@@ -418,17 +418,15 @@ public class PhantasmModelImpl implements PhantasmModel {
     public List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
                                                                       FacetRecord aspect) {
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
-                     .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
+                     .from(EXISTENTIAL_ATTRIBUTE, FACET)
 
-                     .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                     .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
                      .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(FACET.ID))
-
-                     .join(FACET.as("na"))
-                     .on(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID))
+                     .and(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID))
                      .and(FACET.CLASSIFICATION.eq(aspect.getClassification()))
                      .and(FACET.CLASSIFIER.eq(aspect.getClassifier()))
 
-                     .join(EXISTENTIAL_NETWORK.as("network"))
+                     .join(EXISTENTIAL_NETWORK)
                      .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
                      .and(EXISTENTIAL_NETWORK.CHILD.equal(FACET.CLASSIFICATION))

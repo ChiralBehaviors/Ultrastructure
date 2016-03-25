@@ -44,7 +44,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     private Location     anyLocation;
     private Product      anyProduct;
     private Relationship anyRelationship;
-    private Agency       core;
     private final Kernel kernel;
     private final Model  model;
     private Product      sameProduct;
@@ -52,7 +51,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     public OrderProcessingLoader(Model model) throws Exception {
         this.model = model;
         kernel = model.getKernel();
-        core = kernel.getCore();
         sameProduct = kernel.getSameProduct();
         anyProduct = kernel.getAnyProduct();
         anyAgency = kernel.getAnyAgency();
@@ -217,7 +215,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m1.setDeliverTo(state.getId());
         m1.setDeliverFrom(area.getId());
 
-        m1.insert();
+        m1.update();
 
         MetaProtocolRecord m2 = model.getJobModel()
                                      .newInitializedMetaProtocol(pick);
@@ -227,7 +225,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m2.setDeliverTo(area.getId());
         m2.setDeliverFrom(area.getId());
 
-        m2.insert();
+        m2.update();
 
         MetaProtocolRecord m3 = model.getJobModel()
                                      .newInitializedMetaProtocol(ship);
@@ -244,7 +242,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m5.setRequester(salesTaxStatus.getId());
         m5.setDeliverTo(city.getId());
 
-        m5.insert();
+        m5.update();
 
         MetaProtocolRecord m6 = model.getJobModel()
                                      .newInitializedMetaProtocol(printPurchaseOrder);
@@ -254,7 +252,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m6.setDeliverTo(anyRelationship.getId());
         m6.setDeliverFrom(area.getId());
 
-        m6.insert();
+        m6.update();
     }
 
     public void createNetworkNetworkInferences() {
@@ -482,7 +480,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         pickProtocol.setChildAssignTo(factory1Agency.getId());
         pickProtocol.setChildService(pick.getId());
         pickProtocol.setChildProduct(sameProduct.getId());
-        pickProtocol.insert();
+        pickProtocol.update();
 
         ProtocolRecord chkCreditProtocol = model.getJobModel()
                                                 .newInitializedProtocol(pick);
@@ -494,7 +492,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkCreditProtocol.setChildAssignTo(cpu.getId());
         chkCreditProtocol.setChildService(checkCredit.getId());
         chkCreditProtocol.setChildProduct(sameProduct.getId());
-        chkCreditProtocol.insert();
+        chkCreditProtocol.update();
 
         ProtocolRecord chkLtrCrdtProtocol = model.getJobModel()
                                                  .newInitializedProtocol(pick);
@@ -506,7 +504,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkLtrCrdtProtocol.setChildAssignTo(creditDept.getId());
         chkLtrCrdtProtocol.setChildService(checkLetterOfCredit.getId());
         chkLtrCrdtProtocol.setChildProduct(sameProduct.getId());
-        chkLtrCrdtProtocol.insert();
+        chkLtrCrdtProtocol.update();
 
         ProtocolRecord shipProtocol = model.getJobModel()
                                            .newInitializedProtocol(deliver);
@@ -518,7 +516,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         shipProtocol.setChildAssignTo(factory1Agency.getId());
         shipProtocol.setChildService(ship.getId());
         shipProtocol.setChildProduct(sameProduct.getId());
-        shipProtocol.insert();
+        shipProtocol.update();
 
         ProtocolRecord printCustDeclProtocol = model.getJobModel()
                                                     .newInitializedProtocol(ship);
@@ -530,7 +528,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printCustDeclProtocol.setChildAssignTo(cpu.getId());
         printCustDeclProtocol.setChildService(printCustomsDeclaration.getId());
         printCustDeclProtocol.setChildProduct(sameProduct.getId());
-        printCustDeclProtocol.insert();
+        printCustDeclProtocol.update();
 
         ProtocolRecord printPoProtocol = model.getJobModel()
                                               .newInitializedProtocol(ship);
@@ -542,7 +540,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printPoProtocol.setChildAssignTo(cpu.getId());
         printPoProtocol.setChildService(printPurchaseOrder.getId());
         printPoProtocol.setChildProduct(sameProduct.getId());
-        printPoProtocol.insert();
+        printPoProtocol.update();
 
         ProtocolRecord feeProtocol = model.getJobModel()
                                           .newInitializedProtocol(printPurchaseOrder);
@@ -554,7 +552,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         feeProtocol.setChildAssignTo(billingComputer.getId());
         feeProtocol.setChildService(fee.getId());
         feeProtocol.setChildProduct(sameProduct.getId());
-        feeProtocol.insert();
+        feeProtocol.update();
 
         ProtocolRecord salesTaxProtocol = model.getJobModel()
                                                .newInitializedProtocol(fee);
@@ -566,7 +564,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         salesTaxProtocol.setChildAssignTo(billingComputer.getId());
         salesTaxProtocol.setChildService(salesTax.getId());
         salesTaxProtocol.setChildProduct(sameProduct.getId());
-        salesTaxProtocol.insert();
+        salesTaxProtocol.update();
 
         ProtocolRecord discountProtocol = model.getJobModel()
                                                .newInitializedProtocol(fee);
@@ -578,7 +576,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         discountProtocol.setChildAssignTo(billingComputer.getId());
         discountProtocol.setChildService(discount.getId());
         discountProtocol.setChildProduct(sameProduct.getId());
-        discountProtocol.insert();
+        discountProtocol.update();
 
         ProtocolRecord gtuDiscountedPriceProtocol = model.getJobModel()
                                                          .newInitializedProtocol(fee);
@@ -590,7 +588,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         gtuDiscountedPriceProtocol.setChildAssignTo(billingComputer.getId());
         gtuDiscountedPriceProtocol.setChildService(salesTax.getId());
         gtuDiscountedPriceProtocol.setChildProduct(sameProduct.getId());
-        gtuDiscountedPriceProtocol.insert();
+        gtuDiscountedPriceProtocol.update();
     }
 
     public void createRelationships() {

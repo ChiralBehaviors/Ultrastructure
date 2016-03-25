@@ -22,8 +22,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
-import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
@@ -40,13 +38,8 @@ public class TestDebuggingUtil {
     public static void printJobs(List<JobRecord> jobs) {
         for (JobRecord j : jobs) {
             System.out.println(String.format("%s: Status: %s, Parent: %s",
-                                             j.getService()
-                                              .getName(),
-                                             j.getStatus()
-                                              .getName(),
+                                             j.getService(), j.getStatus(),
                                              j.getParent() != null ? j.getParent()
-                                                                      .getService()
-                                                                      .getName()
                                                                    : "null"));
         }
     }
@@ -58,11 +51,9 @@ public class TestDebuggingUtil {
         for (Map.Entry<ProtocolRecord, Map<MetaProtocolRecord, List<String>>> e : gaps.entrySet()) {
             System.out.println(String.format("requested service: %s, service: %s",
                                              e.getKey()
-                                              .getService()
-                                              .getName(),
+                                              .getService(),
                                              e.getKey()
-                                              .getService()
-                                              .getName()));
+                                              .getService()));
 
             for (Map.Entry<MetaProtocolRecord, List<String>> mpe : e.getValue()
                                                                     .entrySet()) {
@@ -82,14 +73,12 @@ public class TestDebuggingUtil {
      * @param findProtocolGaps
      */
     public static void printProtocolGaps(Map<ProtocolRecord, List<String>> gaps) {
-        for (Map.Entry<Protocol, List<String>> e : gaps.entrySet()) {
+        for (Map.Entry<ProtocolRecord, List<String>> e : gaps.entrySet()) {
             System.out.println(String.format("childService: %s, service: %s",
                                              e.getKey()
-                                              .getChildService()
-                                              .getName(),
+                                              .getChildService(),
                                              e.getKey()
-                                              .getService()
-                                              .getName()));
+                                              .getService()));
             System.out.println("Unmatched fields: ");
             for (String f : e.getValue()) {
                 System.out.println(f);
@@ -99,22 +88,17 @@ public class TestDebuggingUtil {
     }
 
     public static void printProtocols(List<ProtocolRecord> protocols) {
-        for (Protocol p : protocols) {
+        for (ProtocolRecord p : protocols) {
             System.out.println(String.format("Requested Service: %s, Service: %s",
-                                             p.getChildService()
-                                              .getName(),
+                                             p.getChildService(),
                                              p.getService()));
         }
     }
 
     public static void printSequencings(List<StatusCodeSequencingRecord> seqs) {
-        for (StatusCodeSequencing s : seqs) {
-            System.out.println(String.format("%s: %s -> %s", s.getService()
-                                                              .getName(),
-                                             s.getParent()
-                                              .getName(),
-                                             s.getChild()
-                                              .getName()));
+        for (StatusCodeSequencingRecord s : seqs) {
+            System.out.println(String.format("%s: %s -> %s", s.getService(),
+                                             s.getParent(), s.getChild()));
         }
     }
 

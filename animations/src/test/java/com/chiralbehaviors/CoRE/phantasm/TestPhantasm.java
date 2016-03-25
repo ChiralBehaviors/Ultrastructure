@@ -20,6 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -44,9 +47,9 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -90,13 +93,10 @@ public class TestPhantasm extends AbstractModelTest {
         Attribute percentage = (Attribute) scope.lookup("discount");
         assertNotNull(percentage);
 
-        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createQuery("select paa from ExistentialAttributeAuthorizationRecord paa "
-                                                                                   + "where paa.networkAuthorization = :a "
-                                                                                   + "and paa.authorizedAttribute = :b",
-                                                                                   ExistentialAttributeAuthorizationRecord.class);
-        query.setParameter("a", facet);
-        query.setParameter("b", percentage);
-        ExistentialAttributeAuthorizationRecord stateAuth = query.getSingleResult();
+        ExistentialAttributeAuthorizationRecord stateAuth = create.selectFrom(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
+                                                                  .where(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(percentage.getId()))
+                                                                  .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(facet.getId()))
+                                                                  .fetchOne();
         assertNotNull(stateAuth);
 
         assertTrue(model.getPhantasmModel()
@@ -154,19 +154,10 @@ public class TestPhantasm extends AbstractModelTest {
                                                       scope.lookup("Thing1"));
         assertNotNull(facet);
 
-        TypedQuery<ExistentialNetworkAuthorization> query = em.createQuery("select auth from ExistentialNetworkAuthorization auth "
-                                                                           + "where auth.classifier = :classifier "
-                                                                           + "and auth.classification = :classification "
-                                                                           + "and auth.childRelationship = :relationship "
-                                                                           + "and auth.authorizedRelationship = :authRel "
-                                                                           + "and auth.authorizedParent = :authParent ",
-                                                                           ExistentialNetworkAuthorization.class);
-        query.setParameter("classifier", kernel.getIsA());
-        query.setParameter("classification", scope.lookup("Thing1"));
-        query.setParameter("relationship", scope.lookup("thing1Of"));
-        query.setParameter("authRel", kernel.getIsA());
-        query.setParameter("authParent", scope.lookup("Thing2"));
-        ExistentialNetworkAuthorizationRecord stateAuth = query.getSingleResult();
+        ExistentialNetworkAuthorizationRecord stateAuth = create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                                .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                                .fetchOne();
+
         assertNotNull(stateAuth);
 
         assertTrue(model.getPhantasmModel()
@@ -437,42 +428,34 @@ public class TestPhantasm extends AbstractModelTest {
 
         WorkspaceScope scope = thing1.getScope();
 
-        TypedQuery<ExistentialNetworkAuthorization> query1 = em.createQuery("select auth from ExistentialNetworkAuthorization auth "
-                                                                            + "where auth.classifier = :classifier "
-                                                                            + "and auth.classification = :classification "
-                                                                            + "and auth.childRelationship = :relationship "
-                                                                            + "and auth.authorizedRelationship = :authRel "
-                                                                            + "and auth.authorizedParent = :authParent ",
-                                                                            ExistentialNetworkAuthorization.class);
-        query1.setParameter("classifier", kernel.getIsA());
-        query1.setParameter("classification", scope.lookup("Thing1"));
-        query1.setParameter("relationship", scope.lookup("thing1Of"));
-        query1.setParameter("authRel", kernel.getIsA());
-        query1.setParameter("authParent", scope.lookup("Thing2"));
-        ExistentialNetworkAuthorizationRecord auth = query1.getSingleResult();
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(kernel.getIsA(),
+                                                      scope.lookup("Thing1"));
+
+        ExistentialNetworkAuthorizationRecord auth = create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                           .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                           .fetchOne();
 
         assertNotNull(auth);
 
         Attribute aliases = (Attribute) scope.lookup("aliases");
         assertNotNull(aliases);
 
-        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createQuery("select paa from ExistentialAttributeAuthorizationRecord paa "
-                                                                                   + "where paa.networkAuthorization = :a "
-                                                                                   + "and paa.authorizedNetworkAttribute = :b",
-                                                                                   ExistentialAttributeAuthorizationRecord.class);
-        query.setParameter("a", auth);
-        query.setParameter("b", aliases);
-        ExistentialAttributeAuthorizationRecord stateAuth = query.getSingleResult();
+        ExistentialNetworkAttributeAuthorizationRecord stateAuth = create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
+                                                                         .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(auth.getId()))
+                                                                         .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(aliases.getId()))
+                                                                         .fetchOne();
+
         assertNotNull(stateAuth);
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
-        ExistentialAttributeAuthorizationRecord accessAuth = model.records()
-                                                                  .newExistentialAttributeAuthorization();
+        ExistentialNetworkAttributeAuthorizationRecord accessAuth = model.records()
+                                                                         .newExistentialNetworkAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setFacet(stateAuth.getFacet());
+        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
         accessAuth.setAuthority(kernel.getAnyAgency()
                                       .getId());
         accessAuth.insert();
@@ -490,9 +473,10 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialAttributeAuthorization();
+                          .newExistentialNetworkAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setFacet(stateAuth.getFacet());
+        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
+
         accessAuth.setAuthority(kernel.getSameAgency()
                                       .getId());
         accessAuth.insert();

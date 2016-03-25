@@ -754,7 +754,7 @@ public class JobModelImpl implements JobModel {
         //            }
         //        }
         //        return protocols;
-        return null;
+        return Collections.emptyMap();
     }
 
     /*
@@ -972,16 +972,18 @@ public class JobModelImpl implements JobModel {
         }
         List<JobRecord> jobs = new ArrayList<>();
         if (protocol.getChildrenRelationship()
-                    .equals(kernel.getNotApplicableRelationship())) {
+                    .equals(kernel.getNotApplicableRelationship()
+                                  .getId())) {
             JobRecord job = model.records()
                                  .newJob();
-            insert(job, parent, protocol, txfm,
-                   resolve(txfm.product, model.records()
-                                              .resolve(protocol.getProduct()),
-                           model.records()
-                                .resolve(parent.getProduct()),
-                           model.records()
-                                .resolve(protocol.getChildProduct())));
+            insert(job, parent, protocol, txfm, model.records()
+                                                     .resolve(resolve(txfm.product,
+                                                                      model.records()
+                                                                           .resolve(protocol.getProduct()),
+                                                                      model.records()
+                                                                           .resolve(parent.getProduct()),
+                                                                      model.records()
+                                                                           .resolve(protocol.getChildProduct()))));
             jobs.add(job);
         } else {
             for (ExistentialRuleform child : model.getPhantasmModel()
@@ -1030,6 +1032,7 @@ public class JobModelImpl implements JobModel {
     public JobRecord newInitializedJob(Product service) {
         JobRecord job = model.records()
                              .newJob();
+        job.setDepth(0);
         job.setService(service.getId());
         job.setAssignTo(kernel.getNotApplicableAgency()
                               .getId());
@@ -1415,16 +1418,15 @@ public class JobModelImpl implements JobModel {
     }
 
     private List<ProtocolRecord> getProtocolsMatching(JobRecord job) {
-        //        TypedQuery<ProtocolRecord> query = em.createNamedQuery(ProtocolRecord.GET,
-        //                                                               ProtocolRecord.class);
-        //        query.setParameter("service", job.getService());
-        //        query.setParameter("requester", job.getRequester());
-        //        query.setParameter("product", job.getProduct());
-        //        query.setParameter("deliverTo", job.getDeliverTo());
-        //        query.setParameter("deliverFrom", job.getDeliverFrom());
-        //        query.setParameter("assignTo", job.getAssignTo());
-        //        return query.getResultList();
-        return null;
+        return model.create()
+                    .selectFrom(PROTOCOL)
+                    .where(PROTOCOL.SERVICE.equal(job.getService()))
+                    .and(PROTOCOL.REQUESTER.equal(job.getRequester()))
+                    .and(PROTOCOL.PRODUCT.equal(job.getProduct()))
+                    .and(PROTOCOL.DELIVER_TO.equal(job.getDeliverTo()))
+                    .and(PROTOCOL.DELIVER_FROM.equal(job.getDeliverFrom()))
+                    .and(PROTOCOL.ASSIGN_TO.equal(job.getAssignTo()))
+                    .fetch();
     }
 
     //    private Subquery<RuleForm> inferenceSubquery(ExistentialAttributeRecord attribute,
@@ -1705,19 +1707,19 @@ public class JobModelImpl implements JobModel {
         return tally;
     }
 
-    private <T extends ExistentialRuleform> T resolve(boolean inferred,
-                                                      T protocol, T parent,
-                                                      T child) {
+    private UUID resolve(boolean inferred, ExistentialRuleform protocol,
+                         ExistentialRuleform parent,
+                         ExistentialRuleform child) {
         if (child.isSame()) {
             if (inferred || protocol.isAny()) {
-                return parent;
+                return parent.getId();
             }
-            return protocol;
+            return protocol.getId();
         }
         if (child.isCopy()) {
-            return parent;
+            return parent.getId();
         }
-        return child;
+        return child.getId();
     }
 
     //    protected void addMask(RuleForm ruleform, Relationship relationship,

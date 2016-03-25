@@ -26,7 +26,6 @@ import java.util.List;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
@@ -42,7 +41,7 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
      * @param em
      */
     public StatusCodeModelImpl(Model model) {
-        super(model);
+        super(model, ExistentialDomain.StatusCode, StatusCode.class);
     }
 
     /* (non-Javadoc)
@@ -93,22 +92,6 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
     @Override
     public List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(StatusCode parent) {
         return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.ExistentialModelImpl#domain()
-     */
-    @Override
-    protected ExistentialDomain domain() {
-        return ExistentialDomain.StatusCode;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.ExistentialModelImpl#domainClass()
-     */
-    @Override
-    protected Class<? extends ExistentialRecord> domainClass() {
-        return StatusCode.class;
     }
 
 }

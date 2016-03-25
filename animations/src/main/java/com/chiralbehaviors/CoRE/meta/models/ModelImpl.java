@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,8 +32,16 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.sql.DataSource;
+
+import org.jooq.Configuration;
 import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.DefaultRecordListenerProvider;
+import org.jooq.util.postgres.PostgresDSL;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
@@ -45,13 +54,9 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
@@ -60,17 +65,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
-import com.chiralbehaviors.CoRE.meta.models.triggers.AgencyTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.AttributeTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.ExistentialNetworkTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.IntervalTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.LocationTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.NetworkInferenceTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.ProductTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.RelationshipTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.StatusCodeSequencingTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.StatusCodeTrigger;
-import com.chiralbehaviors.CoRE.meta.models.triggers.UnitTrigger;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -104,6 +98,27 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
+    private static Configuration configuration() {
+        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_9_5);
+        Settings settings = new Settings();
+        settings.setExecuteWithOptimisticLocking(true);
+        configuration.set(settings);
+        return configuration;
+    }
+
+    private static Configuration configuration(Connection connection) throws SQLException {
+        Configuration configuration = configuration();
+        connection.setAutoCommit(false);
+        configuration.set(connection);
+        return configuration;
+    }
+
+    private static Configuration configuration(DataSource ds) throws SQLException {
+        Configuration configuration = configuration();
+        configuration.set(ds);
+        return configuration;
+    }
+
     private final ExistentialModel<Agency>       agencyModel;
     private final ExistentialModel<Attribute>    attributeModel;
     private final DSLContext                     create;
@@ -120,92 +135,62 @@ public class ModelImpl implements Model {
     private final ExistentialModel<Unit>         unitModel;
     private final WorkspaceModel                 workspaceModel;
 
-    public ModelImpl(DSLContext create) {
+    public ModelImpl(Connection connection) throws SQLException {
+        this(PostgresDSL.using(configuration(connection)));
+    }
+
+    public ModelImpl(DataSource ds) throws SQLException {
+        this(PostgresDSL.using(configuration(ds)));
+    }
+
+    private ModelImpl(DSLContext create) {
+        create.configuration()
+              .set(new DefaultRecordListenerProvider(new Animations(this,
+                                                                    new Inference() {
+                                                                        @Override
+                                                                        public Model model() {
+                                                                            return ModelImpl.this;
+                                                                        }
+                                                                    })));
         this.create = create;
-        factory = createTriggers();
+        factory = new RecordsFactory() {
+
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+
+            @Override
+            public UUID currentPrincipalId() {
+                return getCurrentPrincipal().getPrincipal()
+                                            .getId();
+            }
+        };
         workspaceModel = new WorkspaceModelImpl(this);
         kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
                                .getWorkspace()
                                .getAccessor(Kernel.class);
-        attributeModel = new ExistentialModelImpl<Attribute>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Attribute;
-            }
-
-            @Override
-            protected Class<Attribute> domainClass() {
-                return Attribute.class;
-            }
-        };
-        productModel = new ExistentialModelImpl<Product>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Product;
-            }
-
-            @Override
-            protected Class<Product> domainClass() {
-                return Product.class;
-            }
-        };
-        intervalModel = new ExistentialModelImpl<Interval>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Interval;
-            }
-
-            @Override
-            protected Class<Interval> domainClass() {
-                return Interval.class;
-            }
-        };
-        locationModel = new ExistentialModelImpl<Location>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Location;
-            }
-
-            @Override
-            protected Class<Location> domainClass() {
-                return Location.class;
-            }
-        };
-        agencyModel = new ExistentialModelImpl<Agency>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Agency;
-            }
-
-            @Override
-            protected Class<Agency> domainClass() {
-                return Agency.class;
-            }
-        };
+        agencyModel = new ExistentialModelImpl<>(this, ExistentialDomain.Agency,
+                                                 Agency.class);
+        attributeModel = new ExistentialModelImpl<>(this,
+                                                    ExistentialDomain.Attribute,
+                                                    Attribute.class);
+        intervalModel = new ExistentialModelImpl<>(this,
+                                                   ExistentialDomain.Interval,
+                                                   Interval.class);
         jobModel = new JobModelImpl(this);
-        relationshipModel = new ExistentialModelImpl<Relationship>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Relationship;
-            }
-
-            @Override
-            protected Class<Agency> domainClass() {
-                return Agency.class;
-            }
-        };
+        locationModel = new ExistentialModelImpl<>(this,
+                                                   ExistentialDomain.Location,
+                                                   Location.class);
+        productModel = new ExistentialModelImpl<>(this,
+                                                  ExistentialDomain.Product,
+                                                  Product.class);
+        relationshipModel = new ExistentialModelImpl<>(this,
+                                                       ExistentialDomain.Relationship,
+                                                       Agency.class);
         statusCodeModel = new StatusCodeModelImpl(this);
-        unitModel = new ExistentialModelImpl<Unit>(this) {
-            @Override
-            protected ExistentialDomain domain() {
-                return ExistentialDomain.Unit;
-            }
-
-            @Override
-            protected Class<Unit> domainClass() {
-                return Unit.class;
-            }
-        };
+        unitModel = new ExistentialModelImpl<>(this, ExistentialDomain.Unit,
+                                               Unit.class);
         phantasmModel = new PhantasmModelImpl(this);
         initializeCurrentPrincipal();
     }
@@ -472,103 +457,6 @@ public class ModelImpl implements Model {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
         return (R) definition.wrap(ruleform.getRuleform(), this);
-    }
-
-    private RecordsFactory createTriggers() {
-        Animations animations = new Animations(this, new Inference() {
-            @Override
-            public Model model() {
-                return ModelImpl.this;
-            }
-        });
-        return new RecordsFactory() {
-
-            @Override
-            public DSLContext create() {
-                return create;
-            }
-
-            @Override
-            public UUID currentPrincipalId() {
-                return getCurrentPrincipal().getPrincipal()
-                                            .getId();
-            }
-
-            @Override
-            public Agency newAgency() {
-                AgencyTrigger agency = RecordsFactory.super.newAgency().into(AgencyTrigger.class);
-                agency.set(animations);
-                return agency;
-            }
-
-            @Override
-            public Attribute newAttribute() {
-                AttributeTrigger attribute = RecordsFactory.super.newAttribute().into(AttributeTrigger.class);
-                attribute.set(animations);
-                return attribute;
-            }
-
-            @Override
-            public ExistentialNetworkRecord newExistentialNetwork() {
-                ExistentialNetworkTrigger edge = RecordsFactory.super.newExistentialNetwork().into(ExistentialNetworkTrigger.class);
-                edge.set(animations);
-                return edge;
-            }
-
-            @Override
-            public Interval newInterval() {
-                IntervalTrigger interval = RecordsFactory.super.newInterval().into(IntervalTrigger.class);
-                interval.set(animations);
-                return interval;
-            }
-
-            @Override
-            public Location newLocation() {
-                LocationTrigger location = RecordsFactory.super.newLocation().into(LocationTrigger.class);
-                return location;
-            }
-
-            @Override
-            public NetworkInferenceRecord newNetworkInferrence() {
-                NetworkInferenceTrigger inference = RecordsFactory.super.newNetworkInferrence().into(NetworkInferenceTrigger.class);
-                inference.set(animations);
-                return inference;
-
-            }
-
-            @Override
-            public Product newProduct() {
-                ProductTrigger product = RecordsFactory.super.newProduct().into(ProductTrigger.class);
-                return product;
-            }
-
-            @Override
-            public Relationship newRelationship() {
-                RelationshipTrigger relationship = RecordsFactory.super.newRelationship().into(RelationshipTrigger.class);
-                return relationship;
-            }
-
-            @Override
-            public StatusCode newStatusCode() {
-                StatusCodeTrigger statusCode = RecordsFactory.super.newStatusCode().into(StatusCodeTrigger.class);
-                statusCode.set(animations);
-                return statusCode;
-            }
-
-            @Override
-            public StatusCodeSequencingRecord newStatusCodeSequencing() {
-                StatusCodeSequencingTrigger seq = RecordsFactory.super.newStatusCodeSequencing().into(StatusCodeSequencingTrigger.class);
-                seq.set(animations);
-                return seq;
-            }
-
-            @Override
-            public Unit newUnit() {
-                UnitTrigger unit = RecordsFactory.super.newUnit().into(UnitTrigger.class);
-                unit.set(animations);
-                return unit;
-            }
-        };
     }
 
     private Collection<UUID> excludeThisSingleton() {

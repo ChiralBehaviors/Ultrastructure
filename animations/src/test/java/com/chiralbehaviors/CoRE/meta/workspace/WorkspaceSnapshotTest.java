@@ -55,7 +55,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         File version1File = new File(TARGET_CLASSES_THING_1_JSON);
         File version2File = new File(TARGET_CLASSES_THING_2_JSON);
         File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
-        try (Model myModel = new ModelImpl(newCreate())) {
+        try (Model myModel = new ModelImpl(newConnection())) {
             myModel.create();
             WorkspaceImporter importer;
             Product definingProduct;
@@ -73,7 +73,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
         }
 
-        try (Model myModel = new ModelImpl(newCreate())) {
+        try (Model myModel = new ModelImpl(newConnection())) {
             WorkspaceSnapshot.load(myModel.create(),
                                    Arrays.asList(version1File.toURI()
                                                              .toURL()));
@@ -91,7 +91,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             }
         }
 
-        try (Model myModel = new ModelImpl(newCreate())) {
+        try (Model myModel = new ModelImpl(newConnection())) {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new CoREModule());
@@ -124,7 +124,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             assertNotNull(theDude);
         }
 
-        try (Model myModel = new ModelImpl(newCreate())) {
+        try (Model myModel = new ModelImpl(newConnection())) {
 
             assertNull(myModel.getWorkspaceModel()
                               .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));

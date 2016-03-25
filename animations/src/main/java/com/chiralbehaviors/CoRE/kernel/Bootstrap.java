@@ -157,7 +157,9 @@ public class Bootstrap {
         connection.commit();
 
         // Ain Soph
-        ModelImpl model = new ModelImpl(create);
+        ModelImpl model = new ModelImpl(create.configuration()
+                                              .connectionProvider()
+                                              .acquire());
 
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
                               model).initialize()

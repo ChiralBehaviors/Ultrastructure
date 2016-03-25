@@ -22,16 +22,24 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+
+import org.jooq.RecordContext;
+import org.jooq.RecordType;
+import org.jooq.impl.DefaultRecordListener;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
@@ -48,41 +56,55 @@ import com.chiralbehaviors.CoRE.meta.TriggerException;
  *         This class implements the animations logic for the Ultrastructure
  *         model. Abstractly, this logic is driven by state events of an
  *         Ultrastructure instance. Conceptually, this is equivalent to database
- *         triggers. This class models a simple state model of persist, update,
+ *         triggers. This class models a simple state model of insert, update,
  *         delete style events. The animations model is conceptually simple and
  *         unchanging, thus we don't need a general mechanism of dynamically
  *         registering triggers n' such. We just inline the animation logic in
  *         the state methods, delegating to the appropriate model for
  *         implementation. What this means in practice is that this is the class
  *         that creates the high level logic around state change of an
- *         Ultrastructure instance. This is the high level, disambiguation logic
- *         of Ultrastructure animation.
+ *         Ultrastructure instance.
+ * 
+ *         This is the high level, core disambiguation logic of Ultrastructure
+ *         animation.
  *
  *         This is the Rule Engine (tm).
  */
-public class Animations {
+public class Animations extends DefaultRecordListener {
 
-    private static final int                                MAX_JOB_PROCESSING = 10;
+    private static final int                                  MAX_JOB_PROCESSING = 10;
+    private static final Consumer<RecordContext>              NULL_CONSUMER      = f -> {
+                                                                                 };
 
-    private final Set<ExistentialAttributeRecord>           attributeValues    = new HashSet<>();
-    private final Set<ChildSequencingAuthorizationRecord>   childSequences     = new HashSet<>();
-    private final Inference                                 inference;;
-    private boolean                                         inferNetwork;
-    private final Set<JobRecord>                            jobs               = new LinkedHashSet<>();
-    private final Model                                     model;
-    private final Set<Product>                              modifiedServices   = new HashSet<>();
-    private final Set<ParentSequencingAuthorizationRecord>  parentSequences    = new HashSet<>();
-    private final Set<SelfSequencingAuthorizationRecord>    selfSequences      = new HashSet<>();
-    private final Set<SiblingSequencingAuthorizationRecord> siblingSequences   = new HashSet<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterDelete        = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterInsert        = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterStore         = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterUpdate        = new HashMap<>();
+    private final Set<ExistentialAttributeRecord>             attributeValues    = new HashSet<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> beforeStore        = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> beforeDelete       = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> beforeInsert       = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> beforeUpdate       = new HashMap<>();
+    private final Set<ChildSequencingAuthorizationRecord>     childSequences     = new HashSet<>();
+    private final Inference                                   inference;
+    private boolean                                           inferNetwork;
+    private final Set<JobRecord>                              jobs               = new LinkedHashSet<>();
+    private final Model                                       model;
+    private final Set<Product>                                modifiedServices   = new HashSet<>();
+    private final Set<ParentSequencingAuthorizationRecord>    parentSequences    = new HashSet<>();
+    private final Set<SelfSequencingAuthorizationRecord>      selfSequences      = new HashSet<>();
+    private final Set<SiblingSequencingAuthorizationRecord>   siblingSequences   = new HashSet<>();
 
     public Animations(Model model, Inference inference) {
         this.model = model;
         this.inference = inference;
+        initializeTriggers();
     }
 
-    /**
-     * 
-     */
+    private void initializeTriggers() {
+
+    }
+
     public void begin() {
         model.flushWorkspaces();
     }
@@ -102,6 +124,18 @@ public class Animations {
 
     public void delete(NetworkInferenceRecord inference) {
         inferNetwork = true;
+    }
+
+    @Override
+    public void deleteEnd(RecordContext ctx) {
+        afterDelete.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
+
+    @Override
+    public void deleteStart(RecordContext ctx) {
+        beforeDelete.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                    .accept(ctx);
     }
 
     public void flush() {
@@ -148,6 +182,10 @@ public class Animations {
         inferNetwork = true;
     }
 
+    public void insert(ExistentialRecord a) {
+        inferNetwork = true;
+    }
+
     public void insert(JobRecord j) {
         jobs.add(j);
     }
@@ -169,6 +207,22 @@ public class Animations {
                                   .resolve(scs.getService()));
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
+     */
+
+    @Override
+    public void insertEnd(RecordContext ctx) {
+        afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
+
+    @Override
+    public void insertStart(RecordContext ctx) {
+        beforeInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                    .accept(ctx);
+    }
+
     public void modify(StatusCodeSequencingRecord scs) {
         modifiedServices.add(model.records()
                                   .resolve(scs.getService()));
@@ -179,12 +233,26 @@ public class Animations {
         model.flushWorkspaces();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
-     */
+    @Override
+    public void storeEnd(RecordContext ctx) {
+        afterStore.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                  .accept(ctx);
+    }
+
+    @Override
+    public void storeStart(RecordContext ctx) {
+        beforeStore.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
 
     public void update(JobRecord j) {
         jobs.add(j);
+    }
+
+    @Override
+    public void updateEnd(RecordContext ctx) {
+        afterUpdate.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
     }
 
     private void clearSequences() {
@@ -314,5 +382,11 @@ public class Animations {
                 throw new TriggerException("Invalid sequence", e);
             }
         }
+    }
+
+    @Override
+    public void updateStart(RecordContext ctx) {
+        beforeUpdate.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                    .accept(ctx);
     }
 }

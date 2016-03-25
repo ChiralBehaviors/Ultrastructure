@@ -36,7 +36,6 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 
@@ -44,16 +43,20 @@ import com.chiralbehaviors.CoRE.meta.Model;
  * @author hhildebrand
  *
  */
-abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
+public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         implements ExistentialModel<RuleForm> {
-    protected final DSLContext create;
-    protected final Kernel     kernel;
-    protected final Model      model;
 
-    public ExistentialModelImpl(Model model) {
+    private final DSLContext                         create;
+    private final Model                              model;
+    private final ExistentialDomain                  domain;
+    private final Class<? extends ExistentialRecord> domainClass;
+
+    public ExistentialModelImpl(Model model, ExistentialDomain domain,
+                                Class<? extends ExistentialRecord> domainClass) {
         this.model = model;
         this.create = model.create();
-        this.kernel = model.getKernel();
+        this.domain = domain;
+        this.domainClass = domainClass;
     }
 
     /*
@@ -156,7 +159,11 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                      .into(FacetRecord.class);
     }
 
-    abstract protected ExistentialDomain domain();
+    protected ExistentialDomain domain() {
+        return domain;
+    }
 
-    abstract protected Class<? extends ExistentialRecord> domainClass();
+    protected Class<? extends ExistentialRecord> domainClass() {
+        return domainClass;
+    }
 }

@@ -26,8 +26,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.jooq.DSLContext;
-import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
@@ -56,7 +54,7 @@ public class AbstractModelTest {
     public static void afterClass() throws DataAccessException, SQLException {
     }
 
-    public static DSLContext newCreate() throws IOException, SQLException {
+    public static Connection newConnection() throws IOException, SQLException {
         Properties properties = new Properties();
         properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
         System.out.println(String.format(" ---------> Connecting to DB: %s",
@@ -65,9 +63,7 @@ public class AbstractModelTest {
                                                       (String) properties.get("user"),
                                                       (String) properties.get("password"));
         conn.setAutoCommit(false);
-        Settings settings = new Settings();
-        settings.setExecuteWithOptimisticLocking(true);
-        return PostgresDSL.using(conn, settings);
+        return conn;
     }
 
     public AbstractModelTest() {
@@ -85,9 +81,9 @@ public class AbstractModelTest {
     @Before
     public void before() throws DataAccessException, SQLException,
                          InstantiationException, IOException {
-        DSLContext create = newCreate();
-        KernelUtil.clearAndLoadKernel(create);
-        model = new ModelImpl(create);
+        Connection connection = newConnection();
+        KernelUtil.clearAndLoadKernel(PostgresDSL.using(connection));
+        model = new ModelImpl(connection);
         KernelUtil.initializeInstance(model,
                                       "Abstract Model Test CoRE Instance",
                                       "CoRE instance for an Abstract Model Test");

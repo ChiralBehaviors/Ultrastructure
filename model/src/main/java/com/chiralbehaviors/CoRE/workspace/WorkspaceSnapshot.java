@@ -38,7 +38,6 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.TableRecord;
-import org.jooq.UpdatableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,10 +192,7 @@ public class WorkspaceSnapshot {
         records.forEach(r -> {
             @SuppressWarnings("rawtypes")
             TableRecord r2 = (TableRecord) r;
-            @SuppressWarnings("rawtypes")
-            UpdatableRecord r3 = (UpdatableRecord) create.newRecord(r2.getTable(),
-                                                                    r2);
-            r3.store();
+            create.executeInsert(r2);
         });
     }
 

@@ -226,16 +226,17 @@ public class WorkspaceImporter {
     }
 
     private void createNetworkAuth(FacetContext facet, FacetRecord facetAuth,
-                                   ConstraintContext constraint,
-                                   ExistentialNetworkAuthorizationRecord authorization) {
+                                   ConstraintContext constraint) {
+        ExistentialNetworkAuthorizationRecord authorization = model.records()
+                                                                   .newExistentialNetworkAuthorization();
         authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setParent(facetAuth.getId());
         authorization.setRelationship(resolve(constraint.childRelationship));
         resolveChild(constraint, authorization);
         Cardinality cardinality = cardinality(constraint);
         authorization.setCardinality(cardinality);
-        workspace.add(authorization);
         authorization.insert();
+        workspace.add(authorization);
         List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
@@ -397,10 +398,10 @@ public class WorkspaceImporter {
                                       .getPrincipal()
                                       .getId());
                 ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                ama.insert();
                 setValueFromString(authorizedAttribute, ama,
                                    WorkspacePresentation.stripQuotes(av.value.getText()));
                 workspace.add(ama);
-                ama.insert();
             }
         }
     }
@@ -691,8 +692,7 @@ public class WorkspaceImporter {
         networkConstraints.constraint()
                           .forEach(constraint -> {
                               createNetworkAuth(facet, authorization,
-                                                constraint, model.records()
-                                                                 .newExistentialNetworkAuthorization());
+                                                constraint);
                           });
     }
 

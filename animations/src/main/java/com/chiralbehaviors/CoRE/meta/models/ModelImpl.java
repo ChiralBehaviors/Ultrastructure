@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
@@ -227,6 +230,16 @@ public class ModelImpl implements Model {
 
     @Override
     public void close() {
+        try {
+            create.configuration()
+                  .connectionProvider()
+                  .acquire()
+                  .rollback();
+        } catch (DataAccessException | SQLException e) {
+            LoggerFactory.getLogger(ModelImpl.class)
+                         .error("error rolling back transaction during model close",
+                                e);
+        }
         create.close();
     }
 

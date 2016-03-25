@@ -70,6 +70,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
+
         }
 
         try (Model myModel = new ModelImpl(newCreate())) {
@@ -109,8 +110,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
-            assertEquals(7, delta.getRecords()
-                                 .size());
+            assertEquals(12, delta.getRecords()
+                                  .size());
 
             try {
                 myModel.getWorkspaceModel()

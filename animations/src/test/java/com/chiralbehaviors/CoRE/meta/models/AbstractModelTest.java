@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.jooq.DSLContext;
+import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
@@ -87,8 +88,9 @@ public class AbstractModelTest {
                                                       (String) properties.get("user"),
                                                       (String) properties.get("password"));
         conn.setAutoCommit(false);
-
-        return PostgresDSL.using(conn);
+        Settings settings = new Settings();
+        settings.setExecuteWithOptimisticLocking(true);
+        return PostgresDSL.using(conn, settings);
     }
 
     public AbstractModelTest() {

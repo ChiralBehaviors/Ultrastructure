@@ -453,6 +453,14 @@ public interface RecordsFactory {
         return record;
     }
 
+    default NetworkInferenceRecord newNetworkNetworkInference(Relationship premise1,
+                                                              Relationship premise2,
+                                                              Relationship inference) {
+        return newNetworkInference(premise1.getId(), premise2.getId(),
+                                   inference.getId());
+
+    }
+
     default ParentSequencingAuthorizationRecord newParentSequencingAuthorization() {
         ParentSequencingAuthorizationRecord record = create().newRecord(PARENT_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());

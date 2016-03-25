@@ -298,10 +298,11 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
                                                                              terminalState);
         sequence3.insert();
 
-        create.configuration()
-              .connectionProvider()
-              .acquire()
-              .commit();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
 
         List<StatusCode> initialStates = jobModel.getInitialStates(service);
         assertEquals(initialStates.stream()

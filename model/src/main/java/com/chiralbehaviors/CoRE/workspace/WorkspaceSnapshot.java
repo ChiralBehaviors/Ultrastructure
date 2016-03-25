@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -89,9 +88,9 @@ public class WorkspaceSnapshot {
         load(create, Collections.singletonList(resource));
     }
 
-    private Product      definingProduct;
+    protected Product      definingProduct;
 
-    private List<Record> records;
+    protected List<Record> records;
 
     public WorkspaceSnapshot() {
         records = new ArrayList<>();
@@ -99,14 +98,9 @@ public class WorkspaceSnapshot {
     }
 
     public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
-        this(definingProduct, create, Collections.emptyList());
-    }
-
-    public WorkspaceSnapshot(Product definingProduct, DSLContext create,
-                             Collection<UUID> exlude) {
         this.definingProduct = definingProduct;
         records = new ArrayList<>();
-        loadFromDb(create, exlude);
+        loadFromDb(create);
     }
 
     /**
@@ -161,9 +155,20 @@ public class WorkspaceSnapshot {
 
     @SuppressWarnings("unchecked")
     public boolean load(DSLContext create) {
-        ExistentialRecord existing = create.selectFrom(EXISTENTIAL)
-                                           .where(EXISTENTIAL.ID.equal(definingProduct.getId()))
-                                           .fetchOne();
+        loadDefiningProduct(create);
+        records.forEach(r -> {
+            @SuppressWarnings("rawtypes")
+            TableRecord r2 = (TableRecord) r;
+            create.executeInsert(r2);
+        });
+        return true;
+    }
+
+    protected void loadDefiningProduct(DSLContext create) {
+        ExistentialRecord existing = definingProduct == null ? null
+                                                             : create.selectFrom(EXISTENTIAL)
+                                                                     .where(EXISTENTIAL.ID.equal(definingProduct.getId()))
+                                                                     .fetchOne();
         if (existing == null) {
             log.info("Creating workspace [{}] version: {}",
                      definingProduct.getName(), definingProduct.getVersion());
@@ -173,18 +178,7 @@ public class WorkspaceSnapshot {
                      definingProduct.getName(), existing.getVersion(),
                      definingProduct.getVersion());
             create.executeUpdate(definingProduct);
-        } else {
-            log.info("Not updating workspace [{}] existing version: {} is higher than version: {}",
-                     definingProduct.getName(), existing.getVersion(),
-                     definingProduct.getVersion());
-            return false;
         }
-        records.forEach(r -> {
-            @SuppressWarnings("rawtypes")
-            TableRecord r2 = (TableRecord) r;
-            create.executeInsert(r2);
-        });
-        return true;
     }
 
     public void serializeTo(OutputStream os) throws JsonGenerationException,
@@ -196,33 +190,21 @@ public class WorkspaceSnapshot {
     }
 
     @SuppressWarnings("unchecked")
-    private void loadFromDb(DSLContext create, Collection<UUID> exlude) {
+    private void loadFromDb(DSLContext create) {
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
                              if (!t.equals(WORKSPACE_AUTHORIZATION)) {
-                                 if (definingProduct != null) {
-                                     records.addAll(create.selectDistinct(t.fields())
-                                                          .from(t)
-                                                          .join(WORKSPACE_AUTHORIZATION)
-                                                          .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
-                                                          .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
-                                                          .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
-                                                          .fetchInto(t.getRecordType()));
-                                 } else {
-                                     records.addAll(create.selectDistinct(t.fields())
-                                                          .from(t)
-                                                          .where(t.field("workspace")
-                                                                  .isNull())
-                                                          .and(t.field("id")
-                                                                .notIn(exlude))
-                                                          .fetchInto(t.getRecordType()));
-                                 }
+                                 records.addAll(create.selectDistinct(t.fields())
+                                                      .from(t)
+                                                      .join(WORKSPACE_AUTHORIZATION)
+                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                                                      .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                                      .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
+                                                      .fetchInto(t.getRecordType()));
                              }
                          });
-        if (definingProduct != null) {
-            records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
-                                 .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
-                                 .fetch());
-        }
+        records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
+                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
+                             .fetch());
     }
 }

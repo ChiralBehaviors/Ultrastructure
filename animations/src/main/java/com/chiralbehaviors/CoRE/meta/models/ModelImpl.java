@@ -59,6 +59,7 @@ import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -490,6 +491,6 @@ public class ModelImpl implements Model {
      */
     @Override
     public WorkspaceSnapshot snapshot() {
-        return new WorkspaceSnapshot(null, create, excludeThisSingleton());
+        return new StateSnapshot(create, excludeThisSingleton());
     }
 }

@@ -178,7 +178,9 @@ public class StatusCodeTest extends AbstractModelTest {
         List<JobChronologyRecord> chronology = jobModel.getChronologyForJob(child);
         assertEquals(chronology.toString(), 2, chronology.size());
         for (JobChronologyRecord crumb : chronology) {
-            assertEquals(kernel.getUnset(), crumb.getStatus());
+            assertEquals(model.getKernel()
+                              .getUnset(),
+                         crumb.getStatus());
         }
     }
 

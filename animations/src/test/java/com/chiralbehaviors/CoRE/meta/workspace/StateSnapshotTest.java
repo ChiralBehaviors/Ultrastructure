@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,28 +56,29 @@ public class StateSnapshotTest extends AbstractModelTest {
             new ObjectMapper().registerModule(new CoREModule())
                               .writeValue(os, snap);
         }
-        create.configuration()
-              .connectionProvider()
-              .acquire()
-              .rollback();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .rollback();
         Agency frankenstein = model.records()
                                    .resolve(id);
         assertNull("Shouldn't be alive", frankenstein);
 
-        WorkspaceSnapshot snapshot;
+        StateSnapshot snapshot;
         try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
             snapshot = new ObjectMapper().registerModule(new CoREModule())
-                                         .readValue(os,
-                                                    WorkspaceSnapshot.class);
+                                         .readValue(os, StateSnapshot.class);
         }
         snapshot.load(model.create());
         frankenstein = model.records()
                             .resolve(id);
         assertNotNull("Should be found", frankenstein);
-        create.configuration()
-              .connectionProvider()
-              .acquire()
-              .rollback();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .rollback();
         frankenstein = model.records()
                             .resolve(id);
         assertNull("Shouldn't be alive", frankenstein);

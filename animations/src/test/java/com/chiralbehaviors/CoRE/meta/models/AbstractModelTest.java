@@ -33,9 +33,7 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
-import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 
@@ -46,37 +44,16 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
-    public static final String  TARGET_CLASSES_THING_1_2_JSON = "target/test-classes/thing.1.2.json";
-    public static final String  TARGET_CLASSES_THING_1_JSON   = "target/test-classes/thing.1.json";
-    public static final String  TARGET_CLASSES_THING_2_JSON   = "target/test-classes/thing.2.json";
-    public static final String  TARGET_THINGS_JSON            = "target/things.json";
-    public static final String  THING_URI                     = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
+    public static final String TARGET_CLASSES_THING_1_2_JSON = "target/test-classes/thing.1.2.json";
+    public static final String TARGET_CLASSES_THING_1_JSON   = "target/test-classes/thing.1.json";
+    public static final String TARGET_CLASSES_THING_2_JSON   = "target/test-classes/thing.2.json";
+    public static final String TARGET_THINGS_JSON            = "target/things.json";
+    public static final String THING_URI                     = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
 
-    private static boolean      initialized                   = false;
-    protected static DSLContext create;
-    protected static Kernel     kernel;
-    protected static Model      model;
+    protected Model            model;
 
     @AfterClass
     public static void afterClass() throws DataAccessException, SQLException {
-        if (create != null) {
-            create.configuration()
-                  .connectionProvider()
-                  .acquire()
-                  .rollback();
-        }
-    }
-
-    @BeforeClass
-    public static void initializeDatabase() throws IOException, SQLException,
-                                            InstantiationException {
-        if (initialized == false) {
-            initialized = true;
-            create = newCreate();
-            KernelUtil.clearAndLoadKernel(create);
-            model = new ModelImpl(create);
-        }
-        kernel = model.getKernel();
     }
 
     public static DSLContext newCreate() throws IOException, SQLException {
@@ -99,20 +76,18 @@ public class AbstractModelTest {
 
     @After
     public void after() throws DataAccessException, SQLException {
-        create.configuration()
-              .connectionProvider()
-              .acquire()
-              .rollback();
+        if (model != null) {
+            model.close();
+        }
         ModelImpl.clearPhantasmCache();
     }
 
     @Before
     public void before() throws DataAccessException, SQLException,
-                         InstantiationException {
-        create.configuration()
-              .connectionProvider()
-              .acquire()
-              .rollback();
+                         InstantiationException, IOException {
+        DSLContext create = newCreate();
+        KernelUtil.clearAndLoadKernel(create);
+        model = new ModelImpl(create);
         KernelUtil.initializeInstance(model,
                                       "Abstract Model Test CoRE Instance",
                                       "CoRE instance for an Abstract Model Test");

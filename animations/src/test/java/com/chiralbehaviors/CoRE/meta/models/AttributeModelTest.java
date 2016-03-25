@@ -38,7 +38,8 @@ public class AttributeModelTest extends AbstractModelTest {
 
     @Test
     public void testEnumValues() {
-        Agency core = kernel.getCore();
+        Agency core = model.getKernel()
+                           .getCore();
         Attribute attr = model.records()
                               .newAttribute("Attribute", "A", ValueType.Text);
         attr.insert();

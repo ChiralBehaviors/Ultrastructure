@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -63,14 +63,15 @@ public class JobModelTest extends AbstractModelTest {
 
     private static OrderProcessing scenario;
 
-    @BeforeClass
-    public static void loadOrderProcessing() throws Exception {
-        create.transaction(c -> {
-            OrderProcessingLoader loader = new OrderProcessingLoader(model);
-            loader.load();
-            scenario = loader.createWorkspace(model)
-                             .getAccessor(OrderProcessing.class);
-        });
+    @Before
+    public void loadOrderProcessing() throws Exception {
+        model.create()
+             .transaction(c -> {
+                 OrderProcessingLoader loader = new OrderProcessingLoader(model);
+                 loader.load();
+                 scenario = loader.createWorkspace(model)
+                                  .getAccessor(OrderProcessing.class);
+             });
         jobModel = model.getJobModel();
         // model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-db.xml")));
     }
@@ -116,30 +117,40 @@ public class JobModelTest extends AbstractModelTest {
 
         ProtocolRecord p = jobModel.newInitializedProtocol(kiki);
         p.setProduct(bento.getId());
-        p.setRequester(kernel.getCore()
-                             .getId());
-        p.setDeliverTo(kernel.getAnyLocation()
-                             .getId());
-        p.setDeliverFrom(kernel.getAnyLocation()
-                               .getId());
-        p.setAssignTo(kernel.getCore()
+        p.setRequester(model.getKernel()
+                            .getCore()
                             .getId());
+        p.setDeliverTo(model.getKernel()
+                            .getAnyLocation()
+                            .getId());
+        p.setDeliverFrom(model.getKernel()
+                              .getAnyLocation()
+                              .getId());
+        p.setAssignTo(model.getKernel()
+                           .getCore()
+                           .getId());
         p.setChildService(shipping.getId());
         p.setChildProduct(bento.getId());
         p.update();
 
         JobRecord job = model.getJobModel()
                              .newInitializedJob(kiki);
-        job.setAssignTo(kernel.getCore()
-                              .getId());
+        job.setAssignTo(model.getKernel()
+                             .getCore()
+                             .getId());
         job.setProduct(bento.getId());
-        job.setDeliverTo(kernel.getAnyLocation()
-                               .getId());
-        job.setDeliverFrom(kernel.getAnyLocation()
-                                 .getId());
-        job.setRequester(kernel.getCore()
-                               .getId());
-        jobModel.changeStatus(job, kernel.getUnset(), "transition during test");
+        job.setDeliverTo(model.getKernel()
+                              .getAnyLocation()
+                              .getId());
+        job.setDeliverFrom(model.getKernel()
+                                .getAnyLocation()
+                                .getId());
+        job.setRequester(model.getKernel()
+                              .getCore()
+                              .getId());
+        jobModel.changeStatus(job, model.getKernel()
+                                        .getUnset(),
+                              "transition during test");
         job.update();
         jobModel.changeStatus(job, startState, "transition during test");
 
@@ -203,18 +214,22 @@ public class JobModelTest extends AbstractModelTest {
                                .newProduct("test service");
         service.insert();
         MetaProtocolRecord mp = jobModel.newInitializedMetaProtocol(service);
-        mp.setAssignTo(kernel.getDevelopedBy()
+        mp.setAssignTo(model.getKernel()
+                            .getDevelopedBy()
+                            .getId());
+        mp.setDeliverTo(model.getKernel()
+                             .getGreaterThanOrEqual()
                              .getId());
-        mp.setDeliverTo(kernel.getGreaterThanOrEqual()
-                              .getId());
         mp.update();
         ProtocolRecord p = jobModel.newInitializedProtocol(service);
-        p.setAssignTo(kernel.getPropagationSoftware()
-                            .getId());
+        p.setAssignTo(model.getKernel()
+                           .getPropagationSoftware()
+                           .getId());
         p.update();
         JobRecord order = jobModel.newInitializedJob(service);
-        order.setAssignTo(kernel.getCoreUser()
-                                .getId());
+        order.setAssignTo(model.getKernel()
+                               .getCoreUser()
+                               .getId());
         Location loc = model.records()
                             .newLocation("crap location");
         loc.insert();
@@ -323,8 +338,9 @@ public class JobModelTest extends AbstractModelTest {
         p.update();
         JobRecord order = jobModel.newInitializedJob(service);
         order.setProduct(parent.getId());
-        order.setStatus(kernel.getUnset()
-                              .getId());
+        order.setStatus(model.getKernel()
+                             .getUnset()
+                             .getId());
         order.update();
         List<ProtocolRecord> protocols = model.getJobModel()
                                               .getProtocolsFor(service);
@@ -460,22 +476,38 @@ public class JobModelTest extends AbstractModelTest {
                                                      .getService());
         assertEquals(scenario.getDeliver(), protocols.get(1)
                                                      .getService());
-        assertEquals(kernel.getAnyAgency(), protocols.get(0)
-                                                     .getRequester());
-        assertEquals(kernel.getAnyAgency(), protocols.get(1)
-                                                     .getRequester());
-        assertEquals(kernel.getAnyProduct(), protocols.get(0)
-                                                      .getProduct());
-        assertEquals(kernel.getAnyProduct(), protocols.get(1)
-                                                      .getProduct());
-        assertEquals(kernel.getAnyLocation(), protocols.get(0)
-                                                       .getDeliverFrom());
-        assertEquals(kernel.getAnyLocation(), protocols.get(1)
-                                                       .getDeliverFrom());
-        assertEquals(kernel.getAnyLocation(), protocols.get(0)
-                                                       .getDeliverTo());
-        assertEquals(kernel.getAnyLocation(), protocols.get(1)
-                                                       .getDeliverTo());
+        assertEquals(model.getKernel()
+                          .getAnyAgency(),
+                     protocols.get(0)
+                              .getRequester());
+        assertEquals(model.getKernel()
+                          .getAnyAgency(),
+                     protocols.get(1)
+                              .getRequester());
+        assertEquals(model.getKernel()
+                          .getAnyProduct(),
+                     protocols.get(0)
+                              .getProduct());
+        assertEquals(model.getKernel()
+                          .getAnyProduct(),
+                     protocols.get(1)
+                              .getProduct());
+        assertEquals(model.getKernel()
+                          .getAnyLocation(),
+                     protocols.get(0)
+                              .getDeliverFrom());
+        assertEquals(model.getKernel()
+                          .getAnyLocation(),
+                     protocols.get(1)
+                              .getDeliverFrom());
+        assertEquals(model.getKernel()
+                          .getAnyLocation(),
+                     protocols.get(0)
+                              .getDeliverTo());
+        assertEquals(model.getKernel()
+                          .getAnyLocation(),
+                     protocols.get(1)
+                              .getDeliverTo());
         assertEquals(scenario.getFactory1Agency(), protocols.get(0)
                                                             .getChildAssignTo());
         assertEquals(scenario.getFactory1Agency(), protocols.get(1)
@@ -504,7 +536,9 @@ public class JobModelTest extends AbstractModelTest {
                                    .getId());
         job.setRequester(scenario.getCarfleurBon()
                                  .getId());
-        jobModel.changeStatus(job, kernel.getUnset(), "Transition from test");
+        jobModel.changeStatus(job, model.getKernel()
+                                        .getUnset(),
+                              "Transition from test");
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         txfm = jobModel.getProtocols(job);

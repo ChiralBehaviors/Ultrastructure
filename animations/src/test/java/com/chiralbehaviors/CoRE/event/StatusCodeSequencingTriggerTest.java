@@ -38,7 +38,8 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
 
     @Test
     public void test2InitialStates() throws SQLException {
-        Product service = kernel.getNotApplicableProduct();
+        Product service = model.getKernel()
+                               .getNotApplicableProduct();
         StatusCode a = model.records()
                             .newStatusCode("A", null);
         a.insert();

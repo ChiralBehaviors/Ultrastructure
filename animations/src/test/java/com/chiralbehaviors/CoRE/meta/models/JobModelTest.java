@@ -64,7 +64,7 @@ public class JobModelTest extends AbstractModelTest {
     private static OrderProcessing scenario;
 
     @BeforeClass
-    public static void before() throws Exception {
+    public static void loadOrderProcessing() throws Exception {
         create.transaction(c -> {
             OrderProcessingLoader loader = new OrderProcessingLoader(model);
             loader.load();
@@ -292,7 +292,7 @@ public class JobModelTest extends AbstractModelTest {
                                               .newRelationship("child of",
                                                                "test relationship",
                                                                "parentOf",
-                                                               "test relationship inverse");
+                                                               "test relationship inverse").a;
         model.getPhantasmModel()
              .link(parent, childRelationship, child1);
         model.getPhantasmModel()

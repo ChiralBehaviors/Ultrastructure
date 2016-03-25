@@ -38,58 +38,54 @@ public class AttributeModelTest extends AbstractModelTest {
 
     @Test
     public void testEnumValues() {
-        Agency core = model.getKernel()
-                           .getCore();
-        Attribute attr = new Attribute("Attribute", "A", ValueType.Text, core);
-        em.persist(attr);
+        Agency core = kernel.getCore();
+        Attribute attr = model.records()
+                              .newAttribute("Attribute", "A", ValueType.Text);
+        attr.insert();
 
-        Attribute validValues = new Attribute("ValidValues",
-                                              "Valid enumeration values for this attribute",
-                                              ValueType.Text, core);
-        em.persist(validValues);
+        Attribute validValues = model.records()
+                                     .newAttribute("ValidValues",
+                                                   "Valid enumeration values for this attribute",
+                                                   ValueType.Text);
+        validValues.insert();
 
         ExistentialAttributeRecord a = model.records()
-                                            .newExistentialAttribute(attr, "a",
-                                                                     core);
-        a.setAttribute(validValues.getId());
+                                            .newExistentialAttribute(validValues);
+        a.setExistential(core.getId());
         a.insert();
         ExistentialAttributeRecord b = model.records()
-                                            .newExistentialAttribute(attr, "b",
-                                                                     core);
-        b.setMetaAttribute(validValues);
+                                            .newExistentialAttribute(validValues);
+        b.setExistential(core.getId());
         b.setSequenceNumber(10);
-        em.persist(b);
+        b.insert();
         ExistentialAttributeRecord c = model.records()
-                                            .newExistentialAttribute(attr, "c",
-                                                                     core);
+                                            .newExistentialAttribute(validValues);
+        c.setExistential(core.getId());
         c.setSequenceNumber(100);
-        c.setMetaAttribute(validValues);
-        em.persist(c);
-        model.getAttributeModel()
+        c.insert();
+        model.getPhantasmModel()
              .link(attr, model.getKernel()
                               .getIsValidatedBy(),
-                   validValues, core);
+                   validValues);
 
-        Product validatedProduct = new Product("ValidatedProduct",
-                                               "A product supertype with validation",
-                                               core);
-        em.persist(validatedProduct);
+        Product validatedProduct = model.records()
+                                        .newProduct("ValidatedProduct",
+                                                    "A product supertype with validation");
+        validatedProduct.insert();
 
-        Product myProduct = new Product("MyProduct", "my product", core);
-        em.persist(myProduct);
+        Product myProduct = model.records()
+                                 .newProduct("MyProduct", "my product");
+        myProduct.insert();
 
         // set value
-        ProductAttribute attributeValue = new ProductAttribute(attr, "a",
-                                                               model.getKernel()
-                                                                    .getCore());
-        attributeValue.setProduct(myProduct);
-
-        em.persist(attributeValue);
-        em.flush();
-        attributeValue.setValue("aaa");
+        ExistentialAttributeRecord attributeValue = model.records()
+                                                         .newExistentialAttribute(attr);
+        attributeValue.setExistential(myProduct.getId());
+        attributeValue.insert();
+        attributeValue.setTextValue("a");
+        attributeValue.setTextValue("aaa");
         try {
-            em.persist(attributeValue);
-            em.flush();
+            attributeValue.update();
             fail();
         } catch (IllegalArgumentException e) {
 

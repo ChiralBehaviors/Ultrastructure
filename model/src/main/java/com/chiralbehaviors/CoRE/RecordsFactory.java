@@ -60,6 +60,7 @@ import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -179,6 +180,13 @@ public interface RecordsFactory {
         record.setName(name);
         record.setDescription(description);
         return record;
+    }
+
+    default Attribute newAttribute(String name, String description,
+                                   ValueType type) {
+        Attribute attr = newAttribute(name, description);
+        attr.setValueType(type);
+        return attr;
     }
 
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization() {
@@ -404,6 +412,13 @@ public interface RecordsFactory {
         Location l = newLocation();
         l.setName(string);
         return l;
+    }
+
+    default Location newLocation(String name, String description) {
+        Location location = newLocation(name);
+        location.setDescription(description);
+        return location;
+
     }
 
     default MetaProtocolRecord newMetaProtocol() {

@@ -315,19 +315,19 @@ public class PhantasmModelTest extends AbstractModelTest {
     public void testDeduction() throws Exception {
 
         Relationship a = model.records()
-                              .newRelationship("a", "a", "a'", "a'");
+                              .newRelationship("a", "a", "a'", "a'").a;
         Relationship b = model.records()
-                              .newRelationship("b", "b", "b'", "b'");
+                              .newRelationship("b", "b", "b'", "b'").a;
         Relationship c = model.records()
-                              .newRelationship("c", "c", "c'", "c'");
+                              .newRelationship("c", "c", "c'", "c'").a;
         Relationship d = model.records()
-                              .newRelationship("d", "d", "d'", "d'");
+                              .newRelationship("d", "d", "d'", "d'").a;
         Relationship e = model.records()
-                              .newRelationship("e", "e", "e'", "e'");
+                              .newRelationship("e", "e", "e'", "e'").a;
         Relationship f = model.records()
-                              .newRelationship("f", "f", "f'", "f'");
+                              .newRelationship("f", "f", "f'", "f'").a;
         Relationship g = model.records()
-                              .newRelationship("g", "g", "g'", "g'");
+                              .newRelationship("g", "g", "g'", "g'").a;
 
         NetworkInferenceRecord aIsB = model.records()
                                            .newNetworkInference(a, b, a);

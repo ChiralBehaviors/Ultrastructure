@@ -41,7 +41,7 @@
             <column name="fail_parent" type="boolean" defaultValue="true">
                 <constraints nullable="false" />
             </column>
-            <column name="propagate_children" type="boolean" defaultValue="false">
+            <column name="propagate_children" type="boolean" defaultValue="true">
                 <constraints nullable="false" />
             </column>
 

@@ -346,14 +346,14 @@ public class JobModelImpl implements JobModel {
         List<JobRecord> jobs = new ArrayList<JobRecord>();
         for (Entry<ProtocolRecord, InferenceMap> txfm : protocols.entrySet()) {
             ProtocolRecord protocol = txfm.getKey();
-            boolean exists = model.create()
-                                  .selectCount()
-                                  .from(JOB)
-                                  .where(JOB.PARENT.equal(job.getParent()))
-                                  .and(JOB.PROTOCOL.equal(job.getProtocol()))
-                                  .fetchOne()
-                                  .value1()
-                                  .equals(ZERO);
+            boolean exists = !model.create()
+                                   .selectCount()
+                                   .from(JOB)
+                                   .where(JOB.PARENT.equal(job.getParent()))
+                                   .and(JOB.PROTOCOL.equal(job.getProtocol()))
+                                   .fetchOne()
+                                   .value1()
+                                   .equals(ZERO);
             if (!exists) {
                 jobs.addAll(insert(job, protocol, txfm.getValue()));
             } else {
@@ -471,11 +471,19 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<JobRecord> getActiveSubJobsOf(JobRecord job) {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_CHILD_JOBS,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", job);
-        //        return query.getResultList();
-        return null;
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        return model.create()
+                    .selectFrom(JOB)
+                    .where(JOB.PARENT.equal(job.getId()))
+                    .andNotExists(model.create()
+                                       .selectFrom(seq)
+                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                 .equal(JOB.STATUS))
+                                       .andNotExists(model.create()
+                                                          .selectFrom(STATUS_CODE_SEQUENCING)
+                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
+                    .fetch();
     }
 
     /**
@@ -907,7 +915,7 @@ public class JobModelImpl implements JobModel {
 
     // Service gets special handling.  we don't want infinite jobs due to ANY
     private void addServiceMask(MetaProtocolRecord metaProtocol, JobRecord job,
-                         SelectQuery<Record> selectQuery) {
+                                SelectQuery<Record> selectQuery) {
         if (metaProtocol.getServiceType()
                         .equals(WellKnownRelationship.SAME.id())) {
             selectQuery.addConditions(PROTOCOL.SERVICE.equal(job.getService()));

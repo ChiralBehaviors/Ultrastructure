@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 public class ProtocolTest extends AbstractModelTest {
 
     @Test
-    public void testMatchOnAssignTo() {
+    public void testMatchOnAssignTo() throws Exception {
         Product fireFuzzyGreenWarhead = model.records()
                                              .newProduct("FireFuzzyGreenWarheadService",
                                                          null);
@@ -66,7 +66,12 @@ public class ProtocolTest extends AbstractModelTest {
                                   .newInitializedJob(fireFuzzyGreenWarhead);
         startWW3.setAssignTo(halIncandenza.getId());
         startWW3.update();
-
+        model.flush();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         assertEquals(2, model.getJobModel()
                              .getAllChildren(startWW3)
                              .size());

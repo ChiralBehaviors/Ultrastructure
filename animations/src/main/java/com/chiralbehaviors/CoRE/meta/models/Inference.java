@@ -232,12 +232,72 @@ public interface Inference {
 
     default void generateInverses() {
         long then = System.currentTimeMillis();
-        int inverses = 0;
+        ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
+        ExistentialNetwork net = EXISTENTIAL_NETWORK.as("et");
+
+        int inverses = create().insertInto(EXISTENTIAL_NETWORK,
+                                           EXISTENTIAL_NETWORK.ID,
+                                           EXISTENTIAL_NETWORK.PARENT,
+                                           EXISTENTIAL_NETWORK.RELATIONSHIP,
+                                           EXISTENTIAL_NETWORK.CHILD,
+                                           EXISTENTIAL_NETWORK.INFERENCE,
+                                           EXISTENTIAL_NETWORK.PREMISE1,
+                                           EXISTENTIAL_NETWORK.PREMISE2,
+                                           EXISTENTIAL_NETWORK.UPDATED_BY,
+                                           EXISTENTIAL_NETWORK.VERSION)
+                               .select(create().select(GENERATE_UUID,
+                                                       net.field(EXISTENTIAL_NETWORK.CHILD),
+                                                       net.field(EXISTENTIAL_NETWORK.RELATIONSHIP),
+                                                       net.field(EXISTENTIAL_NETWORK.PARENT),
+                                                       net.field(EXISTENTIAL_NETWORK.INFERENCE),
+                                                       net.field(EXISTENTIAL_NETWORK.PREMISE1),
+                                                       net.field(EXISTENTIAL_NETWORK.PREMISE2),
+                                                       DSL.val(model().getCurrentPrincipal()
+                                                                      .getPrincipal()
+                                                                      .getId()),
+                                                       DSL.val(0))
+                                               .from(net)
+                                               .leftOuterJoin(exist)
+                                               .on(net.field(EXISTENTIAL_NETWORK.CHILD)
+                                                      .equal(exist.field(EXISTENTIAL_NETWORK.PARENT)))
+                                               .and(net.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                                       .equal(exist.field(EXISTENTIAL_NETWORK.RELATIONSHIP)))
+                                               .and(net.field(EXISTENTIAL_NETWORK.PARENT)
+                                                       .equal(exist.field(EXISTENTIAL_NETWORK.CHILD)))
+                                               .where(net.field(EXISTENTIAL_NETWORK.ID)
+                                                         .isNull()))
+                               .execute();
         if (log.isTraceEnabled()) {
             log.trace(String.format("created %s inverse rules in %s ms",
                                     inverses,
                                     System.currentTimeMillis() - then));
         }
+
+        //        INSERT INTO ruleform.%tableName%(id,
+        //                parent, 
+        //                relationship, 
+        //                child,
+        //                inference,
+        //                premise1, 
+        //                premise2, 
+        //                updated_by,
+        //                version)
+        //        SELECT uuid_generate_v1mc() as id,
+        //        net.child as parent,
+        //        rel.inverse as relationship,
+        //        net.parent as child,
+        //        net.inference as inference,
+        //        net.premise1 as premise1,
+        //        net.premise2 as premise2,
+        //        '00000000-0000-0000-0000-000000000007' as updated_by,
+        //        1 as version
+        //        FROM ruleform.%tableName% AS net
+        //        JOIN ruleform.relationship AS rel ON net.relationship = rel.id
+        //        LEFT OUTER JOIN ruleform.%tableName% AS exist
+        //        ON net.child = exist.parent
+        //        AND rel.inverse = exist.relationship
+        //        AND net.parent = exist.child
+        //        WHERE exist.id IS NULL
     }
 
     default int infer() {

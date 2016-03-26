@@ -264,8 +264,8 @@ public interface Inference {
                                                        .equal(exist.field(EXISTENTIAL_NETWORK.RELATIONSHIP)))
                                                .and(net.field(EXISTENTIAL_NETWORK.PARENT)
                                                        .equal(exist.field(EXISTENTIAL_NETWORK.CHILD)))
-                                               .where(net.field(EXISTENTIAL_NETWORK.ID)
-                                                         .isNull()))
+                                               .where(exist.field(EXISTENTIAL_NETWORK.ID)
+                                                           .isNull()))
                                .execute();
         if (log.isTraceEnabled()) {
             log.trace(String.format("created %s inverse rules in %s ms",

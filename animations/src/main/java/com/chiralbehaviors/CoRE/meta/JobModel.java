@@ -564,6 +564,12 @@ public interface JobModel {
      */
     void processSiblingSequencing(JobRecord job);
 
+    String toString(JobChronologyRecord r);
+
+    String toString(JobRecord r);
+
+    String toString(ProtocolRecord r);
+
     /**
      * Validate that the status graph of the list of services have no loops that
      * can't be escaped into a terminal state

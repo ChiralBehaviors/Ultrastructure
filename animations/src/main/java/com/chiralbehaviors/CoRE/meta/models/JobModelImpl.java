@@ -1148,28 +1148,36 @@ public class JobModelImpl implements JobModel {
         }
     }
 
+    @Override
     public String toString(JobRecord r) {
         return String.format("Job[%s:%s:%s]", model.records()
                                                    .resolve(r.getService())
                                                    .getName(),
                              model.records()
-                                  .resolve(r.getProduct())
-                                  .getName(),
+                                  .existentialName(r.getProduct()),
                              model.records()
-                                  .resolve(r.getStatus())
-                                  .getName());
+                                  .existentialName(r.getStatus()));
     }
 
+    @Override
     public String toString(ProtocolRecord r) {
         return String.format("Protocol[%s:%s:%s]", model.records()
-                                                        .resolve(r.getService())
-                                                        .getName(),
+                                                        .existentialName(r.getService()),
                              model.records()
-                                  .resolve(r.getProduct())
-                                  .getName(),
+                                  .existentialName(r.getProduct()),
                              model.records()
-                                  .resolve(r.getAssignTo())
-                                  .getName());
+                                  .existentialName(r.getAssignTo()));
+    }
+
+    @Override
+    public String toString(JobChronologyRecord r) {
+        return String.format("Protocol[%s:%s:%s:%s '%s']", model.records()
+                                                                .existentialName(r.getService()),
+                             model.records()
+                                  .existentialName(r.getProduct()),
+                             model.records()
+                                  .existentialName(r.getStatus()),
+                             r.getSequenceNumber(), r.getNotes());
     }
 
     /**

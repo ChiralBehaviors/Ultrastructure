@@ -7,7 +7,7 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="TRACE" />
+        <level value="INFO" />
     </logger>
     <logger name="org.jooq">
         <level value="INFO" />

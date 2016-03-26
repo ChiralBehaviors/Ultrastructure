@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
@@ -373,10 +374,8 @@ public class JobModelTest extends AbstractModelTest {
                                                       .getChronologyForJob(order);
         assertEquals(String.format("Invalid number of chronologies: %s",
                                    chronologies.stream()
-                                               .map(c -> String.format("%s:%s[%s]",
-                                                                       c.getService(),
-                                                                       c.getProduct(),
-                                                                       c.getSequenceNumber()))),
+                                               .map(c -> jobModel.toString(c))
+                                               .collect(Collectors.toList())),
                      2, chronologies.size());
         List<String> fieldErrors = verifyChronologyFields(order,
                                                           chronologies.get(1));
@@ -742,7 +741,8 @@ public class JobModelTest extends AbstractModelTest {
         model.getJobModel()
              .changeStatus(job, kickingAss, "taking names");
 
-        assertEquals("invalid status", takingNames, job.getStatus());
+        assertEquals("invalid status", takingNames.getName(), model.records()
+                                                                   .existentialName(job.getStatus()));
     }
 
     @Test

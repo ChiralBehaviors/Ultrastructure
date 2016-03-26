@@ -110,6 +110,13 @@ public interface RecordsFactory {
         });
     }
 
+    default String existentialName(UUID id) {
+        ExistentialRuleform resolved = resolve(id);
+        return resolved == null ? String.format("INVALID EXISTENTIAL ID: %s",
+                                                id)
+                                : resolved.getName();
+    }
+
     default ExistentialRecord copy(ExistentialRecord rf) {
         ExistentialRecord copy = rf.copy();
         copy.setId(GENERATOR.generate());

@@ -490,7 +490,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
     }
- 
+
     @Override
     public ExistentialRuleform getChild(ExistentialRuleform parent,
                                         Relationship relationship,
@@ -600,8 +600,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         return result.into(ExistentialNetworkRecord.class);
     }
- rn
-     */
+
     @Override
     public ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                                      Relationship relationship,
@@ -631,7 +630,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialNetworkRecord.class);
     }
- 
+
     @Override
     public Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent,
                                                               ExistentialDomain domain) {
@@ -757,14 +756,14 @@ public class PhantasmModelImpl implements PhantasmModel {
         return model.records()
                     .resolve(result.into(ExistentialRecord.class));
     }
- 
+
     @Override
     public List<ExistentialRuleform> getTransitiveRelationships(ExistentialRuleform a,
                                                                 ExistentialDomain damain) {
         // TODO Auto-generated method stub
         return Collections.emptyList();
     }
- 
+
     @Override
     public Object getValue(ExistentialAttributeRecord attributeValue) {
         Attribute attribute = model.records()
@@ -969,7 +968,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                .getId());
         auth.update();
     }
- 
+
     @Override
     public void setValue(ExistentialAttributeRecord attributeValue,
                          Object value) {
@@ -1104,7 +1103,7 @@ public class PhantasmModelImpl implements PhantasmModel {
               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
               .execute();
     }
- 
+
     @Override
     public Class<?> valueClass(Attribute attribute) {
         switch (attribute.getValueType()) {

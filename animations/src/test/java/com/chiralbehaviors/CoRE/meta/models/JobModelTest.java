@@ -377,7 +377,11 @@ public class JobModelTest extends AbstractModelTest {
         List<JobChronologyRecord> chronologies = model.getJobModel()
                                                       .getChronologyForJob(order);
         assertEquals(String.format("Invalid number of chronologies: %s",
-                                   chronologies),
+                                   chronologies.stream()
+                                               .map(c -> String.format("%s:%s[%s]",
+                                                                       c.getService(),
+                                                                       c.getProduct(),
+                                                                       c.getSequenceNumber()))),
                      2, chronologies.size());
         List<String> fieldErrors = verifyChronologyFields(order,
                                                           chronologies.get(1));

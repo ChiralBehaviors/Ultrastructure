@@ -393,6 +393,8 @@ public class PhantasmModelTest extends AbstractModelTest {
                                               .newExistentialNetwork(G, g, H);
         edgeG.insert();
 
+        model.flush();
+
         List<ExistentialRuleform> children = model.getPhantasmModel()
                                                   .getChildren(A, a,
                                                                ExistentialDomain.Agency);

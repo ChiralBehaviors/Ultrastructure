@@ -39,7 +39,10 @@ import com.chiralbehaviors.CoRE.jooq.tables.NetworkInference;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
- * Network inference logic
+ * Network inference logic.
+ * 
+ * I implemented this as a functional programming experiment. I think it worked
+ * out quite well.
  *
  * @author hhildebrand
  *
@@ -128,7 +131,7 @@ public interface Inference {
 
     final String       CURRENT_PASS_RULES       = "current_pass_rules";
     final Table<?>     CURRENT_PASS_RULES_TABLE = DSL.table(DSL.name(CURRENT_PASS_RULES));
-    static Field<UUID> GENERATE_UUID            = DSL.field("uuid_generate_v1mc",
+    static Field<UUID> GENERATE_UUID            = DSL.field("uuid_generate_v1mc()",
                                                             UUID.class);
     final String       LAST_PASS_RULES          = "last_pass_rules";
     final Table<?>     LAST_PASS_RULES_TABLE    = DSL.table(DSL.name(LAST_PASS_RULES));
@@ -197,7 +200,8 @@ public interface Inference {
                                                          WorkingMemory.CHILD,
                                                          WorkingMemory.PREMISE1,
                                                          WorkingMemory.PREMISE2,
-                                                         WorkingMemory.INFERENCE))
+                                                         WorkingMemory.INFERENCE)
+                                                 .from(WORKING_MEMORY_TABLE))
                                  .execute();
         if (log.isTraceEnabled()) {
             log.trace(String.format("deduced %s rules", deductions));
@@ -304,9 +308,7 @@ public interface Inference {
 
     default int inferFromLastPass() {
         ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
-        Table<?> p1 = LAST_PASS_RULES_TABLE.as("p1");
         ExistentialNetwork p2 = EXISTENTIAL_NETWORK.as("p2");
-        NetworkInference deduction = NETWORK_INFERENCE.as("deduction");
 
         return create().insertInto(WORKING_MEMORY_TABLE, WorkingMemory.PARENT,
                                    WorkingMemory.RELATIONSHIP,
@@ -314,21 +316,29 @@ public interface Inference {
                                    WorkingMemory.PREMISE1,
                                    WorkingMemory.PREMISE2)
                        .select(create().select(LastPassRules.PARENT,
-                                               deduction.INFERENCE, p2.CHILD,
-                                               deduction.ID, LastPassRules.ID,
-                                               p2.ID)
-                                       .from(p1)
+                                               NETWORK_INFERENCE.INFERENCE,
+                                               p2.field(EXISTENTIAL_NETWORK.CHILD),
+                                               NETWORK_INFERENCE.ID,
+                                               LastPassRules.ID,
+                                               p2.field(EXISTENTIAL_NETWORK.ID))
+                                       .from(LAST_PASS_RULES_TABLE)
                                        .join(p2)
-                                       .on(p2.PARENT.equal(LastPassRules.CHILD))
-                                       .and(p2.CHILD.notEqual(LastPassRules.PARENT))
-                                       .and(p2.INFERENCE.isNull())
-                                       .join(deduction)
-                                       .on(LastPassRules.RELATIONSHIP.equal(deduction.PREMISE1))
-                                       .and(p2.RELATIONSHIP.equal(deduction.PREMISE2))
+                                       .on(p2.field(EXISTENTIAL_NETWORK.PARENT)
+                                             .equal(LastPassRules.CHILD))
+                                       .and(p2.field(EXISTENTIAL_NETWORK.CHILD)
+                                              .notEqual(LastPassRules.PARENT))
+                                       .and(p2.field(EXISTENTIAL_NETWORK.INFERENCE)
+                                              .isNull())
+                                       .join(NETWORK_INFERENCE)
+                                       .on(LastPassRules.RELATIONSHIP.equal(NETWORK_INFERENCE.PREMISE1))
+                                       .and(p2.field(LastPassRules.RELATIONSHIP)
+                                              .equal(NETWORK_INFERENCE.PREMISE2))
                                        .leftOuterJoin(exist)
-                                       .on(exist.PARENT.equal(LastPassRules.PARENT))
-                                       .and(exist.RELATIONSHIP.equal(deduction.INFERENCE))
-                                       .and(exist.CHILD.equal(p2.CHILD))
+                                       .on(exist.field(LastPassRules.PARENT)
+                                                .equal(LastPassRules.PARENT))
+                                       .and(exist.field(LastPassRules.RELATIONSHIP)
+                                                 .equal(NETWORK_INFERENCE.INFERENCE))
+                                       .and(exist.CHILD.equal(p2.field(EXISTENTIAL_NETWORK.CHILD)))
                                        .where(exist.ID.isNull()))
                        .execute();
         //        INSERT INTO working_memory(parent,
@@ -360,7 +370,7 @@ public interface Inference {
     }
 
     default int insert() {
-        return create().insertInto(EXISTENTIAL_NETWORK,
+        return create().insertInto(EXISTENTIAL_NETWORK, EXISTENTIAL_NETWORK.ID,
                                    EXISTENTIAL_NETWORK.PARENT,
                                    EXISTENTIAL_NETWORK.RELATIONSHIP,
                                    EXISTENTIAL_NETWORK.CHILD,
@@ -369,7 +379,8 @@ public interface Inference {
                                    EXISTENTIAL_NETWORK.PREMISE2,
                                    EXISTENTIAL_NETWORK.UPDATED_BY,
                                    EXISTENTIAL_NETWORK.VERSION)
-                       .select(create().select(CurentPassRules.PARENT,
+                       .select(create().select(CurentPassRules.ID,
+                                               CurentPassRules.PARENT,
                                                CurentPassRules.RELATIONSHIP,
                                                CurentPassRules.CHILD,
                                                CurentPassRules.INFERENCE,
@@ -382,9 +393,9 @@ public interface Inference {
                                        .from(CURRENT_PASS_RULES_TABLE)
                                        .leftOuterJoin(EXISTENTIAL_NETWORK)
                                        .on(CurentPassRules.PARENT.equal(EXISTENTIAL_NETWORK.PARENT))
-                                       .where(EXISTENTIAL_NETWORK.ID.isNull())
-                                       .and(CurentPassRules.RELATIONSHIP.equal(CurentPassRules.RELATIONSHIP))
-                                       .and(CurentPassRules.CHILD.equal(CurentPassRules.CHILD)))
+                                       .and(CurentPassRules.RELATIONSHIP.equal(EXISTENTIAL_NETWORK.RELATIONSHIP))
+                                       .and(CurentPassRules.CHILD.equal(EXISTENTIAL_NETWORK.CHILD))
+                                       .where(EXISTENTIAL_NETWORK.ID.isNull()))
                        .execute();
 
         //        INSERT INTO ruleform.%tableName%(id,
@@ -425,12 +436,13 @@ public interface Inference {
             }
             firstPass = false;
             deduce();
-            if (insert() == 0) {
+            int inserted = insert();
+            log.trace("Inserted: {} deductions", inserted);
+            if (inserted == 0) {
                 break;
             }
             alterDeductionTablesForNextPass();
         } while (true);
         generateInverses();
     }
-
 }

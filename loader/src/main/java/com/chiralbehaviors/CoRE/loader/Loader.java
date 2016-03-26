@@ -19,15 +19,10 @@
  */
 package com.chiralbehaviors.CoRE.loader;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 import org.jooq.DSLContext;
 import org.jooq.util.postgres.PostgresDSL;
@@ -38,7 +33,6 @@ import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
-import com.hellblazer.utils.Utils;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -120,9 +114,8 @@ public class Loader {
     }
 
     public void dropDatabase() throws Exception {
-        Connection connection = configuration.getDbaConnection();
         Liquibase liquibase = null;
-        try {
+        try (Connection connection = configuration.getDbaConnection()) {
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             liquibase = new Liquibase(CREATE_DATABASE_XML,
@@ -145,50 +138,30 @@ public class Loader {
             if (liquibase != null) {
                 liquibase.forceReleaseLocks();
             }
-            try {
-                connection.rollback();
-                connection.close();
-            } catch (SQLException e) {
-                //nothing to do
-            }
         }
     }
 
     private void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
-        String txfmd;
-        try (InputStream is = getClass().getResourceAsStream("/db.properties")) {
-            if (is == null) {
-                throw new IllegalStateException("db properties missing");
-            }
-            Map<String, String> props = new HashMap<>();
-            props.put("init.db.login", configuration.coreUsername);
-            props.put("init.db.password", configuration.corePassword);
-            props.put("init.db.server", configuration.coreServer);
-            props.put("init.db.port", Integer.toString(configuration.corePort));
-            props.put("init.db.database", configuration.coreDb);
-            txfmd = Utils.getDocument(is, props);
-        }
-        Properties properties = new Properties();
-        properties.load(new ByteArrayInputStream(txfmd.getBytes()));
-        Connection conn = DriverManager.getConnection((String) properties.get("url"),
-                                                      (String) properties.get("user"),
-                                                      (String) properties.get("password"));
-        conn.setAutoCommit(false);
 
-        DSLContext create = PostgresDSL.using(conn);
-        try {
+        String url = String.format("jdbc:postgresql://%s:%s/%s",
+                                   configuration.coreServer,
+                                   configuration.corePort,
+                                   configuration.coreServer);
+        System.out.println(String.format(" ---------> Connecting to DB: %s",
+                                         url));
+        Connection conn = DriverManager.getConnection(url,
+                                                      configuration.coreUsername,
+                                                      configuration.corePassword);
+        conn.setAutoCommit(false);
+        try (DSLContext create = PostgresDSL.using(conn)) {
             create.transaction(config -> KernelUtil.loadKernel(create));
-        } finally {
-            create.close();
-        }
-        try (Model model = new ModelImpl(create)) {
-            create.transaction(config -> KernelUtil.initializeInstance(model,
-                                                                       configuration.coreDb,
-                                                                       "CoRE instance"));
-        } finally {
-            create.close();
+            try (Model model = new ModelImpl(conn)) {
+                create.transaction(config -> KernelUtil.initializeInstance(model,
+                                                                           configuration.coreDb,
+                                                                           "CoRE instance"));
+            }
         }
         log.info("Bootstrapping complete");
     }

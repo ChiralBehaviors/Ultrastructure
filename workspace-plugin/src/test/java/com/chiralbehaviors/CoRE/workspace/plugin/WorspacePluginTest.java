@@ -21,8 +21,8 @@
 package com.chiralbehaviors.CoRE.workspace.plugin;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URL;
@@ -46,15 +46,10 @@ public class WorspacePluginTest extends AbstractModelTest {
 
     @Test
     public void testDslLoad() throws Exception {
-        try {
-            model.getWorkspaceModel()
-                 .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-            fail("Should not exist");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertNull(model.getWorkspaceModel()
+                        .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
         Configuration config = Configuration.fromYaml(getClass().getResourceAsStream("/db-configuration.yml"));
-        config.setEmf(mockedEmf());
+        config.set(model.create());
         List<String> toLoad = Arrays.asList("/thing.wsp", "/thing.2.wsp");
         WorkspaceDslLoader loader = new WorkspaceDslLoader(config, toLoad);
         loader.execute();
@@ -67,11 +62,11 @@ public class WorspacePluginTest extends AbstractModelTest {
     @Test
     public void testSnapshotGenerator() throws Exception {
         Configuration config = Configuration.fromYaml(getClass().getResourceAsStream("/db-configuration.yml"));
-        config.setEmf(mockedEmf());
+        config.set(model.create());
         URL resource = Utils.resolveResourceURL(getClass(), "/thing.1.json");
         assertNotNull(resource);
         List<URL> toLoad = Arrays.asList(resource);
-        WorkspaceSnapshot.load(em, toLoad);
+        WorkspaceSnapshot.load(model.create(), toLoad);
         File cloneFileName = new File("target/thing.1.clone.json");
         cloneFileName.delete();
         List<Export> exports = Arrays.asList(new Export(THING_URI,
@@ -84,15 +79,10 @@ public class WorspacePluginTest extends AbstractModelTest {
 
     @Test
     public void testSnapshotLoad() throws Exception {
-        try {
-            model.getWorkspaceModel()
-                 .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-            fail("Should not exist");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertNull(model.getWorkspaceModel()
+                        .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
         Configuration config = Configuration.fromYaml(getClass().getResourceAsStream("/db-configuration.yml"));
-        config.setEmf(mockedEmf());
+        config.set(model.create());
         List<String> toLoad = Arrays.asList("/thing.1.json", "/thing.2.json");
         WorkspaceSnapshotLoader loader = new WorkspaceSnapshotLoader(config,
                                                                      toLoad);

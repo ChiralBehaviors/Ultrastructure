@@ -156,6 +156,8 @@ public interface Model extends AutoCloseable {
     <V> V executeAs(AuthorizedPrincipal principal,
                     Callable<V> function) throws Exception;
 
+    void flush();
+
     /**
      * Flush any caches the workspaces have
      */

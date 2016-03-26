@@ -56,6 +56,7 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
         model.getJobModel()
              .createStatusCodeSequencings(service, codes);
         try {
+            model.flush();
             fail("Insert should not have succeeded");
         } catch (Exception e) {
             // expected

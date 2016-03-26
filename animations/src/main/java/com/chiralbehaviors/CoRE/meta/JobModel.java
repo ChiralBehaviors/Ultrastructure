@@ -256,12 +256,6 @@ public interface JobModel {
     List<ChildSequencingAuthorizationRecord> getChildActions(JobRecord job);
 
     /**
-     * @param node
-     * @return
-     */
-    List<ChildSequencingAuthorizationRecord> getChildActions(Product node);
-
-    /**
      * Gets all immediate children of the parent job having the specified
      * service. Does not differentiate between unset, active, or terminated jobs
      *

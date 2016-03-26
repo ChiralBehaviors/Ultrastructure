@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.workspace.plugin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,46 +89,31 @@ public class WorkspaceDslLoader extends AbstractMojo {
             }
             toLoad.add(url);
         }
-        EntityManagerFactory emf;
-        try {
-            emf = database.getEmf();
-        } catch (IOException e) {
-            throw new MojoExecutionException("An error has occurred while initilizing the required JPA infrastructure",
+        try (Model model = new ModelImpl(database.getCreate())) {
+            model.create()
+                 .transaction(c -> {
+                     for (URL url : toLoad) {
+                         try {
+                             try (InputStream is = url.openStream()) {
+                                 getLog().info(String.format("Loading dsl from: %s",
+                                                             url.toExternalForm()));
+                                 try {
+                                     WorkspaceImporter.manifest(is, model);
+                                 } catch (IllegalStateException e) {
+                                     getLog().warn(String.format("Could not load : %s",
+                                                                 e.getMessage()));
+                                 }
+                             }
+                         } catch (IOException e) {
+                             throw new MojoExecutionException(String.format("An error has occurred while creating workspace from resource: %s",
+                                                                            url.toExternalForm()),
+                                                              e);
+                         }
+                     }
+                 });
+        } catch (IOException | SQLException e) {
+            throw new MojoExecutionException("An error has occurred while initilizing the required SQL infrastructure",
                                              e);
-        }
-        Model model = new ModelImpl(emf);
-        EntityManager em = model.create();
-        em.getTransaction()
-          .begin();
-        try {
-            for (URL url : toLoad) {
-                try {
-                    try (InputStream is = url.openStream()) {
-                        getLog().info(String.format("Loading dsl from: %s",
-                                                    url.toExternalForm()));
-                        try {
-                            WorkspaceImporter.manifest(is, model);
-                        } catch (IllegalStateException e) {
-                            getLog().warn(String.format("Could not load : %s",
-                                                        e.getMessage()));
-                        }
-                    }
-                } catch (IOException e) {
-                    throw new MojoExecutionException(String.format("An error has occurred while creating workspace from resource: %s",
-                                                                   url.toExternalForm()),
-                                                     e);
-                }
-            }
-            em.getTransaction()
-              .commit();
-        } finally {
-            if (em.getTransaction()
-                  .isActive()) {
-                em.getTransaction()
-                  .rollback();
-            }
-            em.close();
-            emf.close();
         }
     }
 

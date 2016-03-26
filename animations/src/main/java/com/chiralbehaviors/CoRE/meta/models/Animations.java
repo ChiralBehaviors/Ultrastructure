@@ -20,6 +20,16 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
+import static com.chiralbehaviors.CoRE.jooq.Tables.PARENT_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.SELF_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,14 +44,12 @@ import org.jooq.RecordContext;
 import org.jooq.RecordType;
 import org.jooq.impl.DefaultRecordListener;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
@@ -76,15 +84,9 @@ public class Animations extends DefaultRecordListener {
     private static final Consumer<RecordContext>              NULL_CONSUMER      = f -> {
                                                                                  };
 
-    private final Map<RecordType<?>, Consumer<RecordContext>> afterDelete        = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterInsert        = new HashMap<>();
-    private final Map<RecordType<?>, Consumer<RecordContext>> afterStore         = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterUpdate        = new HashMap<>();
     private final Set<ExistentialAttributeRecord>             attributeValues    = new HashSet<>();
-    private final Map<RecordType<?>, Consumer<RecordContext>> beforeStore        = new HashMap<>();
-    private final Map<RecordType<?>, Consumer<RecordContext>> beforeDelete       = new HashMap<>();
-    private final Map<RecordType<?>, Consumer<RecordContext>> beforeInsert       = new HashMap<>();
-    private final Map<RecordType<?>, Consumer<RecordContext>> beforeUpdate       = new HashMap<>();
     private final Set<ChildSequencingAuthorizationRecord>     childSequences     = new HashSet<>();
     private final Inference                                   inference;
     private boolean                                           inferNetwork;
@@ -101,10 +103,6 @@ public class Animations extends DefaultRecordListener {
         initializeTriggers();
     }
 
-    private void initializeTriggers() {
-
-    }
-
     public void begin() {
         model.flushWorkspaces();
     }
@@ -112,30 +110,6 @@ public class Animations extends DefaultRecordListener {
     public void commit() throws TriggerException {
         flush();
         reset();
-    }
-
-    public void delete(ExistentialAttributeRecord a) {
-        inferNetwork = true;
-    }
-
-    public void delete(ExistentialRuleform a) {
-        inferNetwork = true;
-    }
-
-    public void delete(NetworkInferenceRecord inference) {
-        inferNetwork = true;
-    }
-
-    @Override
-    public void deleteEnd(RecordContext ctx) {
-        afterDelete.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                   .accept(ctx);
-    }
-
-    @Override
-    public void deleteStart(RecordContext ctx) {
-        beforeDelete.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                    .accept(ctx);
     }
 
     public void flush() {
@@ -187,6 +161,8 @@ public class Animations extends DefaultRecordListener {
     }
 
     public void insert(JobRecord j) {
+        model.getJobModel()
+             .log(j, "Initial insertion of job");
         jobs.add(j);
     }
 
@@ -207,21 +183,15 @@ public class Animations extends DefaultRecordListener {
                                   .resolve(scs.getService()));
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
-     */
-
     @Override
     public void insertEnd(RecordContext ctx) {
         afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
                    .accept(ctx);
     }
 
-    @Override
-    public void insertStart(RecordContext ctx) {
-        beforeInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                    .accept(ctx);
-    }
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
+     */
 
     public void modify(StatusCodeSequencingRecord scs) {
         modifiedServices.add(model.records()
@@ -231,18 +201,6 @@ public class Animations extends DefaultRecordListener {
     public void rollback() {
         reset();
         model.flushWorkspaces();
-    }
-
-    @Override
-    public void storeEnd(RecordContext ctx) {
-        afterStore.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                  .accept(ctx);
-    }
-
-    @Override
-    public void storeStart(RecordContext ctx) {
-        beforeStore.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                   .accept(ctx);
     }
 
     public void update(JobRecord j) {
@@ -260,6 +218,30 @@ public class Animations extends DefaultRecordListener {
         childSequences.clear();
         siblingSequences.clear();
         selfSequences.clear();
+    }
+
+    private void initializeTriggers() {
+        afterUpdate.put(JOB.recordType(),
+                        ctx1 -> update((JobRecord) ctx1.record()));
+        afterInsert.put(STATUS_CODE_SEQUENCING.recordType(),
+                        ctx -> insert((StatusCodeSequencingRecord) ctx.record()));
+        afterInsert.put(JOB.recordType(),
+                        ctx2 -> insert((JobRecord) ctx2.record()));
+        afterInsert.put(EXISTENTIAL.recordType(),
+                        ctx -> insert((ExistentialRecord) ctx.record()));
+        afterInsert.put(CHILD_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((ChildSequencingAuthorizationRecord) ctx.record()));
+        afterInsert.put(EXISTENTIAL_NETWORK.recordType(),
+                        ctx -> insert((ExistentialNetworkRecord) ctx.record()));
+        afterInsert.put(EXISTENTIAL_ATTRIBUTE.recordType(),
+                        ctx -> insert((ExistentialAttributeRecord) ctx.record()));
+        afterInsert.put(PARENT_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((ParentSequencingAuthorizationRecord) ctx.record()));
+        afterInsert.put(SELF_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((SelfSequencingAuthorizationRecord) ctx.record()));
+        afterInsert.put(SIBLING_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((SiblingSequencingAuthorizationRecord) ctx.record()));
+
     }
 
     private void process(JobRecord j) {
@@ -382,11 +364,5 @@ public class Animations extends DefaultRecordListener {
                 throw new TriggerException("Invalid sequence", e);
             }
         }
-    }
-
-    @Override
-    public void updateStart(RecordContext ctx) {
-        beforeUpdate.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                    .accept(ctx);
     }
 }

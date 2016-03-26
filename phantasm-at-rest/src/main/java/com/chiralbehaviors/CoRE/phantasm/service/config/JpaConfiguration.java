@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -20,27 +20,26 @@
 
 package com.chiralbehaviors.CoRE.workspace.plugin;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import com.chiralbehaviors.CoRE.WellKnownObject;
+import org.jooq.DSLContext;
+import org.jooq.util.postgres.PostgresDSL;
+
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
  *
  */
 public class Configuration extends CoreDbConfiguration {
-    private static final String JPA_TEMPLATE_PROPERTIES = "/jpa-template.properties";
 
     public static Configuration fromYaml(InputStream yaml) throws JsonParseException,
                                                            JsonMappingException,
@@ -50,44 +49,35 @@ public class Configuration extends CoreDbConfiguration {
     }
 
     // Used in testing to avoid creating emf and out of band txns
-    private transient EntityManagerFactory emf;
+    private transient DSLContext create;
 
     public Configuration() {
-        emf = null;
+        create = null;
     }
 
-    public Configuration(EntityManagerFactory emf) {
-        this.emf = emf;
+    public Configuration(DSLContext create) {
+        this.create = create;
     }
 
-    public EntityManagerFactory getEmf() throws IOException {
-        if (emf != null) {
-            return emf;
+    public DSLContext getCreate() throws IOException, SQLException {
+        if (create != null) {
+            return create;
         }
         if (corePassword == null) {
             initializeFromEnvironment();
         }
-        String txfmd;
-        try (InputStream is = getClass().getResourceAsStream(JPA_TEMPLATE_PROPERTIES)) {
-            if (is == null) {
-                throw new IllegalStateException("jpa properties missing");
-            }
-            Map<String, String> props = new HashMap<>();
-            props.put("init.db.login", coreUsername);
-            props.put("init.db.password", corePassword);
-            props.put("init.db.server", coreServer);
-            props.put("init.db.port", Integer.toString(corePort));
-            props.put("init.db.database", coreDb);
-            txfmd = Utils.getDocument(is, props);
-        }
-        Properties properties = new Properties();
-        properties.load(new ByteArrayInputStream(txfmd.getBytes()));
-        return Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                      properties);
+
+        String url = String.format("jdbc:postgresql://%s:%s/%s", coreServer,
+                                   corePort, coreDb);
+        System.out.println(String.format(" ---------> Connecting to DB: %s",
+                                         url));
+        Connection conn = DriverManager.getConnection(url, coreUsername,
+                                                      corePassword);
+        return PostgresDSL.using(conn);
 
     }
 
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
+    public void set(DSLContext create) {
+        this.create = create;
     }
 }

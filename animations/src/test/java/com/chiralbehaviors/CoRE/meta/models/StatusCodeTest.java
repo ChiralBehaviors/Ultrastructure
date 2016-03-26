@@ -77,6 +77,8 @@ public class StatusCodeTest extends AbstractModelTest {
 
         model.getJobModel()
              .createStatusCodeSequencings(service, sequences);
+        
+        model.flush();
 
         assertTrue(String.format("%s is not a terminal state",
                                  terminalState.getName()),
@@ -97,6 +99,7 @@ public class StatusCodeTest extends AbstractModelTest {
                                                                         state1);
         loop.insert();
         try {
+            model.flush();
             fail("Expected failure due to circularity");
         } catch (Exception e) {
             loop.delete();
@@ -124,6 +127,7 @@ public class StatusCodeTest extends AbstractModelTest {
                                                                         state1);
         back.insert();
         terminate.insert();
+        model.flush();
     }
 
     @Test
@@ -172,11 +176,13 @@ public class StatusCodeTest extends AbstractModelTest {
         JobRecord parent = jobModel.newInitializedJob(service);
         JobRecord child = jobModel.newInitializedJob(service2);
         child.setParent(parent.getId());
+        model.flush();
         assertNotNull("Parent is null", child.getParent());
         assertTrue("Child is not considered active", jobModel.isActive(child));
         assertEquals(1, jobModel.getActiveSubJobsOf(parent)
                                 .size());
         jobModel.changeStatus(parent, startState, "transition from test");
+        model.flush();
         List<JobChronologyRecord> chronology = jobModel.getChronologyForJob(child);
         assertEquals(chronology.toString(), 2, chronology.size());
         for (JobChronologyRecord crumb : chronology) {

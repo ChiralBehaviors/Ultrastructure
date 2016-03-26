@@ -39,9 +39,9 @@ import javax.persistence.OneToMany;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.existential.Cardinality;
-import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 
 /**

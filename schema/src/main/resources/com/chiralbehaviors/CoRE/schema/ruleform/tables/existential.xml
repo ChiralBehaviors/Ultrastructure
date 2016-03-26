@@ -27,13 +27,23 @@
             <column name="inverse" type="uuid" />
 
             <!-- Attribute columns -->
-            <column name="value_type" type="value_type" defaultValue = "Text"/>
-            <column name="keyed" type="boolean" defaultValue="false"/>
-            <column name="indexed" type="boolean" defaultValue="false"/>
+            <column name="value_type" type="value_type" defaultValue="Text">
+                <constraints nullable="false" />
+            </column>
+            <column name="keyed" type="boolean" defaultValue="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="indexed" type="boolean" defaultValue="false">
+                <constraints nullable="false" />
+            </column>
 
             <!-- Status Code columns -->
-            <column name="fail_parent" type="boolean" />
-            <column name="propagate_children" type="boolean" />
+            <column name="fail_parent" type="boolean" defaultValue="true">
+                <constraints nullable="false" />
+            </column>
+            <column name="propagate_children" type="boolean" defaultValue="false">
+                <constraints nullable="false" />
+            </column>
 
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

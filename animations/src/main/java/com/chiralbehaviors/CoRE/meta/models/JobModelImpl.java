@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
@@ -125,6 +126,15 @@ public class JobModelImpl implements JobModel {
 
     protected final Kernel kernel;
     protected final Model  model;
+
+    public String toString(JobRecord r) {
+        return String.format("Job[%s:%s]", model.records()
+                                                .resolve(r.getService())
+                                                .getName(),
+                             model.records()
+                                  .resolve(r.getProduct())
+                                  .getName());
+    }
 
     public JobModelImpl(Model model) {
         this.model = model;
@@ -340,17 +350,18 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void generateImplicitJobsForExplicitJobs(JobRecord job) {
-        if (((StatusCode) model.records()
-                               .resolve(job.getStatus())).getPropagateChildren()) {
+        StatusCode statusCode = model.records()
+                                     .resolve(job.getStatus());
+        if (statusCode.getPropagateChildren()) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Generating implicit jobs for %s",
-                                        job));
+                                        toString(job)));
             }
             generateImplicitJobs(job);
         } else {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Not generating implicit jobs for: %s",
-                                        job));
+                                        toString(job)));
             }
         }
     }
@@ -498,29 +509,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ChildSequencingAuthorizationRecord> getChildActions(JobRecord job) {
-        //        TypedQuery<ChildSequencingAuthorizationRecord> query = em.createNamedQuery(ChildSequencingAuthorizationRecord.GET_CHILD_ACTIONS,
-        //                                                                                   ChildSequencingAuthorizationRecord.class);
-        //        query.setParameter("service", job.getService());
-        //        query.setParameter("status", job.getStatus());
-        //        List<ChildSequencingAuthorizationRecord> childActions = query.getResultList();
-        //        return childActions;
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.JobModel#getChildActions(com.chiralbehaviors
-     * .CoRE .product.Product)
-     */
-    @Override
-    public List<ChildSequencingAuthorizationRecord> getChildActions(Product parent) {
-        //        TypedQuery<ChildSequencingAuthorizationRecord> query = em.createNamedQuery(ChildSequencingAuthorizationRecord.GET_SEQUENCES,
-        //                                                                                   ChildSequencingAuthorizationRecord.class);
-        //        query.setParameter("parent", parent);
-        //        return query.getResultList();
-        return null;
+        return model.create()
+                    .selectFrom(CHILD_SEQUENCING_AUTHORIZATION)
+                    .where(CHILD_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
+                    .and(CHILD_SEQUENCING_AUTHORIZATION.PARENT.equal(job.getStatus()))
+                    .fetch();
     }
 
     @Override
@@ -928,7 +921,9 @@ public class JobModelImpl implements JobModel {
         List<StatusCode> statusCodes = getStatusCodesFor(service);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Status codes for %s: %s",
-                                    service.getName(), statusCodes));
+                                    service.getName(), statusCodes.stream()
+                                                                  .map(r -> r.getName())
+                                                                  .collect(Collectors.toList())));
         }
         for (StatusCode currentCode : statusCodes) {
             List<StatusCode> codes = getNextStatusCodes(service, currentCode);
@@ -1045,8 +1040,6 @@ public class JobModelImpl implements JobModel {
         job.setStatus(kernel.getUnset()
                             .getId());
         job.insert();
-
-        log(job, "Initial insertion of job");
         return job;
     }
 
@@ -1110,7 +1103,7 @@ public class JobModelImpl implements JobModel {
     public void processChildSequencing(JobRecord job) {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing children of JobRecord %s",
-                                    job));
+                                    toString(job)));
         }
         Deque<ChildSequencingAuthorizationRecord> actions = new ArrayDeque<>(getChildActions(job));
         while (!actions.isEmpty()) {
@@ -1129,7 +1122,8 @@ public class JobModelImpl implements JobModel {
     @Override
     public void processJobSequencing(JobRecord job) {
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing change in JobRecord %s", job));
+            log.trace(String.format("Processing change in JobRecord %s",
+                                    toString(job)));
         }
         //process parents last so we can close out child jobs
         processChildSequencing(job);
@@ -1143,12 +1137,13 @@ public class JobModelImpl implements JobModel {
         if (job.getParent() == null) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("No parent of job, not processing parent sequencing: %s",
-                                        job));
+                                        toString(job)));
             }
             return;
         }
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing parent of JobRecord %s", job));
+            log.trace(String.format("Processing parent of JobRecord %s",
+                                    toString(job)));
         }
 
         Deque<ParentSequencingAuthorizationRecord> actions = new ArrayDeque<>(getParentActions(job));
@@ -1168,7 +1163,8 @@ public class JobModelImpl implements JobModel {
     @Override
     public void processSelfSequencing(JobRecord job) {
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing self of JobRecord %s", job));
+            log.trace(String.format("Processing self of JobRecord %s",
+                                    toString(job)));
         }
 
         for (SelfSequencingAuthorizationRecord seq : getSelfActions(job)) {
@@ -1205,7 +1201,7 @@ public class JobModelImpl implements JobModel {
         }
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing siblings of JobRecord %s",
-                                    job));
+                                    toString(job)));
         }
 
         Deque<SiblingSequencingAuthorizationRecord> actions = new ArrayDeque<>(getSiblingActions(job));
@@ -1229,7 +1225,10 @@ public class JobModelImpl implements JobModel {
     @Override
     public void validateStateGraph(Collection<Product> modifiedServices) throws SQLException {
         if (log.isTraceEnabled()) {
-            log.trace(String.format("modified services %s", modifiedServices));
+            log.trace(String.format("modified services %s",
+                                    modifiedServices.stream()
+                                                    .map(r -> r.getName())
+                                                    .collect(Collectors.toList())));
         }
         for (Product modifiedService : modifiedServices) {
             if (log.isTraceEnabled()) {

@@ -134,6 +134,7 @@ public class ModelImpl implements Model {
     private final StatusCodeModel                statusCodeModel;
     private final ExistentialModel<Unit>         unitModel;
     private final WorkspaceModel                 workspaceModel;
+    private final Animations                     animations;
 
     public ModelImpl(Connection connection) throws SQLException {
         this(PostgresDSL.using(configuration(connection)));
@@ -143,15 +144,15 @@ public class ModelImpl implements Model {
         this(PostgresDSL.using(configuration(ds)));
     }
 
-    private ModelImpl(DSLContext create) {
+    public ModelImpl(DSLContext create) {
+        animations = new Animations(this, new Inference() {
+            @Override
+            public Model model() {
+                return ModelImpl.this;
+            }
+        });
         create.configuration()
-              .set(new DefaultRecordListenerProvider(new Animations(this,
-                                                                    new Inference() {
-                                                                        @Override
-                                                                        public Model model() {
-                                                                            return ModelImpl.this;
-                                                                        }
-                                                                    })));
+              .set(new DefaultRecordListenerProvider(animations));
         this.create = create;
         factory = new RecordsFactory() {
 
@@ -479,5 +480,13 @@ public class ModelImpl implements Model {
                                                          .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
                                                          .fetchOne()
                                                          .into(Agency.class));
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#flush()
+     */
+    @Override
+    public void flush() {
+        animations.flush();
     }
 }

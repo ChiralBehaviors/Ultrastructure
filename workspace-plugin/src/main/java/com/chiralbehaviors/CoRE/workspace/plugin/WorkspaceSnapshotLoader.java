@@ -22,12 +22,15 @@ package com.chiralbehaviors.CoRE.workspace.plugin;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
 
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
@@ -53,7 +56,7 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
      * 
      * @parameter
      */
-    private List<String> resources = new ArrayList<>();
+    private List<String>  resources = new ArrayList<>();
 
     public WorkspaceSnapshotLoader() {
     }
@@ -86,31 +89,13 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
             }
             toLoad.add(url);
         }
-        EntityManagerFactory emf;
-        try {
-            emf = database.getEmf();
-        } catch (IOException e) {
-            throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
-                                             e);
-        }
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction()
-              .begin();
-            WorkspaceSnapshot.load(em, toLoad);
-            em.getTransaction()
-              .commit();
-        } catch (IOException e) {
+        try (DSLContext create = database.getCreate()) {
+            create.transaction(c -> {
+                WorkspaceSnapshot.load(create, toLoad);
+            });
+        } catch (DataAccessException | IOException | SQLException e) {
             throw new MojoExecutionException("An error has occurred while loading snapshots",
                                              e);
-        } finally {
-            if (em.getTransaction()
-                  .isActive()) {
-                em.getTransaction()
-                  .rollback();
-            }
-            em.close();
-            emf.close();
         }
     }
 

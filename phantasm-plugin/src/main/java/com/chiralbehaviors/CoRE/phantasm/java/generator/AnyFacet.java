@@ -66,7 +66,8 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getImport() {
-        return String.format("%s.Any%s", "any", ruleform.getSimpleName());
+        return String.format("com.chiralbehaviors.CoRE.phantasm.java.any.Any%s",
+                             ruleform.getSimpleName());
     }
 
     /* (non-Javadoc)

@@ -490,10 +490,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getChild(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-     */
+ 
     @Override
     public ExistentialRuleform getChild(ExistentialRuleform parent,
                                         Relationship relationship,
@@ -603,11 +600,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         return result.into(ExistentialNetworkRecord.class);
     }
-
-    /**
-     * @param parent
-     * @param relationship
-     * @return
+ rn
      */
     @Override
     public ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
@@ -638,14 +631,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialNetworkRecord.class);
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getImmediateRelationships(com
-     * .hellblazer.CoRE.ExistentialRuleform)
-     */
+ 
     @Override
     public Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent,
                                                               ExistentialDomain domain) {
@@ -771,20 +757,14 @@ public class PhantasmModelImpl implements PhantasmModel {
         return model.records()
                     .resolve(result.into(ExistentialRecord.class));
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getTransitiveRelationships(com.chiralbehaviors.CoRE.domain.ExistentialRuleform, com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain)
-     */
+ 
     @Override
     public List<ExistentialRuleform> getTransitiveRelationships(ExistentialRuleform a,
                                                                 ExistentialDomain damain) {
         // TODO Auto-generated method stub
         return Collections.emptyList();
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
+ 
     @Override
     public Object getValue(ExistentialAttributeRecord attributeValue) {
         Attribute attribute = model.records()
@@ -989,10 +969,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                .getId());
         auth.update();
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#setValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord, java.lang.Object)
-     */
+ 
     @Override
     public void setValue(ExistentialAttributeRecord attributeValue,
                          Object value) {
@@ -1127,10 +1104,7 @@ public class PhantasmModelImpl implements PhantasmModel {
               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
               .execute();
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#valueClass(com.chiralbehaviors.CoRE.domain.Attribute)
-     */
+ 
     @Override
     public Class<?> valueClass(Attribute attribute) {
         switch (attribute.getValueType()) {

@@ -59,13 +59,6 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         this.domainClass = domainClass;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.network
-     * .Networked)
-     */
     @SuppressWarnings("unchecked")
     @Override
     public RuleForm create(RuleForm prototype) {

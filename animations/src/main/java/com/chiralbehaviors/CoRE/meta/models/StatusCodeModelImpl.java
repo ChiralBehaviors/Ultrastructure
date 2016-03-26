@@ -37,58 +37,37 @@ import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
         implements StatusCodeModel {
 
-    /**
-     * @param em
-     */
     public StatusCodeModelImpl(Model model) {
         super(model, ExistentialDomain.StatusCode, StatusCode.class);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodes(com.chiralbehaviors.CoRE.product.Product)
-     */
     @Override
     public Collection<StatusCode> getStatusCodes(Product service) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencing(com.chiralbehaviors.CoRE.product.Product)
-     */
     @Override
     public List<StatusCodeSequencingRecord> getStatusCodeSequencing(Product service) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
     public List<StatusCodeSequencingRecord> getStatusCodeSequencingChild(Product service,
                                                                          StatusCode child) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
     public Collection<StatusCodeSequencingRecord> getStatusCodeSequencingChild(StatusCode child) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
     public List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(Product service,
                                                                           StatusCode parent) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
     public List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(StatusCode parent) {
         return null;

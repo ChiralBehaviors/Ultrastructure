@@ -526,12 +526,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.JobModel#getChronologyForJob(com.
-     * chiralbehaviors. CoRE.jsp.JobRecord)
-     */
     @Override
     public List<JobChronologyRecord> getChronologyForJob(JobRecord job) {
         return model.create()
@@ -540,13 +534,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /**
-     * Answer the list of the active or terminated direct sub jobs of a given
-     * job
-     *
-     * @param job
-     * @return
-     */
     @Override
     public List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job) {
         //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_OR_TERMINATED_SUB_JOBS,
@@ -602,12 +589,6 @@ public class JobModelImpl implements JobModel {
                                         .resolve(job.getService()));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.JobModel#getMetaProtocolsFor(com.
-     * chiralbehaviors.CoRE.product.Product)
-     */
     @Override
     public List<MetaProtocolRecord> getMetaProtocolsFor(Product service) {
         return model.create()
@@ -616,13 +597,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.JobModel#getMostRecentChronologyEntry(com
-     * .chiralbehaviors .CoRE.jsp.JobRecord)
-     */
     @Override
     public JobChronologyRecord getMostRecentChronologyEntry(JobRecord job) {
         List<JobChronologyRecord> c = getChronologyForJob(job);
@@ -666,13 +640,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.JobModel#getParentActions(com.chiralbehaviors
-     * .CoRE .product.Product)
-     */
     @Override
     public List<ParentSequencingAuthorizationRecord> getParentActions(Product service) {
         return model.create()
@@ -746,13 +713,6 @@ public class JobModelImpl implements JobModel {
         return Collections.emptyMap();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.JobModel#getProtocolsFor(com.chiralbehaviors
-     * .CoRE.product.Product)
-     */
     @Override
     public List<ProtocolRecord> getProtocolsFor(Product service) {
         return model.create()
@@ -761,10 +721,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /**
-     * @param job
-     * @return
-     */
     @Override
     public List<SelfSequencingAuthorizationRecord> getSelfActions(JobRecord job) {
         return model.create()
@@ -774,10 +730,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /**
-     * @param job
-     * @return
-     */
     @Override
     public List<SiblingSequencingAuthorizationRecord> getSiblingActions(JobRecord job) {
         return model.create()
@@ -787,13 +739,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.JobModel#getSiblingActions(com.chiralbehaviors
-     * .CoRE .product.Product)
-     */
     @Override
     public List<SiblingSequencingAuthorizationRecord> getSiblingActions(Product parent) {
         return model.create()
@@ -876,11 +821,6 @@ public class JobModelImpl implements JobModel {
         return jobs;
     }
 
-    /**
-     * @param parentJob
-     * @param service
-     * @return
-     */
     @Override
     public List<JobRecord> getUnsetSiblings(JobRecord parent, Product service) {
         return model.create()
@@ -892,10 +832,6 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    /**
-     * @param job
-     * @return
-     */
     @Override
     public boolean hasActiveSiblings(JobRecord job) {
         //        TypedQuery<Long> query = em.createNamedQuery(JobRecord.HAS_ACTIVE_CHILD_JOBS,
@@ -911,10 +847,6 @@ public class JobModelImpl implements JobModel {
         return getInitialState(service).size() == 1;
     }
 
-    /**
-     * @param service
-     * @throws SQLException
-     */
     @Override
     public boolean hasNonTerminalSCCs(Product service) throws SQLException {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
@@ -997,13 +929,6 @@ public class JobModelImpl implements JobModel {
         return !isTerminalState(job.getStatus(), job.getService());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.JobModel#isTerminalState(com.chiralbehaviors
-     * .CoRE .jsp.StatusCode, com.chiralbehaviors.CoRE.jsp.Event)
-     */
     @Override
     public boolean isTerminalState(StatusCode sc, Product service) {
         return isTerminalState(sc.getId(), service.getId());
@@ -1043,9 +968,6 @@ public class JobModelImpl implements JobModel {
         return job;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.JobModel#newInitializedMetaProtocol()
-     */
     @Override
     public MetaProtocolRecord newInitializedMetaProtocol(Product service) {
         Relationship any = kernel.getAnyRelationship();
@@ -1385,11 +1307,6 @@ public class JobModelImpl implements JobModel {
     ////        return tq;
     //    }
 
-    /**
-     * @param job
-     * @param p
-     * @return
-     */
     private List<String> findGaps(JobRecord job, ProtocolRecord p) {
         List<String> missingFields = new LinkedList<>();
         if (!job.getRequester()
@@ -1449,10 +1366,6 @@ public class JobModelImpl implements JobModel {
                                 .value1());
     }
 
-    /**
-     * @param relationship
-     * @return
-     */
     private boolean isTxfm(Relationship relationship) {
         return !WellKnownRelationship.ANY.id()
                                          .equals(relationship.getId())
@@ -1460,11 +1373,6 @@ public class JobModelImpl implements JobModel {
                                              .equals(relationship.getId());
     }
 
-    /**
-     * @param protocol
-     * @param metaProtocol
-     * @return
-     */
     @SuppressWarnings("unused")
     private InferenceMap map(ProtocolRecord protocol,
                              MetaProtocolRecord metaProtocol) {
@@ -1482,11 +1390,6 @@ public class JobModelImpl implements JobModel {
                                             .resolve(metaProtocol.getQuantityUnit())));
     }
 
-    /**
-     * @param mpRelationship
-     * @param child
-     * @param job
-     */
     private boolean pathExists(ExistentialRuleform rf,
                                Relationship mpRelationship,
                                ExistentialRuleform child) {

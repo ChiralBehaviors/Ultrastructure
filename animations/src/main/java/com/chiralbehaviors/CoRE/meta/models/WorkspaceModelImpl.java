@@ -63,9 +63,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return scope;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#flush()
-     */
     @Override
     public void flush() {
         for (WorkspaceScope scope : scopes.values()) {
@@ -86,9 +83,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#getScoped(java.util.UUID)
-     */
     @Override
     public WorkspaceScope getScoped(Product definingProduct) {
         WorkspaceScope cached = scopes.get(definingProduct.getId());

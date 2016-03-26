@@ -189,10 +189,6 @@ public class Animations extends DefaultRecordListener {
                    .accept(ctx);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
-     */
-
     public void modify(StatusCodeSequencingRecord scs) {
         modifiedServices.add(model.records()
                                   .resolve(scs.getService()));

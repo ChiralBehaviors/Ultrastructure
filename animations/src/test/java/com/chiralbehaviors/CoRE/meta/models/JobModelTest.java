@@ -271,6 +271,8 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
 
+        model.flush();
+
         List<StatusCode> states = Arrays.asList(scenario.getActive(),
                                                 scenario.getAvailable(),
                                                 scenario.getAbandoned());
@@ -306,6 +308,7 @@ public class JobModelTest extends AbstractModelTest {
                                                                                 "test relationship inverse");
         relationships.a.insert();
         relationships.b.insert();
+
         Relationship childRelationship = relationships.a;
         model.getPhantasmModel()
              .link(parent, childRelationship, child1);
@@ -346,6 +349,14 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(3, jobs.size());
         jobModel.changeStatus(order, scenario.getAvailable(), null);
 
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
+
+        model.flush();
+
         for (JobRecord j : jobs) {
             assertEquals(scenario.getAvailable()
                                  .getId(),
@@ -383,6 +394,8 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
         model.getJobModel()
              .changeStatus(order, scenario.getActive(), null);
+
+        model.flush();
         chronologies = model.getJobModel()
                             .getChronologyForJob(order);
         assertEquals(3, chronologies.size());
@@ -444,6 +457,7 @@ public class JobModelTest extends AbstractModelTest {
         model.getJobModel()
              .changeStatus(push, pushingMe, null);
         push.setProduct(pushit.getId());
+        model.flush();
         children = model.getJobModel()
                         .getAllChildren(push);
         assertEquals(1, children.size());

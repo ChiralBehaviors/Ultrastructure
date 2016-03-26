@@ -61,7 +61,6 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -196,8 +195,7 @@ public class JobModelImpl implements JobModel {
                 throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  The only allowable state is the initial state of %s  Please consult the Status Code Sequencing rules.",
                                                      nextStatus.getName(),
                                                      model.records()
-                                                          .resolve(job.getService())
-                                                          .getName(),
+                                                          .existentialName(job.getService()),
                                                      status.getName(),
                                                      initialState.getName()));
             }
@@ -207,8 +205,7 @@ public class JobModelImpl implements JobModel {
             throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  Please consult the Status Code Sequencing rules.",
                                                  nextStatus.getName(),
                                                  model.records()
-                                                      .resolve(job.getService())
-                                                      .getName(),
+                                                      .existentialName(job.getService()),
                                                  status.getName()));
         }
     }
@@ -224,14 +221,18 @@ public class JobModelImpl implements JobModel {
     @Override
     public void ensureValidServiceAndStatus(Product service,
                                             StatusCode status) throws SQLException {
-        //        TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
-        //                                                     Long.class);
-        //        query.setParameter("service", service);
-        //        query.setParameter("code", status);
-        //        if (query.getSingleResult() == 0) {
-        //            throw new SQLException(String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
-        //                                                 service, status));
-        //        }
+        if (ZERO.equals(model.create()
+                             .selectCount()
+                             .from(STATUS_CODE_SEQUENCING)
+                             .where(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
+                             .and(STATUS_CODE_SEQUENCING.PARENT.equal(status.getId())
+                                                               .or(STATUS_CODE_SEQUENCING.CHILD.equal(status.getId())))
+                             .fetchOne()
+                             .value1())) {
+            throw new SQLException(String.format("service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!",
+                                                 service.getName(),
+                                                 status.getName()));
+        }
     }
 
     @Override
@@ -371,10 +372,24 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<JobRecord> getActiveExplicitJobs() {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.TOP_LEVEL_ACTIVE_JOBS,
-        //                                                          JobRecord.class);
-        //        return query.getResultList();
-        return null;
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        StatusCodeSequencing seq2 = STATUS_CODE_SEQUENCING.as("seq2");
+        return model.create()
+                    .selectFrom(JOB)
+                    .where(JOB.PARENT.isNull())
+                    .andNotExists(model.create()
+                                       .selectFrom(seq)
+                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                 .equal(JOB.STATUS))
+                                       .and(seq.field(STATUS_CODE_SEQUENCING.SERVICE)
+                                               .equal(JOB.SERVICE))
+                                       .andNotExists(model.create()
+                                                          .selectFrom(seq2)
+                                                          .where(seq2.field(STATUS_CODE_SEQUENCING.SERVICE)
+                                                                     .equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                                          .and(seq2.field(STATUS_CODE_SEQUENCING.PARENT)
+                                                                   .equal(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
+                    .fetch();
     }
 
     @Override
@@ -566,17 +581,20 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<StatusCode> getInitialStates(Product service) {
-        Existential sc = EXISTENTIAL;
+        StatusCodeSequencing seq2 = STATUS_CODE_SEQUENCING.as("seq2");
         return model.create()
-                    .selectDistinct(sc.fields())
-                    .from(sc)
+                    .selectDistinct(EXISTENTIAL.fields())
+                    .from(EXISTENTIAL)
                     .join(STATUS_CODE_SEQUENCING)
                     .on(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
-                    .and(STATUS_CODE_SEQUENCING.PARENT.equal(sc.field(EXISTENTIAL.ID)))
+                    .and(STATUS_CODE_SEQUENCING.PARENT.equal(EXISTENTIAL.ID))
                     .andNotExists(model.create()
-                                       .select(STATUS_CODE_SEQUENCING.CHILD)
-                                       .from(STATUS_CODE_SEQUENCING)
-                                       .where(STATUS_CODE_SEQUENCING.CHILD.equal(EXISTENTIAL.ID)))
+                                       .select(seq2.field(STATUS_CODE_SEQUENCING.CHILD))
+                                       .from(seq2)
+                                       .where(seq2.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                  .equal(EXISTENTIAL.ID))
+                                       .and(seq2.field(STATUS_CODE_SEQUENCING.SERVICE)
+                                                .equal(service.getId())))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()
@@ -620,7 +638,8 @@ public class JobModelImpl implements JobModel {
                     .from(EXISTENTIAL)
                     .join(STATUS_CODE_SEQUENCING)
                     .on(STATUS_CODE_SEQUENCING.PARENT.equal(parent.getId()))
-                    .and(EXISTENTIAL.ID.equal(STATUS_CODE_SEQUENCING.CHILD))
+                    .and(STATUS_CODE_SEQUENCING.CHILD.equal(EXISTENTIAL.ID))
+                    .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()
@@ -767,9 +786,9 @@ public class JobModelImpl implements JobModel {
                     .selectDistinct(EXISTENTIAL.fields())
                     .from(EXISTENTIAL)
                     .join(STATUS_CODE_SEQUENCING)
-                    .on(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId())
-                                                      .and(STATUS_CODE_SEQUENCING.PARENT.equal(EXISTENTIAL.ID)
-                                                                                        .or(STATUS_CODE_SEQUENCING.CHILD.equal(EXISTENTIAL.ID))))
+                    .on(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
+                    .where(STATUS_CODE_SEQUENCING.CHILD.equal(EXISTENTIAL.ID))
+                    .or(STATUS_CODE_SEQUENCING.PARENT.equal(EXISTENTIAL.ID))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()
@@ -857,15 +876,47 @@ public class JobModelImpl implements JobModel {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         List<StatusCode> statusCodes = getStatusCodesFor(service);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Status codes for %s: %s",
+            log.trace(String.format("Status codes for [%s]: %s",
                                     service.getName(), statusCodes.stream()
                                                                   .map(r -> r.getName())
                                                                   .collect(Collectors.toList())));
         }
-        for (StatusCode currentCode : statusCodes) {
+        statusCodes.forEach(currentCode -> {
             List<StatusCode> codes = getNextStatusCodes(service, currentCode);
             graph.put(currentCode, codes);
+        });
+        if (log.isTraceEnabled()) {
+            StringBuffer buf = new StringBuffer();
+            buf.append(String.format("Status code graph for [%s]:\n",
+                                     service.getName()));
+            graph.entrySet()
+                 .forEach(entry -> {
+                     buf.append("          ");
+                     buf.append(entry.getKey()
+                                     .getName());
+                     buf.append("->");
+                     buf.append(entry.getValue()
+                                     .stream()
+                                     .map(s -> s.getName())
+                                     .collect(Collectors.toList()));
+                     buf.append("\n");
+                 });
+            log.trace(buf.toString());
         }
+        assert graph.entrySet()
+                    .stream()
+                    .allMatch(entry -> entry.getValue()
+                                            .stream()
+                                            .allMatch(s -> {
+                                                if (!graph.containsKey(s)) {
+                                                    log.error("Graph is missing entry: [{}] from edges of [{}]",
+                                                              s.getName(),
+                                                              entry.getKey()
+                                                                   .getName());
+                                                    return false;
+                                                }
+                                                return true;
+                                            })) : "Invalid graph";
         return hasScc(graph);
     }
 

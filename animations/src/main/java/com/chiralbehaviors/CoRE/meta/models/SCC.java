@@ -51,21 +51,21 @@ public class SCC {
         return result;
     }
 
-    public void visit(StatusCode StatusCode) {
-        if (low.containsKey(StatusCode)) {
+    public void visit(StatusCode statusCode) {
+        if (low.containsKey(statusCode)) {
             return;
         }
         int num = low.size();
-        low.put(StatusCode, num);
+        low.put(statusCode, num);
         int stackPos = stack.size();
-        stack.add(StatusCode);
-        for (StatusCode successor : graph.get(StatusCode)) {
+        stack.add(statusCode);
+        for (StatusCode successor : graph.get(statusCode)) {
             visit(successor);
-            low.put(StatusCode,
-                    Math.min(low.get(StatusCode), low.get(successor)));
+            low.put(statusCode,
+                    Math.min(low.get(statusCode), low.get(successor)));
         }
 
-        if (num == low.get(StatusCode)
+        if (num == low.get(statusCode)
                       .intValue()) {
             List<StatusCode> component = stack.subList(stackPos, stack.size());
             stack = stack.subList(0, stackPos);

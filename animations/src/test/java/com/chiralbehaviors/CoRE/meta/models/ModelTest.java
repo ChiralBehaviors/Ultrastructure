@@ -73,8 +73,8 @@ public class ModelTest extends AbstractModelTest {
 
         assertEquals(1, attributes.size());
 
-        assertEquals(attribute, attributes.get(0)
-                                          .getAttribute());
+        assertEquals(attribute.getId(), attributes.get(0)
+                                                  .getAttribute());
     }
 
     @Test

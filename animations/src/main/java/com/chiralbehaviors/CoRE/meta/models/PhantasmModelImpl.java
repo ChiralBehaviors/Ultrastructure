@@ -377,13 +377,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .collect(Collectors.toList());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com
-     * .hellblazer.CoRE.meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute)
-     */
     @Override
     public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
                                                                                     Attribute attribute) {
@@ -417,43 +410,18 @@ public class PhantasmModelImpl implements PhantasmModel {
                   .collect(Collectors.toList());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributesClassifiedBy(com
-     * .hellblazer.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.meta.Aspect)
-     */
     @Override
     public List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
-                                                                      FacetRecord aspect) {
+                                                                      FacetRecord facet) {
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
-                     .from(EXISTENTIAL_ATTRIBUTE, FACET)
-
+                     .from(EXISTENTIAL_ATTRIBUTE)
                      .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(FACET.ID))
-                     .and(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID))
-                     .and(FACET.CLASSIFICATION.eq(aspect.getClassification()))
-                     .and(FACET.CLASSIFIER.eq(aspect.getClassifier()))
-
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(FACET.CLASSIFICATION))
-
-                     .where(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.equal(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE))
-                     .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
+                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE))
+                     .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.equal(ruleform.getId()))
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributesGroupedBy(com.chiralbehaviors
-     * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.agency.Agency)
-     */
     @Override
     public List<ExistentialAttributeRecord> getAttributesGroupedBy(ExistentialRuleform ruleform,
                                                                    Agency groupingAgency) {
@@ -545,13 +513,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                     .resolve(result.into(ExistentialRecord.class));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getNetwork(com.chiralbehaviors.CoRE
-     * .network.Networked, com.chiralbehaviors.CoRE.network.Relationship)
-     */
     @Override
     public List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
                                                  Relationship relationship,
@@ -895,9 +856,6 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#isAccessible(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
-     */
     @Override
     public boolean isAccessible(ExistentialRuleform parent,
                                 Relationship relationship,

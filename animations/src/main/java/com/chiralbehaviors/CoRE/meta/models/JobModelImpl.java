@@ -102,7 +102,10 @@ public class JobModelImpl implements JobModel {
     public static boolean hasScc(Map<StatusCode, List<StatusCode>> graph) {
         for (StatusCode[] scc : new SCC(graph).getStronglyConnectedComponents()) {
             if (log.isDebugEnabled()) {
-                log.debug(format("SCC: %s", Arrays.asList(scc)));
+                log.debug(format("SCC: %s", Arrays.asList(scc)
+                                                  .stream()
+                                                  .map(r -> r.getName())
+                                                  .collect(Collectors.toList())));
             }
             // includes nodes of scc, plus nodes they lead to
             Set<StatusCode> outgoing = new HashSet<StatusCode>();
@@ -110,7 +113,9 @@ public class JobModelImpl implements JobModel {
                 outgoing.addAll(graph.get(node));
             }
             if (log.isDebugEnabled()) {
-                log.debug(format("Outgoing nodes: %s", outgoing));
+                log.debug(format("Outgoing nodes: %s", outgoing.stream()
+                                                               .map(r -> r.getName())
+                                                               .collect(Collectors.toList())));
             }
             for (StatusCode n : scc) {
                 outgoing.remove(n);
@@ -1155,8 +1160,16 @@ public class JobModelImpl implements JobModel {
                                   .getName());
     }
 
-    public String toString(ProtocolRecord protocol) {
-        return protocol.toString();
+    public String toString(ProtocolRecord r) {
+        return String.format("Protocol[%s:%s:%s]", model.records()
+                                                        .resolve(r.getService())
+                                                        .getName(),
+                             model.records()
+                                  .resolve(r.getProduct())
+                                  .getName(),
+                             model.records()
+                                  .resolve(r.getAssignTo())
+                                  .getName());
     }
 
     /**
@@ -1667,7 +1680,7 @@ public class JobModelImpl implements JobModel {
         log(child, String.format("Inserted from protocol match"));
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
-                                    child, protocol, txfm));
+                                    toString(child), toString(protocol), txfm));
         }
     }
 

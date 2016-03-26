@@ -161,6 +161,8 @@ public interface Inference {
                          + "child uuid NOT NULL," + "premise1 uuid NOT NULL,"
                          + "premise2 uuid NOT NULL,"
                          + "inference uuid NOT NULL )");
+        create().truncate(CURRENT_PASS_RULES_TABLE)
+                .execute();
     }
 
     default void createDeductionTemporaryTables() {
@@ -175,6 +177,8 @@ public interface Inference {
                          + "relationship uuid NOT NULL, child uuid NOT NULL,"
                          + "premise1 uuid NOT NULL, premise2 uuid NOT NULL,"
                          + "inference uuid NOT NULL )");
+        create().truncate(LAST_PASS_RULES_TABLE)
+                .execute();
     }
 
     default void createWorkingMemory() {
@@ -182,6 +186,8 @@ public interface Inference {
                          + "parent uuid NOT NULL, relationship uuid NOT NULL,"
                          + "child uuid NOT NULL, premise1 uuid NOT NULL,"
                          + "premise2 uuid NOT NULL, inference uuid NOT NULL )");
+        create().truncate(WORKING_MEMORY_TABLE)
+                .execute();
     }
 
     // Deduce the new rules

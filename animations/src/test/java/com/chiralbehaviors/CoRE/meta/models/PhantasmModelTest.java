@@ -121,6 +121,8 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i);
         edgeH.insert();
 
+        model.flush();
+
         assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
@@ -208,10 +210,15 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i);
         edgeH.insert();
 
+        model.flush();
+
         assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
         edgeA.delete();
+
+        model.flush();
+
         List<ExistentialRuleform> children = model.getPhantasmModel()
                                                   .getChildren(a, equals,
                                                                ExistentialDomain.Agency);
@@ -302,10 +309,16 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i);
         edgeH.insert();
 
+        model.flush();
+
         assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
+
         edgeB.delete();
+
+        model.flush();
+
         assertEquals(1, model.getPhantasmModel()
                              .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
@@ -570,6 +583,8 @@ public class PhantasmModelTest extends AbstractModelTest {
                                               .newExistentialNetwork(h, equals2,
                                                                      i);
         edgeH.insert();
+
+        model.flush();
 
         assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals, ExistentialDomain.Agency)

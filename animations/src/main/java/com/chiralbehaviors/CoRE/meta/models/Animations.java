@@ -25,6 +25,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
+import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.PARENT_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.SELF_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZATION;
@@ -50,6 +51,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
@@ -84,6 +86,7 @@ public class Animations extends DefaultRecordListener {
     private static final Consumer<RecordContext>              NULL_CONSUMER      = f -> {
                                                                                  };
 
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterDelete        = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterInsert        = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterUpdate        = new HashMap<>();
     private final Set<ExistentialAttributeRecord>             attributeValues    = new HashSet<>();
@@ -110,6 +113,12 @@ public class Animations extends DefaultRecordListener {
     public void commit() throws TriggerException {
         flush();
         reset();
+    }
+
+    @Override
+    public void deleteEnd(RecordContext ctx) {
+        afterDelete.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
     }
 
     public void flush() {
@@ -144,63 +153,15 @@ public class Animations extends DefaultRecordListener {
         return model;
     }
 
-    public void insert(ChildSequencingAuthorizationRecord pcsa) {
-        childSequences.add(pcsa);
-    }
-
-    public void insert(ExistentialAttributeRecord value) {
-        attributeValues.add(value);
-    }
-
-    public void insert(ExistentialNetworkRecord a) {
-        inferNetwork = true;
-    }
-
-    public void insert(ExistentialRecord a) {
-        inferNetwork = true;
-    }
-
-    public void insert(JobRecord j) {
-        model.getJobModel()
-             .log(j, "Initial insertion of job");
-        jobs.add(j);
-    }
-
-    public void insert(ParentSequencingAuthorizationRecord ppsa) {
-        parentSequences.add(ppsa);
-    }
-
-    public void insert(SelfSequencingAuthorizationRecord pssa) {
-        selfSequences.add(pssa);
-    }
-
-    public void insert(SiblingSequencingAuthorizationRecord pssa) {
-        siblingSequences.add(pssa);
-    }
-
-    public void insert(StatusCodeSequencingRecord scs) {
-        modifiedServices.add(model.records()
-                                  .resolve(scs.getService()));
-    }
-
     @Override
     public void insertEnd(RecordContext ctx) {
         afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
                    .accept(ctx);
     }
 
-    public void modify(StatusCodeSequencingRecord scs) {
-        modifiedServices.add(model.records()
-                                  .resolve(scs.getService()));
-    }
-
     public void rollback() {
         reset();
         model.flushWorkspaces();
-    }
-
-    public void update(JobRecord j) {
-        jobs.add(j);
     }
 
     @Override
@@ -214,6 +175,18 @@ public class Animations extends DefaultRecordListener {
         childSequences.clear();
         siblingSequences.clear();
         selfSequences.clear();
+    }
+
+    private void delete(ExistentialNetworkRecord inference) {
+        inferNetwork = true;
+    }
+
+    private void delete(ExistentialRecord existentialRecord) {
+        inferNetwork = true;
+    }
+
+    private void delete(NetworkInferenceRecord inference) {
+        inferNetwork = true;
     }
 
     private void initializeTriggers() {
@@ -231,13 +204,71 @@ public class Animations extends DefaultRecordListener {
                         ctx -> insert((ExistentialNetworkRecord) ctx.record()));
         afterInsert.put(EXISTENTIAL_ATTRIBUTE.recordType(),
                         ctx -> insert((ExistentialAttributeRecord) ctx.record()));
+        afterInsert.put(NETWORK_INFERENCE.recordType(),
+                        ctx -> insert((NetworkInferenceRecord) ctx.record()));
         afterInsert.put(PARENT_SEQUENCING_AUTHORIZATION.recordType(),
                         ctx -> insert((ParentSequencingAuthorizationRecord) ctx.record()));
         afterInsert.put(SELF_SEQUENCING_AUTHORIZATION.recordType(),
                         ctx -> insert((SelfSequencingAuthorizationRecord) ctx.record()));
         afterInsert.put(SIBLING_SEQUENCING_AUTHORIZATION.recordType(),
                         ctx -> insert((SiblingSequencingAuthorizationRecord) ctx.record()));
+        afterUpdate.put(STATUS_CODE_SEQUENCING.recordType(),
+                        ctx -> modify((StatusCodeSequencingRecord) ctx.record()));
+        afterDelete.put(EXISTENTIAL.recordType(),
+                        ctx -> delete((ExistentialRecord) ctx.record()));
+        afterDelete.put(EXISTENTIAL_NETWORK.recordType(),
+                        ctx -> delete((ExistentialNetworkRecord) ctx.record()));
+        afterDelete.put(NETWORK_INFERENCE.recordType(),
+                        ctx -> delete((NetworkInferenceRecord) ctx.record()));
 
+    }
+
+    private void insert(ChildSequencingAuthorizationRecord pcsa) {
+        childSequences.add(pcsa);
+    }
+
+    private void insert(ExistentialAttributeRecord value) {
+        attributeValues.add(value);
+    }
+
+    private void insert(ExistentialNetworkRecord a) {
+        inferNetwork = true;
+    }
+
+    private void insert(ExistentialRecord a) {
+        inferNetwork = true;
+    }
+
+    private void insert(JobRecord j) {
+        model.getJobModel()
+             .log(j, "Initial insertion of job");
+        jobs.add(j);
+    }
+
+    private void insert(NetworkInferenceRecord a) {
+        inferNetwork = true;
+    }
+
+    private void insert(ParentSequencingAuthorizationRecord ppsa) {
+        parentSequences.add(ppsa);
+    }
+
+    private void insert(SelfSequencingAuthorizationRecord pssa) {
+        selfSequences.add(pssa);
+    }
+
+    private void insert(SiblingSequencingAuthorizationRecord pssa) {
+        siblingSequences.add(pssa);
+    }
+
+    private void insert(StatusCodeSequencingRecord scs) {
+        modifiedServices.add(model.records()
+                                  .resolve(scs.getService()));
+    }
+
+    private void modify(StatusCodeSequencingRecord scs) {
+        modifiedServices.add(model.records()
+                                  .resolve(scs.getService()));
     }
 
     private void process(JobRecord j) {
@@ -258,6 +289,10 @@ public class Animations extends DefaultRecordListener {
         modifiedServices.clear();
         jobs.clear();
         attributeValues.clear();
+    }
+
+    private void update(JobRecord j) {
+        jobs.add(j);
     }
 
     private void validateAttributeValues() {

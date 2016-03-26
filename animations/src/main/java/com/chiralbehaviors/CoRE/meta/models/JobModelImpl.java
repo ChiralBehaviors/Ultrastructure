@@ -127,15 +127,6 @@ public class JobModelImpl implements JobModel {
     protected final Kernel kernel;
     protected final Model  model;
 
-    public String toString(JobRecord r) {
-        return String.format("Job[%s:%s]", model.records()
-                                                .resolve(r.getService())
-                                                .getName(),
-                             model.records()
-                                  .resolve(r.getProduct())
-                                  .getName());
-    }
-
     public JobModelImpl(Model model) {
         this.model = model;
         kernel = model.getKernel();
@@ -148,13 +139,13 @@ public class JobModelImpl implements JobModel {
         if (oldStatus != null && oldStatus.equals(newStatus.getId())) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("JobRecord status is already set to desired status %s",
-                                        job));
+                                        toString(job)));
             }
             return job;
         }
         if (log.isTraceEnabled()) {
-            log.trace(String.format("%s Setting status %s of %s", notes,
-                                    newStatus, job));
+            log.trace(String.format("Changing status of %s to [%s] notes: %s",
+                                    toString(job), newStatus.getName(), notes));
         }
         job.setStatus(newStatus.getId());
         log(job, notes);
@@ -186,8 +177,9 @@ public class JobModelImpl implements JobModel {
         StatusCode status = model.records()
                                  .resolve(job.getStatus());
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Updating %s, current: %s, next: %s", job,
-                                    status, nextStatus));
+            log.trace(String.format("Updating %s, current: %s, next: %s",
+                                    toString(job), status.getName(),
+                                    nextStatus.getName()));
         }
         Product service = model.records()
                                .resolve(job.getService());
@@ -197,16 +189,22 @@ public class JobModelImpl implements JobModel {
             initialState = getInitialState(service);
             if (!nextStatus.equals(initialState)) {
                 throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  The only allowable state is the initial state of %s  Please consult the Status Code Sequencing rules.",
-                                                     nextStatus,
-                                                     job.getService(), status,
-                                                     initialState));
+                                                     nextStatus.getName(),
+                                                     model.records()
+                                                          .resolve(job.getService())
+                                                          .getName(),
+                                                     status.getName(),
+                                                     initialState.getName()));
             }
             return;
         }
         if (!getNextStatusCodes(service, status).contains(nextStatus)) {
             throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  Please consult the Status Code Sequencing rules.",
-                                                 nextStatus, job.getService(),
-                                                 status));
+                                                 nextStatus.getName(),
+                                                 model.records()
+                                                      .resolve(job.getService())
+                                                      .getName(),
+                                                 status.getName()));
         }
     }
 
@@ -323,7 +321,7 @@ public class JobModelImpl implements JobModel {
         Map<ProtocolRecord, InferenceMap> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Found %s protocols for %s",
-                                    protocols.size(), job));
+                                    protocols.size(), toString(job)));
         }
         List<JobRecord> jobs = new ArrayList<JobRecord>();
         for (Entry<ProtocolRecord, InferenceMap> txfm : protocols.entrySet()) {
@@ -341,7 +339,7 @@ public class JobModelImpl implements JobModel {
             } else {
                 if (log.isInfoEnabled()) {
                     log.info(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
-                                           job, protocol));
+                                           toString(job), toString(protocol)));
                 }
             }
         }
@@ -652,7 +650,8 @@ public class JobModelImpl implements JobModel {
     public Map<ProtocolRecord, InferenceMap> getProtocols(JobRecord job) {
         if (job.getStatus() == null) {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("job has no status set %s", job));
+                log.trace(String.format("job has no status set %s",
+                                        toString(job)));
             }
             // Bail because, dude.  We haven't even been initialized
             return Collections.emptyMap();
@@ -669,7 +668,8 @@ public class JobModelImpl implements JobModel {
             return matches;
         } else {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("job has no direct matches %s", job));
+                log.trace(String.format("job has no direct matches %s",
+                                        toString(job)));
             }
         }
 
@@ -679,7 +679,7 @@ public class JobModelImpl implements JobModel {
             if (infered.size() == 0) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("job has no infered matches %s",
-                                            job));
+                                            toString(job)));
                 }
             }
             for (Map.Entry<ProtocolRecord, InferenceMap> transformed : infered) {
@@ -891,7 +891,8 @@ public class JobModelImpl implements JobModel {
                                   InferenceMap txfm) {
         if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
             throw new IllegalStateException(String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
-                                                          parent, protocol));
+                                                          toString(parent),
+                                                          toString(protocol)));
         }
         List<JobRecord> jobs = new ArrayList<>();
         if (protocol.getChildrenRelationship()
@@ -1091,7 +1092,7 @@ public class JobModelImpl implements JobModel {
 
         for (SelfSequencingAuthorizationRecord seq : getSelfActions(job)) {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing %s", seq));
+                log.trace(String.format("Processing %s", toString(seq)));
             }
             try {
                 ensureNextStateIsValid(job, model.records()
@@ -1102,13 +1103,15 @@ public class JobModelImpl implements JobModel {
             } catch (Throwable e) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("invalid self status sequencing %s",
-                                            job),
+                                            toString(job)),
                               e);
                 }
                 log(job,
                     String.format("error changing status of job of %s to: %s in self sequencing %s\n%s",
-                                  job.getId(), seq.getStatusToSet(),
-                                  seq.getId(), e));
+                                  toString(job), model.records()
+                                                      .resolve(seq.getStatusToSet())
+                                                      .getName(),
+                                  toString(seq), e));
             }
         }
     }
@@ -1138,6 +1141,22 @@ public class JobModelImpl implements JobModel {
             }
             processSiblings(job, grouped);
         }
+    }
+
+    public String toString(JobRecord r) {
+        return String.format("Job[%s:%s:%s]", model.records()
+                                                   .resolve(r.getService())
+                                                   .getName(),
+                             model.records()
+                                  .resolve(r.getProduct())
+                                  .getName(),
+                             model.records()
+                                  .resolve(r.getStatus())
+                                  .getName());
+    }
+
+    public String toString(ProtocolRecord protocol) {
+        return protocol.toString();
     }
 
     /**
@@ -1341,6 +1360,16 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
+    private boolean isTerminalState(UUID status, UUID service) {
+        return ZERO.equals(model.create()
+                                .selectCount()
+                                .from(STATUS_CODE_SEQUENCING)
+                                .where(STATUS_CODE_SEQUENCING.PARENT.equal(status))
+                                .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service))
+                                .fetchOne()
+                                .value1());
+    }
+
     //    private Subquery<RuleForm> inferenceSubquery(ExistentialAttributeRecord attribute,
     //                                                 Relationship relationship,
     //                                                 SingularAttribute<Network, RuleForm> parent,
@@ -1355,16 +1384,6 @@ public class JobModelImpl implements JobModel {
     //                                        relationship)));
     //        return inference;
     //    }
-
-    private boolean isTerminalState(UUID status, UUID service) {
-        return ZERO.equals(model.create()
-                                .selectCount()
-                                .from(STATUS_CODE_SEQUENCING)
-                                .where(STATUS_CODE_SEQUENCING.PARENT.equal(status))
-                                .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service))
-                                .fetchOne()
-                                .value1());
-    }
 
     private boolean isTxfm(Relationship relationship) {
         return !WellKnownRelationship.ANY.id()
@@ -1615,6 +1634,10 @@ public class JobModelImpl implements JobModel {
             return parent.getId();
         }
         return child.getId();
+    }
+
+    private String toString(SelfSequencingAuthorizationRecord seq) {
+        return seq.toString();
     }
 
     //    protected void addMask(RuleForm ruleform, Relationship relationship,

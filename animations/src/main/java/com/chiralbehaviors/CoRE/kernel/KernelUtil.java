@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.ThisCoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -67,7 +68,10 @@ public class KernelUtil {
         model.apply(CoreInstance.class, core);
     }
 
-    public static void loadKernel(DSLContext em) throws IOException {
-        em.transaction(config -> WorkspaceSnapshot.load(em, KERNEL_LOADS));
+    public static void loadKernel(DSLContext create) throws IOException {
+        create.transaction(config -> {
+            WorkspaceSnapshot.load(create, KERNEL_LOADS);
+            new ModelImpl(create).inferNetworks();
+        });
     }
 }

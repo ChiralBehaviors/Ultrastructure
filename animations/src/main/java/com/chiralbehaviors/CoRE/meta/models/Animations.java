@@ -396,4 +396,8 @@ public class Animations extends DefaultRecordListener {
             }
         }
     }
+
+    public void inferNetworks() {
+        inference.propagate();
+    }
 }

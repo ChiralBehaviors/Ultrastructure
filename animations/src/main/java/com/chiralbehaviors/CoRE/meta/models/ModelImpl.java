@@ -408,13 +408,7 @@ public class ModelImpl implements Model {
 
     @Override
     public void inferNetworks() {
-        //        animations.inferNetworks();
-    }
-
-    @Override
-    public void inferNetworks(ExistentialRecord ruleform) {
-        // TODO Auto-generated method stub
-
+        animations.inferNetworks();
     }
 
     @SuppressWarnings("unchecked")

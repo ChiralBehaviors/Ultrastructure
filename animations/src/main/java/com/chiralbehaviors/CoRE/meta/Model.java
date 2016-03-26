@@ -240,13 +240,6 @@ public interface Model extends AutoCloseable {
     void inferNetworks();
 
     /**
-     * Infer networks for the existential ruleform
-     *
-     * @param ruleform
-     */
-    void inferNetworks(ExistentialRecord ruleform);
-
-    /**
      * Lookup the ruleform using the UUID and wrap an instance of a phantasm
      * using the model
      *

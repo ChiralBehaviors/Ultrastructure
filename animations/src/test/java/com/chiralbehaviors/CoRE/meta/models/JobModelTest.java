@@ -179,11 +179,6 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
 
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);

@@ -52,6 +52,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testDeltaGeneration() throws Exception {
+        // This is the one test where we have to have the kernel state committed, 
+        // due to the use of multiple contexts to cleanly test delat generation
         model.create()
              .configuration()
              .connectionProvider()

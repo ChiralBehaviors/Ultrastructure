@@ -1092,6 +1092,11 @@ public class PhantasmModelImpl implements PhantasmModel {
               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
               .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
               .execute();
+        create.deleteFrom(EXISTENTIAL_NETWORK)
+              .where(EXISTENTIAL_NETWORK.PARENT.equal(child.getId()))
+              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
+              .and(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
+              .execute();
     }
 
     @Override
@@ -1100,6 +1105,11 @@ public class PhantasmModelImpl implements PhantasmModel {
         create.deleteFrom(EXISTENTIAL_NETWORK)
               .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+              .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+              .execute();
+        create.deleteFrom(EXISTENTIAL_NETWORK)
+              .where(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
+              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
               .execute();
     }

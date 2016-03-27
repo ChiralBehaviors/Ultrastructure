@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
@@ -546,12 +545,8 @@ public class PhantasmCRUD {
             return instance;
         }
 
-        for (ExistentialNetworkRecord childLink : model.getPhantasmModel()
-                                                       .getImmediateChildrenLinks(instance,
-                                                                                  auth.getRelationship(),
-                                                                                  auth.getDomain())) {
-            childLink.delete();
-        }
+        model.getPhantasmModel()
+             .unlinkImmediate(instance, auth.getRelationship());
         children.stream()
                 .filter(child -> checkREAD(child))
                 .peek(child -> cast(child, auth.getChild()))
@@ -612,7 +607,7 @@ public class PhantasmCRUD {
 
         if (child == null) {
             model.getPhantasmModel()
-                 .unlinkImmediate(child, auth.getRelationship());
+                 .unlinkImmediate(instance, auth.getRelationship());
         } else {
             cast(child, auth.getChild());
             model.getPhantasmModel()

@@ -28,6 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -132,7 +133,6 @@ public class StatusCodeTest extends AbstractModelTest {
 
     @Test
     public void testLogInvalidSequencingTransition() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/test-log-config.xml")));
         JobModel jobModel = model.getJobModel();
         StatusCode startState = model.records()
                                      .newStatusCode("top-level");
@@ -179,16 +179,22 @@ public class StatusCodeTest extends AbstractModelTest {
         child.update();
         model.flush();
         assertNotNull("Parent is null", child.getParent());
-        assertTrue("Child is not considered active", jobModel.isActive(child));
+        assertFalse("Child is active", jobModel.isActive(child));
         assertEquals(1, jobModel.getActiveSubJobsOf(parent)
                                 .size());
         jobModel.changeStatus(parent, startState, "transition from test");
         model.flush();
         List<JobChronologyRecord> chronology = jobModel.getChronologyForJob(child);
-        assertEquals(chronology.toString(), 2, chronology.size());
+
+        assertEquals(chronology.stream()
+                               .map(c -> jobModel.toString(c))
+                               .collect(Collectors.toList())
+                               .toString(),
+                     2, chronology.size());
         for (JobChronologyRecord crumb : chronology) {
             assertEquals(model.getKernel()
-                              .getUnset(),
+                              .getUnset()
+                              .getId(),
                          crumb.getStatus());
         }
     }

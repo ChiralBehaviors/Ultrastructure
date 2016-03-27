@@ -111,7 +111,6 @@ public class Animations extends DefaultRecordListener {
 
     public void commit() throws TriggerException {
         flush();
-        reset();
     }
 
     @Override
@@ -121,6 +120,14 @@ public class Animations extends DefaultRecordListener {
     }
 
     public void flush() {
+        try {
+            animate();
+        } finally {
+            reset();
+        }
+    }
+
+    private void animate() {
         try {
             model.getJobModel()
                  .validateStateGraph(modifiedServices);

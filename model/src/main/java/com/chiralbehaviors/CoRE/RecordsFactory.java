@@ -111,10 +111,11 @@ public interface RecordsFactory {
     }
 
     default String existentialName(UUID id) {
-        ExistentialRuleform resolved = resolve(id);
-        return resolved == null ? String.format("INVALID EXISTENTIAL ID: %s",
-                                                id)
-                                : resolved.getName();
+        return create().select(EXISTENTIAL.NAME)
+                       .from(EXISTENTIAL)
+                       .where(EXISTENTIAL.ID.eq(id))
+                       .fetchOne()
+                       .value1();
     }
 
     default ExistentialRecord copy(ExistentialRecord rf) {
@@ -401,7 +402,7 @@ public interface RecordsFactory {
         record.setQuantity(job.getQuantity());
         record.setQuantityUnit(job.getQuantityUnit());
         record.setRequester(job.getRequester());
-        record.setStatus(job.getService());
+        record.setStatus(job.getStatus());
         record.setUpdatedBy(job.getUpdatedBy());
         record.setService(job.getService());
         record.setUpdateDate(new Timestamp(System.currentTimeMillis()));

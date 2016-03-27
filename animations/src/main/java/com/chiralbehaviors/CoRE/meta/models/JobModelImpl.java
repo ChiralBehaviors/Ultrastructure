@@ -159,6 +159,7 @@ public class JobModelImpl implements JobModel {
             return job;
         }
         job.setStatus(newStatus.getId());
+        job.update();
         log(job, notes);
         return job;
     }
@@ -438,12 +439,20 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<JobRecord> getActiveSubJobsForService(JobRecord job,
                                                       Product service) {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_CHILD_JOBS_FOR_SERVICE,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", job);
-        //        query.setParameter("service", service);
-        //        return query.getResultList();
-        return null;
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        return model.create()
+                    .selectFrom(JOB)
+                    .where(JOB.SERVICE.equal(service.getId()))
+                    .and(JOB.PARENT.equal(job.getId()))
+                    .andNotExists(model.create()
+                                       .selectFrom(seq)
+                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                 .equal(JOB.STATUS))
+                                       .andNotExists(model.create()
+                                                          .selectFrom(STATUS_CODE_SEQUENCING)
+                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
+                    .fetch();
     }
 
     @Override
@@ -547,7 +556,7 @@ public class JobModelImpl implements JobModel {
         return model.create()
                     .selectFrom(CHILD_SEQUENCING_AUTHORIZATION)
                     .where(CHILD_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
-                    .and(CHILD_SEQUENCING_AUTHORIZATION.PARENT.equal(job.getStatus()))
+                    .and(CHILD_SEQUENCING_AUTHORIZATION.PARENT.equal(job.getService()))
                     .fetch();
     }
 
@@ -1145,7 +1154,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public void processSelfSequencing(JobRecord job) {
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing self of JobRecord %s",
+            log.trace(String.format("Processing self sequencing of %s",
                                     toString(job)));
         }
 
@@ -1198,10 +1207,12 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobChronologyRecord r) {
-        return String.format("JobChronology[%s {%s:%s} %s:%s:%s:%s:%s]",
+        return String.format("JobChronology[%s {%s:%s} {%s:%s} %s:%s:%s:%s]",
                              r.getNotes(), r.getSequenceNumber(), r.getJob(),
                              model.records()
                                   .existentialName(r.getService()),
+                             model.records()
+                                  .existentialName(r.getStatus()),
                              model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
@@ -1218,8 +1229,10 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobRecord r) {
-        return String.format("Job[%s:%s:%s:%s:%s:%s:%s]", model.records()
-                                                               .existentialName(r.getService()),
+        return String.format("Job[{%s:%s} %s:%s:%s:%s:%s:%s]", model.records()
+                                                                    .existentialName(r.getService()),
+                             model.records()
+                                  .existentialName(r.getStatus()),
                              model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
@@ -1650,11 +1663,6 @@ public class JobModelImpl implements JobModel {
                     }
                     break;
                 } catch (Throwable e) {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("invalid child status sequencing %s",
-                                                child),
-                                  e);
-                    }
                     log(child,
                         String.format("error changing status of child of %s to: %s in child sequencing %s\n%s",
                                       job.getId(), seq.getNextChildStatus(),

@@ -77,7 +77,7 @@ public class StatusCodeTest extends AbstractModelTest {
 
         model.getJobModel()
              .createStatusCodeSequencings(service, sequences);
-        
+
         model.flush();
 
         assertTrue(String.format("%s is not a terminal state",
@@ -176,6 +176,7 @@ public class StatusCodeTest extends AbstractModelTest {
         JobRecord parent = jobModel.newInitializedJob(service);
         JobRecord child = jobModel.newInitializedJob(service2);
         child.setParent(parent.getId());
+        child.update();
         model.flush();
         assertNotNull("Parent is null", child.getParent());
         assertTrue("Child is not considered active", jobModel.isActive(child));

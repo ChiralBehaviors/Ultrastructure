@@ -723,39 +723,34 @@ public class JobModelImpl implements JobModel {
         // First we try for protocols which match the current job
         List<ProtocolRecord> protocols = getProtocolsMatching(job);
         Map<ProtocolRecord, InferenceMap> matches = new LinkedHashMap<>();
+        log.trace("found {} protocol(s) matching {} | {}", protocols.size(),
+                  toString(job), protocols.stream()
+                                          .map(p -> toString(p))
+                                          .collect(Collectors.toList()));
         if (!protocols.isEmpty()) {
-            for (ProtocolRecord protocol : protocols) {
-                if (!matches.containsKey(protocol)) {
-                    matches.put(protocol, NO_TRANSFORMATION);
-                }
-            }
+            protocols.stream()
+                     .filter(p -> !matches.containsKey(p))
+                     .forEach(p -> matches.put(p, NO_TRANSFORMATION));
             return matches;
-        } else {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("job has no direct matches %s",
-                                        toString(job)));
-            }
         }
 
-        for (MetaProtocolRecord metaProtocol : getMetaprotocols(job)) {
+        List<MetaProtocolRecord> metaprotocols = getMetaprotocols(job);
+        log.trace("Found {} metaprotocol(s) matching {}", metaprotocols.size(),
+                  toString(job));
+        for (MetaProtocolRecord metaProtocol : metaprotocols) {
             Set<Entry<ProtocolRecord, InferenceMap>> infered = getProtocols(job,
                                                                             metaProtocol).entrySet();
-            if (infered.size() == 0) {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("job has no infered matches %s",
-                                            toString(job)));
-                }
-            }
-            for (Map.Entry<ProtocolRecord, InferenceMap> transformed : infered) {
-                if (!matches.containsKey(transformed.getKey())) {
-                    matches.put(transformed.getKey(), transformed.getValue());
-                }
-            }
+            log.trace("Inferred {} protocol(s) for {} using {}", infered.size(),
+                      toString(job), toString(metaProtocol));
+            infered.stream()
+                   .filter(t -> !matches.containsKey(t.getKey()))
+                   .forEach(t -> matches.put(t.getKey(), t.getValue()));
             if (metaProtocol.getStopOnMatch()) {
                 break;
             }
         }
         return matches;
+
     }
 
     /**
@@ -771,158 +766,6 @@ public class JobModelImpl implements JobModel {
             protocols.putIfAbsent(protocol, map(protocol, metaProtocol));
         });
         return protocols;
-    }
-
-    /**
-     * Do the work of matching protocols to networks defined by jobs and
-     * metaprocols.
-     *
-     * @param metaprotocol
-     * @param job
-     * @return
-     */
-
-    private SelectConditionStep<Record1<UUID>> inferenceSubQuery(UUID classifier,
-                                                                 UUID classification) {
-        return model.create()
-                    .select(EXISTENTIAL_NETWORK.CHILD)
-                    .from(EXISTENTIAL_NETWORK)
-                    .where(EXISTENTIAL_NETWORK.PARENT.equal(classification))
-                    .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(classifier));
-    }
-
-    private void addMask(SelectQuery<Record> selectQuery, UUID classifier,
-                         UUID classification, TableField<?, UUID> field,
-                         ExistentialDomain domain) {
-        if (classifier.equals(WellKnownRelationship.ANY.id())) {
-            return;
-        }
-        Condition condition;
-        if (classifier.equals(WellKnownRelationship.SAME.id())) {
-            condition = field.eq(classification);
-        } else {
-            condition = field.in(inferenceSubQuery(classifier, classification));
-        }
-        condition.or(field.equal(getAnyId(domain)))
-                 .or(field.equal(getSameId(domain)))
-                 .or(field.equal(getNotApplicable(domain)));
-        selectQuery.addConditions(condition);
-    }
-
-    private UUID getAnyId(ExistentialDomain domain) {
-        switch (domain) {
-            case Agency:
-                return WellKnownAgency.ANY.id();
-            case Attribute:
-                return WellKnownAttribute.ANY.id();
-            case Interval:
-                return WellKnownInterval.ANY.id();
-            case Location:
-                return WellKnownLocation.ANY.id();
-            case Product:
-                return WellKnownProduct.ANY.id();
-            case Relationship:
-                return WellKnownRelationship.ANY.id();
-            case StatusCode:
-                return WellKnownStatusCode.ANY.id();
-            case Unit:
-                return WellKnownUnit.ANY.id();
-
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    private UUID getSameId(ExistentialDomain domain) {
-        switch (domain) {
-            case Agency:
-                return WellKnownAgency.SAME.id();
-            case Attribute:
-                return WellKnownAttribute.SAME.id();
-            case Interval:
-                return WellKnownInterval.SAME.id();
-            case Location:
-                return WellKnownLocation.SAME.id();
-            case Product:
-                return WellKnownProduct.SAME.id();
-            case Relationship:
-                return WellKnownRelationship.SAME.id();
-            case StatusCode:
-                return WellKnownStatusCode.SAME.id();
-            case Unit:
-                return WellKnownUnit.SAME.id();
-
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    private UUID getNotApplicable(ExistentialDomain domain) {
-        switch (domain) {
-            case Agency:
-                return WellKnownAgency.NOT_APPLICABLE.id();
-            case Attribute:
-                return WellKnownAttribute.NOT_APPLICABLE.id();
-            case Interval:
-                return WellKnownInterval.NOT_APPLICABLE.id();
-            case Location:
-                return WellKnownLocation.NOT_APPLICABLE.id();
-            case Product:
-                return WellKnownProduct.NOT_APPLICABLE.id();
-            case Relationship:
-                return WellKnownRelationship.NOT_APPLICABLE.id();
-            case StatusCode:
-                return WellKnownStatusCode.NOT_APPLICABLE.id();
-            case Unit:
-                return WellKnownUnit.NOT_APPLICABLE.id();
-
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    public List<ProtocolRecord> match(MetaProtocolRecord metaProtocol,
-                                      JobRecord job) {
-        SelectQuery<Record> selectQuery = model.create()
-                                               .selectQuery();
-        selectQuery.addDistinctOn(PROTOCOL.fields());
-        selectQuery.addFrom(PROTOCOL);
-
-        addServiceMask(metaProtocol, job, selectQuery);
-        addMask(selectQuery, metaProtocol.getDeliverFrom(),
-                job.getDeliverFrom(), PROTOCOL.DELIVER_FROM,
-                ExistentialDomain.Location);
-
-        addMask(selectQuery, metaProtocol.getDeliverTo(), job.getDeliverTo(),
-                PROTOCOL.DELIVER_TO, ExistentialDomain.Location);
-
-        addMask(selectQuery, metaProtocol.getProduct(), job.getProduct(),
-                PROTOCOL.PRODUCT, ExistentialDomain.Product);
-
-        addMask(selectQuery, metaProtocol.getRequester(), job.getRequester(),
-                PROTOCOL.REQUESTER, ExistentialDomain.Agency);
-
-        addMask(selectQuery, metaProtocol.getAssignTo(), job.getAssignTo(),
-                PROTOCOL.ASSIGN_TO, ExistentialDomain.Agency);
-
-        addMask(selectQuery, metaProtocol.getQuantityUnit(),
-                job.getQuantityUnit(), PROTOCOL.QUANTITY_UNIT,
-                ExistentialDomain.Unit);
-
-        return selectQuery.fetch()
-                          .into(ProtocolRecord.class);
-    }
-
-    // Service gets special handling.  we don't want infinite jobs due to ANY
-    private void addServiceMask(MetaProtocolRecord metaProtocol, JobRecord job,
-                                SelectQuery<Record> selectQuery) {
-        if (metaProtocol.getServiceType()
-                        .equals(WellKnownRelationship.SAME.id())) {
-            selectQuery.addConditions(PROTOCOL.SERVICE.equal(job.getService()));
-        } else {
-            selectQuery.addConditions(PROTOCOL.SERVICE.in(inferenceSubQuery(metaProtocol.getServiceType(),
-                                                                            job.getService())));
-        }
     }
 
     @Override
@@ -1189,6 +1032,38 @@ public class JobModelImpl implements JobModel {
              .newJobChronology(job, notes);
     }
 
+    public List<ProtocolRecord> match(MetaProtocolRecord metaProtocol,
+                                      JobRecord job) {
+        SelectQuery<Record> selectQuery = model.create()
+                                               .selectQuery();
+        selectQuery.addDistinctOn(PROTOCOL.fields());
+        selectQuery.addFrom(PROTOCOL);
+
+        addServiceMask(metaProtocol, job, selectQuery);
+        addMask(selectQuery, metaProtocol.getDeliverFrom(),
+                job.getDeliverFrom(), PROTOCOL.DELIVER_FROM,
+                ExistentialDomain.Location);
+
+        addMask(selectQuery, metaProtocol.getDeliverTo(), job.getDeliverTo(),
+                PROTOCOL.DELIVER_TO, ExistentialDomain.Location);
+
+        addMask(selectQuery, metaProtocol.getProduct(), job.getProduct(),
+                PROTOCOL.PRODUCT, ExistentialDomain.Product);
+
+        addMask(selectQuery, metaProtocol.getRequester(), job.getRequester(),
+                PROTOCOL.REQUESTER, ExistentialDomain.Agency);
+
+        addMask(selectQuery, metaProtocol.getAssignTo(), job.getAssignTo(),
+                PROTOCOL.ASSIGN_TO, ExistentialDomain.Agency);
+
+        addMask(selectQuery, metaProtocol.getQuantityUnit(),
+                job.getQuantityUnit(), PROTOCOL.QUANTITY_UNIT,
+                ExistentialDomain.Unit);
+
+        return selectQuery.fetch()
+                          .into(ProtocolRecord.class);
+    }
+
     @Override
     public JobRecord newInitializedJob(Product service) {
         JobRecord job = model.records()
@@ -1269,7 +1144,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public void processChildSequencing(JobRecord job) {
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing children of JobRecord %s",
+            log.trace(String.format("Processing children of %s",
                                     toString(job)));
         }
         Deque<ChildSequencingAuthorizationRecord> actions = new ArrayDeque<>(getChildActions(job));
@@ -1288,10 +1163,6 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processJobSequencing(JobRecord job) {
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing change in JobRecord %s",
-                                    toString(job)));
-        }
         //process parents last so we can close out child jobs
         processChildSequencing(job);
         processSiblingSequencing(job);
@@ -1301,16 +1172,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processParentSequencing(JobRecord job) {
-        if (job.getParent() == null) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("No parent of job, not processing parent sequencing: %s",
-                                        toString(job)));
-            }
-            return;
-        }
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing parent of JobRecord %s",
-                                    toString(job)));
+            log.trace(String.format("Processing parent of %s", toString(job)));
         }
 
         Deque<ParentSequencingAuthorizationRecord> actions = new ArrayDeque<>(getParentActions(job));
@@ -1362,15 +1225,8 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void processSiblingSequencing(JobRecord job) {
-        if (job.getParent() == null) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("JobRecord does not have a parent, so not processing siblings"));
-            }
-            return;
-        }
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Processing siblings of JobRecord %s",
-                                    toString(job)));
+            log.trace("Processing siblings of {}", toString(job));
         }
 
         Deque<SiblingSequencingAuthorizationRecord> actions = new ArrayDeque<>(getSiblingActions(job));
@@ -1388,35 +1244,82 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public String toString(JobRecord r) {
-        return String.format("Job[%s:%s:%s]", model.records()
-                                                   .resolve(r.getService())
-                                                   .getName(),
+    public String toString(JobChronologyRecord r) {
+        return String.format("JobChronology[{%s:%s} %s:%s:%s:%s:%s:%s]",
+                             r.getSequenceNumber(), r.getJob(), model.records()
+                                                                     .existentialName(r.getService()),
                              model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
-                                  .existentialName(r.getStatus()));
+                                  .existentialName(r.getAssignTo()),
+                             model.records()
+                                  .existentialName(r.getRequester()),
+                             model.records()
+                                  .existentialName(r.getDeliverTo()),
+                             model.records()
+                                  .existentialName(r.getDeliverFrom()),
+                             model.records()
+                                  .existentialName(r.getQuantityUnit()));
+    }
+
+    @Override
+    public String toString(JobRecord r) {
+        return String.format("Job[%s:%s:%s:%s:%s:%s:%s]", model.records()
+                                                               .existentialName(r.getService()),
+                             model.records()
+                                  .existentialName(r.getProduct()),
+                             model.records()
+                                  .existentialName(r.getAssignTo()),
+                             model.records()
+                                  .existentialName(r.getRequester()),
+                             model.records()
+                                  .existentialName(r.getDeliverTo()),
+                             model.records()
+                                  .existentialName(r.getDeliverFrom()),
+                             model.records()
+                                  .existentialName(r.getQuantityUnit()));
+    }
+
+    /**
+     * @param metaProtocol
+     * @return
+     */
+    public Object toString(MetaProtocolRecord r) {
+        return String.format("MetaProtocol[%s->%s:%s:%s:%s:%s:%s:%s]",
+                             model.records()
+                                  .existentialName(r.getService()),
+                             model.records()
+                                  .existentialName(r.getServiceType()),
+                             model.records()
+                                  .existentialName(r.getProduct()),
+                             model.records()
+                                  .existentialName(r.getAssignTo()),
+                             model.records()
+                                  .existentialName(r.getRequester()),
+                             model.records()
+                                  .existentialName(r.getDeliverTo()),
+                             model.records()
+                                  .existentialName(r.getDeliverFrom()),
+                             model.records()
+                                  .existentialName(r.getQuantityUnit()));
     }
 
     @Override
     public String toString(ProtocolRecord r) {
-        return String.format("Protocol[%s:%s:%s]", model.records()
-                                                        .existentialName(r.getService()),
+        return String.format("Protocol[%s:%s:%s:%s:%s:%s:%s]", model.records()
+                                                                    .existentialName(r.getService()),
                              model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
-                                  .existentialName(r.getAssignTo()));
-    }
-
-    @Override
-    public String toString(JobChronologyRecord r) {
-        return String.format("Protocol[%s:%s:%s:%s '%s']", model.records()
-                                                                .existentialName(r.getService()),
+                                  .existentialName(r.getAssignTo()),
                              model.records()
-                                  .existentialName(r.getProduct()),
+                                  .existentialName(r.getRequester()),
                              model.records()
-                                  .existentialName(r.getStatus()),
-                             r.getSequenceNumber(), r.getNotes());
+                                  .existentialName(r.getDeliverTo()),
+                             model.records()
+                                  .existentialName(r.getDeliverFrom()),
+                             model.records()
+                                  .existentialName(r.getQuantityUnit()));
     }
 
     /**
@@ -1463,6 +1366,36 @@ public class JobModelImpl implements JobModel {
                 throw new SQLException(String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
                                                      modifiedService.getName()));
             }
+        }
+    }
+
+    private void addMask(SelectQuery<Record> selectQuery, UUID classifier,
+                         UUID classification, TableField<?, UUID> field,
+                         ExistentialDomain domain) {
+        if (classifier.equals(WellKnownRelationship.ANY.id())) {
+            return;
+        }
+        Condition condition;
+        if (classifier.equals(WellKnownRelationship.SAME.id())) {
+            condition = field.eq(classification);
+        } else {
+            condition = field.in(inferenceSubQuery(classifier, classification));
+        }
+        condition = condition.or(field.equal(getAnyId(domain)))
+                             .or(field.equal(getSameId(domain)))
+                             .or(field.equal(getNotApplicable(domain)));
+        selectQuery.addConditions(condition);
+    }
+
+    // Service gets special handling.  we don't want infinite jobs due to ANY
+    private void addServiceMask(MetaProtocolRecord metaProtocol, JobRecord job,
+                                SelectQuery<Record> selectQuery) {
+        if (metaProtocol.getServiceType()
+                        .equals(WellKnownRelationship.SAME.id())) {
+            selectQuery.addConditions(PROTOCOL.SERVICE.equal(job.getService()));
+        } else {
+            selectQuery.addConditions(PROTOCOL.SERVICE.in(inferenceSubQuery(metaProtocol.getServiceType(),
+                                                                            job.getService())));
         }
     }
 
@@ -1542,6 +1475,54 @@ public class JobModelImpl implements JobModel {
 
     }
 
+    private UUID getAnyId(ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return WellKnownAgency.ANY.id();
+            case Attribute:
+                return WellKnownAttribute.ANY.id();
+            case Interval:
+                return WellKnownInterval.ANY.id();
+            case Location:
+                return WellKnownLocation.ANY.id();
+            case Product:
+                return WellKnownProduct.ANY.id();
+            case Relationship:
+                return WellKnownRelationship.ANY.id();
+            case StatusCode:
+                return WellKnownStatusCode.ANY.id();
+            case Unit:
+                return WellKnownUnit.ANY.id();
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private UUID getNotApplicable(ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return WellKnownAgency.NOT_APPLICABLE.id();
+            case Attribute:
+                return WellKnownAttribute.NOT_APPLICABLE.id();
+            case Interval:
+                return WellKnownInterval.NOT_APPLICABLE.id();
+            case Location:
+                return WellKnownLocation.NOT_APPLICABLE.id();
+            case Product:
+                return WellKnownProduct.NOT_APPLICABLE.id();
+            case Relationship:
+                return WellKnownRelationship.NOT_APPLICABLE.id();
+            case StatusCode:
+                return WellKnownStatusCode.NOT_APPLICABLE.id();
+            case Unit:
+                return WellKnownUnit.NOT_APPLICABLE.id();
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
     private List<ProtocolRecord> getProtocolsMatching(JobRecord job) {
         return model.create()
                     .selectFrom(PROTOCOL)
@@ -1552,6 +1533,48 @@ public class JobModelImpl implements JobModel {
                     .and(PROTOCOL.DELIVER_FROM.equal(job.getDeliverFrom()))
                     .and(PROTOCOL.ASSIGN_TO.equal(job.getAssignTo()))
                     .fetch();
+    }
+
+    private UUID getSameId(ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return WellKnownAgency.SAME.id();
+            case Attribute:
+                return WellKnownAttribute.SAME.id();
+            case Interval:
+                return WellKnownInterval.SAME.id();
+            case Location:
+                return WellKnownLocation.SAME.id();
+            case Product:
+                return WellKnownProduct.SAME.id();
+            case Relationship:
+                return WellKnownRelationship.SAME.id();
+            case StatusCode:
+                return WellKnownStatusCode.SAME.id();
+            case Unit:
+                return WellKnownUnit.SAME.id();
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Do the work of matching protocols to networks defined by jobs and
+     * metaprocols.
+     *
+     * @param metaprotocol
+     * @param job
+     * @return
+     */
+
+    private SelectConditionStep<Record1<UUID>> inferenceSubQuery(UUID classifier,
+                                                                 UUID classification) {
+        return model.create()
+                    .select(EXISTENTIAL_NETWORK.CHILD)
+                    .from(EXISTENTIAL_NETWORK)
+                    .where(EXISTENTIAL_NETWORK.PARENT.equal(classification))
+                    .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(classifier));
     }
 
     private boolean isTerminalState(UUID status, UUID service) {

@@ -35,7 +35,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,7 +92,7 @@ public class Animations extends DefaultRecordListener {
     private final Set<ChildSequencingAuthorizationRecord>     childSequences     = new HashSet<>();
     private final Inference                                   inference;
     private boolean                                           inferNetwork;
-    private final Set<JobRecord>                              jobs               = new LinkedHashSet<>();
+    private final List<JobRecord>                             jobs               = new ArrayList<>();
     private final Model                                       model;
     private final Set<Product>                                modifiedServices   = new HashSet<>();
     private final Set<ParentSequencingAuthorizationRecord>    parentSequences    = new HashSet<>();
@@ -136,7 +135,8 @@ public class Animations extends DefaultRecordListener {
         Set<JobRecord> processed = new HashSet<>(jobs.size());
         while (!jobs.isEmpty()) {
             if (cycles > MAX_JOB_PROCESSING) {
-                throw new IllegalStateException("Processing more inserted job cycles than the maximum number of itterations allowed");
+                throw new IllegalStateException(String.format("Exceeded the maximum number of job cycles allowed [%s]",
+                                                              MAX_JOB_PROCESSING));
             }
             cycles++;
             List<JobRecord> inserted = new ArrayList<>(jobs);

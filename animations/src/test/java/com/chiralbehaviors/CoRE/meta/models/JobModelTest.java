@@ -150,6 +150,8 @@ public class JobModelTest extends AbstractModelTest {
         job.update();
         jobModel.changeStatus(job, startState, "transition during test");
 
+        model.flush();
+
         JobRecord j = model.create()
                            .selectFrom(JOB)
                            .where(JOB.SERVICE.equal(shipping.getId()))
@@ -176,6 +178,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
+        model.flush();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -461,7 +464,7 @@ public class JobModelTest extends AbstractModelTest {
         children = model.getJobModel()
                         .getAllChildren(push);
         assertEquals(1, children.size());
-        assertEquals(shovingMe, push.getStatus());
+        assertEquals(shovingMe.getId(), push.getStatus());
     }
 
     @Test
@@ -576,6 +579,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
+        model.flush();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -603,6 +607,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
+        model.flush();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -620,6 +625,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(creditCheck, scenario.getCompleted(),
                               "transition during test");
+        model.flush();
         JobRecord pick = model.create()
                               .selectFrom(JOB)
                               .where(JOB.SERVICE.equal(scenario.getPick()
@@ -655,6 +661,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(fee, scenario.getCompleted(),
                               "transition during test");
+        model.flush();
         JobRecord printPO = model.create()
                                  .selectFrom(JOB)
                                  .where(JOB.SERVICE.equal(scenario.getPrintPurchaseOrder()
@@ -665,6 +672,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(printPO, scenario.getCompleted(),
                               "transition during test");
+        model.flush();
         ship = model.create()
                     .selectFrom(JOB)
                     .where(JOB.SERVICE.equal(scenario.getShip()
@@ -675,6 +683,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         jobModel.changeStatus(ship, scenario.getCompleted(),
                               "transition during test");
+        model.flush();
         JobRecord deliver = model.create()
                                  .selectFrom(JOB)
                                  .where(JOB.SERVICE.equal(scenario.getDeliver()
@@ -755,6 +764,7 @@ public class JobModelTest extends AbstractModelTest {
         model.getJobModel()
              .changeStatus(job, kickingAss, "taking names");
 
+        model.flush();
         assertEquals("invalid status", takingNames.getName(), model.records()
                                                                    .existentialName(job.getStatus()));
     }
@@ -817,6 +827,7 @@ public class JobModelTest extends AbstractModelTest {
 
         JobRecord push = model.getJobModel()
                               .newInitializedJob(pushit);
+        model.flush();
 
         List<JobRecord> children = model.getJobModel()
                                         .getAllChildren(push);
@@ -831,6 +842,7 @@ public class JobModelTest extends AbstractModelTest {
         List<JobRecord> active = model.getJobModel()
                                       .getActiveSubJobsForService(push,
                                                                   shoveit);
+        model.flush();
         assertEquals(1, active.size());
         JobRecord shovingJob = active.get(0);
 

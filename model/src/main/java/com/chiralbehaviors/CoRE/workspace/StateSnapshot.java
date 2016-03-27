@@ -53,6 +53,7 @@ public class StateSnapshot extends WorkspaceSnapshot {
                                  records.addAll(create.selectFrom(EXISTENTIAL_NETWORK)
                                                       .where(EXISTENTIAL_NETWORK.INFERENCE.isNull())
                                                       .and(EXISTENTIAL_NETWORK.WORKSPACE.isNull())
+                                                      .and(EXISTENTIAL_NETWORK.ID.notIn(exlude))
                                                       .fetchInto(ExistentialNetworkRecord.class)
                                                       .stream()
                                                       .collect(Collectors.toList()));
@@ -76,7 +77,7 @@ public class StateSnapshot extends WorkspaceSnapshot {
     }
 
     public StateSnapshot(DSLContext create, Collection<UUID> exlude) {
-        selectNullClosure(create, exlude);
+        records = selectNullClosure(create, exlude);
     }
 
     @Override

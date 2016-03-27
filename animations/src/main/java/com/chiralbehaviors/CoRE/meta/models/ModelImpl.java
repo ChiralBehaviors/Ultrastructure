@@ -458,13 +458,22 @@ public class ModelImpl implements Model {
     private Collection<UUID> excludeThisSingleton() {
         List<UUID> excluded = new ArrayList<>();
         Agency instance = getCoreInstance().getRuleform();
-        excluded.add(phantasmModel.getImmediateLink(instance,
-                                                    kernel.getSingletonOf(),
+        excluded.add(instance.getId());
+        Relationship relationship = kernel.getSingletonOf();
+        excluded.add(phantasmModel.getImmediateLink(instance, relationship,
                                                     kernel.getCore())
                                   .getId());
         excluded.add(phantasmModel.getImmediateLink(kernel.getCore(),
-                                                    factory.resolve(kernel.getSingletonOf()
-                                                                          .getInverse()),
+                                                    factory.resolve(relationship.getInverse()),
+                                                    instance)
+                                  .getId());
+
+        relationship = kernel.getInstanceOf();
+        excluded.add(phantasmModel.getImmediateLink(instance, relationship,
+                                                    kernel.getCore())
+                                  .getId());
+        excluded.add(phantasmModel.getImmediateLink(kernel.getCore(),
+                                                    factory.resolve(relationship.getInverse()),
                                                     instance)
                                   .getId());
         return excluded;

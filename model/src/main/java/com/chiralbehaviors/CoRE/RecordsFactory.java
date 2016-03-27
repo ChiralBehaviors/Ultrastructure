@@ -93,8 +93,8 @@ public interface RecordsFactory {
     static NoArgGenerator GENERATOR    = Generators.timeBasedGenerator();
     static String         SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    static void clear(DSLContext em) throws SQLException {
-        em.transaction(c -> {
+    static void clear(DSLContext create) throws SQLException {
+        create.transaction(c -> {
             Connection connection = c.connectionProvider()
                                      .acquire();
             ResultSet r = connection.createStatement()

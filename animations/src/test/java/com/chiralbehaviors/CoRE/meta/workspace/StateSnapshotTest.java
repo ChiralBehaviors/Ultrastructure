@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -34,7 +35,9 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,39 +50,45 @@ public class StateSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testSnap() throws Exception {
-        UUID tvsFrank;
-        CoreUser frank = model.construct(CoreUser.class, "frank", "TV's frank");
-        tvsFrank = frank.getRuleform()
-                  .getId();
-        WorkspaceSnapshot snap = model.snapshot();
-        try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
-            snap.serializeTo(os);
-        }
+        // Need to commit for snap state testing
         model.create()
              .configuration()
              .connectionProvider()
              .acquire()
-             .rollback();
+             .commit();
+        UUID tvsFrank;
+        try (Model myModel = new ModelImpl(newConnection())) {
+            CoreUser frank = myModel.construct(CoreUser.class, "frank",
+                                               "TV's frank");
+            tvsFrank = frank.getRuleform()
+                            .getId();
+            WorkspaceSnapshot snap = myModel.snapshot();
+            assertEquals(6, snap.getRecords()
+                                .size());
+            try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
+                snap.serializeTo(os);
+            }
+        }
+
+        try (Model myModel = new ModelImpl(newConnection())) {
+            Agency frankenstein = myModel.records()
+                                         .resolve(tvsFrank);
+            assertNull("Shouldn't be alive", frankenstein);
+
+            StateSnapshot snapshot;
+            try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
+                snapshot = new ObjectMapper().registerModule(new CoREModule())
+                                             .readValue(os,
+                                                        StateSnapshot.class);
+            }
+            snapshot.load(myModel.create());
+            frankenstein = myModel.records()
+                                  .resolve(tvsFrank);
+            assertNotNull("Should be found", frankenstein);
+        }
+
         Agency frankenstein = model.records()
                                    .resolve(tvsFrank);
-        assertNull("Shouldn't be alive", frankenstein);
-
-        StateSnapshot snapshot;
-        try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
-            snapshot = new ObjectMapper().registerModule(new CoREModule())
-                                         .readValue(os, StateSnapshot.class);
-        }
-        snapshot.load(model.create());
-        frankenstein = model.records()
-                            .resolve(tvsFrank);
-        assertNotNull("Should be found", frankenstein);
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .rollback();
-        frankenstein = model.records()
-                            .resolve(tvsFrank);
         assertNull("Shouldn't be alive", frankenstein);
     }
 }

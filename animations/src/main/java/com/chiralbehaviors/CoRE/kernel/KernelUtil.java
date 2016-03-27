@@ -67,7 +67,8 @@ public class KernelUtil {
         model.apply(CoreInstance.class, core);
     }
 
-    public static void loadKernel(DSLContext create) throws IOException {
+    public static void loadKernel(DSLContext create) throws IOException,
+                                                     SQLException {
         WorkspaceSnapshot.load(create, KERNEL_LOADS);
     }
 }

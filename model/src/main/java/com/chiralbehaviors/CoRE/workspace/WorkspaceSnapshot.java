@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.sql.BatchUpdateException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.UpdatableRecord;
+import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +70,8 @@ public class WorkspaceSnapshot {
     }
 
     public static void load(DSLContext create,
-                            List<URL> resources) throws IOException {
+                            List<URL> resources) throws IOException,
+                                                 SQLException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule(create));
         for (URL resource : resources) {
@@ -84,8 +88,8 @@ public class WorkspaceSnapshot {
         }
     }
 
-    public static void load(DSLContext create,
-                            URL resource) throws IOException {
+    public static void load(DSLContext create, URL resource) throws IOException,
+                                                             SQLException {
         load(create, Collections.singletonList(resource));
     }
 
@@ -174,10 +178,15 @@ public class WorkspaceSnapshot {
         return records;
     }
 
-    public void load(DSLContext create) {
+    public void load(DSLContext create) throws SQLException {
         loadDefiningProduct(create);
-        create.batchInsert(records)
-              .execute();
+        try {
+            create.batchInsert(records)
+                  .execute();
+        } catch (DataAccessException e) {
+            BatchUpdateException be = (BatchUpdateException) e.getCause();
+            throw be.getNextException();
+        }
     }
 
     public void serializeTo(OutputStream os) throws JsonGenerationException,

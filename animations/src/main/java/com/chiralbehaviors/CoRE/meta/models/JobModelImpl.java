@@ -709,10 +709,12 @@ public class JobModelImpl implements JobModel {
         // First we try for protocols which match the current job
         List<ProtocolRecord> protocols = getProtocolsMatching(job);
         Map<ProtocolRecord, InferenceMap> matches = new LinkedHashMap<>();
-        log.trace("found {} protocol(s) matching {} | {}", protocols.size(),
-                  toString(job), protocols.stream()
-                                          .map(p -> toString(p))
-                                          .collect(Collectors.toList()));
+        if (log.isTraceEnabled()) {
+            log.trace("found {} protocol(s) matching {} | {}", protocols.size(),
+                      toString(job), protocols.stream()
+                                              .map(p -> toString(p))
+                                              .collect(Collectors.toList()));
+        }
         if (!protocols.isEmpty()) {
             protocols.stream()
                      .filter(p -> !matches.containsKey(p))
@@ -721,13 +723,21 @@ public class JobModelImpl implements JobModel {
         }
 
         List<MetaProtocolRecord> metaprotocols = getMetaprotocols(job);
-        log.trace("Found {} metaprotocol(s) matching {}", metaprotocols.size(),
-                  toString(job));
+        if (log.isTraceEnabled()) {
+            log.trace("Found {} metaprotocol(s) matching {}",
+                      metaprotocols.size(), toString(job));
+        }
         for (MetaProtocolRecord metaProtocol : metaprotocols) {
+            if (log.isTraceEnabled()) {
+                log.trace("Inferring for {} ", toString(job));
+            }
             Set<Entry<ProtocolRecord, InferenceMap>> infered = getProtocols(job,
                                                                             metaProtocol).entrySet();
-            log.trace("Inferred {} protocol(s) for {} using {}", infered.size(),
-                      toString(job), toString(metaProtocol));
+            if (log.isTraceEnabled()) {
+                log.trace("Inferred {} protocol(s) for {} using {}",
+                          infered.size(), toString(job),
+                          toString(metaProtocol));
+            }
             infered.stream()
                    .filter(t -> !matches.containsKey(t.getKey()))
                    .forEach(t -> matches.put(t.getKey(), t.getValue()));

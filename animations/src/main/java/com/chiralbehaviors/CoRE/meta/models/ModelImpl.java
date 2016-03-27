@@ -102,7 +102,7 @@ public class ModelImpl implements Model {
         Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_9_5);
         Settings settings = new Settings();
         settings.setExecuteWithOptimisticLocking(true);
-        settings.withRenderFormatted(false);
+        settings.withRenderFormatted(true);
         configuration.set(settings);
         return configuration;
     }

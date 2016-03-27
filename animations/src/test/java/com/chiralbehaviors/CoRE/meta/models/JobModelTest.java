@@ -184,8 +184,17 @@ public class JobModelTest extends AbstractModelTest {
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         model.flush();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
-        assertEquals(6, jobs.size());
+        assertEquals(jobs.stream()
+                         .map(j -> jobModel.toString(j))
+                         .collect(Collectors.toList())
+                         .toString(),
+                     6, jobs.size());
     }
 
     @Test
@@ -488,56 +497,79 @@ public class JobModelTest extends AbstractModelTest {
         Map<ProtocolRecord, InferenceMap> txfm = jobModel.getProtocols(job);
         assertEquals(2, txfm.size());
         List<ProtocolRecord> protocols = new ArrayList<>(txfm.keySet());
-        assertEquals(scenario.getDeliver(), protocols.get(0)
-                                                     .getService());
-        assertEquals(scenario.getDeliver(), protocols.get(1)
-                                                     .getService());
+        assertEquals(scenario.getDeliver()
+                             .getId(),
+                     protocols.get(0)
+                              .getService());
+        assertEquals(scenario.getDeliver()
+                             .getId(),
+                     protocols.get(1)
+                              .getService());
         assertEquals(model.getKernel()
-                          .getAnyAgency(),
+                          .getAnyAgency()
+                          .getId(),
                      protocols.get(0)
                               .getRequester());
         assertEquals(model.getKernel()
-                          .getAnyAgency(),
+                          .getAnyAgency()
+                          .getId(),
                      protocols.get(1)
                               .getRequester());
         assertEquals(model.getKernel()
-                          .getAnyProduct(),
+                          .getAnyProduct()
+                          .getId(),
                      protocols.get(0)
                               .getProduct());
         assertEquals(model.getKernel()
-                          .getAnyProduct(),
+                          .getAnyProduct()
+                          .getId(),
                      protocols.get(1)
                               .getProduct());
         assertEquals(model.getKernel()
-                          .getAnyLocation(),
+                          .getAnyLocation()
+                          .getId(),
                      protocols.get(0)
                               .getDeliverFrom());
         assertEquals(model.getKernel()
-                          .getAnyLocation(),
+                          .getAnyLocation()
+                          .getId(),
                      protocols.get(1)
                               .getDeliverFrom());
         assertEquals(model.getKernel()
-                          .getAnyLocation(),
+                          .getAnyLocation()
+                          .getId(),
                      protocols.get(0)
                               .getDeliverTo());
         assertEquals(model.getKernel()
-                          .getAnyLocation(),
+                          .getAnyLocation()
+                          .getId(),
                      protocols.get(1)
                               .getDeliverTo());
-        assertEquals(scenario.getFactory1Agency(), protocols.get(0)
-                                                            .getChildAssignTo());
-        assertEquals(scenario.getFactory1Agency(), protocols.get(1)
-                                                            .getChildAssignTo());
+        assertEquals(scenario.getFactory1Agency()
+                             .getId(),
+                     protocols.get(0)
+                              .getChildAssignTo());
+        assertEquals(scenario.getFactory1Agency()
+                             .getId(),
+                     protocols.get(1)
+                              .getChildAssignTo());
         if (protocols.get(0)
                      .getChildService()
-                     .equals(scenario.getPick())) {
-            assertEquals(scenario.getShip(), protocols.get(1)
-                                                      .getChildService());
+                     .equals(scenario.getPick()
+                                     .getId())) {
+            assertEquals(scenario.getShip()
+                                 .getId(),
+                         protocols.get(1)
+                                  .getChildService());
         } else {
-            assertEquals(scenario.getShip(), protocols.get(0)
-                                                      .getChildService());
-            assertEquals(scenario.getPick(), protocols.get(1)
-                                                      .getChildService());
+            assertEquals(scenario.getShip()
+                                 .getId(),
+                         protocols.get(0)
+                                  .getChildService());
+            assertEquals(scenario.getPick()
+                                 .getId(),
+                         protocols.get(1)
+                                  .getChildService());
         }
 
         job = model.getJobModel()
@@ -621,7 +653,9 @@ public class JobModelTest extends AbstractModelTest {
                                      .where(JOB.SERVICE.equal(scenario.getCheckCredit()
                                                                       .getId()))
                                      .fetchOne();
-        assertEquals(scenario.getAvailable(), creditCheck.getStatus());
+        assertEquals(scenario.getAvailable()
+                             .getId(),
+                     creditCheck.getStatus());
         jobModel.changeStatus(creditCheck, scenario.getActive(),
                               "transition during test");
         jobModel.changeStatus(creditCheck, scenario.getCompleted(),
@@ -632,7 +666,9 @@ public class JobModelTest extends AbstractModelTest {
                               .where(JOB.SERVICE.equal(scenario.getPick()
                                                                .getId()))
                               .fetchOne();
-        assertEquals(scenario.getAvailable(), pick.getStatus());
+        assertEquals(scenario.getAvailable()
+                             .getId(),
+                     pick.getStatus());
         jobModel.changeStatus(pick, scenario.getActive(),
                               "transition during test");
         jobModel.changeStatus(pick, scenario.getCompleted(),
@@ -651,7 +687,9 @@ public class JobModelTest extends AbstractModelTest {
                                                                                 .resolve(pick.getParent()),
                                                                            scenario.getShip());
         assertEquals(1, pickSiblings.size());
-        assertEquals(scenario.getWaitingOnPurchaseOrder(), ship.getStatus());
+        assertEquals(scenario.getWaitingOnPurchaseOrder()
+                             .getId(),
+                     ship.getStatus());
         JobRecord fee = model.create()
                              .selectFrom(JOB)
                              .where(JOB.SERVICE.equal(scenario.getFee()
@@ -668,7 +706,9 @@ public class JobModelTest extends AbstractModelTest {
                                  .where(JOB.SERVICE.equal(scenario.getPrintPurchaseOrder()
                                                                   .getId()))
                                  .fetchOne();
-        assertEquals(scenario.getAvailable(), printPO.getStatus());
+        assertEquals(scenario.getAvailable()
+                             .getId(),
+                     printPO.getStatus());
         jobModel.changeStatus(printPO, scenario.getActive(),
                               "transition during test");
         jobModel.changeStatus(printPO, scenario.getCompleted(),
@@ -679,7 +719,9 @@ public class JobModelTest extends AbstractModelTest {
                     .where(JOB.SERVICE.equal(scenario.getShip()
                                                      .getId()))
                     .fetchOne();
-        assertEquals(scenario.getAvailable(), ship.getStatus());
+        assertEquals(scenario.getAvailable()
+                             .getId(),
+                     ship.getStatus());
         jobModel.changeStatus(ship, scenario.getActive(),
                               "transition during test");
         jobModel.changeStatus(ship, scenario.getCompleted(),
@@ -690,7 +732,9 @@ public class JobModelTest extends AbstractModelTest {
                                  .where(JOB.SERVICE.equal(scenario.getDeliver()
                                                                   .getId()))
                                  .fetchOne();
-        assertEquals(scenario.getCompleted(), deliver.getStatus());
+        assertEquals(scenario.getCompleted()
+                             .getId(),
+                     deliver.getStatus());
     }
 
     public void testSelfSequencing() {

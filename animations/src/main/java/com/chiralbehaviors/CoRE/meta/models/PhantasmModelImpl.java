@@ -43,7 +43,6 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
-import org.jooq.exception.DataAccessException;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
@@ -874,11 +873,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         inverse.setParent(child);
         inverse.setRelationship(inverseR);
         inverse.setChild(parent);
-        try {
-            inverse.insert();
-        } catch (DataAccessException e) {
-            e.printStackTrace();
-        }
+        inverse.insert();
         return new Tuple<>(forward, inverse);
     }
 

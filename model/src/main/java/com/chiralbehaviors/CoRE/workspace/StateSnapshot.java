@@ -23,12 +23,14 @@ package com.chiralbehaviors.CoRE.workspace;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
-import org.jooq.TableRecord;
+import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
@@ -41,14 +43,9 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
  */
 public class StateSnapshot extends WorkspaceSnapshot {
 
-    public StateSnapshot() {
-    }
-
-    public StateSnapshot(DSLContext create, Collection<UUID> exlude) {
-        selectClosure(create, exlude);
-    }
-
-    private void selectClosure(DSLContext create, Collection<UUID> exlude) {
+    public static List<UpdatableRecord<? extends UpdatableRecord<?>>> selectNullClosure(DSLContext create,
+                                                                                        Collection<UUID> exlude) {
+        List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
                              if (t.equals(EXISTENTIAL_NETWORK)) {
@@ -68,10 +65,18 @@ public class StateSnapshot extends WorkspaceSnapshot {
                                                             .notIn(exlude))
                                                       .fetchInto(t.getRecordType())
                                                       .stream()
-                                                      .map(r -> (TableRecord<?>) r)
+                                                      .map(r -> (UpdatableRecord<?>) r)
                                                       .collect(Collectors.toList()));
                              }
                          });
+        return records;
+    }
+
+    public StateSnapshot() {
+    }
+
+    public StateSnapshot(DSLContext create, Collection<UUID> exlude) {
+        selectNullClosure(create, exlude);
     }
 
     @Override

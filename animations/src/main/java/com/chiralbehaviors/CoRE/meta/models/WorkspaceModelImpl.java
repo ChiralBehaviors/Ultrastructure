@@ -33,6 +33,7 @@ import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -112,6 +113,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
 
     @Override
     public void unload(Product definingProduct) {
-
+        model.create()
+             .batchDelete(WorkspaceSnapshot.selectWorkspaceClosure(model.create(),
+                                                                   definingProduct))
+             .execute();
     }
 }

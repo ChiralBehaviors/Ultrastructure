@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.io.IOException;
@@ -39,13 +38,12 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.TableRecord;
+import org.jooq.UpdatableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
@@ -91,8 +89,34 @@ public class WorkspaceSnapshot {
         load(create, Collections.singletonList(resource));
     }
 
-    protected Product                                     definingProduct;
-    protected List<TableRecord<? extends TableRecord<?>>> records = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public static List<UpdatableRecord<? extends UpdatableRecord<?>>> selectWorkspaceClosure(DSLContext create,
+                                                                                             Product definingProduct) {
+        List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
+        Ruleform.RULEFORM.getTables()
+                         .forEach(t -> {
+                             if (!t.equals(WORKSPACE_AUTHORIZATION)) {
+                                 records.addAll(create.selectDistinct(t.fields())
+                                                      .from(t)
+                                                      .join(WORKSPACE_AUTHORIZATION)
+                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                                                      .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                                      .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
+                                                      .fetchInto(t.getRecordType())
+                                                      .stream()
+                                                      .map(r -> (UpdatableRecord<?>) r)
+                                                      .collect(Collectors.toList()));
+                             }
+                         });
+        records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
+                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
+                             .fetch());
+        return records;
+    }
+
+    protected Product                                             definingProduct;
+
+    protected List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
 
     public WorkspaceSnapshot() {
         definingProduct = null;
@@ -100,7 +124,7 @@ public class WorkspaceSnapshot {
 
     public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
         this.definingProduct = definingProduct;
-        selectClosure(create);
+        records = selectWorkspaceClosure(create, definingProduct);
     }
 
     /**
@@ -133,7 +157,7 @@ public class WorkspaceSnapshot {
             exclude.add((UUID) record.getValue("id"));
         }
 
-        for (TableRecord<? extends TableRecord<?>> record : records) {
+        for (UpdatableRecord<? extends UpdatableRecord<?>> record : records) {
             UUID id = (UUID) record.getValue("id");
             if (!exclude.contains(id)) {
                 delta.records.add(record);
@@ -146,7 +170,7 @@ public class WorkspaceSnapshot {
         return definingProduct;
     }
 
-    public List<TableRecord<? extends TableRecord<?>>> getRecords() {
+    public List<UpdatableRecord<? extends UpdatableRecord<?>>> getRecords() {
         return records;
     }
 
@@ -154,6 +178,14 @@ public class WorkspaceSnapshot {
         loadDefiningProduct(create);
         create.batchInsert(records)
               .execute();
+    }
+
+    public void serializeTo(OutputStream os) throws JsonGenerationException,
+                                             JsonMappingException, IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(os, this);
     }
 
     protected void loadDefiningProduct(DSLContext create) {
@@ -171,48 +203,5 @@ public class WorkspaceSnapshot {
                      definingProduct.getVersion());
             create.executeUpdate(definingProduct);
         }
-    }
-
-    public void serializeTo(OutputStream os) throws JsonGenerationException,
-                                             JsonMappingException, IOException {
-        ObjectMapper objMapper = new ObjectMapper();
-        objMapper.registerModule(new CoREModule());
-        objMapper.writerWithDefaultPrettyPrinter()
-                 .writeValue(os, this);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void selectClosure(DSLContext create) {
-        Ruleform.RULEFORM.getTables()
-                         .forEach(t -> {
-                             if (t.equals(EXISTENTIAL_NETWORK)) {
-                                 // Workspaces do not contain network inferences
-                                 records.addAll(create.selectDistinct(EXISTENTIAL_NETWORK.fields())
-                                                      .from(EXISTENTIAL_NETWORK)
-                                                      .join(WORKSPACE_AUTHORIZATION)
-                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
-                                                      .and(EXISTENTIAL_NETWORK.ID.notEqual(definingProduct.getId()))
-                                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                                      .and(WORKSPACE_AUTHORIZATION.ID.equal(EXISTENTIAL_NETWORK.WORKSPACE))
-                                                      .fetchInto(ExistentialNetworkRecord.class)
-                                                      .stream()
-                                                      .map(r -> (TableRecord<?>) r)
-                                                      .collect(Collectors.toList()));
-                             } else if (!t.equals(WORKSPACE_AUTHORIZATION)) {
-                                 records.addAll(create.selectDistinct(t.fields())
-                                                      .from(t)
-                                                      .join(WORKSPACE_AUTHORIZATION)
-                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
-                                                      .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
-                                                      .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
-                                                      .fetchInto(t.getRecordType())
-                                                      .stream()
-                                                      .map(r -> (TableRecord<?>) r)
-                                                      .collect(Collectors.toList()));
-                             }
-                         });
-        records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
-                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
-                             .fetch());
     }
 }

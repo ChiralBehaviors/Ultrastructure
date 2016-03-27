@@ -52,6 +52,11 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testDeltaGeneration() throws Exception {
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         File version1File = new File(TARGET_CLASSES_THING_1_JSON);
         File version2File = new File(TARGET_CLASSES_THING_2_JSON);
         File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
@@ -70,14 +75,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
-
         }
 
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
         try (Model myModel = new ModelImpl(newConnection())) {
             WorkspaceSnapshot.load(myModel.create(),
                                    Arrays.asList(version1File.toURI()
@@ -146,7 +145,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
     }
 
-    // @Test
+    @Test
     public void testUnload() throws Exception {
         WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                                 model);
@@ -160,7 +159,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         try {
             assertNull(model.wrap(Thing1.class, thing1.getRuleform()));
             fail("Thing ontology not unloaded");
-        } catch (ClassCastException e) {
+        } catch (IllegalStateException e) {
             // expected
         }
     }

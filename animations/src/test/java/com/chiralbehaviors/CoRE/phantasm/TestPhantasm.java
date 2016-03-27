@@ -296,13 +296,6 @@ public class TestPhantasm extends AbstractModelTest {
         List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
         aFewOfMyFavoriteThings.add(thing3a);
         aFewOfMyFavoriteThings.add(thing3b);
-
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
-
         thing2.addThing3s(aFewOfMyFavoriteThings);
         assertEquals(2, thing2.getThing3s()
                               .size());

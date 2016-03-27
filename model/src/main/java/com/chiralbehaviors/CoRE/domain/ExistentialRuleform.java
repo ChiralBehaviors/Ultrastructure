@@ -34,8 +34,13 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  */
 @SuppressWarnings("rawtypes")
 public interface ExistentialRuleform extends Phantasm {
+    public int delete();
 
     public ExistentialDomain getDomain();
+
+    public int insert();
+
+    public int update();
 
     /**
      * Yes, this is really intentional

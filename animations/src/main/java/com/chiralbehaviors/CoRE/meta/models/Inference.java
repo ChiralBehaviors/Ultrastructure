@@ -235,6 +235,7 @@ public interface Inference {
     default void generateInverses() {
         if (true)
             return;
+        @SuppressWarnings("unused")
         long then = System.currentTimeMillis();
         ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
         ExistentialNetwork net = EXISTENTIAL_NETWORK.as("et");

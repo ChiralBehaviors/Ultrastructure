@@ -351,7 +351,7 @@ public class JobModelTest extends AbstractModelTest {
         List<JobRecord> jobs = model.getJobModel()
                                     .insert(order, protocols.get(0));
         assertEquals(3, jobs.size());
-        jobModel.changeStatus(order, scenario.getAvailable(), null);
+        jobModel.changeStatus(order, scenario.getAvailable(), "transitions");
 
         model.create()
              .configuration()
@@ -459,7 +459,7 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(0, children.size());
 
         model.getJobModel()
-             .changeStatus(push, pushingMe, null);
+             .changeStatus(push, pushingMe, "transitions");
         push.setProduct(pushit.getId());
         model.flush();
         children = model.getJobModel()
@@ -724,9 +724,9 @@ public class JobModelTest extends AbstractModelTest {
                              .newInitializedJob(service);
         job.insert();
         model.getJobModel()
-             .changeStatus(job, a, null);
+             .changeStatus(job, a, "transitions");
         model.getJobModel()
-             .changeStatus(job, b, null);
+             .changeStatus(job, b, "transitions");
 
         assertEquals(c, job.getStatus());
 
@@ -836,14 +836,14 @@ public class JobModelTest extends AbstractModelTest {
 
         for (JobRecord j : children) {
             model.getJobModel()
-                 .changeStatus(j, pushingMe, null);
+                 .changeStatus(j, pushingMe, "transitions");
         }
         model.getJobModel()
-             .changeStatus(push, pushingMe, null);
+             .changeStatus(push, pushingMe, "transitions");
+        model.flush();
         List<JobRecord> active = model.getJobModel()
                                       .getActiveSubJobsForService(push,
                                                                   shoveit);
-        model.flush();
         assertEquals(1, active.size());
         JobRecord shovingJob = active.get(0);
 

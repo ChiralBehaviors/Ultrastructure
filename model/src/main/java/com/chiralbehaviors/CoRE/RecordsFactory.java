@@ -379,6 +379,7 @@ public interface RecordsFactory {
         JobRecord record = create().newRecord(JOB);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
+        record.setNextChronSeq(0);
         return record;
     }
 
@@ -394,7 +395,7 @@ public interface RecordsFactory {
         record.setNotes(notes);
         record.setAssignTo(job.getAssignTo());
         record.setDeliverFrom(job.getDeliverFrom());
-        record.setDeliverTo(record.getDeliverTo());
+        record.setDeliverTo(job.getDeliverTo());
         record.setJob(job.getId());
         record.setProduct(job.getProduct());
         record.setQuantity(job.getQuantity());
@@ -402,7 +403,8 @@ public interface RecordsFactory {
         record.setRequester(job.getRequester());
         record.setStatus(job.getService());
         record.setUpdatedBy(job.getUpdatedBy());
-        record.setSequenceNumber(job.getVersion());
+        record.setService(job.getService());
+        record.setUpdateDate(new Timestamp(System.currentTimeMillis()));
         return record;
 
     }

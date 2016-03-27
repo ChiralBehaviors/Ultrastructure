@@ -58,6 +58,7 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectQuery;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,15 +156,7 @@ public class JobModelImpl implements JobModel {
                                   String notes) {
         UUID oldStatus = job.getStatus();
         if (oldStatus != null && oldStatus.equals(newStatus.getId())) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("JobRecord status is already set to desired status %s",
-                                        toString(job)));
-            }
             return job;
-        }
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Changing status of %s to [%s] notes: %s",
-                                    toString(job), newStatus.getName(), notes));
         }
         job.setStatus(newStatus.getId());
         log(job, notes);
@@ -346,31 +339,15 @@ public class JobModelImpl implements JobModel {
         List<JobRecord> jobs = new ArrayList<JobRecord>();
         for (Entry<ProtocolRecord, InferenceMap> txfm : protocols.entrySet()) {
             ProtocolRecord protocol = txfm.getKey();
-            boolean exists = !model.create()
-                                   .selectCount()
-                                   .from(JOB)
-                                   .where(JOB.PARENT.equal(job.getParent()))
-                                   .and(JOB.PROTOCOL.equal(job.getProtocol()))
-                                   .fetchOne()
-                                   .value1()
-                                   .equals(ZERO);
-            if (!exists) {
-                jobs.addAll(insert(job, protocol, txfm.getValue()));
-            } else {
-                if (log.isInfoEnabled()) {
-                    log.info(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
-                                           toString(job), toString(protocol)));
-                }
-            }
+            jobs.addAll(insert(job, protocol, txfm.getValue()));
         }
         return jobs;
     }
 
     @Override
     public void generateImplicitJobsForExplicitJobs(JobRecord job) {
-        StatusCode statusCode = model.records()
-                                     .resolve(job.getStatus());
-        if (statusCode.getPropagateChildren()) {
+        if (((StatusCode) model.records()
+                               .resolve(job.getStatus())).getPropagateChildren()) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Generating implicit jobs for %s",
                                         toString(job)));
@@ -974,44 +951,6 @@ public class JobModelImpl implements JobModel {
         return insert(parent, protocol, NO_TRANSFORMATION);
     }
 
-    public List<JobRecord> insert(JobRecord parent, ProtocolRecord protocol,
-                                  InferenceMap txfm) {
-        if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
-            throw new IllegalStateException(String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
-                                                          toString(parent),
-                                                          toString(protocol)));
-        }
-        List<JobRecord> jobs = new ArrayList<>();
-        if (protocol.getChildrenRelationship()
-                    .equals(kernel.getNotApplicableRelationship()
-                                  .getId())) {
-            JobRecord job = model.records()
-                                 .newJob();
-            insert(job, parent, protocol, txfm, model.records()
-                                                     .resolve(resolve(txfm.product,
-                                                                      model.records()
-                                                                           .resolve(protocol.getProduct()),
-                                                                      model.records()
-                                                                           .resolve(parent.getProduct()),
-                                                                      model.records()
-                                                                           .resolve(protocol.getChildProduct()))));
-            jobs.add(job);
-        } else {
-            for (ExistentialRuleform child : model.getPhantasmModel()
-                                                  .getChildren(model.records()
-                                                                    .resolve(parent.getProduct()),
-                                                               model.records()
-                                                                    .resolve(protocol.getChildrenRelationship()),
-                                                               ExistentialDomain.Product)) {
-                JobRecord job = model.records()
-                                     .newJob();
-                insert(job, parent, protocol, txfm, (Product) child);
-                jobs.add(job);
-            }
-        }
-        return jobs;
-    }
-
     @Override
     public boolean isActive(JobRecord job) {
         return !isTerminalState(job.getStatus(), job.getService());
@@ -1028,8 +967,21 @@ public class JobModelImpl implements JobModel {
             job.setStatus(kernel.getUnset()
                                 .getId()); // Prophylactic against recursive error disease
         }
-        model.records()
-             .newJobChronology(job, notes);
+        Integer currentGrain = model.create()
+                                    .select(DSL.max(JOB_CHRONOLOGY.SEQUENCE_NUMBER))
+                                    .from(JOB_CHRONOLOGY)
+                                    .where(JOB_CHRONOLOGY.JOB.equal(job.getId()))
+                                    .fetchOne()
+                                    .value1();
+        JobChronologyRecord sandsOTime = model.records()
+                                              .newJobChronology(job, notes);
+        sandsOTime.setSequenceNumber(currentGrain == null ? 0
+                                                          : currentGrain + 1);
+        sandsOTime.insert();
+        if (log.isTraceEnabled()) {
+            log.trace("logged: {}", toString(sandsOTime));
+        }
+
     }
 
     public List<ProtocolRecord> match(MetaProtocolRecord metaProtocol,
@@ -1199,7 +1151,8 @@ public class JobModelImpl implements JobModel {
 
         for (SelfSequencingAuthorizationRecord seq : getSelfActions(job)) {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing %s", toString(seq)));
+                log.trace(String.format("Processing %s for %s", toString(seq),
+                                        toString(job)));
             }
             try {
                 ensureNextStateIsValid(job, model.records()
@@ -1245,9 +1198,10 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobChronologyRecord r) {
-        return String.format("JobChronology[{%s:%s} %s:%s:%s:%s:%s:%s]",
-                             r.getSequenceNumber(), r.getJob(), model.records()
-                                                                     .existentialName(r.getService()),
+        return String.format("JobChronology[%s {%s:%s} %s:%s:%s:%s:%s]",
+                             r.getNotes(), r.getSequenceNumber(), r.getJob(),
+                             model.records()
+                                  .existentialName(r.getService()),
                              model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
@@ -1577,6 +1531,44 @@ public class JobModelImpl implements JobModel {
                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(classifier));
     }
 
+    private List<JobRecord> insert(JobRecord parent, ProtocolRecord protocol,
+                                   InferenceMap txfm) {
+        if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
+            throw new IllegalStateException(String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
+                                                          toString(parent),
+                                                          toString(protocol)));
+        }
+        List<JobRecord> jobs = new ArrayList<>();
+        if (protocol.getChildrenRelationship()
+                    .equals(kernel.getNotApplicableRelationship()
+                                  .getId())) {
+            JobRecord job = model.records()
+                                 .newJob();
+            insert(job, parent, protocol, txfm, model.records()
+                                                     .resolve(resolve(txfm.product,
+                                                                      model.records()
+                                                                           .resolve(protocol.getProduct()),
+                                                                      model.records()
+                                                                           .resolve(parent.getProduct()),
+                                                                      model.records()
+                                                                           .resolve(protocol.getChildProduct()))));
+            jobs.add(job);
+        } else {
+            for (ExistentialRuleform child : model.getPhantasmModel()
+                                                  .getChildren(model.records()
+                                                                    .resolve(parent.getProduct()),
+                                                               model.records()
+                                                                    .resolve(protocol.getChildrenRelationship()),
+                                                               ExistentialDomain.Product)) {
+                JobRecord job = model.records()
+                                     .newJob();
+                insert(job, parent, protocol, txfm, (Product) child);
+                jobs.add(job);
+            }
+        }
+        return jobs;
+    }
+
     private boolean isTerminalState(UUID status, UUID service) {
         return ZERO.equals(model.create()
                                 .selectCount()
@@ -1852,7 +1844,6 @@ public class JobModelImpl implements JobModel {
         child.setProduct(product.getId());
         copyIntoChild(parent, protocol, txfm, child);
         child.insert();
-        log(child, String.format("Inserted from protocol match"));
         if (log.isTraceEnabled()) {
             log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
                                     toString(child), toString(protocol), txfm));

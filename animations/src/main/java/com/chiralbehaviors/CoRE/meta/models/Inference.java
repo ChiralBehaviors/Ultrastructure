@@ -233,12 +233,11 @@ public interface Inference {
     }
 
     default void generateInverses() {
-        if (true)
-            return;
-        @SuppressWarnings("unused")
+        //        if (true)
+        //            return;
         long then = System.currentTimeMillis();
         ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
-        ExistentialNetwork net = EXISTENTIAL_NETWORK.as("et");
+        ExistentialNetwork net = EXISTENTIAL_NETWORK.as("net");
         Existential rel = EXISTENTIAL.as("rel");
 
         int inverses = create().insertInto(EXISTENTIAL_NETWORK,
@@ -269,12 +268,13 @@ public interface Inference {
                                                .leftOuterJoin(exist)
                                                .on(net.field(EXISTENTIAL_NETWORK.CHILD)
                                                       .equal(exist.field(EXISTENTIAL_NETWORK.PARENT)))
-                                               .and(net.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                               .and(rel.field(EXISTENTIAL.INVERSE)
                                                        .equal(exist.field(EXISTENTIAL_NETWORK.RELATIONSHIP)))
                                                .and(net.field(EXISTENTIAL_NETWORK.PARENT)
                                                        .equal(exist.field(EXISTENTIAL_NETWORK.CHILD)))
                                                .where(exist.field(EXISTENTIAL_NETWORK.ID)
                                                            .isNull()))
+
                                .execute();
         if (log.isTraceEnabled()) {
             log.trace(String.format("created %s inverse rules in %s ms",

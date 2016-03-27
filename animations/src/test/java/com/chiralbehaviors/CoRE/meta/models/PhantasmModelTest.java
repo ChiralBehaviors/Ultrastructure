@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -327,20 +328,49 @@ public class PhantasmModelTest extends AbstractModelTest {
     @Test
     public void testDeduction() throws Exception {
 
-        Relationship a = model.records()
-                              .newRelationship("a", "a", "a'", "a'").a;
-        Relationship b = model.records()
-                              .newRelationship("b", "b", "b'", "b'").a;
-        Relationship c = model.records()
-                              .newRelationship("c", "c", "c'", "c'").a;
-        Relationship d = model.records()
-                              .newRelationship("d", "d", "d'", "d'").a;
-        Relationship e = model.records()
-                              .newRelationship("e", "e", "e'", "e'").a;
-        Relationship f = model.records()
-                              .newRelationship("f", "f", "f'", "f'").a;
-        Relationship g = model.records()
-                              .newRelationship("g", "g", "g'", "g'").a;
+        Tuple<Relationship, Relationship> rels = model.records()
+                                                      .newRelationship("a", "a",
+                                                                       "a'",
+                                                                       "a'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship a = rels.a;
+
+        rels = model.records()
+                    .newRelationship("b", "b", "b'", "b'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship b = rels.a;
+
+        rels = model.records()
+                    .newRelationship("c", "c", "c'", "c'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship c = rels.a;
+
+        rels = model.records()
+                    .newRelationship("d", "d", "d'", "d'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship d = rels.a;
+
+        rels = model.records()
+                    .newRelationship("e", "e", "e'", "e'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship e = rels.a;
+
+        rels = model.records()
+                    .newRelationship("f", "f", "f'", "f'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship f = rels.a;
+
+        rels = model.records()
+                    .newRelationship("g", "g", "g'", "g'");
+        rels.a.insert();
+        rels.b.insert();
+        Relationship g = rels.a;
 
         NetworkInferenceRecord aIsB = model.records()
                                            .newNetworkInference(a, b, a);
@@ -415,6 +445,11 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                  .map(r -> r.getName())
                                                  .collect(Collectors.toList())),
                      7, children.size());
+
+        List<ExistentialNetworkRecord> childrenLinks = model.getPhantasmModel()
+                                                            .getChildrenLinks(A,
+                                                                              a);
+        assertEquals(7, childrenLinks.size());
     }
 
     @Test

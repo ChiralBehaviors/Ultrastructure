@@ -251,6 +251,15 @@ public interface PhantasmModel {
                                           Relationship relationship,
                                           ExistentialDomain domain);
 
+    /**
+     *
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
+                                                    Relationship relationship);
+
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
 

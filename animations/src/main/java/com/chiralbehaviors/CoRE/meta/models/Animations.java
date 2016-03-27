@@ -153,6 +153,10 @@ public class Animations extends DefaultRecordListener {
         return model;
     }
 
+    public void inferNetworks() {
+        inferNetwork = true;
+    }
+
     @Override
     public void insertEnd(RecordContext ctx) {
         afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
@@ -395,9 +399,5 @@ public class Animations extends DefaultRecordListener {
                 throw new TriggerException("Invalid sequence", e);
             }
         }
-    }
-
-    public void inferNetworks() {
-        inference.propagate();
     }
 }

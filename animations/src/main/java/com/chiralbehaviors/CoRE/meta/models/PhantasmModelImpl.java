@@ -530,6 +530,16 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
+                                                           Relationship relationship) {
+
+        return create.selectFrom(EXISTENTIAL_NETWORK)
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                     .fetch();
+    }
+
+    @Override
     public FacetRecord getFacetDeclaration(Relationship classifier,
                                            ExistentialRuleform classification) {
         return create.selectFrom(FACET)

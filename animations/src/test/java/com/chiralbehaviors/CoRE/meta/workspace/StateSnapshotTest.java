@@ -47,14 +47,13 @@ public class StateSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testSnap() throws Exception {
-        UUID id;
+        UUID tvsFrank;
         CoreUser frank = model.construct(CoreUser.class, "frank", "TV's frank");
-        id = frank.getRuleform()
+        tvsFrank = frank.getRuleform()
                   .getId();
         WorkspaceSnapshot snap = model.snapshot();
         try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
-            new ObjectMapper().registerModule(new CoREModule())
-                              .writeValue(os, snap);
+            snap.serializeTo(os);
         }
         model.create()
              .configuration()
@@ -62,7 +61,7 @@ public class StateSnapshotTest extends AbstractModelTest {
              .acquire()
              .rollback();
         Agency frankenstein = model.records()
-                                   .resolve(id);
+                                   .resolve(tvsFrank);
         assertNull("Shouldn't be alive", frankenstein);
 
         StateSnapshot snapshot;
@@ -72,7 +71,7 @@ public class StateSnapshotTest extends AbstractModelTest {
         }
         snapshot.load(model.create());
         frankenstein = model.records()
-                            .resolve(id);
+                            .resolve(tvsFrank);
         assertNotNull("Should be found", frankenstein);
         model.create()
              .configuration()
@@ -80,7 +79,7 @@ public class StateSnapshotTest extends AbstractModelTest {
              .acquire()
              .rollback();
         frankenstein = model.records()
-                            .resolve(id);
+                            .resolve(tvsFrank);
         assertNull("Shouldn't be alive", frankenstein);
     }
 }

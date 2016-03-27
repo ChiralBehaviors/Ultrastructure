@@ -20,9 +20,9 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,6 +31,7 @@ import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 
 /**
  * Every category must have its null
@@ -44,14 +45,21 @@ public class StateSnapshot extends WorkspaceSnapshot {
     }
 
     public StateSnapshot(DSLContext create, Collection<UUID> exlude) {
-        records = new ArrayList<>();
-        loadFromDb(create, exlude);
+        selectClosure(create, exlude);
     }
 
-    private void loadFromDb(DSLContext create, Collection<UUID> exlude) {
+    private void selectClosure(DSLContext create, Collection<UUID> exlude) {
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
-                             if (!t.equals(WORKSPACE_AUTHORIZATION)) {
+                             if (t.equals(EXISTENTIAL_NETWORK)) {
+                                 // Snapshots do not contain network inferences
+                                 records.addAll(create.selectFrom(EXISTENTIAL_NETWORK)
+                                                      .where(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                      .and(EXISTENTIAL_NETWORK.WORKSPACE.isNull())
+                                                      .fetchInto(ExistentialNetworkRecord.class)
+                                                      .stream()
+                                                      .collect(Collectors.toList()));
+                             } else if (!t.equals(WORKSPACE_AUTHORIZATION)) {
                                  records.addAll(create.selectDistinct(t.fields())
                                                       .from(t)
                                                       .where(t.field("workspace")

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 
@@ -34,6 +35,7 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.NetworkInference;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -231,9 +233,12 @@ public interface Inference {
     }
 
     default void generateInverses() {
+        if (true)
+            return;
         long then = System.currentTimeMillis();
         ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
         ExistentialNetwork net = EXISTENTIAL_NETWORK.as("et");
+        Existential rel = EXISTENTIAL.as("rel");
 
         int inverses = create().insertInto(EXISTENTIAL_NETWORK,
                                            EXISTENTIAL_NETWORK.ID,
@@ -247,7 +252,7 @@ public interface Inference {
                                            EXISTENTIAL_NETWORK.VERSION)
                                .select(create().select(GENERATE_UUID,
                                                        net.field(EXISTENTIAL_NETWORK.CHILD),
-                                                       net.field(EXISTENTIAL_NETWORK.RELATIONSHIP),
+                                                       rel.field(EXISTENTIAL.INVERSE),
                                                        net.field(EXISTENTIAL_NETWORK.PARENT),
                                                        net.field(EXISTENTIAL_NETWORK.INFERENCE),
                                                        net.field(EXISTENTIAL_NETWORK.PREMISE1),
@@ -257,6 +262,9 @@ public interface Inference {
                                                                       .getId()),
                                                        DSL.val(0))
                                                .from(net)
+                                               .join(rel)
+                                               .on(net.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                                      .equal(rel.field(EXISTENTIAL.ID)))
                                                .leftOuterJoin(exist)
                                                .on(net.field(EXISTENTIAL_NETWORK.CHILD)
                                                       .equal(exist.field(EXISTENTIAL_NETWORK.PARENT)))
@@ -292,7 +300,8 @@ public interface Inference {
         //        '00000000-0000-0000-0000-000000000007' as updated_by,
         //        1 as version
         //        FROM ruleform.%tableName% AS net
-        //        JOIN ruleform.relationship AS rel ON net.relationship = rel.id
+        //        JOIN ruleform.relationship AS rel 
+        //        ON net.relationship = rel.id
         //        LEFT OUTER JOIN ruleform.%tableName% AS exist
         //        ON net.child = exist.parent
         //        AND rel.inverse = exist.relationship

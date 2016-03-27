@@ -30,6 +30,10 @@
             <column name="authority" type="uuid" />
             <column name="version" type="INT4" />
         </createTable>
+        
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child" constraintName="existential_network_p_r_c_unique"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="existential_network" />
+
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child" baseTableName="existential_network" constraintName="existential_network_child_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
@@ -45,8 +49,7 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authority" baseTableName="existential_network" constraintName="existential_network_authority_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, inference, premise1, premise2"
-            constraintName="existential_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="existential_network" />
+
         <createIndex schemaName="ruleform" indexName="existential_network_child_fkey_idx" tableName="existential_network"
             unique="false"
         >

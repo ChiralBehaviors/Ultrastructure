@@ -73,6 +73,11 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
         }
 
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         try (Model myModel = new ModelImpl(newConnection())) {
             WorkspaceSnapshot.load(myModel.create(),
                                    Arrays.asList(version1File.toURI()

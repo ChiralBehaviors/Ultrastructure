@@ -144,7 +144,7 @@ public class Bootstrap {
         Agency core = records.resolve(WellKnownAgency.CORE.id());
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
 
-        // Ain
+        // Ain 
         populateAgencies(core, kernelWorkspace);
         populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);

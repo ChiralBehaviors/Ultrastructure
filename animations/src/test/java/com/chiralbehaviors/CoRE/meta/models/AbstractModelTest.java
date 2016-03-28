@@ -66,10 +66,6 @@ public class AbstractModelTest {
         return conn;
     }
 
-    public AbstractModelTest() {
-        super();
-    }
-
     @After
     public void after() throws DataAccessException, SQLException {
         if (model != null) {

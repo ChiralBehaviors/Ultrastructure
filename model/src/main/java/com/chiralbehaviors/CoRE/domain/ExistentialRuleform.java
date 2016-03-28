@@ -78,18 +78,6 @@ public interface ExistentialRuleform extends Phantasm {
 
     UUID getUpdatedBy();
 
-    boolean isAny();
-
-    default boolean isAnyOrSame() {
-        return isAny() || isSame();
-    }
-
-    boolean isCopy();
-
-    boolean isNotApplicable();
-
-    boolean isSame();
-
     void setDescription(String description);
 
     void setName(String name);

@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.domain;
 
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
@@ -46,41 +45,4 @@ public class StatusCode extends ExistentialRecord
     public StatusCode getRuleform() {
         return this;
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isAny()
-     */
-    @Override
-    public boolean isAny() {
-        return WellKnownStatusCode.ANY.id()
-                                      .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isCopy()
-     */
-    @Override
-    public boolean isCopy() {
-        return WellKnownStatusCode.COPY.id()
-                                       .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isNotApplicable()
-     */
-    @Override
-    public boolean isNotApplicable() {
-        return WellKnownStatusCode.NOT_APPLICABLE.id()
-                                                 .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isSame()
-     */
-    @Override
-    public boolean isSame() {
-        return WellKnownStatusCode.SAME.id()
-                                       .equals(getId());
-    }
-
 }

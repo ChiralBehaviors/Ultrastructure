@@ -234,6 +234,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m3.setRequester(customerType.getId());
         m3.setDeliverTo(area.getId());
         m3.setDeliverFrom(area.getId());
+        m3.update();
 
         MetaProtocolRecord m5 = model.getJobModel()
                                      .newInitializedMetaProtocol(fee);
@@ -241,7 +242,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m5.setProduct(anyRelationship.getId());
         m5.setRequester(salesTaxStatus.getId());
         m5.setDeliverTo(city.getId());
-
         m5.update();
 
         MetaProtocolRecord m6 = model.getJobModel()
@@ -251,7 +251,6 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m6.setRequester(anyRelationship.getId());
         m6.setDeliverTo(anyRelationship.getId());
         m6.setDeliverFrom(area.getId());
-
         m6.update();
     }
 

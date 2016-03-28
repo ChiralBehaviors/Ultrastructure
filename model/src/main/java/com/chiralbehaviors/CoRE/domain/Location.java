@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.domain;
 
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
@@ -35,41 +34,4 @@ public class Location extends ExistentialRecord implements ExistentialRuleform {
     public Location getRuleform() {
         return this;
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isAny()
-     */
-    @Override
-    public boolean isAny() {
-        return WellKnownLocation.ANY.id()
-                                    .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isCopy()
-     */
-    @Override
-    public boolean isCopy() {
-        return WellKnownLocation.COPY.id()
-                                     .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isNotApplicable()
-     */
-    @Override
-    public boolean isNotApplicable() {
-        return WellKnownLocation.NOT_APPLICABLE.id()
-                                               .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isSame()
-     */
-    @Override
-    public boolean isSame() {
-        return WellKnownLocation.SAME.id()
-                                     .equals(getId());
-    }
-
 }

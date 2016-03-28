@@ -455,6 +455,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<JobRecord> getActiveSubJobsForService(JobRecord job,
                                                       Product service) {
+        assert job != null;
         StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
         return model.create()
                     .selectFrom(JOB)
@@ -1259,7 +1260,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobRecord r) {
-        return String.format("Job[{%s:%s} %d %s %s %s %s %s %s]",
+        return String.format("Job[{%s:%s} %d %s %s %s %s %s %s (%s)]",
                              model.records()
                                   .existentialName(r.getService()),
                              model.records()
@@ -1275,7 +1276,8 @@ public class JobModelImpl implements JobModel {
                              model.records()
                                   .existentialName(r.getDeliverTo()),
                              model.records()
-                                  .existentialName(r.getDeliverFrom()));
+                                  .existentialName(r.getDeliverFrom()),
+                             r.getParent());
     }
 
     /**
@@ -1371,13 +1373,22 @@ public class JobModelImpl implements JobModel {
                          UUID classification, TableField<?, UUID> field,
                          ExistentialDomain domain) {
         if (classifier.equals(WellKnownRelationship.ANY.id())) {
+            if (log.isTraceEnabled()) {
+                log.trace("Match ANY {}", field.getName());
+            }
             return;
         }
         Condition condition;
         if (classifier.equals(WellKnownRelationship.SAME.id())) {
             condition = field.eq(classification);
+            if (log.isTraceEnabled()) {
+                log.trace("Match SAME {}", field.getName());
+            }
         } else {
             condition = field.in(inferenceSubQuery(classifier, classification));
+            if (log.isTraceEnabled()) {
+                log.trace("Match on inferrred {}", field.getName());
+            }
         }
         condition = condition.or(field.equal(getAnyId(domain)))
                              .or(field.equal(getSameId(domain)))
@@ -1391,9 +1402,15 @@ public class JobModelImpl implements JobModel {
         if (metaProtocol.getServiceType()
                         .equals(WellKnownRelationship.SAME.id())) {
             selectQuery.addConditions(PROTOCOL.SERVICE.equal(job.getService()));
+            if (log.isTraceEnabled()) {
+                log.trace("Match SAME service");
+            }
         } else {
             selectQuery.addConditions(PROTOCOL.SERVICE.in(inferenceSubQuery(metaProtocol.getServiceType(),
                                                                             job.getService())));
+            if (log.isTraceEnabled()) {
+                log.trace("Match inferred service");
+            }
         }
     }
 
@@ -1403,64 +1420,60 @@ public class JobModelImpl implements JobModel {
         if (metaProtocol.getStatus()
                         .equals(WellKnownRelationship.SAME.id())) {
             selectQuery.addConditions(PROTOCOL.STATUS.equal(job.getStatus()));
+            if (log.isTraceEnabled()) {
+                log.trace("Match on SAME status");
+            }
         } else {
             selectQuery.addConditions(PROTOCOL.STATUS.in(inferenceSubQuery(metaProtocol.getStatus(),
                                                                            job.getService())));
+            if (log.isTraceEnabled()) {
+                log.trace("Match on inferred status");
+            }
         }
     }
 
     private void copyIntoChild(JobRecord parent, ProtocolRecord protocol,
                                InferenceMap inferred, JobRecord child) {
-        child.setAssignTo(resolve(inferred.assignTo, model.records()
-                                                          .resolve(protocol.getAssignTo()),
-                                  model.records()
-                                       .resolve(parent.getAssignTo()),
-                                  model.records()
-                                       .resolve(protocol.getChildAssignTo())));
-        child.setDeliverTo(resolve(inferred.deliverTo, model.records()
-                                                            .resolve(protocol.getDeliverTo()),
-                                   model.records()
-                                        .resolve(parent.getDeliverTo()),
-                                   model.records()
-                                        .resolve(protocol.getChildDeliverTo())));
-        child.setDeliverFrom(resolve(inferred.deliverFrom, model.records()
-                                                                .resolve(protocol.getDeliverFrom()),
-                                     model.records()
-                                          .resolve(parent.getDeliverFrom()),
-                                     model.records()
-                                          .resolve(protocol.getChildDeliverFrom())));
-        child.setService(resolve(false, model.records()
-                                             .resolve(protocol.getService()),
-                                 model.records()
-                                      .resolve(parent.getService()),
-                                 model.records()
-                                      .resolve(protocol.getChildService())));
-        child.setStatus(resolve(false, model.records()
-                                            .resolve(protocol.getStatus()),
-                                model.records()
-                                     .resolve(parent.getStatus()),
-                                model.records()
-                                     .resolve(protocol.getStatus())));
-        if (inferred.requester || model.records()
-                                       .resolve(protocol.getRequester())
-                                       .isAnyOrSame()) {
+        child.setAssignTo(resolve(inferred.assignTo, protocol.getAssignTo(),
+                                  parent.getAssignTo(),
+                                  protocol.getChildAssignTo(),
+                                  ExistentialDomain.Agency));
+        child.setDeliverTo(resolve(inferred.deliverTo, protocol.getDeliverTo(),
+                                   parent.getDeliverTo(),
+                                   protocol.getChildDeliverTo(),
+                                   ExistentialDomain.Location));
+        child.setDeliverFrom(resolve(inferred.deliverFrom,
+                                     protocol.getDeliverFrom(),
+                                     parent.getDeliverFrom(),
+                                     protocol.getChildDeliverFrom(),
+                                     ExistentialDomain.Location));
+        child.setService(resolve(false, protocol.getService(),
+                                 parent.getService(),
+                                 protocol.getChildService(),
+                                 ExistentialDomain.Product));
+        child.setStatus(resolve(false, protocol.getStatus(), parent.getStatus(),
+                                protocol.getStatus(),
+                                ExistentialDomain.Product));
+        child.setQuantityUnit(resolve(false, protocol.getQuantityUnit(),
+                                      parent.getQuantityUnit(),
+                                      protocol.getQuantityUnit(),
+                                      ExistentialDomain.Product));
+        if (inferred.requester
+            || isAny(protocol.getRequester(), ExistentialDomain.Agency)
+            || isSame(protocol.getRequester(), ExistentialDomain.Agency)) {
             child.setRequester(parent.getRequester());
         } else {
             child.setRequester(protocol.getRequester());
         }
 
-        if (model.records()
-                 .resolve(protocol.getChildQuantityUnit())
-                 .isSame()) {
-            if (inferred.quantityUnit || model.records()
-                                              .resolve(protocol.getQuantityUnit())
-                                              .isAny()) {
+        if (isSame(protocol.getChildQuantityUnit(), ExistentialDomain.Unit)) {
+            if (inferred.quantityUnit
+                || isAny(protocol.getQuantityUnit(), ExistentialDomain.Unit)) {
                 child.setQuantity(parent.getQuantity());
                 child.setQuantityUnit(parent.getQuantityUnit());
             }
-        } else if (model.records()
-                        .resolve(protocol.getChildQuantityUnit())
-                        .isCopy()) {
+        } else if (isCopy(protocol.getChildQuantityUnit(),
+                          ExistentialDomain.Unit)) {
             child.setQuantity(parent.getQuantity());
             child.setQuantityUnit(parent.getQuantityUnit());
         } else {
@@ -1594,6 +1607,21 @@ public class JobModelImpl implements JobModel {
                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(classifier));
     }
 
+    private void insert(JobRecord child, JobRecord parent,
+                        ProtocolRecord protocol, InferenceMap txfm,
+                        Product product) {
+        child.setDepth(parent.getDepth() + 1);
+        child.setStatus(protocol.getChildStatus());
+        child.setParent(parent.getId());
+        child.setProduct(product.getId());
+        copyIntoChild(parent, protocol, txfm, child);
+        child.insert();
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
+                                    toString(child), toString(protocol), txfm));
+        }
+    }
+
     private List<JobRecord> insert(JobRecord parent, ProtocolRecord protocol,
                                    InferenceMap txfm) {
         if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
@@ -1607,15 +1635,12 @@ public class JobModelImpl implements JobModel {
                                   .getId())) {
             JobRecord job = model.records()
                                  .newJob();
-            job.setParent(parent.getId());
             insert(job, parent, protocol, txfm, model.records()
                                                      .resolve(resolve(txfm.product,
-                                                                      model.records()
-                                                                           .resolve(protocol.getProduct()),
-                                                                      model.records()
-                                                                           .resolve(parent.getProduct()),
-                                                                      model.records()
-                                                                           .resolve(protocol.getChildProduct()))));
+                                                                      protocol.getProduct(),
+                                                                      parent.getProduct(),
+                                                                      protocol.getChildProduct(),
+                                                                      ExistentialDomain.Product)));
             jobs.add(job);
         } else {
             for (ExistentialRuleform child : model.getPhantasmModel()
@@ -1631,6 +1656,75 @@ public class JobModelImpl implements JobModel {
             }
         }
         return jobs;
+    }
+
+    private boolean isAny(UUID existential, ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return existential.equals(WellKnownAgency.ANY.id());
+            case Attribute:
+                return existential.equals(WellKnownAttribute.ANY.id());
+            case Interval:
+                return existential.equals(WellKnownInterval.ANY.id());
+            case Location:
+                return existential.equals(WellKnownLocation.ANY.id());
+            case Product:
+                return existential.equals(WellKnownProduct.ANY.id());
+            case Relationship:
+                return existential.equals(WellKnownRelationship.ANY.id());
+            case StatusCode:
+                return existential.equals(WellKnownStatusCode.ANY.id());
+            case Unit:
+                return existential.equals(WellKnownUnit.ANY.id());
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean isCopy(UUID existential, ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return existential.equals(WellKnownAgency.COPY.id());
+            case Attribute:
+                return existential.equals(WellKnownAttribute.COPY.id());
+            case Interval:
+                return existential.equals(WellKnownInterval.COPY.id());
+            case Location:
+                return existential.equals(WellKnownLocation.COPY.id());
+            case Product:
+                return existential.equals(WellKnownProduct.COPY.id());
+            case Relationship:
+                return existential.equals(WellKnownRelationship.COPY.id());
+            case StatusCode:
+                return existential.equals(WellKnownStatusCode.COPY.id());
+            case Unit:
+                return existential.equals(WellKnownUnit.COPY.id());
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean isSame(UUID existential, ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return existential.equals(WellKnownAgency.SAME.id());
+            case Attribute:
+                return existential.equals(WellKnownAttribute.SAME.id());
+            case Interval:
+                return existential.equals(WellKnownInterval.SAME.id());
+            case Location:
+                return existential.equals(WellKnownLocation.SAME.id());
+            case Product:
+                return existential.equals(WellKnownProduct.SAME.id());
+            case Relationship:
+                return existential.equals(WellKnownRelationship.SAME.id());
+            case StatusCode:
+                return existential.equals(WellKnownStatusCode.SAME.id());
+            case Unit:
+                return existential.equals(WellKnownUnit.SAME.id());
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     private boolean isTerminalState(UUID status, UUID service) {
@@ -1669,7 +1763,9 @@ public class JobModelImpl implements JobModel {
     private boolean pathExists(ExistentialRuleform rf,
                                Relationship mpRelationship,
                                ExistentialRuleform child) {
-        if (mpRelationship.isAnyOrSame() || mpRelationship.isNotApplicable()) {
+        if (mpRelationship.equals(WellKnownRelationship.ANY)
+            || mpRelationship.equals(WellKnownRelationship.SAME)
+            || mpRelationship.equals(WellKnownRelationship.NOT_APPLICABLE)) {
             return true;
         }
         if (!model.getPhantasmModel()
@@ -1811,11 +1907,15 @@ public class JobModelImpl implements JobModel {
      */
     private void processSiblings(JobRecord job,
                                  List<SiblingSequencingAuthorizationRecord> grouped) {
-        if (grouped.isEmpty()) {
+        if (grouped.isEmpty() || job.getParent() == null) {
             return;
         }
-        for (JobRecord sibling : getActiveSubJobsForService(model.records()
-                                                                 .resolve(job.getParent()),
+        JobRecord parent = model.create()
+                                .selectFrom(JOB)
+                                .where(JOB.ID.equal(job.getParent()))
+                                .fetchOne();
+        assert parent != null;
+        for (JobRecord sibling : getActiveSubJobsForService(parent,
                                                             model.records()
                                                                  .resolve(grouped.get(0)
                                                                                  .getNextSibling()))) {
@@ -1824,7 +1924,7 @@ public class JobModelImpl implements JobModel {
             }
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Processing sibling change for %s",
-                                        sibling));
+                                        toString(sibling)));
             }
             for (SiblingSequencingAuthorizationRecord seq : grouped) {
                 if (log.isTraceEnabled()) {
@@ -1873,38 +1973,37 @@ public class JobModelImpl implements JobModel {
         return tally;
     }
 
-    private UUID resolve(boolean inferred, ExistentialRuleform protocol,
-                         ExistentialRuleform parent,
-                         ExistentialRuleform child) {
-        if (child.isSame()) {
-            if (inferred || protocol.isAny()) {
-                return parent.getId();
+    private UUID resolve(boolean inferred, UUID protocol, UUID parent,
+                         UUID child, ExistentialDomain domain) {
+        if (isSame(child, domain)) {
+            if (inferred || isAny(protocol, domain)) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Using parent(a): {}", model.records()
+                                                          .existentialName(parent));
+                }
+                return parent;
             }
-            return protocol.getId();
+            if (log.isTraceEnabled()) {
+                log.trace("Using protocol: {}", model.records()
+                                                     .existentialName(protocol));
+            }
+            return protocol;
         }
-        if (child.isCopy()) {
-            return parent.getId();
+        if (isCopy(child, domain)) {
+            if (log.isTraceEnabled()) {
+                log.trace("Using parent(b): {}", model.records()
+                                                      .existentialName(parent));
+            }
+            return parent;
         }
-        return child.getId();
+        if (log.isTraceEnabled()) {
+            log.trace("Using child: {}", model.records()
+                                              .existentialName(child));
+        }
+        return child;
     }
 
     private String toString(SelfSequencingAuthorizationRecord seq) {
         return seq.toString();
-    }
-
-    private void insert(JobRecord child, JobRecord parent,
-                        ProtocolRecord protocol, InferenceMap txfm,
-                        Product product) {
-        child.setDepth(parent.getDepth() + 1);
-        child.setStatus(protocol.getChildStatus());
-        child.setParent(parent.getId());
-        child.setProtocol(protocol.getId());
-        child.setProduct(product.getId());
-        copyIntoChild(parent, protocol, txfm, child);
-        child.insert();
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Inserted job %s\nfrom protocol %s\ntxfm %s",
-                                    toString(child), toString(protocol), txfm));
-        }
     }
 }

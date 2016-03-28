@@ -183,11 +183,6 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
         model.flush();
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
         assertTrue(jobModel.isActive(order));
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(jobs.stream()
@@ -362,16 +357,12 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(3, jobs.size());
         jobModel.changeStatus(order, scenario.getAvailable(), "transitions");
 
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
-
         model.flush();
 
         for (JobRecord j : jobs) {
-            assertEquals(scenario.getAvailable()
+            assertEquals(model.records()
+                              .existentialName(j.getStatus()),
+                         scenario.getAvailable()
                                  .getId(),
                          j.getStatus());
         }
@@ -674,8 +665,10 @@ public class JobModelTest extends AbstractModelTest {
                      pick.getStatus());
         jobModel.changeStatus(pick, scenario.getActive(),
                               "transition during test");
+        model.flush();
         jobModel.changeStatus(pick, scenario.getCompleted(),
                               "transition during test");
+        model.flush();
         pick = model.create()
                     .selectFrom(JOB)
                     .where(JOB.SERVICE.equal(scenario.getPick()
@@ -686,8 +679,10 @@ public class JobModelTest extends AbstractModelTest {
                               .where(JOB.SERVICE.equal(scenario.getShip()
                                                                .getId()))
                               .fetchOne();
-        JobRecord pickParent = model.records()
-                                    .resolve(pick.getParent());
+        JobRecord pickParent = model.create()
+                                    .selectFrom(JOB)
+                                    .where(JOB.ID.equal(pick.getParent()))
+                                    .fetchOne();
         assertNotNull(pickParent);
         List<JobRecord> pickSiblings = jobModel.getActiveSubJobsForService(pickParent,
                                                                            scenario.getShip());
@@ -700,9 +695,10 @@ public class JobModelTest extends AbstractModelTest {
                              .where(JOB.SERVICE.equal(scenario.getFee()
                                                               .getId()))
                              .fetchOne();
-        ;
+        assertNotNull(fee);
         jobModel.changeStatus(fee, scenario.getActive(),
                               "transition during test");
+        model.flush();
         jobModel.changeStatus(fee, scenario.getCompleted(),
                               "transition during test");
         model.flush();
@@ -711,11 +707,13 @@ public class JobModelTest extends AbstractModelTest {
                                  .where(JOB.SERVICE.equal(scenario.getPrintPurchaseOrder()
                                                                   .getId()))
                                  .fetchOne();
+        assertNotNull(printPO);
         assertEquals(scenario.getAvailable()
                              .getId(),
                      printPO.getStatus());
         jobModel.changeStatus(printPO, scenario.getActive(),
                               "transition during test");
+        model.flush();
         jobModel.changeStatus(printPO, scenario.getCompleted(),
                               "transition during test");
         model.flush();
@@ -724,11 +722,13 @@ public class JobModelTest extends AbstractModelTest {
                     .where(JOB.SERVICE.equal(scenario.getShip()
                                                      .getId()))
                     .fetchOne();
+        assertNotNull(ship);
         assertEquals(scenario.getAvailable()
                              .getId(),
                      ship.getStatus());
         jobModel.changeStatus(ship, scenario.getActive(),
                               "transition during test");
+        model.flush();
         jobModel.changeStatus(ship, scenario.getCompleted(),
                               "transition during test");
         model.flush();
@@ -737,6 +737,7 @@ public class JobModelTest extends AbstractModelTest {
                                  .where(JOB.SERVICE.equal(scenario.getDeliver()
                                                                   .getId()))
                                  .fetchOne();
+        assertNotNull(deliver);
         assertEquals(scenario.getCompleted()
                              .getId(),
                      deliver.getStatus());

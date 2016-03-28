@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.domain;
 
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
@@ -34,41 +33,5 @@ public class Agency extends ExistentialRecord implements ExistentialRuleform {
     @Override
     public Agency getRuleform() {
         return this;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isAny()
-     */
-    @Override
-    public boolean isAny() {
-        return WellKnownAgency.ANY.id()
-                                  .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isCopy()
-     */
-    @Override
-    public boolean isCopy() {
-        return WellKnownAgency.COPY.id()
-                                   .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isNotApplicable()
-     */
-    @Override
-    public boolean isNotApplicable() {
-        return WellKnownAgency.NOT_APPLICABLE.id()
-                                             .equals(getId());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isSame()
-     */
-    @Override
-    public boolean isSame() {
-        return WellKnownAgency.SAME.id()
-                                   .equals(getId());
     }
 }

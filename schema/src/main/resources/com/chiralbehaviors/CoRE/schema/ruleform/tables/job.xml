@@ -32,8 +32,7 @@
             <column name="status" remarks="The current status of this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="uuid" />
-            <column name="protocol" remarks="The protocol that generated this job" type="uuid" />
+            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="uuid" /> 
             <column name="quantity" type="numeric" />
             <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />
@@ -77,9 +76,6 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="job" constraintName="job_quantity_unit_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="protocol" baseTableName="job" constraintName="job_protocol_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="SET NULL"  referencedColumnNames="id" referencedTableName="protocol" />
 
         <createIndex schemaName="ruleform" indexName="job_assign_to_fkey_idx" tableName="job" unique="false">
             <column name="assign_to" />

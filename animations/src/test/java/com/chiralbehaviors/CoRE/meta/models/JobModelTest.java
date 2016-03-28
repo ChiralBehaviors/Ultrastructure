@@ -130,6 +130,8 @@ public class JobModelTest extends AbstractModelTest {
         p.setChildProduct(bento.getId());
         p.update();
 
+        model.flush();
+
         JobRecord job = model.getJobModel()
                              .newInitializedJob(kiki);
         job.setAssignTo(model.getKernel()
@@ -149,6 +151,7 @@ public class JobModelTest extends AbstractModelTest {
                                         .getUnset(),
                               "transition during test");
         job.update();
+        model.flush();
         jobModel.changeStatus(job, startState, "transition during test");
 
         model.flush();
@@ -355,11 +358,14 @@ public class JobModelTest extends AbstractModelTest {
         List<JobRecord> jobs = model.getJobModel()
                                     .insert(order, protocols.get(0));
         assertEquals(3, jobs.size());
+        model.flush();
+        order.refresh();
         jobModel.changeStatus(order, scenario.getAvailable(), "transitions");
 
         model.flush();
 
         for (JobRecord j : jobs) {
+            j.refresh();
             assertEquals(model.records()
                               .existentialName(j.getStatus()),
                          scenario.getAvailable()
@@ -385,6 +391,8 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getAvailable(),
                               "Test transition");
         order.update();
+        model.flush();
+        order.refresh();
         List<JobChronologyRecord> chronologies = model.getJobModel()
                                                       .getChronologyForJob(order);
         assertEquals(String.format("Invalid number of chronologies: %s",
@@ -450,9 +458,11 @@ public class JobModelTest extends AbstractModelTest {
                                                                                       pushingMe,
                                                                                       shovingMe);
         auth.insert();
+        model.flush();
 
         JobRecord push = model.getJobModel()
                               .newInitializedJob(pushit);
+        model.flush();
 
         List<JobRecord> children = model.getJobModel()
                                         .getAllChildren(push);
@@ -462,6 +472,7 @@ public class JobModelTest extends AbstractModelTest {
              .changeStatus(push, pushingMe, "transitions");
         push.setProduct(pushit.getId());
         model.flush();
+        push.refresh();
         children = model.getJobModel()
                         .getAllChildren(push);
         assertEquals(1, children.size());
@@ -482,11 +493,12 @@ public class JobModelTest extends AbstractModelTest {
                                    .getId());
         job.setRequester(scenario.getGeorgetownUniversity()
                                  .getId());
-        jobModel.changeStatus(job, scenario.getAvailable(), "Test transition");
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> txfm = jobModel.getProtocols(job);
         assertEquals(2, txfm.size());
+        jobModel.changeStatus(job, scenario.getAvailable(), "Test transition");
+        model.flush();
         List<ProtocolRecord> protocols = new ArrayList<>(txfm.keySet());
         assertEquals(scenario.getDeliver()
                              .getId(),
@@ -578,6 +590,7 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(job, model.getKernel()
                                         .getUnset(),
                               "Transition from test");
+        model.flush();
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         txfm = jobModel.getProtocols(job);
@@ -599,15 +612,17 @@ public class JobModelTest extends AbstractModelTest {
         order.setRequester(scenario.getOrgA()
                                    .getId());
         order.update();
-        jobModel.changeStatus(order, scenario.getAvailable(),
-                              "transition during test");
-        jobModel.changeStatus(order, scenario.getActive(),
-                              "transition during test");
-        model.flush();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
+        model.flush();
+        jobModel.changeStatus(order, scenario.getAvailable(),
+                              "transition during test");
+        model.flush();
+        jobModel.changeStatus(order, scenario.getActive(),
+                              "transition during test");
+        model.flush();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(6, jobs.size());
     }
@@ -899,6 +914,8 @@ public class JobModelTest extends AbstractModelTest {
 
         model.getJobModel()
              .changeStatus(shovingJob, shovingMe, null);
+        model.flush();
+        push.refresh();
         assertEquals(model.records()
                           .existentialName(push.getStatus()),
                      shovingMe.getId(), push.getStatus());

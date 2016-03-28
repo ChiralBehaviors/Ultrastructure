@@ -380,7 +380,6 @@ public interface RecordsFactory {
         JobRecord record = create().newRecord(JOB);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
-        record.setNextChronSeq(0);
         return record;
     }
 

@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -174,21 +175,20 @@ public class JobModelTest extends AbstractModelTest {
         order.setRequester(scenario.getCarfleurBon()
                                    .getId());
         order.update();
+        model.flush();
         jobModel.changeStatus(order, scenario.getAvailable(),
                               "transition during test");
+        model.flush();
+
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
-
-        List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
-        assertEquals(1, metaProtocols.size());
-        Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
-        assertEquals(2, protocols.size());
         model.flush();
         model.create()
              .configuration()
              .connectionProvider()
              .acquire()
              .commit();
+        assertTrue(jobModel.isActive(order));
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(jobs.stream()
                          .map(j -> jobModel.toString(j))
@@ -636,15 +636,18 @@ public class JobModelTest extends AbstractModelTest {
         order.setRequester(scenario.getGeorgetownUniversity()
                                    .getId());
         order.update();
-        jobModel.changeStatus(order, scenario.getAvailable(),
-                              "transition during test");
-        jobModel.changeStatus(order, scenario.getActive(),
-                              "transition during test");
-        model.flush();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
+        model.flush();
+        model.flush();
+        jobModel.changeStatus(order, scenario.getAvailable(),
+                              "transition during test");
+        model.flush();
+        jobModel.changeStatus(order, scenario.getActive(),
+                              "transition during test");
+        model.flush();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(5, jobs.size());
 
@@ -683,8 +686,10 @@ public class JobModelTest extends AbstractModelTest {
                               .where(JOB.SERVICE.equal(scenario.getShip()
                                                                .getId()))
                               .fetchOne();
-        List<JobRecord> pickSiblings = jobModel.getActiveSubJobsForService(model.records()
-                                                                                .resolve(pick.getParent()),
+        JobRecord pickParent = model.records()
+                                    .resolve(pick.getParent());
+        assertNotNull(pickParent);
+        List<JobRecord> pickSiblings = jobModel.getActiveSubJobsForService(pickParent,
                                                                            scenario.getShip());
         assertEquals(1, pickSiblings.size());
         assertEquals(scenario.getWaitingOnPurchaseOrder()
@@ -893,7 +898,9 @@ public class JobModelTest extends AbstractModelTest {
 
         model.getJobModel()
              .changeStatus(shovingJob, shovingMe, null);
-        assertEquals(shovingMe, push.getStatus());
+        assertEquals(model.records()
+                          .existentialName(push.getStatus()),
+                     shovingMe.getId(), push.getStatus());
     }
 
     /**

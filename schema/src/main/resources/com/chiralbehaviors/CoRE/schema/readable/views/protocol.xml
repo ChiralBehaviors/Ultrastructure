@@ -14,6 +14,7 @@
                 base_table.id,
                 base_table.name,
                 s.name AS service,
+                sc.name AS status,
                 base_table.quantity,
                 u.name AS quantity_unit, 
                 p.name AS product,
@@ -22,6 +23,7 @@
                 df.name AS deliver_from,
                 dt.name AS deliver_to,
                 cs.name AS child_service,
+                csc.name AS child_status,
                 base_table.child_quantity,
                 cqu.name AS child_quantity_unit,
                 cp.name AS child_product,
@@ -34,6 +36,8 @@
                 base_table.version
                FROM protocol base_table
                JOIN existential s ON base_table.service = s.id
+               JOIN existential sc ON base_table.status = sc.id
+               JOIN existential csc ON base_table.child_status = csc.id
                JOIN existential p ON base_table.product = p.id
                JOIN existential r ON base_table.requester = r.id
                JOIN existential dt ON base_table.deliver_to = dt.id

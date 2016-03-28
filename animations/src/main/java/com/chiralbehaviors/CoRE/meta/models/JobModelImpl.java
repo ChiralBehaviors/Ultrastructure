@@ -340,7 +340,23 @@ public class JobModelImpl implements JobModel {
         List<JobRecord> jobs = new ArrayList<JobRecord>();
         for (Entry<ProtocolRecord, InferenceMap> txfm : protocols.entrySet()) {
             ProtocolRecord protocol = txfm.getKey();
+            assert protocol != null;
             jobs.addAll(insert(job, protocol, txfm.getValue()));
+            //            if (model.create()
+            //                     .selectCount()
+            //                     .from(JOB)
+            //                     .where(JOB.PARENT.equal(job.getParent()))
+            //                     .and(JOB.PROTOCOL.equal(job.getProtocol()))
+            //                     .fetchOne()
+            //                     .value1()
+            //                     .equals(ZERO)) {
+            //                jobs.addAll(insert(job, protocol, txfm.getValue()));
+            //            } else {
+            //                if (log.isInfoEnabled()) {
+            //                    log.info(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
+            //                                           toString(job), toString(protocol)));
+            //                }
+            //            }
         }
         return jobs;
     }
@@ -1011,10 +1027,11 @@ public class JobModelImpl implements JobModel {
         selectQuery.addFrom(PROTOCOL);
 
         addServiceMask(metaProtocol, job, selectQuery);
+        addStatusMask(metaProtocol, job, selectQuery);
+
         addMask(selectQuery, metaProtocol.getDeliverFrom(),
                 job.getDeliverFrom(), PROTOCOL.DELIVER_FROM,
                 ExistentialDomain.Location);
-
         addMask(selectQuery, metaProtocol.getDeliverTo(), job.getDeliverTo(),
                 PROTOCOL.DELIVER_TO, ExistentialDomain.Location);
 
@@ -1065,6 +1082,7 @@ public class JobModelImpl implements JobModel {
         MetaProtocolRecord mp = model.records()
                                      .newMetaProtocol();
         mp.setService(service.getId());
+        mp.setStatus(WellKnownRelationship.SAME.id());
         mp.setAssignTo(any.getId());
         mp.setDeliverTo(any.getId());
         mp.setDeliverFrom(any.getId());
@@ -1082,6 +1100,7 @@ public class JobModelImpl implements JobModel {
         ProtocolRecord protocol = model.records()
                                        .newProtocol();
         protocol.setService(service.getId());
+        protocol.setStatus(WellKnownStatusCode.UNSET.id());
         protocol.setAssignTo(kernel.getNotApplicableAgency()
                                    .getId());
         protocol.setDeliverFrom(kernel.getNotApplicableLocation()
@@ -1106,6 +1125,7 @@ public class JobModelImpl implements JobModel {
                                        .getId());
         protocol.setChildService(kernel.getSameProduct()
                                        .getId());
+        protocol.setChildStatus(WellKnownStatusCode.UNSET.id());
         protocol.setChildQuantityUnit(kernel.getNotApplicableUnit()
                                             .getId());
         protocol.insert();
@@ -1239,10 +1259,13 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobRecord r) {
-        return String.format("Job[{%s:%s} %s:%s:%s:%s:%s:%s]", model.records()
-                                                                    .existentialName(r.getService()),
+        return String.format("Job[{%s:%s} %d %s %s %s %s %s %s]",
+                             model.records()
+                                  .existentialName(r.getService()),
                              model.records()
                                   .existentialName(r.getStatus()),
+                             r.getQuantity(), model.records()
+                                                   .existentialName(r.getQuantityUnit()),
                              model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
@@ -1252,9 +1275,7 @@ public class JobModelImpl implements JobModel {
                              model.records()
                                   .existentialName(r.getDeliverTo()),
                              model.records()
-                                  .existentialName(r.getDeliverFrom()),
-                             model.records()
-                                  .existentialName(r.getQuantityUnit()));
+                                  .existentialName(r.getDeliverFrom()));
     }
 
     /**
@@ -1268,6 +1289,8 @@ public class JobModelImpl implements JobModel {
                              model.records()
                                   .existentialName(r.getServiceType()),
                              model.records()
+                                  .existentialName(r.getQuantityUnit()),
+                             model.records()
                                   .existentialName(r.getProduct()),
                              model.records()
                                   .existentialName(r.getAssignTo()),
@@ -1276,9 +1299,7 @@ public class JobModelImpl implements JobModel {
                              model.records()
                                   .existentialName(r.getDeliverTo()),
                              model.records()
-                                  .existentialName(r.getDeliverFrom()),
-                             model.records()
-                                  .existentialName(r.getQuantityUnit()));
+                                  .existentialName(r.getDeliverFrom()));
     }
 
     @Override
@@ -1376,6 +1397,18 @@ public class JobModelImpl implements JobModel {
         }
     }
 
+    // Status gets special handling.  we don't want infinite jobs due to ANY
+    private void addStatusMask(MetaProtocolRecord metaProtocol, JobRecord job,
+                               SelectQuery<Record> selectQuery) {
+        if (metaProtocol.getStatus()
+                        .equals(WellKnownRelationship.SAME.id())) {
+            selectQuery.addConditions(PROTOCOL.STATUS.equal(job.getStatus()));
+        } else {
+            selectQuery.addConditions(PROTOCOL.STATUS.in(inferenceSubQuery(metaProtocol.getStatus(),
+                                                                           job.getService())));
+        }
+    }
+
     private void copyIntoChild(JobRecord parent, ProtocolRecord protocol,
                                InferenceMap inferred, JobRecord child) {
         child.setAssignTo(resolve(inferred.assignTo, model.records()
@@ -1402,6 +1435,12 @@ public class JobModelImpl implements JobModel {
                                       .resolve(parent.getService()),
                                  model.records()
                                       .resolve(protocol.getChildService())));
+        child.setStatus(resolve(false, model.records()
+                                            .resolve(protocol.getStatus()),
+                                model.records()
+                                     .resolve(parent.getStatus()),
+                                model.records()
+                                     .resolve(protocol.getStatus())));
         if (inferred.requester || model.records()
                                        .resolve(protocol.getRequester())
                                        .isAnyOrSame()) {
@@ -1504,6 +1543,7 @@ public class JobModelImpl implements JobModel {
         return model.create()
                     .selectFrom(PROTOCOL)
                     .where(PROTOCOL.SERVICE.equal(job.getService()))
+                    .and(PROTOCOL.STATUS.equal(job.getStatus()))
                     .and(PROTOCOL.REQUESTER.equal(job.getRequester()))
                     .and(PROTOCOL.PRODUCT.equal(job.getProduct()))
                     .and(PROTOCOL.DELIVER_TO.equal(job.getDeliverTo()))
@@ -1567,6 +1607,7 @@ public class JobModelImpl implements JobModel {
                                   .getId())) {
             JobRecord job = model.records()
                                  .newJob();
+            job.setParent(parent.getId());
             insert(job, parent, protocol, txfm, model.records()
                                                      .resolve(resolve(txfm.product,
                                                                       model.records()
@@ -1851,12 +1892,11 @@ public class JobModelImpl implements JobModel {
         return seq.toString();
     }
 
-    protected void insert(JobRecord child, JobRecord parent,
-                          ProtocolRecord protocol, InferenceMap txfm,
-                          Product product) {
+    private void insert(JobRecord child, JobRecord parent,
+                        ProtocolRecord protocol, InferenceMap txfm,
+                        Product product) {
         child.setDepth(parent.getDepth() + 1);
-        child.setStatus(kernel.getUnset()
-                              .getId());
+        child.setStatus(protocol.getChildStatus());
         child.setParent(parent.getId());
         child.setProtocol(protocol.getId());
         child.setProduct(product.getId());

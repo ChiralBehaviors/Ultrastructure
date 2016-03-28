@@ -29,7 +29,6 @@ import java.util.Properties;
 import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
@@ -49,10 +48,6 @@ public class AbstractModelTest {
     public static final String THING_URI                     = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
 
     protected Model            model;
-
-    @AfterClass
-    public static void afterClass() throws DataAccessException, SQLException {
-    }
 
     public static Connection newConnection() throws IOException, SQLException {
         Properties properties = new Properties();

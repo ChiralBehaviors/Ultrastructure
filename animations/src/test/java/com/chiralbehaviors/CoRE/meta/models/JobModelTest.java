@@ -32,13 +32,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
@@ -941,15 +941,14 @@ public class JobModelTest extends AbstractModelTest {
                                                 "deliverTo" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob()
-                          .equals(job)) {
+                          .equals(job.getId())) {
             unmatchedFields.add("job");
             return unmatchedFields;
         }
         for (String field : fieldsToMatch) {
-            ExistentialRuleform jobRf = (ExistentialRuleform) PropertyUtils.getSimpleProperty(job,
-                                                                                              field);
-            ExistentialRuleform chronoRf = (ExistentialRuleform) PropertyUtils.getSimpleProperty(jobChronology,
-                                                                                                 field);
+            UUID jobRf = (UUID) PropertyUtils.getSimpleProperty(job, field);
+            UUID chronoRf = (UUID) PropertyUtils.getSimpleProperty(jobChronology,
+                                                                   field);
             if (chronoRf == null && jobRf == null) {
                 continue;
             }

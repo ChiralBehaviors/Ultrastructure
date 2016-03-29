@@ -592,6 +592,7 @@ public class JobModelImpl implements JobModel {
         return model.create()
                     .selectFrom(JOB_CHRONOLOGY)
                     .where(JOB_CHRONOLOGY.JOB.equal(job.getId()))
+                    .orderBy(JOB_CHRONOLOGY.SEQUENCE_NUMBER.asc())
                     .fetch();
     }
 

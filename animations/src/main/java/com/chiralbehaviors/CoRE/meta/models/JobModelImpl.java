@@ -2004,7 +2004,12 @@ public class JobModelImpl implements JobModel {
         return child;
     }
 
-    private String toString(SelfSequencingAuthorizationRecord seq) {
-        return seq.toString();
+    public String toString(SelfSequencingAuthorizationRecord seq) {
+        return String.format("SelfSeq[%s:%s -> %s]", model.records()
+                                                          .existentialName(seq.getService()),
+                             model.records()
+                                  .existentialName(seq.getStatusCode()),
+                             model.records()
+                                  .existentialName(seq.getStatusToSet()));
     }
 }

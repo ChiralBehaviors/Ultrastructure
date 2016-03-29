@@ -462,19 +462,25 @@ public class JobModelTest extends AbstractModelTest {
 
         JobRecord push = model.getJobModel()
                               .newInitializedJob(pushit);
-        model.flush();
+        push.setProduct(pushit.getId());
+        push.update();
 
         List<JobRecord> children = model.getJobModel()
                                         .getAllChildren(push);
         assertEquals(0, children.size());
+        model.flush();
 
         model.getJobModel()
              .changeStatus(push, pushingMe, "transitions");
-        push.setProduct(pushit.getId());
         model.flush();
         push.refresh();
         children = model.getJobModel()
                         .getAllChildren(push);
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         assertEquals(1, children.size());
         assertEquals(shovingMe.getId(), push.getStatus());
     }

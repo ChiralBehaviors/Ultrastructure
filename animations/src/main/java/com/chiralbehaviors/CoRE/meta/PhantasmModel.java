@@ -149,11 +149,10 @@ public interface PhantasmModel {
     /**
      * @param attribute
      * @param query
-     * @param agency
      * @return
      */
-    List<Agency> findByAttributeValue(Attribute attribute, Object query,
-                                      ExistentialDomain domain);
+    List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
+                                                             Object query);
 
     List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
                                                          Relationship relationship,

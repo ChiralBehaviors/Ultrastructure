@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -91,12 +91,12 @@ public class ModelTest extends AbstractModelTest {
         agencyAttribute.setTextValue("Hello World");
         agencyAttribute.setExistential(agency.getId());
         agencyAttribute.insert();
+        agency.refresh();
 
         Object queryText = "Hello World";
-        List<Agency> foundAgencies = model.getPhantasmModel()
-                                          .findByAttributeValue(attribute,
-                                                                queryText,
-                                                                ExistentialDomain.Agency);
+        List<? extends ExistentialRuleform> foundAgencies = model.getPhantasmModel()
+                                                                 .findByAttributeValue(attribute,
+                                                                                       queryText);
         assertNotNull(foundAgencies);
         assertEquals(1, foundAgencies.size());
         assertEquals(agency, foundAgencies.get(0));

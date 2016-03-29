@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -352,10 +353,47 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<Agency> findByAttributeValue(Attribute attribute, Object query,
-                                             ExistentialDomain domain) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
+                                                                    Object query) {
+        Condition valueEq;
+        switch (attribute.getValueType()) {
+            case Binary:
+                valueEq = EXISTENTIAL_ATTRIBUTE.BINARY_VALUE.eq((byte[]) query);
+                break;
+            case Integer:
+                valueEq = EXISTENTIAL_ATTRIBUTE.INTEGER_VALUE.eq((Integer) query);
+                break;
+            case Boolean:
+                valueEq = EXISTENTIAL_ATTRIBUTE.BOOLEAN_VALUE.eq((Boolean) query);
+                break;
+            case JSON:
+                throw new IllegalArgumentException("find by JSON value unsupported");
+            case Numeric:
+                valueEq = EXISTENTIAL_ATTRIBUTE.NUMERIC_VALUE.eq((BigDecimal) query);
+                break;
+            case Text:
+                valueEq = EXISTENTIAL_ATTRIBUTE.TEXT_VALUE.eq((String) query);
+                break;
+            case Timestamp:
+                valueEq = EXISTENTIAL_ATTRIBUTE.TIMESTAMP_VALUE.eq((Timestamp) query);
+            default:
+                throw new IllegalStateException(String.format("Unknown value type: %s",
+                                                              attribute.getValueType()));
+        }
+
+        return model.create()
+                    .selectDistinct(EXISTENTIAL.fields())
+                    .from(EXISTENTIAL)
+                    .join(EXISTENTIAL_ATTRIBUTE)
+                    .on(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                    .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(EXISTENTIAL.ID))
+                    .and(valueEq)
+                    .fetch()
+                    .into(ExistentialRecord.class)
+                    .stream()
+                    .map(r -> model.records()
+                                   .resolve(r))
+                    .collect(Collectors.toList());
     }
 
     @Override

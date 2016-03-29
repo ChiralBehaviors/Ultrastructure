@@ -28,14 +28,12 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.hellblazer.utils.Tuple;
@@ -136,15 +134,6 @@ public interface PhantasmModel {
 
     void deauthorizeAll(ExistentialRuleform ruleform, Relationship relationship,
                         List<? extends ExistentialRuleform> authorized);
-
-    /**
-     * Find the ruleform instances that match the supplied attribute
-     *
-     * @param attributeValue
-     *            - the attribute value to match
-     * @return the collection of ruleform instances that match the attribute
-     */
-    ExistentialRecord find(ExistentialAttribute attributeValue);
 
     /**
      * @param attribute
@@ -322,14 +311,6 @@ public interface PhantasmModel {
     /**
      *
      * @param parent
-     * @return
-     */
-    Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent,
-                                                       ExistentialDomain domain);
-
-    /**
-     *
-     * @param parent
      * @param relationship
      * @param child
      * @return
@@ -370,12 +351,9 @@ public interface PhantasmModel {
                                             Relationship relationship,
                                             ExistentialDomain domain);
 
-    ExistentialRuleform getSingleChild(ExistentialRuleform parent,
-                                       Relationship r,
-                                       ExistentialDomain domain);
-
-    List<ExistentialRuleform> getTransitiveRelationships(ExistentialRuleform a,
-                                                         ExistentialDomain damain);
+    <T extends ExistentialRuleform> T getSingleChild(ExistentialRuleform parent,
+                                                     Relationship r,
+                                                     ExistentialDomain domain);
 
     Object getValue(ExistentialAttributeRecord attributeValue);
 

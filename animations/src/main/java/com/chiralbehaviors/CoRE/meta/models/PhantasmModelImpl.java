@@ -33,7 +33,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +50,6 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
@@ -344,12 +342,6 @@ public class PhantasmModelImpl implements PhantasmModel {
         for (ExistentialRuleform e : authorized) {
             deauthorize(existential, relationship, e);
         }
-    }
-
-    @Override
-    public ExistentialRecord find(ExistentialAttribute attributeValue) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
@@ -680,20 +672,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent,
-                                                              ExistentialDomain domain) {
-        return create.selectDistinct(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK.ID))
-                     .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(Relationship.class);
-    }
-
-    @Override
     public List<ExistentialRuleform> getInferredChildren(ExistentialRuleform parent,
                                                          Relationship relationship,
                                                          ExistentialDomain domain) {
@@ -785,10 +763,11 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public ExistentialRuleform getSingleChild(ExistentialRuleform parent,
-                                              Relationship relationship,
-                                              ExistentialDomain domain) {
+    public <T extends ExistentialRuleform> T getSingleChild(ExistentialRuleform parent,
+                                                            Relationship relationship,
+                                                            ExistentialDomain domain) {
         Record result = create.selectDistinct(EXISTENTIAL.fields())
                               .from(EXISTENTIAL)
                               .join(EXISTENTIAL_NETWORK)
@@ -801,15 +780,8 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (result == null) {
             return null;
         }
-        return model.records()
-                    .resolve(result.into(ExistentialRecord.class));
-    }
-
-    @Override
-    public List<ExistentialRuleform> getTransitiveRelationships(ExistentialRuleform a,
-                                                                ExistentialDomain damain) {
-        // TODO Auto-generated method stub
-        return Collections.emptyList();
+        return (T) model.records()
+                        .resolve(result.into(ExistentialRecord.class));
     }
 
     @Override

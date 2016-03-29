@@ -476,11 +476,6 @@ public class JobModelTest extends AbstractModelTest {
         push.refresh();
         children = model.getJobModel()
                         .getAllChildren(push);
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
         assertEquals(1, children.size());
         assertEquals(shovingMe.getId(), push.getStatus());
     }

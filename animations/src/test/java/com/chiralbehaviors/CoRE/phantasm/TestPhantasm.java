@@ -345,8 +345,9 @@ public class TestPhantasm extends AbstractModelTest {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  "myartifact", "artifact");
         artifact.setType("jar");
+        artifact.setType("invalid");
         try {
-            artifact.setType("invalid");
+            model.flush();
             fail();
         } catch (Exception e) {
         }

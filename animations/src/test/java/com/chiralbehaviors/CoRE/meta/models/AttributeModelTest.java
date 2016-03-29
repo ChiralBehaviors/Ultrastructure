@@ -85,8 +85,9 @@ public class AttributeModelTest extends AbstractModelTest {
         attributeValue.insert();
         attributeValue.setTextValue("a");
         attributeValue.setTextValue("aaa");
+        attributeValue.update();
         try {
-            attributeValue.update();
+            model.flush();
             fail();
         } catch (IllegalArgumentException e) {
 

@@ -44,7 +44,9 @@ import org.jooq.RecordContext;
 import org.jooq.RecordType;
 import org.jooq.impl.DefaultRecordListener;
 
+import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
@@ -127,6 +129,31 @@ public class Animations extends DefaultRecordListener {
         }
     }
 
+    public Model getModel() {
+        return model;
+    }
+
+    public void inferNetworks() {
+        inferNetwork = true;
+    }
+
+    @Override
+    public void insertEnd(RecordContext ctx) {
+        afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
+
+    public void rollback() {
+        reset();
+        model.flushWorkspaces();
+    }
+
+    @Override
+    public void updateEnd(RecordContext ctx) {
+        afterUpdate.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
+
     private void animate() {
         try {
             model.getJobModel()
@@ -156,31 +183,6 @@ public class Animations extends DefaultRecordListener {
         }
     }
 
-    public Model getModel() {
-        return model;
-    }
-
-    public void inferNetworks() {
-        inferNetwork = true;
-    }
-
-    @Override
-    public void insertEnd(RecordContext ctx) {
-        afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                   .accept(ctx);
-    }
-
-    public void rollback() {
-        reset();
-        model.flushWorkspaces();
-    }
-
-    @Override
-    public void updateEnd(RecordContext ctx) {
-        afterUpdate.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
-                   .accept(ctx);
-    }
-
     private void clearSequences() {
         parentSequences.clear();
         childSequences.clear();
@@ -198,6 +200,18 @@ public class Animations extends DefaultRecordListener {
 
     private void delete(NetworkInferenceRecord inference) {
         inferNetwork = true;
+    }
+
+    private boolean equals(ExistentialAttributeRecord a,
+                           ExistentialAttributeRecord b) {
+        Object aValue = model.getPhantasmModel()
+                             .getValue(a);
+        Object bValue = model.getPhantasmModel()
+                             .getValue(a);
+        if (aValue == null) {
+            return bValue == null;
+        }
+        return aValue.equals(bValue);
     }
 
     private void initializeTriggers() {
@@ -231,6 +245,8 @@ public class Animations extends DefaultRecordListener {
                         ctx -> delete((ExistentialNetworkRecord) ctx.record()));
         afterDelete.put(NETWORK_INFERENCE.recordType(),
                         ctx -> delete((NetworkInferenceRecord) ctx.record()));
+        afterUpdate.put(EXISTENTIAL_ATTRIBUTE.recordType(),
+                        ctx -> update((ExistentialAttributeRecord) ctx.record()));
 
     }
 
@@ -302,6 +318,10 @@ public class Animations extends DefaultRecordListener {
         attributeValues.clear();
     }
 
+    private void update(ExistentialAttributeRecord record) {
+        attributeValues.add(record);
+    }
+
     private void update(JobRecord j) {
         jobs.add(j);
     }
@@ -328,35 +348,36 @@ public class Animations extends DefaultRecordListener {
     }
 
     private void validateEnums() {
-        //        for (ExistentialAttributeRecord value : attributeValues) {
-        //            Attribute attribute = value.getAttribute();
-        //            Attribute validatingAttribute = model.getAttributeModel()
-        //                                                 .getSingleChild(attribute,
-        //                                                                 model.getKernel()
-        //                                                                      .getIsValidatedBy());
-        //            if (validatingAttribute != null) {
-        //                List<AttributeMetaAttribute> attrs = model.getAttributeModel()
-        //                                                          .getAttributeValues(validatingAttribute,
-        //                                                                              attribute);
-        //                if (attrs == null || attrs.size() == 0) {
-        //                    throw new IllegalArgumentException("No valid values for attribute "
-        //                                                       + attribute.getName());
-        //                }
-        //                boolean valid = false;
-        //                for (AttributeMetaAttribute ama : attrs) {
-        //                    if (ama.getValue() != null && ama.getValue()
-        //                                                     .equals(value.getValue())) {
-        //                        valid = true;
-        //                        break;
-        //                    }
-        //                }
-        //                if (!valid) {
-        //                    throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
-        //                                                                     value,
-        //                                                                     attribute));
-        //                }
-        //            }
-        //        }
+        for (ExistentialAttributeRecord value : attributeValues) {
+            Attribute attribute = model.records()
+                                       .resolve(value.getAttribute());
+            Attribute validatingAttribute = model.getPhantasmModel()
+                                                 .getSingleChild(attribute,
+                                                                 model.getKernel()
+                                                                      .getIsValidatedBy(),
+                                                                 ExistentialDomain.Attribute);
+            if (validatingAttribute != null) {
+                List<ExistentialAttributeRecord> attrs = model.getPhantasmModel()
+                                                              .getAttributeValues(validatingAttribute,
+                                                                                  attribute);
+                if (attrs == null || attrs.size() == 0) {
+                    throw new IllegalArgumentException("No valid values for attribute "
+                                                       + attribute.getName());
+                }
+                boolean valid = false;
+                for (ExistentialAttributeRecord ama : attrs) {
+                    if (equals(ama, value)) {
+                        valid = true;
+                        break;
+                    }
+                }
+                if (!valid) {
+                    throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
+                                                                     value,
+                                                                     attribute));
+                }
+            }
+        }
     }
 
     private void validateParentSequencing() {

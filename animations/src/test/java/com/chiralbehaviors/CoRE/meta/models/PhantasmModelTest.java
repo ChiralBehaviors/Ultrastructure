@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -450,95 +449,6 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                             .getChildrenLinks(A,
                                                                               a);
         assertEquals(7, childrenLinks.size());
-    }
-
-    @Test
-    public void testGetImmediateRelationships() throws Exception {
-        Relationship equals2 = model.records()
-                                    .newRelationship("equals 2",
-                                                     "an alias for equals");
-
-        Relationship equals = model.records()
-                                   .newRelationship("equals on another level",
-                                                    "an alias for equals");
-        equals.setInverse(equals.getId());
-        equals.insert();
-        equals2.setInverse(equals2.getId());
-        equals2.insert();
-        NetworkInferenceRecord aEqualsA = model.records()
-                                               .newNetworkInference(equals,
-                                                                    equals2,
-                                                                    equals);
-        aEqualsA.insert();
-        Agency a = model.records()
-                        .newAgency("A", "A");
-        a.insert();
-        Agency b = model.records()
-                        .newAgency("B", "B");
-        b.insert();
-        Agency c = model.records()
-                        .newAgency("C", "C");
-        c.insert();
-        ExistentialNetworkRecord edgeA = model.records()
-                                              .newExistentialNetwork(a, equals,
-                                                                     b);
-        edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
-                                              .newExistentialNetwork(b, equals2,
-                                                                     c);
-        edgeB.insert();
-
-        assertEquals(1, model.getPhantasmModel()
-                             .getImmediateRelationships(a,
-                                                        ExistentialDomain.Agency)
-                             .size());
-    }
-
-    @Test
-    public void testGetTransitiveRelationships() throws SQLException {
-        Relationship equals = model.records()
-                                   .newRelationship("so equals so",
-                                                    "an alias for equals");
-        equals.setInverse(equals.getId());
-        equals.insert();
-        ;
-
-        Relationship equals2 = model.records()
-                                    .newRelationship("so equals",
-                                                     "an alias for equals");
-        equals2.setInverse(equals2.getId());
-        equals2.insert();
-        ;
-        NetworkInferenceRecord aEqualsA = model.records()
-                                               .newNetworkInference(equals,
-                                                                    equals2,
-                                                                    equals);
-        aEqualsA.insert();
-
-        Agency a = model.records()
-                        .newAgency("A", "A");
-        a.insert();
-        ;
-        Agency b = model.records()
-                        .newAgency("B", "B");
-        b.insert();
-        ;
-        Agency c = model.records()
-                        .newAgency("C", "C");
-        c.insert();
-        ;
-        ExistentialNetworkRecord edgeA = model.records()
-                                              .newExistentialNetwork(a, equals,
-                                                                     b);
-        edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
-                                              .newExistentialNetwork(b, equals2,
-                                                                     c);
-        edgeB.insert();
-        assertEquals(2, model.getPhantasmModel()
-                             .getTransitiveRelationships(a,
-                                                         ExistentialDomain.Agency)
-                             .size());
     }
 
     @Test

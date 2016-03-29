@@ -186,6 +186,10 @@ public class JobModelImpl implements JobModel {
     @Override
     public void ensureNextStateIsValid(JobRecord job,
                                        StatusCode nextStatus) throws SQLException {
+        if (job.getStatus()
+               .equals(nextStatus.getId())) {
+            return;
+        }
         StatusCode status = model.records()
                                  .resolve(job.getStatus());
         if (log.isTraceEnabled()) {
@@ -1305,6 +1309,17 @@ public class JobModelImpl implements JobModel {
                                   .existentialName(r.getDeliverFrom()));
     }
 
+    public String toString(ParentSequencingAuthorizationRecord seq) {
+        return String.format("SelfSeq[%s:%s^%s -> %s]", model.records()
+                                                             .existentialName(seq.getService()),
+                             model.records()
+                                  .existentialName(seq.getStatusCode()),
+                             model.records()
+                                  .existentialName(seq.getParent()),
+                             model.records()
+                                  .existentialName(seq.getParentStatusToSet()));
+    }
+
     @Override
     public String toString(ProtocolRecord r) {
         return String.format("Protocol[%s:%s:%s:%s:%s:%s:%s]", model.records()
@@ -1321,6 +1336,15 @@ public class JobModelImpl implements JobModel {
                                   .existentialName(r.getDeliverFrom()),
                              model.records()
                                   .existentialName(r.getQuantityUnit()));
+    }
+
+    public String toString(SelfSequencingAuthorizationRecord seq) {
+        return String.format("SelfSeq[%s:%s -> %s]", model.records()
+                                                          .existentialName(seq.getService()),
+                             model.records()
+                                  .existentialName(seq.getStatusCode()),
+                             model.records()
+                                  .existentialName(seq.getStatusToSet()));
     }
 
     /**
@@ -1833,7 +1857,7 @@ public class JobModelImpl implements JobModel {
                                 List<ParentSequencingAuthorizationRecord> grouped) {
         for (ParentSequencingAuthorizationRecord seq : grouped) {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("Processing %s", seq));
+                log.trace(String.format("Processing %s", toString(seq)));
             }
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 JobRecord parent = model.records()
@@ -2002,14 +2026,5 @@ public class JobModelImpl implements JobModel {
                                               .existentialName(child));
         }
         return child;
-    }
-
-    public String toString(SelfSequencingAuthorizationRecord seq) {
-        return String.format("SelfSeq[%s:%s -> %s]", model.records()
-                                                          .existentialName(seq.getService()),
-                             model.records()
-                                  .existentialName(seq.getStatusCode()),
-                             model.records()
-                                  .existentialName(seq.getStatusToSet()));
     }
 }

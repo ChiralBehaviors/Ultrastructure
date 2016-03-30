@@ -1,8 +1,8 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  * 
  
- * This file is part of Ultrastructure.
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -20,40 +20,32 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.google.common.base.Optional;
 
-import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.auth.AuthenticationException;
+import io.dropwizard.auth.Authenticator;
 
 /**
  * @author hhildebrand
  *
  */
-public final class NullAuthenticationFactory
-        extends AuthFactory<BasicCredentials, AuthorizedPrincipal> {
+public class NullAuthenticator
+        implements Authenticator<String, AuthorizedPrincipal> {
+    private final Model model;
 
-    public NullAuthenticationFactory() {
-        super(cred -> Optional.absent());
+    NullAuthenticator(Model model) {
+        this.model = model;
     }
 
     @Override
-    public AuthFactory<BasicCredentials, AuthorizedPrincipal> clone(boolean required) {
-        return this;
+    public Optional<AuthorizedPrincipal> authenticate(String credentials) throws AuthenticationException {
+        return Optional.of(model.principalFrom(model.getKernel()
+                                                    .getUnauthenticatedAgency(),
+                                               Collections.emptyList()));
     }
 
-    @Override
-    public Class<AuthorizedPrincipal> getGeneratedClass() {
-        return AuthorizedPrincipal.class;
-    }
-
-    @Override
-    public AuthorizedPrincipal provide() {
-        return null;
-    }
-
-    @Override
-    public void setRequest(HttpServletRequest request) {
-    }
 }

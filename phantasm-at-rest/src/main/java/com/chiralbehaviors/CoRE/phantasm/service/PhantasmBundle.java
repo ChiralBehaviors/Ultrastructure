@@ -36,7 +36,6 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.glassfish.hk2.utilities.Binder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +43,7 @@ import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
-import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
+import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
@@ -66,7 +64,11 @@ import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.auth.CachingAuthenticator;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.PermitAllAuthorizer;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter.Builder;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.server.ServerFactory;
@@ -167,8 +169,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     @Override
     public void run(PhantasmConfiguration configuration,
                     Environment environment) throws Exception {
-        //        environment.jersey()
-        //                   .setUrlPattern(null);
         this.environment = environment;
         if (configuration.jpa.configureFromEnvironment()) {
             configureFromEnvironment(configuration);
@@ -210,35 +210,44 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
     private void configureAuth(PhantasmConfiguration configuration,
                                Environment environment) {
-        Binder authBinder = null;
         switch (configuration.auth) {
-            case NULL:
+            case NULL: {
                 log.warn("Setting authentication to NULL");
-                authBinder = AuthFactory.binder(new NullAuthenticationFactory());
+                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(null);
+                NullAuthFilter<AuthorizedPrincipal> filter;
+                filter = new NullAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
+                                                                          .setAuthorizer(new PermitAllAuthorizer<>())
+                                                                          .setPrefix("Bearer")
+                                                                          .buildAuthFilter();
+                environment.jersey()
+                           .register(new AuthDynamicFeature(filter));
                 break;
-            case BASIC_DIGEST:
+            }
+            case BASIC_DIGEST: {
                 log.warn("Setting authentication to US basic authentication");
-                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
-                                                                                                                     new AgencyBasicAuthenticator(emf),
-                                                                                                                     configuration.authenticationCachePolicy),
-                                                                                          configuration.realm,
-                                                                                          AuthorizedPrincipal.class));
+                AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(null);
+                BasicCredentialAuthFilter<AuthorizedPrincipal> filter;
+                filter = new BasicCredentialAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
+                                                                                     .setAuthorizer(new PermitAllAuthorizer<>())
+                                                                                     .setPrefix("Basic")
+                                                                                     .buildAuthFilter();
+                environment.jersey()
+                           .register(new AuthDynamicFeature(filter));
                 break;
-            case BEARER_TOKEN:
+            }
+            case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
-                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
-                                                                                                                   new AgencyBearerTokenAuthenticator(emf),
-                                                                                                                   configuration.authenticationCachePolicy),
-                                                                                        configuration.realm,
-                                                                                        AuthorizedPrincipal.class));
+                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(null);
+                OAuthCredentialAuthFilter<AuthorizedPrincipal> filter;
+                filter = new Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
+                                                           .setAuthorizer(new PermitAllAuthorizer<>())
+                                                           .setPrefix("Bearer")
+                                                           .buildAuthFilter();
+                environment.jersey()
+                           .register(new AuthDynamicFeature(filter));
                 break;
+            }
         }
-        if (authBinder == null) {
-            throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
-        }
-
-        environment.jersey()
-                   .register(authBinder);
         environment.jersey()
                    .register(new AuthxResource(emf));
     }
@@ -311,8 +320,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                    .register(new WorkspaceMediatedResource(emf));
         environment.jersey()
                    .register(new GraphQlResource(emf, executionScope));
-        environment.healthChecks()
-                   .register("EMF Health", new EmfHealthCheck(emf));
     }
 
 }

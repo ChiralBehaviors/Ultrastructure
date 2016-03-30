@@ -26,6 +26,9 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,13 +51,15 @@ import io.dropwizard.auth.Authenticator;
  *
  */
 public class AgencyBearerTokenAuthenticator
-        implements Authenticator<RequestCredentials, AuthorizedPrincipal> {
+        implements Authenticator<String, AuthorizedPrincipal> {
     public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
     private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     private final Model         model;
     private final CoreInstance  coreInstance;
     private final Relationship  loginTo;
+    @Context
+    private HttpServletRequest  servletRequest;
 
     public AgencyBearerTokenAuthenticator(Model m) {
         model = m;
@@ -64,6 +69,11 @@ public class AgencyBearerTokenAuthenticator
     }
 
     @Override
+    public Optional<AuthorizedPrincipal> authenticate(String token) throws AuthenticationException {
+        return authenticate(new RequestCredentials(servletRequest.getRemoteAddr(),
+                                                   token));
+    }
+
     public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
         UUID uuid;
         try {

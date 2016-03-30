@@ -25,8 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -40,15 +38,16 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
 
@@ -61,6 +60,7 @@ import io.dropwizard.auth.Auth;
 @Path("oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthxResource extends TransactionalResource {
+    private final static String PREFIX = "Bearer";
 
     public static class CapabilityRequest {
         public List<UUID> capabilities = Collections.emptyList();
@@ -71,12 +71,9 @@ public class AuthxResource extends TransactionalResource {
     private static final Logger log = LoggerFactory.getLogger(AuthxResource.class);
     private final Attribute     login;
 
-    public AuthxResource(EntityManagerFactory emf) {
-        super(emf);
-        try (Model model = new ModelImpl(emf)) {
-            login = model.getKernel()
-                         .getLogin();
-        }
+    public AuthxResource(Model model) {
+        login = model.getKernel()
+                     .getLogin();
     }
 
     @POST
@@ -97,16 +94,30 @@ public class AuthxResource extends TransactionalResource {
     @Path("deauthorize")
     @Consumes(MediaType.APPLICATION_JSON)
     public void deauthorize(@Auth AuthorizedPrincipal principal,
-                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken) {
+                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken,
+                            @Context DSLContext create) {
         perform(principal, model -> {
-            UUID uuid = UUID.fromString(UsOAuthFactory.parse(bearerToken));
-            EntityManager em = model.create();
-            em.remove(em.find(AgencyAttribute.class, uuid));
+            UUID uuid = UUID.fromString(parse(bearerToken));
+            model.em.remove(em.find(ExistentialAttributeRecord.class, uuid));
             Agency user = principal.getPrincipal();
             log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
                      user.getName());
             return null;
         });
+    }
+
+    public static String parse(String header) {
+        if (header == null) {
+            return null;
+        }
+        final int space = header.indexOf(' ');
+        if (space > 0) {
+            final String method = header.substring(0, space);
+            if (PREFIX.equalsIgnoreCase(method)) {
+                return header.substring(space + 1);
+            }
+        }
+        return null;
     }
 
     @POST
@@ -127,7 +138,8 @@ public class AuthxResource extends TransactionalResource {
 
     private CoreUser authenticate(String username, String password,
                                   Model model) {
-        AgencyAttribute attributeValue = new AgencyAttribute(login);
+        ExistentialAttributeRecord attributeValue = model.records()
+                                                         .newExistentialAttributeRecord(login);
         attributeValue.setValue(username);
         List<Agency> agencies = model.find(attributeValue);
         if (agencies.size() > 1) {
@@ -150,30 +162,29 @@ public class AuthxResource extends TransactionalResource {
         return user;
     }
 
-    private AgencyAttribute generateToken(Credential cred, CoreUser user,
-                                          Model model) {
-        EntityManager em = model.create();
-        em.getTransaction()
-          .begin();
-        List<AgencyAttribute> values = model.getAgencyModel()
-                                            .getAttributeValues(user.getRuleform(),
-                                                                model.getKernel()
-                                                                     .getAccessToken());
-        int seqNum = values.isEmpty() ? 0 : values.get(values.size() - 1)
-                                                  .getSequenceNumber()
-                                            + 1;
-        AgencyAttribute accessToken = new AgencyAttribute(user.getRuleform(),
-                                                          model.getKernel()
-                                                               .getAccessToken(),
-                                                          model.getCurrentPrincipal()
-                                                               .getPrincipal());
-        accessToken.setValue(cred);
-        accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
-        accessToken.setSequenceNumber(seqNum);
-        model.create()
-             .persist(accessToken);
-        em.getTransaction()
-          .commit();
-        return accessToken;
+    private ExistentialAttributeRecord generateToken(Credential cred,
+                                                     CoreUser user,
+                                                     Model model) {
+        return model.create()
+                    .transactionResult(c -> {
+                        List<ExistentialAttributeRecord> values = model.getPhantasmModel()
+                                                                       .getAttributeValues(user.getRuleform(),
+                                                                                           model.getKernel()
+                                                                                                .getAccessToken());
+                        int seqNum = values.isEmpty() ? 0
+                                                      : values.get(values.size()
+                                                                   - 1)
+                                                              .getSequenceNumber()
+                                                        + 1;
+                        ExistentialAttributeRecord accessToken = model.records()
+                                                                      .newExistentialAttribute(user.getRuleform(),
+                                                                                               model.getKernel()
+                                                                                                    .getAccessToken());
+                        accessToken.setValue(cred);
+                        accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
+                        accessToken.setSequenceNumber(seqNum);
+                        accessToken.insert();
+                        return accessToken;
+                    });
     }
 }

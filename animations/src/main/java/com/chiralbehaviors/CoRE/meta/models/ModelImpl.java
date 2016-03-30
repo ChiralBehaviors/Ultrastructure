@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -443,11 +444,18 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.domain.Agency, java.util.List)
      */
     @Override
-    public AuthorizedPrincipal principalFrom(Agency agency,
+    public AuthorizedPrincipal principalFrom(Agency principal,
                                              List<UUID> capabilities) {
-        return new AuthorizedPrincipal((Agency) records().resolve(agency),
+        return new AuthorizedPrincipal(principal, capabilities,
                                        capabilities.stream()
-                                                   .map(id -> records().resolve(id))
+                                                   .map(uuid -> create().selectFrom(FACET)
+                                                                        .where(FACET.ID.eq(uuid))
+                                                                        .fetchOne())
+                                                   .filter(auth -> auth != null)
+                                                   .filter(auth -> phantasmModel.isAccessible(principal,
+                                                                                              records().resolve(auth.getClassifier()),
+                                                                                              records().resolve(auth.getClassification())))
+                                                   .map(f -> records().resolve(f.getClassification()))
                                                    .map(e -> (Agency) e)
                                                    .collect(Collectors.toList()));
     }

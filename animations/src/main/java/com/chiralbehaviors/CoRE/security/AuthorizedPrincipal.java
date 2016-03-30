@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.security;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 
@@ -36,22 +37,25 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 public class AuthorizedPrincipal implements Cloneable, Principal {
     private final List<Agency> capabilities;
     private final Agency       principal;
+    private final List<UUID>   asserted;
 
     /**
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal, new ArrayList<>());
+        this(principal, new ArrayList<>(), new ArrayList<>());
     }
 
     /**
      * @param principal
-     * @param asserted
+     * @param capabilities2
      */
-    public AuthorizedPrincipal(Agency principal, List<Agency> asserted) {
+    public AuthorizedPrincipal(Agency principal, List<UUID> asserted,
+                               List<Agency> capabilities) {
         this.principal = principal;
-        capabilities = asserted;
-        capabilities.add(0, this.principal);
+        this.asserted = asserted;
+        this.capabilities = capabilities;
+        this.capabilities.add(0, this.principal);
     }
 
     public List<Agency> getCapabilities() {
@@ -65,5 +69,9 @@ public class AuthorizedPrincipal implements Cloneable, Principal {
 
     public Agency getPrincipal() {
         return principal;
+    }
+
+    public List<UUID> getAsserted() {
+        return asserted;
     }
 }

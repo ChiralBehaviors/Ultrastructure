@@ -31,11 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -84,13 +84,16 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                                                                        kernel.getCoreUser()))
                                                      .getId());
         credential.capabilities = capabilities;
-        AgencyAttribute accessToken = new AgencyAttribute(kernel.getCore());
-        accessToken.setAttribute(kernel.getAccessToken());
-        accessToken.setAgency(bob.getRuleform());
+        ExistentialAttributeRecord accessToken = model.records()
+                                                      .newExistentialAttribute();
+        accessToken.setAttribute(model.getKernel()
+                                      .getAccessToken()
+                                      .getId());
+        accessToken.setExistential(bob.getRuleform()
+                                      .getId());
         accessToken.setValue(credential);
-        em.persist(accessToken);
-        em.flush();
-        em.clear();
+        accessToken.insert();
+        model.flush();
 
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf());
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
@@ -135,24 +138,26 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
-        em.flush();
-        AuthxResource authx = new AuthxResource(mockedEmf());
+        model.flush();
+        AuthxResource authx = new AuthxResource(model);
         HttpServletRequest request = mock(HttpServletRequest.class);
         String ip = "There's no place like 127.0.0.1";
         when(request.getRemoteAddr()).thenReturn(ip);
         UUID authToken = authx.loginForToken(username, password, request);
         assertNotNull(authToken);
 
-        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf());
+        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(model);
         RequestCredentials credential = new RequestCredentials(ip,
                                                                authToken.toString());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(credential);
         assertTrue(authenticated.isPresent());
         AuthorizedPrincipal authBob = authenticated.get();
         assertEquals(bob, authBob.getPrincipal());
-        NetworkAuthorization<Agency> asserted = model.getAgencyModel()
-                                                     .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                       kernel.getCoreUser()));
+        FacetRecord asserted = model.getPhantasmModel()
+                                    .getFacetDeclaration(model.getKernel()
+                                                              .getIsA(),
+                                                         model.getKernel()
+                                                              .getCoreUser());
 
         CapabilityRequest capRequest = new CapabilityRequest();
         capRequest.username = username;
@@ -175,7 +180,9 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                .size());
         assertEquals(bob.getRuleform(), authBob.getCapabilities()
                                                .get(0));
-        assertEquals(kernel.getCoreUser(), authBob.getCapabilities()
-                                                  .get(1));
+        assertEquals(model.getKernel()
+                          .getCoreUser(),
+                     authBob.getCapabilities()
+                            .get(1));
     }
 }

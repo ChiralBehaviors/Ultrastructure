@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -251,6 +252,8 @@ public interface Model extends AutoCloseable {
                                                                     UUID uuid);
 
     ExistentialRecord lookupExistential(UUID id);
+
+    AuthorizedPrincipal principalFrom(Agency agency, List<UUID> capabilities);
 
     RecordsFactory records();
 

@@ -36,6 +36,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.domain.Agency;
 
 /**
@@ -81,10 +82,11 @@ abstract public class DatabaseTest {
         };
         RecordsFactory.clear(create);
         Agency c = RECORDS.newAgency("Ye CoRE");
+        c.setId(WellKnownAgency.CORE.id());
         c.setUpdatedBy(c.getId());
         create.insertInto(EXISTENTIAL)
               .set(c);
-        core.set(c.getId());
+        core.set(WellKnownAgency.CORE.id());
 
     }
 

@@ -31,6 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -121,6 +122,7 @@ public class ModelImpl implements Model {
     }
 
     private final ExistentialModel<Agency>       agencyModel;
+    private final Animations                     animations;
     private final ExistentialModel<Attribute>    attributeModel;
     private final DSLContext                     create;
     private AuthorizedPrincipal                  currentPrincipal;
@@ -135,7 +137,6 @@ public class ModelImpl implements Model {
     private final StatusCodeModel                statusCodeModel;
     private final ExistentialModel<Unit>         unitModel;
     private final WorkspaceModel                 workspaceModel;
-    private final Animations                     animations;
 
     public ModelImpl(Connection connection) throws SQLException {
         this(PostgresDSL.using(configuration(connection)));
@@ -265,6 +266,14 @@ public class ModelImpl implements Model {
             currentPrincipal = previous;
         }
         return value;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#flush()
+     */
+    @Override
+    public void flush() {
+        animations.flush();
     }
 
     @Override
@@ -430,6 +439,19 @@ public class ModelImpl implements Model {
         return records().resolve(id);
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.domain.Agency, java.util.List)
+     */
+    @Override
+    public AuthorizedPrincipal principalFrom(Agency agency,
+                                             List<UUID> capabilities) {
+        return new AuthorizedPrincipal((Agency) records().resolve(agency),
+                                       capabilities.stream()
+                                                   .map(id -> records().resolve(id))
+                                                   .map(e -> (Agency) e)
+                                                   .collect(Collectors.toList()));
+    }
+
     @Override
     public RecordsFactory records() {
         return factory;
@@ -484,13 +506,5 @@ public class ModelImpl implements Model {
                                                          .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
                                                          .fetchOne()
                                                          .into(Agency.class));
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#flush()
-     */
-    @Override
-    public void flush() {
-        animations.flush();
     }
 }

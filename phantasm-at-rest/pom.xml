@@ -105,6 +105,10 @@
             <version>2.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+            <dependency>
+                <groupId>com.bendb.dropwizard</groupId>
+                <artifactId>dropwizard-jooq</artifactId> 
+            </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -161,7 +165,7 @@
                 <executions>
                     <execution>
                         <id>copy</id>
-                        <phase>generate-test-resources</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>

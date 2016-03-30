@@ -20,23 +20,24 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.UUID;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthenticationException;
@@ -48,23 +49,18 @@ import io.dropwizard.auth.Authenticator;
  */
 public class AgencyBearerTokenAuthenticator
         implements Authenticator<RequestCredentials, AuthorizedPrincipal> {
-    public static final int            ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
-    private final static Logger        log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
+    public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
+    private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
-    private final EntityManagerFactory emf;
-    private final CoreInstance         coreInstance;
-    private final Relationship         loginTo;
+    private final Model         model;
+    private final CoreInstance  coreInstance;
+    private final Relationship  loginTo;
 
-    /**
-     * @param emf
-     */
-    public AgencyBearerTokenAuthenticator(EntityManagerFactory emf) {
-        this.emf = emf;
-        try (Model model = new ModelImpl(emf)) {
-            coreInstance = model.getCoreInstance();
-            loginTo = model.getKernel()
-                           .getLOGIN_TO();
-        }
+    public AgencyBearerTokenAuthenticator(Model m) {
+        model = m;
+        coreInstance = model.getCoreInstance();
+        loginTo = model.getKernel()
+                       .getLOGIN_TO();
     }
 
     @Override
@@ -78,29 +74,28 @@ public class AgencyBearerTokenAuthenticator
                      credentials);
             return Optional.absent();
         }
-        try (Model model = new ModelImpl(emf);) {
-            EntityManager em = model.create();
-            em.getTransaction()
-              .begin();
-
-            AgencyAttribute accessToken = em.find(AgencyAttribute.class, uuid);
-            if (accessToken == null) {
-                log.warn("requested access token {} not found", credentials);
-                return Optional.absent();
-            }
-            Optional<AuthorizedPrincipal> returned = validate(accessToken,
-                                                              credentials, em,
-                                                              model);
-            em.getTransaction()
-              .commit();
-            return returned;
+        ExistentialAttributeRecord accessToken = model.create()
+                                                      .selectFrom(EXISTENTIAL_ATTRIBUTE)
+                                                      .where(EXISTENTIAL_ATTRIBUTE.ID.eq(uuid))
+                                                      .fetchOne();
+        if (accessToken == null) {
+            log.warn("requested access token {} not found", credentials);
+            return Optional.absent();
         }
+        return validate(accessToken, credentials);
     }
 
     public AuthorizedPrincipal principalFrom(Agency agency,
-                                             AgencyAttribute accessToken,
+                                             ExistentialAttributeRecord accessToken,
                                              Model model) {
-        Credential credential = accessToken.getJsonValue(Credential.class);
+        Credential credential;
+        try {
+            credential = new ObjectMapper().treeToValue(accessToken.getJsonValue(),
+                                                        Credential.class);
+        } catch (JsonProcessingException e) {
+            log.warn("unable to deserialize access token {}", accessToken);
+            return null;
+        }
         return credential == null ? new AuthorizedPrincipal(agency)
                                   : model.principalFrom(agency,
                                                         credential.capabilities);
@@ -119,43 +114,53 @@ public class AgencyBearerTokenAuthenticator
         return credential.ip.equals(onRequest.remoteIp);
     }
 
-    private Optional<AuthorizedPrincipal> validate(AgencyAttribute accessToken,
-                                                   RequestCredentials requestCredentials,
-                                                   EntityManager em,
-                                                   Model model) {
+    private Optional<AuthorizedPrincipal> validate(ExistentialAttributeRecord accessToken,
+                                                   RequestCredentials requestCredentials) {
         // Validate the credential
-        Credential credential = (accessToken.getJsonValue(Credential.class));
+        Credential credential;
+        try {
+            credential = new ObjectMapper().treeToValue(accessToken.getJsonValue(),
+                                                        Credential.class);
+        } catch (JsonProcessingException e) {
+            log.warn("Cannot deserialize access token {}", accessToken);
+            return Optional.absent();
+        }
         if (!validate(credential, requestCredentials)) {
-            em.remove(accessToken);
+            accessToken.delete();
             log.warn("Invalid access token {}", requestCredentials);
             return Optional.absent();
         }
 
         // Validate time to live
-        Agency agency = accessToken.getAgency();
+        UUID agency = accessToken.getExistential();
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         if (!credential.isValid(accessToken.getUpdated(), currentTime)) {
             log.warn("requested access token {} for {}:{} has timed out",
-                     requestCredentials, agency.getId(), agency);
-            em.remove(accessToken);
+                     requestCredentials, agency, model.records()
+                                                      .resolve(agency));
+            accessToken.delete();
             return Optional.absent();
         }
 
         // Validate agency has login cap to this core instance
-        if (!model.getAgencyModel()
-                  .checkCapability(Arrays.asList(agency),
+        if (!model.getPhantasmModel()
+                  .checkCapability(Arrays.asList(model.records()
+                                                      .resolve(agency)),
                                    coreInstance.getRuleform(), loginTo)) {
             log.warn("requested access token {} for {}:{} has no login capability",
-                     requestCredentials, agency.getId(), agency);
-            em.remove(accessToken);
+                     requestCredentials, agency, model.records()
+                                                      .resolve(agency));
+            accessToken.delete();
             return Optional.absent();
         }
 
         // Update and auth
         accessToken.setUpdated(currentTime);
         log.info("requested access token {} refreshed for {}:{}",
-                 requestCredentials, agency.getId(), agency);
-        return Optional.of(principalFrom(agency, accessToken, model));
+                 requestCredentials, agency, agency);
+        return Optional.of(principalFrom(model.records()
+                                              .resolve(agency),
+                                         accessToken, model));
     }
 
 }

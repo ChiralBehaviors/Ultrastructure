@@ -66,9 +66,7 @@ import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.CachingAuthenticator;
-import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.server.ServerFactory;

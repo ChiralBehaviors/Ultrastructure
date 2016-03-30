@@ -135,11 +135,6 @@ public interface PhantasmModel {
     void deauthorizeAll(ExistentialRuleform ruleform, Relationship relationship,
                         List<? extends ExistentialRuleform> authorized);
 
-    /**
-     * @param attribute
-     * @param query
-     * @return
-     */
     List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
                                                              Object query);
 

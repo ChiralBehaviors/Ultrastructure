@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.google.common.base.Optional;
 
-import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.basic.BasicCredentials;
 
 /**

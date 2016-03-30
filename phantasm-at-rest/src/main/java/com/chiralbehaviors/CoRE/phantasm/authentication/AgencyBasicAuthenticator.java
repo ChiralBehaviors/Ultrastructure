@@ -19,17 +19,15 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.bcrypt.BCrypt;
 import com.google.common.base.Optional;
@@ -63,68 +61,68 @@ public class AgencyBasicAuthenticator
         }
     }
 
-    private final EntityManagerFactory emf;
-    private final CoreInstance         coreInstance;
-    private final Relationship         loginTo;
+    private final Model        model;
+    private final CoreInstance coreInstance;
+    private final Relationship loginTo;
 
     /**
-     * @param emf
+     * @param create
      */
-    public AgencyBasicAuthenticator(EntityManagerFactory emf) {
-        this.emf = emf;
-        try (Model model = new ModelImpl(emf)) {
-            coreInstance = model.getCoreInstance();
-            loginTo = model.getKernel()
-                           .getLOGIN_TO();
-        }
+    public AgencyBasicAuthenticator(Model m) {
+        this.model = m;
+        coreInstance = model.getCoreInstance();
+        loginTo = model.getKernel()
+                       .getLOGIN_TO();
     }
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials) throws AuthenticationException {
         String username = credentials.getUsername();
-        try (Model model = new ModelImpl(emf)) {
-            AgencyAttribute attributeValue = new AgencyAttribute(model.getKernel()
-                                                                      .getLogin());
-            attributeValue.setValue(username);
-            List<Agency> agencies = model.find(attributeValue);
-            if (agencies.size() > 1) {
-                log.error(String.format("Multiple agencies with username %s",
-                                        username));
-                return Optional.absent();
-            }
-            if (agencies.size() == 0) {
-                log.warn(String.format("Attempt to login from non existent username %s",
-                                       username));
-                return Optional.absent();
-            }
-            CoreUser user = (CoreUser) model.wrap(CoreUser.class,
-                                                  agencies.get(0));
+        List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
+                                                            .findByAttributeValue(model.getKernel()
+                                                                                       .getLogin(),
+                                                                                  username);
+        if (agencies.size() > 1) {
+            log.error(String.format("Multiple agencies with username %s",
+                                    username));
+            return Optional.absent();
+        }
+        if (agencies.size() == 0) {
+            log.warn(String.format("Attempt to login from non existent username %s",
+                                   username));
+            return Optional.absent();
+        }
+        ExistentialRuleform agency = agencies.get(0);
+        if (agency.getDomain() != ExistentialDomain.Agency) {
+            log.warn(String.format("Attempt to login from non existent agency %s",
+                                   username));
+            return Optional.absent();
+        }
+        CoreUser user = (CoreUser) model.wrap(CoreUser.class, agency);
 
-            if (!model.getAgencyModel()
-                      .checkCapability(Arrays.asList(user.getRuleform()),
-                                       coreInstance.getRuleform(), loginTo)) {
-                log.warn(String.format("Authentication failure for %s:%s - no login capability",
-                                       user.getRuleform()
-                                           .getId(),
-                                       username));
-                return Optional.absent();
-            }
+        if (!model.getPhantasmModel()
+                  .checkCapability(Arrays.asList(user.getRuleform()),
+                                   coreInstance.getRuleform(), loginTo)) {
+            log.warn(String.format("Authentication failure for %s:%s - no login capability",
+                                   user.getRuleform()
+                                       .getId(),
+                                   username));
+            return Optional.absent();
+        }
 
-            boolean authenticated = authenticate(user,
-                                                 credentials.getPassword());
-            if (authenticated) {
-                log.info(String.format("Authentication success for %s:%s",
-                                       user.getRuleform()
-                                           .getId(),
-                                       username));
-                return Optional.of(new AuthorizedPrincipal(user.getRuleform()));
-            } else {
-                log.warn(String.format("Authentication failure for %s:%s",
-                                       user.getRuleform()
-                                           .getId(),
-                                       username));
-                return Optional.absent();
-            }
+        boolean authenticated = authenticate(user, credentials.getPassword());
+        if (authenticated) {
+            log.info(String.format("Authentication success for %s:%s",
+                                   user.getRuleform()
+                                       .getId(),
+                                   username));
+            return Optional.of(new AuthorizedPrincipal(user.getRuleform()));
+        } else {
+            log.warn(String.format("Authentication failure for %s:%s",
+                                   user.getRuleform()
+                                       .getId(),
+                                   username));
+            return Optional.absent();
         }
     }
 }

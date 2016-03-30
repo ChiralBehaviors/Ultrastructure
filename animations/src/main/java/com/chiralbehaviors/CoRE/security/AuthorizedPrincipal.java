@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.security;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
  * @author hhildebrand
  *
  */
-public class AuthorizedPrincipal implements Cloneable {
+public class AuthorizedPrincipal implements Cloneable, Principal {
     private final List<Agency> capabilities;
     private final Agency       principal;
 
@@ -55,6 +56,11 @@ public class AuthorizedPrincipal implements Cloneable {
 
     public List<Agency> getCapabilities() {
         return capabilities;
+    }
+
+    @Override
+    public String getName() {
+        return principal.getName();
     }
 
     public Agency getPrincipal() {

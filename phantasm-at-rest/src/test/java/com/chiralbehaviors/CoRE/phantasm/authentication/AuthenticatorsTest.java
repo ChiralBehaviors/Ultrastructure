@@ -59,14 +59,16 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
-        em.flush();
-        em.clear();
-        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(mockedEmf());
+        model.flush();
+        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(model);
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
         assertTrue(authenticated.isPresent());
-        assertEquals(bob, authenticated.get()
-                                       .getPrincipal());
+        assertEquals(bob.getRuleform()
+                        .getId(),
+                     authenticated.get()
+                                  .getPrincipal()
+                                  .getId());
     }
 
     @Test

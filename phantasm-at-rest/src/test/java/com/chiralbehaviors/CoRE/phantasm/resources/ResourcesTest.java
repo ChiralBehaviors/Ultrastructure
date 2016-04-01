@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -46,9 +45,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
+import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
@@ -90,20 +94,21 @@ public class ResourcesTest extends ThingWorkspaceTest {
     public void testFacetNode() throws Exception {
         URL url;
         Map<String, Object> jsonObject;
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
         thing1.setURI("http://example.com");
         thing1.setThing2(thing2);
         JsonLdOptions options = new JsonLdOptions();
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),
-                                    scope.lookup("kernel", "IsA")
-                                         .getId()
-                                         .toString(),
-                                    scope.lookup("Thing1")
-                                         .getId()
-                                         .toString(),
+                                    ((ExistentialRecord) scope.lookup("kernel",
+                                                                      "IsA")).getId()
+                                                                             .toString(),
+                                    ((ExistentialRecord) scope.lookup("Thing1")).getId()
+                                                                                .toString(),
                                     thing1.getRuleform()
                                           .getId()));
         jsonObject = (Map<String, Object>) JsonUtils.fromInputStream(url.openStream());
@@ -122,14 +127,16 @@ public class ResourcesTest extends ThingWorkspaceTest {
         String[] newAliases = new String[] { "jones", "smith" };
         String newUri = "new iri";
 
-        MavenArtifact artifact1 = model.construct(MavenArtifact.class, "core",
-                                                  "core artifact");
+        MavenArtifact artifact1 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
+                                                  "core", "core artifact");
         artifact1.setArtifactID("com.chiralbehaviors.CoRE");
         artifact1.setArtifactID("core");
         artifact1.setVersion("0.0.2-SNAPSHOT");
         artifact1.setType("jar");
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
                                                   "animations",
                                                   "animations artifact");
         artifact2.setArtifactID("com.chiralbehaviors.CoRE");
@@ -243,9 +250,9 @@ public class ResourcesTest extends ThingWorkspaceTest {
         URL url;
         Object jsonObject;
         url = new URL(String.format("http://localhost:%s/json-ld/ruleform/Attribute/%s",
-                                    application.getPort(), scope.lookup("URI")
-                                                                .getId()
-                                                                .toString()));
+                                    application.getPort(),
+                                    ((ExistentialRecord) scope.lookup("URI")).getId()
+                                                                             .toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",

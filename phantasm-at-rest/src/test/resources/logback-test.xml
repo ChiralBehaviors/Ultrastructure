@@ -7,22 +7,13 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
+        <level value="TRACE" />
+    </logger> 
+    <logger name="org.jooq">
         <level value="INFO" />
     </logger>
-    <logger name="org.hibernate">
-        <level value="WARN" />
-    </logger>
-    <logger name="org.hibernate.SQL">
-        <level value="WARN" />
-    </logger>
-    <logger name="org.hibernate.type">
-        <level value="WARN" />
-    </logger>
-    <logger name="org.hibernate.cache">
-        <level value="WARN" />
-    </logger>
     <logger name="graphql">
-        <level value="WARN" />
+        <level value="TRACE" />
     </logger>
     <root>
         <level value="WARN" />

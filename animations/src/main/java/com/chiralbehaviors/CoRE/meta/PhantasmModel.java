@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
@@ -233,6 +234,9 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
                                           Relationship relationship,
                                           ExistentialDomain domain);
+
+    List<ExistentialRuleform> getChildrenUuid(UUID id, UUID inverse,
+                                              ExistentialDomain domain);
 
     /**
      *

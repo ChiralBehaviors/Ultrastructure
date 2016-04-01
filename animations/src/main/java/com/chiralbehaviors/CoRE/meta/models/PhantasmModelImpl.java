@@ -544,11 +544,18 @@ public class PhantasmModelImpl implements PhantasmModel {
     public List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
                                                  Relationship relationship,
                                                  ExistentialDomain domain) {
+        return getChildrenUuid(parent.getId(), relationship.getId(), domain);
+    }
+
+    @Override
+    public List<ExistentialRuleform> getChildrenUuid(UUID parent,
+                                                     UUID relationship,
+                                                     ExistentialDomain domain) {
         return create.selectDistinct(EXISTENTIAL.fields())
                      .from(EXISTENTIAL)
                      .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                     .on(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
                      .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
                      .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()

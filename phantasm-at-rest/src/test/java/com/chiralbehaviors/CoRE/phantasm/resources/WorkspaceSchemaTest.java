@@ -34,21 +34,26 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Argument;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
+import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -62,27 +67,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     private static final String COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST = "com.chiralbehaviors.CoRE.phantasm.plugin.test";
 
-    private static final String INTROSPECTION_QUERY                            = "\n  query IntrospectionQuery "
-                                                                                 + "{\n    __schema "
-                                                                                 + "{\n      queryType { name }\n      mutationType { name }\n      "
-                                                                                 + "types {\n        ...FullType\n      }\n      "
-                                                                                 + "directives {\n        name\n        description\n        "
-                                                                                 + "args {\n          ...InputValue\n        }\n        "
-                                                                                 + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
-                                                                                 + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
-                                                                                 + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
-                                                                                 + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
-                                                                                 + "inputFields {\n      ...InputValue\n    }\n    "
-                                                                                 + "interfaces {\n      ...TypeRef\n    }\n    "
-                                                                                 + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
-                                                                                 + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
-                                                                                 + "fragment InputValue on __InputValue {\n    name\n    description\n    "
-                                                                                 + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
-                                                                                 + "fragment TypeRef on __Type {\n    kind\n    name\n    "
-                                                                                 + "ofType {\n      kind\n      name\n      "
-                                                                                 + "ofType {\n        kind\n        name\n        "
-                                                                                 + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
-
     private static ClassLoader  executionScope;
 
     @BeforeClass
@@ -92,17 +76,16 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @Test
     public void testCasting() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
+                                        "Thingy", "a favorite thing");
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);
 
-        EntityManagerFactory mockedEmf = mockedEmf();
-
-        GraphQlResource resource = new GraphQlResource(mockedEmf,
-                                                       getClass().getClassLoader());
+        GraphQlResource resource = new GraphQlResource(getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -112,8 +95,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                       .toString());
         QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { UpdateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);
-        ExecutionResult result = resource.query(null, TEST_SCENARIO_URI,
-                                                request);
+        ExecutionResult result = resource.query(null, THING_URI, request);
         assertNotNull(result);
 
         assertEquals(result.getErrors()
@@ -128,17 +110,20 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @Test
     public void testCreate() throws Exception {
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
-                                                 "model artifact");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
+                                        "Thingy", "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
+                                                 "model", "model artifact");
         artifact.setArtifactID("com.chiralbehaviors.CoRE");
         artifact.setArtifactID("model");
         artifact.setVersion("0.0.2-SNAPSHOT");
         artifact.setType("jar");
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
                                                   "animations",
                                                   "animations artifact");
         artifact2.setArtifactID("com.chiralbehaviors.CoRE");
@@ -151,10 +136,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
 
-        EntityManagerFactory mockedEmf = mockedEmf();
-
-        GraphQlResource resource = new GraphQlResource(mockedEmf,
-                                                       getClass().getClassLoader());
+        GraphQlResource resource = new GraphQlResource(getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
@@ -165,7 +147,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 variables);
         ExecutionResult result;
         try {
-            result = resource.query(null, TEST_SCENARIO_URI, request);
+            result = resource.query(null, THING_URI, request);
         } catch (WebApplicationException e) {
             fail(e.getResponse()
                   .toString());
@@ -187,18 +169,22 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @Test
     public void testGraphQlResource() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
-                                                 "model artifact");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
+                                        "Thingy", "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
+                                                 "model", "model artifact");
         artifact.setArtifactID("com.chiralbehaviors.CoRE");
         artifact.setArtifactID("model");
         artifact.setVersion("0.0.2-SNAPSHOT");
         artifact.setType("jar");
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
                                                   "animations",
                                                   "animations artifact");
         artifact2.setArtifactID("com.chiralbehaviors.CoRE");
@@ -216,10 +202,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
 
-        EntityManagerFactory mockedEmf = mockedEmf();
-
-        GraphQlResource resource = new GraphQlResource(mockedEmf,
-                                                       getClass().getClassLoader());
+        GraphQlResource resource = new GraphQlResource(getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -228,7 +211,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 variables);
         ExecutionResult result;
         try {
-            result = resource.query(null, TEST_SCENARIO_URI, request);
+            result = resource.query(null, THING_URI, request);
         } catch (WebApplicationException e) {
             fail(e.getResponse()
                   .getEntity()
@@ -269,12 +252,12 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @Test
     public void testIntrospection() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf,
-                                                   getClass().getClassLoader()).build(thing1.getScope()
-                                                                                            .getWorkspace(),
-                                                                                      model);
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        GraphQLSchema schema = FacetType.build(thing1.getScope()
+                                                     .getWorkspace(),
+                                               model,
+                                               getClass().getClassLoader());
         String query = INTROSPECTION_QUERY;
         @SuppressWarnings("rawtypes")
         ExecutionResult execute = new GraphQL(schema).execute(query,
@@ -293,18 +276,22 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
     public void testMutation() throws Exception {
         String[] newAliases = new String[] { "jones", "smith" };
         String newUri = "new iri";
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
-                                                 "model artifact");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
+                                        "Thingy", "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
+                                                 "model", "model artifact");
         artifact.setArtifactID("com.chiralbehaviors.CoRE");
         artifact.setArtifactID("model");
         artifact.setVersion("0.0.2-SNAPSHOT");
         artifact.setType("jar");
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
                                                   "animations",
                                                   "animations artifact");
         artifact2.setArtifactID("com.chiralbehaviors.CoRE");
@@ -322,10 +309,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
 
-        EntityManagerFactory mockedEmf = mockedEmf();
-
-        GraphQlResource resource = new GraphQlResource(mockedEmf,
-                                                       getClass().getClassLoader());
+        GraphQlResource resource = new GraphQlResource(getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -364,14 +348,11 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
     @Test
     public void testPlugin() throws Exception {
 
-        EntityManagerFactory mockedEmf = mockedEmf();
-
         Workspace workspace = model.wrap(Workspace.class, scope.getWorkspace()
                                                                .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf,
-                                                       executionScope);
+        GraphQlResource resource = new GraphQlResource(executionScope);
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
                                                                        COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
@@ -389,8 +370,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 variables);
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
-        ExecutionResult result = resource.query(null, TEST_SCENARIO_URI,
-                                                request);
+        ExecutionResult result = resource.query(null, THING_URI, request);
 
         assertEquals(result.getErrors()
                            .toString(),
@@ -408,14 +388,15 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertEquals(bob, thing1.getDescription());
 
         String apple = "Connie";
-        Thing2 thing2 = model.construct(Thing2.class, apple, "Her Dobbsness");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        apple, "Her Dobbsness");
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);
         variables.put("test", "me");
         request = new QueryRequest("query it($id: String!, $test: String) { Thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
-        result = resource.query(null, TEST_SCENARIO_URI, request);
+        result = resource.query(null, THING_URI, request);
 
         assertEquals(result.getErrors()
                            .toString(),
@@ -429,115 +410,27 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test
-    public void testWorkspaceSchema() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
-                                                 "model artifact");
-        artifact.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact.setArtifactID("model");
-        artifact.setVersion("0.0.2-SNAPSHOT");
-        artifact.setType("jar");
-        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
-                                                  "animations",
-                                                  "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        String uri = "http://example.com";
-        thing1.setURI(uri);
-        thing1.setDerivedFrom(artifact);
-        thing1.setThing2(thing2);
-        thing2.addThing3(thing3);
-        thing3.addDerivedFrom(artifact);
-        thing3.addDerivedFrom(artifact2);
-
-        EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf,
-                                                   getClass().getClassLoader()).build(thing1.getScope()
-                                                                                            .getWorkspace(),
-                                                                                      model);
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
-
-                                                              new PhantasmCRUD(model),
-                                                              variables);
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
-
-        assertNotNull(result);
-
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
-        assertNotNull(thing1Result);
-        assertEquals(thing1.getName(), thing1Result.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
-                     thing1Result.get("id"));
-
-        Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
-        assertNotNull(thing2Result);
-        assertEquals(thing2.getName(), thing2Result.get("name"));
-        assertEquals(thing2.getRuleform()
-                           .getId()
-                           .toString(),
-                     thing2Result.get("id"));
-        List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
-        assertNotNull(thing3s);
-        assertEquals(1, thing3s.size());
-        Map<String, Object> thing3Result = thing3s.get(0);
-        assertEquals(thing3.getName(), thing3Result.get("name"));
-        assertEquals(thing3.getRuleform()
-                           .getId()
-                           .toString(),
-                     thing3Result.get("id"));
-        List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
-        assertNotNull(thing3DerivedFroms);
-        assertEquals(2, thing3DerivedFroms.size());
-
-        result = (Map<String, Object>) new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
-                                                                                 thing1.getRuleform()
-                                                                                       .getId()),
-                                                                   new PhantasmCRUD(model))
-                                                          .getData();
-        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
-        assertEquals(1, instances.size());
-        Map<String, Object> instance = instances.get(0);
-        assertEquals(thing1.getName(), instance.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
-                     instance.get("id"));
-        assertEquals(uri, instance.get("URI"));
-    }
-
     private Plugin constructPlugin() throws InstantiationException {
-        Plugin testPlugin = model.construct(Plugin.class, "Test Plugin",
+        Plugin testPlugin = model.construct(Plugin.class,
+                                            ExistentialDomain.Product,
+                                            "Test Plugin",
                                             "My super green test plugin");
         testPlugin.setFacetName("Thing1");
         testPlugin.setPackageName(COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST);
         testPlugin.setConstructor(model.construct(Constructor.class,
+                                                  ExistentialDomain.Product,
                                                   "constructor",
                                                   "For all your construction needs"));
         testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
+                                                     ExistentialDomain.Product,
                                                      "instanceMethod",
                                                      "For instance"));
         InstanceMethod methodWithArg = model.construct(InstanceMethod.class,
+                                                       ExistentialDomain.Product,
                                                        "instanceMethodWithArgument",
                                                        "For all your argument needs");
-        Argument argument = model.construct(Argument.class, "arg1",
+        Argument argument = model.construct(Argument.class,
+                                            ExistentialDomain.Product, "arg1",
                                             "Who needs an argument?");
         methodWithArg.addArgument(argument);
         argument.setInputType("String");

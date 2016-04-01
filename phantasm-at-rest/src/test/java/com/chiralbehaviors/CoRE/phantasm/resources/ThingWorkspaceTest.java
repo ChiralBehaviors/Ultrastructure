@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -36,28 +35,13 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
  */
 public class ThingWorkspaceTest extends AbstractModelTest {
 
-    public static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
-
-    private static boolean   initialized = false;
-    @BeforeClass
-    public static void loadWorkspace() throws IOException {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.manifest(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
-        em.getTransaction()
-          .commit();
-    }
-
     protected WorkspaceScope scope;
 
     @Before
-    public void initializeScope() {
+    public void initializeScope() throws IOException {
+        WorkspaceImporter.manifest(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                   model);
         scope = model.getWorkspaceModel()
-                     .getScoped(WorkspaceAccessor.uuidOf(TEST_SCENARIO_URI));
+                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
     }
 }

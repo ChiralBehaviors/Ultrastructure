@@ -20,12 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static graphql.schema.GraphQLObjectType.newObject;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +29,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -50,24 +44,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
-import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
 import io.dropwizard.auth.Auth;
 
@@ -124,9 +114,8 @@ public class GraphQlResource extends TransactionalResource {
     private final ConcurrentMap<UUID, GraphQLSchema> cache     = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
 
-    public GraphQlResource(EntityManagerFactory emf,
-                           ClassLoader executionScope) {
-        super(emf);
+    public GraphQlResource(ClassLoader executionScope) {
+        super(null);
         this.executionScope = executionScope;
     }
 
@@ -136,13 +125,13 @@ public class GraphQlResource extends TransactionalResource {
     public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal) {
         return readOnly(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
-            Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
-                                                  kernel.getWorkspace());
             List<Map<String, Object>> workspaces = new ArrayList<>();
-            for (Product definingProduct : readOnlyModel.getProductModel()
-                                                        .getChildren(aspect.getClassification(),
-                                                                     aspect.getClassifier()
-                                                                           .getInverse())) {
+            for (ExistentialRuleform definingProduct : readOnlyModel.getPhantasmModel()
+                                                                    .getChildren(kernel.getWorkspace()
+                                                                                       .getId(),
+                                                                                 kernel.getIsA()
+                                                                                       .getInverse(),
+                                                                                 ExistentialDomain.Product)) {
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put("id", definingProduct.getId()
                                              .toString());
@@ -184,7 +173,7 @@ public class GraphQlResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return build(scoped.getWorkspace(), model);
+                return FacetType.build(scoped.getWorkspace(), model, executionScope);
             });
 
             if (schema == null) {
@@ -198,9 +187,9 @@ public class GraphQlResource extends TransactionalResource {
             PhantasmCRUD crud = new PhantasmCRUD(model);
             Product definingProduct = model.create()
                                            .find(Product.class, uuid);
-            if (!model.getNetworkedModel(definingProduct)
+            if (!model.getPhantasmModel()
                       .checkCapability(definingProduct, crud.getREAD())
-                || !model.getNetworkedModel(definingProduct)
+                || !model.getPhantasmModel()
                          .checkCapability(definingProduct, model.getKernel()
                                                                 .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
@@ -250,66 +239,5 @@ public class GraphQlResource extends TransactionalResource {
                                  String workspace, QueryRequest request) {
         return query(principal, workspace, request.toMap());
 
-    }
-
-    private Deque<NetworkAuthorization<?>> initialState(WorkspaceAccessor workspace,
-                                                        Model model) {
-        Product definingProduct = workspace.getDefiningProduct();
-        Deque<NetworkAuthorization<?>> unresolved = new ArrayDeque<>();
-        unresolved.addAll(model.getAgencyModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getAttributeModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getIntervalModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getLocationModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getProductModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getRelationshipModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getStatusCodeModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getUnitModel()
-                               .getFacets(definingProduct));
-        return unresolved;
-    }
-
-    protected GraphQLSchema build(WorkspaceAccessor accessor, Model model) {
-        Deque<NetworkAuthorization<?>> unresolved = initialState(accessor,
-                                                                 model);
-        Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
-        Product definingProduct = accessor.getDefiningProduct();
-        Workspace workspace = model.wrap(Workspace.class, definingProduct);
-        Builder topLevelQuery = newObject().name("Query")
-                                           .description(String.format("Top level query for %s",
-                                                                      definingProduct.getName()));
-        Builder topLevelMutation = newObject().name("Mutation")
-                                              .description(String.format("Top level mutation for %s",
-                                                                         definingProduct.getName()));
-        List<Plugin> plugins = workspace.getPlugins();
-        while (!unresolved.isEmpty()) {
-            NetworkAuthorization<?> facet = unresolved.pop();
-            if (resolved.containsKey(facet)) {
-                continue;
-            }
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            FacetType<?, ?> type = new FacetType(facet);
-            resolved.put(facet, type);
-            List<Plugin> facetPlugins = plugins.stream()
-                                               .filter(plugin -> facet.getName()
-                                                                      .equals(plugin.getFacetName()))
-                                               .collect(Collectors.toList());
-            type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
-                       model, executionScope)
-                .stream()
-                .filter(auth -> !resolved.containsKey(auth))
-                .forEach(auth -> unresolved.add(auth));
-        }
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
-        return schema;
     }
 }

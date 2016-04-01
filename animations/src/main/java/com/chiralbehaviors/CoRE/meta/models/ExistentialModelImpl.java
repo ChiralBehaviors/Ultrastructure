@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
@@ -143,7 +142,7 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                      .from(FACET)
                      .join(WORKSPACE_AUTHORIZATION)
                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                     .and(WORKSPACE_AUTHORIZATION.REFERENCE.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.ID))
+                     .and(WORKSPACE_AUTHORIZATION.REFERENCE.equal(FACET.ID))
                      .join(EXISTENTIAL)
                      .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
                      .where(EXISTENTIAL.DOMAIN.equal(domain()))

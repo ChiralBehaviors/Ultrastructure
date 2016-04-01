@@ -1,0 +1,191 @@
+/**
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
+ * 
+ 
+ *  This file is part of Ultrastructure.
+ *
+ *  Ultrastructure is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ULtrastructure is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.chiralbehaviors.CoRE.phantasm.graphql;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
+import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
+
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
+
+/**
+ * @author hhildebrand
+ *
+ */
+public class FacetTypeTest extends AbstractModelTest {
+
+    @Before
+    public void initializeScope() throws IOException {
+        WorkspaceImporter.manifest(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                   model);
+    }
+
+    @Test
+    public void testIntrospection() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        GraphQLSchema schema = FacetType.build(thing1.getScope()
+                                                     .getWorkspace(),
+                                               model,
+                                               getClass().getClassLoader());
+        String query = getIntrospectionQuery();
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model));
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result = (Map<String, Object>) execute.getData();
+
+        assertNotNull(result);
+    }
+
+    private String getIntrospectionQuery() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[16 * 4096];
+        try (InputStream in = getClass().getResourceAsStream("/introspection-query")) {
+            for (int read = in.read(buf); read != -1; read = in.read(buf)) {
+                baos.write(buf, 0, read);
+            }
+        }
+        return baos.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testWorkspaceSchema() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
+                                        "Thingy", "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
+                                                 "model", "model artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        String uri = "http://example.com";
+        thing1.setURI(uri);
+        thing1.setDerivedFrom(artifact);
+        thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
+
+        GraphQLSchema schema = FacetType.build(thing1.getScope()
+                                                     .getWorkspace(),
+                                               model,
+                                               getClass().getClassLoader());
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
+
+                                                              new PhantasmCRUD(model),
+                                                              variables);
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        Map<String, Object> result = (Map<String, Object>) execute.getData();
+
+        assertNotNull(result);
+
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
+        assertNotNull(thing1Result);
+        assertEquals(thing1.getName(), thing1Result.get("name"));
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing1Result.get("id"));
+
+        Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
+        assertNotNull(thing2Result);
+        assertEquals(thing2.getName(), thing2Result.get("name"));
+        assertEquals(thing2.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing2Result.get("id"));
+        List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
+        assertNotNull(thing3s);
+        assertEquals(1, thing3s.size());
+        Map<String, Object> thing3Result = thing3s.get(0);
+        assertEquals(thing3.getName(), thing3Result.get("name"));
+        assertEquals(thing3.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing3Result.get("id"));
+        List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
+        assertNotNull(thing3DerivedFroms);
+        assertEquals(2, thing3DerivedFroms.size());
+
+        result = (Map<String, Object>) new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
+                                                                                 thing1.getRuleform()
+                                                                                       .getId()),
+                                                                   new PhantasmCRUD(model))
+                                                          .getData();
+        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
+        assertEquals(1, instances.size());
+        Map<String, Object> instance = instances.get(0);
+        assertEquals(thing1.getName(), instance.get("name"));
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
+                     instance.get("id"));
+        assertEquals(uri, instance.get("URI"));
+    }
+}

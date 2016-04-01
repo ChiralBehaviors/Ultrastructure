@@ -129,6 +129,10 @@ public class PhantasmTraversal {
         public String toString() {
             return String.format("Attribute auth[%s]", attribute.getName());
         }
+
+        public String getNotes() {
+            return auth.getNotes();
+        }
     }
 
     public static class NetworkAuthorization {

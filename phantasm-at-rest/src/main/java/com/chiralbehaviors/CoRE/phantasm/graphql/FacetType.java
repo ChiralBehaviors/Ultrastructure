@@ -35,8 +35,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,15 +54,17 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
@@ -81,6 +85,7 @@ import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
 
 /**
@@ -125,6 +130,66 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
     }
 
+    public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,
+                                      ClassLoader executionScope) {
+        Deque<FacetRecord> unresolved = FacetType.initialState(accessor, model);
+        Map<FacetRecord, FacetType> resolved = new HashMap<>();
+        Product definingProduct = accessor.getDefiningProduct();
+        Workspace workspace = model.wrap(Workspace.class, definingProduct);
+        Builder topLevelQuery = newObject().name("Query")
+                                           .description(String.format("Top level query for %s",
+                                                                      definingProduct.getName()));
+        Builder topLevelMutation = newObject().name("Mutation")
+                                              .description(String.format("Top level mutation for %s",
+                                                                         definingProduct.getName()));
+        List<Plugin> plugins = workspace.getPlugins();
+        while (!unresolved.isEmpty()) {
+            FacetRecord facet = unresolved.pop();
+            if (resolved.containsKey(facet)) {
+                continue;
+            }
+            FacetType type = new FacetType(facet);
+            resolved.put(facet, type);
+            List<Plugin> facetPlugins = plugins.stream()
+                                               .filter(plugin -> facet.getName()
+                                                                      .equals(plugin.getFacetName()))
+                                               .collect(Collectors.toList());
+            type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
+                       model, executionScope)
+                .stream()
+                .filter(auth -> !resolved.containsKey(auth))
+                .forEach(auth -> unresolved.add(auth));
+        }
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                                            .query(topLevelQuery.build())
+                                            .mutation(topLevelMutation.build())
+                                            .build();
+        return schema;
+    }
+
+    public static Deque<FacetRecord> initialState(WorkspaceAccessor workspace,
+                                                  Model model) {
+        Product definingProduct = workspace.getDefiningProduct();
+        Deque<FacetRecord> unresolved = new ArrayDeque<>();
+        unresolved.addAll(model.getAgencyModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getAttributeModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getIntervalModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getLocationModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getProductModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getRelationshipModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getStatusCodeModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getUnitModel()
+                               .getFacets(definingProduct));
+        return unresolved;
+    }
+
     public static Object invoke(Method method, DataFetchingEnvironment env) {
         try {
             return method.invoke(null, env);
@@ -136,8 +201,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     public static Object invoke(Method method, DataFetchingEnvironment env,
-                                Model model,
-                                @SuppressWarnings("rawtypes") Phantasm instance) {
+                                Model model, Phantasm instance) {
         try {
             return method.invoke(null, env, model, instance);
         } catch (InvocationTargetException e) {
@@ -150,18 +214,18 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
             return null;
         }
     }
-
     private static String capitalized(String field) {
         char[] chars = field.toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);
         return new String(chars);
     }
-
     private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
     private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
     private String                                                                          name;
-    private Set<ExistentialNetworkAuthorization>                                            references     = new HashSet<>();
+    private Set<FacetRecord>                                                                references     = new HashSet<>();
+
     private Builder                                                                         typeBuilder;
+
     private Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate = new HashMap<>();
 
     private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
@@ -188,35 +252,31 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
      * @param facet
      * @return the references this facet has to other facets.
      */
-    public Set<ExistentialNetworkAuthorization> build(Builder query,
-                                                      Builder mutation,
-                                                      FacetRecord facet,
-                                                      List<Plugin> plugins,
-                                                      Model model,
-                                                      ClassLoader executionScope) {
+    public Set<FacetRecord> build(Builder query, Builder mutation,
+                                  FacetRecord facet, List<Plugin> plugins,
+                                  Model model, ClassLoader executionScope) {
         build(facet);
-        new PhantasmTraversal(model).traverse(new Aspect(model.create(), facet),
-                                              this);
+        Aspect aspect = new Aspect(model.create(), facet);
+        new PhantasmTraversal(model).traverse(aspect, this);
 
-        addPlugins(facet, plugins, executionScope);
+        addPlugins(aspect, plugins, executionScope);
 
         GraphQLObjectType type = typeBuilder.build();
 
-        query.field(instance(facet, type));
-        query.field(instances(facet));
+        query.field(instance(aspect, type));
+        query.field(instances(aspect));
 
-        mutation.field(createInstance(facet));
-        mutation.field(createInstances(facet));
-        mutation.field(apply(facet));
-        mutation.field(update(facet));
-        mutation.field(updateInstances(facet));
-        mutation.field(remove(facet));
-        Set<ExistentialNetworkAuthorization> referenced = references;
+        mutation.field(createInstance(aspect));
+        mutation.field(createInstances(aspect));
+        mutation.field(apply(aspect));
+        mutation.field(update(aspect));
+        mutation.field(updateInstances(aspect));
+        mutation.field(remove(aspect));
+        Set<FacetRecord> referenced = references;
         clear();
         return referenced;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public PhantasmCRUD ctx(DataFetchingEnvironment env) {
         return (PhantasmCRUD) env.getContext();
     }
@@ -320,7 +380,6 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         createTypeBuilder.field(field);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void visitChildren(Aspect facet, NetworkAuthorization auth,
                               String fieldName, Aspect child,
@@ -347,10 +406,9 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         addChildren(facet, auth, fieldName);
         removeChild(facet, auth, singularFieldName);
         removeChildren(facet, auth, fieldName);
-        references.add(child);
+        references.add(child.getFacet());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void visitSingular(Aspect facet, NetworkAuthorization auth,
                               String fieldName, Aspect child) {
@@ -377,12 +435,10 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                          id == null ? null
                                                     : (ExistentialRuleform) crud.lookup(id));
         });
-        references.add(child);
+        references.add(child.getFacet());
     }
 
-    @SuppressWarnings("unchecked")
-    private void addChild(ExistentialNetworkAuthorization facet,
-                          ExistentialNetworkAuthorization auth,
+    private void addChild(Aspect facet, NetworkAuthorization auth,
                           String singularFieldName) {
         String add = String.format(ADD_TEMPLATE,
                                    capitalized(singularFieldName));
@@ -401,8 +457,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private void addChildren(ExistentialNetworkAuthorization facet,
-                             ExistentialNetworkAuthorization auth,
+    private void addChildren(Aspect facet, NetworkAuthorization auth,
                              String fieldName) {
         String addChildren = String.format(ADD_TEMPLATE,
                                            capitalized(fieldName));
@@ -420,7 +475,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                                         (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(addChildren))));
     }
 
-    private void addPlugins(FacetRecord facet, List<Plugin> plugins,
+    private void addPlugins(Aspect facet, List<Plugin> plugins,
                             ClassLoader executionScope) {
         plugins.forEach(plugin -> {
             String defaultImplementation = Optional.of(plugin.getPackageName())
@@ -439,8 +494,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition apply(FacetRecord facet) {
+    private GraphQLFieldDefinition apply(Aspect facet) {
         List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(APPLY_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
@@ -462,6 +516,63 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                                          });
                                    })
                                    .build();
+    }
+
+    private void build(Aspect facet, InstanceMethod instanceMethod,
+                       String defaultImplementation,
+                       ClassLoader executionScope) {
+        Method method = getInstanceMethod(Optional.ofNullable(instanceMethod.getImplementationClass())
+                                                  .orElse(defaultImplementation),
+                                          Optional.ofNullable(instanceMethod.getImplementationMethod())
+                                                  .orElse(instanceMethod.getName()),
+                                          instanceMethod.toString(),
+                                          executionScope);
+        List<GraphQLArgument> arguments = instanceMethod.getArguments()
+                                                        .stream()
+                                                        .map(arg -> newArgument().name(arg.getName())
+                                                                                 .description(arg.getDescription())
+                                                                                 .type(inputTypeOf(arg.getInputType()))
+                                                                                 .build())
+                                                        .collect(Collectors.toList());
+        @SuppressWarnings("unchecked")
+        Class<? extends Phantasm> phantasm = (Class<? extends Phantasm>) method.getParameterTypes()[2];
+        typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
+                                              .argument(arguments)
+                                              .name(instanceMethod.getName())
+                                              .dataFetcher(env -> {
+                                                  ExistentialRuleform instance = (ExistentialRuleform) env.getSource();
+                                                  PhantasmCRUD crud = ctx(env);
+                                                  if (!checkInvoke(facet,
+                                                                   instanceMethod,
+                                                                   instance,
+                                                                   crud)) {
+                                                      log.info(String.format("Failed invoking %s by: %s",
+                                                                             instanceMethod,
+                                                                             crud.getModel()
+                                                                                 .getCurrentPrincipal()));
+                                                      return null;
+
+                                                  }
+                                                  Model model = ctx(env).getModel();
+
+                                                  ClassLoader prev = Thread.currentThread()
+                                                                           .getContextClassLoader();
+                                                  Thread.currentThread()
+                                                        .setContextClassLoader(executionScope);
+                                                  try {
+                                                      return instance == null ? null
+                                                                              : invoke(method,
+                                                                                       env,
+                                                                                       model,
+                                                                                       model.wrap(phantasm,
+                                                                                                  instance));
+                                                  } finally {
+                                                      Thread.currentThread()
+                                                            .setContextClassLoader(prev);
+                                                  }
+                                              })
+                                              .description(instanceMethod.getDescription())
+                                              .build());
     }
 
     private void build(Constructor constructor, String defaultImplementation,
@@ -499,7 +610,6 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void build(FacetRecord facet) {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
@@ -546,74 +656,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                                            (String) update.get(SET_DESCRIPTION)));
     }
 
-    private void build(ExistentialNetworkAuthorization facet,
-                       InstanceMethod instanceMethod,
-                       String defaultImplementation,
-                       ClassLoader executionScope) {
-        Method method = getInstanceMethod(Optional.ofNullable(instanceMethod.getImplementationClass())
-                                                  .orElse(defaultImplementation),
-                                          Optional.ofNullable(instanceMethod.getImplementationMethod())
-                                                  .orElse(instanceMethod.getName()),
-                                          instanceMethod.toString(),
-                                          executionScope);
-        List<GraphQLArgument> arguments = instanceMethod.getArguments()
-                                                        .stream()
-                                                        .map(arg -> newArgument().name(arg.getName())
-                                                                                 .description(arg.getDescription())
-                                                                                 .type(inputTypeOf(arg.getInputType()))
-                                                                                 .build())
-                                                        .collect(Collectors.toList());
-        @SuppressWarnings("unchecked")
-        Class<? extends Phantasm> phantasm = (Class<? extends Phantasm>) method.getParameterTypes()[2];
-        typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
-                                              .argument(arguments)
-                                              .name(instanceMethod.getName())
-                                              .dataFetcher(env -> {
-                                                  @SuppressWarnings("unchecked")
-                                                  ExistentialRuleform instance = (ExistentialRuleform) env.getSource();
-                                                  PhantasmCRUD crud = ctx(env);
-                                                  if (!checkInvoke(facet,
-                                                                   instanceMethod,
-                                                                   instance,
-                                                                   crud)) {
-                                                      log.info(String.format("Failed invoking %s by: %s",
-                                                                             instanceMethod,
-                                                                             crud.getModel()
-                                                                                 .getCurrentPrincipal()));
-                                                      return null;
-
-                                                  }
-                                                  Model model = ctx(env).getModel();
-
-                                                  ClassLoader prev = Thread.currentThread()
-                                                                           .getContextClassLoader();
-                                                  Thread.currentThread()
-                                                        .setContextClassLoader(executionScope);
-                                                  try {
-                                                      return instance == null ? null
-                                                                              : invoke(method,
-                                                                                       env,
-                                                                                       model,
-                                                                                       model.wrap(phantasm,
-                                                                                                  instance));
-                                                  } finally {
-                                                      Thread.currentThread()
-                                                            .setContextClassLoader(prev);
-                                                  }
-                                              })
-                                              .description(instanceMethod.getDescription())
-                                              .build());
-    }
-
-    private boolean checkInvoke(Constructor constructor, PhantasmCRUD crud) {
-        return crud.getModel()
-                   .getPhantasmModel()
-                   .checkCapability(constructor.getRuleform(),
-                                    crud.getINVOKE());
-    }
-
-    private boolean checkInvoke(ExistentialNetworkAuthorization facet,
-                                InstanceMethod method,
+    private boolean checkInvoke(Aspect facet, InstanceMethod method,
                                 ExistentialRuleform instance,
                                 PhantasmCRUD crud) {
         Model model = crud.getModel();
@@ -621,6 +664,13 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         Relationship invoke = crud.getINVOKE();
         return networkedModel.checkCapability(method.getRuleform(), invoke)
                && crud.checkInvoke(facet, instance);
+    }
+
+    private boolean checkInvoke(Constructor constructor, PhantasmCRUD crud) {
+        return crud.getModel()
+                   .getPhantasmModel()
+                   .checkCapability(constructor.getRuleform(),
+                                    crud.getINVOKE());
     }
 
     private void clear() {
@@ -633,7 +683,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstance(FacetRecord facet) {
+    private GraphQLFieldDefinition createInstance(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
         List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
@@ -668,7 +718,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstances(FacetRecord facet) {
+    private GraphQLFieldDefinition createInstances(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
         List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(CREATE_INSTANCES_MUTATION,
@@ -781,7 +831,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         }
     }
 
-    private GraphQLFieldDefinition instance(FacetRecord facet,
+    private GraphQLFieldDefinition instance(Aspect facet,
                                             GraphQLObjectType type) {
         return newFieldDefinition().name(WorkspacePresentation.toTypeName(facet.getName()))
                                    .type(type)
@@ -793,7 +843,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                    .build();
     }
 
-    private GraphQLFieldDefinition instances(FacetRecord facet) {
+    private GraphQLFieldDefinition instances(Aspect facet) {
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Return the instances of %s",
@@ -836,8 +886,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition remove(FacetRecord facet) {
+    private GraphQLFieldDefinition remove(Aspect facet) {
         return newFieldDefinition().name(String.format(REMOVE_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(referenceToType(facet.getName()))
@@ -853,9 +902,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                    .build();
     }
 
-    @SuppressWarnings("unchecked")
-    private void removeChild(ExistentialNetworkAuthorization facet,
-                             ExistentialNetworkAuthorization auth,
+    private void removeChild(Aspect facet, NetworkAuthorization auth,
                              String singularFieldName) {
         String remove = String.format(REMOVE_TEMPLATE,
                                       capitalized(singularFieldName));
@@ -872,8 +919,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private void removeChildren(ExistentialNetworkAuthorization facet,
-                                ExistentialNetworkAuthorization auth,
+    private void removeChildren(Aspect facet, NetworkAuthorization auth,
                                 String fieldName) {
         String removeChildren = String.format(REMOVE_TEMPLATE,
                                               capitalized(fieldName));
@@ -890,8 +936,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private void setChildren(ExistentialNetworkAuthorization facet,
-                             ExistentialNetworkAuthorization auth,
+    private void setChildren(Aspect facet, NetworkAuthorization auth,
                              String fieldName) {
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
@@ -911,22 +956,22 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     private GraphQLOutputType typeOf(Attribute attribute) {
         GraphQLOutputType type = null;
         switch (attribute.getValueType()) {
-            case BINARY:
+            case Binary:
                 type = GraphQLString; // encoded binary
                 break;
-            case BOOLEAN:
+            case Boolean:
                 type = GraphQLBoolean;
                 break;
-            case INTEGER:
+            case Integer:
                 type = GraphQLInt;
                 break;
-            case NUMERIC:
+            case Numeric:
                 type = GraphQLFloat;
                 break;
-            case TEXT:
+            case Text:
                 type = GraphQLString;
                 break;
-            case TIMESTAMP:
+            case Timestamp:
                 type = GraphQLString;
                 break;
             case JSON:
@@ -936,7 +981,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition update(FacetRecord facet) {
+    private GraphQLFieldDefinition update(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
@@ -973,7 +1018,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition updateInstances(FacetRecord facet) {
+    private GraphQLFieldDefinition updateInstances(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_INSTANCES_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))

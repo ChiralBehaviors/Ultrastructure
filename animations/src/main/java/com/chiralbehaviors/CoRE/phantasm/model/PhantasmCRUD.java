@@ -324,8 +324,11 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getChildren(facet.getClassification(),
-                                 facet.getClassifier(), facet.getDomain())
+                    .getChildrenUuid(facet.getClassification()
+                                          .getId(),
+                                     facet.getClassifier()
+                                          .getInverse(),
+                                     facet.getDomain())
                     .stream()
                     .map(e -> e)
                     .filter(instance -> checkREAD(instance))

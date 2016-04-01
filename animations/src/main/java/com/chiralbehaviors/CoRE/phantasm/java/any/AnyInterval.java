@@ -30,5 +30,5 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  *
  */
 @Facet(classifier = @Key(name = "AnyInterval"), classification = @Key(name = "AnyInterval"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Interval.class)
-public interface AnyInterval extends Phantasm<Interval> {
+public interface AnyInterval extends Phantasm {
 }

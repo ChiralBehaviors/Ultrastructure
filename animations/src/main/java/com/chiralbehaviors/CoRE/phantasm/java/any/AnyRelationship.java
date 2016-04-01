@@ -30,5 +30,5 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  *
  */
 @Facet(classifier = @Key(name = "AnyRelationship"), classification = @Key(name = "AnyRelationship"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Relationship.class)
-public interface AnyRelationship extends Phantasm<Relationship> {
+public interface AnyRelationship extends Phantasm {
 }

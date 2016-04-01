@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
@@ -35,8 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor
  * @author hhildebrand
  *
  */
-public class Phantasmagoria<RuleForm extends ExistentialRuleform>
-        implements PhantasmVisitor<RuleForm> {
+public class Phantasmagoria implements PhantasmVisitor {
 
     public final Map<String, AttributeAuthorization> attributes          = new HashMap<>();
     public final Map<String, NetworkAuthorization>   childAuthorizations = new HashMap<>();
@@ -46,7 +44,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform>
         this.facet = facet;
     }
 
-    public void traverse(PhantasmTraversal<RuleForm> traverser) {
+    public void traverse(PhantasmTraversal traverser) {
         traverser.traverse(facet, this);
     }
 

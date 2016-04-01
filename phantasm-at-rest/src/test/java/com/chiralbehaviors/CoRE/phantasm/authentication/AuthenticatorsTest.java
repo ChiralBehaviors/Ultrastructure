@@ -79,8 +79,8 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setLogin(username);
         Credential credential = new Credential();
         credential.ip = "No place like 127.00.1";
-        List<UUID> capabilities = Arrays.asList(model.getAgencyModel()
-                                                     .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
+        List<UUID> capabilities = Arrays.asList(model.getPhantasmModel()
+                                                     .getFacetDeclaration(kernel.getIsA(),
                                                                                        kernel.getCoreUser()))
                                                      .getId());
         credential.capabilities = capabilities;
@@ -95,7 +95,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         accessToken.insert();
         model.flush();
 
-        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf());
+        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(model);
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
                                                                        accessToken.getId()
                                                                                   .toString());

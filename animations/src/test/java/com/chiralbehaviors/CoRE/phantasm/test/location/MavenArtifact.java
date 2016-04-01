@@ -10,7 +10,7 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
 
 @Facet(classifier = @Key(name = "IsA"), classification = @Key(name = "MavenArtifact"), ruleformClass = Location.class, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm")
-public interface MavenArtifact extends ScopedPhantasm<Location> {
+public interface MavenArtifact extends ScopedPhantasm {
 
     @PrimitiveState(fieldName = "artifactID", attribute = @Key(name = "artifactId"))
     String getArtifactID();

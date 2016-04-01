@@ -30,10 +30,4 @@ public class Attribute extends ExistentialRecord
         implements ExistentialRuleform {
 
     private static final long serialVersionUID = 1L;
-
-    @Override
-    public Attribute getRuleform() {
-        return this;
-    }
-
 }

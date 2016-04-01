@@ -40,9 +40,4 @@ public class StatusCode extends ExistentialRecord
     public StatusCode(UUID id) {
         setId(id);
     }
-
-    @Override
-    public StatusCode getRuleform() {
-        return this;
-    }
 }

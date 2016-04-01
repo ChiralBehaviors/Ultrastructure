@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.ThisCoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -62,7 +63,8 @@ public class KernelUtil {
 
     public static void initializeInstance(Model model, String name,
                                           String description) throws InstantiationException {
-        ThisCoreInstance core = model.construct(ThisCoreInstance.class, name,
+        ThisCoreInstance core = model.construct(ThisCoreInstance.class,
+                                                ExistentialDomain.Agency, name,
                                                 description);
         model.apply(CoreInstance.class, core);
     }

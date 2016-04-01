@@ -35,6 +35,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -154,8 +155,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         Product definingProduct = importer.getWorkspace()
                                           .getDefiningProduct();
 
-        Thing1 thing1 = model.construct(Thing1.class, "Freddy",
-                                        "He always comes back");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "Freddy", "He always comes back");
         model.getWorkspaceModel()
              .unload(definingProduct);
         try {

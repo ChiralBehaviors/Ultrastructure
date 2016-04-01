@@ -74,7 +74,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testAttributeCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
         FacetRecord facet = model.getPhantasmModel()
@@ -159,7 +160,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testChildCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
         FacetRecord facet = model.getPhantasmModel()
@@ -248,8 +250,10 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testThingOntology() throws Exception {
 
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
-        Thing2 thing2 = model.construct(Thing2.class, "tasty", "chips");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tasty", "chips");
         assertNotNull(thing1);
         assertNotNull(thing1.getRuleform());
         assertEquals(thing1.getRuleform()
@@ -278,7 +282,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
 
-        Thing3 thing3a = model.construct(Thing3.class, "uncle it",
+        Thing3 thing3a = model.construct(Thing3.class,
+                                         ExistentialDomain.Product, "uncle it",
                                          "one of my favorite things");
         assertNotNull(thing2.getThing3s());
         assertEquals(0, thing2.getThing3s()
@@ -290,7 +295,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(0, thing2.getThing3s()
                               .size());
 
-        Thing3 thing3b = model.construct(Thing3.class, "cousin it",
+        Thing3 thing3b = model.construct(Thing3.class,
+                                         ExistentialDomain.Product, "cousin it",
                                          "another one of my favorite things");
 
         List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
@@ -305,6 +311,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         assertNull(thing1.getDerivedFrom());
         MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
                                                  "myartifact", "artifact");
         artifact.setType("jar");
         assertEquals("jar", artifact.getType());
@@ -324,6 +331,7 @@ public class TestPhantasm extends AbstractModelTest {
                               .size());
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
                                                   "myartifact2", "artifact2");
         artifact2.setType("jar");
 
@@ -343,6 +351,7 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testEnums() throws Exception {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
                                                  "myartifact", "artifact");
         artifact.setType("jar");
         artifact.setType("invalid");
@@ -355,7 +364,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testFacetCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
         FacetRecord facet = model.getPhantasmModel()
@@ -431,7 +441,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testInstanceCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         Product instance = thing1.getRuleform();
         assertTrue(model.getPhantasmModel()
@@ -505,7 +516,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testNetworkAttributeCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
         model.create()
              .configuration()
              .connectionProvider()
@@ -610,7 +622,8 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testThis() throws InstantiationException {
 
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
         Product child = (Product) model.getPhantasmModel()
                                        .getChild(thing1.getScope()
                                                        .getWorkspace()

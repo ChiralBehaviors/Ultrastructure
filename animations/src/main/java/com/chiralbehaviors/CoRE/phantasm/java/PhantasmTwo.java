@@ -40,13 +40,13 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
  * @author hhildebrand
  *
  */
-public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
-        PhantasmCRUD implements InvocationHandler, ScopedPhantasm<RuleForm> {
-    private final PhantasmDefinition<RuleForm> definition;
-    private final RuleForm                     ruleform;
+public class PhantasmTwo extends PhantasmCRUD
+        implements InvocationHandler, ScopedPhantasm {
+    private final PhantasmDefinition  definition;
+    private final ExistentialRuleform ruleform;
 
-    public PhantasmTwo(RuleForm ruleform,
-                       PhantasmDefinition<RuleForm> definition, Model model) {
+    public PhantasmTwo(ExistentialRuleform ruleform,
+                       PhantasmDefinition definition, Model model) {
         super(model);
         this.ruleform = ruleform;
         this.definition = definition;
@@ -56,7 +56,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
      * @see com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm#cast(java.lang.Class)
      */
     @Override
-    public <T extends Phantasm<RuleForm>> T cast(Class<T> toPhantasm) {
+    public <T extends Phantasm> T cast(Class<T> toPhantasm) {
         return model.cast(getRuleform(), toPhantasm);
     }
 
@@ -78,9 +78,10 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getRuleform()
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public RuleForm getRuleform() {
-        return ruleform;
+    public <T extends ExistentialRuleform> T getRuleform() {
+        return (T) ruleform;
     }
 
     /* (non-Javadoc)
@@ -91,7 +92,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
         throw new IllegalStateException("This should have never been called");
     }
 
-    public Object getScope(PhantasmDefinition<RuleForm> facetDefinition) {
+    public Object getScope(PhantasmDefinition facetDefinition) {
         return model.getWorkspaceModel()
                     .getScoped(facetDefinition.getWorkspace());
     }
@@ -115,7 +116,12 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
             && method.getParameterCount() == 0) {
             return definition.getPhantasm();
         }
-        StateFunction<RuleForm> function = definition.methods.get(method);
+        if (method.getName()
+                  .equals("getRuleform")
+            && method.getParameterCount() == 0) {
+            return ruleform;
+        }
+        StateFunction function = definition.methods.get(method);
         if (function != null) {
             WorkspaceScope scope = model.getWorkspaceModel()
                                         .getScoped(definition.getWorkspace());
@@ -130,7 +136,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
                   .equals("equals")
             && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return args[0] instanceof Phantasm ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
+            return args[0] instanceof Phantasm ? ruleform.equals(((Phantasm) args[0]).getRuleform())
                                                : false;
         } else if (method.getName()
                          .equals("hashCode")
@@ -157,7 +163,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
     public String toString() {
         return String.format("%s[%s]", definition.getPhantasm()
                                                  .getSimpleName(),
-                             ruleform.toString());
+                             ruleform.getName());
     }
 
     /**
@@ -165,8 +171,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
      * @param ruleform2
      * @return
      */
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                         T ruleform) {
+    public <T extends ExistentialRuleform, R extends Phantasm> R wrap(Class<R> phantasm,
+                                                                      T ruleform) {
         return model.wrap(phantasm, ruleform);
     }
 

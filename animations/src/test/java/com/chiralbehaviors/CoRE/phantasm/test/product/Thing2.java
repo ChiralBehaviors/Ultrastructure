@@ -16,7 +16,7 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
 
 @Facet(classifier = @Key(name = "IsA"), classification = @Key(name = "Thing2"), ruleformClass = Product.class, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm")
-public interface Thing2 extends ScopedPhantasm<Product> {
+public interface Thing2 extends ScopedPhantasm {
 
     @PrimitiveState(fieldName = "aliases", attribute = @Key(name = "aliases"))
     String[] getAliases();

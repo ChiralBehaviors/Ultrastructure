@@ -26,7 +26,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
  * @author hhildebrand
  *
  */
-public interface Phantasm<T extends ExistentialRuleform> {
+public interface Phantasm {
 
     String getDescription();
 
@@ -34,5 +34,5 @@ public interface Phantasm<T extends ExistentialRuleform> {
 
     String getNotes();
 
-    T getRuleform();
+    <T extends ExistentialRuleform> T getRuleform();
 }

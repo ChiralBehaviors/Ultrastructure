@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.java;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,15 +52,14 @@ import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
  * @author hhildebrand
  *
  */
-public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
-        extends Phantasmagoria<RuleForm> {
+public class PhantasmDefinition extends Phantasmagoria {
 
-    private final static Map<Class<Phantasm<?>>, PhantasmDefinition<?>> CACHE = new HashMap<>();
-    private static final String                                         GET   = "get";
+    private final static Map<Class<Phantasm>, PhantasmDefinition> CACHE = new HashMap<>();
+    private static final String                                   GET   = "get";
 
-    private static final String                                         SET   = "set";
+    private static final String                                   SET   = "set";
 
-    public static Aspect facetFrom(Class<? extends Phantasm<?>> phantasm,
+    public static Aspect facetFrom(Class<? extends Phantasm> phantasm,
                                    Model model) {
         Facet facet = phantasm.getAnnotation(Facet.class);
         if (facet == null) {
@@ -96,20 +96,20 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                   .getName());
     }
 
-    public static PhantasmDefinition<?> getCached(Class<? extends Phantasm<?>> returnPhantasm) {
+    public static PhantasmDefinition getCached(Class<? extends Phantasm> returnPhantasm) {
         return CACHE.get(returnPhantasm);
     }
 
-    private final Facet                                  facetAnnotation;
-    private final Class<Phantasm<RuleForm>>              phantasm;
-    private final UUID                                   workspace;
+    private final Facet                        facetAnnotation;
+    private final Class<? extends Phantasm>    phantasm;
+    private final UUID                         workspace;
 
-    protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
+    protected final Map<Method, StateFunction> methods = new HashMap<>();
 
-    public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm, Model model) {
+    public PhantasmDefinition(Class<? extends Phantasm> phantasm, Model model) {
         super(facetFrom(phantasm, model));
 
-        traverse(new PhantasmTraversal<>(model));
+        traverse(new PhantasmTraversal(model));
         this.phantasm = phantasm;
         facetAnnotation = phantasm.getAnnotation(Facet.class);
         workspace = WorkspaceAccessor.uuidOf(facetAnnotation.workspace());
@@ -125,7 +125,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      *             - if the ruleform is not classified as required by the facets
      *             of this state definition
      */
-    public void constrain(Model model, RuleForm ruleform) {
+    public void constrain(Model model, ExistentialRuleform ruleform) {
         if (ruleform == null) {
             throw new IllegalStateException("Ruleform cannot be null");
         }
@@ -146,18 +146,18 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
         }
     }
 
-    public Phantasm<RuleForm> construct(ExistentialRuleform ruleform,
-                                        Model model, Agency updatedBy) {
+    public Phantasm construct(ExistentialRuleform ruleform, Model model,
+                              Agency updatedBy) {
         model.getPhantasmModel()
              .initialize(ruleform, facet.getFacet());
         return wrap(ruleform, model);
     }
 
-    public Map<Method, StateFunction<RuleForm>> getMethods() {
+    public Map<Method, StateFunction> getMethods() {
         return methods;
     }
 
-    public Class<Phantasm<RuleForm>> getPhantasm() {
+    public Class<? extends Phantasm> getPhantasm() {
         return phantasm;
     }
 
@@ -165,17 +165,12 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
         return workspace;
     }
 
-    public Phantasm<RuleForm> wrap(ExistentialRuleform ruleform, Model model) {
-        @SuppressWarnings("unchecked")
-        RuleForm form = (RuleForm) ruleform;
-        constrain(model, form);
-        PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(form,
-                                                                       this,
-                                                                       model);
-        @SuppressWarnings("unchecked")
-        Phantasm<RuleForm> proxy = (Phantasm<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
-                                                                               new Class[] { phantasm },
-                                                                               doppelgänger);
+    public Phantasm wrap(ExistentialRuleform ruleform, Model model) {
+        constrain(model, ruleform);
+        PhantasmTwo doppelgänger = new PhantasmTwo(ruleform, this, model);
+        Phantasm proxy = (Phantasm) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                           new Class[] { phantasm },
+                                                           doppelgänger);
         return proxy;
 
     }
@@ -193,10 +188,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
         }
     }
 
-    private void getInferred(Class<Phantasm<ExistentialRuleform>> phantasm,
-                             Method method, String fieldName,
+    private void getInferred(Class<Phantasm> phantasm, Method method,
+                             String fieldName,
                              Class<ExistentialRuleform> rulformClass) {
-        methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+        methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             NetworkAuthorization auth = childAuthorizations.get(fieldName);
             if (auth == null) {
@@ -233,9 +228,8 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                   .equals("getScope")
             && method.getDeclaringClass()
                      .equals(ScopedPhantasm.class)) {
-            methods.put(method,
-                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.getScope(this));
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> state.getScope(this));
             return;
         }
         if (method.getAnnotation(Edge.class) != null) {
@@ -258,110 +252,27 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
         }
     }
 
-    /**
-     * @SuppressWarnings({ "rawtypes", "unchecked" }) public Phantasm
-     * construct(ExistentialRuleform ruleform, Model model, Agency updatedBy) {
-     * RuleForm form = (RuleForm) ruleform;
-     *
-     * model.getNetworkedModel(ruleform) .initialize(form, new
-     * Aspect(facet.getClassifier(), facet.getClassification())); return
-     * wrap(form, model); }
-     *
-     * public PhantasmDefinition<?> getCached(Class<? extends Phantasm<?>>
-     * returnPhantasm) { return CACHE.get(returnPhantasm); }
-     *
-     * public Map<Method, StateFunction<RuleForm>> getMethods() { return
-     * methods; }
-     *
-     * public Class<Phantasm<RuleForm>> getPhantasm() { return phantasm; }
-     *
-     * public UUID getWorkspace() { return workspace; }
-     *
-     * public Phantasm<?> wrap(@SuppressWarnings("rawtypes") ExistentialRuleform
-     * ruleform, Model model) { @SuppressWarnings("unchecked") RuleForm form =
-     * (RuleForm) ruleform; constrain(model, form); PhantasmTwo
-     * <RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(form, this, model);
-     * Phantasm<?> proxy = (Phantasm<?>)
-     * Proxy.newProxyInstance(phantasm.getClassLoader(), new Class[] { phantasm
-     * }, doppelgänger); return proxy;
-     *
-     * }
-     *
-     * private void construct() { for (Method method :
-     * this.phantasm.getDeclaredMethods()) { if (!method.isDefault()) {
-     * process(method); } } for (Class<?> iFace : this.phantasm.getInterfaces())
-     * { for (Method method : iFace.getDeclaredMethods()) { process(method); } }
-     * }
-     *
-     * private void getInferred(Class<Phantasm<ExistentialRuleform>> phantasm,
-     * Method method, String fieldName, Class<ExistentialRuleform> rulformClass)
-     * { if (!rulformClass.equals(getRuleformClass())) { throw new
-     * IllegalStateException(String.format(
-     * "Use of @Inferred can only be applied to network relationship methods: %s"
-     * , method.toGenericString())); } methods.put(method, (PhantasmTwo
-     * <RuleForm> state, WorkspaceScope scope, Object[] arguments) -> {
-     * ExistentialNetworkAuthorizationRecord auth =
-     * childAuthorizations.get(fieldName); if (auth == null) { throw new
-     * IllegalStateException(String.format("field %s does not exist on %s",
-     * fieldName, phantasm.getSimpleName())); } return state.getChildren(facet,
-     * state.getRuleform(), auth) .stream() .map(r -> state.wrap(phantasm, r));
-     * }); }
-     *
-     * @SuppressWarnings("unchecked") private Class<RuleForm> getRuleformClass()
-     * { return (Class<RuleForm>) Model.getExistentialRuleform(phantasm); }
-     *
-     * private void process(Edge edge, Method method) { if (method.getName()
-     * .startsWith("add")) { processAdd(edge, method); } else if
-     * (method.getName() .startsWith("remove")) { processRemove(edge, method); }
-     * else if (method.getParameterTypes().length == 0 &&
-     * List.class.isAssignableFrom(method.getReturnType())) {
-     * processGetList(edge, method); } else if
-     * (method.getParameterTypes().length == 1 &&
-     * List.class.isAssignableFrom(method.getParameterTypes()[0])) {
-     * processSetList(edge, method); } else { processSingular(edge, method); } }
-     *
-     * private void process(Method method) { if (method.getName()
-     * .equals("getScope") && method.getDeclaringClass()
-     * .equals(ScopedPhantasm.class)) { methods.put(method, (PhantasmTwo
-     * <RuleForm> state, WorkspaceScope scope, Object[] arguments) ->
-     * state.getScope(this)); return; } if (method.getAnnotation(Edge.class) !=
-     * null) { process(method.getAnnotation(Edge.class), method); } else if
-     * (method.getAnnotation(PrimitiveState.class) != null) {
-     * process(method.getAnnotation(PrimitiveState.class), method); } }
-     *
-     * private void process(PrimitiveState annotation, Method method) { if
-     * (method.getName() .startsWith(GET)) { processPrimitiveGetter(annotation,
-     * method); } else if (method.getName() .startsWith(SET)) {
-     * processPrimitiveSetter(annotation, method); } else { throw new
-     * IllegalStateException(String.format(
-     * "The method is neither a primitive setter/getter: %s",
-     * method.toGenericString())); } }
-     *
-     * /**
-     *
-     * @param edge
-     * @param method
-     */
     @SuppressWarnings("unchecked")
     private void processAdd(Edge edge, Method method) {
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method, (PhantasmTwo<RuleForm> state,
-                                 WorkspaceScope scope, Object[] arguments) -> {
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
                 NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
                                                                   phantasm.getSimpleName()));
                 }
+                List<ExistentialRuleform> children = new ArrayList<>();
+                ((List<Phantasm>) arguments[0]).forEach(e -> children.add(e.getRuleform()));
+
                 return state.addChildren(facet, state.getRuleform(), auth,
-                                         ((List<Phantasm<RuleForm>>) arguments[0]).stream()
-                                                                                  .map(r -> r.getRuleform())
-                                                                                  .collect(Collectors.toList()));
+                                         children);
             });
 
         } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method, (PhantasmTwo<RuleForm> state,
-                                 WorkspaceScope scope, Object[] arguments) -> {
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
                 NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
@@ -369,7 +280,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                                   phantasm.getSimpleName()));
                 }
                 return state.addChild(facet, state.getRuleform(), auth,
-                                      ((Phantasm<RuleForm>) arguments[0]).getRuleform());
+                                      ((Phantasm) arguments[0]).getRuleform());
             });
         }
     }
@@ -381,10 +292,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      */
     @SuppressWarnings("unchecked")
     private void processGetList(Edge edge, Method method) {
-        Class<? extends Phantasm<ExistentialRuleform>> returnPhantasm = (Class<Phantasm<ExistentialRuleform>>) edge.wrappedChildType();
+        Class<? extends Phantasm> returnPhantasm = (Class<Phantasm>) edge.wrappedChildType();
         if (method.getAnnotation(Inferred.class) != null) {
-            methods.put(method, (PhantasmTwo<RuleForm> state,
-                                 WorkspaceScope scope, Object[] arguments) -> {
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
                 NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
@@ -398,8 +309,8 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                             .collect(Collectors.toList());
             });
         } else {
-            methods.put(method, (PhantasmTwo<RuleForm> state,
-                                 WorkspaceScope scope, Object[] arguments) -> {
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
                 NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
@@ -422,7 +333,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
             throw new IllegalStateException(String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
-        methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+        methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             AttributeAuthorization auth = attributes.get(annotation.fieldName());
             if (auth == null) {
@@ -437,7 +348,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
     @SuppressWarnings("unchecked")
     private void processPrimitiveSetter(PrimitiveState annotation,
                                         Method method) {
-        methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+        methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             AttributeAuthorization auth = attributes.get(annotation.fieldName());
             if (auth == null) {
@@ -467,18 +378,20 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
     @SuppressWarnings("unchecked")
     private void processRemove(Edge edge, Method method) {
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method,
-                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.removeChildren(facet,
-                                                                     state.getRuleform(),
-                                                                     childAuthorizations.get(edge.fieldName()),
-                                                                     ((List<Phantasm<RuleForm>>) arguments[0]).stream()
-                                                                                                              .map(r -> r.getRuleform())
-                                                                                                              .collect(Collectors.toList())));
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
+                List<ExistentialRuleform> children = new ArrayList<>();
+                ((List<Phantasm>) arguments[0]).forEach(e -> children.add(e.getRuleform()));
+                return state.removeChildren(facet,
+
+                                            state.getRuleform(),
+                                            childAuthorizations.get(edge.fieldName()),
+                                            children);
+            });
 
         } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method, (PhantasmTwo<RuleForm> state,
-                                 WorkspaceScope scope, Object[] arguments) -> {
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
                 NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
@@ -486,7 +399,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                                   phantasm.getSimpleName()));
                 }
                 return state.removeChild(facet, state.getRuleform(), auth,
-                                         ((Phantasm<RuleForm>) arguments[0]).getRuleform());
+                                         ((Phantasm) arguments[0]).getRuleform());
             });
         }
     }
@@ -497,7 +410,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      */
     @SuppressWarnings("unchecked")
     private void processSetList(Edge edge, Method method) {
-        methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+        methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
             if (auth == null) {
@@ -505,20 +418,19 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                               edge.fieldName(),
                                                               phantasm.getSimpleName()));
             }
+            List<ExistentialRuleform> children = new ArrayList<>();
+            ((List<Phantasm>) arguments[0]).forEach(e -> children.add(e.getRuleform()));
             return state.setChildren(facet, state.getRuleform(), auth,
-                                     ((List<Phantasm<RuleForm>>) arguments[0]).stream()
-                                                                              .map(r -> r.getRuleform())
-                                                                              .collect(Collectors.toList()));
+                                     children);
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void processSetSingular(Method method, Edge edge) {
         if (method.getParameterCount() != 1) {
             throw new IllegalArgumentException(String.format("Not a valid Relationship setter: %s",
                                                              method));
         }
-        methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+        methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
             if (auth == null) {
@@ -527,7 +439,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                               phantasm.getSimpleName()));
             }
             return state.setSingularChild(facet, state.getRuleform(), auth,
-                                          ((Phantasm<RuleForm>) arguments[0]).getRuleform());
+                                          ((Phantasm) arguments[0]).getRuleform());
         });
     }
 
@@ -539,15 +451,15 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
             return;
         }
 
-        Class<Phantasm<ExistentialRuleform>> phantasmReturned = (Class<Phantasm<ExistentialRuleform>>) edge.wrappedChildType();
+        Class<Phantasm> phantasmReturned = (Class<Phantasm>) edge.wrappedChildType();
         Class<ExistentialRuleform> ruleformClass = (Class<ExistentialRuleform>) phantasmReturned.getAnnotation(Facet.class)
                                                                                                 .ruleformClass();
         if (method.getAnnotation(Inferred.class) != null) {
             getInferred(phantasmReturned, method, edge.fieldName(),
                         ruleformClass);
         } else {
-            methods.put(method, (PhantasmTwo<RuleForm> state,
-                                 WorkspaceScope scope, Object[] arguments) -> {
+            methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
+                                 Object[] arguments) -> {
                 NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",

@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -36,7 +34,6 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -55,45 +52,6 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public interface Model extends AutoCloseable {
 
-    static ExistentialDomain getExistentialDomain(Class<?> phantasm) {
-        if (!phantasm.isInterface()) {
-            throw new IllegalArgumentException(String.format("%s is not an interface",
-                                                             phantasm));
-        }
-        if (!Phantasm.class.isAssignableFrom(phantasm)) {
-            throw new IllegalArgumentException(String.format("%s is not a Phantasm",
-                                                             phantasm));
-        }
-
-        Type type = ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
-        }
-        if (type.equals(Attribute.class)) {
-            return ExistentialDomain.Attribute;
-        }
-        if (type.equals(Interval.class)) {
-            return ExistentialDomain.Interval;
-        }
-        if (type.equals(Location.class)) {
-            return ExistentialDomain.Location;
-        }
-        if (type.equals(Product.class)) {
-            return ExistentialDomain.Product;
-        }
-        if (type.equals(Relationship.class)) {
-            return ExistentialDomain.Relationship;
-        }
-        if (type.equals(StatusCode.class)) {
-            return ExistentialDomain.StatusCode;
-        }
-        if (type.equals(Unit.class)) {
-            return ExistentialDomain.Unit;
-        }
-        throw new IllegalArgumentException(String.format("Unknown domain: %s",
-                                                         type));
-    }
-
     /**
      * Apply the phantasm to the target.
      *
@@ -101,8 +59,8 @@ public interface Model extends AutoCloseable {
      * @param target
      * @return
      */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
-                                                                   Phantasm<T> target);
+    <T extends ExistentialRuleform, R extends Phantasm> R apply(Class<R> phantasm,
+                                                                Phantasm target);
 
     /**
      * Answer the cached facet definition for a phantasm class
@@ -110,7 +68,7 @@ public interface Model extends AutoCloseable {
      * @param phantasm
      * @return
      */
-    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
+    PhantasmDefinition cached(Class<? extends Phantasm> phantasm);
 
     /**
      * Cast the phantasm to another facet
@@ -119,8 +77,8 @@ public interface Model extends AutoCloseable {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(T source,
-                                                                  Class<R> phantasm);
+    <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
+                                                               Class<R> phantasm);
 
     @Override
     void close();
@@ -134,9 +92,10 @@ public interface Model extends AutoCloseable {
      * @return
      * @throws InstantiationException
      */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R construct(Class<R> phantasm,
-                                                                       String name,
-                                                                       String description) throws InstantiationException;
+    <T extends ExistentialRuleform, R extends Phantasm> R construct(Class<R> phantasm,
+                                                                    ExistentialDomain domain,
+                                                                    String name,
+                                                                    String description) throws InstantiationException;
 
     /**
      * Answer the entity manager used for this model instance
@@ -248,8 +207,8 @@ public interface Model extends AutoCloseable {
      * @param uuid
      * @return
      */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
-                                                                    UUID uuid);
+    <T extends ExistentialRuleform, R extends Phantasm> R lookup(Class<R> phantasm,
+                                                                 UUID uuid);
 
     ExistentialRecord lookupExistential(UUID id);
 
@@ -266,6 +225,6 @@ public interface Model extends AutoCloseable {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                  ExistentialRuleform ruleform);
+    <T extends ExistentialRuleform, R extends Phantasm> R wrap(Class<R> phantasm,
+                                                               ExistentialRuleform ruleform);
 }

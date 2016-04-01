@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  * @author hhildebrand
  *
  */
-@SuppressWarnings("rawtypes")
 public interface ExistentialRuleform extends Phantasm {
     public int delete();
 
@@ -86,4 +85,9 @@ public interface ExistentialRuleform extends Phantasm {
 
     void setUpdatedBy(UUID updatedBy);
 
+    @SuppressWarnings("unchecked")
+    @Override
+    default <T extends ExistentialRuleform> T getRuleform() {
+        return (T) this;
+    }
 }

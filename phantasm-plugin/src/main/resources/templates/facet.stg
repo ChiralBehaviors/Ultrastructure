@@ -58,7 +58,7 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 @Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>,
         ruleformClass=<facet.ruleformType>.class,
         workspace = <facet.uri>)
-public interface <facet.className> extends ScopedPhantasm\<<facet.ruleformType>\> {
+public interface <facet.className> extends ScopedPhantasm {
 
 <facet.primitiveGetters: {getter| <primitiveGetter(getter)><\n>}>
 <facet.primitiveSetters: {setter| <primitiveSetter(setter)><\n>}>

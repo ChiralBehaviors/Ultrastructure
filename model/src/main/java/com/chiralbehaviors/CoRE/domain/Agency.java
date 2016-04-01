@@ -29,9 +29,4 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 public class Agency extends ExistentialRecord implements ExistentialRuleform {
 
     private static final long serialVersionUID = 1L;
-
-    @Override
-    public Agency getRuleform() {
-        return this;
-    }
 }

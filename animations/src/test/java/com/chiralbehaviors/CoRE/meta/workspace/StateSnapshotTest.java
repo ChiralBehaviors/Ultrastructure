@@ -33,6 +33,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -58,8 +59,9 @@ public class StateSnapshotTest extends AbstractModelTest {
              .commit();
         UUID tvsFrank;
         try (Model myModel = new ModelImpl(newConnection())) {
-            CoreUser frank = myModel.construct(CoreUser.class, "frank",
-                                               "TV's frank");
+            CoreUser frank = myModel.construct(CoreUser.class,
+                                               ExistentialDomain.Agency,
+                                               "frank", "TV's frank");
             tvsFrank = frank.getRuleform()
                             .getId();
             WorkspaceSnapshot snap = myModel.snapshot();

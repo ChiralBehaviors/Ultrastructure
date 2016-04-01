@@ -78,14 +78,12 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  *
  */
 public class ModelImpl implements Model {
-    private final static ConcurrentMap<Class<?>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
+    private final static ConcurrentMap<Class<? extends Phantasm>, PhantasmDefinition> cache = new ConcurrentHashMap<>();
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm,
-                                               Model model) {
+    public static PhantasmDefinition cached(Class<? extends Phantasm> phantasm,
+                                            Model model) {
         return cache.computeIfAbsent(phantasm,
-                                     (Class<?> p) -> new PhantasmDefinition(p,
-                                                                            model));
+                                     p -> new PhantasmDefinition(p, model));
     }
 
     public static void clearPhantasmCache() {
@@ -201,22 +199,22 @@ public class ModelImpl implements Model {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
-                                                                          Phantasm<T> target) {
-        PhantasmDefinition<T> definition = (PhantasmDefinition<T>) cached(phantasm,
-                                                                          this);
+    public <T extends ExistentialRuleform, R extends Phantasm> R apply(Class<R> phantasm,
+                                                                       Phantasm target) {
+        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
+                                                                    this);
         return (R) definition.construct(target.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
     }
 
     @Override
-    public PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
+    public PhantasmDefinition cached(Class<? extends Phantasm> phantasm) {
         return cached(phantasm, this);
     }
 
     @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(T source,
-                                                                         Class<R> phantasm) {
+    public <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
+                                                                      Class<R> phantasm) {
         return wrap(phantasm, source);
     }
 
@@ -236,13 +234,14 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R construct(Class<R> phantasm,
-                                                                              String name,
-                                                                              String description) throws InstantiationException {
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm,
-                                                                                 this);
-        ExistentialRecord record = (ExistentialRecord) records().newExistential(Model.getExistentialDomain(phantasm));
+    @SuppressWarnings({ "unchecked" })
+    public <T extends ExistentialRuleform, R extends Phantasm> R construct(Class<R> phantasm,
+                                                                           ExistentialDomain domain,
+                                                                           String name,
+                                                                           String description) throws InstantiationException {
+        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
+                                                                    this);
+        ExistentialRecord record = (ExistentialRecord) records().newExistential(domain);
         record.setName(name);
         record.setDescription(description);
         record.insert();
@@ -424,14 +423,14 @@ public class ModelImpl implements Model {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
-                                                                           UUID uuid) {
+    public <T extends ExistentialRuleform, R extends Phantasm> R lookup(Class<R> phantasm,
+                                                                        UUID uuid) {
         T ruleform = (T) factory.resolve(uuid);
         if (ruleform == null) {
             return null;
         }
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                              this);
+        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
+                                                                    this);
         return (R) definition.wrap(ruleform, this);
     }
 
@@ -475,19 +474,18 @@ public class ModelImpl implements Model {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                         ExistentialRuleform ruleform) {
+    public <T extends ExistentialRuleform, R extends Phantasm> R wrap(Class<R> phantasm,
+                                                                      ExistentialRuleform ruleform) {
         if (ruleform == null) {
             return null;
         }
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                              this);
+        PhantasmDefinition definition = cached(phantasm, this);
         return (R) definition.wrap(ruleform.getRuleform(), this);
     }
 
     private Collection<UUID> excludeThisSingleton() {
         List<UUID> excluded = new ArrayList<>();
-        Agency instance = getCoreInstance().getRuleform();
+        Agency instance = (Agency) getCoreInstance().getRuleform();
         excluded.add(instance.getId());
         Relationship relationship = kernel.getSingletonOf();
         excluded.add(phantasmModel.getImmediateLink(instance, relationship,

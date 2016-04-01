@@ -46,7 +46,7 @@ import com.chiralbehaviors.CoRE.utils.English;
  * @author hhildebrand
  *
  */
-public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
+public class PhantasmTraversal {
 
     public static class Aspect {
         private final ExistentialRuleform classification;
@@ -179,7 +179,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
         }
     }
 
-    public static interface PhantasmVisitor<RuleForm extends ExistentialRuleform> {
+    public static interface PhantasmVisitor {
 
         /**
          * Visit the attribute authorization
@@ -258,14 +258,13 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
         this.model = model;
     }
 
-    public void traverse(Aspect facet, PhantasmVisitor<RuleForm> visitor) {
+    public void traverse(Aspect facet, PhantasmVisitor visitor) {
         traverseAttributes(facet, visitor);
         traverseNetworkAuths(facet, visitor);
 
     }
 
-    private void traverseAttributes(Aspect facet,
-                                    PhantasmVisitor<RuleForm> visitor) {
+    private void traverseAttributes(Aspect facet, PhantasmVisitor visitor) {
 
         for (ExistentialAttributeAuthorizationRecord auth : model.getPhantasmModel()
                                                                  .getAttributeAuthorizations(facet.facet,
@@ -277,8 +276,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
         }
     }
 
-    private void traverseNetworkAuths(Aspect facet,
-                                      PhantasmVisitor<RuleForm> visitor) {
+    private void traverseNetworkAuths(Aspect facet, PhantasmVisitor visitor) {
 
         DSLContext create = model.create();
         for (ExistentialNetworkAuthorizationRecord auth : model.getPhantasmModel()

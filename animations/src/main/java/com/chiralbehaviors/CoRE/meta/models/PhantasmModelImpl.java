@@ -867,11 +867,10 @@ public class PhantasmModelImpl implements PhantasmModel {
                                 Relationship relationship,
                                 ExistentialRuleform child) {
         return !ZERO.equals(create.selectCount()
-                                  .from(EXISTENTIAL)
-                                  .join(EXISTENTIAL_NETWORK)
-                                  .on(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                  .and(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                  .from(EXISTENTIAL_NETWORK)
+                                  .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                                   .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
                                   .and(EXISTENTIAL_NETWORK.CHILD.notEqual(parent.getId()))
                                   .fetchOne()
                                   .value1());

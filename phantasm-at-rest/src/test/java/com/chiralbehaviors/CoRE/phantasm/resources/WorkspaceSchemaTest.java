@@ -20,13 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -105,65 +103,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                          .get(0)
                          .getMessage()
                          .contains("ClassCastException"));
-    }
-
-    @Test
-    public void testCreate() throws Exception {
-        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
-                                        "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
-                                        "Thingy", "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 ExistentialDomain.Location,
-                                                 "model", "model artifact");
-        artifact.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact.setArtifactID("model");
-        artifact.setVersion("0.0.2-SNAPSHOT");
-        artifact.setType("jar");
-
-        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
-                                                  ExistentialDomain.Location,
-                                                  "animations",
-                                                  "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-
-        thing2.addThing3(thing3);
-
-        thing3.addDerivedFrom(artifact);
-        thing3.addDerivedFrom(artifact2);
-
-        GraphQlResource resource = new GraphQlResource(getClass().getClassLoader());
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
-        variables.put("name", "hello");
-        variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
-                                                variables);
-        ExecutionResult result;
-        try {
-            result = resource.query(null, THING_URI, request);
-        } catch (WebApplicationException e) {
-            fail(e.getResponse()
-                  .toString());
-            return;
-        }
-        assertNotNull(result);
-
-        assertEquals(result.getErrors()
-                           .toString(),
-                     0, result.getErrors()
-                              .size());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("CreateThing1");
-        assertNotNull(thing1Result);
-        assertEquals("hello", thing1Result.get("name"));
-
-        // assertEquals(artifact2, thing1.getDerivedFrom());
     }
 
     @Test
@@ -247,100 +186,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      thing3Result.get("id"));
 
-    }
-
-    @Test
-    public void testIntrospection() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "test", "testy");
-        GraphQLSchema schema = FacetType.build(thing1.getScope()
-                                                     .getWorkspace(),
-                                               model,
-                                               getClass().getClassLoader());
-        String query = INTROSPECTION_QUERY;
-        @SuppressWarnings("rawtypes")
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model));
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
-
-        assertNotNull(result);
-    }
-
-    @Test
-    public void testMutation() throws Exception {
-        String[] newAliases = new String[] { "jones", "smith" };
-        String newUri = "new iri";
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
-                                        "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
-                                        "Thingy", "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 ExistentialDomain.Location,
-                                                 "model", "model artifact");
-        artifact.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact.setArtifactID("model");
-        artifact.setVersion("0.0.2-SNAPSHOT");
-        artifact.setType("jar");
-
-        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
-                                                  ExistentialDomain.Location,
-                                                  "animations",
-                                                  "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-
-        thing1.setAliases(new String[] { "smith", "jones" });
-        String uri = "http://example.com";
-        thing1.setURI(uri);
-        thing1.setDerivedFrom(artifact);
-        thing1.setThing2(thing2);
-        thing2.addThing3(thing3);
-
-        thing3.addDerivedFrom(artifact);
-        thing3.addDerivedFrom(artifact2);
-
-        GraphQlResource resource = new GraphQlResource(getClass().getClassLoader());
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
-        variables.put("aliases", Arrays.asList(newAliases));
-        variables.put("name", "hello");
-        variables.put("uri", newUri);
-        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
-                                                variables);
-        ExecutionResult result;
-        try {
-            result = resource.query(null, TEST_SCENARIO_URI, request);
-        } catch (WebApplicationException e) {
-            fail(e.getResponse()
-                  .toString());
-            return;
-        }
-        assertNotNull(result);
-
-        assertEquals(0, result.getErrors()
-                              .size());
-        assertEquals("hello", thing1.getName());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("UpdateThing1");
-        assertNotNull(thing1Result);
-        assertEquals(thing1.getName(), thing1Result.get("name"));
-        assertEquals(artifact2, thing1.getDerivedFrom());
-        assertArrayEquals(newAliases, thing1.getAliases());
-        assertEquals(newUri, thing1.getURI());
     }
 
     @SuppressWarnings("unchecked")

@@ -37,7 +37,6 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
@@ -169,9 +168,8 @@ public class PhantasmCRUD {
                   .isAccessible(ruleform, facet.getClassifier(),
                                 facet.getClassification())) {
             throw new ClassCastException(String.format("%s not of facet type %s",
-                                                       ruleform,
-                                                       PhantasmDefinition.factString(model,
-                                                                                     facet.getFacet())));
+                                                       ruleform.getId(),
+                                                       facet));
         }
     }
 
@@ -585,6 +583,7 @@ public class PhantasmCRUD {
             return instance;
         }
         instance.setName(name);
+        instance.update();
         return instance;
     }
 

@@ -39,6 +39,8 @@ public interface ExistentialRuleform extends Phantasm {
 
     public int insert();
 
+    public void refresh();
+
     public int update();
 
     /**
@@ -75,6 +77,11 @@ public interface ExistentialRuleform extends Phantasm {
     @Override
     String getNotes();
 
+    @Override
+    default ExistentialRuleform getRuleform() {
+        return this;
+    }
+
     UUID getUpdatedBy();
 
     void setDescription(String description);
@@ -84,9 +91,4 @@ public interface ExistentialRuleform extends Phantasm {
     void setNotes(String notes);
 
     void setUpdatedBy(UUID updatedBy);
-
-    @Override
-    default ExistentialRuleform getRuleform() {
-        return this;
-    }
 }

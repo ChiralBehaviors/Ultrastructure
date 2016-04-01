@@ -87,7 +87,7 @@ public class PhantasmTraversal {
 
         @Override
         public String toString() {
-            return String.format("Aspact[%s:%s]", classifier.getName(),
+            return String.format("Aspect[%s:%s]", classifier.getName(),
                                  classification.getName());
         }
 

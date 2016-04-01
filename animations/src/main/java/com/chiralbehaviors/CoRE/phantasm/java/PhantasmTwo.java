@@ -135,7 +135,9 @@ public class PhantasmTwo extends PhantasmCRUD
                   .equals("equals")
             && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return args[0] instanceof Phantasm ? ruleform.equals(((Phantasm) args[0]).getRuleform())
+            return args[0] instanceof Phantasm ? ruleform.getId()
+                                                         .equals(((Phantasm) args[0]).getRuleform()
+                                                                                     .getId())
                                                : false;
         } else if (method.getName()
                          .equals("hashCode")

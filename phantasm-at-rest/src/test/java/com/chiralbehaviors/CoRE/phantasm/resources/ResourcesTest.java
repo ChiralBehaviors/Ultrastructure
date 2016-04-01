@@ -48,7 +48,6 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
-import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
@@ -146,8 +145,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(String.format("http://localhost:%s/graphql/workspace",
                                                           application.getPort()));
-        webTarget = webTarget.path(URLEncoder.encode(TEST_SCENARIO_URI,
-                                                     "UTF-8"));
+        webTarget = webTarget.path(URLEncoder.encode(THING_URI, "UTF-8"));
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 
         Map<String, Object> variables = new HashMap<>();

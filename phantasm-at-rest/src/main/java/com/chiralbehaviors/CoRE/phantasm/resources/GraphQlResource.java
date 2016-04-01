@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,44 +71,9 @@ import io.dropwizard.auth.Auth;
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
 
-    public static class QueryRequest {
-        private String              query;
-        private Map<String, Object> variables = Collections.emptyMap();
-
-        public QueryRequest() {
-        }
-
-        public QueryRequest(String query) {
-            this(query, Collections.emptyMap());
-        }
-
-        public QueryRequest(String query, Map<String, Object> variables) {
-            this.query = query;
-            this.variables = variables;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        public Map<String, Object> getVariables() {
-            return variables;
-        }
-
-        @SuppressWarnings("serial")
-        public Map<String, Object> toMap() {
-            return new HashMap<String, Object>() {
-                {
-                    put(QUERY, query);
-                    put(VARIABLES, variables);
-                }
-            };
-        }
-    }
-
     private static final Logger                      log       = LoggerFactory.getLogger(GraphQlResource.class);
-    private static final String                      QUERY     = "query";
-    private static final String                      VARIABLES = "variables";
+    static final String                      QUERY     = "query";
+    static final String                      VARIABLES = "variables";
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache     = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;

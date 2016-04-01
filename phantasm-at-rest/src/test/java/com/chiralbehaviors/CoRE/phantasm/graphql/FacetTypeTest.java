@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -27,17 +28,22 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
@@ -187,5 +193,115 @@ public class FacetTypeTest extends AbstractModelTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGraphQlCreateAndMutate() throws Exception {
+        String[] newAliases = new String[] { "jones", "smith" };
+        String newUri = "new iri";
+
+        MavenArtifact artifact1 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
+                                                  "core", "core artifact");
+        artifact1.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact1.setArtifactID("core");
+        artifact1.setVersion("0.0.2-SNAPSHOT");
+        artifact1.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
+        WorkspaceScope scope = model.getWorkspaceModel()
+                                    .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+        GraphQLSchema schema = FacetType.build(scope.getWorkspace(), model,
+                                               getClass().getClassLoader());
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("artifact", artifact1.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        variables.put("description", "goodbye");
+
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+                                                variables);
+
+        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
+                                                              new PhantasmCRUD(model),
+                                                              request.getVariables());
+
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+
+        Map<String, Object> result = (Map<String, Object>) execute.getData();
+
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        assertNotNull(thing1Result);
+        assertEquals("hello", thing1Result.get("name"));
+        Thing1 thing1 = model.wrap(Thing1.class, model.records()
+                                                      .resolve(UUID.fromString((String) thing1Result.get("id"))));
+        assertNotNull(thing1);
+        assertEquals(artifact1, thing1.getDerivedFrom());
+
+        variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("aliases", Arrays.asList(newAliases));
+        variables.put("name", "hello");
+        variables.put("uri", newUri);
+        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
+                                   variables);
+        execute = new GraphQL(schema).execute(request.getQuery(),
+                                              new PhantasmCRUD(model),
+                                              request.getVariables());
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        result = (Map<String, Object>) execute.getData();
+
+        thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        assertNotNull(thing1Result);
+        assertEquals("hello", thing1Result.get("name"));
+        thing1 = model.wrap(Thing1.class, model.records()
+                                               .resolve(UUID.fromString((String) thing1Result.get("id"))));
+        assertNotNull(thing1);
+        assertEquals(artifact2, thing1.getDerivedFrom());
+        assertArrayEquals(newAliases, thing1.getAliases());
+        assertEquals(newUri, thing1.getURI());
+
+        variables = new HashMap<>();
+        variables.put("thing1", thing1.getRuleform()
+                                      .getId()
+                                      .toString());
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { CreateThing2(state: {setName: $name, addDerivedFrom: $artifact, setThing1: $thing1}) { id name } }",
+                                   variables);
+
+        execute = new GraphQL(schema).execute(request.getQuery(),
+                                              new PhantasmCRUD(model),
+                                              request.getVariables());
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        result = (Map<String, Object>) execute.getData();
+
     }
 }

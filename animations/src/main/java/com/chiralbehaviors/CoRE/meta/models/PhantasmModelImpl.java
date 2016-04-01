@@ -953,7 +953,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   Relationship relationship,
                                   ExistentialRuleform child) {
 
-        unlink(parent, relationship, child);
+        unlinkImmediate(parent, relationship);
         link(parent, relationship, child);
 
     }

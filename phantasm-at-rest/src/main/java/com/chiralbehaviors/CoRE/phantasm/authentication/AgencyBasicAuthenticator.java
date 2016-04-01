@@ -102,8 +102,9 @@ public class AgencyBasicAuthenticator
         CoreUser user = (CoreUser) model.wrap(CoreUser.class, agency);
 
         if (!model.getPhantasmModel()
-                  .checkCapability(Arrays.asList((Agency)user.getRuleform()),
-                                   (ExistentialRuleform) coreInstance.getRuleform(), loginTo)) {
+                  .checkCapability(Arrays.asList((Agency) user.getRuleform()),
+                                   (ExistentialRuleform) coreInstance.getRuleform(),
+                                   loginTo)) {
             log.warn(String.format("Authentication failure for %s:%s - no login capability",
                                    user.getRuleform()
                                        .getId(),
@@ -117,7 +118,7 @@ public class AgencyBasicAuthenticator
                                    user.getRuleform()
                                        .getId(),
                                    username));
-            return Optional.of(new AuthorizedPrincipal(user.getRuleform()));
+            return Optional.of(new AuthorizedPrincipal((Agency) user.getRuleform()));
         } else {
             log.warn(String.format("Authentication failure for %s:%s",
                                    user.getRuleform()

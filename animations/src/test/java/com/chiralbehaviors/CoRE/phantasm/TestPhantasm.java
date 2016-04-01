@@ -444,7 +444,7 @@ public class TestPhantasm extends AbstractModelTest {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
 
-        Product instance = thing1.getRuleform();
+        Product instance = (Product) thing1.getRuleform();
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(model.getKernel()
                                                      .getCore()),

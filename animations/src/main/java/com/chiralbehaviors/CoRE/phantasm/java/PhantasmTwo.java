@@ -78,10 +78,9 @@ public class PhantasmTwo extends PhantasmCRUD
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getRuleform()
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform> T getRuleform() {
-        return (T) ruleform;
+    public ExistentialRuleform getRuleform() {
+        return ruleform;
     }
 
     /* (non-Javadoc)

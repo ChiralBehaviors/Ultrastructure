@@ -50,9 +50,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
@@ -62,6 +65,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,8 +90,7 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
+public class FacetType implements PhantasmTraversal.PhantasmVisitor {
 
     private static final String ADD_TEMPLATE              = "add%s";
     private static final String APPLY_MUTATION            = "Apply%s";
@@ -154,16 +157,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return new String(chars);
     }
 
-    private List<BiFunction<DataFetchingEnvironment, RuleForm, Object>>                             constructors   = new ArrayList<>();
-    private graphql.schema.GraphQLInputObjectType.Builder                                           createTypeBuilder;
-    private String                                                                                  name;
-    private Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
-    private Builder                                                                                 typeBuilder;
-    private Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
+    private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
+    private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
+    private String                                                                          name;
+    private Set<ExistentialNetworkAuthorization>                                            references     = new HashSet<>();
+    private Builder                                                                         typeBuilder;
+    private Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate = new HashMap<>();
 
-    private graphql.schema.GraphQLInputObjectType.Builder                                           updateTypeBuilder;
+    private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
 
-    public FacetType(NetworkAuthorization<RuleForm> facet) {
+    public FacetType(FacetRecord facet) {
         this.name = WorkspacePresentation.toTypeName(facet.getName());
         typeBuilder = newObject().name(getName())
                                  .description(facet.getNotes());
@@ -185,14 +188,15 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
      * @param facet
      * @return the references this facet has to other facets.
      */
-    public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation,
-                                              NetworkAuthorization<?> facetUntyped,
-                                              List<Plugin> plugins, Model model,
-                                              ClassLoader executionScope) {
-        @SuppressWarnings("unchecked")
-        NetworkAuthorization<RuleForm> facet = (NetworkAuthorization<RuleForm>) facetUntyped;
+    public Set<ExistentialNetworkAuthorization> build(Builder query,
+                                                      Builder mutation,
+                                                      FacetRecord facet,
+                                                      List<Plugin> plugins,
+                                                      Model model,
+                                                      ClassLoader executionScope) {
         build(facet);
-        new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
+        new PhantasmTraversal(model).traverse(new Aspect(model.create(), facet),
+                                              this);
 
         addPlugins(facet, plugins, executionScope);
 
@@ -207,13 +211,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         mutation.field(update(facet));
         mutation.field(updateInstances(facet));
         mutation.field(remove(facet));
-        Set<NetworkAuthorization<?>> referenced = references;
+        Set<ExistentialNetworkAuthorization> referenced = references;
         clear();
         return referenced;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public PhantasmCRUD<RuleForm, Network> ctx(DataFetchingEnvironment env) {
+    public PhantasmCRUD ctx(DataFetchingEnvironment env) {
         return (PhantasmCRUD) env.getContext();
     }
 
@@ -237,26 +241,25 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visit(NetworkAuthorization<RuleForm> facet,
-                      AttributeAuthorization<RuleForm, Network> auth,
+    public void visit(Aspect facet, AttributeAuthorization auth,
                       String fieldName) {
-        Attribute attribute = auth.getAuthorizedAttribute();
+        Attribute attribute = auth.getAttribute();
         GraphQLOutputType type = typeOf(attribute);
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(attribute.getDescription())
                                               .dataFetcher(env -> {
                                                   Object value = ctx(env).getAttributeValue(facet,
-                                                                                            (RuleForm) env.getSource(),
+                                                                                            (ExistentialRuleform) env.getSource(),
                                                                                             auth);
                                                   if (value == null) {
                                                       return null;
                                                   }
                                                   switch (attribute.getValueType()) {
-                                                      case NUMERIC:
+                                                      case Numeric:
                                                           // GraphQL does not have a NUMERIC return type, so convert to float - ugly
                                                           return ((BigDecimal) value).floatValue();
-                                                      case TIMESTAMP:
+                                                      case Timestamp:
                                                       case JSON:
                                                           // GraphQL does not have a generic map or timestamp return type, so stringify it.
                                                           try {
@@ -284,21 +287,21 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                 e);
             }
         } : object -> object;
-        if (auth.getAuthorizedAttribute()
+        if (auth.getAttribute()
                 .getIndexed()) {
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
-                                                                  (RuleForm) update.get(AT_RULEFORM),
+                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (List<Object>) update.get(setter)));
             builder.type(new GraphQLList(GraphQLString));
-        } else if (auth.getAuthorizedAttribute()
+        } else if (auth.getAttribute()
                        .getKeyed()) {
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
-                                                                  (RuleForm) update.get(AT_RULEFORM),
+                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (Map<String, Object>) update.get(setter)));
             builder.type(GraphQLString);
@@ -307,7 +310,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
-                                                                  (RuleForm) update.get(AT_RULEFORM),
+                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (Object) converter.apply(update.get(setter))));
             builder.type(GraphQLString);
@@ -319,17 +322,15 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visitChildren(NetworkAuthorization<RuleForm> facet,
-                              NetworkAuthorization<RuleForm> auth,
-                              String fieldName,
-                              NetworkAuthorization<RuleForm> child,
+    public void visitChildren(Aspect facet, NetworkAuthorization auth,
+                              String fieldName, Aspect child,
                               String singularFieldName) {
         GraphQLOutputType type = referenceToType(child.getName());
         type = new GraphQLList(type);
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                       (RuleForm) env.getSource(),
+                                                                                       (ExistentialRuleform) env.getSource(),
                                                                                        auth))
                                               .description(auth.getNotes())
                                               .build());
@@ -337,7 +338,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .name(String.format(IMMEDIATE_TEMPLATE,
                                                                   capitalized(fieldName)))
                                               .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
-                                                                                                (RuleForm) env.getSource(),
+                                                                                                (ExistentialRuleform) env.getSource(),
                                                                                                 auth))
                                               .description(auth.getNotes())
                                               .build());
@@ -351,37 +352,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visitChildren(NetworkAuthorization<RuleForm> facet,
-                              XDomainNetworkAuthorization<?, ?> auth,
-                              String fieldName, NetworkAuthorization<?> child,
-                              String singularFieldName) {
-        GraphQLList type = new GraphQLList(referenceToType(child.getName()));
-        typeBuilder.field(newFieldDefinition().type(type)
-                                              .name(fieldName)
-                                              .description(auth.getNotes())
-                                              .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                       (RuleForm) env.getSource(),
-                                                                                       auth))
-                                              .build());
-        setChildren(facet, auth, fieldName, child);
-        addChild(facet, auth, child, singularFieldName);
-        addChildren(facet, auth, fieldName, child);
-        removeChild(facet, auth, child, singularFieldName);
-        removeChildren(facet, auth, fieldName, child);
-        references.add(child);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void visitSingular(NetworkAuthorization<RuleForm> facet,
-                              NetworkAuthorization<RuleForm> auth,
-                              String fieldName,
-                              NetworkAuthorization<RuleForm> child) {
+    public void visitSingular(Aspect facet, NetworkAuthorization auth,
+                              String fieldName, Aspect child) {
         GraphQLOutputType type = referenceToType(child.getName());
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .dataFetcher(env -> ctx(env).getSingularChild(facet,
-                                                                                            (RuleForm) env.getSource(),
+                                                                                            (ExistentialRuleform) env.getSource(),
                                                                                             auth))
                                               .description(auth.getNotes())
                                               .build());
@@ -395,45 +372,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTemplate.put(setter, (crud, update) -> {
             String id = (String) update.get(setter);
             return crud.setSingularChild(facet,
-                                         (RuleForm) update.get(AT_RULEFORM),
+                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                          auth,
                                          id == null ? null
-                                                    : (RuleForm) crud.lookup(id));
+                                                    : (ExistentialRuleform) crud.lookup(id));
         });
         references.add(child);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public void visitSingular(NetworkAuthorization<RuleForm> facet,
-                              XDomainNetworkAuthorization<?, ?> auth,
-                              String fieldName, NetworkAuthorization<?> child) {
-        typeBuilder.field(newFieldDefinition().type(referenceToType(child.getName()))
-                                              .name(fieldName)
-                                              .description(auth.getNotes())
-                                              .dataFetcher(env -> ctx(env).getSingularChild(facet,
-                                                                                            (RuleForm) env.getSource(),
-                                                                                            auth))
-                                              .build());
-        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        GraphQLInputObjectField pointerField = newInputObjectField().type(GraphQLString)
-                                                                    .name(setter)
-                                                                    .description(auth.getNotes())
-                                                                    .build();
-        updateTypeBuilder.field(pointerField);
-        createTypeBuilder.field(pointerField);
-        updateTemplate.put(setter,
-                           (crud,
-                            update) -> crud.setSingularChild(facet,
-                                                             (RuleForm) update.get(AT_RULEFORM),
-                                                             auth,
-                                                             crud.lookup((String) update.get(setter))));
-        references.add(child);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void addChild(NetworkAuthorization<RuleForm> facet,
-                          NetworkAuthorization<RuleForm> auth,
+    private void addChild(ExistentialNetworkAuthorization facet,
+                          ExistentialNetworkAuthorization auth,
                           String singularFieldName) {
         String add = String.format(ADD_TEMPLATE,
                                    capitalized(singularFieldName));
@@ -446,35 +395,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTemplate.put(add,
                            (crud,
                             update) -> crud.addChild(facet,
-                                                     (RuleForm) update.get(AT_RULEFORM),
+                                                     (ExistentialRuleform) update.get(AT_RULEFORM),
                                                      auth,
-                                                     (RuleForm) crud.lookup((String) update.get(add))));
+                                                     (ExistentialRuleform) crud.lookup((String) update.get(add))));
     }
 
     @SuppressWarnings("unchecked")
-    private void addChild(NetworkAuthorization<RuleForm> facet,
-                          XDomainNetworkAuthorization<?, ?> auth,
-                          NetworkAuthorization<?> child,
-                          String singularFieldName) {
-        String add = String.format(ADD_TEMPLATE,
-                                   capitalized(singularFieldName));
-        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
-                                                             .name(add)
-                                                             .description(auth.getNotes())
-                                                             .build();
-        updateTypeBuilder.field(field);
-        createTypeBuilder.field(field);
-        updateTemplate.put(add,
-                           (crud,
-                            update) -> crud.addChild(facet,
-                                                     (RuleForm) update.get(AT_RULEFORM),
-                                                     auth,
-                                                     crud.lookup((String) update.get(add))));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void addChildren(NetworkAuthorization<RuleForm> facet,
-                             NetworkAuthorization<RuleForm> auth,
+    private void addChildren(ExistentialNetworkAuthorization facet,
+                             ExistentialNetworkAuthorization auth,
                              String fieldName) {
         String addChildren = String.format(ADD_TEMPLATE,
                                            capitalized(fieldName));
@@ -487,33 +415,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTemplate.put(addChildren,
                            (crud,
                             update) -> crud.addChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm((List<String>) update.get(addChildren))));
+                                                        (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(addChildren))));
     }
 
-    @SuppressWarnings("unchecked")
-    private void addChildren(NetworkAuthorization<RuleForm> facet,
-                             XDomainNetworkAuthorization<?, ?> auth,
-                             String fieldName, NetworkAuthorization<?> child) {
-        String addChildren = String.format(ADD_TEMPLATE,
-                                           capitalized(fieldName));
-        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                             .name(addChildren)
-                                                             .description(auth.getNotes())
-                                                             .build();
-        updateTypeBuilder.field(field);
-        createTypeBuilder.field(field);
-        updateTemplate.put(addChildren,
-                           (crud,
-                            update) -> crud.addChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup((List<String>) update.get(addChildren))));
-    }
-
-    private void addPlugins(NetworkAuthorization<RuleForm> facet,
-                            List<Plugin> plugins, ClassLoader executionScope) {
+    private void addPlugins(FacetRecord facet, List<Plugin> plugins,
+                            ClassLoader executionScope) {
         plugins.forEach(plugin -> {
             String defaultImplementation = Optional.of(plugin.getPackageName())
                                                    .map(pkg -> String.format(S_S_PLUGIN_CONVENTION,
@@ -532,8 +440,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition apply(NetworkAuthorization<RuleForm> facet) {
-        List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
+    private GraphQLFieldDefinition apply(FacetRecord facet) {
+        List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(APPLY_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Apply %s facet to the instance",
@@ -544,14 +452,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> {
-                                       RuleForm ruleform = (RuleForm) ctx(env).lookup((String) env.getArgument(ID));
-                                       PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                       ExistentialRuleform ruleform = (ExistentialRuleform) ctx(env).lookup((String) env.getArgument(ID));
+                                       PhantasmCRUD crud = ctx(env);
                                        return crud.apply(facet, ruleform,
                                                          instance -> {
-                                           detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                         instance));
-                                           return ruleform;
-                                       });
+                                                             detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                                           instance));
+                                                             return ruleform;
+                                                         });
                                    })
                                    .build();
     }
@@ -571,7 +479,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             Thread.currentThread()
                   .setContextClassLoader(executionScope);
             try {
-                PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                PhantasmCRUD crud = ctx(env);
                 if (!checkInvoke(constructor, crud)) {
                     log.info(String.format("Failed invoking %s by: %s",
                                            constructor, crud.getModel()
@@ -580,7 +488,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
                 }
                 @SuppressWarnings("unchecked")
-                Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+                Class<? extends Phantasm> phantasm = (Class<? extends Phantasm>) method.getParameterTypes()[2];
                 Model model = ctx(env).getModel();
                 return invoke(method, env, model,
                               model.wrap(phantasm, instance));
@@ -592,7 +500,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private void build(NetworkAuthorization<RuleForm> facet) {
+    private void build(FacetRecord facet) {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
                                               .description("The id of the facet instance")
@@ -623,7 +531,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(SET_NAME,
                            (crud,
-                            update) -> crud.setName((RuleForm) update.get(AT_RULEFORM),
+                            update) -> crud.setName((ExistentialRuleform) update.get(AT_RULEFORM),
                                                     (String) update.get(SET_NAME)));
         GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
                                                              .name(SET_DESCRIPTION)
@@ -634,11 +542,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         createTypeBuilder.field(field);
         updateTemplate.put(SET_DESCRIPTION,
                            (crud,
-                            update) -> crud.setDescription((RuleForm) update.get(AT_RULEFORM),
+                            update) -> crud.setDescription((ExistentialRuleform) update.get(AT_RULEFORM),
                                                            (String) update.get(SET_DESCRIPTION)));
     }
 
-    private void build(NetworkAuthorization<RuleForm> facet,
+    private void build(ExistentialNetworkAuthorization facet,
                        InstanceMethod instanceMethod,
                        String defaultImplementation,
                        ClassLoader executionScope) {
@@ -656,14 +564,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                  .build())
                                                         .collect(Collectors.toList());
         @SuppressWarnings("unchecked")
-        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+        Class<? extends Phantasm> phantasm = (Class<? extends Phantasm>) method.getParameterTypes()[2];
         typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
                                               .argument(arguments)
                                               .name(instanceMethod.getName())
                                               .dataFetcher(env -> {
                                                   @SuppressWarnings("unchecked")
-                                                  RuleForm instance = (RuleForm) env.getSource();
-                                                  PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                                  ExistentialRuleform instance = (ExistentialRuleform) env.getSource();
+                                                  PhantasmCRUD crud = ctx(env);
                                                   if (!checkInvoke(facet,
                                                                    instanceMethod,
                                                                    instance,
@@ -697,19 +605,19 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .build());
     }
 
-    private boolean checkInvoke(Constructor constructor,
-                                PhantasmCRUD<RuleForm, Network> crud) {
+    private boolean checkInvoke(Constructor constructor, PhantasmCRUD crud) {
         return crud.getModel()
-                   .getProductModel()
+                   .getPhantasmModel()
                    .checkCapability(constructor.getRuleform(),
                                     crud.getINVOKE());
     }
 
-    private boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
-                                InstanceMethod method, RuleForm instance,
-                                PhantasmCRUD<RuleForm, Network> crud) {
+    private boolean checkInvoke(ExistentialNetworkAuthorization facet,
+                                InstanceMethod method,
+                                ExistentialRuleform instance,
+                                PhantasmCRUD crud) {
         Model model = crud.getModel();
-        PhantasmModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+        PhantasmModel networkedModel = model.getPhantasmModel();
         Relationship invoke = crud.getINVOKE();
         return networkedModel.checkCapability(method.getRuleform(), invoke)
                && crud.checkInvoke(facet, instance);
@@ -725,9 +633,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet) {
-        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdate = updateTemplate;
-        List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
+    private GraphQLFieldDefinition createInstance(FacetRecord facet) {
+        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
+        List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Create an instance of %s",
@@ -739,28 +647,30 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .build())
                                    .dataFetcher(env -> {
                                        Map<String, Object> createState = (Map<String, Object>) env.getArgument(STATE);
-                                       PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                       PhantasmCRUD crud = ctx(env);
                                        return crud.createInstance(facet,
                                                                   (String) createState.get(SET_NAME),
                                                                   (String) createState.get(SET_DESCRIPTION),
                                                                   instance -> {
-                                           createState.remove(SET_NAME);
-                                           createState.remove(SET_DESCRIPTION);
-                                           update(instance, createState, crud,
-                                                  detachedUpdate);
-                                           detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                         instance));
-                                           return instance;
-                                       });
+                                                                      createState.remove(SET_NAME);
+                                                                      createState.remove(SET_DESCRIPTION);
+                                                                      update(instance,
+                                                                             createState,
+                                                                             crud,
+                                                                             detachedUpdate);
+                                                                      detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                                                    instance));
+                                                                      return instance;
+                                                                  });
 
                                    })
                                    .build();
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstances(NetworkAuthorization<RuleForm> facet) {
-        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdate = updateTemplate;
-        List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
+    private GraphQLFieldDefinition createInstances(FacetRecord facet) {
+        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
+        List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(CREATE_INSTANCES_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Create instances of %s",
@@ -772,20 +682,22 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .build())
                                    .dataFetcher(env -> {
                                        List<Map<String, Object>> createStates = (List<Map<String, Object>>) env.getArgument(STATE);
-                                       PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                       PhantasmCRUD crud = ctx(env);
                                        return createStates.stream()
                                                           .map(createState -> crud.createInstance(facet,
                                                                                                   (String) createState.get(SET_NAME),
                                                                                                   (String) createState.get(SET_DESCRIPTION),
                                                                                                   instance -> {
-                                           createState.remove(SET_NAME);
-                                           createState.remove(SET_DESCRIPTION);
-                                           update(instance, createState, crud,
-                                                  detachedUpdate);
-                                           detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                         instance));
-                                           return instance;
-                                       }))
+                                                                                                      createState.remove(SET_NAME);
+                                                                                                      createState.remove(SET_DESCRIPTION);
+                                                                                                      update(instance,
+                                                                                                             createState,
+                                                                                                             crud,
+                                                                                                             detachedUpdate);
+                                                                                                      detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                                                                                    instance));
+                                                                                                      return instance;
+                                                                                                  }))
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
@@ -869,7 +781,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
     }
 
-    private GraphQLFieldDefinition instance(NetworkAuthorization<RuleForm> facet,
+    private GraphQLFieldDefinition instance(FacetRecord facet,
                                             GraphQLObjectType type) {
         return newFieldDefinition().name(WorkspacePresentation.toTypeName(facet.getName()))
                                    .type(type)
@@ -881,7 +793,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private GraphQLFieldDefinition instances(NetworkAuthorization<RuleForm> facet) {
+    private GraphQLFieldDefinition instances(FacetRecord facet) {
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Return the instances of %s",
@@ -925,7 +837,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition remove(NetworkAuthorization<RuleForm> facet) {
+    private GraphQLFieldDefinition remove(FacetRecord facet) {
         return newFieldDefinition().name(String.format(REMOVE_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(referenceToType(facet.getName()))
@@ -936,14 +848,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).remove(facet,
-                                                                       (RuleForm) ctx(env).lookup((String) env.getArgument(ID)),
+                                                                       (ExistentialRuleform) ctx(env).lookup((String) env.getArgument(ID)),
                                                                        true))
                                    .build();
     }
 
     @SuppressWarnings("unchecked")
-    private void removeChild(NetworkAuthorization<RuleForm> facet,
-                             NetworkAuthorization<RuleForm> auth,
+    private void removeChild(ExistentialNetworkAuthorization facet,
+                             ExistentialNetworkAuthorization auth,
                              String singularFieldName) {
         String remove = String.format(REMOVE_TEMPLATE,
                                       capitalized(singularFieldName));
@@ -954,33 +866,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTemplate.put(remove,
                            (crud,
                             update) -> crud.removeChild(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (RuleForm) crud.lookup((String) update.get(remove))));
+                                                        (ExistentialRuleform) crud.lookup((String) update.get(remove))));
     }
 
     @SuppressWarnings("unchecked")
-    private void removeChild(NetworkAuthorization<RuleForm> facet,
-                             XDomainNetworkAuthorization<?, ?> auth,
-                             NetworkAuthorization<?> child,
-                             String singularFieldName) {
-        String remove = String.format(REMOVE_TEMPLATE,
-                                      capitalized(singularFieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(remove)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(remove,
-                           (crud,
-                            update) -> crud.removeChild(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup((String) update.get(remove))));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void removeChildren(NetworkAuthorization<RuleForm> facet,
-                                NetworkAuthorization<RuleForm> auth,
+    private void removeChildren(ExistentialNetworkAuthorization facet,
+                                ExistentialNetworkAuthorization auth,
                                 String fieldName) {
         String removeChildren = String.format(REMOVE_TEMPLATE,
                                               capitalized(fieldName));
@@ -991,33 +884,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTemplate.put(removeChildren,
                            (crud,
                             update) -> crud.removeChildren(facet,
-                                                           (RuleForm) update.get(AT_RULEFORM),
+                                                           (ExistentialRuleform) update.get(AT_RULEFORM),
                                                            auth,
-                                                           (List<RuleForm>) crud.lookupRuleForm((List<String>) update.get(removeChildren))));
+                                                           (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(removeChildren))));
     }
 
     @SuppressWarnings("unchecked")
-    private void removeChildren(NetworkAuthorization<RuleForm> facet,
-                                XDomainNetworkAuthorization<?, ?> auth,
-                                String fieldName,
-                                NetworkAuthorization<?> child) {
-        String removeChildren = String.format(REMOVE_TEMPLATE,
-                                              capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(removeChildren)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(removeChildren,
-                           (crud,
-                            update) -> crud.removeChildren(facet,
-                                                           (RuleForm) update.get(AT_RULEFORM),
-                                                           auth,
-                                                           crud.lookup((List<String>) update.get(removeChildren))));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setChildren(NetworkAuthorization<RuleForm> facet,
-                             NetworkAuthorization<RuleForm> auth,
+    private void setChildren(ExistentialNetworkAuthorization facet,
+                             ExistentialNetworkAuthorization auth,
                              String fieldName) {
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
@@ -1029,28 +903,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm((List<String>) update.get(setter))));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setChildren(NetworkAuthorization<RuleForm> facet,
-                             XDomainNetworkAuthorization<?, ?> auth,
-                             String fieldName, NetworkAuthorization<?> child) {
-        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
-                                                             .name(setter)
-                                                             .description(auth.getNotes())
-                                                             .build();
-        updateTypeBuilder.field(field);
-        createTypeBuilder.field(field);
-        updateTemplate.put(setter,
-                           (crud,
-                            update) -> crud.setChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup((List<String>) update.get(setter))));
+                                                        (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(setter))));
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
@@ -1081,8 +936,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet) {
-        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdateTemplate = updateTemplate;
+    private GraphQLFieldDefinition update(FacetRecord facet) {
+        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(referenceToType(facet.getName()))
@@ -1094,8 +949,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .build())
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
-                                       PhantasmCRUD<RuleForm, Network> crud = ctx(env);
-                                       RuleForm ruleform = (RuleForm) crud.lookup((String) updateState.get(ID));
+                                       PhantasmCRUD crud = ctx(env);
+                                       ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((String) updateState.get(ID));
                                        update(ruleform, updateState, crud,
                                               detachedUpdateTemplate);
                                        return ruleform;
@@ -1103,9 +958,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private void update(RuleForm ruleform, Map<String, Object> updateState,
-                        PhantasmCRUD<RuleForm, Network> crud,
-                        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
+    private void update(ExistentialRuleform ruleform,
+                        Map<String, Object> updateState, PhantasmCRUD crud,
+                        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate) {
         updateState.put(AT_RULEFORM, ruleform);
         updateState.keySet()
                    .stream()
@@ -1118,8 +973,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition updateInstances(NetworkAuthorization<RuleForm> facet) {
-        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdateTemplate = updateTemplate;
+    private GraphQLFieldDefinition updateInstances(FacetRecord facet) {
+        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_INSTANCES_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(referenceToType(facet.getName()))
@@ -1131,16 +986,19 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .build())
                                    .dataFetcher(env -> {
                                        List<Map<String, Object>> updateStates = (List<Map<String, Object>>) env.getArgument(STATE);
-                                       PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                       PhantasmCRUD crud = ctx(env);
                                        return updateStates.stream()
                                                           .map(updateState -> {
-                                           RuleForm ruleform = (RuleForm) crud.lookup((String) updateState.get(ID));
-                                           update(ruleform, updateState, crud,
-                                                  detachedUpdateTemplate);
-                                           return ruleform;
-                                       })
+                                                              ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((String) updateState.get(ID));
+                                                              update(ruleform,
+                                                                     updateState,
+                                                                     crud,
+                                                                     detachedUpdateTemplate);
+                                                              return ruleform;
+                                                          })
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
     }
+
 }

@@ -90,6 +90,10 @@ public class PhantasmTraversal {
             return String.format("Aspact[%s:%s]", classifier.getName(),
                                  classification.getName());
         }
+
+        public String getName() {
+            return facet.getName();
+        }
     }
 
     public static class AttributeAuthorization {
@@ -176,6 +180,10 @@ public class PhantasmTraversal {
         public String toString() {
             return String.format("Network Auth[%s->%s]", relationship.getName(),
                                  child);
+        }
+
+        public String getNotes() {
+            return auth.getNotes();
         }
     }
 

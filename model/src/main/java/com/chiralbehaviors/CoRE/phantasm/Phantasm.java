@@ -34,5 +34,5 @@ public interface Phantasm {
 
     String getNotes();
 
-    <T extends ExistentialRuleform> T getRuleform();
+    ExistentialRuleform getRuleform();
 }

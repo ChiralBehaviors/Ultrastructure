@@ -22,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
@@ -101,8 +102,8 @@ public class AgencyBasicAuthenticator
         CoreUser user = (CoreUser) model.wrap(CoreUser.class, agency);
 
         if (!model.getPhantasmModel()
-                  .checkCapability(Arrays.asList(user.getRuleform()),
-                                   coreInstance.getRuleform(), loginTo)) {
+                  .checkCapability(Arrays.asList((Agency)user.getRuleform()),
+                                   (ExistentialRuleform) coreInstance.getRuleform(), loginTo)) {
             log.warn(String.format("Authentication failure for %s:%s - no login capability",
                                    user.getRuleform()
                                        .getId(),

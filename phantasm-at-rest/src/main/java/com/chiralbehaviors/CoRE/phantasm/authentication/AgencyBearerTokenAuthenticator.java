@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
@@ -156,7 +157,8 @@ public class AgencyBearerTokenAuthenticator
         if (!model.getPhantasmModel()
                   .checkCapability(Arrays.asList(model.records()
                                                       .resolve(agency)),
-                                   coreInstance.getRuleform(), loginTo)) {
+                                   (ExistentialRuleform) coreInstance.getRuleform(),
+                                   loginTo)) {
             log.warn("requested access token {} for {}:{} has no login capability",
                      requestCredentials, agency, model.records()
                                                       .resolve(agency));

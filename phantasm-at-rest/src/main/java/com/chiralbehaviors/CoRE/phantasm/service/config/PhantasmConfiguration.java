@@ -27,6 +27,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.cache.CacheBuilderSpec;
 
 import io.dropwizard.Configuration;
+import io.dropwizard.db.DatabaseConfiguration;
+import io.dropwizard.db.PooledDataSourceFactory;
 
 /**
  * @author hhildebrand
@@ -59,39 +61,49 @@ public class PhantasmConfiguration extends Configuration
         @JsonProperty NULL;
     }
 
-    private static final String DEFAULT_ASSETS_NAME       = "assets";
-    private static final String DEFAULT_INDEX_FILE        = "index.htm";
-    private static final String DEFAULT_PATH              = "/assets";
+    private static final String                                      DEFAULT_ASSETS_NAME       = "assets";
+    private static final String                                      DEFAULT_INDEX_FILE        = "index.htm";
+    private static final String                                      DEFAULT_PATH              = "/assets";
 
     @NotNull
-    public List<Asset>          assets                    = new ArrayList<>();
+    public List<Asset>                                               assets                    = new ArrayList<>();
 
     @NotNull
-    public AssetsConfiguration  assetsConfiguration       = new AssetsConfiguration();
+    public AssetsConfiguration                                       assetsConfiguration       = new AssetsConfiguration();
 
     @NotNull
-    public AuthType             auth                      = AuthType.BEARER_TOKEN;
+    public AuthType                                                  auth                      = AuthType.BEARER_TOKEN;
 
     @NotNull
-    public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
+    public CacheBuilderSpec                                          authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
     @NotNull
-    public CORSConfiguration    CORS                      = new CORSConfiguration();
+    public CORSConfiguration                                         CORS                      = new CORSConfiguration();
 
     @NotNull
-    public List<String>         executionScope            = Collections.emptyList();
+    public List<String>                                              executionScope            = Collections.emptyList();
 
-    public boolean              randomPort                = false;
+    public boolean                                                   randomPort                = false;
 
-    public String               realm;
+    public String                                                    realm;
 
-    public boolean              useCORS                   = false;
+    public boolean                                                   useCORS                   = false;
 
-    /* (non-Javadoc)
-     * @see com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration#getAssetsConfiguration()
-     */
+    @JsonProperty("database")
+    private DatabaseConfiguration<PhantasmConfiguration>             databaseConfiguration;
+
+    private EnvironmentDriventDbConfiguration<PhantasmConfiguration> environmentConfig         = new EnvironmentDriventDbConfiguration<>();
+
     @Override
     public AssetsConfiguration getAssetsConfiguration() {
         return assetsConfiguration;
+    }
+
+    public PooledDataSourceFactory getDatabaseConfiguration() {
+        if (databaseConfiguration == null) {
+            return environmentConfig.getDataSourceFactory(this);
+        } else {
+            return databaseConfiguration.getDataSourceFactory(this);
+        }
     }
 }

@@ -22,7 +22,8 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Collections;
+
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -61,18 +62,15 @@ public class SnapshotCommand extends Command {
     @Override
     public void run(Bootstrap<?> bootstrap,
                     Namespace namespace) throws Exception {
-        EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
-                                                                        JpaConfiguration.PERSISTENCE_UNIT);
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.create()
-                                       .getTransaction();
-            t.begin();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new CoREModule());
-            try (FileOutputStream os = new FileOutputStream(new File(namespace.getString("file")))) {
-                objectMapper.writeValue(os, model.snapshot());
+        DSLContext create = PhantasmBundle.getCreateFromEnvironment();
+        create.transaction(c -> {
+            try (Model model = new ModelImpl(create)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new CoREModule());
+                try (FileOutputStream os = new FileOutputStream(new File(namespace.getString("file")))) {
+                    objectMapper.writeValue(os, model.snapshot());
+                }
             }
-        }
+        });
     }
-
 }

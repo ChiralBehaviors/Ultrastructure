@@ -21,7 +21,8 @@
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
 import java.io.InputStream;
-import java.util.Collections;
+
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -46,9 +47,6 @@ public class LoadSnapshotCommand extends Command {
         super("load-snap", "load snapsot state into the CoRE instance");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#configure(net.sourceforge.argparse4j.inf.Subparser)
-     */
     @Override
     public void configure(Subparser subparser) {
         subparser.addArgument("file")
@@ -56,28 +54,22 @@ public class LoadSnapshotCommand extends Command {
                  .help("State snapshot file");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
-     */
     @Override
     public void run(Bootstrap<?> bootstrap,
                     Namespace namespace) throws Exception {
-        EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
-                                                                        JpaConfiguration.PERSISTENCE_UNIT);
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.create()
-                                       .getTransaction();
-            t.begin();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new CoREModule());
-            try (InputStream is = Utils.resolveResource(getClass(),
-                                                        namespace.getString("file"))) {
-                StateSnapshot snapshot = objectMapper.readValue(is,
-                                                                StateSnapshot.class);
-                snapshot.retarget(model.create());
+        DSLContext create = PhantasmBundle.getCreateFromEnvironment();
+        create.transaction(c -> {
+            try (Model model = new ModelImpl(create)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new CoREModule());
+                try (InputStream is = Utils.resolveResource(getClass(),
+                                                            namespace.getString("file"))) {
+                    StateSnapshot snapshot = objectMapper.readValue(is,
+                                                                    StateSnapshot.class);
+                    snapshot.load(model.create());
+                }
             }
-            t.commit();
-        }
+        });
     }
 
 }

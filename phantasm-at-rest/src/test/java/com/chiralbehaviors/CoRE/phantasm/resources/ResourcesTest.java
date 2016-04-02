@@ -30,12 +30,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
@@ -55,38 +51,6 @@ public class ResourcesTest extends ThingWorkspaceTest {
     @AfterClass
     public static void shutdown() {
         application.stop();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFacetNode() throws Exception {
-        URL url;
-        Map<String, Object> jsonObject;
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
-                                        "tester", "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing1.setThing2(thing2);
-        JsonLdOptions options = new JsonLdOptions();
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
-                                    application.getPort(),
-                                    ((ExistentialRecord) scope.lookup("kernel",
-                                                                      "IsA")).getId()
-                                                                             .toString(),
-                                    ((ExistentialRecord) scope.lookup("Thing1")).getId()
-                                                                                .toString(),
-                                    thing1.getRuleform()
-                                          .getId()));
-        jsonObject = (Map<String, Object>) JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject);
-        URL contextUrl = new URL((String) jsonObject.get(Constants.CONTEXT));
-        Map<String, Object> context = (Map<String, Object>) JsonUtils.fromInputStream(contextUrl.openStream());
-        JsonLdProcessor.normalize(jsonObject, options);
-        JsonLdProcessor.compact(jsonObject, context, options);
-        JsonLdProcessor.flatten(jsonObject, context, options);
-        JsonLdProcessor.expand(jsonObject, options);
     }
 
     @Test

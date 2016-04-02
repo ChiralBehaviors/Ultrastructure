@@ -50,12 +50,12 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
-import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;

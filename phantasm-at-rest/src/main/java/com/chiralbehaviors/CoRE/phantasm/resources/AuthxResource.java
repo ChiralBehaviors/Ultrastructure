@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
@@ -75,9 +76,11 @@ public class AuthxResource extends TransactionalResource {
     private static final Logger log = LoggerFactory.getLogger(AuthxResource.class);
     private final Attribute     login;
 
-    public AuthxResource(Model model) {
-        login = model.getKernel()
-                     .getLogin();
+    public AuthxResource(DSLContext create) {
+        try (Model model = new ModelImpl(create)) {
+            login = model.getKernel()
+                         .getLogin();
+        }
     }
 
     @POST
@@ -85,13 +88,14 @@ public class AuthxResource extends TransactionalResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public UUID loginForToken(@FormParam("username") String username,
                               @FormParam("password") String password,
-                              @Context HttpServletRequest httpRequest) {
-        return perform(null, model -> {
+                              @Context HttpServletRequest httpRequest,
+                              @Context DSLContext create) {
+        return mutate(null, model -> {
             Credential cred = new Credential();
             cred.ip = httpRequest.getRemoteAddr();
             return generateToken(cred, authenticate(username, password, model),
                                  model).getId();
-        });
+        }, create);
     }
 
     @POST
@@ -100,7 +104,7 @@ public class AuthxResource extends TransactionalResource {
     public void deauthorize(@Auth AuthorizedPrincipal principal,
                             @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken,
                             @Context DSLContext create) {
-        perform(principal, model -> {
+        mutate(principal, model -> {
             UUID uuid = UUID.fromString(parse(bearerToken));
             ExistentialAttributeRecord record = model.create()
                                                      .selectFrom(EXISTENTIAL_ATTRIBUTE)
@@ -114,7 +118,7 @@ public class AuthxResource extends TransactionalResource {
             log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
                      user.getName());
             return null;
-        });
+        }, create);
     }
 
     public static String parse(String header) {
@@ -135,8 +139,9 @@ public class AuthxResource extends TransactionalResource {
     @Path("capability")
     @Consumes(MediaType.APPLICATION_JSON)
     public UUID requestCapability(CapabilityRequest request,
-                                  @Context HttpServletRequest httpRequest) {
-        return perform(null, model -> {
+                                  @Context HttpServletRequest httpRequest,
+                                  @Context DSLContext create) {
+        return mutate(null, model -> {
             Credential cred = new Credential();
             cred.capabilities = request.capabilities;
             cred.ip = httpRequest.getRemoteAddr();
@@ -144,7 +149,7 @@ public class AuthxResource extends TransactionalResource {
                                  authenticate(request.username,
                                               request.password, model),
                                  model).getId();
-        });
+        }, create);
     }
 
     private CoreUser authenticate(String username, String password,

@@ -153,11 +153,12 @@ public class AuthenticatorsTest extends AbstractModelTest {
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
         model.flush();
-        AuthxResource authx = new AuthxResource(model);
+        AuthxResource authx = new AuthxResource(model.create());
         HttpServletRequest request = mock(HttpServletRequest.class);
         String ip = "There's no place like 127.0.0.1";
         when(request.getRemoteAddr()).thenReturn(ip);
-        UUID authToken = authx.loginForToken(username, password, request);
+        UUID authToken = authx.loginForToken(username, password, request,
+                                             model.create());
         assertNotNull(authToken);
 
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(model);
@@ -177,7 +178,8 @@ public class AuthenticatorsTest extends AbstractModelTest {
         capRequest.username = username;
         capRequest.password = password;
         capRequest.capabilities = Arrays.asList(asserted.getId());
-        authToken = authx.requestCapability(capRequest, request);
+        authToken = authx.requestCapability(capRequest, request,
+                                            model.create());
 
         credential = new RequestCredentials(ip, authToken.toString());
         authenticated = authenticator.authenticate(credential);

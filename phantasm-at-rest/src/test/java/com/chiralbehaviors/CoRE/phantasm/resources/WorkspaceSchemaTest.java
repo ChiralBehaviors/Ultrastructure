@@ -90,7 +90,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 variables);
         ExecutionResult result;
         try {
-            result = resource.query(null, THING_URI, request);
+            result = resource.query(null, THING_URI, request, model.create());
         } catch (WebApplicationException e) {
             fail(e.getResponse()
                   .getEntity()

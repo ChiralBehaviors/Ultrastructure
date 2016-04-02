@@ -27,6 +27,7 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,6 +224,14 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                                    ClassLoader executionScope) {
         environment.jersey()
                    .register(new GraphQlResource(executionScope));
+    }
+
+    /**
+     * @return
+     */
+    public static DSLContext getCreateFromEnvironment() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

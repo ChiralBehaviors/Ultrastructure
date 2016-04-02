@@ -16,23 +16,18 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import java.util.UUID;
+import java.sql.SQLException;
 import java.util.function.Function;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
+import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 /**
@@ -41,59 +36,11 @@ import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 public class TransactionalResource {
     private final static Logger log = LoggerFactory.getLogger(TransactionalResource.class);
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Aspect<RuleForm> getAspect(String ruleformType,
-                                                                                                                                              UUID relationship,
-                                                                                                                                              UUID ruleform,
-                                                                                                                                              Model readOnlyModel) {
-        Class<ExistentialRuleform> ruleformClass = (Class<ExistentialRuleform>) RuleformResource.entityMap.get(ruleformType);
-        if (ruleformClass == null) {
-            throw new WebApplicationException(String.format("%s does not exist",
-                                                            ruleformType),
-                                              Status.NOT_FOUND);
-        }
-        Relationship classifier = readOnlyModel.create()
-                                               .find(Relationship.class,
-                                                     relationship);
-        if (classifier == null) {
-            throw new WebApplicationException(String.format("classifier does not exist: %s",
-                                                            relationship),
-                                              Status.NOT_FOUND);
-        }
-        classifier = Ruleform.initializeAndUnproxy(classifier);
-        ExistentialRuleform classification = readOnlyModel.create()
-                                                          .find(ruleformClass,
-                                                                ruleform);
-        if (classification == null) {
-            throw new WebApplicationException(String.format("classification does not exist: %s",
-                                                            ruleform),
-                                              Status.NOT_FOUND);
-        }
-        classification = Ruleform.initializeAndUnproxy(classification);
-        Aspect aspect = new Aspect(classifier, classification);
-        return aspect;
-    }
+    protected <T> T mutate(AuthorizedPrincipal principal,
+                            Function<Model, T> txn,
+                            DSLContext create) throws WebApplicationException {
+        Model model = new ModelImpl(create);
 
-    protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
-                                                                                             UUID classification,
-                                                                                             PhantasmModel<RuleForm, ?, ?, ?> networkedModel) {
-        try {
-            return networkedModel.getAspect(classifier, classification);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e, Response.Status.NOT_FOUND);
-        }
-    }
-
-    protected Model getNewModel() {
-        return new ModelImpl(emf);
-    }
-
-    protected <T> T perform(AuthorizedPrincipal principal,
-                            Function<Model, T> txn) throws WebApplicationException {
-        Model model = new ModelImpl(emf);
-        EntityManager em = model.create();
-        em.getTransaction()
-          .begin();
         if (principal == null) {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
@@ -101,17 +48,12 @@ public class TransactionalResource {
         try {
             return model.executeAs(principal, () -> {
                 try {
-                    T value = txn.apply(model);
-                    em.getTransaction()
-                      .commit();
-                    return value;
+                    return create.transactionResult(c -> txn.apply(model));
                 } catch (WebApplicationException e) {
                     throw e;
                 } catch (Throwable e) {
                     log.error("error applying transaction", e);
                     throw new WebApplicationException(e, 500);
-                } finally {
-                    em.close();
                 }
             });
         } catch (WebApplicationException e) {
@@ -122,14 +64,21 @@ public class TransactionalResource {
         }
     }
 
-    protected <T> T readOnly(AuthorizedPrincipal principal,
-                             Function<Model, T> txn) throws WebApplicationException {
-        Model model = new ModelImpl(emf);
-        EntityManager em = model.create();
-        em.getTransaction()
-          .begin();
-        em.getTransaction()
-          .setRollbackOnly();
+    protected <T> T read(AuthorizedPrincipal principal,
+                             Function<Model, T> txn,
+                             DSLContext create) throws WebApplicationException {
+        Model model = new ModelImpl(create);
+        try {
+            model.create()
+                 .configuration()
+                 .connectionProvider()
+                 .acquire()
+                 .setReadOnly(true);
+        } catch (DataAccessException e) {
+            throw new WebApplicationException(e, 500);
+        } catch (SQLException e) {
+            throw new WebApplicationException(e, 500);
+        }
         if (principal == null) {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
@@ -142,8 +91,6 @@ public class TransactionalResource {
                 } catch (Throwable e) {
                     log.error("error applying transaction", e);
                     throw new WebApplicationException(e, 500);
-                } finally {
-                    em.close();
                 }
             });
         } catch (WebApplicationException e) {

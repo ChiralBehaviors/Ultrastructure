@@ -15,11 +15,7 @@
         <main.class>HandiNAVI</main.class>
     </properties>
     
-    <dependencies> 
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-        </dependency> 
+    <dependencies>  
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>phantasm-at-rest</artifactId>

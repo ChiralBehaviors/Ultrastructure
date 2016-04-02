@@ -36,9 +36,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +87,9 @@ public class GraphQlResource extends TransactionalResource {
     @Timed
     @GET
     @Path("workspace")
-    public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal) {
-        return readOnly(principal, readOnlyModel -> {
+    public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal,
+                                                   @Context DSLContext create) {
+        return read(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
             List<Map<String, Object>> workspaces = new ArrayList<>();
             for (ExistentialRuleform definingProduct : readOnlyModel.getPhantasmModel()
@@ -103,7 +106,7 @@ public class GraphQlResource extends TransactionalResource {
                 workspaces.add(wsp);
             }
             return workspaces;
-        });
+        }, create);
     }
 
     @Timed
@@ -111,7 +114,8 @@ public class GraphQlResource extends TransactionalResource {
     @POST
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
                                  @PathParam("workspace") String workspace,
-                                 @SuppressWarnings("rawtypes") Map request) {
+                                 @SuppressWarnings("rawtypes") Map request,
+                                 @Context DSLContext create) {
         if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
@@ -120,7 +124,7 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        return perform(principal, model -> {
+        return mutate(principal, model -> {
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
 
             GraphQLSchema schema = cache.computeIfAbsent(uuid, id -> {
@@ -172,7 +176,7 @@ public class GraphQlResource extends TransactionalResource {
             log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
-        });
+        }, create);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -204,8 +208,9 @@ public class GraphQlResource extends TransactionalResource {
 
     // here only because of insanity
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
-                                 String workspace, QueryRequest request) {
-        return query(principal, workspace, request.toMap());
+                                 String workspace, QueryRequest request,
+                                 @Context DSLContext context) {
+        return query(principal, workspace, request.toMap(), context);
 
     }
 }

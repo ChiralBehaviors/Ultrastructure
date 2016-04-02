@@ -20,8 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
-import java.util.Collections;
 import java.util.stream.Collectors;
+
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -61,28 +62,25 @@ public class ManifestCommand extends Command {
     @Override
     public void run(Bootstrap<?> bootstrap,
                     Namespace namespace) throws Exception {
-        EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
-                                                                        JpaConfiguration.PERSISTENCE_UNIT);
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.create()
-                                       .getTransaction();
-            t.begin();
-            WorkspaceImporter.manifest(namespace.getList("files")
-                                                .stream()
-                                                .map(file -> {
-                                                    try {
-                                                        return Utils.resolveResourceURL(getClass(),
-                                                                                        (String) file);
-                                                    } catch (Exception e) {
-                                                        throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                         file),
-                                                                                           e);
-                                                    }
-                                                })
-                                                .collect(Collectors.toList()),
-                                       model);
-            t.commit();
-        }
+        DSLContext create = PhantasmBundle.getCreateFromEnvironment();
+        create.transaction(c -> {
+            try (Model model = new ModelImpl(create)) {
+                WorkspaceImporter.manifest(namespace.getList("files")
+                                                    .stream()
+                                                    .map(file -> {
+                                                        try {
+                                                            return Utils.resolveResourceURL(getClass(),
+                                                                                            (String) file);
+                                                        } catch (Exception e) {
+                                                            throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
+                                                                                                             file),
+                                                                                               e);
+                                                        }
+                                                    })
+                                                    .collect(Collectors.toList()),
+                                           model);
+            }
+        });
     }
 
 }

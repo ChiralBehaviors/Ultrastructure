@@ -19,8 +19,6 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 import java.util.UUID;
 import java.util.function.Function;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -42,12 +40,6 @@ import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
  */
 public class TransactionalResource {
     private final static Logger log = LoggerFactory.getLogger(TransactionalResource.class);
-
-    private final EntityManagerFactory emf;
-
-    public TransactionalResource(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Aspect<RuleForm> getAspect(String ruleformType,

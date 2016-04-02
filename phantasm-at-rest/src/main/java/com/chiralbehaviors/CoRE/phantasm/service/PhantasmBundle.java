@@ -20,17 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 
@@ -44,12 +36,9 @@ import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadSnapshotCommand;
@@ -60,7 +49,6 @@ import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
@@ -81,66 +69,15 @@ import io.dropwizard.setup.Environment;
  *
  */
 public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
-    public static final String  JAVAX_PERSISTENCE_JDBC_DRIVER   = "javax.persistence.jdbc.driver";
-    public static final String  JAVAX_PERSISTENCE_JDBC_PASSWORD = "javax.persistence.jdbc.password";
-    public static final String  JAVAX_PERSISTENCE_JDBC_URL      = "javax.persistence.jdbc.url";
-    public static final String  JAVAX_PERSISTENCE_JDBC_USER     = "javax.persistence.jdbc.user";
-    public static final String  ORG_POSTGRESQL_DRIVER           = "org.postgresql.Driver";
+    public static final String JAVAX_PERSISTENCE_JDBC_DRIVER   = "javax.persistence.jdbc.driver";
+    public static final String JAVAX_PERSISTENCE_JDBC_PASSWORD = "javax.persistence.jdbc.password";
+    public static final String JAVAX_PERSISTENCE_JDBC_URL      = "javax.persistence.jdbc.url";
+    public static final String JAVAX_PERSISTENCE_JDBC_USER     = "javax.persistence.jdbc.user";
+    public static final String ORG_POSTGRESQL_DRIVER           = "org.postgresql.Driver";
 
-    private final static Logger log                             = LoggerFactory.getLogger(PhantasmBundle.class);
+    public final static Logger log                             = LoggerFactory.getLogger(PhantasmBundle.class);
 
-    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
-        ClassLoader parent = Thread.currentThread()
-                                   .getContextClassLoader();
-        if (parent == null) {
-            parent = PhantasmBundle.class.getClassLoader();
-        }
-        List<URL> urls = new ArrayList<>();
-        for (String url : urlStrings) {
-            URL resolved;
-            try {
-                resolved = new URL(url);
-            } catch (MalformedURLException e) {
-                try {
-                    resolved = new File(url).toURI()
-                                            .toURL();
-                } catch (MalformedURLException e1) {
-                    log.error("Invalid configured execution scope url: {}", url,
-                              e1);
-                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
-                                                                     url),
-                                                       e1);
-                }
-            }
-            urls.add(resolved);
-        }
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
-    }
-
-    public static EntityManagerFactory getEmfFromEnvironment(Map<String, String> configuredProperties,
-                                                             String persistenceUnity) {
-
-        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
-        properties.putAll(configuredProperties);
-
-        CoreDbConfiguration coreConfig = new CoreDbConfiguration();
-        coreConfig.initializeFromEnvironment();
-        properties.put(JAVAX_PERSISTENCE_JDBC_USER, coreConfig.coreUsername);
-        properties.put(JAVAX_PERSISTENCE_JDBC_PASSWORD,
-                       coreConfig.corePassword);
-        properties.put(JAVAX_PERSISTENCE_JDBC_URL, coreConfig.getCoreJdbcURL());
-        properties.put(JAVAX_PERSISTENCE_JDBC_DRIVER, ORG_POSTGRESQL_DRIVER);
-        return Persistence.createEntityManagerFactory(persistenceUnity,
-                                                      properties);
-    }
-
-    private EntityManagerFactory emf;
-
-    private Environment          environment;
-
-    public PhantasmBundle(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
+    private Environment        environment;
 
     public int getPort() {
         return ((AbstractNetworkConnector) environment.getApplicationContext()
@@ -170,16 +107,11 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     public void run(PhantasmConfiguration configuration,
                     Environment environment) throws Exception {
         this.environment = environment;
-        if (configuration.jpa.configureFromEnvironment()) {
-            configureFromEnvironment(configuration);
-        } else {
-            configure(configuration);
-        }
 
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
         configureServices(environment,
-                          configureExecutionScope(configuration.executionScope));
+                          FacetType.configureExecutionScope(configuration.executionScope));
 
         configuration.assets.forEach(asset -> {
             try {
@@ -201,11 +133,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
         Map<String, String> properties = JpaConfiguration.getDefaultProperties();
         properties.putAll(configuration.jpa.getProperties());
-
-        if (emf == null) { // allow tests to set this if needed
-            emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
-                                                         properties);
-        }
     }
 
     private void configureAuth(PhantasmConfiguration configuration,
@@ -285,13 +212,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
     }
 
-    private void configureFromEnvironment(PhantasmConfiguration configuration) throws Exception {
-        if (emf == null) {
-            emf = getEmfFromEnvironment(configuration.jpa.getProperties(),
-                                        configuration.jpa.getPersistenceUnit());
-        }
-    }
-
     private void configureRandomPort(PhantasmConfiguration configuration) {
         ServerFactory serverFactory = configuration.getServerFactory();
         if (serverFactory instanceof DefaultServerFactory) {
@@ -311,15 +231,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     private void configureServices(Environment environment,
                                    ClassLoader executionScope) {
         environment.jersey()
-                   .register(new FacetResource(emf));
-        environment.jersey()
-                   .register(new WorkspaceResource(emf));
-        environment.jersey()
-                   .register(new RuleformResource(emf));
-        environment.jersey()
-                   .register(new WorkspaceMediatedResource(emf));
-        environment.jersey()
-                   .register(new GraphQlResource(emf, executionScope));
+                   .register(new GraphQlResource(executionScope));
     }
 
 }

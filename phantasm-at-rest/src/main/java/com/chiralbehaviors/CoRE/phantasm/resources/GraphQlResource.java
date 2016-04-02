@@ -72,14 +72,13 @@ import io.dropwizard.auth.Auth;
 public class GraphQlResource extends TransactionalResource {
 
     private static final Logger                      log       = LoggerFactory.getLogger(GraphQlResource.class);
-    static final String                      QUERY     = "query";
-    static final String                      VARIABLES = "variables";
+    static final String                              QUERY     = "query";
+    static final String                              VARIABLES = "variables";
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache     = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
 
     public GraphQlResource(ClassLoader executionScope) {
-        super(null);
         this.executionScope = executionScope;
     }
 
@@ -91,11 +90,11 @@ public class GraphQlResource extends TransactionalResource {
             Kernel kernel = readOnlyModel.getKernel();
             List<Map<String, Object>> workspaces = new ArrayList<>();
             for (ExistentialRuleform definingProduct : readOnlyModel.getPhantasmModel()
-                                                                    .getChildren(kernel.getWorkspace()
-                                                                                       .getId(),
-                                                                                 kernel.getIsA()
-                                                                                       .getInverse(),
-                                                                                 ExistentialDomain.Product)) {
+                                                                    .getChildrenUuid(kernel.getWorkspace()
+                                                                                           .getId(),
+                                                                                     kernel.getIsA()
+                                                                                           .getInverse(),
+                                                                                     ExistentialDomain.Product)) {
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put("id", definingProduct.getId()
                                              .toString());
@@ -107,7 +106,6 @@ public class GraphQlResource extends TransactionalResource {
         });
     }
 
-    @SuppressWarnings("unchecked")
     @Timed
     @Path("workspace/{workspace}")
     @POST
@@ -137,7 +135,8 @@ public class GraphQlResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return FacetType.build(scoped.getWorkspace(), model, executionScope);
+                return FacetType.build(scoped.getWorkspace(), model,
+                                       executionScope);
             });
 
             if (schema == null) {
@@ -147,10 +146,9 @@ public class GraphQlResource extends TransactionalResource {
                                                   Status.NOT_FOUND);
             }
 
-            @SuppressWarnings("rawtypes")
             PhantasmCRUD crud = new PhantasmCRUD(model);
-            Product definingProduct = model.create()
-                                           .find(Product.class, uuid);
+            Product definingProduct = model.records()
+                                           .resolve(uuid);
             if (!model.getPhantasmModel()
                       .checkCapability(definingProduct, crud.getREAD())
                 || !model.getPhantasmModel()
@@ -163,28 +161,7 @@ public class GraphQlResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = Collections.emptyMap();
-            Object provided = request.get(VARIABLES);
-            if (provided != null) {
-                if (provided instanceof Map) {
-                    variables = (Map<String, Object>) provided;
-                } else if (provided instanceof String) {
-                    try {
-                        String variableString = ((String) provided).trim();
-                        if (!variableString.isEmpty()) {
-                            variables = new ObjectMapper().readValue(variableString,
-                                                                     Map.class);
-                        }
-                    } catch (Exception e) {
-                        throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
-                                                                        e.getMessage()),
-                                                          Status.BAD_REQUEST);
-                    }
-                } else {
-                    throw new WebApplicationException("Invalid variables parameter",
-                                                      Status.BAD_REQUEST);
-                }
-            }
+            Map<String, Object> variables = getVariables(request);
             ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
                                                                  crud,
                                                                  variables);
@@ -196,6 +173,33 @@ public class GraphQlResource extends TransactionalResource {
                      result.getErrors());
             return result;
         });
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Map<String, Object> getVariables(Map request) {
+        Map<String, Object> variables = Collections.emptyMap();
+        Object provided = request.get(VARIABLES);
+        if (provided != null) {
+            if (provided instanceof Map) {
+                variables = (Map<String, Object>) provided;
+            } else if (provided instanceof String) {
+                try {
+                    String variableString = ((String) provided).trim();
+                    if (!variableString.isEmpty()) {
+                        variables = new ObjectMapper().readValue(variableString,
+                                                                 Map.class);
+                    }
+                } catch (Exception e) {
+                    throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
+                                                                    e.getMessage()),
+                                                      Status.BAD_REQUEST);
+                }
+            } else {
+                throw new WebApplicationException("Invalid variables parameter",
+                                                  Status.BAD_REQUEST);
+            }
+        }
+        return variables;
     }
 
     // here only because of insanity

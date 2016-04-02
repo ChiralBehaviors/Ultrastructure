@@ -30,11 +30,15 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,6 +76,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.Scalars;
@@ -1044,6 +1049,34 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
+    }
+
+    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
+        ClassLoader parent = Thread.currentThread()
+                                   .getContextClassLoader();
+        if (parent == null) {
+            parent = PhantasmBundle.class.getClassLoader();
+        }
+        List<URL> urls = new ArrayList<>();
+        for (String url : urlStrings) {
+            URL resolved;
+            try {
+                resolved = new URL(url);
+            } catch (MalformedURLException e) {
+                try {
+                    resolved = new File(url).toURI()
+                                            .toURL();
+                } catch (MalformedURLException e1) {
+                    PhantasmBundle.log.error("Invalid configured execution scope url: {}", url,
+                              e1);
+                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
+                                                                     url),
+                                                       e1);
+                }
+            }
+            urls.add(resolved);
+        }
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
 }

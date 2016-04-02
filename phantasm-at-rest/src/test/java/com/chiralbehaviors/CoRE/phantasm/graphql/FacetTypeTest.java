@@ -55,7 +55,6 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -69,7 +68,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
     @Before
     public void initializeScope() throws IOException {
-        WorkspaceImporter.manifest(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream("/thing.wsp"),
                                    model);
     }
 

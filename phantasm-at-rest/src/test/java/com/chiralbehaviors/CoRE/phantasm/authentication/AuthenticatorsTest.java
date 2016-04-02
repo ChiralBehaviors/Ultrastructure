@@ -117,10 +117,12 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                                                  .get(0)))
                                     .fetchOne();
         assertEquals(model.getKernel()
-                          .getIsA(),
+                          .getIsA()
+                          .getId(),
                      asserted.getClassifier());
         assertEquals(model.getKernel()
-                          .getCoreUser(),
+                          .getCoreUser()
+                          .getId(),
                      asserted.getClassification());
 
         requestCredentials = new RequestCredentials("No place like HOME",

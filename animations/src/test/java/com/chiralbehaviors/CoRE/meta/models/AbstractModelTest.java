@@ -26,6 +26,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
@@ -47,8 +48,6 @@ public class AbstractModelTest {
     public static final String TARGET_THINGS_JSON            = "target/things.json";
     public static final String THING_URI                     = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
 
-    protected Model            model;
-
     public static Connection newConnection() throws IOException, SQLException {
         Properties properties = new Properties();
         properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
@@ -60,6 +59,12 @@ public class AbstractModelTest {
         conn.setAutoCommit(false);
         return conn;
     }
+
+    public static DSLContext newCreate() throws SQLException, IOException {
+        return ModelImpl.newCreate(newConnection());
+    }
+
+    protected Model model;
 
     @After
     public void after() throws DataAccessException, SQLException {

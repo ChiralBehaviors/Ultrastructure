@@ -90,6 +90,14 @@ public class ModelImpl implements Model {
         cache.clear();
     }
 
+    public static DSLContext newCreate(Connection connection) throws SQLException {
+        return PostgresDSL.using(configuration(connection));
+    }
+
+    public static DSLContext newCreate(DataSource ds) throws SQLException {
+        return PostgresDSL.using(configuration(ds));
+    }
+
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
         StringBuilder builder = new StringBuilder(simpleName.length());
@@ -134,15 +142,17 @@ public class ModelImpl implements Model {
     private final ExistentialModel<Product>      productModel;
     private final ExistentialModel<Relationship> relationshipModel;
     private final StatusCodeModel                statusCodeModel;
+
     private final ExistentialModel<Unit>         unitModel;
+
     private final WorkspaceModel                 workspaceModel;
 
     public ModelImpl(Connection connection) throws SQLException {
-        this(PostgresDSL.using(configuration(connection)));
+        this(newCreate(connection));
     }
 
     public ModelImpl(DataSource ds) throws SQLException {
-        this(PostgresDSL.using(configuration(ds)));
+        this(newCreate(ds));
     }
 
     public ModelImpl(DSLContext create) {

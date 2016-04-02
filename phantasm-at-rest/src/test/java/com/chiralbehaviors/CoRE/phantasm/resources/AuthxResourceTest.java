@@ -52,6 +52,13 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+
+import io.dropwizard.cli.CheckCommand;
+import io.dropwizard.cli.Cli;
+import io.dropwizard.cli.ServerCommand;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.util.JarLocation;
 
 /**
  * @author hhildebrand
@@ -62,7 +69,18 @@ public class AuthxResourceTest extends AbstractModelTest {
 
     @BeforeClass
     public static void initialize() throws Exception {
-        application.run("server", "target/test-classes/oauth.yml");
+        final Bootstrap<PhantasmConfiguration> bootstrap = new Bootstrap<>(application);
+        bootstrap.addCommand(new ServerCommand<>(application));
+        bootstrap.addCommand(new CheckCommand<>(application));
+        application.initialize(bootstrap);
+        // Should by called after initialize to give an opportunity to set a custom metric registry
+        bootstrap.registerMetrics();
+
+        final Cli cli = new Cli(new JarLocation(application.getClass()),
+                                bootstrap, System.out, System.err);
+        if (!cli.run("server", "target/test-classes/oauth.yml")) {
+            fail();
+        }
     }
 
     @AfterClass

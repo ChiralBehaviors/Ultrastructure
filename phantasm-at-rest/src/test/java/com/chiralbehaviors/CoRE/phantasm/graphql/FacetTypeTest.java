@@ -526,7 +526,7 @@ public class FacetTypeTest extends AbstractModelTest {
         passThrough.set(bob);
 
         GraphQLSchema schema = FacetType.build(scope.getWorkspace(), model,
-                                               getClass().getClassLoader());
+                                               executionScope);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),

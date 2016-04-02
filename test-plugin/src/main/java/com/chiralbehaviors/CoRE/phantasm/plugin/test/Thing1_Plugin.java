@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.plugin.test;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.plugin.test.product.Thing1;
 
@@ -36,8 +37,9 @@ public class Thing1_Plugin {
 
     public static void constructor(DataFetchingEnvironment env, Model model,
                                    Thing1 instance) {
-        instance.getRuleform()
-                .setDescription(passThrough.get());
+        ExistentialRuleform ruleform = instance.getRuleform();
+        ruleform.setDescription(passThrough.get());
+        ruleform.update();
     }
 
     public static String instanceMethod(DataFetchingEnvironment env,

@@ -65,95 +65,18 @@ import io.dropwizard.auth.Auth;
 @Path("oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthxResource extends TransactionalResource {
-    private final static String PREFIX = "Bearer";
-
     public static class CapabilityRequest {
         public List<UUID> capabilities = Collections.emptyList();
         public String     password;
         public String     username;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(AuthxResource.class);
-    private final Attribute     login;
+    private static final Logger log    = LoggerFactory.getLogger(AuthxResource.class);
 
-    public AuthxResource(DSLContext create) {
-        try (Model model = new ModelImpl(create)) {
-            login = model.getKernel()
-                         .getLogin();
-        }
-    }
+    private final static String PREFIX = "Bearer";
 
-    @POST
-    @Path("login")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public UUID loginForToken(@FormParam("username") String username,
-                              @FormParam("password") String password,
-                              @Context HttpServletRequest httpRequest,
-                              @Context DSLContext create) {
-        return mutate(null, model -> {
-            Credential cred = new Credential();
-            cred.ip = httpRequest.getRemoteAddr();
-            return generateToken(cred, authenticate(username, password, model),
-                                 model).getId();
-        }, create);
-    }
-
-    @POST
-    @Path("deauthorize")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void deauthorize(@Auth AuthorizedPrincipal principal,
-                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken,
-                            @Context DSLContext create) {
-        mutate(principal, model -> {
-            UUID uuid = UUID.fromString(parse(bearerToken));
-            ExistentialAttributeRecord record = model.create()
-                                                     .selectFrom(EXISTENTIAL_ATTRIBUTE)
-                                                     .where(EXISTENTIAL_ATTRIBUTE.ID.equal(uuid))
-                                                     .fetchOne();
-            if (record != null) {
-                record.delete();
-            }
-
-            Agency user = principal.getPrincipal();
-            log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
-                     user.getName());
-            return null;
-        }, create);
-    }
-
-    public static String parse(String header) {
-        if (header == null) {
-            return null;
-        }
-        final int space = header.indexOf(' ');
-        if (space > 0) {
-            final String method = header.substring(0, space);
-            if (PREFIX.equalsIgnoreCase(method)) {
-                return header.substring(space + 1);
-            }
-        }
-        return null;
-    }
-
-    @POST
-    @Path("capability")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public UUID requestCapability(CapabilityRequest request,
-                                  @Context HttpServletRequest httpRequest,
-                                  @Context DSLContext create) {
-        return mutate(null, model -> {
-            Credential cred = new Credential();
-            cred.capabilities = request.capabilities;
-            cred.ip = httpRequest.getRemoteAddr();
-            return generateToken(cred,
-                                 authenticate(request.username,
-                                              request.password, model),
-                                 model).getId();
-        }, create);
-    }
-
-    private CoreUser authenticate(String username, String password,
-                                  Model model) {
+    public static CoreUser authenticate(String username, String password,
+                                        Model model, Attribute login) {
         List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
                                                             .findByAttributeValue(login,
                                                                                   username);
@@ -177,9 +100,25 @@ public class AuthxResource extends TransactionalResource {
         return user;
     }
 
-    private ExistentialAttributeRecord generateToken(Credential cred,
-                                                     CoreUser user,
-                                                     Model model) {
+    public static void deauthorize(AuthorizedPrincipal principal,
+                                   String bearerToken, Model model) {
+        UUID uuid = UUID.fromString(parse(bearerToken));
+        ExistentialAttributeRecord record = model.create()
+                                                 .selectFrom(EXISTENTIAL_ATTRIBUTE)
+                                                 .where(EXISTENTIAL_ATTRIBUTE.ID.equal(uuid))
+                                                 .fetchOne();
+        if (record != null) {
+            record.delete();
+        }
+
+        Agency user = principal.getPrincipal();
+        log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
+                 user.getName());
+    }
+
+    public static ExistentialAttributeRecord generateToken(Credential cred,
+                                                           CoreUser user,
+                                                           Model model) {
         return model.create()
                     .transactionResult(c -> {
                         List<ExistentialAttributeRecord> values = model.getPhantasmModel()
@@ -201,5 +140,84 @@ public class AuthxResource extends TransactionalResource {
                         accessToken.insert();
                         return accessToken;
                     });
+    }
+
+    public static UUID loginForToken(String username, String password,
+                                     HttpServletRequest httpRequest,
+                                     Model model, Attribute login) {
+        Credential cred = new Credential();
+        cred.ip = httpRequest.getRemoteAddr();
+        return generateToken(cred,
+                             authenticate(username, password, model, login),
+                             model).getId();
+    }
+
+    public static String parse(String header) {
+        if (header == null) {
+            return null;
+        }
+        final int space = header.indexOf(' ');
+        if (space > 0) {
+            final String method = header.substring(0, space);
+            if (PREFIX.equalsIgnoreCase(method)) {
+                return header.substring(space + 1);
+            }
+        }
+        return null;
+    }
+
+    public static UUID requestCapability(CapabilityRequest request,
+                                         HttpServletRequest httpRequest,
+                                         Model model, Attribute login) {
+        Credential cred = new Credential();
+        cred.capabilities = request.capabilities;
+        cred.ip = httpRequest.getRemoteAddr();
+        return generateToken(cred, authenticate(request.username,
+                                                request.password, model, login),
+                             model).getId();
+    }
+
+    private final Attribute login;
+
+    public AuthxResource(DSLContext create) {
+        try (Model model = new ModelImpl(create)) {
+            login = model.getKernel()
+                         .getLogin();
+        }
+    }
+
+    @POST
+    @Path("deauthorize")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deauthorize(@Auth AuthorizedPrincipal principal,
+                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken,
+                            @Context DSLContext create) {
+        mutate(principal, model -> {
+            deauthorize(principal, bearerToken, model);
+            return null;
+        }, create);
+    }
+
+    @POST
+    @Path("login")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public UUID loginForToken(@FormParam("username") String username,
+                              @FormParam("password") String password,
+                              @Context HttpServletRequest httpRequest,
+                              @Context DSLContext create) {
+        return mutate(null, model -> {
+            return loginForToken(username, password, httpRequest, model, login);
+        }, create);
+    }
+
+    @POST
+    @Path("capability")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public UUID requestCapability(CapabilityRequest request,
+                                  @Context HttpServletRequest httpRequest,
+                                  @Context DSLContext create) {
+        return mutate(null, model -> {
+            return requestCapability(request, httpRequest, model, login);
+        }, create);
     }
 }

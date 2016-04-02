@@ -79,10 +79,7 @@ public class PhantasmConfiguration extends Configuration
     public CORSConfiguration    CORS                      = new CORSConfiguration();
 
     @NotNull
-    public List<String>         executionScope                 = Collections.emptyList();
-
-    @NotNull
-    public JpaConfiguration     jpa                       = new JpaConfiguration();
+    public List<String>         executionScope            = Collections.emptyList();
 
     public boolean              randomPort                = false;
 

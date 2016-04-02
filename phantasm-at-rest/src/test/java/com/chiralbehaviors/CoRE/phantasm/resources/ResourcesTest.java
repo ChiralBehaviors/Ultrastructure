@@ -20,36 +20,20 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
-import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
 import com.github.jsonldjava.core.JsonLdOptions;
@@ -65,27 +49,12 @@ public class ResourcesTest extends ThingWorkspaceTest {
 
     @BeforeClass
     public static void initialize() throws Exception {
-        EntityManagerFactory emf = mockedEmf();
-        application.setEmf(emf);
         application.run("server", "target/test-classes/test.yml");
     }
 
     @AfterClass
     public static void shutdown() {
         application.stop();
-    }
-
-    @Test
-    public void testFacetContext() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/context",
-                                        application.getPort(),
-                                        scope.lookup("kernel", "IsA")
-                                             .getId()
-                                             .toString(),
-                                        scope.lookup("Thing1")
-                                             .getId()
-                                             .toString()));
-        JsonUtils.fromInputStream(url.openStream());
     }
 
     @SuppressWarnings("unchecked")
@@ -118,109 +87,6 @@ public class ResourcesTest extends ThingWorkspaceTest {
         JsonLdProcessor.compact(jsonObject, context, options);
         JsonLdProcessor.flatten(jsonObject, context, options);
         JsonLdProcessor.expand(jsonObject, options);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testGraphQlCreateAndMutate() throws Exception {
-        String[] newAliases = new String[] { "jones", "smith" };
-        String newUri = "new iri";
-
-        MavenArtifact artifact1 = model.construct(MavenArtifact.class,
-                                                  ExistentialDomain.Location,
-                                                  "core", "core artifact");
-        artifact1.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact1.setArtifactID("core");
-        artifact1.setVersion("0.0.2-SNAPSHOT");
-        artifact1.setType("jar");
-
-        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
-                                                  ExistentialDomain.Location,
-                                                  "animations",
-                                                  "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/graphql/workspace",
-                                                          application.getPort()));
-        webTarget = webTarget.path(URLEncoder.encode(THING_URI, "UTF-8"));
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("artifact", artifact1.getRuleform()
-                                           .getId()
-                                           .toString());
-        variables.put("name", "hello");
-        variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
-                                                variables);
-
-        Response response = invocationBuilder.post(Entity.entity(request,
-                                                                 MediaType.APPLICATION_JSON_TYPE));
-        Map<String, Object> result = response.readEntity(Map.class);
-
-        assertEquals(result.get("errors")
-                           .toString(),
-                     0, ((List<?>) result.get("errors")).size());
-
-        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.get("data")).get("CreateThing1");
-        assertNotNull(thing1Result);
-        assertEquals("hello", thing1Result.get("name"));
-        Thing1 thing1 = model.wrap(Thing1.class,
-                                   em.find(Product.class,
-                                           UUID.fromString((String) thing1Result.get("id"))));
-        assertNotNull(thing1);
-        assertEquals(artifact1, thing1.getDerivedFrom());
-
-        variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
-        variables.put("aliases", Arrays.asList(newAliases));
-        variables.put("name", "hello");
-        variables.put("uri", newUri);
-        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
-                                   variables);
-        response = invocationBuilder.post(Entity.entity(request,
-                                                        MediaType.APPLICATION_JSON_TYPE));
-        result = response.readEntity(Map.class);
-
-        assertEquals(result.get("errors")
-                           .toString(),
-                     0, ((List<?>) result.get("errors")).size());
-        thing1Result = (Map<String, Object>) ((Map<String, Object>) result.get("data")).get("UpdateThing1");
-        assertNotNull(thing1Result);
-        assertEquals("hello", thing1Result.get("name"));
-        thing1 = model.wrap(Thing1.class,
-                            em.find(Product.class,
-                                    UUID.fromString((String) thing1Result.get("id"))));
-        assertNotNull(thing1);
-        assertEquals(artifact2, thing1.getDerivedFrom());
-        assertArrayEquals(newAliases, thing1.getAliases());
-        assertEquals(newUri, thing1.getURI());
-
-        variables = new HashMap<>();
-        variables.put("thing1", thing1.getRuleform()
-                                      .getId()
-                                      .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
-        variables.put("name", "hello");
-        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { CreateThing2(state: {setName: $name, addDerivedFrom: $artifact, setThing1: $thing1}) { id name } }",
-                                   variables);
-        response = invocationBuilder.post(Entity.entity(request,
-                                                        MediaType.APPLICATION_JSON_TYPE));
-        result = response.readEntity(Map.class);
-
-        assertEquals(result.get("errors")
-                           .toString(),
-                     0, ((List<?>) result.get("errors")).size());
     }
 
     @Test

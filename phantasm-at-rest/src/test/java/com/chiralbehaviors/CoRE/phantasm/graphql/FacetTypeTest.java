@@ -75,7 +75,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGraphQlCreateAndMutate() throws Exception {
+    public void testCreateAndMutate() throws Exception {
         String[] newAliases = new String[] { "jones", "smith" };
         String newUri = "new iri";
 

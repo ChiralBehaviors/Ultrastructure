@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
@@ -44,12 +46,14 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.auth.Auth;
 
@@ -98,7 +102,14 @@ public class AuthxResource extends TransactionalResource {
                             @Context DSLContext create) {
         perform(principal, model -> {
             UUID uuid = UUID.fromString(parse(bearerToken));
-            model.em.remove(em.find(ExistentialAttributeRecord.class, uuid));
+            ExistentialAttributeRecord record = model.create()
+                                                     .selectFrom(EXISTENTIAL_ATTRIBUTE)
+                                                     .where(EXISTENTIAL_ATTRIBUTE.ID.equal(uuid))
+                                                     .fetchOne();
+            if (record != null) {
+                record.delete();
+            }
+
             Agency user = principal.getPrincipal();
             log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
                      user.getName());
@@ -138,10 +149,9 @@ public class AuthxResource extends TransactionalResource {
 
     private CoreUser authenticate(String username, String password,
                                   Model model) {
-        ExistentialAttributeRecord attributeValue = model.records()
-                                                         .newExistentialAttributeRecord(login);
-        attributeValue.setValue(username);
-        List<Agency> agencies = model.find(attributeValue);
+        List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
+                                                            .findByAttributeValue(login,
+                                                                                  username);
         if (agencies.size() > 1) {
             log.error(String.format("Multiple agencies with login name %s",
                                     username));
@@ -180,7 +190,7 @@ public class AuthxResource extends TransactionalResource {
                                                                       .newExistentialAttribute(user.getRuleform(),
                                                                                                model.getKernel()
                                                                                                     .getAccessToken());
-                        accessToken.setValue(cred);
+                        accessToken.setJsonValue(new ObjectMapper().valueToTree(cred));
                         accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
                         accessToken.setSequenceNumber(seqNum);
                         accessToken.insert();

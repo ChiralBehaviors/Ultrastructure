@@ -16,6 +16,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,15 +32,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -53,8 +55,9 @@ public class AuthenticatorsTest extends AbstractModelTest {
     public void testBasic() throws Exception {
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
-        CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",
-                                                  "Test Dummy");
+        CoreUser bob = (CoreUser) model.construct(CoreUser.class,
+                                                  ExistentialDomain.Agency,
+                                                  "Bob", "Test Dummy");
         bob.setLogin(username);
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
@@ -74,14 +77,17 @@ public class AuthenticatorsTest extends AbstractModelTest {
     @Test
     public void testBearerToken() throws Exception {
         String username = "bob@slack.com";
-        CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",
-                                                  "Test Dummy");
+        CoreUser bob = (CoreUser) model.construct(CoreUser.class,
+                                                  ExistentialDomain.Agency,
+                                                  "Bob", "Test Dummy");
         bob.setLogin(username);
         Credential credential = new Credential();
         credential.ip = "No place like 127.00.1";
         List<UUID> capabilities = Arrays.asList(model.getPhantasmModel()
-                                                     .getFacetDeclaration(kernel.getIsA(),
-                                                                                       kernel.getCoreUser()))
+                                                     .getFacetDeclaration(model.getKernel()
+                                                                               .getIsA(),
+                                                                          model.getKernel()
+                                                                               .getCoreUser())
                                                      .getId());
         credential.capabilities = capabilities;
         ExistentialAttributeRecord accessToken = model.records()
@@ -91,7 +97,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                       .getId());
         accessToken.setExistential(bob.getRuleform()
                                       .getId());
-        accessToken.setValue(credential);
+        accessToken.setJsonValue(new ObjectMapper().valueToTree(credential));
         accessToken.insert();
         model.flush();
 
@@ -105,10 +111,17 @@ public class AuthenticatorsTest extends AbstractModelTest {
         assertEquals(bob, authBob.getPrincipal());
         assertEquals(1, authBob.getAsserted()
                                .size());
-        AgencyNetworkAuthorization asserted = authBob.getAsserted()
-                                                     .get(0);
-        assertEquals(kernel.getIsA(), asserted.getClassifier());
-        assertEquals(kernel.getCoreUser(), asserted.getClassification());
+        FacetRecord asserted = model.create()
+                                    .selectFrom(FACET)
+                                    .where(FACET.ID.equal(authBob.getAsserted()
+                                                                 .get(0)))
+                                    .fetchOne();
+        assertEquals(model.getKernel()
+                          .getIsA(),
+                     asserted.getClassifier());
+        assertEquals(model.getKernel()
+                          .getCoreUser(),
+                     asserted.getClassification());
 
         requestCredentials = new RequestCredentials("No place like HOME",
                                                     accessToken.getId()
@@ -132,8 +145,9 @@ public class AuthenticatorsTest extends AbstractModelTest {
     public void testAuthRoundTrip() throws Exception {
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
-        CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",
-                                                  "Test Dummy");
+        CoreUser bob = (CoreUser) model.construct(CoreUser.class,
+                                                  ExistentialDomain.Agency,
+                                                  "Bob", "Test Dummy");
         bob.setLogin(username);
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);

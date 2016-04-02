@@ -23,13 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
 
@@ -70,20 +66,19 @@ public class LoadWorkspaceCommand extends Command {
             EntityTransaction t = model.create()
                                        .getTransaction();
             t.begin();
-            WorkspaceSnapshot.load(model.create(),
-                                   namespace.getList("files")
-                                            .stream()
-                                            .map(file -> {
-                                                try {
-                                                    return Utils.resolveResourceURL(getClass(),
-                                                                                    (String) file);
-                                                } catch (Exception e) {
-                                                    throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                     file),
-                                                                                       e);
-                                                }
-                                            })
-                                            .collect(Collectors.toList()));
+            WorkspaceSnapshot.load(model.create(), namespace.getList("files")
+                                                            .stream()
+                                                            .map(file -> {
+                                                                try {
+                                                                    return Utils.resolveResourceURL(getClass(),
+                                                                                                    (String) file);
+                                                                } catch (Exception e) {
+                                                                    throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
+                                                                                                                     file),
+                                                                                                       e);
+                                                                }
+                                                            })
+                                                            .collect(Collectors.toList()));
             t.commit();
         }
     }

@@ -24,14 +24,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collections;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.cli.Command;

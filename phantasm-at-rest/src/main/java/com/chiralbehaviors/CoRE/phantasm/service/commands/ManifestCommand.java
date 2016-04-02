@@ -23,14 +23,10 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.hellblazer.utils.Utils;
 
 import io.dropwizard.cli.Command;

@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -45,13 +44,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.WellKnownObject;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 
@@ -64,8 +62,6 @@ public class AuthxResourceTest extends AbstractModelTest {
 
     @BeforeClass
     public static void initialize() throws Exception {
-        EntityManagerFactory emf = mockedEmf();
-        application.setEmf(emf);
         application.run("server", "target/test-classes/oauth.yml");
     }
 
@@ -78,13 +74,13 @@ public class AuthxResourceTest extends AbstractModelTest {
     public void functionalAuthRoundTripTest() throws Exception {
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
-        CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",
-                                                  "Test Dummy");
+        CoreUser bob = (CoreUser) model.construct(CoreUser.class,
+                                                  ExistentialDomain.Agency,
+                                                  "Bob", "Test Dummy");
         bob.setLogin(username);
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
-        em.flush();
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(String.format("http://localhost:%s/oauth2/token/login",
                                                           application.getPort()));
@@ -98,7 +94,7 @@ public class AuthxResourceTest extends AbstractModelTest {
         System.out.println(token);
         webTarget = client.target(String.format("http://localhost:%s/graphql/workspace",
                                                 application.getPort()));
-        webTarget = webTarget.path(URLEncoder.encode(Ruleform.KERNEL_IRI,
+        webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");
@@ -132,9 +128,11 @@ public class AuthxResourceTest extends AbstractModelTest {
         resp = invocationBuilder.post(null);
         assertEquals(401, resp.getStatus());
 
-        NetworkAuthorization<Agency> asserted = model.getAgencyModel()
-                                                     .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                       kernel.getCoreUser()));
+        FacetRecord asserted = model.getPhantasmModel()
+                                    .getFacetDeclaration(model.getKernel()
+                                                              .getIsA(),
+                                                         model.getKernel()
+                                                              .getCoreUser());
 
         CapabilityRequest capReq = new CapabilityRequest();
         capReq.username = username;

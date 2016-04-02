@@ -110,14 +110,6 @@ public interface RecordsFactory {
         });
     }
 
-    default String existentialName(UUID id) {
-        return create().select(EXISTENTIAL.NAME)
-                       .from(EXISTENTIAL)
-                       .where(EXISTENTIAL.ID.eq(id))
-                       .fetchOne()
-                       .value1();
-    }
-
     default ExistentialRecord copy(ExistentialRecord rf) {
         ExistentialRecord copy = rf.copy();
         copy.setId(GENERATOR.generate());
@@ -143,6 +135,14 @@ public interface RecordsFactory {
     }
 
     UUID currentPrincipalId();
+
+    default String existentialName(UUID id) {
+        return create().select(EXISTENTIAL.NAME)
+                       .from(EXISTENTIAL)
+                       .where(EXISTENTIAL.ID.eq(id))
+                       .fetchOne()
+                       .value1();
+    }
 
     default FacetRecord findFacetRecord(UUID id) {
         return create().selectFrom(FACET)
@@ -283,6 +283,13 @@ public interface RecordsFactory {
     default ExistentialAttributeRecord newExistentialAttribute(Attribute attr) {
         ExistentialAttributeRecord record = newExistentialAttribute();
         record.setAttribute(attr.getId());
+        return record;
+    }
+
+    default ExistentialAttributeRecord newExistentialAttribute(ExistentialRuleform ruleform,
+                                                               Attribute attribute) {
+        ExistentialAttributeRecord record = newExistentialAttribute(attribute);
+        record.setExistential(ruleform.getId());
         return record;
     }
 

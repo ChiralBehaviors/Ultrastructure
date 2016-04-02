@@ -23,14 +23,10 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.io.InputStream;
 import java.util.Collections;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;

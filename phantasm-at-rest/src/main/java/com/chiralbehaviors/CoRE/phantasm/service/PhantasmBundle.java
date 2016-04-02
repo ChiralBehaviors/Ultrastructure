@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.phantasm.service;
 
 import java.util.EnumSet;
-import java.util.Map;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
@@ -46,7 +45,6 @@ import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadWorkspaceCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ManifestCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.SnapshotCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.google.common.base.Joiner;
@@ -127,14 +125,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
     }
 
-    private void configure(PhantasmConfiguration configuration) throws Exception {
-        if (configuration.randomPort) {
-            configureRandomPort(configuration);
-        }
-        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
-        properties.putAll(configuration.jpa.getProperties());
-    }
-
     private void configureAuth(PhantasmConfiguration configuration,
                                Environment environment) {
         switch (configuration.auth) {
@@ -176,7 +166,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             }
         }
         environment.jersey()
-                   .register(new AuthxResource(emf));
+                   .register(new AuthxResource(null));
     }
 
     private void configureCORS(PhantasmConfiguration configuration,
@@ -212,6 +202,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
     }
 
+    @SuppressWarnings("unused")
     private void configureRandomPort(PhantasmConfiguration configuration) {
         ServerFactory serverFactory = configuration.getServerFactory();
         if (serverFactory instanceof DefaultServerFactory) {

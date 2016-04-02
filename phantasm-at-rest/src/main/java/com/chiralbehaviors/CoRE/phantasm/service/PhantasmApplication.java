@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
@@ -42,13 +40,8 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
         new PhantasmApplication().run(argv);
     }
 
-    private EntityManagerFactory emf;
-    private Server               jettyServer;
-    private PhantasmBundle       service;
-
-    public EntityManagerFactory getEmf() {
-        return emf;
-    }
+    private Server         jettyServer;
+    private PhantasmBundle service;
 
     public int getPort() {
         return service.getPort();
@@ -56,7 +49,7 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
 
     @Override
     public void initialize(Bootstrap<PhantasmConfiguration> bootstrap) {
-        service = new PhantasmBundle(emf);
+        service = new PhantasmBundle();
         bootstrap.addBundle(service);
     }
 
@@ -70,12 +63,7 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
                    .addServerLifecycleListener(server -> jettyServer = server);
     }
 
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
-
     public void stop() {
-        emf.close();
         if (jettyServer != null) {
             try {
                 jettyServer.setStopTimeout(100);

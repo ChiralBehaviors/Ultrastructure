@@ -73,7 +73,6 @@ public class AuthxResourceTest extends AbstractModelTest {
         bootstrap.addCommand(new ServerCommand<>(application));
         bootstrap.addCommand(new CheckCommand<>(application));
         application.initialize(bootstrap);
-        // Should by called after initialize to give an opportunity to set a custom metric registry
         bootstrap.registerMetrics();
 
         final Cli cli = new Cli(new JarLocation(application.getClass()),

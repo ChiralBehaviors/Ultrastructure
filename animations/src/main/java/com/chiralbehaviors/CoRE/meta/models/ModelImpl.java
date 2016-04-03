@@ -39,6 +39,8 @@ import javax.sql.DataSource;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.TransactionContext;
+import org.jooq.TransactionProvider;
 import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DefaultConfiguration;
@@ -163,11 +165,7 @@ public class ModelImpl implements Model {
                 return ModelImpl.this;
             }
         });
-        create.configuration()
-              .set(new DefaultRecordListenerProvider(animations));
-        create.configuration()
-              .settings()
-              .setExecuteWithOptimisticLocking(true);
+        establish(create);
         this.create = create;
         factory = new RecordsFactory() {
 
@@ -500,6 +498,37 @@ public class ModelImpl implements Model {
         }
         PhantasmDefinition definition = cached(phantasm, this);
         return (R) definition.wrap(ruleform.getRuleform(), this);
+    }
+
+    private void establish(DSLContext create) {
+        Configuration configuration = create.configuration();
+        configuration.set(new DefaultRecordListenerProvider(animations));
+        configuration.settings()
+                     .setExecuteWithOptimisticLocking(true);
+        TransactionProvider inner = configuration.transactionProvider();
+        configuration.set(new TransactionProvider() {
+
+            @Override
+            public void begin(TransactionContext ctx) throws DataAccessException {
+                inner.begin(ctx);
+            }
+
+            @Override
+            public void commit(TransactionContext ctx) throws DataAccessException {
+                try {
+                    flush();
+                    inner.commit(ctx);
+                } finally {
+                    configuration.set(inner);
+                }
+            }
+
+            @Override
+            public void rollback(TransactionContext ctx) throws DataAccessException {
+                configuration.set(inner);
+                inner.rollback(ctx);
+            }
+        });
     }
 
     private Collection<UUID> excludeThisSingleton() {

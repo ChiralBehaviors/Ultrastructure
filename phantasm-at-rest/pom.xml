@@ -10,7 +10,7 @@
     <artifactId>phantasm-at-rest</artifactId>
     <name>Phantasm At REST</name>
     <description>A rest API for the Ultrastructure Phantasms</description>
-    <dependencies>  
+    <dependencies>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
@@ -29,12 +29,11 @@
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-servlets</artifactId>
+            <artifactId>dropwizard-db</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.jsonld-java</groupId>
-            <artifactId>jsonld-java</artifactId>
-            <scope>test</scope>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-servlets</artifactId>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -91,19 +90,21 @@
             <artifactId>loader</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.dirkraft.dropwizard</groupId>
-            <artifactId>dropwizard-file-assets</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>test-plugin</artifactId>
             <version>2.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-            <dependency>
-                <groupId>com.bendb.dropwizard</groupId>
-                <artifactId>dropwizard-jooq</artifactId> 
-            </dependency>
+        <dependency>
+            <groupId>com.bendb.dropwizard</groupId>
+            <artifactId>dropwizard-jooq</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.dropwizard</groupId>
+                    <artifactId>dropwizard-db</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency> 
     </dependencies>
     <build>
         <plugins>
@@ -182,8 +183,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId> 
-                <configuration> 
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
                     <classpathDependencyExcludes>
                         <classpathDependencyExclude>${project.groupId}:test-plugin</classpathDependencyExclude>
                     </classpathDependencyExcludes>
@@ -207,6 +208,19 @@
                                         <versionRange>[2.0.0-SNAPSHOT,)</versionRange>
                                         <goals>
                                             <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[2.8,)</versionRange>
+                                        <goals>
+                                            <goal>copy</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

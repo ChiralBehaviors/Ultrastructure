@@ -23,14 +23,16 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.hellblazer.utils.Utils;
 
-import io.dropwizard.cli.Command;
+import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -39,16 +41,13 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class ManifestCommand extends Command {
+public class ManifestCommand extends ConfiguredCommand<PhantasmConfiguration> {
 
     public ManifestCommand() {
         super("manifest",
               "Manifest workspace dsl files into the CoRE instance");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#configure(net.sourceforge.argparse4j.inf.Subparser)
-     */
     @Override
     public void configure(Subparser subparser) {
         subparser.addArgument("files")
@@ -56,13 +55,11 @@ public class ManifestCommand extends Command {
                  .help("Workspace dsl files");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
-     */
     @Override
-    public void run(Bootstrap<?> bootstrap,
-                    Namespace namespace) throws Exception {
-        DSLContext create = PhantasmBundle.getCreateFromEnvironment();
+    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
+                    Namespace namespace,
+                    PhantasmConfiguration configuration) throws Exception {
+        DSLContext create = DSL.using(configuration.getConfiguration(PhantasmBundle.environmentFrom(bootstrap)));
         create.transaction(c -> {
             try (Model model = new ModelImpl(create)) {
                 WorkspaceImporter.manifest(namespace.getList("files")

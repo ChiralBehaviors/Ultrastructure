@@ -21,9 +21,10 @@
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
 import com.chiralbehaviors.CoRE.loader.Loader;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
-import io.dropwizard.cli.Command;
+import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -32,7 +33,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class BootstrapCommand extends Command {
+public class BootstrapCommand extends ConfiguredCommand<PhantasmConfiguration> {
 
     public BootstrapCommand() {
         super("bootstrap", "Bootstraps the CoRE instance");
@@ -49,8 +50,9 @@ public class BootstrapCommand extends Command {
      * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
      */
     @Override
-    public void run(Bootstrap<?> bootstrap,
-                    Namespace namespace) throws Exception {
+    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
+                    Namespace namespace,
+                    PhantasmConfiguration configuration) throws Exception {
         DbaConfiguration config = new DbaConfiguration();
         config.initializeFromEnvironment();
         new Loader(config).bootstrap();

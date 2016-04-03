@@ -21,9 +21,10 @@
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
 import com.chiralbehaviors.CoRE.loader.Loader;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
-import io.dropwizard.cli.Command;
+import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -32,27 +33,22 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class ClearCommand extends Command {
+public class ClearCommand extends ConfiguredCommand<PhantasmConfiguration> {
 
     public ClearCommand() {
         super("clear",
               "Reset and clear the CoRE instance, rolling back Ultrastructure schema");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#configure(net.sourceforge.argparse4j.inf.Subparser)
-     */
     @Override
     public void configure(Subparser subparser) {
         // no args
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
-     */
     @Override
-    public void run(Bootstrap<?> bootstrap,
-                    Namespace namespace) throws Exception {
+    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
+                    Namespace namespace,
+                    PhantasmConfiguration configuration) throws Exception {
         DbaConfiguration config = new DbaConfiguration();
         config.initializeFromEnvironment();
         new Loader(config).clear();

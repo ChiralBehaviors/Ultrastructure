@@ -23,12 +23,13 @@ import javax.validation.constraints.NotNull;
 
 import com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration;
 import com.bazaarvoice.dropwizard.assets.AssetsConfiguration;
+import com.bendb.dropwizard.jooq.JooqFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.cache.CacheBuilderSpec;
 
 import io.dropwizard.Configuration;
-import io.dropwizard.db.DatabaseConfiguration;
-import io.dropwizard.db.PooledDataSourceFactory;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.setup.Environment;
 
 /**
  * @author hhildebrand
@@ -36,6 +37,13 @@ import io.dropwizard.db.PooledDataSourceFactory;
  */
 public class PhantasmConfiguration extends Configuration
         implements AssetsBundleConfiguration {
+
+    {
+        setServerFactory(new SinglePortServerFactory());
+        setLoggingFactory(new ConsoleOnlyLoggingFactory());
+        database = new DataSourceFactoryFromEnv();
+    }
+
     public static class Asset {
 
         @NotNull
@@ -61,49 +69,48 @@ public class PhantasmConfiguration extends Configuration
         @JsonProperty NULL;
     }
 
-    private static final String                                      DEFAULT_ASSETS_NAME       = "assets";
-    private static final String                                      DEFAULT_INDEX_FILE        = "index.htm";
-    private static final String                                      DEFAULT_PATH              = "/assets";
+    private static final String DEFAULT_ASSETS_NAME       = "assets";
+    private static final String DEFAULT_INDEX_FILE        = "index.htm";
+    private static final String DEFAULT_PATH              = "/assets";
 
     @NotNull
-    public List<Asset>                                               assets                    = new ArrayList<>();
+    public List<Asset>          assets                    = new ArrayList<>();
 
     @NotNull
-    public AssetsConfiguration                                       assetsConfiguration       = new AssetsConfiguration();
+    public AssetsConfiguration  assetsConfiguration       = new AssetsConfiguration();
 
     @NotNull
-    public AuthType                                                  auth                      = AuthType.BEARER_TOKEN;
+    public AuthType             auth                      = AuthType.BEARER_TOKEN;
 
     @NotNull
-    public CacheBuilderSpec                                          authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
+    public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
     @NotNull
-    public CORSConfiguration                                         CORS                      = new CORSConfiguration();
+    public CORSConfiguration    CORS                      = new CORSConfiguration();
 
     @NotNull
-    public List<String>                                              executionScope            = Collections.emptyList();
+    public List<String>         executionScope            = Collections.emptyList();
 
-    public boolean                                                   randomPort                = false;
+    @NotNull
+    public JooqFactory          jooq                      = new JooqFactory();
 
-    public String                                                    realm;
+    public boolean              randomPort                = false;
 
-    public boolean                                                   useCORS                   = false;
+    public boolean              useCORS                   = false;
 
-    @JsonProperty("database")
-    private DatabaseConfiguration<PhantasmConfiguration>             databaseConfiguration;
-
-    private EnvironmentDriventDbConfiguration<PhantasmConfiguration> environmentConfig         = new EnvironmentDriventDbConfiguration<>();
+    public DataSourceFactory    database;
 
     @Override
     public AssetsConfiguration getAssetsConfiguration() {
         return assetsConfiguration;
     }
 
-    public PooledDataSourceFactory getDatabaseConfiguration() {
-        if (databaseConfiguration == null) {
-            return environmentConfig.getDataSourceFactory(this);
-        } else {
-            return databaseConfiguration.getDataSourceFactory(this);
+    public org.jooq.Configuration getConfiguration(Environment environment) {
+        try {
+            return jooq.build(environment, database, "command");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Cannot obtain database configuration",
+                                            e);
         }
     }
 }

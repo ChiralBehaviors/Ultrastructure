@@ -40,8 +40,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -52,38 +52,21 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
-import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
-
-import io.dropwizard.cli.CheckCommand;
-import io.dropwizard.cli.Cli;
-import io.dropwizard.cli.ServerCommand;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.util.JarLocation;
 
 /**
  * @author hhildebrand
  *
  */
 public class AuthxResourceTest extends AbstractModelTest {
-    protected final static PhantasmApplication application = new PhantasmApplication();
+    protected PhantasmApplication application = new PhantasmApplication();
 
-    @BeforeClass
-    public static void initialize() throws Exception {
-        final Bootstrap<PhantasmConfiguration> bootstrap = new Bootstrap<>(application);
-        bootstrap.addCommand(new ServerCommand<>(application));
-        bootstrap.addCommand(new CheckCommand<>(application));
-        application.initialize(bootstrap);
-        bootstrap.registerMetrics();
-
-        final Cli cli = new Cli(new JarLocation(application.getClass()),
-                                bootstrap, System.out, System.err);
-        if (!cli.run("server", "target/test-classes/oauth.yml")) {
-            fail();
-        }
+    @Before
+    public void initialize() throws Exception {
+        application.run("server", "target/test-classes/oauth.yml");
     }
 
-    @AfterClass
-    public static void shutdown() {
+    @After
+    public void shutdown() {
         application.stop();
     }
 

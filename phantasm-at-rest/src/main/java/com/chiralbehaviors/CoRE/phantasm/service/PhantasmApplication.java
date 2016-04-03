@@ -22,9 +22,12 @@ package com.chiralbehaviors.CoRE.phantasm.service;
 
 import org.eclipse.jetty.server.Server;
 
+import com.bendb.dropwizard.jooq.JooqBundle;
+import com.bendb.dropwizard.jooq.JooqFactory;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 
 import io.dropwizard.Application;
+import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -51,6 +54,17 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
     public void initialize(Bootstrap<PhantasmConfiguration> bootstrap) {
         service = new PhantasmBundle();
         bootstrap.addBundle(service);
+        bootstrap.addBundle(new JooqBundle<PhantasmConfiguration>() {
+            @Override
+            public DataSourceFactory getDataSourceFactory(PhantasmConfiguration configuration) {
+                return configuration.database;
+            }
+
+            @Override
+            public JooqFactory getJooqFactory(PhantasmConfiguration configuration) {
+                return configuration.jooq;
+            }
+        });
     }
 
     /* (non-Javadoc)

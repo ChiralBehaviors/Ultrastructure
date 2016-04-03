@@ -1,14 +1,8 @@
-randomPort: true 
-
-auth: BEARER_TOKEN
+auth: BEARER_TOKEN 
 
 logging:
-    level: ERROR
-    loggers:
-        "org.hibernate": ERROR
-        "org.glassfish": ERROR
-        graphql: WARN
-
-server: 
-  requestLog:
-    appenders: [] #turns off request logging
+  level: ERROR
+  loggers:
+    org.hibernate: ERROR
+    org.glassfish: ERROR
+    graphql: WARN

@@ -27,12 +27,13 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
-import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
@@ -68,13 +69,8 @@ import io.dropwizard.setup.Environment;
  *
  */
 public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
-    public static final String JAVAX_PERSISTENCE_JDBC_DRIVER   = "javax.persistence.jdbc.driver";
-    public static final String JAVAX_PERSISTENCE_JDBC_PASSWORD = "javax.persistence.jdbc.password";
-    public static final String JAVAX_PERSISTENCE_JDBC_URL      = "javax.persistence.jdbc.url";
-    public static final String JAVAX_PERSISTENCE_JDBC_USER     = "javax.persistence.jdbc.user";
-    public static final String ORG_POSTGRESQL_DRIVER           = "org.postgresql.Driver";
 
-    public final static Logger log                             = LoggerFactory.getLogger(PhantasmBundle.class);
+    public final static Logger log = LoggerFactory.getLogger(PhantasmBundle.class);
 
     private Environment        environment;
 
@@ -89,8 +85,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
      */
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
-        bootstrap.getObjectMapper()
-                 .registerModule(new CoREModule());
         bootstrap.addCommand(new BootstrapCommand());
         bootstrap.addCommand(new ClearCommand());
         bootstrap.addCommand(new LoadWorkspaceCommand());
@@ -155,7 +149,10 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             }
             case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
-                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(null);
+                AgencyBearerTokenAuthenticator authenticator;
+                try (Model model = new ModelImpl(DSL.using(configuration.getConfiguration(environment)))) {
+                    authenticator = new AgencyBearerTokenAuthenticator(model);
+                }
                 OAuthCredentialAuthFilter<AuthorizedPrincipal> filter;
                 filter = new Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
                                                            .setAuthorizer(new PermitAllAuthorizer<>())
@@ -226,12 +223,13 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                    .register(new GraphQlResource(executionScope));
     }
 
-    /**
-     * @return
-     */
-    public static DSLContext getCreateFromEnvironment() {
-        // TODO Auto-generated method stub
-        return null;
+    public static Environment environmentFrom(Bootstrap<PhantasmConfiguration> bootstrap) {
+        return new Environment(bootstrap.getApplication()
+                                        .getName(),
+                               bootstrap.getObjectMapper(),
+                               bootstrap.getValidatorFactory()
+                                        .getValidator(),
+                               bootstrap.getMetricRegistry(),
+                               bootstrap.getClassLoader());
     }
-
 }

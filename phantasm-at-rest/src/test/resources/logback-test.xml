@@ -13,7 +13,7 @@
         <level value="INFO" />
     </logger> 
     <root>
-        <level value="INFO" />
+        <level value="TRACE" />
         <appender-ref ref="C" />
     </root>
 </configuration>

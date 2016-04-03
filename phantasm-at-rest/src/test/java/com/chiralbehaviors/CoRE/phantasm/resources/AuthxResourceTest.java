@@ -41,7 +41,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -60,11 +59,6 @@ import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 public class AuthxResourceTest extends AbstractModelTest {
     protected PhantasmApplication application = new PhantasmApplication();
 
-    @Before
-    public void initialize() throws Exception {
-        application.run("server", "target/test-classes/oauth.yml");
-    }
-
     @After
     public void shutdown() {
         application.stop();
@@ -72,6 +66,12 @@ public class AuthxResourceTest extends AbstractModelTest {
 
     @Test
     public void functionalAuthRoundTripTest() throws Exception {
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
+        application.run("server", "target/test-classes/oauth.yml");
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,

@@ -67,6 +67,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -179,8 +180,13 @@ public class ModelImpl implements Model {
             }
         };
         workspaceModel = new WorkspaceModelImpl(this);
-        kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
-                               .getWorkspace()
+        WorkspaceScope workspaceScope = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id());
+        if (workspaceScope == null) {
+            LoggerFactory.getLogger(ModelImpl.class)
+                         .error("Cannot obtain kernel workspace.  Database is not bootstrapped");
+            throw new IllegalStateException("Database has not been boostrapped");
+        }
+        kernel = workspaceScope.getWorkspace()
                                .getAccessor(Kernel.class);
         agencyModel = new ExistentialModelImpl<>(this, ExistentialDomain.Agency,
                                                  Agency.class);

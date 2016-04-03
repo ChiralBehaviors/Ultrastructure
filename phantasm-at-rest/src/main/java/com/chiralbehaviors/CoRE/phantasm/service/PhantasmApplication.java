@@ -43,8 +43,9 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
         new PhantasmApplication().run(argv);
     }
 
-    private Server         jettyServer;
-    private PhantasmBundle service;
+    private Server                            jettyServer;
+    private PhantasmBundle                    service;
+    private JooqBundle<PhantasmConfiguration> jooqBundle;
 
     public int getPort() {
         return service.getPort();
@@ -54,17 +55,18 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
     public void initialize(Bootstrap<PhantasmConfiguration> bootstrap) {
         service = new PhantasmBundle();
         bootstrap.addBundle(service);
-        bootstrap.addBundle(new JooqBundle<PhantasmConfiguration>() {
+        jooqBundle = new JooqBundle<PhantasmConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(PhantasmConfiguration configuration) {
-                return configuration.database;
+                return configuration.getDatabase();
             }
 
             @Override
             public JooqFactory getJooqFactory(PhantasmConfiguration configuration) {
-                return configuration.jooq;
+                return configuration.getJooq();
             }
-        });
+        };
+        bootstrap.addBundle(jooqBundle);
     }
 
     /* (non-Javadoc)
@@ -73,6 +75,7 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
     @Override
     public void run(PhantasmConfiguration configuration,
                     Environment environment) throws Exception {
+        configuration.setJooqBundle(jooqBundle);
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
     }

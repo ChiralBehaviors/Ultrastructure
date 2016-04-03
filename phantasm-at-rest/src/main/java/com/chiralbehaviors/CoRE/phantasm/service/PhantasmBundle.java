@@ -27,7 +27,6 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,25 +103,28 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
         configureServices(environment,
-                          FacetType.configureExecutionScope(configuration.executionScope));
+                          FacetType.configureExecutionScope(configuration.getExecutionScope()));
 
-        configuration.assets.forEach(asset -> {
-            try {
-                log.info("Configuring {}", asset);
-                new ConfiguredAssetsBundle(asset.path, asset.uri, asset.index,
-                                           asset.name).run(configuration,
-                                                           environment);
-            } catch (Exception e) {
-                log.error(String.format("Cannot configure asset: %s", asset),
-                          e);
-            }
-        });
+        configuration.getAssets()
+                     .forEach(asset -> {
+                         try {
+                             log.info("Configuring {}", asset);
+                             new ConfiguredAssetsBundle(asset.path, asset.uri,
+                                                        asset.index,
+                                                        asset.name).run(configuration,
+                                                                        environment);
+                         } catch (Exception e) {
+                             log.error(String.format("Cannot configure asset: %s",
+                                                     asset),
+                                       e);
+                         }
+                     });
 
     }
 
     private void configureAuth(PhantasmConfiguration configuration,
                                Environment environment) {
-        switch (configuration.auth) {
+        switch (configuration.getAuth()) {
             case NULL: {
                 log.warn("Setting authentication to NULL");
                 AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(null);
@@ -150,7 +152,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
                 AgencyBearerTokenAuthenticator authenticator;
-                try (Model model = new ModelImpl(DSL.using(configuration.getConfiguration(environment)))) {
+                try (Model model = new ModelImpl(configuration.create())) {
                     authenticator = new AgencyBearerTokenAuthenticator(model);
                 }
                 OAuthCredentialAuthFilter<AuthorizedPrincipal> filter;
@@ -163,14 +165,16 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                 break;
             }
         }
-        environment.jersey()
-                   .register(new AuthxResource(null));
+        try (Model model = new ModelImpl(configuration.create())) {
+            environment.jersey()
+                       .register(new AuthxResource(model.create()));
+        }
     }
 
     private void configureCORS(PhantasmConfiguration configuration,
                                Environment environment) {
-        if (configuration.useCORS) {
-            CORSConfiguration cors = configuration.CORS;
+        if (configuration.isUseCORS()) {
+            CORSConfiguration cors = configuration.getCORS();
             FilterRegistration.Dynamic filter = environment.servlets()
                                                            .addFilter("CORS",
                                                                       CrossOriginFilter.class);
@@ -221,15 +225,5 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                                    ClassLoader executionScope) {
         environment.jersey()
                    .register(new GraphQlResource(executionScope));
-    }
-
-    public static Environment environmentFrom(Bootstrap<PhantasmConfiguration> bootstrap) {
-        return new Environment(bootstrap.getApplication()
-                                        .getName(),
-                               bootstrap.getObjectMapper(),
-                               bootstrap.getValidatorFactory()
-                                        .getValidator(),
-                               bootstrap.getMetricRegistry(),
-                               bootstrap.getClassLoader());
     }
 }

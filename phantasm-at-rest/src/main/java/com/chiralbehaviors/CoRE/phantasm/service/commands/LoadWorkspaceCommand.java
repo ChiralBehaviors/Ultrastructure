@@ -23,11 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
@@ -59,7 +57,7 @@ public class LoadWorkspaceCommand
     public void run(Bootstrap<PhantasmConfiguration> bootstrap,
                     Namespace namespace,
                     PhantasmConfiguration configuration) throws Exception {
-        DSLContext create = DSL.using(configuration.getConfiguration(PhantasmBundle.environmentFrom(bootstrap)));
+        DSLContext create = configuration.create();
         create.transaction(c -> {
             try (Model model = new ModelImpl(create)) {
                 WorkspaceSnapshot.load(model.create(),

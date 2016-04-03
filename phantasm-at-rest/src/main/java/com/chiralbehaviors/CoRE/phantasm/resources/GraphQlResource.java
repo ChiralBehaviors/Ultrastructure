@@ -205,12 +205,4 @@ public class GraphQlResource extends TransactionalResource {
         }
         return variables;
     }
-
-    // here only because of insanity
-    public ExecutionResult query(@Auth AuthorizedPrincipal principal,
-                                 String workspace, QueryRequest request,
-                                 @Context DSLContext context) {
-        return query(principal, workspace, request.toMap(), context);
-
-    }
 }

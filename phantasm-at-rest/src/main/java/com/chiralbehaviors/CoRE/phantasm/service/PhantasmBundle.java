@@ -50,6 +50,7 @@ import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.PermitAllAuthorizer;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter.Builder;
@@ -99,8 +100,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
-        configureServices(environment,
-                          FacetType.configureExecutionScope(configuration.getExecutionScope()));
+        environment.jersey()
+                   .register(new GraphQlResource(FacetType.configureExecutionScope(configuration.getExecutionScope())));
 
         configuration.getAssets()
                      .forEach(asset -> {
@@ -158,6 +159,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
         environment.jersey()
                    .register(new AuthxResource());
+        environment.jersey()
+                   .register(new AuthValueFactoryProvider.Binder<>(AuthorizedPrincipal.class));
     }
 
     private void configureCORS(PhantasmConfiguration configuration,
@@ -208,11 +211,5 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                      serverFactory.getClass()
                                   .getSimpleName());
         }
-    }
-
-    private void configureServices(Environment environment,
-                                   ClassLoader executionScope) {
-        environment.jersey()
-                   .register(new GraphQlResource(executionScope));
     }
 }

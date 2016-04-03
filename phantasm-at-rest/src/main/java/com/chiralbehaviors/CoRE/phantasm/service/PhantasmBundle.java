@@ -31,8 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
@@ -54,7 +52,6 @@ import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.PermitAllAuthorizer;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter.Builder;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
@@ -127,7 +124,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         switch (configuration.getAuth()) {
             case NULL: {
                 log.warn("Setting authentication to NULL");
-                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(null);
+                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
                 NullAuthFilter<AuthorizedPrincipal> filter;
                 filter = new NullAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
                                                                           .setAuthorizer(new PermitAllAuthorizer<>())
@@ -139,7 +136,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             }
             case BASIC_DIGEST: {
                 log.warn("Setting authentication to US basic authentication");
-                AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(null);
+                AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
                 BasicCredentialAuthFilter<AuthorizedPrincipal> filter;
                 filter = new BasicCredentialAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
                                                                                      .setAuthorizer(new PermitAllAuthorizer<>())
@@ -151,24 +148,16 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             }
             case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
-                AgencyBearerTokenAuthenticator authenticator;
-                try (Model model = new ModelImpl(configuration.create())) {
-                    authenticator = new AgencyBearerTokenAuthenticator(model);
-                }
-                OAuthCredentialAuthFilter<AuthorizedPrincipal> filter;
-                filter = new Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
-                                                           .setAuthorizer(new PermitAllAuthorizer<>())
-                                                           .setPrefix("Bearer")
-                                                           .buildAuthFilter();
                 environment.jersey()
-                           .register(new AuthDynamicFeature(filter));
+                           .register(new AuthDynamicFeature(new Builder<AuthorizedPrincipal>().setAuthenticator(new AgencyBearerTokenAuthenticator())
+                                                                                              .setAuthorizer(new PermitAllAuthorizer<>())
+                                                                                              .setPrefix("Bearer")
+                                                                                              .buildAuthFilter()));
                 break;
             }
         }
-        try (Model model = new ModelImpl(configuration.create())) {
-            environment.jersey()
-                       .register(new AuthxResource(model.create()));
-        }
+        environment.jersey()
+                   .register(new AuthxResource());
     }
 
     private void configureCORS(PhantasmConfiguration configuration,

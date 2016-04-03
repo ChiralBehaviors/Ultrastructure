@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -65,7 +64,8 @@ public class AuthenticatorsTest extends AbstractModelTest {
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
         model.flush();
-        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(model);
+        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
+        authenticator.setCreate(model.create());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
         assertTrue(authenticated.isPresent());
@@ -103,7 +103,8 @@ public class AuthenticatorsTest extends AbstractModelTest {
         accessToken.insert();
         model.flush();
 
-        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(model);
+        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
+        authenticator.setCreate(model.create());
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
                                                                        accessToken.getId()
                                                                                   .toString());
@@ -159,14 +160,12 @@ public class AuthenticatorsTest extends AbstractModelTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         String ip = "There's no place like 127.0.0.1";
         when(request.getRemoteAddr()).thenReturn(ip);
-        Attribute login = model.getKernel()
-                               .getLogin();
 
-        UUID authToken = AuthxResource.loginForToken(username, password,
-                                                     request, model, login);
+        UUID authToken = AuthxResource.loginUuidForToken(username, password,
+                                                         request, model);
         assertNotNull(authToken);
 
-        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(model);
+        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
         RequestCredentials credential = new RequestCredentials(ip,
                                                                authToken.toString());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(credential);
@@ -183,8 +182,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         capRequest.username = username;
         capRequest.password = password;
         capRequest.capabilities = Arrays.asList(asserted.getId());
-        authToken = AuthxResource.requestCapability(capRequest, request, model,
-                                                    login);
+        authToken = AuthxResource.requestCapability(capRequest, request, model);
 
         credential = new RequestCredentials(ip, authToken.toString());
         authenticated = authenticator.authenticate(credential);

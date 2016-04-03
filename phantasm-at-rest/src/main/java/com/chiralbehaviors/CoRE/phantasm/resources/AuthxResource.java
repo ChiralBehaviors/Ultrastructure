@@ -45,12 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
@@ -76,9 +74,10 @@ public class AuthxResource extends TransactionalResource {
     private final static String PREFIX = "Bearer";
 
     public static CoreUser authenticate(String username, String password,
-                                        Model model, Attribute login) {
+                                        Model model) {
         List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
-                                                            .findByAttributeValue(login,
+                                                            .findByAttributeValue(model.getKernel()
+                                                                                       .getLogin(),
                                                                                   username);
         if (agencies.size() > 1) {
             log.error(String.format("Multiple agencies with login name %s",
@@ -142,13 +141,12 @@ public class AuthxResource extends TransactionalResource {
                     });
     }
 
-    public static UUID loginForToken(String username, String password,
-                                     HttpServletRequest httpRequest,
-                                     Model model, Attribute login) {
+    public static UUID loginUuidForToken(String username, String password,
+                                         HttpServletRequest httpRequest,
+                                         Model model) {
         Credential cred = new Credential();
         cred.ip = httpRequest.getRemoteAddr();
-        return generateToken(cred,
-                             authenticate(username, password, model, login),
+        return generateToken(cred, authenticate(username, password, model),
                              model).getId();
     }
 
@@ -168,22 +166,13 @@ public class AuthxResource extends TransactionalResource {
 
     public static UUID requestCapability(CapabilityRequest request,
                                          HttpServletRequest httpRequest,
-                                         Model model, Attribute login) {
+                                         Model model) {
         Credential cred = new Credential();
         cred.capabilities = request.capabilities;
         cred.ip = httpRequest.getRemoteAddr();
         return generateToken(cred, authenticate(request.username,
-                                                request.password, model, login),
+                                                request.password, model),
                              model).getId();
-    }
-
-    private final Attribute login;
-
-    public AuthxResource(DSLContext create) {
-        try (Model model = new ModelImpl(create)) {
-            login = model.getKernel()
-                         .getLogin();
-        }
     }
 
     @POST
@@ -206,8 +195,8 @@ public class AuthxResource extends TransactionalResource {
                               @Context HttpServletRequest httpRequest,
                               @Context DSLContext create) {
         return mutate(null, model -> {
-            return loginForToken(username, password, httpRequest, model, login);
-        }, create);
+            return loginUuidForToken(username, password, httpRequest, model);
+        }, (DSLContext) create);
     }
 
     @POST
@@ -217,7 +206,7 @@ public class AuthxResource extends TransactionalResource {
                                   @Context HttpServletRequest httpRequest,
                                   @Context DSLContext create) {
         return mutate(null, model -> {
-            return requestCapability(request, httpRequest, model, login);
+            return requestCapability(request, httpRequest, model);
         }, create);
     }
 }

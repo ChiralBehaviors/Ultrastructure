@@ -80,6 +80,11 @@ public class AuthxResourceTest extends AbstractModelTest {
         bob.setLogin(username);
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
 
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(String.format("http://localhost:%s/oauth2/token/login",

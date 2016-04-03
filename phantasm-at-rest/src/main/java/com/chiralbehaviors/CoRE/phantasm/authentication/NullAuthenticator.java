@@ -35,17 +35,18 @@ import io.dropwizard.auth.Authenticator;
  */
 public class NullAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
-    private final Model model;
+    private  Model model;
 
-    NullAuthenticator(Model model) {
-        this.model = model;
-    }
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(String credentials) throws AuthenticationException {
         return Optional.of(model.principalFrom(model.getKernel()
                                                     .getUnauthenticatedAgency(),
                                                Collections.emptyList()));
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
 }

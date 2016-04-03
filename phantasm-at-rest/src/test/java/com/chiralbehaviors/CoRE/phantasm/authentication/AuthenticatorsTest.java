@@ -65,7 +65,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
 
         model.flush();
         AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
-        authenticator.setCreate(model.create());
+        authenticator.setModel(model);
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
         assertTrue(authenticated.isPresent());
@@ -92,6 +92,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                                                                .getCoreUser())
                                                      .getId());
         credential.capabilities = capabilities;
+
         ExistentialAttributeRecord accessToken = model.records()
                                                       .newExistentialAttribute();
         accessToken.setAttribute(model.getKernel()
@@ -104,7 +105,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         model.flush();
 
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
-        authenticator.setCreate(model.create());
+        authenticator.setModel(model);
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
                                                                        accessToken.getId()
                                                                                   .toString());
@@ -114,11 +115,13 @@ public class AuthenticatorsTest extends AbstractModelTest {
         assertEquals(bob, authBob.getPrincipal());
         assertEquals(1, authBob.getAsserted()
                                .size());
+
         FacetRecord asserted = model.create()
                                     .selectFrom(FACET)
                                     .where(FACET.ID.equal(authBob.getAsserted()
                                                                  .get(0)))
                                     .fetchOne();
+        assertNotNull(asserted);
         assertEquals(model.getKernel()
                           .getIsA()
                           .getId(),
@@ -166,6 +169,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         assertNotNull(authToken);
 
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
+        authenticator.setModel(model);
         RequestCredentials credential = new RequestCredentials(ip,
                                                                authToken.toString());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(credential);

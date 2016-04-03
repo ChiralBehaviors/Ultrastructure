@@ -51,7 +51,7 @@ public class NullAuthFilter<P extends Principal> extends AuthFilter<String, P> {
         try {
             principal = authenticator.authenticate(null);
         } catch (AuthenticationException e) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(e);
         }
         requestContext.setSecurityContext(new SecurityContext() {
             @Override

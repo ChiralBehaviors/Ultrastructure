@@ -26,10 +26,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
-
-import org.jooq.DSLContext;
+import org.eclipse.jetty.server.HttpChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +34,6 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,44 +49,18 @@ import io.dropwizard.auth.Authenticator;
  */
 public class AgencyBearerTokenAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
+    public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
     private static final long   DWELL                        = (long) (Math.random()
                                                                        * 10000);
-    public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
     private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
-    @Context
-    private HttpServletRequest  servletRequest;
-    @Context
-    private DSLContext          create;
-
-    @Override
-    public Optional<AuthorizedPrincipal> authenticate(String token) throws AuthenticationException {
-        return authenticate(new RequestCredentials(servletRequest.getRemoteAddr(),
-                                                   token));
-    }
-
-    public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
-        UUID uuid;
+    public static Optional<AuthorizedPrincipal> absent() {
         try {
-            uuid = UUID.fromString(credentials.bearerToken);
-        } catch (IllegalArgumentException e) {
-            // Must be a valid UUID
-            log.warn("requested access token {} invalid bearer token",
-                     credentials);
-            return absent();
+            Thread.sleep(DWELL);
+        } catch (InterruptedException e) {
+            return Optional.absent();
         }
-        ExistentialAttributeRecord accessToken;
-        try (Model model = new ModelImpl(create)) {
-            accessToken = model.create()
-                               .selectFrom(EXISTENTIAL_ATTRIBUTE)
-                               .where(EXISTENTIAL_ATTRIBUTE.ID.eq(uuid))
-                               .fetchOne();
-        }
-        if (accessToken == null) {
-            log.warn("requested access token {} not found", credentials);
-            return absent();
-        }
-        return validate(accessToken, credentials);
+        return Optional.absent();
     }
 
     public static AuthorizedPrincipal principalFrom(Agency agency,
@@ -120,13 +90,6 @@ public class AgencyBearerTokenAuthenticator
             return false;
         }
         return credential.ip.equals(onRequest.remoteIp);
-    }
-
-    private Optional<AuthorizedPrincipal> validate(ExistentialAttributeRecord accessToken,
-                                                   RequestCredentials requestCredentials) {
-        try (Model model = new ModelImpl(create)) {
-            return validate(requestCredentials, accessToken, model);
-        }
     }
 
     public static Optional<AuthorizedPrincipal> validate(RequestCredentials requestCredentials,
@@ -182,17 +145,40 @@ public class AgencyBearerTokenAuthenticator
                                          accessToken, model));
     }
 
-    public static Optional<AuthorizedPrincipal> absent() {
+    private Model               model;
+
+    public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
+        UUID uuid;
         try {
-            Thread.sleep(DWELL);
-        } catch (InterruptedException e) {
-            return Optional.absent();
+            uuid = UUID.fromString(credentials.bearerToken);
+        } catch (IllegalArgumentException e) {
+            // Must be a valid UUID
+            log.warn("requested access token {} invalid bearer token",
+                     credentials);
+            return absent();
         }
-        return Optional.absent();
+        ExistentialAttributeRecord accessToken;
+        accessToken = model.create()
+                           .selectFrom(EXISTENTIAL_ATTRIBUTE)
+                           .where(EXISTENTIAL_ATTRIBUTE.ID.eq(uuid))
+                           .fetchOne();
+        if (accessToken == null) {
+            log.warn("requested access token {} not found", credentials);
+            return absent();
+        }
+        return validate(credentials, accessToken, model);
     }
 
-    protected void setCreate(DSLContext create) {
-        this.create = create;
+    @Override
+    public Optional<AuthorizedPrincipal> authenticate(String token) throws AuthenticationException {
+        // For some reason I can't inject the request via @Context nor in the filters either.  Hence this hack
+        return authenticate(new RequestCredentials(HttpChannel.getCurrentHttpChannel()
+                                                              .getRequest()
+                                                              .getRemoteAddr(),
+                                                   token));
     }
 
+    public void setModel(Model model) {
+        this.model = model;
+    }
 }

@@ -19,9 +19,6 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.ws.rs.core.Context;
-
-import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +27,6 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.bcrypt.BCrypt;
 import com.google.common.base.Optional;
@@ -65,18 +61,15 @@ public class AgencyBasicAuthenticator
         }
     }
 
-    protected void setCreate(DSLContext create) {
-        this.create = create;
-    }
-
-    @Context
-    private DSLContext create;
+    private Model model;
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials) throws AuthenticationException {
-        try (Model model = new ModelImpl(create)) {
-            return authenticate(credentials, model);
-        }
+        return authenticate(credentials, model);
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     private Optional<AuthorizedPrincipal> absent() {

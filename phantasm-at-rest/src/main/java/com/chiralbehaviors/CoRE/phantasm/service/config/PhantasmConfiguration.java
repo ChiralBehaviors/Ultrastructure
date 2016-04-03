@@ -113,6 +113,10 @@ public class PhantasmConfiguration extends Configuration
         setDatabase(new DataSourceFactoryFromEnv());
     }
 
+    public org.jooq.Configuration getJooqConfiguration() {
+        return jooqBundle.getConfiguration();
+    }
+
     public DSLContext create() {
         return DSL.using(jooqBundle.getConfiguration());
     }

@@ -27,13 +27,16 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
+import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
@@ -125,14 +128,21 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         switch (configuration.getAuth()) {
             case NULL: {
                 log.warn("Setting authentication to NULL");
-                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
                 NullAuthFilter<AuthorizedPrincipal> filter;
+                NullAuthenticator authenticator = new NullAuthenticator();
                 filter = new NullAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
                                                                           .setAuthorizer(new PermitAllAuthorizer<>())
-                                                                          .setPrefix("Bearer")
+                                                                          .setPrefix("Null")
                                                                           .buildAuthFilter();
                 environment.jersey()
                            .register(new AuthDynamicFeature(filter));
+                environment.lifecycle()
+                           .manage(new AbstractLifeCycle() {
+                               @Override
+                               protected void doStart() throws Exception {
+                                   authenticator.setModel(new ModelImpl(configuration.create()));
+                               }
+                           });
                 break;
             }
             case BASIC_DIGEST: {
@@ -145,15 +155,30 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                                                                                      .buildAuthFilter();
                 environment.jersey()
                            .register(new AuthDynamicFeature(filter));
+                environment.lifecycle()
+                           .manage(new AbstractLifeCycle() {
+                               @Override
+                               protected void doStart() throws Exception {
+                                   authenticator.setModel(new ModelImpl(configuration.create()));
+                               }
+                           });
                 break;
             }
             case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
+                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
                 environment.jersey()
-                           .register(new AuthDynamicFeature(new Builder<AuthorizedPrincipal>().setAuthenticator(new AgencyBearerTokenAuthenticator())
+                           .register(new AuthDynamicFeature(new Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
                                                                                               .setAuthorizer(new PermitAllAuthorizer<>())
                                                                                               .setPrefix("Bearer")
                                                                                               .buildAuthFilter()));
+                environment.lifecycle()
+                           .manage(new AbstractLifeCycle() {
+                               @Override
+                               protected void doStart() throws Exception {
+                                   authenticator.setModel(new ModelImpl(configuration.create()));
+                               }
+                           });
                 break;
             }
         }

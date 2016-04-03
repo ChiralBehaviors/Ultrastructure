@@ -244,17 +244,7 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>phantasm-plugin</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>network-inference-generator</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>json</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+            </dependency>  
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>animations</artifactId>
@@ -548,13 +538,6 @@
                     <attach>true</attach>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -575,12 +558,7 @@
                         <enableAssertions>true</enableAssertions>
                     </configuration>
                     <version>2.17</version>
-                </plugin>
-                <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>network-inference-generator</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
+                </plugin> 
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
@@ -645,17 +623,7 @@
                         <port>9999</port>
                         <tempWebappDirectory>${basedir}/target/site/tempdir</tempWebappDirectory>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.2.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.7</version>
-                </plugin>
+                </plugin> 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
@@ -699,45 +667,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.8</version>
-                </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.chiralbehaviors.CoRE</groupId>
-                                        <artifactId>network-inference-generator</artifactId>
-                                        <versionRange>[${project.version},)</versionRange>
-                                        <goals>
-                                            <goal>generate</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.hibernate.orm.tooling</groupId>
-                                        <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                                        <versionRange>[${hibernate.version},)</versionRange>
-                                        <goals>
-                                            <goal>enhance</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
+                </plugin> 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -758,22 +688,5 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>database.active</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    </build> 
 </project>

@@ -145,7 +145,7 @@ public class AgencyBearerTokenAuthenticator
                                          accessToken, model));
     }
 
-    private Model               model;
+    private Model model;
 
     public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
         UUID uuid;
@@ -157,16 +157,21 @@ public class AgencyBearerTokenAuthenticator
                      credentials);
             return absent();
         }
-        ExistentialAttributeRecord accessToken;
-        accessToken = model.create()
-                           .selectFrom(EXISTENTIAL_ATTRIBUTE)
-                           .where(EXISTENTIAL_ATTRIBUTE.ID.eq(uuid))
-                           .fetchOne();
-        if (accessToken == null) {
-            log.warn("requested access token {} not found", credentials);
-            return absent();
-        }
-        return validate(credentials, accessToken, model);
+        return model.create()
+                    .transactionResult(c -> {
+                        ExistentialAttributeRecord accessToken;
+                        accessToken = model.create()
+                                           .selectFrom(EXISTENTIAL_ATTRIBUTE)
+                                           .where(EXISTENTIAL_ATTRIBUTE.ID.eq(uuid))
+                                           .fetchOne();
+                        if (accessToken == null) {
+                            log.warn("requested access token {} not found",
+                                     credentials);
+                            return absent();
+                        }
+                        return validate(credentials, accessToken, model);
+                    });
+
     }
 
     @Override

@@ -96,6 +96,9 @@ public class AuthxResource extends TransactionalResource {
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
+        log.info(String.format("Login successful for %s:%s", username,
+                               user.getRuleform()
+                                   .getId()));
         return user;
     }
 
@@ -118,27 +121,22 @@ public class AuthxResource extends TransactionalResource {
     public static ExistentialAttributeRecord generateToken(Credential cred,
                                                            CoreUser user,
                                                            Model model) {
-        return model.create()
-                    .transactionResult(c -> {
-                        List<ExistentialAttributeRecord> values = model.getPhantasmModel()
-                                                                       .getAttributeValues(user.getRuleform(),
-                                                                                           model.getKernel()
-                                                                                                .getAccessToken());
-                        int seqNum = values.isEmpty() ? 0
-                                                      : values.get(values.size()
-                                                                   - 1)
-                                                              .getSequenceNumber()
-                                                        + 1;
-                        ExistentialAttributeRecord accessToken = model.records()
-                                                                      .newExistentialAttribute(user.getRuleform(),
-                                                                                               model.getKernel()
-                                                                                                    .getAccessToken());
-                        accessToken.setJsonValue(new ObjectMapper().valueToTree(cred));
-                        accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
-                        accessToken.setSequenceNumber(seqNum);
-                        accessToken.insert();
-                        return accessToken;
-                    });
+        List<ExistentialAttributeRecord> values = model.getPhantasmModel()
+                                                       .getAttributeValues(user.getRuleform(),
+                                                                           model.getKernel()
+                                                                                .getAccessToken());
+        int seqNum = values.isEmpty() ? 0 : values.get(values.size() - 1)
+                                                  .getSequenceNumber()
+                                            + 1;
+        ExistentialAttributeRecord accessToken = model.records()
+                                                      .newExistentialAttribute(user.getRuleform(),
+                                                                               model.getKernel()
+                                                                                    .getAccessToken());
+        accessToken.setJsonValue(new ObjectMapper().valueToTree(cred));
+        accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
+        accessToken.setSequenceNumber(seqNum);
+        accessToken.insert();
+        return accessToken;
     }
 
     public static UUID loginUuidForToken(String username, String password,

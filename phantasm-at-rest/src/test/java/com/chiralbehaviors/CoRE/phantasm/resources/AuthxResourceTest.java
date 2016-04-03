@@ -96,7 +96,6 @@ public class AuthxResourceTest extends AbstractModelTest {
         UUID token = invocationBuilder.post(Entity.entity(creds,
                                                           MediaType.APPLICATION_FORM_URLENCODED),
                                             UUID.class);
-        System.out.println(token);
         webTarget = client.target(String.format("http://localhost:%s/graphql/workspace",
                                                 application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,

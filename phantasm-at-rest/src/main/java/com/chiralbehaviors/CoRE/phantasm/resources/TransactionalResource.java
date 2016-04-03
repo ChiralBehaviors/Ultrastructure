@@ -16,7 +16,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 import javax.ws.rs.WebApplicationException;
@@ -36,11 +38,39 @@ import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 public class TransactionalResource {
     private final static Logger log = LoggerFactory.getLogger(TransactionalResource.class);
 
-    protected <T> T mutate(AuthorizedPrincipal principal,
-                            Function<Model, T> txn,
-                            DSLContext create) throws WebApplicationException {
-        Model model = new ModelImpl(create);
+    public static <T> T readOnly(Callable<T> call,
+                                 Model model) throws Exception {
+        Connection connection = model.create()
+                                     .configuration()
+                                     .connectionProvider()
+                                     .acquire();
+        connection.setReadOnly(true);
+        try {
+            return call.call();
+        } finally {
+            connection.setReadOnly(false);
+        }
+    }
 
+    @SuppressWarnings("unused")
+    private void setReadOnly(Model model, boolean value) {
+        try {
+            model.create()
+                 .configuration()
+                 .connectionProvider()
+                 .acquire()
+                 .setReadOnly(value);
+        } catch (DataAccessException e) {
+            throw new WebApplicationException(e, 500);
+        } catch (SQLException e) {
+            throw new WebApplicationException(e, 500);
+        }
+    }
+
+    protected <T> T mutate(AuthorizedPrincipal principal,
+                           Function<Model, T> txn,
+                           DSLContext create) throws WebApplicationException {
+        Model model = new ModelImpl(create);
         if (principal == null) {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
@@ -48,7 +78,9 @@ public class TransactionalResource {
         try {
             return model.executeAs(principal, () -> {
                 try {
-                    return create.transactionResult(c -> txn.apply(model));
+                    return create.transactionResult(c -> {
+                        return txn.apply(model);
+                    });
                 } catch (WebApplicationException e) {
                     throw e;
                 } catch (Throwable e) {
@@ -64,21 +96,9 @@ public class TransactionalResource {
         }
     }
 
-    protected <T> T read(AuthorizedPrincipal principal,
-                             Function<Model, T> txn,
-                             DSLContext create) throws WebApplicationException {
+    protected <T> T read(AuthorizedPrincipal principal, Function<Model, T> txn,
+                         DSLContext create) throws WebApplicationException {
         Model model = new ModelImpl(create);
-        try {
-            model.create()
-                 .configuration()
-                 .connectionProvider()
-                 .acquire()
-                 .setReadOnly(true);
-        } catch (DataAccessException e) {
-            throw new WebApplicationException(e, 500);
-        } catch (SQLException e) {
-            throw new WebApplicationException(e, 500);
-        }
         if (principal == null) {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
@@ -86,8 +106,9 @@ public class TransactionalResource {
         try {
             return model.executeAs(principal, () -> {
                 try {
-                    T value = txn.apply(model);
-                    return value;
+                    return create.transactionResult(c -> {
+                        return txn.apply(model);
+                    });
                 } catch (Throwable e) {
                     log.error("error applying transaction", e);
                     throw new WebApplicationException(e, 500);

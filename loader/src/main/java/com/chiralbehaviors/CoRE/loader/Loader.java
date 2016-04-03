@@ -136,7 +136,11 @@ public class Loader {
             throw e;
         } finally {
             if (liquibase != null) {
-                liquibase.forceReleaseLocks();
+                try {
+                    liquibase.forceReleaseLocks();
+                } catch (LiquibaseException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

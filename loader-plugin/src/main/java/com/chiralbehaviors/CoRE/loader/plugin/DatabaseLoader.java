@@ -54,6 +54,8 @@ public class DatabaseLoader extends AbstractMojo {
         }
         try {
             Loader dbLoader = new Loader(loader);
+            System.out.println(String.format("executing loader.dbaUsername: %s",
+                                             loader.dbaUsername));
             if (loader.dbaUsername != null) {
                 getLog().info("Creating multi tentant DB");
                 dbLoader.createDatabase();

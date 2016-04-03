@@ -74,7 +74,7 @@ public class DbaConfiguration extends CoreDbConfiguration {
 
     public Connection getDbaConnection() throws SQLException {
         String url = String.format(JDBC_URL, dbaServer, dbaPort, dbaDb);
-        System.out.println(String.format("DBA connection: %s", url));
+        System.out.println(String.format("DBA connection: %s, user: %s", url, dbaUsername));
         return DriverManager.getConnection(url, dbaUsername, dbaPassword);
     }
 
@@ -87,6 +87,6 @@ public class DbaConfiguration extends CoreDbConfiguration {
                              corePort, coreServer, coreUsername, dbaDb,
                              dbaPassword == null ? ":: undefined :: "
                                                  : "**********",
-                             dbaPort, dbaServer, dbaPassword, dropDatabase);
+                             dbaPort, dbaServer, dbaUsername, dropDatabase);
     }
 }

@@ -89,7 +89,7 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     @Override
     public final RuleForm create(String name, String description) {
         return (RuleForm) model.records()
-                               .newExistential(domain(), name, description);
+                               .newExistential(domain, name, description);
     }
 
     @SafeVarargs
@@ -98,7 +98,7 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                                  FacetRecord aspect, FacetRecord... aspects) {
         @SuppressWarnings("unchecked")
         RuleForm instance = (RuleForm) model.records()
-                                            .newExistential(domain());
+                                            .newExistential(domain);
         model.getPhantasmModel()
              .initialize(instance, aspect);
         for (FacetRecord additional : aspects) {
@@ -116,9 +116,9 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     public RuleForm find(UUID id) {
         return (RuleForm) create.selectFrom(EXISTENTIAL)
                                 .where(EXISTENTIAL.ID.equal(id))
-                                .and(EXISTENTIAL.DOMAIN.equal(domain()))
+                                .and(EXISTENTIAL.DOMAIN.equal(domain))
                                 .fetchOne()
-                                .into(domainClass());
+                                .into(domainClass);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                      .from(FACET)
                      .join(EXISTENTIAL)
                      .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
-                     .where(EXISTENTIAL.DOMAIN.equal(domain()))
+                     .where(EXISTENTIAL.DOMAIN.equal(domain))
                      .and(FACET.CLASSIFIER.isNull())
                      .and(FACET.AUTHORITY.isNull())
                      .fetch()
@@ -145,17 +145,9 @@ public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                      .and(WORKSPACE_AUTHORIZATION.REFERENCE.equal(FACET.ID))
                      .join(EXISTENTIAL)
                      .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
-                     .where(EXISTENTIAL.DOMAIN.equal(domain()))
+                     .where(EXISTENTIAL.DOMAIN.equal(domain))
                      .and(FACET.AUTHORITY.isNull())
                      .fetch()
                      .into(FacetRecord.class);
-    }
-
-    protected ExistentialDomain domain() {
-        return domain;
-    }
-
-    protected Class<? extends ExistentialRecord> domainClass() {
-        return domainClass;
     }
 }

@@ -152,6 +152,7 @@ public class PhantasmConfiguration extends Configuration
     }
 
     public JooqFactory getJooq() {
+        jooq.setExecuteWithOptimisticLocking(true);
         return jooq;
     }
 

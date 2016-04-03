@@ -165,6 +165,9 @@ public class ModelImpl implements Model {
         });
         create.configuration()
               .set(new DefaultRecordListenerProvider(animations));
+        create.configuration()
+              .settings()
+              .setExecuteWithOptimisticLocking(true);
         this.create = create;
         factory = new RecordsFactory() {
 

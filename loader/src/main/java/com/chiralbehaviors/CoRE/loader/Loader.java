@@ -21,7 +21,6 @@ package com.chiralbehaviors.CoRE.loader;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
@@ -138,26 +137,28 @@ public class Loader {
             if (liquibase != null) {
                 try {
                     liquibase.forceReleaseLocks();
-                } catch (LiquibaseException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
                 }
             }
         }
     }
 
+    public void execute() throws Exception {
+        System.out.println(String.format("executing loader.dbaUsername: %s",
+                                         configuration.dbaUsername));
+        if (configuration.dbaUsername != null) {
+            log.info("Creating multi tentant DB");
+            createDatabase();
+        } else {
+            log.info("Creating single tentant DB");
+        }
+        bootstrap();
+    }
+
     private void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
-
-        String url = String.format("jdbc:postgresql://%s:%s/%s",
-                                   configuration.coreServer,
-                                   configuration.corePort,
-                                   configuration.coreServer);
-        System.out.println(String.format(" ---------> Connecting to DB: %s",
-                                         url));
-        Connection conn = DriverManager.getConnection(url,
-                                                      configuration.coreUsername,
-                                                      configuration.corePassword);
+        Connection conn = configuration.getCoreConnection();
         conn.setAutoCommit(false);
         try (DSLContext create = PostgresDSL.using(conn)) {
             create.transaction(config -> KernelUtil.loadKernel(create));
@@ -171,8 +172,9 @@ public class Loader {
     }
 
     private void initialize() throws Exception, SQLException {
-        log.info(String.format("initializing core db %s",
-                               configuration.coreDb));
+        log.info(String.format("initializing core db %s: user: %s",
+                               configuration.coreDb,
+                               configuration.coreUsername));
         load(INITIALIZE_XML, configuration.getCoreConnection());
     }
 

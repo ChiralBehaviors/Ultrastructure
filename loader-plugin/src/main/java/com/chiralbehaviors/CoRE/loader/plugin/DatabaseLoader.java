@@ -54,15 +54,7 @@ public class DatabaseLoader extends AbstractMojo {
         }
         try {
             Loader dbLoader = new Loader(loader);
-            System.out.println(String.format("executing loader.dbaUsername: %s",
-                                             loader.dbaUsername));
-            if (loader.dbaUsername != null) {
-                getLog().info("Creating multi tentant DB");
-                dbLoader.createDatabase();
-            } else {
-                getLog().info("Creating single tentant DB");
-            }
-            dbLoader.bootstrap();
+            dbLoader.execute();
         } catch (Exception e) {
             MojoFailureException ex = new MojoFailureException("Unable to load database");
             ex.initCause(e);

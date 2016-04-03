@@ -1,11 +1,12 @@
-dbaServer: ${testing.db.server}
-dbaPort: ${testing.db.port}
-dbaUsername: ${testing.db.password}
-dbaPassword: ${testing.db.login}
+dbaServer: ${dba.db.server}
+dbaPort: ${dba.db.port}
+dbaUsername: ${dba.db.login}
+dbaPassword: ${dba.db.password}
 
 coreServer: ${db.server}
 corePort: ${db.port}
-coreUsername: ${db.login}
+coreUsername: scott
 corePassword: ${db.password}
+coreDb: testMe
 
 dropDatabase: true

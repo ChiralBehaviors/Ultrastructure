@@ -85,7 +85,8 @@ public class CoreDbConfiguration {
             initializeFromEnvironment();
         }
         String url = getCoreJdbcURL();
-        System.out.println(String.format("core connection: %s", url));
+        System.out.println(String.format("core connection: %s, user: %s", url,
+                                         coreUsername));
         return DriverManager.getConnection(url, coreUsername, corePassword);
     }
 

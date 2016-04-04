@@ -7,9 +7,7 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="existential_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT w.name AS workspace,
-                 wa.key AS wsp_key,
-                 wa.description AS wsp_desc,
+			 SELECT 
                  ra.id, 
 			     a.name AS attribute, 
                  r.name AS existential,
@@ -21,9 +19,12 @@
 			     ra.text_value, 
                  ra.json_value, 
 			     u.name AS unit,  
+                 ra.updated,
 			     ra.notes,
 			     up.name AS updated_by, 
-                 ra.updated,
+                 w.name AS workspace,
+                 wa.key AS wsp_key,
+                 wa.description AS wsp_desc,
 			     ra.version
 			   FROM existential_attribute ra
 			   JOIN existential r ON ra.existential = r.id

@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="protocol" replaceIfExists="true"><![CDATA[
              SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 base_table.id,
                 base_table.name,
                 s.name AS service,
@@ -33,6 +30,9 @@
                 base_table.sequence_number,
                 base_table.notes,
                 up.name AS updated_by,
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 base_table.version
                FROM protocol base_table
                JOIN existential s ON base_table.service = s.id

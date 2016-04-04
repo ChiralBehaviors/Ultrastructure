@@ -8,10 +8,7 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
                  SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
-                 base_table.id, 
+                        base_table.id, 
                         s.name AS service,  
                         st.name AS service_type, 
                         status.name AS status, 
@@ -24,6 +21,9 @@
                         base_table.stop_on_match,
                         base_table.sequence_number, 
                         up.name AS updated_by, 
+                        w.name AS workspace,
+                        wa.key AS wsp_key,
+                        wa.description AS wsp_desc,
                         base_table.version
                    FROM meta_protocol base_table
                    JOIN existential s ON base_table.service = s.id

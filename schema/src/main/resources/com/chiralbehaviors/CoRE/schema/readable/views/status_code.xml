@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="status_code" replaceIfExists="true"><![CDATA[ 
 			 SELECT 
-                w.name AS workspace, 
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 base_table.id, 
                 base_table.name, 
                 base_table.description, 
@@ -18,6 +15,9 @@
                 base_table.fail_parent, 
                 base_table.propagate_children, 
                 up.name AS updated_by, 
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 base_table.version
 			   FROM existential base_table
 			   JOIN existential up ON base_table.updated_by = up.id

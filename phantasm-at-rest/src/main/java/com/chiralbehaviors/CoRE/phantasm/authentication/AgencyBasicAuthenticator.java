@@ -41,7 +41,7 @@ import io.dropwizard.auth.basic.BasicCredentials;
  */
 public class AgencyBasicAuthenticator
         implements Authenticator<BasicCredentials, AuthorizedPrincipal> {
-    private static final long   DWELL = (long) (Math.random() * 10000);
+    private static final long   DWELL = (long) (Math.random() * 1000);
     private final static Logger log   = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     public static boolean authenticate(CoreUser user, String password) {

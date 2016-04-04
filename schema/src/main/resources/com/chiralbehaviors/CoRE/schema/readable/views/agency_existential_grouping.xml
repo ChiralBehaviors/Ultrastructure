@@ -8,15 +8,15 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_existential_grouping" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 base_table.id,
                 auth.name AS authority,
                 entity.name AS entity,
                 entity.domain AS domain,
                 base_table.notes, 
                 up.name AS updated_by, 
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 base_table.version
              FROM agency_existential_grouping base_table
                JOIN existential entity ON base_table.entity = entity.id

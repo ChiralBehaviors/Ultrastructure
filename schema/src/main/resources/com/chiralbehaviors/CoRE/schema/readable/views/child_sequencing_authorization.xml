@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="child_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 base_table.id, 
                 p.name AS parent, 
                 sc.name AS status_code, 
@@ -19,6 +16,9 @@
 		        ncs.name AS next_child_status, 
                 base_table.notes, 
 		        up.name AS updated_by, 
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 base_table.version
 			   FROM child_sequencing_authorization base_table
 			   JOIN existential p ON base_table.parent = p.id

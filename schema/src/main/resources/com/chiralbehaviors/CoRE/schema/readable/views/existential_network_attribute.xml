@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="existential_network_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT  
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 ba.id, 
                 b.id AS network_rule, 
                 a.name AS attribute, 
@@ -20,10 +17,13 @@
                 ba.boolean_value, 
     	        ba.text_value, 
                 ba.json_value, 
-                u.name AS unit,
-                ba.notes, 
-    	        up.name AS updated_by, 
+                u.name AS unit, 
                 ba.updated,
+                ba.notes, 
+    	        up.name AS updated_by,
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
     	        ba.version
 			   FROM existential_network_attribute ba
 			   JOIN existential_network b ON ba.edge = b.id

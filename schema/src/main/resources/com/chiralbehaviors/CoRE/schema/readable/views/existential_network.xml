@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="existential_network" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
-                w.name AS workspace, n.id, 
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                     p.name AS parent,
                     rel.name AS relationship, 
                     c.name AS child, 
@@ -18,6 +15,9 @@
                     c.domain AS child_domain,
                     n.notes, 
                     u.name AS updated_by, 
+                    w.name AS workspace, n.id, 
+                    wa.key AS wsp_key,
+                    wa.description AS wsp_desc,
                     n.version
 			   FROM existential_network n
 			   JOIN existential p ON n.parent = p.id

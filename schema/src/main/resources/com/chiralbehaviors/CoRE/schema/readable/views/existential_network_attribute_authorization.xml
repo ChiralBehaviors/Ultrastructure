@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="existential_network_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 base_table.id,
                 att.name AS attribute, 
                 classifier.name as classifier,
@@ -25,6 +22,9 @@
                 res.name AS authority, 
 			    base_table.notes, 
 			    up.name AS updated_by, 
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
 			    base_table.version
 			 FROM existential_network_attribute_authorization base_table
              LEFT JOIN existential_network_authorization auth ON base_table.network_authorization = auth.id

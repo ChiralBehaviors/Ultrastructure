@@ -8,9 +8,6 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="job_chronology"><![CDATA[ 
              SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                  base.id, 
                     s.name AS service,
                     base.quantity,
@@ -24,7 +21,11 @@
                     base.sequence_number,
                     base.job,
                     base.notes, 
-                    up.name AS updated_by, base.version
+                    up.name AS updated_by,
+                    w.name AS workspace,
+                    wa.key AS wsp_key,
+                    wa.description AS wsp_desc,
+                    base.version
                FROM job_chronology base
                JOIN existential s ON base.service = s.id
                JOIN existential p ON base.product = p.id

@@ -51,7 +51,7 @@ public class AgencyBearerTokenAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
     public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
     private static final long   DWELL                        = (long) (Math.random()
-                                                                       * 10000);
+                                                                       * 1000);
     private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     public static Optional<AuthorizedPrincipal> absent() {

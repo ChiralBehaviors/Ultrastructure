@@ -8,14 +8,14 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="unit" replaceIfExists="true"><![CDATA[ 
 			 SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                  b.id, 
 			     b.name, 
                  b.description,  
 			     b.notes, 
 			     up.name AS updated_by,
+                 w.name AS workspace,
+                 wa.key AS wsp_key,
+                 wa.description AS wsp_desc,
 			     b.version
 			   FROM existential b
 			   JOIN existential up ON b.updated_by = up.id

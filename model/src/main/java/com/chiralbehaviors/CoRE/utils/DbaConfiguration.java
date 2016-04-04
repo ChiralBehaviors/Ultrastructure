@@ -77,7 +77,10 @@ public class DbaConfiguration extends CoreDbConfiguration {
                                    dbaDb.toLowerCase());
         System.out.println(String.format("DBA connection: %s, user: %s", url,
                                          dbaUsername));
-        return DriverManager.getConnection(url, dbaUsername, dbaPassword);
+        Connection connection = DriverManager.getConnection(url, dbaUsername,
+                                                            dbaPassword);
+        connection.setAutoCommit(false);
+        return connection;
     }
 
     @Override

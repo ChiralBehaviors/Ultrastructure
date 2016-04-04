@@ -368,6 +368,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 break;
             case Timestamp:
                 valueEq = EXISTENTIAL_ATTRIBUTE.TIMESTAMP_VALUE.eq((Timestamp) query);
+                break;
             default:
                 throw new IllegalStateException(String.format("Unknown value type: %s",
                                                               attribute.getValueType()));
@@ -1204,6 +1205,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 break;
             case Timestamp:
                 value.setTimestampValue(authorization.getTimestampValue());
+                break;
             default:
                 throw new IllegalStateException(String.format("Unknown value type %s",
                                                               attribute.getValueType()));

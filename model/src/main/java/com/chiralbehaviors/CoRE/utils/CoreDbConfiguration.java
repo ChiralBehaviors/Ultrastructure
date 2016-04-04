@@ -87,7 +87,10 @@ public class CoreDbConfiguration {
         String url = getCoreJdbcURL();
         System.out.println(String.format("core connection: %s, user: %s", url,
                                          coreUsername));
-        return DriverManager.getConnection(url, coreUsername, corePassword);
+        Connection connection = DriverManager.getConnection(url, coreUsername,
+                                                            corePassword);
+        connection.setAutoCommit(false);
+        return connection;
     }
 
     public String getCoreJdbcURL() {

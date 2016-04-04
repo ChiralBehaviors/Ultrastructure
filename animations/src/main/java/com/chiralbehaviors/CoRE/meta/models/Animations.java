@@ -289,13 +289,19 @@ public class Animations extends DefaultRecordListener {
     }
 
     private void insert(StatusCodeSequencingRecord scs) {
-        modifiedServices.add(model.records()
-                                  .resolve(scs.getService()));
+        Product service = model.records()
+                               .resolve(scs.getService());
+        if (service != null) {
+            modifiedServices.add(service);
+        }
     }
 
     private void modify(StatusCodeSequencingRecord scs) {
-        modifiedServices.add(model.records()
-                                  .resolve(scs.getService()));
+        Product service = model.records()
+                               .resolve(scs.getService());
+        if (service != null) {
+            modifiedServices.add(service);
+        }
     }
 
     private void process(JobRecord j) {

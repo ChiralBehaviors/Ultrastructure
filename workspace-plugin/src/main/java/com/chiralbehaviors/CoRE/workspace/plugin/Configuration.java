@@ -26,6 +26,7 @@ import java.sql.SQLException;
 
 import org.jooq.DSLContext;
 import org.jooq.util.postgres.PostgresDSL;
+import org.postgresql.Driver;
 
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -51,6 +52,7 @@ public class Configuration extends CoreDbConfiguration {
 
     public Configuration() {
         create = null;
+        Driver.getVersion();
     }
 
     public Configuration(DSLContext create) {

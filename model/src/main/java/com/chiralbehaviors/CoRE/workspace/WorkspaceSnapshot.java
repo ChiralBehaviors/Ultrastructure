@@ -83,8 +83,28 @@ public class WorkspaceSnapshot {
                          resource.toExternalForm(), e);
                 throw e;
             }
-            log.info("Loading workspace from: {}", resource.toExternalForm());
-            workspace.load(create);
+            ExistentialRecord definingProduct = workspace.getDefiningProduct();
+            ExistentialRecord existing = create.selectFrom(EXISTENTIAL)
+                                               .where(EXISTENTIAL.ID.equal(definingProduct.getId()))
+                                               .fetchOne();
+            if (existing == null) {
+                log.info("Creating workspace [{}] version: {} from: {}",
+                         definingProduct.getName(),
+                         definingProduct.getVersion(),
+                         resource.toExternalForm());
+                workspace.load(create);
+            } else if (existing.getVersion() < definingProduct.getVersion()) {
+                log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
+                         definingProduct.getName(), existing.getVersion(),
+                         definingProduct.getVersion(),
+                         resource.toExternalForm());
+                workspace.load(create);
+            } else {
+                log.info("Not updating workspace [{}] existing version: {} is higher than version: {} from: {}",
+                         definingProduct.getName(), existing.getVersion(),
+                         definingProduct.getVersion(),
+                         resource.toExternalForm());
+            }
         }
     }
 

@@ -290,6 +290,7 @@ public class WorkspaceImporter {
         workspaceProduct.setId(uuid);
         workspaceProduct.setVersion(-1);
         workspaceProduct.insert();
+        workspaceProduct.refresh();
         return workspaceProduct;
     }
 

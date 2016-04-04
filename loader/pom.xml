@@ -65,7 +65,6 @@
     <profiles>
         <profile>
             <id>functional.test</id>
-
             <build>
                 <plugins>
                     <plugin>

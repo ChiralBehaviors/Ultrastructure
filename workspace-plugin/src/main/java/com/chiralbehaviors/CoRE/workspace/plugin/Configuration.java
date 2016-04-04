@@ -22,8 +22,6 @@ package com.chiralbehaviors.CoRE.workspace.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
@@ -71,9 +69,7 @@ public class Configuration extends CoreDbConfiguration {
                                    corePort, coreDb);
         System.out.println(String.format(" ---------> Connecting to DB: %s",
                                          url));
-        Connection conn = DriverManager.getConnection(url, coreUsername,
-                                                      corePassword);
-        return PostgresDSL.using(conn);
+        return PostgresDSL.using(getCoreConnection());
 
     }
 

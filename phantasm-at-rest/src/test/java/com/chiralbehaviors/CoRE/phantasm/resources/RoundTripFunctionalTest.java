@@ -56,7 +56,7 @@ import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
  * @author hhildebrand
  *
  */
-public class AuthxResourceTest extends AbstractModelTest {
+public class RoundTripFunctionalTest extends AbstractModelTest {
     protected PhantasmApplication application = new PhantasmApplication();
 
     @After

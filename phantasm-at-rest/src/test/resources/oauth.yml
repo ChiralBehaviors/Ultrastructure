@@ -12,3 +12,4 @@ database:
     user: ${db.login}
     password: ${db.password}
     driverClass: org.postgresql.Driver
+    maxSize: 2

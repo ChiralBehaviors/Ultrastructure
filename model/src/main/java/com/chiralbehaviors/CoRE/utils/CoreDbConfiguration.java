@@ -91,7 +91,8 @@ public class CoreDbConfiguration {
     }
 
     public String getCoreJdbcURL() {
-        return String.format(JDBC_URL, coreServer, corePort, coreDb);
+        return String.format(JDBC_URL, coreServer, corePort,
+                             coreDb.toLowerCase());
     }
 
     public void initializeFromEnvironment() {

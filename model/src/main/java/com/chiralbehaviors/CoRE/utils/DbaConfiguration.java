@@ -73,8 +73,10 @@ public class DbaConfiguration extends CoreDbConfiguration {
     public boolean dropDatabase = false;
 
     public Connection getDbaConnection() throws SQLException {
-        String url = String.format(JDBC_URL, dbaServer, dbaPort, dbaDb);
-        System.out.println(String.format("DBA connection: %s, user: %s", url, dbaUsername));
+        String url = String.format(JDBC_URL, dbaServer, dbaPort,
+                                   dbaDb.toLowerCase());
+        System.out.println(String.format("DBA connection: %s, user: %s", url,
+                                         dbaUsername));
         return DriverManager.getConnection(url, dbaUsername, dbaPassword);
     }
 

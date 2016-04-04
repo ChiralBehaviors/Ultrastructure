@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.loader;
 
+import org.junit.Test;
+
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -30,7 +32,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 public class LoaderTest {
 
-    //@Test
+    @Test
     public void testLoader() throws Exception {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         DbaConfiguration config = mapper.readValue(getClass().getResourceAsStream("/loader.yml"),

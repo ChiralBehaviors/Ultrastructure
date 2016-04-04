@@ -18,6 +18,7 @@
             <column name="classification" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="constrain_to" type="existential_domain"/>
             <column name="authority" remarks="authority" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
             <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"

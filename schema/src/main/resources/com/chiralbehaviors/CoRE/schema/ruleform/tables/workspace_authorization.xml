@@ -16,13 +16,16 @@
             <column name="type" type="reference_type">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue= "'00000000-0000-0000-0000-000000000003'" type="uuid">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
             <column name="key" type="text" />
             <column name="description" type="TEXT" />
             <column name="defining_product" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="exported" type="boolean" defaultValue="true">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -34,8 +37,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="existential" />
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
 
         <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_idx" tableName="workspace_authorization"
             unique="false"
@@ -60,7 +62,7 @@
 
         <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="existential" constraintName="agency_workspace_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="workspace" baseTableName="existential" constraintName="agency_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

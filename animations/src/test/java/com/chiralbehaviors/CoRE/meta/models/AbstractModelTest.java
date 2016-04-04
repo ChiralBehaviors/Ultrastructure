@@ -26,9 +26,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
@@ -65,16 +62,6 @@ public class AbstractModelTest {
 
     public static DSLContext newCreate() throws SQLException, IOException {
         return ModelImpl.newCreate(newConnection());
-    }
-
-    public static DataSource newDatasource() throws IOException {
-        Properties properties = new Properties();
-        properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
-        BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setUrl((String) properties.get("url"));
-        dataSource.setUsername((String) properties.get("user"));
-        dataSource.setPassword((String) properties.get("password"));
-        return dataSource;
     }
 
     protected Model model;

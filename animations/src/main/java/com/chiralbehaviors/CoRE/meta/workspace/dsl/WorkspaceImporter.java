@@ -501,6 +501,7 @@ public class WorkspaceImporter {
                                               .equals("stop")) {
                 metaProtocol.setStopOnMatch(true);
             }
+            workspace.add(metaProtocol);
         }
     }
 

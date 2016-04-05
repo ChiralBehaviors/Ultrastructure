@@ -24,7 +24,6 @@ import java.lang.reflect.Field;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
@@ -119,9 +118,11 @@ public class OrderProcessingWorkspace {
                                                                .getScoped(orderEntryWorkspace)
                                                                .getWorkspace();
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
-            ExistentialRuleform extRuleform = (ExistentialRuleform) field.get(this);
-            workspace.put(extRuleform.getName(),
-                          (ExistentialRecord) extRuleform);
+            Object result = field.get(this);
+            if (ExistentialRecord.class.isAssignableFrom(result.getClass())) {
+                ExistentialRecord extRuleform = (ExistentialRecord) result;
+                workspace.put(extRuleform.getName(), extRuleform);
+            }
         }
         return model.getWorkspaceModel()
                     .getScoped(orderEntryWorkspace)

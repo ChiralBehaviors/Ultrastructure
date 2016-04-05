@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="existential_network" schemaName="readable" replaceIfExists="true"><![CDATA[
+			 SELECT 
+                    p.name AS parent,
+                    rel.name AS relationship, 
+                    c.name AS child, 
+                    p.domain AS parent_domain,
+                    c.domain AS child_domain,
+                    n.notes, 
+                    u.name AS updated_by, 
+                    w.name AS workspace, n.id, 
+                    wa.key AS wsp_key,
+                    wa.description AS wsp_desc,
+                    n.version
+			   FROM existential_network n
+			   JOIN existential p ON n.parent = p.id
+			   JOIN existential rel ON n.relationship = rel.id
+			   JOIN existential c ON n.child = c.id
+			   JOIN existential u ON n.updated_by = u.id
+             LEFT JOIN workspace_authorization wa ON n.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+             WHERE n.inference IS NULL
+            ]]>
+        </createView>
+    </changeSet>
+</databaseChangeLog>

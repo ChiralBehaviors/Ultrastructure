@@ -8,23 +8,23 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="status_code_sequencing" replaceIfExists="true"><![CDATA[ 
 			 SELECT 
+                base_table.id, 
+                s.name AS service, 
+                pc.name AS parent, 
+                cc.name AS child, 
+                base_table.notes, 
+                up.name AS updated_by, 
                 w.name AS workspace,
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc,
-                base_table.id, 
-                s.name AS service, 
-                pc.name AS parent_code, 
-                cc.name AS child_code, 
-                base_table.notes, 
-                up.name AS updated_by, 
                 base_table.version
 			   FROM status_code_sequencing base_table
-			   JOIN product s ON base_table.service = s.id
-			   JOIN status_code pc ON base_table.parent_code = pc.id
-			   JOIN status_code cc ON base_table.child_code = cc.id
-			   JOIN agency up ON base_table.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   JOIN existential s ON base_table.service = s.id
+			   JOIN existential pc ON base_table.parent = pc.id
+			   JOIN existential cc ON base_table.child = cc.id
+			   JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
         </createView>
     </changeSet>

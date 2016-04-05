@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="existential_network_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
+             SELECT 
+                base_table.id,
+                att.name AS attribute, 
+                classifier.name as classifier,
+                classification.name as classification,
+                bridge.name as relationship,
+                authorized_rel.name as child_classifer,
+                authorized_parent.name as child_classification,
+			    base_table.text_value, 
+			    base_table.integer_value, 
+			    base_table.numeric_value, 
+                base_table.json_value, 
+                res.name AS authority, 
+			    base_table.notes, 
+			    up.name AS updated_by, 
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+			    base_table.version
+			 FROM existential_network_attribute_authorization base_table
+             LEFT JOIN existential_network_authorization auth ON base_table.network_authorization = auth.id
+             JOIN facet parent ON auth.parent = parent.id
+             JOIN facet child ON auth.child = child.id
+             JOIN existential classification ON parent.classification = classification.id
+             JOIN existential classifier ON parent.classifier = classifier.id
+             LEFT JOIN existential bridge ON auth.relationship = bridge.id
+             LEFT JOIN existential authorized_parent ON child.classification = authorized_parent.id
+             LEFT JOIN existential authorized_rel ON child.classifier = authorized_rel.id
+			 LEFT JOIN existential res ON base_table.authority = res.id
+			 LEFT JOIN existential att ON base_table.authorized_attribute = att.id
+			 LEFT JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+            ]]>
+        </createView>
+    </changeSet>
+</databaseChangeLog>

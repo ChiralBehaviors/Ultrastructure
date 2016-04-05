@@ -21,12 +21,18 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+
 import com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration;
 import com.bazaarvoice.dropwizard.assets.AssetsConfiguration;
+import com.bendb.dropwizard.jooq.JooqBundle;
+import com.bendb.dropwizard.jooq.JooqFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.cache.CacheBuilderSpec;
 
 import io.dropwizard.Configuration;
+import io.dropwizard.db.DataSourceFactory;
 
 /**
  * @author hhildebrand
@@ -34,6 +40,7 @@ import io.dropwizard.Configuration;
  */
 public class PhantasmConfiguration extends Configuration
         implements AssetsBundleConfiguration {
+
     public static class Asset {
 
         @NotNull
@@ -59,42 +66,137 @@ public class PhantasmConfiguration extends Configuration
         @JsonProperty NULL;
     }
 
-    private static final String DEFAULT_ASSETS_NAME       = "assets";
-    private static final String DEFAULT_INDEX_FILE        = "index.htm";
-    private static final String DEFAULT_PATH              = "/assets";
+    private static final String               DEFAULT_ASSETS_NAME       = "assets";
+
+    private static final String               DEFAULT_INDEX_FILE        = "index.htm";
+
+    private static final String               DEFAULT_PATH              = "/assets";
 
     @NotNull
-    public List<Asset>          assets                    = new ArrayList<>();
+    private List<Asset>                       assets                    = new ArrayList<>();
+    @NotNull
+    private AssetsConfiguration               assetsConfiguration       = new AssetsConfiguration();
+    @NotNull
+    private AuthType                          auth                      = AuthType.BEARER_TOKEN;
 
     @NotNull
-    public AssetsConfiguration  assetsConfiguration       = new AssetsConfiguration();
+    private CacheBuilderSpec                  authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
     @NotNull
-    public AuthType             auth                      = AuthType.BEARER_TOKEN;
+    private CORSConfiguration                 CORS                      = new CORSConfiguration();
+
+    private DataSourceFactory                 database;
 
     @NotNull
-    public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
+    private List<String>                      executionScope            = Collections.emptyList();
 
     @NotNull
-    public CORSConfiguration    CORS                      = new CORSConfiguration();
+    private JooqFactory                       jooq                      = new JooqFactory();
 
-    @NotNull
-    public List<String>         executionScope                 = Collections.emptyList();
+    private JooqBundle<PhantasmConfiguration> jooqBundle                = new JooqBundle<PhantasmConfiguration>() {
+                                                                            @Override
+                                                                            public DataSourceFactory getDataSourceFactory(PhantasmConfiguration configuration) {
+                                                                                return configuration.getDatabase();
+                                                                            }
 
-    @NotNull
-    public JpaConfiguration     jpa                       = new JpaConfiguration();
+                                                                            @Override
+                                                                            public JooqFactory getJooqFactory(PhantasmConfiguration configuration) {
+                                                                                return configuration.getJooq();
+                                                                            }
+                                                                        };
 
-    public boolean              randomPort                = false;
+    private boolean                           useCORS                   = false;
 
-    public String               realm;
+    {
+        setServerFactory(new SinglePortServerFactory());
+        setLoggingFactory(new ConsoleOnlyLoggingFactory());
+        setDatabase(new DataSourceFactoryFromEnv());
+    }
 
-    public boolean              useCORS                   = false;
+    public org.jooq.Configuration getJooqConfiguration() {
+        return jooqBundle.getConfiguration();
+    }
 
-    /* (non-Javadoc)
-     * @see com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration#getAssetsConfiguration()
-     */
+    public DSLContext create() {
+        return DSL.using(jooqBundle.getConfiguration());
+    }
+
+    public List<Asset> getAssets() {
+        return assets;
+    }
+
     @Override
     public AssetsConfiguration getAssetsConfiguration() {
         return assetsConfiguration;
+    }
+
+    public AuthType getAuth() {
+        return auth;
+    }
+
+    public CacheBuilderSpec getAuthenticationCachePolicy() {
+        return authenticationCachePolicy;
+    }
+
+    public CORSConfiguration getCORS() {
+        return CORS;
+    }
+
+    public DataSourceFactory getDatabase() {
+        database.setAutoCommitByDefault(false);
+        return database;
+    }
+
+    public List<String> getExecutionScope() {
+        return executionScope;
+    }
+
+    public JooqFactory getJooq() {
+        jooq.setExecuteWithOptimisticLocking(true);
+        return jooq;
+    }
+
+    public boolean isUseCORS() {
+        return useCORS;
+    }
+
+    public void setAssets(List<Asset> assets) {
+        this.assets = assets;
+    }
+
+    public void setAssetsConfiguration(AssetsConfiguration assetsConfiguration) {
+        this.assetsConfiguration = assetsConfiguration;
+    }
+
+    public void setAuth(AuthType auth) {
+        this.auth = auth;
+    }
+
+    public void setAuthenticationCachePolicy(CacheBuilderSpec authenticationCachePolicy) {
+        this.authenticationCachePolicy = authenticationCachePolicy;
+    }
+
+    public void setCORS(CORSConfiguration cORS) {
+        CORS = cORS;
+    }
+
+    public void setDatabase(DataSourceFactory database) {
+        this.database = database;
+    }
+
+    public void setExecutionScope(List<String> executionScope) {
+        this.executionScope = executionScope;
+    }
+
+    public void setJooq(JooqFactory jooq) {
+        this.jooq = jooq;
+    }
+
+    public void setJooqBundle(JooqBundle<PhantasmConfiguration> jooqBundle) {
+        this.jooqBundle = jooqBundle;
+    }
+
+    public void setUseCORS(boolean useCORS) {
+        this.useCORS = useCORS;
     }
 }

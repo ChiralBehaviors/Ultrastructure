@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -22,19 +22,15 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.Collection;
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 
 /**
  * @author hhildebrand
  *
  */
-public interface StatusCodeModel extends
-        NetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
+public interface StatusCodeModel extends ExistentialModel<StatusCode> {
 
     /**
      * Answer the unique status codes associated with a service
@@ -45,53 +41,55 @@ public interface StatusCodeModel extends
     Collection<StatusCode> getStatusCodes(Product service);
 
     /**
-     * Answer the list of {@link #StatusCodeSequencing} that refer to a service
+     * Answer the list of {@link #StatusCodeSequencingRecord} that refer to a
+     * service
      *
      * @param service
-     * @return the list of {@link #StatusCodeSequencing} that refer to a service
+     * @return the list of {@link #StatusCodeSequencingRecord} that refer to a
+     *         service
      */
-    List<StatusCodeSequencing> getStatusCodeSequencing(Product service);
+    List<StatusCodeSequencingRecord> getStatusCodeSequencing(Product service);
 
     /**
-     * Answer the list of {@link #StatusCodeSequencing} that refer to the
-     * service with the child {@link #StatusCode}
+     * Answer the list of {@link #StatusCodeSequencingRecord} that refer to the
+     * service with the child {@link #ExistentialRecord}
      *
      * @param service
      * @param child
      * @return
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
-                                                            StatusCode child);
+    List<StatusCodeSequencingRecord> getStatusCodeSequencingChild(Product service,
+                                                                  StatusCode child);
 
     /**
-     * Answer the list of {@link #StatusCodeSequencing} that refer to the child
-     * {@link #StatusCode}
+     * Answer the list of {@link #StatusCodeSequencingRecord} that refer to the
+     * child {@link #ExistentialRecord}
      *
      * @param child
      * @return
      */
-    Collection<StatusCodeSequencing> getStatusCodeSequencingChild(StatusCode child);
+    Collection<StatusCodeSequencingRecord> getStatusCodeSequencingChild(StatusCode child);
 
     /**
-     * Answer the list of {@link #StatusCodeSequencing} that refer to the
-     * service with the parent {@link #StatusCode}
+     * Answer the list of {@link #StatusCodeSequencingRecord} that refer to the
+     * service with the parent {@link #ExistentialRecord}
      *
      * @param service
      * @param parent
-     * @return the list of {@link #StatusCodeSequencing} that refer to the
-     *         service with the parent {@link #StatusCode}
+     * @return the list of {@link #StatusCodeSequencingRecord} that refer to the
+     *         service with the parent {@link #ExistentialRecord}
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
-                                                             StatusCode parent);
+    List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(Product service,
+                                                                   StatusCode parent);
 
     /**
-     * Answer the list of {@link #StatusCodeSequencing} that refer to the parent
-     * {@link #StatusCode}
+     * Answer the list of {@link #StatusCodeSequencingRecord} that refer to the
+     * parent {@link #ExistentialRecord}
      *
      * @param service
-     * @return the list of {@link #StatusCodeSequencing} that refer to the
-     *         service with the parent {@link #StatusCode}
+     * @return the list of {@link #StatusCodeSequencingRecord} that refer to the
+     *         service with the parent {@link #ExistentialRecord}
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingParent(StatusCode parent);
+    List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(StatusCode parent);
 
 }

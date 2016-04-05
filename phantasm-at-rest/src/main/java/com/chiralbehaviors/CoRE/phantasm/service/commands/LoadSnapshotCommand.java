@@ -21,21 +21,18 @@
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
 import java.io.InputStream;
-import java.util.Collections;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
-import io.dropwizard.cli.Command;
+import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -44,15 +41,13 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class LoadSnapshotCommand extends Command {
+public class LoadSnapshotCommand
+        extends ConfiguredCommand<PhantasmConfiguration> {
 
     public LoadSnapshotCommand() {
         super("load-snap", "load snapsot state into the CoRE instance");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#configure(net.sourceforge.argparse4j.inf.Subparser)
-     */
     @Override
     public void configure(Subparser subparser) {
         subparser.addArgument("file")
@@ -60,28 +55,23 @@ public class LoadSnapshotCommand extends Command {
                  .help("State snapshot file");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
-     */
     @Override
-    public void run(Bootstrap<?> bootstrap,
-                    Namespace namespace) throws Exception {
-        EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
-                                                                        JpaConfiguration.PERSISTENCE_UNIT);
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.getEntityManager()
-                                       .getTransaction();
-            t.begin();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new CoREModule());
-            try (InputStream is = Utils.resolveResource(getClass(),
-                                                        namespace.getString("file"))) {
-                StateSnapshot snapshot = objectMapper.readValue(is,
-                                                                StateSnapshot.class);
-                snapshot.retarget(model.getEntityManager());
+    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
+                    Namespace namespace,
+                    PhantasmConfiguration configuration) throws Exception {
+        DSLContext create = configuration.create();
+        create.transaction(c -> {
+            try (Model model = new ModelImpl(create)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new CoREModule());
+                try (InputStream is = Utils.resolveResource(getClass(),
+                                                            namespace.getString("file"))) {
+                    StateSnapshot snapshot = objectMapper.readValue(is,
+                                                                    StateSnapshot.class);
+                    snapshot.load(model.create());
+                }
             }
-            t.commit();
-        }
+        });
     }
 
 }

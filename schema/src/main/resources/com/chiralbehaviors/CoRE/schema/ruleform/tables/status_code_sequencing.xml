@@ -16,39 +16,38 @@
             <column name="service" remarks="The service whose states are being described" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="parent_code"
-                remarks="The &quot;from&quot; state to which one may transition to any state listed in the &quot;child_code&quot; column"
+            <column name="parent" remarks="The &quot;from&quot; state to which one may transition to any state listed in the &quot;child&quot; column"
                 type="uuid"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="child_code"
-                remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent_code&quot; column"
-                type="uuid"
+            <column name="child"
+                remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent&quot; column" type="uuid"
             >
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by"  defaultValue= "'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"
+                type="uuid"
+            >
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="child_code" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_child_code_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            baseColumnNames="child" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_child_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="parent_code" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_parent_code_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            baseColumnNames="parent" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_parent_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_service_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="service, parent_code, child_code"
-            constraintName="status_code_sequencing_service_parent_code_sequence_number_key" deferrable="false" disabled="false"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, parent, child"
+            constraintName="status_code_sequencing_service_parent_sequence_number_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="status_code_sequencing" />
         <createIndex schemaName="ruleform" indexName="status_code_sequencing_updated_by_fkey_idx" tableName="status_code_sequencing"
             unique="false"

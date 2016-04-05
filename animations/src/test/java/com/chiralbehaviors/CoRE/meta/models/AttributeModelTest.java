@@ -20,24 +20,15 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
-import java.util.List;
-
-import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 
 /**
  * @author hhildebrand
@@ -49,88 +40,59 @@ public class AttributeModelTest extends AbstractModelTest {
     public void testEnumValues() {
         Agency core = model.getKernel()
                            .getCore();
-        Attribute attr = new Attribute("Attribute", "A", ValueType.TEXT, core);
-        em.persist(attr);
+        Attribute attr = model.records()
+                              .newAttribute("Attribute", "A", ValueType.Text);
+        attr.insert();
 
-        Attribute validValues = new Attribute("ValidValues",
-                                              "Valid enumeration values for this attribute",
-                                              ValueType.TEXT, core);
-        em.persist(validValues);
+        Attribute validValues = model.records()
+                                     .newAttribute("ValidValues",
+                                                   "Valid enumeration values for this attribute",
+                                                   ValueType.Text);
+        validValues.insert();
 
-        AttributeMetaAttribute a = new AttributeMetaAttribute(attr, "a", core);
-        a.setMetaAttribute(validValues);
-        em.persist(a);
-        AttributeMetaAttribute b = new AttributeMetaAttribute(attr, "b", core);
-        b.setMetaAttribute(validValues);
+        ExistentialAttributeRecord a = model.records()
+                                            .newExistentialAttribute(validValues);
+        a.setExistential(core.getId());
+        a.insert();
+        ExistentialAttributeRecord b = model.records()
+                                            .newExistentialAttribute(validValues);
+        b.setExistential(core.getId());
         b.setSequenceNumber(10);
-        em.persist(b);
-        AttributeMetaAttribute c = new AttributeMetaAttribute(attr, "c", core);
+        b.insert();
+        ExistentialAttributeRecord c = model.records()
+                                            .newExistentialAttribute(validValues);
+        c.setExistential(core.getId());
         c.setSequenceNumber(100);
-        c.setMetaAttribute(validValues);
-        em.persist(c);
-        model.getAttributeModel()
+        c.insert();
+        model.getPhantasmModel()
              .link(attr, model.getKernel()
                               .getIsValidatedBy(),
-                   validValues, core);
+                   validValues);
 
-        Product validatedProduct = new Product("ValidatedProduct",
-                                               "A product supertype with validation",
-                                               core);
-        em.persist(validatedProduct);
+        Product validatedProduct = model.records()
+                                        .newProduct("ValidatedProduct",
+                                                    "A product supertype with validation");
+        validatedProduct.insert();
 
-        Product myProduct = new Product("MyProduct", "my product", core);
-        em.persist(myProduct);
+        Product myProduct = model.records()
+                                 .newProduct("MyProduct", "my product");
+        myProduct.insert();
 
         // set value
-        ProductAttribute attributeValue = new ProductAttribute(attr, "a",
-                                                               model.getKernel()
-                                                                    .getCore());
-        attributeValue.setProduct(myProduct);
-
-        em.persist(attributeValue);
-        em.flush();
-        attributeValue.setValue("aaa");
+        ExistentialAttributeRecord attributeValue = model.records()
+                                                         .newExistentialAttribute(attr);
+        attributeValue.setExistential(myProduct.getId());
+        attributeValue.insert();
+        attributeValue.setTextValue("a");
+        attributeValue.setTextValue("aaa");
+        attributeValue.update();
         try {
-            em.persist(attributeValue);
-            em.flush();
+            model.flush();
             fail();
         } catch (IllegalArgumentException e) {
 
         }
 
-    }
-
-    @Test
-    public void testSimpleNetworkPropagation() {
-        Agency core = model.getKernel()
-                           .getCore();
-        Relationship equals = model.getKernel()
-                                   .getEquals();
-
-        Relationship equals2 = new Relationship("equals 2",
-                                                "an alias for equals", core);
-        equals2.setInverse(equals2);
-        em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
-                                                         equals, core);
-        em.persist(aEqualsA);
-        Attribute a = new Attribute("A", "A", ValueType.BOOLEAN, core);
-        em.persist(a);
-        Attribute b = new Attribute("B", "B", ValueType.BOOLEAN, core);
-        em.persist(b);
-        Attribute c = new Attribute("C", "C", ValueType.BOOLEAN, core);
-        em.persist(c);
-        AttributeNetwork edgeA = new AttributeNetwork(a, equals, b, core);
-        em.persist(edgeA);
-        AttributeNetwork edgeB = new AttributeNetwork(b, equals2, c, core);
-        em.persist(edgeB);
-
-        em.flush();
-
-        TypedQuery<AttributeNetwork> query = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inference IS NOT NULL",
-                                                            AttributeNetwork.class);
-        List<AttributeNetwork> edges = query.getResultList();
-        assertEquals(2, edges.size());
     }
 
 }

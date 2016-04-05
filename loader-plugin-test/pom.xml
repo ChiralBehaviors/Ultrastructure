@@ -28,8 +28,8 @@
                                         <contexts>${db.context}</contexts>
                                         <dbaServer>${dba.db.server}</dbaServer>
                                         <dbaPort>${dba.db.port}</dbaPort>
-                                        <dbaUsername>${dba.db.password}</dbaUsername>
-                                        <dbaPassword>${dba.db.login}</dbaPassword>
+                                        <dbaUsername>${dba.db.login}}</dbaUsername>
+                                        <dbaPassword>${dba.db.password}</dbaPassword>
 
                                         <coreServer>${db.server}</coreServer>
                                         <corePort>${db.port}</corePort>

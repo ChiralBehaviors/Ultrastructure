@@ -117,4 +117,7 @@ relationships {
         EXECUTE_QUERY.IsA.Capability
         LOGIN_TO.IsA.Capability
     }
+    facets {
+        IsA.Capability
+    }
 } 

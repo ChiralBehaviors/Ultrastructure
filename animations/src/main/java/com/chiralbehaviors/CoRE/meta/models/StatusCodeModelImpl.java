@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -21,251 +21,56 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.TypedQuery;
-
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
 
 /**
  * @author hhildebrand
  *
  */
-public class StatusCodeModelImpl extends
-        AbstractNetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute>
+public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
         implements StatusCodeModel {
 
-    /**
-     * @param em
-     */
     public StatusCodeModelImpl(Model model) {
-        super(model);
+        super(model, ExistentialDomain.StatusCode, StatusCode.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE
-     * .meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute[])
-     */
-    @Override
-    public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
-        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                      .getPrincipal());
-        auth.setClassifier(aspect.getClassifier());
-        auth.setClassification(aspect.getClassification());
-        em.persist(auth);
-        for (Attribute attribute : attributes) {
-            StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(attribute,
-                                                                                                  model.getCurrentPrincipal()
-                                                                                                       .getPrincipal());
-            authorization.setNetworkAuthorization(auth);
-            em.persist(authorization);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.network
-     * .Networked)
-     */
-    @Override
-    public StatusCode create(StatusCode prototype) {
-        StatusCode copy = prototype.clone();
-        em.detach(copy);
-        em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal()
-                               .getPrincipal());
-        for (StatusCodeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent()
-                   .link(network.getRelationship(), copy,
-                         model.getCurrentPrincipal()
-                              .getPrincipal(),
-                         model.getCurrentPrincipal()
-                              .getPrincipal(),
-                         em);
-        }
-        for (StatusCodeAttribute attribute : prototype.getAttributes()) {
-            StatusCodeAttribute clone = (StatusCodeAttribute) attribute.clone();
-            em.detach(clone);
-            em.persist(clone);
-            clone.setStatusCode(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal()
-                                    .getPrincipal());
-        }
-        return copy;
-    }
-
-    @Override
-    public StatusCodeAttribute create(StatusCode ruleform, Attribute attribute,
-                                      Agency updatedBy) {
-        return new StatusCodeAttribute(ruleform, attribute, updatedBy);
-    }
-
-    @Override
-    public final StatusCode create(String name, String description) {
-        StatusCode statusCode = new StatusCode(name, description,
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
-        em.persist(statusCode);
-        return statusCode;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.meta
-     * .Aspect<RuleForm>[])
-     */
-    @SafeVarargs
-    @Override
-    public final StatusCode create(String name, String description,
-                                   Aspect<StatusCode> aspect, Agency updatedBy,
-                                   Aspect<StatusCode>... aspects) {
-        StatusCode agency = new StatusCode(name, description,
-                                           model.getCurrentPrincipal()
-                                                .getPrincipal());
-        em.persist(agency);
-        initialize(agency, aspect);
-        if (aspects != null) {
-            for (Aspect<StatusCode> a : aspects) {
-                initialize(agency, a);
-            }
-        }
-        return agency;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
-     */
-    @Override
-    public List<StatusCodeNetwork> getInterconnections(Collection<StatusCode> parents,
-                                                       Collection<Relationship> relationships,
-                                                       Collection<StatusCode> children) {
-        TypedQuery<StatusCodeNetwork> query = em.createNamedQuery(StatusCodeNetwork.GET_NETWORKS,
-                                                                  StatusCodeNetwork.class);
-        query.setParameter("parents", parents);
-        query.setParameter("relationship", relationships);
-        query.setParameter("children", children);
-        return query.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodes(com.chiralbehaviors.CoRE.product.Product)
-     */
     @Override
     public Collection<StatusCode> getStatusCodes(Product service) {
-        Set<StatusCode> codes = new HashSet<StatusCode>();
-        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES_SERVICE,
-                                                           StatusCode.class);
-        query.setParameter("service", service);
-        codes.addAll(query.getResultList());
-        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES_SERVICE,
-                                    StatusCode.class);
-        query.setParameter("service", service);
-        codes.addAll(query.getResultList());
-        return codes;
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencing(com.chiralbehaviors.CoRE.product.Product)
-     */
     @Override
-    public List<StatusCodeSequencing> getStatusCodeSequencing(Product service) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("service", service);
-        return query.getResultList();
+    public List<StatusCodeSequencingRecord> getStatusCodeSequencing(Product service) {
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
-    public List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
-                                                                   StatusCode child) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("service", service);
-        query.setParameter("statusCode", child);
-        return query.getResultList();
+    public List<StatusCodeSequencingRecord> getStatusCodeSequencingChild(Product service,
+                                                                         StatusCode child) {
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingChild(com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
-    public Collection<StatusCodeSequencing> getStatusCodeSequencingChild(StatusCode child) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("statusCode", child);
-        return query.getResultList();
+    public Collection<StatusCodeSequencingRecord> getStatusCodeSequencingChild(StatusCode child) {
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.chiralbehaviors.CoRE.product.Product, com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
-    public List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
-                                                                    StatusCode parent) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("service", service);
-        query.setParameter("statusCode", parent);
-        return query.getResultList();
+    public List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(Product service,
+                                                                          StatusCode parent) {
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.StatusCodeModel#getStatusCodeSequencingParent(com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
     @Override
-    public List<StatusCodeSequencing> getStatusCodeSequencingParent(StatusCode parent) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("statusCode", parent);
-        return query.getResultList();
+    public List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(StatusCode parent) {
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
-     */
-    @Override
-    protected Class<?> getAgencyGroupingClass() {
-        return AgencyStatusCodeGrouping.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
-     */
-    @Override
-    protected Class<?> getAttributeAuthorizationClass() {
-        return StatusCodeAttributeAuthorization.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
-     */
-    @Override
-    protected Class<?> getNetworkAuthClass() {
-        return StatusCodeNetworkAuthorization.class;
-    }
 }

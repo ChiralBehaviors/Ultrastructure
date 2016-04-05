@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="parent_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
+			 SELECT  
+                base_table.id, 
+                p.name AS service, 
+                sc.name AS status_code, 
+			    base_table.sequence_number, 
+                mp.name AS parent, 
+			    mps.name AS parent_status_to_set, 
+                base_table.set_if_active_siblings, 
+			    base_table.notes,
+			    up.name AS updated_by, 
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc, 
+                base_table.version
+			   FROM parent_sequencing_authorization base_table
+			   JOIN existential p ON base_table.service = p.id
+			   JOIN existential sc ON base_table.status_code = sc.id
+			   LEFT JOIN existential mp ON base_table.parent = mp.id
+			   LEFT JOIN existential mps ON base_table.parent_status_to_set = mps.id
+			   JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+            ]]>
+        </createView>
+    </changeSet>
+</databaseChangeLog>

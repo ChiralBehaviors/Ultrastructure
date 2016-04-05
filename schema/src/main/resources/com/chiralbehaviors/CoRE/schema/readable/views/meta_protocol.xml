@@ -8,34 +8,36 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
                  SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
-                 base_table.id, 
+                        base_table.id, 
                         s.name AS service,  
                         st.name AS service_type, 
-                        rr.name AS requester, 
-                        po.name AS product,
-                        dt.name AS deliver_to, 
-                        df.name AS deliver_from, 
-                        at.name AS assign_to,
+                        status.name AS status, 
                         u.name AS quantity_unit,
+                        po.name AS product,
+                        at.name AS assign_to,
+                        rr.name AS requester, 
+                        df.name AS deliver_from, 
+                        dt.name AS deliver_to, 
                         base_table.stop_on_match,
                         base_table.sequence_number, 
                         up.name AS updated_by, 
+                        w.name AS workspace,
+                        wa.key AS wsp_key,
+                        wa.description AS wsp_desc,
                         base_table.version
                    FROM meta_protocol base_table
-                   JOIN product s ON base_table.service = s.id
-                   LEFT JOIN relationship rr ON base_table.requester = rr.id
-                   LEFT JOIN relationship st ON base_table.service_type = st.id
-                   LEFT JOIN relationship po ON base_table.product = po.id
-                   LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
-                   LEFT JOIN relationship df ON base_table.deliver_from = df.id 
-                   LEFT JOIN relationship at ON base_table.assign_to = at.id 
-                   LEFT JOIN relationship u ON base_table.quantity_unit = u.id
-                   JOIN agency up ON base_table.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+                   JOIN existential s ON base_table.service = s.id
+                   LEFT JOIN existential rr ON base_table.requester = rr.id
+                   LEFT JOIN existential st ON base_table.service_type = st.id
+                   LEFT JOIN existential status ON base_table.status = status.id
+                   LEFT JOIN existential po ON base_table.product = po.id
+                   LEFT JOIN existential dt ON base_table.deliver_to= dt.id
+                   LEFT JOIN existential df ON base_table.deliver_from = df.id 
+                   LEFT JOIN existential at ON base_table.assign_to = at.id 
+                   LEFT JOIN existential u ON base_table.quantity_unit = u.id
+                   JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
         ]]>
         </createView>
     </changeSet>

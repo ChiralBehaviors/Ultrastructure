@@ -19,13 +19,18 @@ package com.chiralbehaviors.CoRE.event;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Map;
+
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry
@@ -34,45 +39,110 @@ import com.chiralbehaviors.CoRE.product.Product;
 public class ProtocolTest extends AbstractModelTest {
 
     @Test
-    public void testMatchOnAssignTo() {
-        Product fireFuzzyGreenWarhead = new Product("FireFuzzyGreenWarheadService",
-                                                    null, kernel.getCore());
-        em.persist(fireFuzzyGreenWarhead);
-        em.flush();
+    public void testMatchOnAssignTo() throws Exception {
+        Product fireFuzzyGreenWarhead = model.records()
+                                             .newProduct("FireFuzzyGreenWarheadService");
+        fireFuzzyGreenWarhead.insert();
 
-        Agency halIncandenza = new Agency("HalIncandenza", null,
-                                          kernel.getCore());
-        em.persist(halIncandenza);
+        Agency halIncandenza = model.records()
+                                    .newAgency("HalIncandenza");
+        halIncandenza.insert();
 
-        Agency michaelPemulous = new Agency("MichaelPemulous", null,
-                                            kernel.getCore());
-        em.persist(michaelPemulous);
+        Agency michaelPemulous = model.records()
+                                      .newAgency("MichaelPemulous");
+        michaelPemulous.insert();
 
-        Protocol infiniteTest = model.getJobModel()
-                                     .newInitializedProtocol(fireFuzzyGreenWarhead,
-                                                             kernel.getCore());
-        infiniteTest.setAssignTo(halIncandenza);
-        infiniteTest.setChildAssignTo(michaelPemulous);
-        infiniteTest.setChildService(fireFuzzyGreenWarhead);
-        em.persist(infiniteTest);
+        ProtocolRecord infiniteTest = model.getJobModel()
+                                           .newInitializedProtocol(fireFuzzyGreenWarhead);
+        infiniteTest.setAssignTo(halIncandenza.getId());
+        infiniteTest.setChildAssignTo(michaelPemulous.getId());
+        infiniteTest.setChildService(fireFuzzyGreenWarhead.getId());
+        infiniteTest.update();
 
-        Protocol infiniteTest2 = model.getJobModel()
-                                      .newInitializedProtocol(fireFuzzyGreenWarhead,
-                                                              kernel.getCore());
-        infiniteTest2.setAssignTo(halIncandenza);
-        infiniteTest2.setChildAssignTo(michaelPemulous);
-        infiniteTest2.setChildService(fireFuzzyGreenWarhead);
-        em.persist(infiniteTest2);
+        ProtocolRecord infiniteTest2 = model.getJobModel()
+                                            .newInitializedProtocol(fireFuzzyGreenWarhead);
+        infiniteTest2.setAssignTo(halIncandenza.getId());
+        infiniteTest2.setChildAssignTo(michaelPemulous.getId());
+        infiniteTest2.setChildService(fireFuzzyGreenWarhead.getId());
+        infiniteTest2.update();
 
-        Job startWW3 = model.getJobModel()
-                            .newInitializedJob(fireFuzzyGreenWarhead,
-                                               kernel.getCore());
-        startWW3.setAssignTo(halIncandenza);
-        em.persist(startWW3);
-        em.flush();
-
+        JobRecord startWW3 = model.getJobModel()
+                                  .newInitializedJob(fireFuzzyGreenWarhead);
+        startWW3.setAssignTo(halIncandenza.getId());
+        startWW3.update();
+        model.flush();
         assertEquals(2, model.getJobModel()
                              .getAllChildren(startWW3)
+                             .size());
+
+    }
+
+    @Test
+    public void testMetaprotocolMatch() throws Exception {
+        Product service = model.records()
+                               .newProduct("*service*");
+        service.insert();
+
+        Product service2 = model.records()
+                                .newProduct("*service 2*");
+        service2.insert();
+
+        Agency assignTo = model.records()
+                               .newAgency("*assignTo*");
+        assignTo.insert();
+
+        Agency delegate = model.records()
+                               .newAgency("c");
+        delegate.insert();
+        Agency classification = model.records()
+                                     .newAgency("*classification*");
+        classification.insert();
+        model.getPhantasmModel()
+             .link(assignTo, model.getKernel()
+                                  .getInstanceOf(),
+                   classification);
+
+        Location deliverTo = model.records()
+                                  .newLocation("home");
+        deliverTo.insert();
+        Location locationClassification = model.records()
+                                               .newLocation("no place");
+        locationClassification.insert();
+        model.getPhantasmModel()
+             .link(deliverTo, model.getKernel()
+                                   .getInstanceOf(),
+                   locationClassification);
+
+        ProtocolRecord proto = model.getJobModel()
+                                    .newInitializedProtocol(service);
+        proto.setAssignTo(classification.getId());
+        proto.setChildAssignTo(delegate.getId());
+        proto.setDeliverTo(locationClassification.getId());
+        proto.setChildDeliverTo(deliverTo.getId());
+        proto.setChildService(service2.getId());
+        proto.update();
+
+        MetaProtocolRecord meta = model.getJobModel()
+                                       .newInitializedMetaProtocol(service);
+        meta.setAssignTo(model.getKernel()
+                              .getInstanceOf()
+                              .getId());
+        meta.setDeliverTo(model.getKernel()
+                               .getInstanceOf()
+                               .getId());
+        meta.update();
+
+        JobRecord job = model.getJobModel()
+                             .newInitializedJob(service);
+        job.setAssignTo(assignTo.getId());
+        job.setDeliverTo(deliverTo.getId());
+        job.update();
+        Map<ProtocolRecord, InferenceMap> match = model.getJobModel()
+                                                       .getProtocols(job);
+        assertEquals(1, match.size());
+        model.flush();
+        assertEquals(1, model.getJobModel()
+                             .getAllChildren(job)
                              .size());
 
     }

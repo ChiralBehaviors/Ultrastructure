@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.InvalidKeyException;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
 /**
@@ -60,14 +59,14 @@ public class WorkspaceAccessHandler implements InvocationHandler {
         return getAsBeanAccessor(method);
     }
 
-    protected Ruleform getAsBeanAccessor(Method method) throws InvalidKeyException {
+    protected Object getAsBeanAccessor(Method method) throws InvalidKeyException {
         String name = method.getName();
         if (!name.startsWith("get")) {
             throw new UnsupportedOperationException(String.format("Cannot create key for method: %s",
                                                                   method));
         }
         name = name.substring("get".length());
-        Ruleform ruleform = workspace.lookup(name);
+        Object ruleform = workspace.lookup(name);
         if (ruleform == null) {
             throw new InvalidKeyException(String.format("Cannot find %s in this workspace",
                                                         name));

@@ -1,8 +1,8 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  * 
  
- * This file is part of Ultrastructure.
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -20,97 +20,68 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import org.jooq.DSLContext;
+import org.jooq.UpdatableRecord;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hellblazer.utils.collections.OaHashSet;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 
 /**
+ * Every category must have its null
+ * 
  * @author hhildebrand
  *
  */
-public class StateSnapshot {
-    @JsonProperty
-    private List<Ruleform> frontier  = new ArrayList<>(1024);
-    @JsonProperty
-    private List<Ruleform> ruleforms = new ArrayList<>(1024);
+public class StateSnapshot extends WorkspaceSnapshot {
+
+    public static List<UpdatableRecord<? extends UpdatableRecord<?>>> selectNullClosure(DSLContext create,
+                                                                                        Collection<UUID> exlude) {
+        List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
+        Ruleform.RULEFORM.getTables()
+                         .forEach(t -> {
+                             if (t.equals(EXISTENTIAL_NETWORK)) {
+                                 // Snapshots do not contain network inferences
+                                 records.addAll(create.selectFrom(EXISTENTIAL_NETWORK)
+                                                      .where(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                      .and(EXISTENTIAL_NETWORK.WORKSPACE.isNull())
+                                                      .and(EXISTENTIAL_NETWORK.ID.notIn(exlude))
+                                                      .fetchInto(ExistentialNetworkRecord.class)
+                                                      .stream()
+                                                      .collect(Collectors.toList()));
+                             } else if (!t.equals(WORKSPACE_AUTHORIZATION)) {
+                                 records.addAll(create.selectDistinct(t.fields())
+                                                      .from(t)
+                                                      .where(t.field("workspace")
+                                                              .isNull())
+                                                      .and(t.field("id")
+                                                            .notIn(exlude))
+                                                      .fetchInto(t.getRecordType())
+                                                      .stream()
+                                                      .map(r -> (UpdatableRecord<?>) r)
+                                                      .collect(Collectors.toList()));
+                             }
+                         });
+        return records;
+    }
 
     public StateSnapshot() {
     }
 
-    public StateSnapshot(EntityManager em) {
-        this(em, Collections.emptyList());
+    public StateSnapshot(DSLContext create, Collection<UUID> exlude) {
+        records = selectNullClosure(create, exlude);
     }
 
-    public StateSnapshot(EntityManager em,
-                         Collection<? extends Ruleform> exclusions) {
-        Predicate<Ruleform> systemDefinition = traversing -> traversing.getWorkspace() == null;
-        Map<UUID, Ruleform> exits = new HashMap<>();
-        Set<UUID> traversed = new OaHashSet<UUID>(1024);
-
-        Ruleform.CONCRETE_SUBCLASSES.values()
-                                    .stream()
-                                    .filter(c -> !c.equals(WorkspaceAuthorization.class))
-                                    .forEach(form -> {
-                                        findAll(form, em).stream()
-                                                         .filter(rf -> !exclusions.contains(rf))
-                                                         .forEach(rf -> {
-                                            ruleforms.add(rf);
-                                        });
-                                    });
-
-        for (Ruleform ruleform : ruleforms) {
-            Ruleform.slice(ruleform, systemDefinition, exits, traversed);
-        }
-
-        frontier = new ArrayList<>(exits.values());
+    @Override
+    protected void loadDefiningProduct(DSLContext create) {
+        // the void
     }
-
-    /**
-     * Merge the state of the workspace into the database
-     * 
-     * @param em
-     */
-    public void retarget(EntityManager em) {
-        Map<UUID, Ruleform> theReplacements = new HashMap<>();
-        for (Ruleform exit : frontier) {
-            Ruleform someDudeIKnow = em.find(exit.getClass(), exit.getId());
-            if (someDudeIKnow == null) {
-                throw new IllegalStateException(String.format("Unable to locate frontier: %s:%s",
-                                                              exit,
-                                                              exit.getId()));
-            }
-            theReplacements.put(exit.getId(), someDudeIKnow);
-        }
-        for (ListIterator<Ruleform> iterator = ruleforms.listIterator(); iterator.hasNext();) {
-            iterator.set(Ruleform.smartMerge(em, iterator.next(),
-                                             theReplacements));
-        }
-    }
-
-    private Collection<? extends Ruleform> findAll(Class<? extends Ruleform> form,
-                                                   EntityManager em) {
-        TypedQuery<? extends Ruleform> query = NetworkRuleform.class.isAssignableFrom(form) ? em.createQuery(String.format("SELECT f FROM %s f WHERE f.workspace IS NULL AND f.inference IS NULL",
-                                                                                                                           form.getSimpleName()),
-                                                                                                             form)
-                                                                                            : em.createQuery(String.format("SELECT f FROM %s f WHERE f.workspace IS NULL",
-                                                                                                                           form.getSimpleName()),
-                                                                                                             form);
-        return query.getResultList();
-    }
-
 }

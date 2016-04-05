@@ -20,48 +20,46 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
+import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.PARENT_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.SELF_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
+import org.jooq.RecordContext;
+import org.jooq.RecordType;
+import org.jooq.impl.DefaultRecordListener;
 
-import org.hibernate.internal.SessionImpl;
-
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Triggers;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
-import com.chiralbehaviors.CoRE.meta.models.hibernate.AnimationsInterceptor;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -69,196 +67,94 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *         This class implements the animations logic for the Ultrastructure
  *         model. Abstractly, this logic is driven by state events of an
  *         Ultrastructure instance. Conceptually, this is equivalent to database
- *         triggers. This class models a simple state model of persist, update,
+ *         triggers. This class models a simple state model of insert, update,
  *         delete style events. The animations model is conceptually simple and
  *         unchanging, thus we don't need a general mechanism of dynamically
  *         registering triggers n' such. We just inline the animation logic in
  *         the state methods, delegating to the appropriate model for
  *         implementation. What this means in practice is that this is the class
  *         that creates the high level logic around state change of an
- *         Ultrastructure instance. This is the high level, disambiguation logic
- *         of Ultrastructure animation.
+ *         Ultrastructure instance.
+ * 
+ *         This is the high level, core disambiguation logic of Ultrastructure
+ *         animation.
  *
  *         This is the Rule Engine (tm).
  */
-public class Animations implements Triggers {
+public class Animations extends DefaultRecordListener {
 
-    private static final int MAX_JOB_PROCESSING = 10;
+    private static final int                                  MAX_JOB_PROCESSING = 10;
+    private static final Consumer<RecordContext>              NULL_CONSUMER      = f -> {
+                                                                                 };
 
-    private final Set<AttributeValue<?>>                     attributeValues  = new HashSet<>();
-    private final Set<ProductChildSequencingAuthorization>   childSequences   = new HashSet<>();
-    private final EntityManager                              em;
-    private boolean                                          inferAgencyNetwork;
-    private boolean                                          inferAttributeNetwork;
-    private boolean                                          inferIntervalNetwork;
-    private boolean                                          inferLocationNetwork;
-    private boolean                                          inferProductNetwork;
-    private boolean                                          inferRelationshipNetwork;
-    private boolean                                          inferStatusCodeNetwork;
-    private boolean                                          inferUnitNetwork;
-    private final Set<Job>                                   jobs             = new LinkedHashSet<>();
-    private final Model                                      model;
-    private final Set<Product>                               modifiedServices = new HashSet<>();
-    private final Set<ProductParentSequencingAuthorization>  parentSequences  = new HashSet<>();
-    private final Set<ProductSelfSequencingAuthorization>    selfSequences    = new HashSet<>();
-    private final Set<ProductSiblingSequencingAuthorization> siblingSequences = new HashSet<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterDelete        = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterInsert        = new HashMap<>();
+    private final Map<RecordType<?>, Consumer<RecordContext>> afterUpdate        = new HashMap<>();
+    private final Set<ExistentialAttributeRecord>             attributeValues    = new HashSet<>();
+    private final Set<ChildSequencingAuthorizationRecord>     childSequences     = new HashSet<>();
+    private final Inference                                   inference;
+    private boolean                                           inferNetwork;
+    private final List<JobRecord>                             jobs               = new ArrayList<>();
+    private final Model                                       model;
+    private final Set<Product>                                modifiedServices   = new HashSet<>();
+    private final Set<ParentSequencingAuthorizationRecord>    parentSequences    = new HashSet<>();
+    private final Set<SelfSequencingAuthorizationRecord>      selfSequences      = new HashSet<>();
+    private final Set<SiblingSequencingAuthorizationRecord>   siblingSequences   = new HashSet<>();
 
-    public Animations(Model model, EntityManager em) {
+    public Animations(Model model, Inference inference) {
         this.model = model;
-        this.em = em;
-        new AnimationsInterceptor((SessionImpl) em.getDelegate(), this);
+        this.inference = inference;
+        initializeTriggers();
     }
 
-    /**
-     * 
-     */
     public void begin() {
         model.flushWorkspaces();
     }
 
     public void commit() throws TriggerException {
         flush();
-        reset();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.agency.Agency)
-     */
     @Override
-    public void delete(Agency a) {
-        inferAgencyNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.agency.AgencyNetwork)
-     */
-    @Override
-    public void delete(AgencyNetwork a) {
-        inferAgencyNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.Attribute)
-     */
-    @Override
-    public void delete(Attribute a) {
-        inferAttributeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.AttributeNetwork)
-     */
-    @Override
-    public void delete(AttributeNetwork a) {
-        inferAttributeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.time.Interval)
-     */
-    @Override
-    public void delete(Interval i) {
-        inferIntervalNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.time.IntervalNetwork)
-     */
-    @Override
-    public void delete(IntervalNetwork i) {
-        inferAttributeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.location.Location)
-     */
-    @Override
-    public void delete(Location l) {
-        inferLocationNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.location.LocationNetwork)
-     */
-    @Override
-    public void delete(LocationNetwork l) {
-        inferLocationNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.NetworkInference)
-     */
-    @Override
-    public void delete(NetworkInference inference) {
-        propagateAll();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.product.Product)
-     */
-    @Override
-    public void delete(Product p) {
-        inferProductNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.product.ProductNetwork)
-     */
-    @Override
-    public void delete(ProductNetwork p) {
-        inferProductNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.Relationship)
-     */
-    @Override
-    public void delete(Relationship r) {
-        inferRelationshipNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.RelationshipNetwork)
-     */
-    @Override
-    public void delete(RelationshipNetwork r) {
-        inferRelationshipNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.event.status.StatusCode)
-     */
-    @Override
-    public void delete(StatusCode s) {
-        inferStatusCodeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork)
-     */
-    @Override
-    public void delete(StatusCodeNetwork s) {
-        inferStatusCodeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.unit.Unit)
-     */
-    @Override
-    public void delete(Unit u) {
-        inferUnitNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork)
-     */
-    @Override
-    public void delete(UnitNetwork u) {
-        inferUnitNetwork = true;
+    public void deleteEnd(RecordContext ctx) {
+        afterDelete.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
     }
 
     public void flush() {
-        em.flush();
+        try {
+            animate();
+        } finally {
+            reset();
+        }
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void inferNetworks() {
+        inferNetwork = true;
+    }
+
+    @Override
+    public void insertEnd(RecordContext ctx) {
+        afterInsert.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
+
+    public void rollback() {
+        reset();
+        model.flushWorkspaces();
+    }
+
+    @Override
+    public void updateEnd(RecordContext ctx) {
+        afterUpdate.computeIfAbsent(ctx.recordType(), k -> NULL_CONSUMER)
+                   .accept(ctx);
+    }
+
+    private void animate() {
         try {
             model.getJobModel()
                  .validateStateGraph(modifiedServices);
@@ -270,218 +166,21 @@ public class Animations implements Triggers {
         validateSequenceAuthorizations();
         propagate();
         int cycles = 0;
-        Set<Job> processed = new HashSet<>(jobs.size());
+        Set<JobRecord> processed = new HashSet<>(jobs.size());
         while (!jobs.isEmpty()) {
             if (cycles > MAX_JOB_PROCESSING) {
-                throw new IllegalStateException("Processing more inserted job cycles than the maximum number of itterations allowed");
+                throw new IllegalStateException(String.format("Exceeded the maximum number of job cycles allowed [%s]",
+                                                              MAX_JOB_PROCESSING));
             }
             cycles++;
-            List<Job> inserted = new ArrayList<>(jobs);
+            List<JobRecord> inserted = new ArrayList<>(jobs);
             jobs.clear();
-            for (Job j : inserted) {
+            for (JobRecord j : inserted) {
                 if (processed.add(j)) {
                     process(j);
                 }
             }
         }
-        em.flush();
-    }
-
-    public EntityManager getEm() {
-        return model.getEntityManager();
-    }
-
-    /**
-     * @return
-     */
-    public Model getModel() {
-        return model;
-    }
-
-    public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
-        if (ruleform instanceof Agency) {
-            inferAgencyNetwork = true;
-            return;
-        }
-        if (ruleform instanceof Attribute) {
-            inferAttributeNetwork = true;
-            return;
-        }
-        if (ruleform instanceof Interval) {
-            inferIntervalNetwork = true;
-            return;
-        }
-        if (ruleform instanceof Location) {
-            inferLocationNetwork = true;
-            return;
-        }
-        if (ruleform instanceof Product) {
-            inferProductNetwork = true;
-            return;
-        }
-        if (ruleform instanceof Relationship) {
-            inferRelationshipNetwork = true;
-            return;
-        }
-        if (ruleform instanceof StatusCode) {
-            inferStatusCodeNetwork = true;
-            return;
-        }
-        if (ruleform instanceof Unit) {
-            inferUnitNetwork = true;
-            return;
-        }
-        throw new IllegalStateException(String.format("Not a valid existential entity class %s",
-                                                      ruleform.getClass()
-                                                              .getSimpleName()));
-    }
-
-    public void log(StatusCodeSequencing scs) {
-        modifiedServices.add(scs.getService());
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.agency.AgencyNetwork)
-     */
-    @Override
-    public void persist(AgencyNetwork a) {
-        inferAgencyNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.attribute.AttributeNetwork)
-     */
-    @Override
-    public void persist(AttributeNetwork a) {
-        inferAttributeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.time.IntervalNetwork)
-     */
-    @Override
-    public void persist(IntervalNetwork i) {
-        inferIntervalNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.Job)
-     */
-    @Override
-    public void persist(Job j) {
-        jobs.add(j);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.location.LocationNetwork)
-     */
-    @Override
-    public void persist(LocationNetwork l) {
-        inferLocationNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization)
-     */
-    @Override
-    public void persist(ProductChildSequencingAuthorization pcsa) {
-        childSequences.add(pcsa);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.product.ProductNetwork)
-     */
-    @Override
-    public void persist(ProductNetwork p) {
-        inferProductNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization)
-     */
-    @Override
-    public void persist(ProductParentSequencingAuthorization ppsa) {
-        parentSequences.add(ppsa);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization)
-     */
-    @Override
-    public void persist(ProductSelfSequencingAuthorization pssa) {
-        selfSequences.add(pssa);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization)
-     */
-    @Override
-    public void persist(ProductSiblingSequencingAuthorization pssa) {
-        siblingSequences.add(pssa);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.network.RelationshipNetwork)
-     */
-    @Override
-    public void persist(RelationshipNetwork r) {
-        inferRelationshipNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork)
-     */
-    @Override
-    public void persist(StatusCodeNetwork sc) {
-        inferStatusCodeNetwork = true;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing)
-     */
-    @Override
-    public void persist(StatusCodeSequencing scs) {
-        modifiedServices.add(scs.getService());
-    }
-
-    @Override
-    public <T extends AttributeValue<?>> void persist(T value) {
-        attributeValues.add(value);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork)
-     */
-    @Override
-    public void persist(UnitNetwork u) {
-        inferUnitNetwork = true;
-    }
-
-    public void rollback() {
-        em.getTransaction()
-          .setRollbackOnly();
-        reset();
-        model.flushWorkspaces();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
-     */
-    @Override
-    public void update(Job j) {
-        jobs.add(j);
-    }
-
-    private void clearPropagation() {
-        inferIntervalNetwork = false;
-        inferRelationshipNetwork = false;
-        inferStatusCodeNetwork = false;
-        inferUnitNetwork = false;
-        inferProductNetwork = false;
-        inferLocationNetwork = false;
-        inferAttributeNetwork = false;
-        inferAgencyNetwork = false;
-        inferRelationshipNetwork = false;
     }
 
     private void clearSequences() {
@@ -491,75 +190,146 @@ public class Animations implements Triggers {
         selfSequences.clear();
     }
 
-    private void process(Job j) {
+    private void delete(ExistentialNetworkRecord inference) {
+        inferNetwork = true;
+    }
+
+    private void delete(ExistentialRecord existentialRecord) {
+        inferNetwork = true;
+    }
+
+    private void delete(NetworkInferenceRecord inference) {
+        inferNetwork = true;
+    }
+
+    private boolean equals(ExistentialAttributeRecord a,
+                           ExistentialAttributeRecord b) {
+        Object aValue = model.getPhantasmModel()
+                             .getValue(a);
+        Object bValue = model.getPhantasmModel()
+                             .getValue(a);
+        if (aValue == null) {
+            return bValue == null;
+        }
+        return aValue.equals(bValue);
+    }
+
+    private void initializeTriggers() {
+        afterUpdate.put(JOB.recordType(),
+                        ctx1 -> update((JobRecord) ctx1.record()));
+        afterInsert.put(STATUS_CODE_SEQUENCING.recordType(),
+                        ctx -> insert((StatusCodeSequencingRecord) ctx.record()));
+        afterInsert.put(JOB.recordType(),
+                        ctx2 -> insert((JobRecord) ctx2.record()));
+        afterInsert.put(EXISTENTIAL.recordType(),
+                        ctx -> insert((ExistentialRecord) ctx.record()));
+        afterInsert.put(CHILD_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((ChildSequencingAuthorizationRecord) ctx.record()));
+        afterInsert.put(EXISTENTIAL_NETWORK.recordType(),
+                        ctx -> insert((ExistentialNetworkRecord) ctx.record()));
+        afterInsert.put(EXISTENTIAL_ATTRIBUTE.recordType(),
+                        ctx -> insert((ExistentialAttributeRecord) ctx.record()));
+        afterInsert.put(NETWORK_INFERENCE.recordType(),
+                        ctx -> insert((NetworkInferenceRecord) ctx.record()));
+        afterInsert.put(PARENT_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((ParentSequencingAuthorizationRecord) ctx.record()));
+        afterInsert.put(SELF_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((SelfSequencingAuthorizationRecord) ctx.record()));
+        afterInsert.put(SIBLING_SEQUENCING_AUTHORIZATION.recordType(),
+                        ctx -> insert((SiblingSequencingAuthorizationRecord) ctx.record()));
+        afterUpdate.put(STATUS_CODE_SEQUENCING.recordType(),
+                        ctx -> modify((StatusCodeSequencingRecord) ctx.record()));
+        afterDelete.put(EXISTENTIAL.recordType(),
+                        ctx -> delete((ExistentialRecord) ctx.record()));
+        afterDelete.put(EXISTENTIAL_NETWORK.recordType(),
+                        ctx -> delete((ExistentialNetworkRecord) ctx.record()));
+        afterDelete.put(NETWORK_INFERENCE.recordType(),
+                        ctx -> delete((NetworkInferenceRecord) ctx.record()));
+        afterUpdate.put(EXISTENTIAL_ATTRIBUTE.recordType(),
+                        ctx -> update((ExistentialAttributeRecord) ctx.record()));
+
+    }
+
+    private void insert(ChildSequencingAuthorizationRecord pcsa) {
+        childSequences.add(pcsa);
+    }
+
+    private void insert(ExistentialAttributeRecord value) {
+        attributeValues.add(value);
+    }
+
+    private void insert(ExistentialNetworkRecord a) {
+        inferNetwork = true;
+    }
+
+    private void insert(ExistentialRecord a) {
+        inferNetwork = true;
+    }
+
+    private void insert(JobRecord j) {
+        model.getJobModel()
+             .log(j, "Initial insertion of job");
+        jobs.add(j);
+    }
+
+    private void insert(NetworkInferenceRecord a) {
+        inferNetwork = true;
+    }
+
+    private void insert(ParentSequencingAuthorizationRecord ppsa) {
+        parentSequences.add(ppsa);
+    }
+
+    private void insert(SelfSequencingAuthorizationRecord pssa) {
+        selfSequences.add(pssa);
+    }
+
+    private void insert(SiblingSequencingAuthorizationRecord pssa) {
+        siblingSequences.add(pssa);
+    }
+
+    private void insert(StatusCodeSequencingRecord scs) {
+        Product service = model.records()
+                               .resolve(scs.getService());
+        if (service != null) {
+            modifiedServices.add(service);
+        }
+    }
+
+    private void modify(StatusCodeSequencingRecord scs) {
+        Product service = model.records()
+                               .resolve(scs.getService());
+        if (service != null) {
+            modifiedServices.add(service);
+        }
+    }
+
+    private void process(JobRecord j) {
         JobModel jobModel = model.getJobModel();
-        jobModel.generateImplicitJobsForExplicitJobs(j,
-                                                     model.getCurrentPrincipal()
-                                                          .getPrincipal());
+        jobModel.generateImplicitJobsForExplicitJobs(j);
         jobModel.processJobSequencing(j);
     }
 
     private void propagate() {
-        boolean initial = true;
-        if (inferAgencyNetwork) {
-            model.getAgencyModel()
-                 .propagate(initial);
-            initial = false;
+        if (inferNetwork) {
+            inference.propagate();
         }
-        if (inferAttributeNetwork) {
-            model.getAttributeModel()
-                 .propagate(initial);
-            initial = false;
-        }
-        if (inferIntervalNetwork) {
-            model.getIntervalModel()
-                 .propagate(initial);
-            initial = false;
-        }
-        if (inferLocationNetwork) {
-            model.getLocationModel()
-                 .propagate(initial);
-            initial = false;
-        }
-        if (inferProductNetwork) {
-            model.getProductModel()
-                 .propagate(initial);
-            initial = false;
-        }
-        if (inferRelationshipNetwork) {
-            model.getRelationshipModel()
-                 .propagate(initial);
-            initial = false;
-        }
-        if (inferStatusCodeNetwork) {
-            model.getStatusCodeModel()
-                 .propagate(initial);
-            initial = false;
-        }
-        if (inferUnitNetwork) {
-            model.getUnitModel()
-                 .propagate(initial);
-        }
-    }
-
-    private void propagateAll() {
-        inferIntervalNetwork = true;
-        inferRelationshipNetwork = true;
-        inferStatusCodeNetwork = true;
-        inferUnitNetwork = true;
-        inferProductNetwork = true;
-        inferLocationNetwork = true;
-        inferAttributeNetwork = true;
-        inferAgencyNetwork = true;
-        inferRelationshipNetwork = true;
     }
 
     private void reset() {
-        clearPropagation();
+        inferNetwork = false;
         clearSequences();
         modifiedServices.clear();
         jobs.clear();
         attributeValues.clear();
+    }
+
+    private void update(ExistentialAttributeRecord record) {
+        attributeValues.add(record);
+    }
+
+    private void update(JobRecord j) {
+        jobs.add(j);
     }
 
     private void validateAttributeValues() {
@@ -567,12 +337,14 @@ public class Animations implements Triggers {
     }
 
     private void validateChildSequencing() {
-        for (ProductChildSequencingAuthorization pcsa : childSequences) {
+        for (ChildSequencingAuthorizationRecord pcsa : childSequences) {
 
             try {
                 model.getJobModel()
-                     .ensureValidServiceAndStatus(pcsa.getNextChild(),
-                                                  pcsa.getNextChildStatus());
+                     .ensureValidServiceAndStatus(model.records()
+                                                       .resolve(pcsa.getNextChild()),
+                                                  model.records()
+                                                       .resolve(pcsa.getNextChildStatus()));
             } catch (SQLException e) {
                 throw new TriggerException(String.format("Invalid sequence: %s",
                                                          pcsa),
@@ -582,24 +354,25 @@ public class Animations implements Triggers {
     }
 
     private void validateEnums() {
-        for (AttributeValue<?> value : attributeValues) {
-            Attribute attribute = value.getAttribute();
-            Attribute validatingAttribute = model.getAttributeModel()
+        for (ExistentialAttributeRecord value : attributeValues) {
+            Attribute attribute = model.records()
+                                       .resolve(value.getAttribute());
+            Attribute validatingAttribute = model.getPhantasmModel()
                                                  .getSingleChild(attribute,
                                                                  model.getKernel()
-                                                                      .getIsValidatedBy());
+                                                                      .getIsValidatedBy(),
+                                                                 ExistentialDomain.Attribute);
             if (validatingAttribute != null) {
-                List<AttributeMetaAttribute> attrs = model.getAttributeModel()
-                                                          .getAttributeValues(validatingAttribute,
-                                                                              attribute);
+                List<ExistentialAttributeRecord> attrs = model.getPhantasmModel()
+                                                              .getAttributeValues(validatingAttribute,
+                                                                                  attribute);
                 if (attrs == null || attrs.size() == 0) {
                     throw new IllegalArgumentException("No valid values for attribute "
                                                        + attribute.getName());
                 }
                 boolean valid = false;
-                for (AttributeMetaAttribute ama : attrs) {
-                    if (ama.getValue() != null && ama.getValue()
-                                                     .equals(value.getValue())) {
+                for (ExistentialAttributeRecord ama : attrs) {
+                    if (equals(ama, value)) {
                         valid = true;
                         break;
                     }
@@ -614,11 +387,13 @@ public class Animations implements Triggers {
     }
 
     private void validateParentSequencing() {
-        for (ProductParentSequencingAuthorization ppsa : parentSequences) {
+        for (ParentSequencingAuthorizationRecord ppsa : parentSequences) {
             try {
                 model.getJobModel()
-                     .ensureValidServiceAndStatus(ppsa.getParent(),
-                                                  ppsa.getParentStatusToSet());
+                     .ensureValidServiceAndStatus(model.records()
+                                                       .resolve(ppsa.getParent()),
+                                                  model.records()
+                                                       .resolve(ppsa.getParentStatusToSet()));
             } catch (SQLException e) {
                 throw new TriggerException("Invalid sequence", e);
             }
@@ -626,11 +401,13 @@ public class Animations implements Triggers {
     }
 
     private void validateSelfSequencing() {
-        for (ProductSelfSequencingAuthorization pssa : selfSequences) {
+        for (SelfSequencingAuthorizationRecord pssa : selfSequences) {
             try {
                 model.getJobModel()
-                     .ensureValidServiceAndStatus(pssa.getService(),
-                                                  pssa.getStatusToSet());
+                     .ensureValidServiceAndStatus(model.records()
+                                                       .resolve(pssa.getService()),
+                                                  model.records()
+                                                       .resolve(pssa.getStatusToSet()));
             } catch (SQLException e) {
                 throw new TriggerException("Invalid sequence", e);
             }
@@ -645,11 +422,13 @@ public class Animations implements Triggers {
     }
 
     private void validateSiblingSequencing() {
-        for (ProductSiblingSequencingAuthorization pssa : siblingSequences) {
+        for (SiblingSequencingAuthorizationRecord pssa : siblingSequences) {
             try {
                 model.getJobModel()
-                     .ensureValidServiceAndStatus(pssa.getNextSibling(),
-                                                  pssa.getNextSiblingStatus());
+                     .ensureValidServiceAndStatus(model.records()
+                                                       .resolve(pssa.getNextSibling()),
+                                                  model.records()
+                                                       .resolve(pssa.getNextSiblingStatus()));
             } catch (SQLException e) {
                 throw new TriggerException("Invalid sequence", e);
             }

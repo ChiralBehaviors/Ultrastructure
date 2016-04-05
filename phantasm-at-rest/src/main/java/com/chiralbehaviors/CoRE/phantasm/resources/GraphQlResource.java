@@ -20,22 +20,15 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static graphql.schema.GraphQLObjectType.newObject;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -43,31 +36,29 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
-import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
-import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
 import io.dropwizard.auth.Auth;
 
@@ -82,67 +73,31 @@ import io.dropwizard.auth.Auth;
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
 
-    public static class QueryRequest {
-        private String              query;
-        private Map<String, Object> variables = Collections.emptyMap();
-
-        public QueryRequest() {
-        }
-
-        public QueryRequest(String query) {
-            this(query, Collections.emptyMap());
-        }
-
-        public QueryRequest(String query, Map<String, Object> variables) {
-            this.query = query;
-            this.variables = variables;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        public Map<String, Object> getVariables() {
-            return variables;
-        }
-
-        @SuppressWarnings("serial")
-        public Map<String, Object> toMap() {
-            return new HashMap<String, Object>() {
-                {
-                    put(QUERY, query);
-                    put(VARIABLES, variables);
-                }
-            };
-        }
-    }
-
     private static final Logger                      log       = LoggerFactory.getLogger(GraphQlResource.class);
-    private static final String                      QUERY     = "query";
-    private static final String                      VARIABLES = "variables";
+    static final String                              QUERY     = "query";
+    static final String                              VARIABLES = "variables";
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache     = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
 
-    public GraphQlResource(EntityManagerFactory emf,
-                           ClassLoader executionScope) {
-        super(emf);
+    public GraphQlResource(ClassLoader executionScope) {
         this.executionScope = executionScope;
     }
 
     @Timed
     @GET
     @Path("workspace")
-    public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal) {
-        return readOnly(principal, readOnlyModel -> {
+    public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal,
+                                                   @Context DSLContext create) {
+        return read(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
-            Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
-                                                  kernel.getWorkspace());
             List<Map<String, Object>> workspaces = new ArrayList<>();
-            for (Product definingProduct : readOnlyModel.getProductModel()
-                                                        .getChildren(aspect.getClassification(),
-                                                                     aspect.getClassifier()
-                                                                           .getInverse())) {
+            for (ExistentialRuleform definingProduct : readOnlyModel.getPhantasmModel()
+                                                                    .getChildrenUuid(kernel.getWorkspace()
+                                                                                           .getId(),
+                                                                                     kernel.getIsA()
+                                                                                           .getInverse(),
+                                                                                     ExistentialDomain.Product)) {
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put("id", definingProduct.getId()
                                              .toString());
@@ -151,16 +106,16 @@ public class GraphQlResource extends TransactionalResource {
                 workspaces.add(wsp);
             }
             return workspaces;
-        });
+        }, create);
     }
 
-    @SuppressWarnings("unchecked")
     @Timed
     @Path("workspace/{workspace}")
     @POST
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
                                  @PathParam("workspace") String workspace,
-                                 @SuppressWarnings("rawtypes") Map request) {
+                                 @SuppressWarnings("rawtypes") Map request,
+                                 @Context DSLContext create) {
         if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
@@ -169,7 +124,7 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        return perform(principal, model -> {
+        return mutate(principal, model -> {
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
 
             GraphQLSchema schema = cache.computeIfAbsent(uuid, id -> {
@@ -184,7 +139,8 @@ public class GraphQlResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return build(scoped.getWorkspace(), model);
+                return FacetType.build(scoped.getWorkspace(), model,
+                                       executionScope);
             });
 
             if (schema == null) {
@@ -194,13 +150,12 @@ public class GraphQlResource extends TransactionalResource {
                                                   Status.NOT_FOUND);
             }
 
-            @SuppressWarnings("rawtypes")
             PhantasmCRUD crud = new PhantasmCRUD(model);
-            Product definingProduct = model.getEntityManager()
-                                           .find(Product.class, uuid);
-            if (!model.getNetworkedModel(definingProduct)
+            Product definingProduct = model.records()
+                                           .resolve(uuid);
+            if (!model.getPhantasmModel()
                       .checkCapability(definingProduct, crud.getREAD())
-                || !model.getNetworkedModel(definingProduct)
+                || !model.getPhantasmModel()
                          .checkCapability(definingProduct, model.getKernel()
                                                                 .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
@@ -210,28 +165,7 @@ public class GraphQlResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = Collections.emptyMap();
-            Object provided = request.get(VARIABLES);
-            if (provided != null) {
-                if (provided instanceof Map) {
-                    variables = (Map<String, Object>) provided;
-                } else if (provided instanceof String) {
-                    try {
-                        String variableString = ((String) provided).trim();
-                        if (!variableString.isEmpty()) {
-                            variables = new ObjectMapper().readValue(variableString,
-                                                                     Map.class);
-                        }
-                    } catch (Exception e) {
-                        throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
-                                                                        e.getMessage()),
-                                                          Status.BAD_REQUEST);
-                    }
-                } else {
-                    throw new WebApplicationException("Invalid variables parameter",
-                                                      Status.BAD_REQUEST);
-                }
-            }
+            Map<String, Object> variables = getVariables(request);
             ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
                                                                  crud,
                                                                  variables);
@@ -242,74 +176,33 @@ public class GraphQlResource extends TransactionalResource {
             log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
-        });
+        }, create);
     }
 
-    // here only because of insanity
-    public ExecutionResult query(@Auth AuthorizedPrincipal principal,
-                                 String workspace, QueryRequest request) {
-        return query(principal, workspace, request.toMap());
-
-    }
-
-    private Deque<NetworkAuthorization<?>> initialState(WorkspaceAccessor workspace,
-                                                        Model model) {
-        Product definingProduct = workspace.getDefiningProduct();
-        Deque<NetworkAuthorization<?>> unresolved = new ArrayDeque<>();
-        unresolved.addAll(model.getAgencyModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getAttributeModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getIntervalModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getLocationModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getProductModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getRelationshipModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getStatusCodeModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getUnitModel()
-                               .getFacets(definingProduct));
-        return unresolved;
-    }
-
-    protected GraphQLSchema build(WorkspaceAccessor accessor, Model model) {
-        Deque<NetworkAuthorization<?>> unresolved = initialState(accessor,
-                                                                 model);
-        Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
-        Product definingProduct = accessor.getDefiningProduct();
-        Workspace workspace = model.wrap(Workspace.class, definingProduct);
-        Builder topLevelQuery = newObject().name("Query")
-                                           .description(String.format("Top level query for %s",
-                                                                      definingProduct.getName()));
-        Builder topLevelMutation = newObject().name("Mutation")
-                                              .description(String.format("Top level mutation for %s",
-                                                                         definingProduct.getName()));
-        List<Plugin> plugins = workspace.getPlugins();
-        while (!unresolved.isEmpty()) {
-            NetworkAuthorization<?> facet = unresolved.pop();
-            if (resolved.containsKey(facet)) {
-                continue;
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Map<String, Object> getVariables(Map request) {
+        Map<String, Object> variables = Collections.emptyMap();
+        Object provided = request.get(VARIABLES);
+        if (provided != null) {
+            if (provided instanceof Map) {
+                variables = (Map<String, Object>) provided;
+            } else if (provided instanceof String) {
+                try {
+                    String variableString = ((String) provided).trim();
+                    if (!variableString.isEmpty()) {
+                        variables = new ObjectMapper().readValue(variableString,
+                                                                 Map.class);
+                    }
+                } catch (Exception e) {
+                    throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
+                                                                    e.getMessage()),
+                                                      Status.BAD_REQUEST);
+                }
+            } else {
+                throw new WebApplicationException("Invalid variables parameter",
+                                                  Status.BAD_REQUEST);
             }
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            FacetType<?, ?> type = new FacetType(facet);
-            resolved.put(facet, type);
-            List<Plugin> facetPlugins = plugins.stream()
-                                               .filter(plugin -> facet.getName()
-                                                                      .equals(plugin.getFacetName()))
-                                               .collect(Collectors.toList());
-            type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
-                       model, executionScope)
-                .stream()
-                .filter(auth -> !resolved.containsKey(auth))
-                .forEach(auth -> unresolved.add(auth));
         }
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
-        return schema;
+        return variables;
     }
 }

@@ -8,20 +8,22 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="relationship" replaceIfExists="true"><![CDATA[  
 			 SELECT 
-                w.name AS workspace, 
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 rel.id, 
                 rel.name, 
                 rel.description, 
                 inv.name AS inverse, 
                 rel.notes, 
-                up.name AS updated_by
-			   FROM relationship rel
-			   JOIN relationship inv ON rel.inverse = inv.id
-			   JOIN agency up ON rel.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON rel.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+                up.name AS updated_by,
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                rel.version
+			   FROM existential rel
+			   JOIN existential inv ON rel.inverse = inv.id
+			   JOIN existential up ON rel.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON rel.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+               WHERE rel.domain = 'Relationship'
             ]]>
         </createView>
     </changeSet>

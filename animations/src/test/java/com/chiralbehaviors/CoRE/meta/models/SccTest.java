@@ -31,10 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 
 /**
  * @author hhildebrand
@@ -76,25 +77,27 @@ public class SccTest {
             }
         };
 
-        StatusCode[] expected = new StatusCode[] { codes[6], codes[7],
-                                                   codes[8] };
-        Arrays.sort(expected, scComparator);
-        StatusCode[] got = sccs.get(0);
-        Arrays.sort(got, scComparator);
-        assertArrayEquals(expected, got);
+        StatusCode[] expected;
+
+        sccs = sccs.stream()
+                   .peek(g -> Arrays.sort(g, scComparator))
+                   .sorted((a, b) -> a[0].getId()
+                                         .compareTo(b[0].getId()))
+                   .collect(Collectors.toList());
 
         expected = new StatusCode[] { codes[0], codes[1], codes[2] };
         Arrays.sort(expected, scComparator);
-
-        got = sccs.get(1);
-        Arrays.sort(got, scComparator);
+        StatusCode[] got = sccs.get(0);
         assertArrayEquals(expected, got);
 
         expected = new StatusCode[] { codes[4], codes[5], codes[3] };
         Arrays.sort(expected, scComparator);
+        got = sccs.get(1);
+        assertArrayEquals(expected, got);
 
+        expected = new StatusCode[] { codes[6], codes[7], codes[8] };
+        Arrays.sort(expected, scComparator);
         got = sccs.get(2);
-        Arrays.sort(got, scComparator);
         assertArrayEquals(expected, got);
     }
 }

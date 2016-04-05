@@ -22,10 +22,10 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 
 /**
  * A class full of utility methods to aid in debugging.
@@ -35,16 +35,11 @@ import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
  */
 public class TestDebuggingUtil {
 
-    public static void printJobs(List<Job> jobs) {
-        for (Job j : jobs) {
+    public static void printJobs(List<JobRecord> jobs) {
+        for (JobRecord j : jobs) {
             System.out.println(String.format("%s: Status: %s, Parent: %s",
-                                             j.getService()
-                                              .getName(),
-                                             j.getStatus()
-                                              .getName(),
+                                             j.getService(), j.getStatus(),
                                              j.getParent() != null ? j.getParent()
-                                                                      .getService()
-                                                                      .getName()
                                                                    : "null"));
         }
     }
@@ -52,18 +47,16 @@ public class TestDebuggingUtil {
     /**
      * @param findMetaProtocolGaps
      */
-    public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
-        for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
+    public static void printMetaProtocolGaps(Map<ProtocolRecord, Map<MetaProtocolRecord, List<String>>> gaps) {
+        for (Map.Entry<ProtocolRecord, Map<MetaProtocolRecord, List<String>>> e : gaps.entrySet()) {
             System.out.println(String.format("requested service: %s, service: %s",
                                              e.getKey()
-                                              .getService()
-                                              .getName(),
+                                              .getService(),
                                              e.getKey()
-                                              .getService()
-                                              .getName()));
+                                              .getService()));
 
-            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue()
-                                                              .entrySet()) {
+            for (Map.Entry<MetaProtocolRecord, List<String>> mpe : e.getValue()
+                                                                    .entrySet()) {
                 System.out.println(String.format("MetaProtocol: %s",
                                                  mpe.getKey()
                                                     .getId()));
@@ -79,15 +72,13 @@ public class TestDebuggingUtil {
     /**
      * @param findProtocolGaps
      */
-    public static void printProtocolGaps(Map<Protocol, List<String>> gaps) {
-        for (Map.Entry<Protocol, List<String>> e : gaps.entrySet()) {
+    public static void printProtocolGaps(Map<ProtocolRecord, List<String>> gaps) {
+        for (Map.Entry<ProtocolRecord, List<String>> e : gaps.entrySet()) {
             System.out.println(String.format("childService: %s, service: %s",
                                              e.getKey()
-                                              .getChildService()
-                                              .getName(),
+                                              .getChildService(),
                                              e.getKey()
-                                              .getService()
-                                              .getName()));
+                                              .getService()));
             System.out.println("Unmatched fields: ");
             for (String f : e.getValue()) {
                 System.out.println(f);
@@ -96,23 +87,18 @@ public class TestDebuggingUtil {
 
     }
 
-    public static void printProtocols(List<Protocol> protocols) {
-        for (Protocol p : protocols) {
+    public static void printProtocols(List<ProtocolRecord> protocols) {
+        for (ProtocolRecord p : protocols) {
             System.out.println(String.format("Requested Service: %s, Service: %s",
-                                             p.getChildService()
-                                              .getName(),
+                                             p.getChildService(),
                                              p.getService()));
         }
     }
 
-    public static void printSequencings(List<StatusCodeSequencing> seqs) {
-        for (StatusCodeSequencing s : seqs) {
-            System.out.println(String.format("%s: %s -> %s", s.getService()
-                                                              .getName(),
-                                             s.getParentCode()
-                                              .getName(),
-                                             s.getChildCode()
-                                              .getName()));
+    public static void printSequencings(List<StatusCodeSequencingRecord> seqs) {
+        for (StatusCodeSequencingRecord s : seqs) {
+            System.out.println(String.format("%s: %s -> %s", s.getService(),
+                                             s.getParent(), s.getChild()));
         }
     }
 

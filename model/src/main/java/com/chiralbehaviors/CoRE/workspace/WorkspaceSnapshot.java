@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,31 +20,36 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.sql.BatchUpdateException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.UpdatableRecord;
+import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,24 +59,21 @@ import com.hellblazer.utils.collections.OaHashSet;
  * @author hhildebrand
  *
  */
-@JsonPropertyOrder({ "frontier", "definingProduct", "ruleforms" })
 public class WorkspaceSnapshot {
-    private final static Logger log = LoggerFactory.getLogger(WorkspaceSnapshot.class);
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceSnapshot.class);
 
-    public static List<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
-                                                                 EntityManager em) {
-        TypedQuery<WorkspaceAuthorization> query = em.createQuery("SELECT auth FROM WorkspaceAuthorization auth "
-                                                                  + "WHERE auth.definingProduct = :product",
-                                                                  WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        List<WorkspaceAuthorization> authorizations = new ArrayList<>(query.getResultList());
-        return authorizations;
+    public static Result<WorkspaceAuthorizationRecord> getAuthorizations(UUID definingProduct,
+                                                                         DSLContext create) {
+        return create.selectFrom(WORKSPACE_AUTHORIZATION)
+                     .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct))
+                     .fetch();
     }
 
-    public static void load(EntityManager em,
-                            List<URL> resources) throws IOException {
+    public static void load(DSLContext create,
+                            List<URL> resources) throws IOException,
+                                                 SQLException {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new CoREModule());
+        mapper.registerModule(new CoREModule(create));
         for (URL resource : resources) {
             WorkspaceSnapshot workspace;
             try (InputStream is = resource.openStream();) {
@@ -81,20 +83,22 @@ public class WorkspaceSnapshot {
                          resource.toExternalForm(), e);
                 throw e;
             }
-            Product definingProduct = workspace.getDefiningProduct();
-            Product existing = em.find(Product.class, definingProduct.getId());
+            ExistentialRecord definingProduct = workspace.getDefiningProduct();
+            ExistentialRecord existing = create.selectFrom(EXISTENTIAL)
+                                               .where(EXISTENTIAL.ID.equal(definingProduct.getId()))
+                                               .fetchOne();
             if (existing == null) {
                 log.info("Creating workspace [{}] version: {} from: {}",
                          definingProduct.getName(),
                          definingProduct.getVersion(),
                          resource.toExternalForm());
-                workspace.retarget(em);
+                workspace.load(create);
             } else if (existing.getVersion() < definingProduct.getVersion()) {
                 log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
                          definingProduct.getName(), existing.getVersion(),
                          definingProduct.getVersion(),
                          resource.toExternalForm());
-                workspace.retarget(em);
+                workspace.load(create);
             } else {
                 log.info("Not updating workspace [{}] existing version: {} is higher than version: {} from: {}",
                          definingProduct.getName(), existing.getVersion(),
@@ -104,77 +108,66 @@ public class WorkspaceSnapshot {
         }
     }
 
-    public static void load(EntityManager em, URL resource) throws IOException {
-        load(em, Collections.singletonList(resource));
+    public static void load(DSLContext create, URL resource) throws IOException,
+                                                             SQLException {
+        load(create, Collections.singletonList(resource));
     }
 
-    @JsonProperty
-    private Product        definingProduct;
-    @JsonProperty
-    private List<Ruleform> frontier;
-    @JsonProperty
-    private List<Ruleform> ruleforms;
+    @SuppressWarnings("unchecked")
+    public static List<UpdatableRecord<? extends UpdatableRecord<?>>> selectWorkspaceClosure(DSLContext create,
+                                                                                             Product definingProduct) {
+        List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
+        Ruleform.RULEFORM.getTables()
+                         .forEach(t -> {
+                             if (!t.equals(WORKSPACE_AUTHORIZATION)) {
+                                 records.addAll(create.selectDistinct(t.fields())
+                                                      .from(t)
+                                                      .join(WORKSPACE_AUTHORIZATION)
+                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                                                      .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                                      .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
+                                                      .fetchInto(t.getRecordType())
+                                                      .stream()
+                                                      .map(r -> (UpdatableRecord<?>) r)
+                                                      .collect(Collectors.toList()));
+                             }
+                         });
+        records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
+                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
+                             .fetch());
+        return records;
+    }
+
+    protected Product                                             definingProduct;
+
+    protected List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
 
     public WorkspaceSnapshot() {
-        ruleforms = new ArrayList<>();
         definingProduct = null;
-        frontier = new ArrayList<>();
     }
 
-    public WorkspaceSnapshot(Product definingProduct, EntityManager em) {
-        this(definingProduct, getAuthorizations(definingProduct, em), em);
-    }
-
-    public WorkspaceSnapshot(Product definingProduct,
-                             List<WorkspaceAuthorization> auths,
-                             EntityManager em) {
+    public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
         this.definingProduct = definingProduct;
-        this.ruleforms = new ArrayList<>(auths.size());
-        Predicate<Ruleform> systemDefinition = traversing -> sameWorkspace(traversing);
-        Map<UUID, Ruleform> exits = new HashMap<>();
-        Set<UUID> traversed = new OaHashSet<UUID>(1024);
-
-        for (WorkspaceAuthorization auth : auths) {
-            if (!auth.getDefiningProduct()
-                     .getId()
-                     .equals(this.definingProduct.getId())) {
-                throw new IllegalStateException(String.format("%s is not in the workspace %s",
-                                                              auth.getDefiningProduct()
-                                                                  .getName(),
-                                                              this.definingProduct.getName()));
-            }
-            Ruleform ruleform = Ruleform.initializeAndUnproxy(auth.getRuleform(em));
-            ruleforms.add(ruleform);
-        }
-
-        for (Ruleform ruleform : ruleforms) {
-            Ruleform.slice(ruleform, systemDefinition, exits, traversed);
-        }
-
-        frontier = new ArrayList<>(exits.values());
+        records = selectWorkspaceClosure(create, definingProduct);
     }
 
     /**
      * Calculate the delta graph between this workspace and a different version.
      * The delta graph's frontier will include any references to ruleforms
      * defined in the previous workspace.
-     * 
+     *
      * The delta graph is defined to be everything that is in this workspace
      * minus the things that are in the other version of the workspace.
      * Ruleforms remaining in this delta graph will have references to ruleforms
-     * defined in the other version replaced with ruleforms in the frontier of
-     * the returned workspace.
-     * 
-     * Note that this is a destructive operation, operating in place not copies
-     * of the ruleforms. Consequently, this workspace and the other workspace
-     * will no longer be valid and need to be discarded.
-     * 
+     * defined in the other version in the frontier of the returned workspace.
+     *
      * @param otherVersion
      *            - the other version of the workspace
      * @return the workspace snapshot containing the delta graph between this
      *         version and the other version
      */
-    public WorkspaceSnapshot deltaFrom(WorkspaceSnapshot otherVersion) {
+    public WorkspaceSnapshot deltaFrom(DSLContext create,
+                                       WorkspaceSnapshot otherVersion) {
         if (!otherVersion.getDefiningProduct()
                          .equals(definingProduct)) {
             return this; // by workspace graph closure definition
@@ -183,28 +176,17 @@ public class WorkspaceSnapshot {
         WorkspaceSnapshot delta = new WorkspaceSnapshot();
         delta.definingProduct = definingProduct;
 
-        Set<UUID> exclude = new OaHashSet<UUID>(1024);
-        for (Ruleform ruleform : otherVersion.ruleforms) {
-            if (!definingProduct.equals(ruleform)) {
-                exclude.add(ruleform.getId());
+        Set<UUID> exclude = new OaHashSet<>(otherVersion.records.size());
+        for (Record record : otherVersion.records) {
+            exclude.add((UUID) record.getValue("id"));
+        }
+
+        for (UpdatableRecord<? extends UpdatableRecord<?>> record : records) {
+            UUID id = (UUID) record.getValue("id");
+            if (!exclude.contains(id)) {
+                delta.records.add(record);
             }
         }
-
-        for (Ruleform ruleform : ruleforms) {
-            if (!exclude.contains(ruleform.getId())) {
-                delta.ruleforms.add(ruleform);
-            }
-        }
-
-        Set<UUID> traversed = new OaHashSet<UUID>(1024);
-        Map<UUID, Ruleform> exits = new HashMap<>();
-        Predicate<Ruleform> systemDefinition = traversing -> !exclude.contains(traversing.getId())
-                                                             && sameWorkspace(traversing);
-        for (Ruleform ruleform : delta.ruleforms) {
-            Ruleform.slice(ruleform, systemDefinition, exits, traversed);
-        }
-
-        delta.frontier = new ArrayList<>(exits.values());
         return delta;
     }
 
@@ -212,43 +194,18 @@ public class WorkspaceSnapshot {
         return definingProduct;
     }
 
-    public List<Ruleform> getFrontier() {
-        return frontier;
+    public List<UpdatableRecord<? extends UpdatableRecord<?>>> getRecords() {
+        return records;
     }
 
-    public List<Ruleform> getRuleforms() {
-        return ruleforms;
-    }
-
-    public boolean validate() {
-        return ruleforms.stream()
-                        .map(ruleform -> ruleform.getWorkspace() != null)
-                        .reduce((prev, cur) -> prev && cur)
-                        .orElse(false);
-    }
-
-    /**
-     * Merge the state of the workspace into the database
-     * 
-     * @param em
-     */
-    public void retarget(EntityManager em) {
-        Map<UUID, Ruleform> theReplacements = new HashMap<>();
-        for (Ruleform exit : frontier) {
-            Ruleform someDudeIKnow = em.find(exit.getClass(), exit.getId());
-            if (someDudeIKnow == null) {
-                throw new IllegalStateException(String.format("Workspace: %s, unable to locate frontier: %s:%s",
-                                                              definingProduct.getName(),
-                                                              exit,
-                                                              exit.getId()));
-            }
-            theReplacements.put(exit.getId(), someDudeIKnow);
-        }
-        definingProduct = Ruleform.smartMerge(em, definingProduct,
-                                              theReplacements);
-        for (ListIterator<Ruleform> iterator = ruleforms.listIterator(); iterator.hasNext();) {
-            iterator.set(Ruleform.smartMerge(em, iterator.next(),
-                                             theReplacements));
+    public void load(DSLContext create) throws SQLException {
+        loadDefiningProduct(create);
+        try {
+            create.batchInsert(records)
+                  .execute();
+        } catch (DataAccessException e) {
+            BatchUpdateException be = (BatchUpdateException) e.getCause();
+            throw be.getNextException();
         }
     }
 
@@ -260,11 +217,20 @@ public class WorkspaceSnapshot {
                  .writeValue(os, this);
     }
 
-    private boolean sameWorkspace(Ruleform traversing) {
-        return (traversing instanceof WorkspaceAuthorization
-                && this.definingProduct.equals(((WorkspaceAuthorization) traversing).getDefiningProduct()))
-               || (traversing.getWorkspace() != null
-                   && this.definingProduct.equals(traversing.getWorkspace()
-                                                            .getDefiningProduct()));
+    protected void loadDefiningProduct(DSLContext create) {
+        ExistentialRecord existing = definingProduct == null ? null
+                                                             : create.selectFrom(EXISTENTIAL)
+                                                                     .where(EXISTENTIAL.ID.equal(definingProduct.getId()))
+                                                                     .fetchOne();
+        if (existing == null) {
+            log.info("Creating workspace [{}] version: {}",
+                     definingProduct.getName(), definingProduct.getVersion());
+            create.executeInsert(definingProduct);
+        } else if (existing.getVersion() < definingProduct.getVersion()) {
+            log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
+                     definingProduct.getName(), existing.getVersion(),
+                     definingProduct.getVersion());
+            create.executeUpdate(definingProduct);
+        }
     }
 }

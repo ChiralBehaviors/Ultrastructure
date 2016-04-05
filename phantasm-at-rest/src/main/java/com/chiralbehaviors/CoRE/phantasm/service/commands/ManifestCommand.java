@@ -20,20 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
-import java.util.Collections;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.hellblazer.utils.Utils;
 
-import io.dropwizard.cli.Command;
+import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -42,16 +39,13 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class ManifestCommand extends Command {
+public class ManifestCommand extends ConfiguredCommand<PhantasmConfiguration> {
 
     public ManifestCommand() {
         super("manifest",
               "Manifest workspace dsl files into the CoRE instance");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#configure(net.sourceforge.argparse4j.inf.Subparser)
-     */
     @Override
     public void configure(Subparser subparser) {
         subparser.addArgument("files")
@@ -59,34 +53,29 @@ public class ManifestCommand extends Command {
                  .help("Workspace dsl files");
     }
 
-    /* (non-Javadoc)
-     * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
-     */
     @Override
-    public void run(Bootstrap<?> bootstrap,
-                    Namespace namespace) throws Exception {
-        EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
-                                                                        JpaConfiguration.PERSISTENCE_UNIT);
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.getEntityManager()
-                                       .getTransaction();
-            t.begin();
-            WorkspaceImporter.manifest(namespace.getList("files")
-                                                .stream()
-                                                .map(file -> {
-                                                    try {
-                                                        return Utils.resolveResourceURL(getClass(),
-                                                                                        (String) file);
-                                                    } catch (Exception e) {
-                                                        throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                         file),
-                                                                                           e);
-                                                    }
-                                                })
-                                                .collect(Collectors.toList()),
-                                       model);
-            t.commit();
-        }
+    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
+                    Namespace namespace,
+                    PhantasmConfiguration configuration) throws Exception {
+        DSLContext create = configuration.create();
+        create.transaction(c -> {
+            try (Model model = new ModelImpl(create)) {
+                WorkspaceImporter.manifest(namespace.getList("files")
+                                                    .stream()
+                                                    .map(file -> {
+                                                        try {
+                                                            return Utils.resolveResourceURL(getClass(),
+                                                                                            (String) file);
+                                                        } catch (Exception e) {
+                                                            throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
+                                                                                                             file),
+                                                                                               e);
+                                                        }
+                                                    })
+                                                    .collect(Collectors.toList()),
+                                           model);
+            }
+        });
     }
 
 }

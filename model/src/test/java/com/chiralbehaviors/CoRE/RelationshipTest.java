@@ -22,14 +22,11 @@ package com.chiralbehaviors.CoRE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.persistence.TypedQuery;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.test.DatabaseTest;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.test.DatabaseTest;;
 
 /**
  * @author hhildebrand
@@ -40,77 +37,28 @@ public class RelationshipTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        Agency core = new Agency("CoREd");
-        core.setUpdatedBy(core);
-        em.persist(core);
+        Relationship massList = RECORDS.newRelationship("mass-list",
+                                                        "A is a member of the mass list B");
 
-        Relationship massList = new Relationship("mass-list",
-                                                 "A is a member of the mass list B",
-                                                 core);
-        em.persist(massList);
-
-        Relationship massListOf = new Relationship("mass-list-of",
-                                                   "A is a mass list that has B as a member",
-                                                   core, massList);
-        em.persist(massListOf);
-        em.flush();
-        em.clear();
+        Relationship massListOf = RECORDS.newRelationship("mass-list-of",
+                                                          "A is a mass list that has B as a member",
+                                                          massList);
+        massList.insert();
+        massListOf.insert();
     }
 
     @Test
     public void setInverseTest() {
-        Relationship r = new Relationship();
-        r.setName("Foo");
+        Relationship r = RECORDS.newRelationship("Foo");
 
-        Relationship i = new Relationship();
-        i.setName("Bar");
-
-        r.setInverse(i);
+        Relationship i = RECORDS.newRelationship("Bar", r);
+        r.insert();
+        i.insert();
 
         assertNotNull(r.getInverse());
-        assertEquals(r.getInverse(), i);
+        assertEquals(i.getId(), r.getInverse());
 
         assertNotNull(i.getInverse());
-        assertEquals(i.getInverse(), r);
-    }
-
-    @Test
-    public void testInverseMerge() {
-        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-                                                       Agency.class);
-        query.setParameter("name", "CoREd");
-        Agency core = query.getSingleResult();
-
-        Relationship relationship = new Relationship();
-        relationship.setName("Foo");
-        relationship.setUpdatedBy(core);
-        em.persist(relationship);
-
-        Relationship inverse = new Relationship();
-        inverse.setName("Bar");
-        inverse.setUpdatedBy(core);
-        em.persist(inverse);
-
-        relationship.setInverse(inverse);
-
-        assertNotNull(relationship.getInverse());
-        assertEquals(inverse, relationship.getInverse());
-
-        assertNotNull(inverse.getInverse());
-        assertEquals(relationship, inverse.getInverse());
-
-        System.out.println("R: " + relationship);
-        System.out.println("I: " + relationship.getInverse());
-
-        Relationship r1 = em.merge(relationship);
-
-        System.out.println("R1: " + r1);
-        System.out.println("I1: " + r1.getInverse());
-
-        System.out.println("R1 Class: " + r1.getClass());
-        System.out.println("I1 Class: " + r1.getInverse()
-                                            .getClass());
-
-        assertNotNull(r1.getInverse());
+        assertEquals(r.getId(), i.getInverse());
     }
 }

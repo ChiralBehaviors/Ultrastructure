@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
@@ -40,8 +40,9 @@ public class WorkspaceScope {
 
     public WorkspaceScope(Map<String, WorkspaceAccessor> imports,
                           WorkspaceAccessor workspace) {
-        if (imports != null)
+        if (imports != null) {
             this.imports.putAll(imports);
+        }
         this.workspace = workspace;
     }
 
@@ -55,27 +56,28 @@ public class WorkspaceScope {
 
     /**
      * Lookup the key in the named scope of the receiver
-     * 
+     *
      * @param key
      * @return the value associated with the key in the named scope, or null
      */
-    public Ruleform lookup(Key key) {
+    @SuppressWarnings("unchecked")
+    public <T> T lookup(Key key) {
         String namespace = key.namespace();
         String name = key.name();
-        return lookup(namespace, name);
+        return (T) lookup(namespace, name);
     }
 
     /**
      * Lookup the key in the hierarchical scope of the receiver, searching first
      * in the receiver, then through the ordered list of imported scopes
-     * 
+     *
      * @param key
      *            the simple name of the ruleform
      * @return the value associated with the key in the reciever scope, or from
      *         an imported scope, or null if this simple name is not defined
      */
-    public Ruleform lookup(String key) {
-        Ruleform ruleform = workspace.get(key);
+    public <T> T lookup(String key) {
+        T ruleform = workspace.get(key);
         if (ruleform != null) {
             return ruleform;
         }
@@ -91,13 +93,13 @@ public class WorkspaceScope {
 
     /**
      * Lookup the key in the named scope of the receiver
-     * 
+     *
      * @param namespace
      * @param name
      * @return the value associated with the key in the named scope, or null
      */
     @SuppressWarnings("unchecked")
-    public <T extends Ruleform> T lookup(String namespace, String name) {
+    public <T> T lookup(String namespace, String name) {
         // null and empty string is alias for null scoped lookup in the workspace
         if (namespace == null || namespace.length() == 0) {
             return (T) lookup(name);
@@ -108,6 +110,47 @@ public class WorkspaceScope {
                                                              namespace));
         }
         T member = workspace.get(name);
+        if (member == null) {
+            throw new IllegalArgumentException(String.format("Member %s::%s does not exist",
+                                                             namespace, name));
+        }
+        return member;
+    }
+
+    /**
+     * @param name
+     * @return
+     */
+    public UUID lookupId(String name) {
+        UUID ruleform = workspace.getId(name);
+        if (ruleform != null) {
+            return ruleform;
+        }
+        for (WorkspaceAccessor accessor : sortedImports) {
+            ruleform = accessor.getScope()
+                               .lookupId(name);
+            if (ruleform != null) {
+                return ruleform;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Answer the reference id
+     *
+     */
+    public UUID lookupId(String namespace, String name) {
+        // null and empty string is alias for null scoped lookup in the workspace
+        if (namespace == null || namespace.length() == 0) {
+            return lookupId(name);
+        }
+        WorkspaceAccessor workspace = imports.get(namespace);
+        if (workspace == null) {
+            throw new IllegalArgumentException(String.format("Namespace %s does not exist",
+                                                             namespace));
+        }
+        UUID member = workspace.getId(name);
         if (member == null) {
             throw new IllegalArgumentException(String.format("Member %s::%s does not exist",
                                                              namespace, name));
@@ -149,7 +192,7 @@ public class WorkspaceScope {
         sortedImports.add(workspace);
     }
 
-    protected Ruleform localLookup(String key, Model model) {
+    protected <T> T localLookup(String key, Model model) {
         return workspace.get(key);
     }
 }

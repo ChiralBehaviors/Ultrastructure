@@ -8,19 +8,20 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="location" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
-                w.name AS workspace, 
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 l.id, 
                 l.name, 
                 l.description, 
                 l.notes, 
                 r.name AS updated_by, 
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 l.version
-			   FROM location l
-			   JOIN agency r ON l.updated_by = r.id
-             LEFT JOIN ruleform.workspace_authorization wa ON r.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM existential l
+			   JOIN existential r ON l.updated_by = r.id
+             LEFT JOIN workspace_authorization wa ON r.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+               WHERE l.domain = 'Location'
             ]]>
         </createView>
     </changeSet>

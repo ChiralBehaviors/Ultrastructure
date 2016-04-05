@@ -9,24 +9,11 @@
     <logger name="com.chiralbehaviors.CoRE">
         <level value="INFO" />
     </logger>
-    <logger name="com.mchange">
-        <level value="WARN" />
-    </logger>
-    <logger name="org.hibernate">
-        <level value="WARN" />
-    </logger> 
-    <logger name="org.hibernate.test">
-        <level value="WARN" />
-    </logger> 
-    <logger name="org.hibernate.SQL">
-        <level value="WARN" />
-    </logger> 
-    <logger name="org.hibernate.type">
-        <level value="WARN" />
+    <logger name="org.jooq">
+        <level value="INFO" />
     </logger> 
     <root>
-        <level value="WARN" />
+        <level value="INFO" />
         <appender-ref ref="C" />
     </root>
-
 </configuration>

@@ -6,7 +6,7 @@
 >
 
     <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" remarks="Rules for generating masks for the protocol ruleform" tableName="meta_protocol">
+        <createTable schemaName="ruleform" tableName="meta_protocol">
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="meta_protocol_pkey" />
@@ -14,9 +14,7 @@
             <column name="service" remarks="The service we are creating a mask for" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="sequence_number" remarks="Ordering and uniqueness, for when a service can have multiple meta-protocol rules"
-                type="INT4"
-            >
+            <column name="sequence_number" type="INT4" defaultValue="0">
                 <constraints nullable="false" />
             </column>
             <column name="requester" type="uuid">
@@ -25,10 +23,13 @@
             <column name="assign_to" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="service_type" remarks="Used to select a mapped value from a Product" type="uuid">
+            <column name="service_type" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product" remarks="Used to select a mapped value from a Product" type="uuid">
+            <column name="status" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="deliver_to" type="uuid">
@@ -42,38 +43,43 @@
             </column>
             <column defaultValueBoolean="false" name="stop_on_match" type="boolean" />
             <column name="notes" remarks="Additional notes regarding usage of the metaprotocol" type="TEXT" />
-            <column name="updated_by"  defaultValue= "'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"
+                type="uuid"
+            >
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from" baseTableName="meta_protocol" constraintName="meta_protocol_deliver_from_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to" baseTableName="meta_protocol" constraintName="meta_protocol_deliver_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product" baseTableName="meta_protocol" constraintName="meta_protocol_product_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requester" baseTableName="meta_protocol" constraintName="meta_protocol_requester_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to" baseTableName="meta_protocol" constraintName="meta_protocol_assign_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="meta_protocol" constraintName="meta_protocol_service_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status" baseTableName="meta_protocol" constraintName="meta_protocol_status_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service_type" baseTableName="meta_protocol" constraintName="meta_protocol_service_type_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="meta_protocol" constraintName="meta_protocol_quantity_unit_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="meta_protocol" constraintName="meta_protocol_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
         <addUniqueConstraint schemaName="ruleform" columnNames="service, sequence_number" constraintName="meta_protocol_service_sequence_number_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="meta_protocol" />
         <createIndex schemaName="ruleform" indexName="meta_protocol_updated_by_fkey_idx" tableName="meta_protocol" unique="false">
@@ -83,7 +89,7 @@
             <column name="service" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="meta_protocol" constraintName="meta_protocol_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="workspace" baseTableName="meta_protocol" constraintName="meta_protocol_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

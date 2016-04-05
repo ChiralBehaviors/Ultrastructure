@@ -25,10 +25,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -39,22 +38,25 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
 
     @Test
     public void test2InitialStates() throws SQLException {
-        Agency core = kernel.getCore();
-        Product service = kernel.getNotApplicableProduct();
-        StatusCode a = new StatusCode("A", null, core);
-        em.persist(a);
-        StatusCode b = new StatusCode("B", null, core);
-        em.persist(b);
-        StatusCode x = new StatusCode("X", null, core);
-        em.persist(x);
+        Product service = model.getKernel()
+                               .getNotApplicableProduct();
+        StatusCode a = model.records()
+                            .newStatusCode("A", null);
+        a.insert();
+        StatusCode b = model.records()
+                            .newStatusCode("B", null);
+        b.insert();
+        StatusCode x = model.records()
+                            .newStatusCode("X", null);
+        x.insert();
 
         List<Tuple<StatusCode, StatusCode>> codes = new ArrayList<>();
         codes.add(new Tuple<StatusCode, StatusCode>(a, x));
         codes.add(new Tuple<StatusCode, StatusCode>(b, x));
         model.getJobModel()
-             .createStatusCodeSequencings(service, codes, core);
+             .createStatusCodeSequencings(service, codes);
         try {
-            em.flush();
+            model.flush();
             fail("Insert should not have succeeded");
         } catch (Exception e) {
             // expected

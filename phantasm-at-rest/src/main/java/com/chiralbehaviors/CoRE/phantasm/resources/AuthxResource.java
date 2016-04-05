@@ -20,13 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -40,19 +40,19 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.auth.Auth;
 
@@ -63,75 +63,22 @@ import io.dropwizard.auth.Auth;
 @Path("oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthxResource extends TransactionalResource {
-
     public static class CapabilityRequest {
         public List<UUID> capabilities = Collections.emptyList();
         public String     password;
         public String     username;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(AuthxResource.class);
-    private final Attribute     login;
+    private static final Logger log    = LoggerFactory.getLogger(AuthxResource.class);
 
-    public AuthxResource(EntityManagerFactory emf) {
-        super(emf);
-        try (Model model = new ModelImpl(emf)) {
-            login = model.getKernel()
-                         .getLogin();
-        }
-    }
+    private final static String PREFIX = "Bearer";
 
-    @POST
-    @Path("login")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public UUID loginForToken(@FormParam("username") String username,
-                              @FormParam("password") String password,
-                              @Context HttpServletRequest httpRequest) {
-        return perform(null, model -> {
-            Credential cred = new Credential();
-            cred.ip = httpRequest.getRemoteAddr();
-            return generateToken(cred, authenticate(username, password, model),
-                                 model).getId();
-        });
-    }
-
-    @POST
-    @Path("deauthorize")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void deauthorize(@Auth AuthorizedPrincipal principal,
-                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken) {
-        perform(principal, model -> {
-            UUID uuid = UUID.fromString(UsOAuthFactory.parse(bearerToken));
-            EntityManager em = model.getEntityManager();
-            em.remove(em.find(AgencyAttribute.class, uuid));
-            Agency user = principal.getPrincipal();
-            log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
-                     user.getName());
-            return null;
-        });
-    }
-
-    @POST
-    @Path("capability")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public UUID requestCapability(CapabilityRequest request,
-                                  @Context HttpServletRequest httpRequest) {
-        return perform(null, model -> {
-            Credential cred = new Credential();
-            cred.capabilities = request.capabilities;
-            cred.ip = httpRequest.getRemoteAddr();
-            return generateToken(cred,
-                                 authenticate(request.username,
-                                              request.password, model),
-                                 model).getId();
-        });
-    }
-
-    private CoreUser authenticate(String username, String password,
-                                  Model model) {
-        AgencyAttribute attributeValue = new AgencyAttribute(login);
-        attributeValue.setValue(username);
-        List<Agency> agencies = model.find(attributeValue);
+    public static CoreUser authenticate(String username, String password,
+                                        Model model) {
+        List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
+                                                            .findByAttributeValue(model.getKernel()
+                                                                                       .getLogin(),
+                                                                                  username);
         if (agencies.size() > 1) {
             log.error(String.format("Multiple agencies with login name %s",
                                     username));
@@ -149,33 +96,115 @@ public class AuthxResource extends TransactionalResource {
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
+        log.info(String.format("Login successful for %s:%s", username,
+                               user.getRuleform()
+                                   .getId()));
         return user;
     }
 
-    private AgencyAttribute generateToken(Credential cred, CoreUser user,
-                                          Model model) {
-        EntityManager em = model.getEntityManager();
-        em.getTransaction()
-          .begin();
-        List<AgencyAttribute> values = model.getAgencyModel()
-                                            .getAttributeValues(user.getRuleform(),
-                                                                model.getKernel()
-                                                                     .getAccessToken());
+    public static void deauthorize(AuthorizedPrincipal principal,
+                                   String bearerToken, Model model) {
+        UUID uuid = UUID.fromString(parse(bearerToken));
+        ExistentialAttributeRecord record = model.create()
+                                                 .selectFrom(EXISTENTIAL_ATTRIBUTE)
+                                                 .where(EXISTENTIAL_ATTRIBUTE.ID.equal(uuid))
+                                                 .fetchOne();
+        if (record != null) {
+            record.delete();
+        }
+
+        Agency user = principal.getPrincipal();
+        log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
+                 user.getName());
+    }
+
+    public static ExistentialAttributeRecord generateToken(Credential cred,
+                                                           CoreUser user,
+                                                           Model model) {
+        List<ExistentialAttributeRecord> values = model.getPhantasmModel()
+                                                       .getAttributeValues(user.getRuleform(),
+                                                                           model.getKernel()
+                                                                                .getAccessToken());
         int seqNum = values.isEmpty() ? 0 : values.get(values.size() - 1)
                                                   .getSequenceNumber()
                                             + 1;
-        AgencyAttribute accessToken = new AgencyAttribute(user.getRuleform(),
-                                                          model.getKernel()
-                                                               .getAccessToken(),
-                                                          model.getCurrentPrincipal()
-                                                               .getPrincipal());
-        accessToken.setValue(cred);
+        ExistentialAttributeRecord accessToken = model.records()
+                                                      .newExistentialAttribute(user.getRuleform(),
+                                                                               model.getKernel()
+                                                                                    .getAccessToken());
+        accessToken.setJsonValue(new ObjectMapper().valueToTree(cred));
         accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
         accessToken.setSequenceNumber(seqNum);
-        model.getEntityManager()
-             .persist(accessToken);
-        em.getTransaction()
-          .commit();
+        accessToken.insert();
         return accessToken;
+    }
+
+    public static UUID loginUuidForToken(String username, String password,
+                                         HttpServletRequest httpRequest,
+                                         Model model) {
+        Credential cred = new Credential();
+        cred.ip = httpRequest.getRemoteAddr();
+        return generateToken(cred, authenticate(username, password, model),
+                             model).getId();
+    }
+
+    public static String parse(String header) {
+        if (header == null) {
+            return null;
+        }
+        final int space = header.indexOf(' ');
+        if (space > 0) {
+            final String method = header.substring(0, space);
+            if (PREFIX.equalsIgnoreCase(method)) {
+                return header.substring(space + 1);
+            }
+        }
+        return null;
+    }
+
+    public static UUID requestCapability(CapabilityRequest request,
+                                         HttpServletRequest httpRequest,
+                                         Model model) {
+        Credential cred = new Credential();
+        cred.capabilities = request.capabilities;
+        cred.ip = httpRequest.getRemoteAddr();
+        return generateToken(cred, authenticate(request.username,
+                                                request.password, model),
+                             model).getId();
+    }
+
+    @POST
+    @Path("deauthorize")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deauthorize(@Auth AuthorizedPrincipal principal,
+                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken,
+                            @Context DSLContext create) {
+        mutate(principal, model -> {
+            deauthorize(principal, bearerToken, model);
+            return null;
+        }, create);
+    }
+
+    @POST
+    @Path("login")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public UUID loginForToken(@FormParam("username") String username,
+                              @FormParam("password") String password,
+                              @Context HttpServletRequest httpRequest,
+                              @Context DSLContext create) {
+        return mutate(null, model -> {
+            return loginUuidForToken(username, password, httpRequest, model);
+        }, (DSLContext) create);
+    }
+
+    @POST
+    @Path("capability")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public UUID requestCapability(CapabilityRequest request,
+                                  @Context HttpServletRequest httpRequest,
+                                  @Context DSLContext create) {
+        return mutate(null, model -> {
+            return requestCapability(request, httpRequest, model);
+        }, create);
     }
 }

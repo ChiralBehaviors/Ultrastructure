@@ -21,14 +21,16 @@
 package com.chiralbehaviors.CoRE.kernel;
 
 /**
+ * If you forget to disable this during non bootstrap debugging, you will be
+ * lost in a twisty maze of uuids that look all alike. This test is stateful.
+ * 
  * @author hhildebrand
  *
  */
 public class BootstrapTest {
-    // uncomment to test zee bootstrapping. commented out because pretty much everything tests bootstrapping
-    // @Test
+    //@Test
     public void testBootstrap() throws Exception {
-        Bootstrap.main(new String[] { "target/test-classes/jpa.properties",
+        Bootstrap.main(new String[] { "target/test-classes/db.properties",
                                       "target/bootstrap-out.json" });
     }
 }

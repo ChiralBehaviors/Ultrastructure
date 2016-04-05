@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 
 /**
  * Use Tarjan's algorithm to detect all strongly-connected components (SCCs) in
@@ -51,27 +51,26 @@ public class SCC {
         return result;
     }
 
-    public void visit(StatusCode StatusCode) {
-        if (low.containsKey(StatusCode)) {
+    public void visit(StatusCode statusCode) {
+        if (low.containsKey(statusCode)) {
             return;
         }
         int num = low.size();
-        low.put(StatusCode, num);
+        low.put(statusCode, num);
         int stackPos = stack.size();
-        stack.add(StatusCode);
-        for (StatusCode successor : graph.get(StatusCode)) {
+        stack.add(statusCode);
+        for (StatusCode successor : graph.get(statusCode)) {
             visit(successor);
-            low.put(StatusCode,
-                    Math.min(low.get(StatusCode), low.get(successor)));
+            low.put(statusCode,
+                    Math.min(low.get(statusCode), low.get(successor)));
         }
 
-        if (num == low.get(StatusCode)
+        if (num == low.get(statusCode)
                       .intValue()) {
             List<StatusCode> component = stack.subList(stackPos, stack.size());
             stack = stack.subList(0, stackPos);
 
-            if (component.size() > 1) {// ignore trivial SCCs of a single
-                // StatusCode
+            if (component.size() > 1) {
                 StatusCode[] array = component.toArray(new StatusCode[component.size()]);
                 result.add(array);
             }

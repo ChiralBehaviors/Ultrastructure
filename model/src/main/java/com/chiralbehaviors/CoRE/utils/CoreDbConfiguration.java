@@ -85,12 +85,17 @@ public class CoreDbConfiguration {
             initializeFromEnvironment();
         }
         String url = getCoreJdbcURL();
-        System.out.println(String.format("core connection: %s", url));
-        return DriverManager.getConnection(url, coreUsername, corePassword);
+        System.out.println(String.format("core connection: %s, user: %s", url,
+                                         coreUsername));
+        Connection connection = DriverManager.getConnection(url, coreUsername,
+                                                            corePassword);
+        connection.setAutoCommit(false);
+        return connection;
     }
 
     public String getCoreJdbcURL() {
-        return String.format(JDBC_URL, coreServer, corePort, coreDb);
+        return String.format(JDBC_URL, coreServer, corePort,
+                             coreDb.toLowerCase());
     }
 
     public void initializeFromEnvironment() {

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,16 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
  * @author hhildebrand
  *
  */
 @FunctionalInterface
-public interface StateFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    Object invoke(PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                  Object[] arguments);
+public interface StateFunction {
+    Object invoke(PhantasmTwo state, WorkspaceScope scope, Object[] arguments);
 }

@@ -22,24 +22,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hibernate4</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
@@ -53,21 +37,11 @@
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -88,10 +62,6 @@
             <artifactId>utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>schema</artifactId>
             <scope>test</scope>
@@ -101,62 +71,11 @@
     <build>
         <resources>
             <resource>
-                <directory>${project.build.directory}/generated-resources/queries</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>2.2.4</version>
-                <executions>
-                    <execution>
-                        <id>process</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <optionMap>
-                                <addSuppressWarningsAnnotation>true</addSuppressWarningsAnnotation>
-                            </optionMap>
-                            <processors>
-                                <!-- list of processors to use -->
-                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-                            </processors>
-                            <outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>${hibernate.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>network-inference-generator</artifactId>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/generated-resources/queries</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>network-inference-generator</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -169,34 +88,164 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-resources/queries</source>
-                                <source>${project.build.directory}/generated-sources/jpa</source>
+                                <source>${project.build.directory}/generated-sources/jooq</source>
                             </sources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                <version>${hibernate.version}</version>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.driver.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                    <driver>${jdbc.driver}</driver>
+                    <url>${jdbc.url}</url>
+                    <username>${db.login}</username>
+                    <password>${db.password}</password>
+                    <verbose>true</verbose>
+                    <expressionVars>
+                        <property>
+                            <name>create.db.database</name>
+                            <value>${db.database}</value>
+                        </property>
+                        <property>
+                            <name>create.db.role</name>
+                            <value>${db.login}</value>
+                        </property>
+                        <property>
+                            <name>create.db.password</name>
+                            <value>${db.password}</value>
+                        </property>
+                    </expressionVars>
+                </configuration>
                 <executions>
-                <execution>
-                <phase>compile</phase>
-                <goals>
-                <goal>enhance</goal>
-                </goals>
-                </execution>
+                    <execution>
+                        <id>initialize database</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                        <configuration>
+                            <changeLogFile>initialize.xml</changeLogFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>update database</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                        <configuration>
+                            <changeLogFile>com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.7.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
                 </executions>
                 <dependencies>
-                <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
-                </dependency>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.driver.version}</version>
+                    </dependency>
                 </dependencies>
-                </plugin> -->
+                <configuration>
+                    <jdbc>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>${jdbc.url}</url>
+                        <user>${db.login}</user>
+                        <password>${db.password}</password>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.util.postgres.PostgresDatabase</name>
+                            <includes>.*</includes>
+                            <excludes></excludes>
+                            <inputSchema>ruleform</inputSchema>
+                            <recordVersionFields>version</recordVersionFields>
+                            <customTypes>
+                                <customType>
+                                    <name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
+                                    <type>com.fasterxml.jackson.databind.JsonNode</type>
+                                    <binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
+                                </customType>
+                            </customTypes>
+                            <forcedTypes>
+                                <forcedType>
+                                    <name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
+                                    <expression>.*json_value.*</expression>
+                                </forcedType>
+                            </forcedTypes>
+                        </database>
+                        <target>
+                            <packageName>com.chiralbehaviors.CoRE.jooq</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.liquibase</groupId>
+                                        <artifactId>liquibase-maven-plugin</artifactId>
+                                        <versionRange>[3.1.1,)</versionRange>
+                                        <goals>
+                                            <goal>update</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.jooq</groupId>
+                                        <artifactId>jooq-codegen-maven</artifactId>
+                                        <versionRange>[3.7.3,)</versionRange>
+                                        <goals>
+                                            <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <profiles>
         <profile>
@@ -206,68 +255,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>database.active</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.liquibase</groupId>
-                        <artifactId>liquibase-maven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.driver.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                            <driver>${jdbc.driver}</driver>
-                            <url>${jdbc.url}</url>
-                            <username>${db.login}</username>
-                            <password>${db.password}</password>
-                            <verbose>true</verbose>
-                            <expressionVars>
-                                <property>
-                                    <name>create.db.database</name>
-                                    <value>${db.database}</value>
-                                </property>
-                                <property>
-                                    <name>create.db.role</name>
-                                    <value>${db.login}</value>
-                                </property>
-                                <property>
-                                    <name>create.db.password</name>
-                                    <value>${db.password}</value>
-                                </property>
-                            </expressionVars>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>initialize database</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>update</goal>
-                                </goals>
-                                <configuration>
-                                    <changeLogFile>initialize.xml</changeLogFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>update database</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>update</goal>
-                                </goals>
-                                <configuration>
-                                    <changeLogFile>com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

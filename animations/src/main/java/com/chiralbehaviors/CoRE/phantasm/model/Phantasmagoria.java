@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -23,95 +23,47 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor;
 
 /**
  * Bare bones metadata representation of a Phantasm facet in Java
- * 
+ *
  * @author hhildebrand
  *
  */
-public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        implements PhantasmVisitor<RuleForm, Network> {
+public class Phantasmagoria implements PhantasmVisitor {
 
-    public final Map<String, AttributeAuthorization<RuleForm, Network>> attributes            = new HashMap<>();
-    public final Map<String, NetworkAuthorization<RuleForm>>            childAuthorizations   = new HashMap<>();
-    public final NetworkAuthorization<RuleForm>                         facet;
-    public final Map<String, XDomainNetworkAuthorization<?, ?>>         xdChildAuthorizations = new HashMap<>();
+    public final Map<String, AttributeAuthorization> attributes          = new HashMap<>();
+    public final Map<String, NetworkAuthorization>   childAuthorizations = new HashMap<>();
+    public final Aspect                              facet;
 
-    public Phantasmagoria(NetworkAuthorization<RuleForm> facet) {
-        this.facet = Ruleform.initializeAndUnproxy(facet);
+    public Phantasmagoria(Aspect facet) {
+        this.facet = facet;
     }
 
-    public void traverse(NetworkAuthorization<RuleForm> facet,
-                         PhantasmTraversal<RuleForm, Network> traverser) {
+    public void traverse(PhantasmTraversal traverser) {
         traverser.traverse(facet, this);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visit(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.attribute.AttributeAuthorization, java.lang.String)
-     */
     @Override
-    public void visit(NetworkAuthorization<RuleForm> facet,
-                      AttributeAuthorization<RuleForm, Network> auth,
+    public void visit(Aspect facet, AttributeAuthorization auth,
                       String fieldName) {
-        attributes.put(fieldName, Ruleform.initializeAndUnproxy(auth));
+        attributes.put(fieldName, auth);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visitChildren(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String)
-     */
     @Override
-    public void visitChildren(NetworkAuthorization<RuleForm> facet,
-                              NetworkAuthorization<RuleForm> auth,
-                              String fieldName,
-                              NetworkAuthorization<RuleForm> child,
+    public void visitChildren(Aspect facet, NetworkAuthorization auth,
+                              String fieldName, Aspect child,
                               String singularFieldName) {
-        childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
-        Ruleform.initializeAndUnproxy(child);
+        childAuthorizations.put(fieldName, auth);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visitChildren(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization, java.lang.String, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String)
-     */
     @Override
-    public void visitChildren(NetworkAuthorization<RuleForm> facet,
-                              XDomainNetworkAuthorization<?, ?> auth,
-                              String fieldName, NetworkAuthorization<?> child,
-                              String singularFieldName) {
-        xdChildAuthorizations.put(fieldName,
-                                  Ruleform.initializeAndUnproxy(auth));
-        Ruleform.initializeAndUnproxy(child);
+    public void visitSingular(Aspect facet, NetworkAuthorization auth,
+                              String fieldName, Aspect child) {
+        childAuthorizations.put(fieldName, auth);
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visitSingular(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String, com.chiralbehaviors.CoRE.network.NetworkAuthorization)
-     */
-    @Override
-    public void visitSingular(NetworkAuthorization<RuleForm> facet,
-                              NetworkAuthorization<RuleForm> auth,
-                              String fieldName,
-                              NetworkAuthorization<RuleForm> child) {
-        childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
-        Ruleform.initializeAndUnproxy(child);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visitSingular(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization, java.lang.String, com.chiralbehaviors.CoRE.network.NetworkAuthorization)
-     */
-    @Override
-    public void visitSingular(NetworkAuthorization<RuleForm> facet,
-                              XDomainNetworkAuthorization<?, ?> auth,
-                              String fieldName, NetworkAuthorization<?> child) {
-        xdChildAuthorizations.put(fieldName,
-                                  Ruleform.initializeAndUnproxy(auth));
-        Ruleform.initializeAndUnproxy(child);
-    }
-
 }

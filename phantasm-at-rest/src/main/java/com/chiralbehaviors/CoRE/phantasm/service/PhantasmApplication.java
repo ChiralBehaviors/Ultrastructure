@@ -20,13 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.eclipse.jetty.server.Server;
 
+import com.bendb.dropwizard.jooq.JooqBundle;
+import com.bendb.dropwizard.jooq.JooqFactory;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 
 import io.dropwizard.Application;
+import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -42,13 +43,9 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
         new PhantasmApplication().run(argv);
     }
 
-    private EntityManagerFactory emf;
-    private Server               jettyServer;
-    private PhantasmBundle       service;
-
-    public EntityManagerFactory getEmf() {
-        return emf;
-    }
+    private Server                            jettyServer;
+    private PhantasmBundle                    service;
+    private JooqBundle<PhantasmConfiguration> jooqBundle;
 
     public int getPort() {
         return service.getPort();
@@ -56,8 +53,20 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
 
     @Override
     public void initialize(Bootstrap<PhantasmConfiguration> bootstrap) {
-        service = new PhantasmBundle(emf);
+        service = new PhantasmBundle();
         bootstrap.addBundle(service);
+        jooqBundle = new JooqBundle<PhantasmConfiguration>() {
+            @Override
+            public DataSourceFactory getDataSourceFactory(PhantasmConfiguration configuration) {
+                return configuration.getDatabase();
+            }
+
+            @Override
+            public JooqFactory getJooqFactory(PhantasmConfiguration configuration) {
+                return configuration.getJooq();
+            }
+        };
+        bootstrap.addBundle(jooqBundle);
     }
 
     /* (non-Javadoc)
@@ -66,16 +75,12 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
     @Override
     public void run(PhantasmConfiguration configuration,
                     Environment environment) throws Exception {
+        configuration.setJooqBundle(jooqBundle);
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
     }
 
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
-
     public void stop() {
-        emf.close();
         if (jettyServer != null) {
             try {
                 jettyServer.setStopTimeout(100);

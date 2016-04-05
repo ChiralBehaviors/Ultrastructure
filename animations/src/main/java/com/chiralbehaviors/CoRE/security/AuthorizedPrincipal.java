@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,13 +20,12 @@
 
 package com.chiralbehaviors.CoRE.security;
 
+import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.domain.Agency;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has
@@ -35,41 +34,44 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
  * @author hhildebrand
  *
  */
-public class AuthorizedPrincipal implements Cloneable {
-    private final List<AgencyNetworkAuthorization> asserted;
-    private final List<Agency>                     capabilities;
-    private final Agency                           principal;
+public class AuthorizedPrincipal implements Cloneable, Principal {
+    private final List<Agency> capabilities;
+    private final Agency       principal;
+    private final List<UUID>   asserted;
 
     /**
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal, Collections.<AgencyNetworkAuthorization> emptyList());
+        this(principal, new ArrayList<>(), new ArrayList<>());
     }
 
     /**
      * @param principal
-     * @param asserted
+     * @param capabilities2
      */
-    public AuthorizedPrincipal(Agency principal,
-                               List<AgencyNetworkAuthorization> asserted) {
+    public AuthorizedPrincipal(Agency principal, List<UUID> asserted,
+                               List<Agency> capabilities) {
         this.principal = principal;
-        this.asserted = new ArrayList<>(asserted);
-        capabilities = this.asserted.stream()
-                                       .map(auth -> auth.getClassification())
-                                       .collect(Collectors.toList());
-        capabilities.add(0, this.principal);
+        this.asserted = asserted;
+        this.capabilities = capabilities;
+        this.capabilities.add(0, this.principal);
     }
 
-    public List<AgencyNetworkAuthorization> getAsserted() {
-        return asserted;
+    public List<Agency> getCapabilities() {
+        return capabilities;
+    }
+
+    @Override
+    public String getName() {
+        return principal.getName();
     }
 
     public Agency getPrincipal() {
         return principal;
     }
 
-    public List<Agency> getCapabilities() {
-        return capabilities;
+    public List<UUID> getAsserted() {
+        return asserted;
     }
 }

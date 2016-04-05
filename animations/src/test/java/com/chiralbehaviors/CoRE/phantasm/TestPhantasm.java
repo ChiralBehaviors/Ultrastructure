@@ -20,6 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -37,28 +40,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.TypedQuery;
-
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
-import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
 
 /**
  * @author hhildebrand
@@ -66,161 +66,194 @@ import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
  */
 public class TestPhantasm extends AbstractModelTest {
 
-    @BeforeClass
-    public static void before() throws Exception {
-        em.getTransaction()
-          .begin();
-        try {
-            WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
-                                       model);
-            em.getTransaction()
-              .commit();
-        } catch (IllegalStateException e) {
-            LoggerFactory.getLogger(TestPhantasm.class)
-                         .warn(String.format("Not loading thing workspace: %s",
-                                             e.getMessage()));
-        }
+    @Before
+    public void loadThingOntology() throws Exception {
+        WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+                                   model);
     }
 
     @Test
     public void testAttributeCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
-        NetworkAuthorization<Product> facet = model.getProductModel()
-                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                     (Product) scope.lookup("Thing1")));
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(model.getKernel()
+                                                           .getIsA(),
+                                                      scope.lookup("Thing1"));
         assertNotNull(facet);
         Attribute percentage = (Attribute) scope.lookup("discount");
         assertNotNull(percentage);
 
-        TypedQuery<ProductAttributeAuthorization> query = em.createQuery("select paa from ProductAttributeAuthorization paa "
-                                                                         + "where paa.networkAuthorization = :a "
-                                                                         + "and paa.authorizedAttribute = :b",
-                                                                         ProductAttributeAuthorization.class);
-        query.setParameter("a", facet);
-        query.setParameter("b", percentage);
-        ProductAttributeAuthorization stateAuth = query.getSingleResult();
+        ExistentialAttributeAuthorizationRecord stateAuth = model.create()
+                                                                 .selectFrom(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
+                                                                 .where(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(percentage.getId()))
+                                                                 .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(facet.getId()))
+                                                                 .fetchOne();
         assertNotNull(stateAuth);
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
 
-        ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
+        ExistentialAttributeAuthorizationRecord accessAuth = model.records()
+                                                                  .newExistentialAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        em.persist(accessAuth);
+        accessAuth.setFacet(stateAuth.getFacet());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getAnyAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
 
-        accessAuth = new ProductAttributeAuthorization(kernel.getCore());
+        accessAuth = model.records()
+                          .newExistentialAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        em.persist(accessAuth);
+        accessAuth.setFacet(stateAuth.getFacet());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getSameAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getSameAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
     }
 
     @Test
     public void testChildCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
-        NetworkAuthorization<Product> facet = model.getProductModel()
-                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                     (Product) scope.lookup("Thing1")));
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(model.getKernel()
+                                                           .getIsA(),
+                                                      scope.lookup("Thing1"));
         assertNotNull(facet);
 
-        TypedQuery<ProductNetworkAuthorization> query = em.createQuery("select auth from ProductNetworkAuthorization auth "
-                                                                       + "where auth.classifier = :classifier "
-                                                                       + "and auth.classification = :classification "
-                                                                       + "and auth.childRelationship = :relationship "
-                                                                       + "and auth.authorizedRelationship = :authRel "
-                                                                       + "and auth.authorizedParent = :authParent ",
-                                                                       ProductNetworkAuthorization.class);
-        query.setParameter("classifier", kernel.getIsA());
-        query.setParameter("classification", scope.lookup("Thing1"));
-        query.setParameter("relationship", scope.lookup("thing1Of"));
-        query.setParameter("authRel", kernel.getIsA());
-        query.setParameter("authParent", scope.lookup("Thing2"));
-        ProductNetworkAuthorization stateAuth = query.getSingleResult();
+        Relationship relationship = scope.lookup("thing1Of");
+        assertNotNull(relationship);
+        ExistentialNetworkAuthorizationRecord stateAuth = model.create()
+                                                               .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
+                                                               .fetchOne();
+
         assertNotNull(stateAuth);
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
 
-        ProductNetworkAuthorization accessAuth = new ProductNetworkAuthorization(kernel.getCore());
-        accessAuth.setClassifier(stateAuth.getClassifier());
-        accessAuth.setClassification(stateAuth.getClassification());
-        accessAuth.setChildRelationship(stateAuth.getChildRelationship());
-        accessAuth.setAuthorizedRelationship(stateAuth.getAuthorizedRelationship());
-        accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        em.persist(accessAuth);
+        ExistentialNetworkAuthorizationRecord accessAuth = model.records()
+                                                                .newExistentialNetworkAuthorization();
+        accessAuth.setParent(stateAuth.getParent());
+        accessAuth.setRelationship(stateAuth.getRelationship());
+        accessAuth.setChild(stateAuth.getChild());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getAnyAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
 
-        accessAuth = new ProductNetworkAuthorization(kernel.getCore());
-        accessAuth.setClassifier(stateAuth.getClassifier());
-        accessAuth.setClassification(stateAuth.getClassification());
-        accessAuth.setChildRelationship(stateAuth.getChildRelationship());
-        accessAuth.setAuthorizedRelationship(stateAuth.getAuthorizedRelationship());
-        accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        em.persist(accessAuth);
+        accessAuth = model.records()
+                          .newExistentialNetworkAuthorization();
+        accessAuth.setParent(stateAuth.getParent());
+        accessAuth.setRelationship(stateAuth.getRelationship());
+        accessAuth.setChild(stateAuth.getChild());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getSameAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getSameAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
     }
 
     @Test
     public void testThingOntology() throws Exception {
 
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
-        Thing2 thing2 = model.construct(Thing2.class, "tasty", "chips");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
+                                        "tasty", "chips");
         assertNotNull(thing1);
         assertNotNull(thing1.getRuleform());
         assertEquals(thing1.getRuleform()
@@ -234,7 +267,6 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(BigDecimal.ONE, thing1.getPercentage());
         String[] aliases = new String[] { "foo", "bar", "baz" };
         thing1.setAliases(aliases);
-        em.flush();
         String[] alsoKnownAs = thing1.getAliases();
         assertNotNull(alsoKnownAs);
         assertArrayEquals(aliases, alsoKnownAs);
@@ -246,12 +278,12 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(0, thing1.getProperties()
                               .size());
         thing1.setProperties(properties);
-        em.flush();
         Map<String, String> newProps = thing1.getProperties();
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
 
-        Thing3 thing3a = model.construct(Thing3.class, "uncle it",
+        Thing3 thing3a = model.construct(Thing3.class,
+                                         ExistentialDomain.Product, "uncle it",
                                          "one of my favorite things");
         assertNotNull(thing2.getThing3s());
         assertEquals(0, thing2.getThing3s()
@@ -263,13 +295,13 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(0, thing2.getThing3s()
                               .size());
 
-        Thing3 thing3b = model.construct(Thing3.class, "cousin it",
+        Thing3 thing3b = model.construct(Thing3.class,
+                                         ExistentialDomain.Product, "cousin it",
                                          "another one of my favorite things");
 
         List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
         aFewOfMyFavoriteThings.add(thing3a);
         aFewOfMyFavoriteThings.add(thing3b);
-
         thing2.addThing3s(aFewOfMyFavoriteThings);
         assertEquals(2, thing2.getThing3s()
                               .size());
@@ -279,12 +311,11 @@ public class TestPhantasm extends AbstractModelTest {
 
         assertNull(thing1.getDerivedFrom());
         MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
                                                  "myartifact", "artifact");
         artifact.setType("jar");
         assertEquals("jar", artifact.getType());
-        em.flush();
         thing1.setDerivedFrom(artifact);
-        em.flush();
         assertNotNull(thing1.getDerivedFrom());
 
         assertEquals(0, thing2.getDerivedFroms()
@@ -300,6 +331,7 @@ public class TestPhantasm extends AbstractModelTest {
                               .size());
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
                                                   "myartifact2", "artifact2");
         artifact2.setType("jar");
 
@@ -319,12 +351,12 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testEnums() throws Exception {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
                                                  "myartifact", "artifact");
         artifact.setType("jar");
-        em.flush();
         artifact.setType("invalid");
         try {
-            em.flush();
+            model.flush();
             fail();
         } catch (Exception e) {
         }
@@ -332,324 +364,274 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testFacetCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
-        NetworkAuthorization<Product> facet = model.getProductModel()
-                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                     (Product) scope.lookup("Thing1")));
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(model.getKernel()
+                                                           .getIsA(),
+                                                      scope.lookup("Thing1"));
         assertNotNull(facet);
 
-        assertTrue(model.getProductModel()
-                        .checkFacetCapability(asList(kernel.getCore()), facet,
-                                              kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
 
-        ProductNetworkAuthorization accessAuth = new ProductNetworkAuthorization(kernel.getCore());
+        FacetRecord accessAuth = model.records()
+                                      .newFacet();
         accessAuth.setClassifier(facet.getClassifier());
         accessAuth.setClassification(facet.getClassification());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        em.persist(accessAuth);
+        accessAuth.setAuthority(model.getKernel()
+                                     .getAnyAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkFacetCapability(asList(kernel.getCore()), facet,
-                                               kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          facet, model.getKernel()
+                                                      .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkFacetCapability(asList(kernel.getCore()), facet,
-                                              kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
 
-        accessAuth = new ProductNetworkAuthorization(kernel.getCore());
+        accessAuth = model.records()
+                          .newFacet();
         accessAuth.setClassifier(facet.getClassifier());
         accessAuth.setClassification(facet.getClassification());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        em.persist(accessAuth);
+        accessAuth.setAuthority(model.getKernel()
+                                     .getSameAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkFacetCapability(asList(kernel.getCore()), facet,
-                                               kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          facet, model.getKernel()
+                                                      .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getSameAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkFacetCapability(asList(kernel.getCore()), facet,
-                                              kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
     }
 
     @Test
     public void testInstanceCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
 
-        Product instance = thing1.getRuleform();
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), instance,
-                                         kernel.getHadMember()));
+        Product instance = (Product) thing1.getRuleform();
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
 
-        AgencyProductGrouping accessAuth = new AgencyProductGrouping();
-        accessAuth.setUpdatedBy(kernel.getCore());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        accessAuth.setEntity(instance);
-        em.persist(accessAuth);
+        AgencyExistentialGroupingRecord accessAuth = model.records()
+                                                          .newExistentialGrouping();
+        accessAuth.setUpdatedBy(model.getKernel()
+                                     .getCore()
+                                     .getId());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getAnyAgency()
+                                     .getId());
+        accessAuth.setEntity(instance.getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), instance,
-                                          kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), instance,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
 
-        accessAuth = new AgencyProductGrouping();
-        accessAuth.setUpdatedBy(kernel.getCore());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        accessAuth.setEntity(instance);
-        em.persist(accessAuth);
+        accessAuth = model.records()
+                          .newExistentialGrouping();
+        accessAuth.setUpdatedBy(model.getKernel()
+                                     .getCore()
+                                     .getId());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getSameAgency()
+                                     .getId());
+        accessAuth.setEntity(instance.getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), instance,
-                                          kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getSameAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), instance,
-                                         kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
     }
 
     @Test
     public void testNetworkAttributeCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
 
         WorkspaceScope scope = thing1.getScope();
 
-        TypedQuery<ProductNetworkAuthorization> query1 = em.createQuery("select auth from ProductNetworkAuthorization auth "
-                                                                        + "where auth.classifier = :classifier "
-                                                                        + "and auth.classification = :classification "
-                                                                        + "and auth.childRelationship = :relationship "
-                                                                        + "and auth.authorizedRelationship = :authRel "
-                                                                        + "and auth.authorizedParent = :authParent ",
-                                                                        ProductNetworkAuthorization.class);
-        query1.setParameter("classifier", kernel.getIsA());
-        query1.setParameter("classification", scope.lookup("Thing1"));
-        query1.setParameter("relationship", scope.lookup("thing1Of"));
-        query1.setParameter("authRel", kernel.getIsA());
-        query1.setParameter("authParent", scope.lookup("Thing2"));
-        ProductNetworkAuthorization auth = query1.getSingleResult();
-
-        assertNotNull(auth);
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(model.getKernel()
+                                                           .getIsA(),
+                                                      scope.lookup("Thing1"));
 
         Attribute aliases = (Attribute) scope.lookup("aliases");
         assertNotNull(aliases);
 
-        TypedQuery<ProductAttributeAuthorization> query = em.createQuery("select paa from ProductAttributeAuthorization paa "
-                                                                         + "where paa.networkAuthorization = :a "
-                                                                         + "and paa.authorizedNetworkAttribute = :b",
-                                                                         ProductAttributeAuthorization.class);
-        query.setParameter("a", auth);
-        query.setParameter("b", aliases);
-        ProductAttributeAuthorization stateAuth = query.getSingleResult();
+        Relationship relationship = scope.lookup("thing1Of");
+        assertNotNull(relationship);
+
+        ExistentialNetworkAuthorizationRecord auth = model.create()
+                                                          .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                          .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
+                                                          .fetchOne();
+
+        assertNotNull(auth);
+
+        ExistentialNetworkAttributeAuthorizationRecord stateAuth = model.create()
+                                                                        .selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
+                                                                        .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(auth.getId()))
+                                                                        .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(aliases.getId()))
+                                                                        .fetchOne();
+
         assertNotNull(stateAuth);
 
-        assertTrue(model.getProductModel()
-                        .checkNetworkCapability(asList(kernel.getCore()),
-                                                stateAuth,
-                                                kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
 
-        ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
-        accessAuth.setAuthorizedNetworkAttribute(stateAuth.getAuthorizedNetworkAttribute());
+        ExistentialNetworkAttributeAuthorizationRecord accessAuth = model.records()
+                                                                         .newExistentialNetworkAttributeAuthorization();
+        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        em.persist(accessAuth);
+        accessAuth.setAuthority(model.getKernel()
+                                     .getAnyAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        assertFalse(model.getProductModel()
-                         .checkNetworkCapability(asList(kernel.getCore()),
-                                                 stateAuth,
-                                                 kernel.getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
 
-        assertTrue(model.getProductModel()
-                        .checkNetworkCapability(asList(kernel.getCore()),
-                                                stateAuth,
-                                                kernel.getHadMember()));
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
 
-        accessAuth = new ProductAttributeAuthorization(kernel.getCore());
-        accessAuth.setAuthorizedNetworkAttribute(stateAuth.getAuthorizedNetworkAttribute());
+        accessAuth = model.records()
+                          .newExistentialNetworkAttributeAuthorization();
+        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        em.persist(accessAuth);
 
-        assertFalse(model.getProductModel()
-                         .checkNetworkCapability(asList(kernel.getCore()),
-                                                 stateAuth,
-                                                 kernel.getHadMember()));
+        accessAuth.setAuthority(model.getKernel()
+                                     .getSameAgency()
+                                     .getId());
+        accessAuth.insert();
 
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+        assertFalse(model.getPhantasmModel()
+                         .checkCapability(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
 
-        assertTrue(model.getProductModel()
-                        .checkNetworkCapability(asList(kernel.getCore()),
-                                                stateAuth,
-                                                kernel.getHadMember()));
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getSameAgency());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkCapability(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
     }
 
     @Test
     public void testThis() throws InstantiationException {
 
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
-        Product child = model.getProductModel()
-                             .getChild(thing1.getScope()
-                                             .getWorkspace()
-                                             .getDefiningProduct(),
-                                       model.getKernel()
-                                            .getHasMember());
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        Product child = (Product) model.getPhantasmModel()
+                                       .getChild(thing1.getScope()
+                                                       .getWorkspace()
+                                                       .getDefiningProduct(),
+                                                 model.getKernel()
+                                                      .getHasMember(),
+                                                 ExistentialDomain.Product);
         assertEquals("Thing1", child.getName());
-    }
-
-    @Test
-    public void testXdChildCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
-
-        WorkspaceScope scope = thing1.getScope();
-        NetworkAuthorization<Product> facet = model.getProductModel()
-                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                     (Product) scope.lookup("Thing1")));
-        assertNotNull(facet);
-
-        TypedQuery<ProductLocationAuthorization> query = em.createQuery("select auth from ProductLocationAuthorization auth "
-                                                                        + "where auth.fromRelationship = :fromRelationship "
-                                                                        + "and auth.fromParent = :fromParent "
-                                                                        + "and auth.connection = :connection "
-                                                                        + "and auth.toRelationship = :toRelationship "
-                                                                        + "and auth.toParent = :toParent ",
-                                                                        ProductLocationAuthorization.class);
-        query.setParameter("fromRelationship", kernel.getIsA());
-        query.setParameter("fromParent", scope.lookup("Thing1"));
-        query.setParameter("connection", scope.lookup("derivedFrom"));
-        query.setParameter("toRelationship", kernel.getIsA());
-        query.setParameter("toParent", scope.lookup("MavenArtifact"));
-        ProductLocationAuthorization stateAuth = query.getSingleResult();
-        assertNotNull(stateAuth);
-
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
-
-        ProductLocationAuthorization accessAuth = new ProductLocationAuthorization(kernel.getCore());
-        accessAuth.setFromRelationship(stateAuth.getFromRelationship());
-        accessAuth.setFromParent(stateAuth.getFromParent());
-        accessAuth.setConnection(stateAuth.getConnection());
-        accessAuth.setToRelationship(stateAuth.getToRelationship());
-        accessAuth.setToParent(stateAuth.getToParent());
-        accessAuth.setCardinality(stateAuth.getCardinality());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        em.persist(accessAuth);
-        assertNotNull(stateAuth);
-
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
-
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
-
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
-
-        accessAuth = new ProductLocationAuthorization(kernel.getCore());
-        accessAuth.setFromRelationship(stateAuth.getFromRelationship());
-        accessAuth.setFromParent(stateAuth.getFromParent());
-        accessAuth.setConnection(stateAuth.getConnection());
-        accessAuth.setToRelationship(stateAuth.getToRelationship());
-        accessAuth.setToParent(stateAuth.getToParent());
-        accessAuth.setCardinality(stateAuth.getCardinality());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        em.persist(accessAuth);
-        assertNotNull(stateAuth);
-
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
-
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
-
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
-    }
-
-    @Test
-    public void testXdNetworkAttributeCapabilities() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
-
-        WorkspaceScope scope = thing1.getScope();
-        Attribute aliases = (Attribute) scope.lookup("aliases");
-        assertNotNull(aliases);
-
-        TypedQuery<ProductLocationAttributeAuthorization> query = em.createQuery("select paa from ProductLocationAttributeAuthorization paa "
-                                                                                 + "where paa.authorizedAttribute = :b",
-                                                                                 ProductLocationAttributeAuthorization.class);
-        query.setParameter("b", aliases);
-        ProductLocationAttributeAuthorization stateAuth = query.getSingleResult();
-        assertNotNull(stateAuth);
-
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
-
-        ProductLocationAttributeAuthorization accessAuth = new ProductLocationAttributeAuthorization(kernel.getCore());
-        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setGroupingAgency(kernel.getAnyAgency());
-        em.persist(accessAuth);
-
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
-
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
-
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
-
-        accessAuth = new ProductLocationAttributeAuthorization(kernel.getCore());
-        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setGroupingAgency(kernel.getSameAgency());
-        em.persist(accessAuth);
-
-        assertFalse(model.getProductModel()
-                         .checkCapability(asList(kernel.getCore()), stateAuth,
-                                          kernel.getHadMember()));
-
-        model.getAgencyModel()
-             .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
-
-        assertTrue(model.getProductModel()
-                        .checkCapability(asList(kernel.getCore()), stateAuth,
-                                         kernel.getHadMember()));
     }
 
 }

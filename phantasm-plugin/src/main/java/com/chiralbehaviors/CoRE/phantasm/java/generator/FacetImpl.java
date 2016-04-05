@@ -31,8 +31,8 @@ import java.util.Set;
 
 import org.antlr.v4.runtime.Token;
 
+import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.utils.English;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
@@ -172,9 +172,22 @@ public class FacetImpl implements Facet {
             imports.add(type.getImport());
         }
         ScopedName key = new ScopedName(constraint.childRelationship);
-        Cardinality cardinality = Enum.valueOf(Cardinality.class,
-                                               constraint.cardinality.getText()
-                                                                     .toUpperCase());
+        Cardinality cardinality;
+        switch (constraint.cardinality.getText()
+                                      .toUpperCase()) {
+            case "ONE":
+                cardinality = Cardinality._1;
+                break;
+            case "ZERO":
+                cardinality = Cardinality.Zero;
+                break;
+            case "N":
+                cardinality = Cardinality.N;
+                break;
+            default:
+                throw new IllegalStateException(String.format("Unknown cardinality: %s",
+                                                              constraint.cardinality.getText()));
+        }
         String className = type.getClassName();
         String baseName = WorkspacePresentation.networkAuthNameOf(constraint);
         baseName = Character.toUpperCase(baseName.charAt(0))
@@ -185,7 +198,7 @@ public class FacetImpl implements Facet {
                         + (parameterName.length() == 1 ? ""
                                                        : parameterName.substring(1));
         switch (cardinality) {
-            case ONE: {
+            case _1: {
                 relationshipGetters.add(new Getter(key,
                                                    String.format("get%s",
                                                                  baseName),

@@ -8,47 +8,51 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="protocol" replaceIfExists="true"><![CDATA[
              SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                 base_table.id,
                 base_table.name,
                 s.name AS service,
-                p.name AS product,
-                r.name AS requester,
-                dt.name AS deliver_to,
-                df.name AS deliver_from,
-                assign.name AS assign_to,
+                sc.name AS status,
                 base_table.quantity,
                 u.name AS quantity_unit, 
+                p.name AS product,
+                assign.name AS assign_to,
+                r.name AS requester,
+                df.name AS deliver_from,
+                dt.name AS deliver_to,
                 cs.name AS child_service,
-                cp.name AS child_product,
-                cat.name AS child_assign_to,
+                csc.name AS child_status,
                 base_table.child_quantity,
                 cqu.name AS child_quantity_unit,
-                cdt.name AS child_deliver_to,
+                cp.name AS child_product,
+                cat.name AS child_assign_to,
                 cdf.name AS child_deliver_from, 
+                cdt.name AS child_deliver_to,
                 base_table.sequence_number,
                 base_table.notes,
                 up.name AS updated_by,
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 base_table.version
-               FROM ruleform.protocol base_table
-               JOIN ruleform.product s ON base_table.service = s.id
-               JOIN ruleform.product p ON base_table.product = p.id
-               JOIN ruleform.agency r ON base_table.requester = r.id
-               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
-               JOIN ruleform.location df ON base_table.deliver_from = df.id
-               JOIN ruleform.agency assign ON base_table.assign_to = assign.id
-               JOIN ruleform.unit u ON base_table.quantity_unit = u.id
-               JOIN ruleform.unit cqu ON base_table.child_quantity_unit = cqu.id 
-               JOIN ruleform.product cs ON base_table.child_service = cs.id
-               JOIN ruleform.product cp ON base_table.child_product = cp.id
-               JOIN ruleform.agency cat ON base_table.child_assign_to = cat.id
-               JOIN ruleform.location cdt ON base_table.child_deliver_to = cdt.id
-               JOIN ruleform.location cdf ON base_table.child_deliver_from = cdf.id
-               JOIN ruleform.agency up ON base_table.updated_by = up.id
-               LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
-               LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+               FROM protocol base_table
+               JOIN existential s ON base_table.service = s.id
+               JOIN existential sc ON base_table.status = sc.id
+               JOIN existential csc ON base_table.child_status = csc.id
+               JOIN existential p ON base_table.product = p.id
+               JOIN existential r ON base_table.requester = r.id
+               JOIN existential dt ON base_table.deliver_to = dt.id
+               JOIN existential df ON base_table.deliver_from = df.id
+               JOIN existential assign ON base_table.assign_to = assign.id
+               JOIN existential u ON base_table.quantity_unit = u.id
+               JOIN existential cqu ON base_table.child_quantity_unit = cqu.id 
+               JOIN existential cs ON base_table.child_service = cs.id
+               JOIN existential cp ON base_table.child_product = cp.id
+               JOIN existential cat ON base_table.child_assign_to = cat.id
+               JOIN existential cdt ON base_table.child_deliver_to = cdt.id
+               JOIN existential cdf ON base_table.child_deliver_from = cdf.id
+               JOIN existential up ON base_table.updated_by = up.id
+               LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+               LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
         </createView>
     </changeSet>

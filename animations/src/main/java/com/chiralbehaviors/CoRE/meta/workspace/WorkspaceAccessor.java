@@ -24,10 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.StringArgGenerator;
@@ -51,13 +48,15 @@ public interface WorkspaceAccessor {
 
     void flushCache();
 
-    <T extends Ruleform> T get(String key);
+    <T> T get(String key);
 
     <T> T getAccessor(Class<T> accessorInterface);
 
-    <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass);
+    <T> List<T> getCollection(Class<T> ruleformClass);
 
     Product getDefiningProduct();
+
+    UUID getId(String name);
 
     Map<String, Tuple<Product, Integer>> getImports();
 
@@ -66,8 +65,4 @@ public interface WorkspaceAccessor {
     WorkspaceScope getScope();
 
     WorkspaceSnapshot getSnapshot();
-
-    void replaceFrom(EntityManager em);
-
-    void retarget(EntityManager em);
 }

@@ -24,18 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -44,35 +41,29 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class WorkspaceModelImpl implements WorkspaceModel {
 
-    private final EntityManager             em;
     private final Model                     model;
     private final Map<UUID, WorkspaceScope> scopes = new HashMap<>();
 
     public WorkspaceModelImpl(Model model) {
         this.model = model;
-        em = model.getEntityManager();
     }
 
     @Override
-    public WorkspaceScope createWorkspace(Product definingProduct,
-                                          Agency updatedBy) {
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
-                                                                        model);
+    public WorkspaceScope createWorkspace(Product definingProduct) {
+        EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
+                                                                  model);
         workspace.add(definingProduct);
         Kernel kernel = model.getKernel();
-        Aspect<Product> aspect = new Aspect<Product>(kernel.getIsA(),
-                                                     kernel.getWorkspace());
-        model.getProductModel()
+        FacetRecord aspect = model.getPhantasmModel()
+                                  .getFacetDeclaration(kernel.getIsA(),
+                                                       kernel.getWorkspace());
+        model.getPhantasmModel()
              .initialize(definingProduct, aspect, workspace);
-        em.persist(definingProduct);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#flush()
-     */
     @Override
     public void flush() {
         for (WorkspaceScope scope : scopes.values()) {
@@ -82,27 +73,17 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceAuthorization get(Product definingProduct, String key) {
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION,
-                                                                       WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        query.setParameter("key", key);
-        return query.getSingleResult();
+    public WorkspaceAuthorizationRecord get(Product definingProduct,
+                                            String key) {
+        return null;
     }
 
     @Override
-    public List<WorkspaceAuthorization> getByType(Product definingProduct,
-                                                  String type) {
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE,
-                                                                       WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        query.setParameter("type", type);
-        return query.getResultList();
+    public List<WorkspaceAuthorizationRecord> getByType(Product definingProduct,
+                                                        String type) {
+        return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#getScoped(java.util.UUID)
-     */
     @Override
     public WorkspaceScope getScoped(Product definingProduct) {
         WorkspaceScope cached = scopes.get(definingProduct.getId());
@@ -117,27 +98,24 @@ public class WorkspaceModelImpl implements WorkspaceModel {
 
     @Override
     public WorkspaceScope getScoped(UUID definingProduct) {
-        Product product = em.find(Product.class, definingProduct);
+        Product product = model.records()
+                               .resolve(definingProduct);
         if (product == null) {
-            throw new IllegalArgumentException(String.format("Defining Product %s does not exist",
-                                                             definingProduct));
+            return null;
         }
         return getScoped(product);
     }
 
     @Override
-    public List<WorkspaceAuthorization> getWorkspace(Product definingProduct) {
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_WORKSPACE,
-                                                                       WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        return query.getResultList();
+    public List<WorkspaceAuthorizationRecord> getWorkspace(Product definingProduct) {
+        return null;
     }
 
     @Override
     public void unload(Product definingProduct) {
-        for (WorkspaceAuthorization auth : WorkspaceSnapshot.getAuthorizations(definingProduct,
-                                                                               em)) {
-            em.remove(auth.getEntity(em));
-        }
+        model.create()
+             .batchDelete(WorkspaceSnapshot.selectWorkspaceClosure(model.create(),
+                                                                   definingProduct))
+             .execute();
     }
 }

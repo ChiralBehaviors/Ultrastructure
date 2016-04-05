@@ -8,35 +8,36 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="job_chronology"><![CDATA[ 
              SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                  base.id, 
-                    base.job,
-                    base.sequence_number,
-                    sc.name AS status,
-                    s.name AS service, 
-                    at.name AS assign_to, 
-                    r.name AS requester, 
-                    p.name AS product, 
-                    dt.name AS deliver_to, 
-                    df.name AS deliver_from, 
+                    s.name AS service,
                     base.quantity,
                     u.name AS quantity_unit,
+                    p.name AS product, 
+                    sc.name AS status, 
+                    at.name AS assign_to, 
+                    r.name AS requester, 
+                    df.name AS deliver_from, 
+                    dt.name AS deliver_to, 
+                    base.sequence_number,
+                    base.job,
                     base.notes, 
-                    up.name AS updated_by, base.version
+                    up.name AS updated_by,
+                    w.name AS workspace,
+                    wa.key AS wsp_key,
+                    wa.description AS wsp_desc,
+                    base.version
                FROM job_chronology base
-               JOIN product s ON base.service = s.id
-               JOIN product p ON base.product = p.id
-               JOIN agency at ON base.assign_to = at.id
-               JOIN agency r ON base.requester = r.id
-               JOIN location dt ON base.deliver_to = dt.id
-               JOIN location df ON base.deliver_from = df.id
-               JOIN status_code sc ON base.status = sc.id
-               JOIN agency up ON base.updated_by = up.id
-               JOIN unit u ON base.quantity_unit = u.id
-             LEFT JOIN ruleform.workspace_authorization wa ON base.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+               JOIN existential s ON base.service = s.id
+               JOIN existential p ON base.product = p.id
+               JOIN existential at ON base.assign_to = at.id
+               JOIN existential r ON base.requester = r.id
+               JOIN existential dt ON base.deliver_to = dt.id
+               JOIN existential df ON base.deliver_from = df.id
+               JOIN existential sc ON base.status = sc.id
+               JOIN existential up ON base.updated_by = up.id
+               JOIN existential u ON base.quantity_unit = u.id
+             LEFT JOIN workspace_authorization wa ON base.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
         </createView> 
     </changeSet>

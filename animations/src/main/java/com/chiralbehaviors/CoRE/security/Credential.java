@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -40,15 +40,15 @@ public class Credential {
     /**
      * The remote ip address that is authorized for this credential
      */
-    public String ip;
+    public String     ip;
 
     /**
      * The time to live for this credential, in milliseconds
      */
-    public long ttl = TimeUnit.MINUTES.toMillis(30);
+    public long       ttl          = TimeUnit.MINUTES.toMillis(30);
 
     /**
-     * 
+     *
      * @return true if the credential is valid at the current time, given the
      *         last updated timestamp of the credential
      */

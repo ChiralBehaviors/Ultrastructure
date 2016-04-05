@@ -1,14 +1,15 @@
-randomPort: true 
-
-auth: BEARER_TOKEN
+auth: BEARER_TOKEN 
 
 logging:
-    level: ERROR
-    loggers:
-        "org.hibernate": ERROR
-        "org.glassfish": ERROR
-        graphql: WARN
+  level: INFO
+  loggers:
+    org.jooq: INFO
+    org.glassfish: INFO
+    graphql: INFO
 
-server: 
-  requestLog:
-    appenders: [] #turns off request logging
+database:
+    url: jdbc:postgresql://${db.server}:${db.port}/${db.database}
+    user: ${db.login}
+    password: ${db.password}
+    driverClass: org.postgresql.Driver
+    maxSize: 2

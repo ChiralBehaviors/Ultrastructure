@@ -20,89 +20,81 @@
 
 package com.chiralbehaviors.CoRE.test;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
+import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+
+import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
+import com.chiralbehaviors.CoRE.domain.Agency;
 
 /**
  * @author hhildebrand
  * 
  */
 abstract public class DatabaseTest {
-    protected static Connection           connection;
-    protected static EntityManager        em;
-    protected static EntityManagerFactory emf;
-    private static boolean                initialized = false;
-
-    @AfterClass
-    public static void afterClass() {
-        if (em != null && em.getTransaction()
-                            .isActive()) {
-            em.getTransaction()
-              .rollback();
-            em.clear();
-            em.close();
-        }
-    }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        Properties properties = new Properties();
-        properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
-        if (!initialized) {
-            initialized = true;
-            emf = Persistence.createEntityManagerFactory("CoRE", properties);
-        } else {
-            em.close();
-        }
-        em = emf.createEntityManager();
-        em.getTransaction()
-          .begin();
-    }
-
-    /**
-     * Initiates a database transaction.
-     */
-    protected static void beginTransaction() {
-        if (!em.getTransaction()
-               .isActive()) {
-            em.getTransaction()
-              .begin();
-        }
-    }
-
-    /**
-     * Commits the current transaction, if it is still active.
-     */
-    protected static final void commitTransaction() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
-              .commit();
-        }
-    }
+    protected DSLContext     create;
+    protected RecordsFactory RECORDS;
 
     @After
-    public void after() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
+    public void after() throws DataAccessException, SQLException {
+        create.configuration()
+              .connectionProvider()
+              .acquire()
               .rollback();
-        }
-        em.clear();
+        create.close();
     }
 
     @Before
-    public void before() {
-        beginTransaction();
-        em.clear();
+    public void setup() throws Exception {
+        Properties properties = new Properties();
+        properties.load(DatabaseTest.class.getResourceAsStream("/db.properties"));
+        Connection conn = DriverManager.getConnection((String) properties.get("url"),
+                                                      (String) properties.get("user"),
+                                                      (String) properties.get("password"));
+        conn.setAutoCommit(false);
+
+        create = PostgresDSL.using(conn);
+
+        AtomicReference<UUID> core = new AtomicReference<>();
+        RECORDS = new RecordsFactory() {
+
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+
+            @Override
+            public UUID currentPrincipalId() {
+                return core.get();
+            }
+        };
+        RecordsFactory.clear(create);
+        Agency c = RECORDS.newAgency("Ye CoRE");
+        c.setId(WellKnownAgency.CORE.id());
+        c.setUpdatedBy(c.getId());
+        create.insertInto(EXISTENTIAL)
+              .set(c);
+        core.set(WellKnownAgency.CORE.id());
+
+    }
+
+    protected final void commitTransaction() throws DataAccessException,
+                                             SQLException {
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .commit();
     }
 }

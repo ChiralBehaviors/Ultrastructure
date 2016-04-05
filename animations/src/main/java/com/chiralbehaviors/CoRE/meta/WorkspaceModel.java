@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -22,10 +22,9 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
  * @author hhildebrand
@@ -36,25 +35,24 @@ public interface WorkspaceModel {
     /**
      * Create the workspace and return the Workspace scope defined by that
      * workspace
-     * 
+     *
      * @param definingProduct
-     * @param updatedBy
      * @return
      */
-    WorkspaceScope createWorkspace(Product definingProduct, Agency updatedBy);
+    WorkspaceScope createWorkspace(Product definingProduct);
 
     void flush();
 
-    WorkspaceAuthorization get(Product definingProduct, String key);
+    WorkspaceAuthorizationRecord get(Product definingProduct, String key);
 
-    List<WorkspaceAuthorization> getByType(Product definingProduct,
-                                           String type);
+    List<WorkspaceAuthorizationRecord> getByType(Product definingProduct,
+                                                 String type);
 
     WorkspaceScope getScoped(Product definingProduct);
 
     WorkspaceScope getScoped(UUID definingProduct);
 
-    List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
+    List<WorkspaceAuthorizationRecord> getWorkspace(Product definingProduct);
 
     void unload(Product definingProduct);
 }

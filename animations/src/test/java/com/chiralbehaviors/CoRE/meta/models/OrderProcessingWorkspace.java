@@ -22,16 +22,17 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.lang.reflect.Field;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand
@@ -118,8 +119,9 @@ public class OrderProcessingWorkspace {
                                                                .getScoped(orderEntryWorkspace)
                                                                .getWorkspace();
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
-            ExistentialRuleform<?, ?> extRuleform = (ExistentialRuleform<?, ?>) field.get(this);
-            workspace.put(extRuleform.getName(), extRuleform);
+            ExistentialRuleform extRuleform = (ExistentialRuleform) field.get(this);
+            workspace.put(extRuleform.getName(),
+                          (ExistentialRecord) extRuleform);
         }
         return model.getWorkspaceModel()
                     .getScoped(orderEntryWorkspace)

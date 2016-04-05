@@ -19,24 +19,20 @@
  */
 package com.chiralbehaviors.CoRE.meta.models;
 
-import javax.persistence.EntityManager;
-
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand
@@ -44,21 +40,17 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
-    private Agency              anyAgency;
-    private Location            anyLocation;
-    private Product             anyProduct;
-    private Relationship        anyRelationship;
-    private Agency              core;
-    private final EntityManager em;
-    private final Kernel        kernel;
-    private final Model         model;
-    private Product             sameProduct;
+    private Agency       anyAgency;
+    private Location     anyLocation;
+    private Product      anyProduct;
+    private Relationship anyRelationship;
+    private final Kernel kernel;
+    private final Model  model;
+    private Product      sameProduct;
 
     public OrderProcessingLoader(Model model) throws Exception {
-        this.em = model.getEntityManager();
         this.model = model;
         kernel = model.getKernel();
-        core = kernel.getCore();
         sameProduct = kernel.getSameProduct();
         anyProduct = kernel.getAnyProduct();
         anyAgency = kernel.getAnyAgency();
@@ -67,717 +59,829 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createAgencyNetworks() {
-        model.getAgencyModel()
-             .link(georgeTownUniversity, customerType, externalCust, core);
-        model.getAgencyModel()
-             .link(georgeTownUniversity, salesTaxStatus, exempt, core);
-        model.getAgencyModel()
-             .link(orgA, customerType, externalCust, core);
-        model.getAgencyModel()
-             .link(cafleurBon, customerType, externalCust, core);
-        model.getAgencyModel()
-             .link(orgA, salesTaxStatus, nonExemptAgency, core);
+        model.getPhantasmModel()
+             .link(georgeTownUniversity, customerType, externalCust);
+        model.getPhantasmModel()
+             .link(georgeTownUniversity, salesTaxStatus, exempt);
+        model.getPhantasmModel()
+             .link(orgA, customerType, externalCust);
+        model.getPhantasmModel()
+             .link(cafleurBon, customerType, externalCust);
+        model.getPhantasmModel()
+             .link(orgA, salesTaxStatus, nonExemptAgency);
     }
 
     public void createAgencys() {
-        billingComputer = new Agency("BillingComputer", "The Billing Computer",
-                                     core);
-        em.persist(billingComputer);
+        billingComputer = model.records()
+                               .newAgency("BillingComputer",
+                                          "The Billing Computer");
+        billingComputer.insert();
 
-        cpu = new Agency("CPU", "Computer", core);
-        em.persist(cpu);
+        cpu = model.records()
+                   .newAgency("CPU", "Computer");
+        cpu.insert();
 
-        creditDept = new Agency("Credit", "Credit Department", core);
-        em.persist(creditDept);
+        creditDept = model.records()
+                          .newAgency("Credit", "Credit Department");
+        creditDept.insert();
 
-        exempt = new Agency("Exempt", "Exempt from sales taxes", core);
-        em.persist(exempt);
+        exempt = model.records()
+                      .newAgency("Exempt", "Exempt from sales taxes");
+        exempt.insert();
 
-        externalCust = new Agency("Ext Customer", "External (Paying) Customer",
-                                  core);
-        em.persist(externalCust);
+        externalCust = model.records()
+                            .newAgency("Ext Customer",
+                                       "External (Paying) Customer");
+        externalCust.insert();
 
-        factory1Agency = new Agency("Factory1Agency", "Factory #1", core);
-        em.persist(factory1Agency);
+        factory1Agency = model.records()
+                              .newAgency("Factory1Agency", "Factory #1");
+        factory1Agency.insert();
 
-        georgeTownUniversity = new Agency("GeorgetownUniversity",
-                                          "Georgetown University", core);
-        em.persist(georgeTownUniversity);
+        georgeTownUniversity = model.records()
+                                    .newAgency("GeorgetownUniversity",
+                                               "Georgetown University");
+        georgeTownUniversity.insert();
 
-        cafleurBon = new Agency("CarfleurBon", "Carfleur Bon", core);
-        em.persist(cafleurBon);
+        cafleurBon = model.records()
+                          .newAgency("CarfleurBon", "Carfleur Bon");
+        cafleurBon.insert();
 
-        manufacturer = new Agency("MNFR", "Manufacturer", core);
-        em.persist(manufacturer);
+        manufacturer = model.records()
+                            .newAgency("MNFR", "Manufacturer");
+        manufacturer.insert();
 
-        nonExemptAgency = new Agency("NonExemptAgency",
-                                     "Subject to sales taxes", core);
-        em.persist(nonExemptAgency);
+        nonExemptAgency = model.records()
+                               .newAgency("NonExemptAgency",
+                                          "Subject to sales taxes");
+        nonExemptAgency.insert();
 
-        orgA = new Agency("OrgA", "Organization A", core);
-        em.persist(orgA);
+        orgA = model.records()
+                    .newAgency("OrgA", "Organization A");
+        orgA.insert();
 
-        orderFullfillment = new Agency("OrderFullfillment",
-                                       "Order Fullfillment", core);
-        em.persist(orderFullfillment);
+        orderFullfillment = model.records()
+                                 .newAgency("OrderFullfillment",
+                                            "Order Fullfillment");
+        orderFullfillment.insert();
     }
 
     public void createAttributes() {
-        priceAttribute = new Attribute("price", "price", core,
-                                       ValueType.INTEGER);
-        em.persist(priceAttribute);
+        priceAttribute = model.records()
+                              .newAttribute("price", "price",
+                                            ValueType.Integer);
+        priceAttribute.insert();
 
-        taxRateAttribute = new Attribute("tax rate", "tax rate", core,
-                                         ValueType.INTEGER);
-        em.persist(taxRateAttribute);
+        taxRateAttribute = model.records()
+                                .newAttribute("tax rate", "tax rate",
+                                              ValueType.Integer);
+        taxRateAttribute.insert();
 
-        discountAttribute = new Attribute("discount", "discount", core,
-                                          ValueType.INTEGER);
-        em.persist(discountAttribute);
+        discountAttribute = model.records()
+                                 .newAttribute("discount", "discount",
+                                               ValueType.Integer);
+        discountAttribute.insert();
     }
 
     public void createLocationNetworks() {
-        model.getLocationModel()
-             .link(bin1, area, factory1, core);
-        model.getLocationModel()
-             .link(bin15, area, factory1, core);
-        model.getLocationModel()
-             .link(factory1, street, bht37, core);
-        model.getLocationModel()
-             .link(rsb225, city, dc, core);
-        model.getLocationModel()
-             .link(bht37, city, dc, core);
-        model.getLocationModel()
-             .link(rc31, city, paris, core);
-        model.getLocationModel()
-             .link(dc, region, east_coast, core);
-        model.getLocationModel()
-             .link(east_coast, area, us, core);
-        model.getLocationModel()
-             .link(paris, region, france, core);
-        model.getLocationModel()
-             .link(france, area, euro, core);
+        model.getPhantasmModel()
+             .link(bin1, area, factory1);
+        model.getPhantasmModel()
+             .link(bin15, area, factory1);
+        model.getPhantasmModel()
+             .link(factory1, street, bht37);
+        model.getPhantasmModel()
+             .link(rsb225, city, dc);
+        model.getPhantasmModel()
+             .link(bht37, city, dc);
+        model.getPhantasmModel()
+             .link(rc31, city, paris);
+        model.getPhantasmModel()
+             .link(dc, region, east_coast);
+        model.getPhantasmModel()
+             .link(east_coast, area, us);
+        model.getPhantasmModel()
+             .link(paris, region, france);
+        model.getPhantasmModel()
+             .link(france, area, euro);
     }
 
     public void createLocations() {
-        rsb225 = new Location("RSB225", "225 Reiss Science Bldg", core);
-        em.persist(rsb225);
-        bht37 = new Location("BHT37", "37 Bret Harte Terrace", core);
-        em.persist(bht37);
+        rsb225 = model.records()
+                      .newLocation("RSB225", "225 Reiss Science Bldg");
+        rsb225.insert();
+        bht37 = model.records()
+                     .newLocation("BHT37", "37 Bret Harte Terrace");
+        bht37.insert();
 
-        rc31 = new Location("RC31", "31 Rue Cambon", core);
-        em.persist(rc31);
+        rc31 = model.records()
+                    .newLocation("RC31", "31 Rue Cambon");
+        rc31.insert();
 
-        bin1 = new Location("BIN01", "Bin #1", core);
-        em.persist(bin1);
-        bin15 = new Location("BIN15", "Bin #15", core);
-        em.persist(bin15);
-        dc = new Location("DC", "District of Columbia", core);
-        em.persist(dc);
-        east_coast = new Location("EAST_COAST", "East Coast", core);
-        em.persist(east_coast);
-        factory1 = new Location("Factory1", "Factory 1", core);
-        em.persist(factory1);
-        france = new Location("FRANCE", "France", core);
-        em.persist(france);
-        paris = new Location("PARIS", "Paris", core);
-        em.persist(paris);
-        us = new Location("US", "U.S. Locations", core);
-        em.persist(us);
-        euro = new Location("Euro", "European locations", core);
-        em.persist(euro);
+        bin1 = model.records()
+                    .newLocation("BIN01", "Bin #1");
+        bin1.insert();
+        bin15 = model.records()
+                     .newLocation("BIN15", "Bin #15");
+        bin15.insert();
+        dc = model.records()
+                  .newLocation("DC", "District of Columbia");
+        dc.insert();
+        east_coast = model.records()
+                          .newLocation("EAST_COAST", "East Coast");
+        east_coast.insert();
+        factory1 = model.records()
+                        .newLocation("Factory1", "Factory 1");
+        factory1.insert();
+        france = model.records()
+                      .newLocation("FRANCE", "France");
+        france.insert();
+        paris = model.records()
+                     .newLocation("PARIS", "Paris");
+        paris.insert();
+        us = model.records()
+                  .newLocation("US", "U.S. Locations");
+        us.insert();
+        euro = model.records()
+                    .newLocation("Euro", "European locations");
+        euro.insert();
     }
 
-    public void createMetaProtocols() {
-        MetaProtocol m1 = model.getJobModel()
-                               .newInitializedMetaProtocol(deliver, core);
+    public void createMetaProtocol() {
+        MetaProtocolRecord m1 = model.getJobModel()
+                                     .newInitializedMetaProtocol(deliver);
         m1.setSequenceNumber(1);
-        m1.setProduct(anyRelationship);
-        m1.setDeliverTo(state);
-        m1.setDeliverFrom(area);
+        m1.setProduct(anyRelationship.getId());
+        m1.setDeliverTo(state.getId());
+        m1.setDeliverFrom(area.getId());
 
-        em.persist(m1);
+        m1.update();
 
-        MetaProtocol m2 = model.getJobModel()
-                               .newInitializedMetaProtocol(pick, core);
+        MetaProtocolRecord m2 = model.getJobModel()
+                                     .newInitializedMetaProtocol(pick);
         m2.setSequenceNumber(1);
-        m2.setProduct(anyRelationship);
-        m2.setRequester(customerType);
-        m2.setDeliverTo(area);
-        m2.setDeliverFrom(area);
+        m2.setProduct(anyRelationship.getId());
+        m2.setRequester(customerType.getId());
+        m2.setDeliverTo(area.getId());
+        m2.setDeliverFrom(area.getId());
 
-        em.persist(m2);
+        m2.update();
 
-        MetaProtocol m3 = model.getJobModel()
-                               .newInitializedMetaProtocol(ship, core);
+        MetaProtocolRecord m3 = model.getJobModel()
+                                     .newInitializedMetaProtocol(ship);
         m3.setSequenceNumber(1);
-        m3.setProduct(anyRelationship);
-        m3.setRequester(customerType);
-        m3.setDeliverTo(area);
-        m3.setDeliverFrom(area);
+        m3.setProduct(anyRelationship.getId());
+        m3.setRequester(customerType.getId());
+        m3.setDeliverTo(area.getId());
+        m3.setDeliverFrom(area.getId());
+        m3.update();
 
-        MetaProtocol m5 = model.getJobModel()
-                               .newInitializedMetaProtocol(fee, core);
+        MetaProtocolRecord m5 = model.getJobModel()
+                                     .newInitializedMetaProtocol(fee);
         m5.setSequenceNumber(1);
-        m5.setProduct(anyRelationship);
-        m5.setRequester(salesTaxStatus);
-        m5.setDeliverTo(city);
+        m5.setProduct(anyRelationship.getId());
+        m5.setRequester(salesTaxStatus.getId());
+        m5.setDeliverTo(city.getId());
+        m5.update();
 
-        em.persist(m5);
-
-        MetaProtocol m6 = model.getJobModel()
-                               .newInitializedMetaProtocol(printPurchaseOrder,
-                                                           core);
+        MetaProtocolRecord m6 = model.getJobModel()
+                                     .newInitializedMetaProtocol(printPurchaseOrder);
         m6.setSequenceNumber(1);
-        m6.setProduct(anyRelationship);
-        m6.setRequester(anyRelationship);
-        m6.setDeliverTo(anyRelationship);
-        m6.setDeliverFrom(area);
-
-        em.persist(m6);
+        m6.setProduct(anyRelationship.getId());
+        m6.setRequester(anyRelationship.getId());
+        m6.setDeliverTo(anyRelationship.getId());
+        m6.setDeliverFrom(area.getId());
+        m6.update();
     }
 
-    public void createNetworkInferences() {
-        NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
-                                                             areaOf, core);
-        em.persist(areaToRegion);
+    public void createNetworkNetworkInferences() {
+        NetworkInferenceRecord areaToRegion = model.records()
+                                                   .newNetworkNetworkInference(areaOf,
+                                                                               regionOf,
+                                                                               areaOf);
+        areaToRegion.insert();
 
-        NetworkInference areaToState = new NetworkInference(areaOf, stateOf,
-                                                            areaOf, core);
-        em.persist(areaToState);
+        NetworkInferenceRecord areaToState = model.records()
+                                                  .newNetworkNetworkInference(areaOf,
+                                                                              stateOf,
+                                                                              areaOf);
+        areaToState.insert();
 
-        NetworkInference areaToCity = new NetworkInference(areaOf, cityOf,
-                                                           areaOf, core);
-        em.persist(areaToCity);
+        NetworkInferenceRecord areaToCity = model.records()
+                                                 .newNetworkNetworkInference(areaOf,
+                                                                             cityOf,
+                                                                             areaOf);
+        areaToCity.insert();
 
-        NetworkInference areaToStreet = new NetworkInference(areaOf, streetOf,
-                                                             areaOf, core);
-        em.persist(areaToStreet);
+        NetworkInferenceRecord areaToStreet = model.records()
+                                                   .newNetworkNetworkInference(areaOf,
+                                                                               streetOf,
+                                                                               areaOf);
+        areaToStreet.insert();
 
-        NetworkInference regionToState = new NetworkInference(regionOf, stateOf,
-                                                              regionOf, core);
-        em.persist(regionToState);
+        NetworkInferenceRecord regionToState = model.records()
+                                                    .newNetworkNetworkInference(regionOf,
+                                                                                stateOf,
+                                                                                regionOf);
+        regionToState.insert();
 
-        NetworkInference regionToCity = new NetworkInference(regionOf, cityOf,
-                                                             regionOf, core);
-        em.persist(regionToCity);
+        NetworkInferenceRecord regionToCity = model.records()
+                                                   .newNetworkNetworkInference(regionOf,
+                                                                               cityOf,
+                                                                               regionOf);
+        regionToCity.insert();
 
-        NetworkInference regionToStreet = new NetworkInference(regionOf,
-                                                               streetOf,
-                                                               regionOf, core);
-        em.persist(regionToStreet);
+        NetworkInferenceRecord regionToStreet = model.records()
+                                                     .newNetworkNetworkInference(regionOf,
+                                                                                 streetOf,
+                                                                                 regionOf);
+        regionToStreet.insert();
 
-        NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
-                                                            stateOf, core);
-        em.persist(stateToCity);
+        NetworkInferenceRecord stateToCity = model.records()
+                                                  .newNetworkNetworkInference(stateOf,
+                                                                              cityOf,
+                                                                              stateOf);
+        stateToCity.insert();
 
-        NetworkInference stateToStreet = new NetworkInference(stateOf, streetOf,
-                                                              stateOf, core);
-        em.persist(stateToStreet);
+        NetworkInferenceRecord stateToStreet = model.records()
+                                                    .newNetworkNetworkInference(stateOf,
+                                                                                streetOf,
+                                                                                stateOf);
+        stateToStreet.insert();
 
-        NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
-                                                             cityOf, core);
-        em.persist(cityToStreet);
+        NetworkInferenceRecord cityToStreet = model.records()
+                                                   .newNetworkNetworkInference(cityOf,
+                                                                               streetOf,
+                                                                               cityOf);
+        cityToStreet.insert();
     }
 
     public void createProductNetworks() {
-        model.getProductModel()
-             .link(abc486, storageType, roomTemp, core);
-        model.getProductModel()
-             .link(abc486, salesTaxStatus, nonExempt, core);
-        model.getProductModel()
-             .link(chemB, storageType, frozen, core);
+        model.getPhantasmModel()
+             .link(abc486, storageType, roomTemp);
+        model.getPhantasmModel()
+             .link(abc486, salesTaxStatus, nonExempt);
+        model.getPhantasmModel()
+             .link(chemB, storageType, frozen);
     }
 
     public void createProducts() {
-        abc486 = new Product("ABC486", "Laptop Computer", core);
-        em.persist(abc486);
-        frozen = new Product("Frozen", "Frozen products", core);
-        em.persist(frozen);
-        nonExempt = new Product("NonExempt", "Subject to sales tax", core);
-        em.persist(nonExempt);
-        chemB = new Product("ChemB", "Chemical B", core);
-        em.persist(chemB);
-        roomTemp = new Product("RoomTemp", "Room temperature products", core);
-        em.persist(roomTemp);
-        orderEntryWorkspace = new Product("defining product for order entry",
-                                          core);
-        em.persist(orderEntryWorkspace);
+        abc486 = model.records()
+                      .newProduct("ABC486", "Laptop Computer");
+        abc486.insert();
+        frozen = model.records()
+                      .newProduct("Frozen", "Frozen products");
+        frozen.insert();
+        nonExempt = model.records()
+                         .newProduct("NonExempt", "Subject to sales tax");
+        nonExempt.insert();
+        chemB = model.records()
+                     .newProduct("ChemB", "Chemical B");
+        chemB.insert();
+        roomTemp = model.records()
+                        .newProduct("RoomTemp", "Room temperature products");
+        roomTemp.insert();
+        orderEntryWorkspace = model.records()
+                                   .newProduct("defining product for order entry");
+        orderEntryWorkspace.insert();
     }
 
     public void createProductSequencingAuthorizations() {
 
-        ProductSiblingSequencingAuthorization activatePrintCustomsDeclaration = new ProductSiblingSequencingAuthorization(core);
-        activatePrintCustomsDeclaration.setParent(printPurchaseOrder);
-        activatePrintCustomsDeclaration.setStatusCode(completed);
-        activatePrintCustomsDeclaration.setNextSibling(printCustomsDeclaration);
-        activatePrintCustomsDeclaration.setNextSiblingStatus(available);
-        em.persist(activatePrintCustomsDeclaration);
+        SiblingSequencingAuthorizationRecord activatePrintCustomsDeclaration = model.records()
+                                                                                    .newSiblingSequencingAuthorization();
+        activatePrintCustomsDeclaration.setParent(printPurchaseOrder.getId());
+        activatePrintCustomsDeclaration.setStatusCode(completed.getId());
+        activatePrintCustomsDeclaration.setNextSibling(printCustomsDeclaration.getId());
+        activatePrintCustomsDeclaration.setNextSiblingStatus(available.getId());
+        activatePrintCustomsDeclaration.insert();
 
-        ProductParentSequencingAuthorization productPicked = new ProductParentSequencingAuthorization(core);
-        productPicked.setService(pick);
-        productPicked.setStatusCode(completed);
-        productPicked.setParent(deliver);
-        productPicked.setParentStatusToSet(completed);
+        ParentSequencingAuthorizationRecord productPicked = model.records()
+                                                                 .newParentSequencingAuthorization();
+        productPicked.setService(pick.getId());
+        productPicked.setStatusCode(completed.getId());
+        productPicked.setParent(deliver.getId());
+        productPicked.setParentStatusToSet(completed.getId());
         productPicked.setSetIfActiveSiblings(false);
-        em.persist(productPicked);
+        productPicked.insert();
 
-        ProductParentSequencingAuthorization checkCreditCompleted = new ProductParentSequencingAuthorization(core);
-        checkCreditCompleted.setService(checkCredit);
-        checkCreditCompleted.setStatusCode(completed);
-        checkCreditCompleted.setParent(pick);
-        checkCreditCompleted.setParentStatusToSet(available);
-        em.persist(checkCreditCompleted);
+        ParentSequencingAuthorizationRecord checkCreditCompleted = model.records()
+                                                                        .newParentSequencingAuthorization();
+        checkCreditCompleted.setService(checkCredit.getId());
+        checkCreditCompleted.setStatusCode(completed.getId());
+        checkCreditCompleted.setParent(pick.getId());
+        checkCreditCompleted.setParentStatusToSet(available.getId());
+        checkCreditCompleted.insert();
 
-        ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(core);
-        activateShip.setParent(pick);
-        activateShip.setStatusCode(completed);
-        activateShip.setNextSibling(ship);
-        activateShip.setNextSiblingStatus(waitingOnPurchaseOrder);
-        em.persist(activateShip);
+        SiblingSequencingAuthorizationRecord activateShip = model.records()
+                                                                 .newSiblingSequencingAuthorization();
+        activateShip.setParent(pick.getId());
+        activateShip.setStatusCode(completed.getId());
+        activateShip.setNextSibling(ship.getId());
+        activateShip.setNextSiblingStatus(waitingOnPurchaseOrder.getId());
+        activateShip.insert();
 
-        ProductParentSequencingAuthorization activateShipFromPrintCustomsDeclaration = new ProductParentSequencingAuthorization(core);
-        activateShipFromPrintCustomsDeclaration.setService(printCustomsDeclaration);
-        activateShipFromPrintCustomsDeclaration.setStatusCode(completed);
-        activateShipFromPrintCustomsDeclaration.setParent(ship);
-        activateShipFromPrintCustomsDeclaration.setParentStatusToSet(available);
+        ParentSequencingAuthorizationRecord activateShipFromPrintCustomsDeclaration = model.records()
+                                                                                           .newParentSequencingAuthorization();
+        activateShipFromPrintCustomsDeclaration.setService(printCustomsDeclaration.getId());
+        activateShipFromPrintCustomsDeclaration.setStatusCode(completed.getId());
+        activateShipFromPrintCustomsDeclaration.setParent(ship.getId());
+        activateShipFromPrintCustomsDeclaration.setParentStatusToSet(available.getId());
         activateShipFromPrintCustomsDeclaration.setSetIfActiveSiblings(false);
-        em.persist(activateShipFromPrintCustomsDeclaration);
+        activateShipFromPrintCustomsDeclaration.insert();
 
-        ProductParentSequencingAuthorization activateShipFromPrintPurchaseOrder = new ProductParentSequencingAuthorization(core);
-        activateShipFromPrintPurchaseOrder.setService(printPurchaseOrder);
-        activateShipFromPrintPurchaseOrder.setStatusCode(completed);
-        activateShipFromPrintPurchaseOrder.setParent(ship);
-        activateShipFromPrintPurchaseOrder.setParentStatusToSet(available);
+        ParentSequencingAuthorizationRecord activateShipFromPrintPurchaseOrder = model.records()
+                                                                                      .newParentSequencingAuthorization();
+        activateShipFromPrintPurchaseOrder.setService(printPurchaseOrder.getId());
+        activateShipFromPrintPurchaseOrder.setStatusCode(completed.getId());
+        activateShipFromPrintPurchaseOrder.setParent(ship.getId());
+        activateShipFromPrintPurchaseOrder.setParentStatusToSet(available.getId());
         activateShipFromPrintPurchaseOrder.setSetIfActiveSiblings(false);
-        em.persist(activateShipFromPrintPurchaseOrder);
+        activateShipFromPrintPurchaseOrder.insert();
 
-        ProductChildSequencingAuthorization activatePrintPurchaseOrder = new ProductChildSequencingAuthorization(core);
-        activatePrintPurchaseOrder.setParent(ship);
-        activatePrintPurchaseOrder.setStatusCode(waitingOnPurchaseOrder);
-        activatePrintPurchaseOrder.setNextChild(printPurchaseOrder);
-        activatePrintPurchaseOrder.setNextChildStatus(waitingOnFee);
-        em.persist(activatePrintPurchaseOrder);
+        ChildSequencingAuthorizationRecord activatePrintPurchaseOrder = model.records()
+                                                                             .newChildSequencingAuthorization();
+        activatePrintPurchaseOrder.setParent(ship.getId());
+        activatePrintPurchaseOrder.setStatusCode(waitingOnPurchaseOrder.getId());
+        activatePrintPurchaseOrder.setNextChild(printPurchaseOrder.getId());
+        activatePrintPurchaseOrder.setNextChildStatus(waitingOnFee.getId());
+        activatePrintPurchaseOrder.insert();
 
-        ProductChildSequencingAuthorization activateCreditCheck = new ProductChildSequencingAuthorization(core);
-        activateCreditCheck.setParent(pick);
-        activateCreditCheck.setStatusCode(waitingOnCreditCheck);
-        activateCreditCheck.setNextChild(checkCredit);
-        activateCreditCheck.setNextChildStatus(available);
-        em.persist(activateCreditCheck);
+        ChildSequencingAuthorizationRecord activateCreditCheck = model.records()
+                                                                      .newChildSequencingAuthorization();
+        activateCreditCheck.setParent(pick.getId());
+        activateCreditCheck.setStatusCode(waitingOnCreditCheck.getId());
+        activateCreditCheck.setNextChild(checkCredit.getId());
+        activateCreditCheck.setNextChildStatus(available.getId());
+        activateCreditCheck.insert();
 
-        ProductChildSequencingAuthorization activateFee = new ProductChildSequencingAuthorization(core);
-        activateFee.setParent(printPurchaseOrder);
-        activateFee.setStatusCode(waitingOnFee);
-        activateFee.setNextChild(fee);
-        activateFee.setNextChildStatus(available);
-        em.persist(activateFee);
+        ChildSequencingAuthorizationRecord activateFee = model.records()
+                                                              .newChildSequencingAuthorization();
+        activateFee.setParent(printPurchaseOrder.getId());
+        activateFee.setStatusCode(waitingOnFee.getId());
+        activateFee.setNextChild(fee.getId());
+        activateFee.setNextChildStatus(available.getId());
+        activateFee.insert();
 
-        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(core);
-        activatePick.setParent(deliver);
-        activatePick.setStatusCode(available);
-        activatePick.setNextChild(pick);
-        activatePick.setNextChildStatus(waitingOnCreditCheck);
-        em.persist(activatePick);
+        ChildSequencingAuthorizationRecord activatePick = model.records()
+                                                               .newChildSequencingAuthorization();
+        activatePick.setParent(deliver.getId());
+        activatePick.setStatusCode(available.getId());
+        activatePick.setNextChild(pick.getId());
+        activatePick.setNextChildStatus(waitingOnCreditCheck.getId());
+        activatePick.insert();
 
-        ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(core);
-        activateDiscount.setParent(fee);
-        activateDiscount.setStatusCode(completed);
-        activateDiscount.setNextSibling(discount);
-        activateDiscount.setNextSiblingStatus(available);
-        em.persist(activateDiscount);
+        SiblingSequencingAuthorizationRecord activateDiscount = model.records()
+                                                                     .newSiblingSequencingAuthorization();
+        activateDiscount.setParent(fee.getId());
+        activateDiscount.setStatusCode(completed.getId());
+        activateDiscount.setNextSibling(discount.getId());
+        activateDiscount.setNextSiblingStatus(available.getId());
+        activateDiscount.insert();
 
-        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromFee = new ProductParentSequencingAuthorization(core);
-        activatePrintPurchaseOrderFromFee.setService(fee);
-        activatePrintPurchaseOrderFromFee.setStatusCode(completed);
-        activatePrintPurchaseOrderFromFee.setParent(printPurchaseOrder);
-        activatePrintPurchaseOrderFromFee.setParentStatusToSet(available);
+        ParentSequencingAuthorizationRecord activatePrintPurchaseOrderFromFee = model.records()
+                                                                                     .newParentSequencingAuthorization();
+        activatePrintPurchaseOrderFromFee.setService(fee.getId());
+        activatePrintPurchaseOrderFromFee.setStatusCode(completed.getId());
+        activatePrintPurchaseOrderFromFee.setParent(printPurchaseOrder.getId());
+        activatePrintPurchaseOrderFromFee.setParentStatusToSet(available.getId());
         activatePrintPurchaseOrderFromFee.setSetIfActiveSiblings(false);
-        em.persist(activatePrintPurchaseOrderFromFee);
+        activatePrintPurchaseOrderFromFee.insert();
 
-        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromDiscount = new ProductParentSequencingAuthorization(core);
-        activatePrintPurchaseOrderFromDiscount.setService(discount);
-        activatePrintPurchaseOrderFromDiscount.setStatusCode(completed);
-        activatePrintPurchaseOrderFromDiscount.setParent(printPurchaseOrder);
-        activatePrintPurchaseOrderFromDiscount.setParentStatusToSet(available);
+        ParentSequencingAuthorizationRecord activatePrintPurchaseOrderFromDiscount = model.records()
+                                                                                          .newParentSequencingAuthorization();
+        activatePrintPurchaseOrderFromDiscount.setService(discount.getId());
+        activatePrintPurchaseOrderFromDiscount.setStatusCode(completed.getId());
+        activatePrintPurchaseOrderFromDiscount.setParent(printPurchaseOrder.getId());
+        activatePrintPurchaseOrderFromDiscount.setParentStatusToSet(available.getId());
         activatePrintPurchaseOrderFromDiscount.setSetIfActiveSiblings(false);
-        em.persist(activatePrintPurchaseOrderFromDiscount);
+        activatePrintPurchaseOrderFromDiscount.insert();
 
-        ProductParentSequencingAuthorization completeDeliverFromShip = new ProductParentSequencingAuthorization(core);
-        completeDeliverFromShip.setService(ship);
-        completeDeliverFromShip.setStatusCode(completed);
-        completeDeliverFromShip.setParent(deliver);
-        completeDeliverFromShip.setParentStatusToSet(completed);
+        ParentSequencingAuthorizationRecord completeDeliverFromShip = model.records()
+                                                                           .newParentSequencingAuthorization();
+        completeDeliverFromShip.setService(ship.getId());
+        completeDeliverFromShip.setStatusCode(completed.getId());
+        completeDeliverFromShip.setParent(deliver.getId());
+        completeDeliverFromShip.setParentStatusToSet(completed.getId());
         completeDeliverFromShip.setSetIfActiveSiblings(false);
-        em.persist(completeDeliverFromShip);
+        completeDeliverFromShip.insert();
     }
 
     public void createProtocols() {
 
-        Protocol pickProtocol = model.getJobModel()
-                                     .newInitializedProtocol(deliver, core);
-        pickProtocol.setService(deliver);
-        pickProtocol.setRequester(anyAgency);
-        pickProtocol.setProduct(anyProduct);
-        pickProtocol.setDeliverTo(anyLocation);
-        pickProtocol.setDeliverFrom(anyLocation);
-        pickProtocol.setChildAssignTo(factory1Agency);
-        pickProtocol.setChildService(pick);
-        pickProtocol.setChildProduct(sameProduct);
-        em.persist(pickProtocol);
+        ProtocolRecord pickProtocol = model.getJobModel()
+                                           .newInitializedProtocol(deliver);
+        pickProtocol.setService(deliver.getId());
+        pickProtocol.setRequester(anyAgency.getId());
+        pickProtocol.setProduct(anyProduct.getId());
+        pickProtocol.setDeliverTo(anyLocation.getId());
+        pickProtocol.setDeliverFrom(anyLocation.getId());
+        pickProtocol.setChildAssignTo(factory1Agency.getId());
+        pickProtocol.setChildService(pick.getId());
+        pickProtocol.setChildProduct(sameProduct.getId());
+        pickProtocol.update();
 
-        Protocol chkCreditProtocol = model.getJobModel()
-                                          .newInitializedProtocol(pick, core);
-        chkCreditProtocol.setService(pick);
-        chkCreditProtocol.setRequester(externalCust);
-        chkCreditProtocol.setProduct(anyProduct);
-        chkCreditProtocol.setDeliverTo(us);
-        chkCreditProtocol.setDeliverFrom(us);
-        chkCreditProtocol.setChildAssignTo(cpu);
-        chkCreditProtocol.setChildService(checkCredit);
-        chkCreditProtocol.setChildProduct(sameProduct);
-        em.persist(chkCreditProtocol);
+        ProtocolRecord chkCreditProtocol = model.getJobModel()
+                                                .newInitializedProtocol(pick);
+        chkCreditProtocol.setService(pick.getId());
+        chkCreditProtocol.setRequester(externalCust.getId());
+        chkCreditProtocol.setProduct(anyProduct.getId());
+        chkCreditProtocol.setDeliverTo(us.getId());
+        chkCreditProtocol.setDeliverFrom(us.getId());
+        chkCreditProtocol.setChildAssignTo(cpu.getId());
+        chkCreditProtocol.setChildService(checkCredit.getId());
+        chkCreditProtocol.setChildProduct(sameProduct.getId());
+        chkCreditProtocol.update();
 
-        Protocol chkLtrCrdtProtocol = model.getJobModel()
-                                           .newInitializedProtocol(pick, core);
-        chkLtrCrdtProtocol.setService(pick);
-        chkLtrCrdtProtocol.setRequester(externalCust);
-        chkLtrCrdtProtocol.setProduct(anyProduct);
-        chkLtrCrdtProtocol.setDeliverTo(euro);
-        chkLtrCrdtProtocol.setDeliverFrom(us);
-        chkLtrCrdtProtocol.setChildAssignTo(creditDept);
-        chkLtrCrdtProtocol.setChildService(checkLetterOfCredit);
-        chkLtrCrdtProtocol.setChildProduct(sameProduct);
-        em.persist(chkLtrCrdtProtocol);
+        ProtocolRecord chkLtrCrdtProtocol = model.getJobModel()
+                                                 .newInitializedProtocol(pick);
+        chkLtrCrdtProtocol.setService(pick.getId());
+        chkLtrCrdtProtocol.setRequester(externalCust.getId());
+        chkLtrCrdtProtocol.setProduct(anyProduct.getId());
+        chkLtrCrdtProtocol.setDeliverTo(euro.getId());
+        chkLtrCrdtProtocol.setDeliverFrom(us.getId());
+        chkLtrCrdtProtocol.setChildAssignTo(creditDept.getId());
+        chkLtrCrdtProtocol.setChildService(checkLetterOfCredit.getId());
+        chkLtrCrdtProtocol.setChildProduct(sameProduct.getId());
+        chkLtrCrdtProtocol.update();
 
-        Protocol shipProtocol = model.getJobModel()
-                                     .newInitializedProtocol(deliver, core);
-        shipProtocol.setService(deliver);
-        shipProtocol.setRequester(anyAgency);
-        shipProtocol.setProduct(anyProduct);
-        shipProtocol.setDeliverTo(anyLocation);
-        shipProtocol.setDeliverFrom(anyLocation);
-        shipProtocol.setChildAssignTo(factory1Agency);
-        shipProtocol.setChildService(ship);
-        shipProtocol.setChildProduct(sameProduct);
-        em.persist(shipProtocol);
+        ProtocolRecord shipProtocol = model.getJobModel()
+                                           .newInitializedProtocol(deliver);
+        shipProtocol.setService(deliver.getId());
+        shipProtocol.setRequester(anyAgency.getId());
+        shipProtocol.setProduct(anyProduct.getId());
+        shipProtocol.setDeliverTo(anyLocation.getId());
+        shipProtocol.setDeliverFrom(anyLocation.getId());
+        shipProtocol.setChildAssignTo(factory1Agency.getId());
+        shipProtocol.setChildService(ship.getId());
+        shipProtocol.setChildProduct(sameProduct.getId());
+        shipProtocol.update();
 
-        Protocol printCustDeclProtocol = model.getJobModel()
-                                              .newInitializedProtocol(ship,
-                                                                      core);
-        printCustDeclProtocol.setService(ship);
-        printCustDeclProtocol.setRequester(externalCust);
-        printCustDeclProtocol.setProduct(abc486);
-        printCustDeclProtocol.setDeliverTo(euro);
-        printCustDeclProtocol.setDeliverFrom(us);
-        printCustDeclProtocol.setChildAssignTo(cpu);
-        printCustDeclProtocol.setChildService(printCustomsDeclaration);
-        printCustDeclProtocol.setChildProduct(sameProduct);
-        em.persist(printCustDeclProtocol);
+        ProtocolRecord printCustDeclProtocol = model.getJobModel()
+                                                    .newInitializedProtocol(ship);
+        printCustDeclProtocol.setService(ship.getId());
+        printCustDeclProtocol.setRequester(externalCust.getId());
+        printCustDeclProtocol.setProduct(abc486.getId());
+        printCustDeclProtocol.setDeliverTo(euro.getId());
+        printCustDeclProtocol.setDeliverFrom(us.getId());
+        printCustDeclProtocol.setChildAssignTo(cpu.getId());
+        printCustDeclProtocol.setChildService(printCustomsDeclaration.getId());
+        printCustDeclProtocol.setChildProduct(sameProduct.getId());
+        printCustDeclProtocol.update();
 
-        Protocol printPoProtocol = model.getJobModel()
-                                        .newInitializedProtocol(ship, core);
-        printPoProtocol.setService(ship);
-        printPoProtocol.setRequester(externalCust);
-        printPoProtocol.setProduct(abc486);
-        printPoProtocol.setDeliverTo(anyLocation);
-        printPoProtocol.setDeliverFrom(us);
-        printPoProtocol.setChildAssignTo(cpu);
-        printPoProtocol.setChildService(printPurchaseOrder);
-        printPoProtocol.setChildProduct(sameProduct);
-        em.persist(printPoProtocol);
+        ProtocolRecord printPoProtocol = model.getJobModel()
+                                              .newInitializedProtocol(ship);
+        printPoProtocol.setService(ship.getId());
+        printPoProtocol.setRequester(externalCust.getId());
+        printPoProtocol.setProduct(abc486.getId());
+        printPoProtocol.setDeliverTo(anyLocation.getId());
+        printPoProtocol.setDeliverFrom(us.getId());
+        printPoProtocol.setChildAssignTo(cpu.getId());
+        printPoProtocol.setChildService(printPurchaseOrder.getId());
+        printPoProtocol.setChildProduct(sameProduct.getId());
+        printPoProtocol.update();
 
-        Protocol feeProtocol = model.getJobModel()
-                                    .newInitializedProtocol(printPurchaseOrder,
-                                                            core);
-        feeProtocol.setService(printPurchaseOrder);
-        feeProtocol.setRequester(anyAgency);
-        feeProtocol.setProduct(abc486);
-        feeProtocol.setDeliverTo(anyLocation);
-        feeProtocol.setDeliverFrom(us);
-        feeProtocol.setChildAssignTo(billingComputer);
-        feeProtocol.setChildService(fee);
-        feeProtocol.setChildProduct(sameProduct);
-        em.persist(feeProtocol);
+        ProtocolRecord feeProtocol = model.getJobModel()
+                                          .newInitializedProtocol(printPurchaseOrder);
+        feeProtocol.setService(printPurchaseOrder.getId());
+        feeProtocol.setRequester(anyAgency.getId());
+        feeProtocol.setProduct(abc486.getId());
+        feeProtocol.setDeliverTo(anyLocation.getId());
+        feeProtocol.setDeliverFrom(us.getId());
+        feeProtocol.setChildAssignTo(billingComputer.getId());
+        feeProtocol.setChildService(fee.getId());
+        feeProtocol.setChildProduct(sameProduct.getId());
+        feeProtocol.update();
 
-        Protocol salesTaxProtocol = model.getJobModel()
-                                         .newInitializedProtocol(fee, core);
-        salesTaxProtocol.setService(fee);
-        salesTaxProtocol.setRequester(nonExemptAgency);
-        salesTaxProtocol.setProduct(nonExempt);
-        salesTaxProtocol.setDeliverTo(dc);
-        salesTaxProtocol.setDeliverFrom(anyLocation);
-        salesTaxProtocol.setChildAssignTo(billingComputer);
-        salesTaxProtocol.setChildService(salesTax);
-        salesTaxProtocol.setChildProduct(sameProduct);
-        em.persist(salesTaxProtocol);
+        ProtocolRecord salesTaxProtocol = model.getJobModel()
+                                               .newInitializedProtocol(fee);
+        salesTaxProtocol.setService(fee.getId());
+        salesTaxProtocol.setRequester(nonExemptAgency.getId());
+        salesTaxProtocol.setProduct(nonExempt.getId());
+        salesTaxProtocol.setDeliverTo(dc.getId());
+        salesTaxProtocol.setDeliverFrom(anyLocation.getId());
+        salesTaxProtocol.setChildAssignTo(billingComputer.getId());
+        salesTaxProtocol.setChildService(salesTax.getId());
+        salesTaxProtocol.setChildProduct(sameProduct.getId());
+        salesTaxProtocol.update();
 
-        Protocol discountProtocol = model.getJobModel()
-                                         .newInitializedProtocol(fee, core);
-        discountProtocol.setService(fee);
-        discountProtocol.setRequester(externalCust);
-        discountProtocol.setProduct(abc486);
-        discountProtocol.setDeliverTo(euro);
-        discountProtocol.setDeliverFrom(us);
-        discountProtocol.setChildAssignTo(billingComputer);
-        discountProtocol.setChildService(discount);
-        discountProtocol.setChildProduct(sameProduct);
-        em.persist(discountProtocol);
+        ProtocolRecord discountProtocol = model.getJobModel()
+                                               .newInitializedProtocol(fee);
+        discountProtocol.setService(fee.getId());
+        discountProtocol.setRequester(externalCust.getId());
+        discountProtocol.setProduct(abc486.getId());
+        discountProtocol.setDeliverTo(euro.getId());
+        discountProtocol.setDeliverFrom(us.getId());
+        discountProtocol.setChildAssignTo(billingComputer.getId());
+        discountProtocol.setChildService(discount.getId());
+        discountProtocol.setChildProduct(sameProduct.getId());
+        discountProtocol.update();
 
-        Protocol gtuDiscountedPriceProtocol = model.getJobModel()
-                                                   .newInitializedProtocol(fee,
-                                                                           core);
-        gtuDiscountedPriceProtocol.setService(fee);
-        gtuDiscountedPriceProtocol.setRequester(georgeTownUniversity);
-        gtuDiscountedPriceProtocol.setProduct(abc486);
-        gtuDiscountedPriceProtocol.setDeliverTo(dc);
-        gtuDiscountedPriceProtocol.setDeliverFrom(us);
-        gtuDiscountedPriceProtocol.setChildAssignTo(billingComputer);
-        gtuDiscountedPriceProtocol.setChildService(salesTax);
-        gtuDiscountedPriceProtocol.setChildProduct(sameProduct);
-        em.persist(gtuDiscountedPriceProtocol);
+        ProtocolRecord gtuDiscountedPriceProtocol = model.getJobModel()
+                                                         .newInitializedProtocol(fee);
+        gtuDiscountedPriceProtocol.setService(fee.getId());
+        gtuDiscountedPriceProtocol.setRequester(georgeTownUniversity.getId());
+        gtuDiscountedPriceProtocol.setProduct(abc486.getId());
+        gtuDiscountedPriceProtocol.setDeliverTo(dc.getId());
+        gtuDiscountedPriceProtocol.setDeliverFrom(us.getId());
+        gtuDiscountedPriceProtocol.setChildAssignTo(billingComputer.getId());
+        gtuDiscountedPriceProtocol.setChildService(salesTax.getId());
+        gtuDiscountedPriceProtocol.setChildProduct(sameProduct.getId());
+        gtuDiscountedPriceProtocol.update();
     }
 
     public void createRelationships() {
-        area = new Relationship("Area",
-                                "A is a member of the economic community B",
-                                core);
-        em.persist(area);
-        areaOf = new Relationship("Area Of", "A is economic community of B",
-                                  core, area);
-        area.setInverse(areaOf);
-        em.persist(areaOf);
+        area = model.records()
+                    .newRelationship("Area",
+                                     "A is a member of the economic community B");
+        areaOf = model.records()
+                      .newRelationship("Area Of",
+                                       "A is economic community of B", area);
+        area.insert();
+        area.setInverse(areaOf.getId());
+        areaOf.insert();
 
-        city = new Relationship("City", "A is located in the City B", core);
-        em.persist(city);
-        cityOf = new Relationship("City Of", "A is the city of B", core, city);
-        city.setInverse(cityOf);
-        em.persist(cityOf);
+        city = model.records()
+                    .newRelationship("City", "A is located in the City B");
+        city.insert();
+        cityOf = model.records()
+                      .newRelationship("City Of", "A is the city of B", city);
+        city.setInverse(cityOf.getId());
+        cityOf.insert();
 
-        customerType = new Relationship("Customer Type",
-                                        "A has customer type of B", core);
-        em.persist(customerType);
-        customerTypeOf = new Relationship("Customer Type Of",
-                                          "A is the customer type of B", core,
-                                          customerType);
-        customerType.setInverse(customerTypeOf);
-        em.persist(customerTypeOf);
+        customerType = model.records()
+                            .newRelationship("Customer Type",
+                                             "A has customer type of B");
+        customerType.insert();
+        customerTypeOf = model.records()
+                              .newRelationship("Customer Type Of",
+                                               "A is the customer type of B",
+                                               customerType);
+        customerType.setInverse(customerTypeOf.getId());
+        customerTypeOf.insert();
 
-        region = new Relationship("Region", "A's general region is B", core);
-        em.persist(region);
-        regionOf = new Relationship("Region Of", "A is the region of B", core,
-                                    region);
-        region.setInverse(regionOf);
-        em.persist(regionOf);
+        region = model.records()
+                      .newRelationship("Region", "A's general region is B");
+        region.insert();
+        regionOf = model.records()
+                        .newRelationship("Region Of", "A is the region of B",
+                                         region);
+        region.setInverse(regionOf.getId());
+        regionOf.insert();
 
-        state = new Relationship("State", "The State of A is B", core);
-        em.persist(state);
-        stateOf = new Relationship("State Of", "A is the state of B", core,
-                                   state);
-        state.setInverse(stateOf);
-        em.persist(stateOf);
+        state = model.records()
+                     .newRelationship("State", "The State of A is B");
+        state.insert();
+        stateOf = model.records()
+                       .newRelationship("State Of", "A is the state of B",
+                                        state);
+        state.setInverse(stateOf.getId());
+        stateOf.insert();
 
-        salesTaxStatus = new Relationship("SalesTaxStatus",
-                                          "The sales tax status of A is B",
-                                          core);
-        em.persist(salesTaxStatus);
-        salesTaxStatusOf = new Relationship("SalesTaxStatus Of",
-                                            "A is the sales tax status of B",
-                                            core, salesTaxStatus);
-        salesTaxStatus.setInverse(salesTaxStatusOf);
-        em.persist(salesTaxStatusOf);
+        salesTaxStatus = model.records()
+                              .newRelationship("SalesTaxStatus",
+                                               "The sales tax status of A is B");
+        salesTaxStatus.insert();
+        salesTaxStatusOf = model.records()
+                                .newRelationship("SalesTaxStatus Of",
+                                                 "A is the sales tax status of B",
+                                                 salesTaxStatus);
+        salesTaxStatus.setInverse(salesTaxStatusOf.getId());
+        salesTaxStatusOf.insert();
 
-        storageType = new Relationship("StorageType",
-                                       "The type of storage required for A is B",
-                                       core);
-        em.persist(storageType);
-        storageTypeOf = new Relationship("StorageType Of",
-                                         "A is the storage type of B", core,
-                                         storageType);
-        storageType.setInverse(storageTypeOf);
-        em.persist(storageTypeOf);
+        storageType = model.records()
+                           .newRelationship("StorageType",
+                                            "The type of storage required for A is B");
+        storageType.insert();
+        storageTypeOf = model.records()
+                             .newRelationship("StorageType Of",
+                                              "A is the storage type of B",
+                                              storageType);
+        storageType.setInverse(storageTypeOf.getId());
+        storageTypeOf.insert();
 
-        street = new Relationship("Street", "The street of A is B", core);
-        em.persist(street);
-        streetOf = new Relationship("Street of", "A is the street of B", core,
-                                    street);
-        street.setInverse(streetOf);
-        em.persist(streetOf);
+        street = model.records()
+                      .newRelationship("Street", "The street of A is B");
+        street.insert();
+        streetOf = model.records()
+                        .newRelationship("Street of", "A is the street of B",
+                                         street);
+        street.setInverse(streetOf.getId());
+        streetOf.insert();
     }
 
     public void createServices() {
-        deliver = new Product("Deliver", "Deliver product", core);
-        em.persist(deliver);
+        deliver = model.records()
+                       .newProduct("Deliver", "Deliver product");
+        deliver.insert();
 
-        pick = new Product("Pick", "Pick inventory", core);
-        em.persist(pick);
+        pick = model.records()
+                    .newProduct("Pick", "Pick inventory");
+        pick.insert();
 
-        ship = new Product("Ship", "Ship inventory", core);
-        em.persist(ship);
+        ship = model.records()
+                    .newProduct("Ship", "Ship inventory");
+        ship.insert();
 
-        checkCredit = new Product("CheckCredit",
-                                  "Check customer inhouse credit", core);
-        em.persist(checkCredit);
+        checkCredit = model.records()
+                           .newProduct("CheckCredit",
+                                       "Check customer inhouse credit");
+        checkCredit.insert();
 
-        checkLetterOfCredit = new Product("CheckLetterOfCredit",
-                                          "Check customer letter of credit",
-                                          core);
-        em.persist(checkLetterOfCredit);
+        checkLetterOfCredit = model.records()
+                                   .newProduct("CheckLetterOfCredit",
+                                               "Check customer letter of credit");
+        checkLetterOfCredit.insert();
 
-        discount = new Product("Discount", "Compute fee discount ", core);
-        em.persist(discount);
+        discount = model.records()
+                        .newProduct("Discount", "Compute fee discount ");
+        discount.insert();
 
-        fee = new Product("Fee", "Compute fee", core);
-        em.persist(fee);
+        fee = model.records()
+                   .newProduct("Fee", "Compute fee");
+        fee.insert();
 
-        printCustomsDeclaration = new Product("PrintCustomsDeclaration",
-                                              "Print the customs declaration",
-                                              core);
-        em.persist(printCustomsDeclaration);
+        printCustomsDeclaration = model.records()
+                                       .newProduct("PrintCustomsDeclaration",
+                                                   "Print the customs declaration");
+        printCustomsDeclaration.insert();
 
-        printPurchaseOrder = new Product("PrintPurchaseOrder",
-                                         "Print the purchase order", core);
-        em.persist(printPurchaseOrder);
+        printPurchaseOrder = model.records()
+                                  .newProduct("PrintPurchaseOrder",
+                                              "Print the purchase order");
+        printPurchaseOrder.insert();
 
-        salesTax = new Product("SalesTax", "Compute sales tax", core);
-        em.persist(salesTax);
+        salesTax = model.records()
+                        .newProduct("SalesTax", "Compute sales tax");
+        salesTax.insert();
     }
 
     public void createStatusCodes() {
-        available = new StatusCode("Available",
-                                   "The job is available for execution", core);
-        em.persist(available);
+        available = model.records()
+                         .newStatusCode("Available",
+                                        "The job is available for execution");
+        available.insert();
 
-        active = new StatusCode("Active", "Working on it now", core);
-        em.persist(active);
+        active = model.records()
+                      .newStatusCode("Active", "Working on it now");
+        active.insert();
 
-        waitingOnCreditCheck = new StatusCode("Waiting on Credit Check",
-                                              "Waiting for credit check to be completed",
-                                              core);
-        em.persist(waitingOnCreditCheck);
+        waitingOnCreditCheck = model.records()
+                                    .newStatusCode("Waiting on Credit Check",
+                                                   "Waiting for credit check to be completed");
+        waitingOnCreditCheck.insert();
 
-        completed = new StatusCode("Completed", "Completed Job", core);
+        completed = model.records()
+                         .newStatusCode("Completed", "Completed Job");
         completed.setPropagateChildren(true); // This is done to test the dup logic in the job animation
-        em.persist(completed);
+        completed.insert();
 
-        failure = new StatusCode("Failure", "Something went wrong", core);
+        failure = model.records()
+                       .newStatusCode("Failure", "Something went wrong");
         failure.setFailParent(true);
-        em.persist(failure);
+        failure.insert();
 
-        pickCompleted = new StatusCode("Pick Completed",
-                                       "Pick product has been completed", core);
-        em.persist(pickCompleted);
+        pickCompleted = model.records()
+                             .newStatusCode("Pick Completed",
+                                            "Pick product has been completed");
+        pickCompleted.insert();
 
-        waitingOnPurchaseOrder = new StatusCode("WaitingOnPurchaseOrder",
-                                                "Waiting for purchase order to be completed",
-                                                core);
-        em.persist(waitingOnPurchaseOrder);
+        waitingOnPurchaseOrder = model.records()
+                                      .newStatusCode("WaitingOnPurchaseOrder",
+                                                     "Waiting for purchase order to be completed");
+        waitingOnPurchaseOrder.insert();
 
-        waitingOnPricing = new StatusCode("Waiting on pricing",
-                                          "Waiting for pricing to be completed",
-                                          core);
-        em.persist(waitingOnPricing);
+        waitingOnPricing = model.records()
+                                .newStatusCode("Waiting on pricing",
+                                               "Waiting for pricing to be completed");
+        waitingOnPricing.insert();
 
-        waitingOnFee = new StatusCode("Waiting on fee calculation",
-                                      "Waiting for fee calculation to be completed",
-                                      core);
-        em.persist(waitingOnFee);
+        waitingOnFee = model.records()
+                            .newStatusCode("Waiting on fee calculation",
+                                           "Waiting for fee calculation to be completed");
+        waitingOnFee.insert();
 
-        abandoned = new StatusCode("Abandoned",
-                                   "We were going to do it, something happened in earlier processing that will prevent us.  This can be garbage-collected now",
-                                   core);
-        em.persist(abandoned);
+        abandoned = model.records()
+                         .newStatusCode("Abandoned",
+                                        "We were going to do it, something happened in earlier processing that will prevent us.  This can be garbage-collected now");
+        abandoned.insert();
     }
 
     public void createStatusCodeSequencing() {
-        StatusCodeSequencing s = new StatusCodeSequencing(pick,
-                                                          waitingOnCreditCheck,
-                                                          available, core);
-        em.persist(s);
+        StatusCodeSequencingRecord s = model.records()
+                                            .newStatusCodeSequencing(pick,
+                                                                     waitingOnCreditCheck,
+                                                                     available);
+        s.insert();
 
-        s = new StatusCodeSequencing(pick, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(pick, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(pick, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(pick, active, completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(ship, waitingOnPurchaseOrder, available,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(ship, waitingOnPurchaseOrder,
+                                          available);
+        s.insert();
 
-        s = new StatusCodeSequencing(ship, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(ship, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(ship, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(ship, active, completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(deliver, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(deliver, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(deliver, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(deliver, active, completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(checkCredit, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(checkCredit, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(checkCredit, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(checkCredit, active, completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(checkLetterOfCredit, available, active,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(checkLetterOfCredit, available,
+                                          active);
+        s.insert();
 
-        s = new StatusCodeSequencing(checkLetterOfCredit, active, completed,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(checkLetterOfCredit, active,
+                                          completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(discount, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(discount, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(discount, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(discount, active, completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(fee, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(fee, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(fee, available, waitingOnPricing, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(fee, available, waitingOnPricing);
+        s.insert();
 
-        s = new StatusCodeSequencing(fee, waitingOnPricing, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(fee, waitingOnPricing, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(fee, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(fee, active, completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(printCustomsDeclaration, waitingOnFee,
-                                     available, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(printCustomsDeclaration, waitingOnFee,
+                                          available);
+        s.insert();
 
-        s = new StatusCodeSequencing(printCustomsDeclaration, available, active,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(printCustomsDeclaration, available,
+                                          active);
+        s.insert();
 
-        s = new StatusCodeSequencing(printCustomsDeclaration, active, completed,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(printCustomsDeclaration, active,
+                                          completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(printPurchaseOrder, waitingOnFee,
-                                     available, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(printPurchaseOrder, waitingOnFee,
+                                          available);
+        s.insert();
 
-        s = new StatusCodeSequencing(printPurchaseOrder, available, active,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(printPurchaseOrder, available,
+                                          active);
+        s.insert();
 
-        s = new StatusCodeSequencing(printPurchaseOrder, active, completed,
-                                     core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(printPurchaseOrder, active,
+                                          completed);
+        s.insert();
 
-        s = new StatusCodeSequencing(salesTax, available, active, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(salesTax, available, active);
+        s.insert();
 
-        s = new StatusCodeSequencing(salesTax, active, completed, core);
-        em.persist(s);
+        s = model.records()
+                 .newStatusCodeSequencing(salesTax, active, completed);
+        s.insert();
     }
 
     public void load() {
@@ -787,12 +891,12 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         createServices();
         createLocations();
         createRelationships();
-        createNetworkInferences();
+        createNetworkNetworkInferences();
         createProductNetworks();
         createAgencyNetworks();
         createLocationNetworks();
         createProtocols();
-        createMetaProtocols();
+        createMetaProtocol();
         createStatusCodes();
         createStatusCodeSequencing();
         createProductSequencingAuthorizations();

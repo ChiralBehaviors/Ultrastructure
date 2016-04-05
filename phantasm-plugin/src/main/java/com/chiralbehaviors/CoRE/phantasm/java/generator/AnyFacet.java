@@ -22,9 +22,8 @@ package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.phantasm.java.any.AnyAgency;
 
 /**
  * @author hhildebrand
@@ -67,8 +66,7 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getImport() {
-        return String.format("%s.Any%s", AnyAgency.class.getPackage()
-                                                        .getName(),
+        return String.format("com.chiralbehaviors.CoRE.phantasm.java.any.Any%s",
                              ruleform.getSimpleName());
     }
 
@@ -99,7 +97,7 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getUri() {
-        return Ruleform.KERNEL_IRI;
+        return WellKnownObject.KERNEL_IRI;
     }
 
     /* (non-Javadoc)

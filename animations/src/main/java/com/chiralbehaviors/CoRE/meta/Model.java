@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,26 +20,29 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import javax.persistence.EntityManager;
+import org.jooq.DSLContext;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * The meta model for the CoRE
@@ -50,66 +53,32 @@ import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 public interface Model extends AutoCloseable {
 
     /**
-     * @param phantasm
-     * @return
-     */
-    static Class<?> getExistentialRuleform(Class<?> phantasm) {
-        if (!phantasm.isInterface()) {
-            throw new IllegalArgumentException(String.format("%s is not an interface",
-                                                             phantasm));
-        }
-        if (!Phantasm.class.isAssignableFrom(phantasm)) {
-            throw new IllegalArgumentException(String.format("%s is not a Phantasm",
-                                                             phantasm));
-        }
-
-        Type type = ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
-        return (Class<?>) type;
-    }
-
-    /**
-     * @param phantasm
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    static <T extends ExistentialRuleform<T, ?>> Constructor<? super T> getExistentialRuleformConstructor(Class<?> phantasm) {
-        try {
-            return (Constructor<? super T>) getExistentialRuleform(phantasm).getConstructor(String.class,
-                                                                                            String.class,
-                                                                                            Agency.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot access or find constructor for ruleform",
-                                            e);
-        }
-    }
-
-    /**
      * Apply the phantasm to the target.
-     * 
+     *
      * @param phantasm
      * @param target
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Class<R> phantasm,
-                                                                         Phantasm<? extends T> target);
+    <T extends ExistentialRuleform, R extends Phantasm> R apply(Class<R> phantasm,
+                                                                Phantasm target);
 
     /**
      * Answer the cached facet definition for a phantasm class
-     * 
+     *
      * @param phantasm
      * @return
      */
-    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
+    PhantasmDefinition cached(Class<? extends Phantasm> phantasm);
 
     /**
      * Cast the phantasm to another facet
-     * 
+     *
      * @param targetPhantasm
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
-                                                                        Class<R> phantasm);
+    <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
+                                                               Class<R> phantasm);
 
     @Override
     void close();
@@ -117,20 +86,28 @@ public interface Model extends AutoCloseable {
     /**
      * Create a new instance of the phantasm's existential ruleform type using
      * the model
-     * 
+     *
      * @param phantasm
      * @param ruleform
      * @return
      * @throws InstantiationException
      */
-    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R construct(Class<R> phantasm,
-                                                                             String name,
-                                                                             String description) throws InstantiationException;
+    <T extends ExistentialRuleform, R extends Phantasm> R construct(Class<R> phantasm,
+                                                                    ExistentialDomain domain,
+                                                                    String name,
+                                                                    String description) throws InstantiationException;
+
+    /**
+     * Answer the entity manager used for this model instance
+     *
+     * @return
+     */
+    DSLContext create();
 
     /**
      * Execute the function within in the context of the authenticated
      * principal.
-     * 
+     *
      * @param principal
      * @param function
      *            -
@@ -139,54 +116,7 @@ public interface Model extends AutoCloseable {
     <V> V executeAs(AuthorizedPrincipal principal,
                     Callable<V> function) throws Exception;
 
-    /**
-     * Find the ruleform instances that match the supplied attribute
-     *
-     * @param attributeValue
-     *            - the attribute value to match
-     * @return the collection of ruleform instances that match the attribute
-     */
-    <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue);
-
-    /**
-     * Find an instance of the ExistentialRuleform using the name
-     *
-     * @param name
-     * @return the instance that has the supplied name, or null if the instance
-     *         does not exist
-     */
-    <RuleForm extends ExistentialRuleform<?, ?>> RuleForm find(String name,
-                                                               Class<RuleForm> ruleform);
-
-    /**
-     * Find an instance using the id
-     *
-     * @param id
-     * @return the instance corresponding to the supplied id, or null if the
-     *         instance does not exist
-     */
-    <RuleForm extends Ruleform> RuleForm find(UUID id,
-                                              Class<RuleForm> ruleform);
-
-    /**
-     * Find all rows of a ruleform. not a smart thing to do, really. will need
-     * to be paged n' probably removed. eventually
-     * 
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform);
-
-    /**
-     * Find all the instances of the RuleForm that have been updated by the
-     * agency
-     *
-     * @param updatedBy
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
-                                                             Class<Ruleform> ruleform);
+    void flush();
 
     /**
      * Flush any caches the workspaces have
@@ -196,12 +126,14 @@ public interface Model extends AutoCloseable {
     /**
      * @return the Agency model
      */
-    AgencyModel getAgencyModel();
+    ExistentialModel<Agency> getAgencyModel();
+
+    Attribute getAttribute(UUID id);
 
     /**
      * @return the Attribute model
      */
-    AttributeModel getAttributeModel();
+    ExistentialModel<Attribute> getAttributeModel();
 
     /**
      * @return the agency that represents this instance of the CoRE
@@ -209,22 +141,17 @@ public interface Model extends AutoCloseable {
     CoreInstance getCoreInstance();
 
     /**
-     * 
+     *
      * @return the current thread's authorized principal
      */
     AuthorizedPrincipal getCurrentPrincipal();
 
-    /**
-     * Answer the entity manager used for this model instance
-     *
-     * @return
-     */
-    EntityManager getEntityManager();
+    ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain);
 
     /**
      * @return the Interval model
      */
-    IntervalModel getIntervalModel();
+    ExistentialModel<Interval> getIntervalModel();
 
     /**
      * @return the Job Model
@@ -241,25 +168,19 @@ public interface Model extends AutoCloseable {
     /**
      * @return the Location model
      */
-    LocationModel getLocationModel();
+    ExistentialModel<Location> getLocationModel();
 
-    /**
-     * Answer the appropriate networked model for the existential ruleform
-     * 
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkedModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform);
+    PhantasmModel getPhantasmModel();
 
     /**
      * @return the Product model
      */
-    ProductModel getProductModel();
+    ExistentialModel<Product> getProductModel();
 
     /**
      * @return the Relationship model
      */
-    RelationshipModel getRelationshipModel();
+    ExistentialModel<Relationship> getRelationshipModel();
 
     /**
      * @return the StatusCode model
@@ -269,51 +190,41 @@ public interface Model extends AutoCloseable {
     /**
      * @return the UnitCode model
      */
-    UnitModel getUnitModel();
-
-    /**
-     * Answer the appropriate networked model for the existential ruleform
-     * 
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform);
+    ExistentialModel<Unit> getUnitModel();
 
     /**
      * @return the UnitCode model
      */
     WorkspaceModel getWorkspaceModel();
 
-    /**
-     * Infer networks for the existential ruleform
-     * 
-     * @param ruleform
-     */
-    void inferNetworks(ExistentialRuleform<?, ?> ruleform);
+    void inferNetworks();
 
     /**
      * Lookup the ruleform using the UUID and wrap an instance of a phantasm
      * using the model
-     * 
+     *
      * @param phantasm
      * @param uuid
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                         UUID uuid);
+    <T extends ExistentialRuleform, R extends Phantasm> R lookup(Class<R> phantasm,
+                                                                 UUID uuid);
 
-    AuthorizedPrincipal principalFrom(Agency principal,
-                                      List<UUID> capabilities);
+    ExistentialRecord lookupExistential(UUID id);
 
-    StateSnapshot snapshot();
+    AuthorizedPrincipal principalFrom(Agency agency, List<UUID> capabilities);
+
+    RecordsFactory records();
+
+    WorkspaceSnapshot snapshot();
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
-     * 
+     *
      * @param phantasm
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                        Phantasm<?> ruleform);
+    <T extends ExistentialRuleform, R extends Phantasm> R wrap(Class<R> phantasm,
+                                                               ExistentialRuleform ruleform);
 }

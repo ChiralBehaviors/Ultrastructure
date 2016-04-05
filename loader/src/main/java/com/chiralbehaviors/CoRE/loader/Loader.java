@@ -19,29 +19,19 @@
  */
 package com.chiralbehaviors.CoRE.loader;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-
+import org.jooq.DSLContext;
+import org.jooq.util.postgres.PostgresDSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
-import com.hellblazer.utils.Utils;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -76,9 +66,8 @@ public class Loader {
     }
 
     public void clear() throws SQLException, LiquibaseException {
-        Connection connection = configuration.getCoreConnection();
         Liquibase liquibase = null;
-        try {
+        try (Connection connection = configuration.getCoreConnection()) {
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             liquibase = new Liquibase(Loader.MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
@@ -95,21 +84,6 @@ public class Loader {
                 return;
             }
             throw e;
-        } finally {
-            if (liquibase != null) {
-                try {
-                    liquibase.forceReleaseLocks();
-                } catch (LiquibaseException e) {
-                    throw new IllegalStateException(String.format("Could not release liquibase lock on: %s",
-                                                                  configuration.coreDb));
-                }
-            }
-            try {
-                connection.rollback();
-                connection.close();
-            } catch (SQLException e) {
-                //nothing to do
-            }
         }
     }
 
@@ -118,14 +92,15 @@ public class Loader {
             dropDatabase();
         }
         log.info(String.format("Creating core db %s", configuration.coreDb));
-        load(CREATE_DATABASE_XML, configuration.getDbaConnection());
+        try (Connection connection = configuration.getDbaConnection()) {
+            load(CREATE_DATABASE_XML, connection);
+        }
         return this;
     }
 
     public void dropDatabase() throws Exception {
-        Connection connection = configuration.getDbaConnection();
         Liquibase liquibase = null;
-        try {
+        try (Connection connection = configuration.getDbaConnection()) {
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             liquibase = new Liquibase(CREATE_DATABASE_XML,
@@ -144,71 +119,44 @@ public class Loader {
                 return;
             }
             throw e;
-        } finally {
-            if (liquibase != null) {
-                liquibase.forceReleaseLocks();
-            }
-            try {
-                connection.rollback();
-                connection.close();
-            } catch (SQLException e) {
-                //nothing to do
-            }
         }
+    }
+
+    public void execute() throws Exception {
+        System.out.println(String.format("executing loader.dbaUsername: %s",
+                                         configuration.dbaUsername));
+        if (configuration.dbaUsername != null) {
+            log.info("Creating multi tentant DB");
+            createDatabase();
+        } else {
+            log.info("Creating single tentant DB");
+        }
+        bootstrap();
     }
 
     private void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
-        String txfmd;
-        try (InputStream is = getClass().getResourceAsStream("/jpa.properties")) {
-            if (is == null) {
-                throw new IllegalStateException("jpa properties missing");
+        try (Connection conn = configuration.getCoreConnection()) {
+            conn.setAutoCommit(false);
+            DSLContext create = PostgresDSL.using(conn);
+            create.transaction(config -> KernelUtil.loadKernel(create));
+            try (Model model = new ModelImpl(conn)) {
+                create.transaction(config -> KernelUtil.initializeInstance(model,
+                                                                           configuration.coreDb,
+                                                                           "CoRE instance"));
             }
-            Map<String, String> props = new HashMap<>();
-            props.put("init.db.login", configuration.coreUsername);
-            props.put("init.db.password", configuration.corePassword);
-            props.put("init.db.server", configuration.coreServer);
-            props.put("init.db.port", Integer.toString(configuration.corePort));
-            props.put("init.db.database", configuration.coreDb);
-            txfmd = Utils.getDocument(is, props);
-        }
-        Properties properties = new Properties();
-        properties.load(new ByteArrayInputStream(txfmd.getBytes()));
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
-
-        EntityManager loadingEm = emf.createEntityManager();
-        try {
-            KernelUtil.loadKernel(loadingEm);
-        } finally {
-            if (loadingEm.getTransaction()
-                         .isActive()) {
-                loadingEm.getTransaction()
-                         .rollback();
-            }
-            loadingEm.close();
-        }
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction transaction = model.getEntityManager()
-                                                 .getTransaction();
-            transaction.begin();
-            KernelUtil.initializeInstance(model, configuration.coreDb,
-                                          "CoRE instance");
-            transaction.commit();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("Unable to create CoRE instance",
-                                            e);
-        } finally {
-            emf.close();
         }
         log.info("Bootstrapping complete");
     }
 
     private void initialize() throws Exception, SQLException {
-        log.info(String.format("initializing core db %s",
-                               configuration.coreDb));
-        load(INITIALIZE_XML, configuration.getCoreConnection());
+        log.info(String.format("initializing core db %s: user: %s",
+                               configuration.coreDb,
+                               configuration.coreUsername));
+        try (Connection connection = configuration.getCoreConnection()) {
+            load(INITIALIZE_XML, connection);
+        }
     }
 
     private void initializeParameters(Liquibase liquibase) {
@@ -223,32 +171,20 @@ public class Loader {
     private void load(String changeLog,
                       Connection connection) throws Exception {
         Liquibase liquibase = null;
-        try {
-            Database database = DatabaseFactory.getInstance()
-                                               .findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            liquibase = new Liquibase(changeLog,
-                                      new ClassLoaderResourceAccessor(getClass().getClassLoader()),
-                                      database);
-            initializeParameters(liquibase);
-            liquibase.update(Integer.MAX_VALUE, configuration.contexts);
-
-        } finally {
-            if (liquibase != null) {
-                liquibase.forceReleaseLocks();
-            }
-            try {
-                connection.rollback();
-                connection.close();
-            } catch (SQLException e) {
-                //nothing to do
-            }
-        }
+        Database database = DatabaseFactory.getInstance()
+                                           .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+        liquibase = new Liquibase(changeLog,
+                                  new ClassLoaderResourceAccessor(getClass().getClassLoader()),
+                                  database);
+        initializeParameters(liquibase);
+        liquibase.update(Integer.MAX_VALUE, configuration.contexts);
     }
 
     private void loadModel() throws Exception, SQLException {
         log.info(String.format("loading model sql in core db %s",
                                configuration.coreDb));
-        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
-             configuration.getCoreConnection());
+        try (Connection connection = configuration.getCoreConnection()) {
+            load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML, connection);
+        }
     }
 }

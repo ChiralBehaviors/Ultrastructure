@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -31,13 +32,15 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -48,42 +51,46 @@ public class StateSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testSnap() throws Exception {
-        UUID id;
-        try (Model myModel = new ModelImpl(emf)) {
-            myModel.getEntityManager()
-                   .getTransaction()
-                   .begin();
-            CoreUser frank = myModel.construct(CoreUser.class, "frank",
-                                               "he's frank");
-            id = frank.getRuleform()
-                      .getId();
-            StateSnapshot snap = myModel.snapshot();
+        // Need to commit for snap state testing
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
+        UUID tvsFrank;
+        try (Model myModel = new ModelImpl(newConnection())) {
+            CoreUser frank = myModel.construct(CoreUser.class,
+                                               ExistentialDomain.Agency,
+                                               "frank", "TV's frank");
+            tvsFrank = frank.getRuleform()
+                            .getId();
+            WorkspaceSnapshot snap = myModel.snapshot();
+            assertEquals(6, snap.getRecords()
+                                .size());
             try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
-                new ObjectMapper().registerModule(new CoREModule())
-                                  .writeValue(os, snap);
+                snap.serializeTo(os);
             }
         }
-        Agency frankenstein = em.find(Agency.class, id);
-        assertNull("Shouldn't be alive", frankenstein);
 
-        try (Model myModel = new ModelImpl(emf)) {
-            myModel.getEntityManager()
-                   .getTransaction()
-                   .begin();
+        try (Model myModel = new ModelImpl(newConnection())) {
+            Agency frankenstein = myModel.records()
+                                         .resolve(tvsFrank);
+            assertNull("Shouldn't be alive", frankenstein);
+
             StateSnapshot snapshot;
             try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
                 snapshot = new ObjectMapper().registerModule(new CoREModule())
                                              .readValue(os,
                                                         StateSnapshot.class);
             }
-            snapshot.retarget(myModel.getEntityManager());
-            myModel.getEntityManager()
-                   .flush();
-            frankenstein = myModel.getEntityManager()
-                                  .find(Agency.class, id);
+            snapshot.load(myModel.create());
+            frankenstein = myModel.records()
+                                  .resolve(tvsFrank);
             assertNotNull("Should be found", frankenstein);
         }
-        frankenstein = em.find(Agency.class, id);
+
+        Agency frankenstein = model.records()
+                                   .resolve(tvsFrank);
         assertNull("Shouldn't be alive", frankenstein);
     }
 }

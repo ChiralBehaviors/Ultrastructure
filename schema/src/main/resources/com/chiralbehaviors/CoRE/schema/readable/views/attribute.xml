@@ -8,21 +8,21 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
-                w.name AS workspace,
-                wa.key AS wsp_key,
-                wa.description AS wsp_desc,
                  a.id, 
 			     a.name, 
 			     a.description, 
 			     a.notes, 
-			     a.inheritable, 
 			     a.value_type, 
 			     up.name AS updated_by, 
+                 w.name AS workspace,
+                 wa.key AS wsp_key,
+                 wa.description AS wsp_desc,
 			     a.version
-			   FROM attribute a
-			   JOIN agency up ON a.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON a.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM existential a
+			   JOIN existential up ON a.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON a.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+               WHERE a.domain = 'Attribute'
             ]]>
         </createView>
     </changeSet>

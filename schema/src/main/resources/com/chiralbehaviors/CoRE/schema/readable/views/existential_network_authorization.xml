@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hparry">
+        <createView viewName="existential_network_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
+            SELECT  
+                auth.id, 
+                auth.name,
+                classifier.name as classifier,
+                classification.name as classification,
+                bridge.name as relationship,
+                authorized_rel.name as child_classifier,
+                authorized_parent.name as child_classification,
+                classification.domain as classification_domain,
+                authorized_parent.domain as child_classification_domain,
+                res.name as authority,
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc
+                
+                from existential_network_authorization auth
+                join facet parent on auth.parent = parent.id
+                join facet child on auth.child = child.id
+                join existential classification on parent.classification = classification.id
+                join existential classifier on parent.classifier = classifier.id
+                left join existential bridge on auth.relationship = bridge.id
+                left join existential authorized_parent on child.classification = authorized_parent.id
+                left join existential authorized_rel on child.classifier = authorized_rel.id
+                left join existential res on auth.authority = res.id
+             LEFT JOIN workspace_authorization wa ON auth.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+            ]]>
+        </createView>
+    </changeSet>
+</databaseChangeLog>

@@ -21,22 +21,6 @@
             <artifactId>stringtemplate</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-testing</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j</artifactId>
-                    <groupId>log4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>thing-ontology</artifactId>
             <scope>test</scope>
@@ -66,8 +50,12 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <artifactId>mockito-all</artifactId> 
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -137,7 +125,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>logback-test.xml</exclude>
-                                <exclude>jpa.properties</exclude>
+                                <exclude>db.properties</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -197,21 +185,10 @@
                             <classpathScope>test</classpathScope>
                             <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
                             <arguments>
-                                <argument>${project.build.directory}/test-classes/jpa.properties</argument>
+                                <argument>${project.build.directory}/test-classes/db.properties</argument>
                                 <argument>src/main/kernel/kernel.2.json</argument>
                             </arguments>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>enforce-convergence</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>

@@ -23,16 +23,16 @@ package com.chiralbehaviors.CoRE.workspace.plugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -57,7 +57,7 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
         /**
          * @parameter
          */
-        public File output;
+        public File   output;
 
         public Export() {
         }
@@ -80,7 +80,7 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
      * 
      * @parameter
      */
-    private List<Export> exports = new ArrayList<>();
+    private List<Export>  exports = new ArrayList<>();
 
     public WorkspaceSnapshotGenerator() {
     }
@@ -97,23 +97,14 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Generating workspace snapshots from database state ");
-        EntityManagerFactory emf;
-        try {
-            emf = database.getEmf();
-        } catch (IOException e) {
-            throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
-                                             e);
-        }
-        try {
+
+        try (DSLContext create = database.getCreate()) {
             for (Export export : exports) {
                 UUID uuid = WorkspaceAccessor.uuidOf(export.iri);
                 getLog().warn(String.format("Processing workspace: %s:%s", uuid,
                                             export.iri));
 
-                try (Model model = new ModelImpl(emf)) {
-                    EntityManager em = model.getEntityManager();
-                    em.getTransaction()
-                      .begin();
+                try (Model model = new ModelImpl(create)) {
                     WorkspaceScope scope = model.getWorkspaceModel()
                                                 .getScoped(uuid);
                     if (scope == null) {
@@ -130,10 +121,14 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
                         throw new MojoFailureException("An error occurred while serializing the workspace",
                                                        e);
                     }
+                } catch (DataAccessException e) {
+                    throw new MojoFailureException("An error occurred while serializing the workspace",
+                                                   e);
                 }
             }
-        } finally {
-            emf.close();
+        } catch (IOException | SQLException e) {
+            throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
+                                             e);
         }
     }
 

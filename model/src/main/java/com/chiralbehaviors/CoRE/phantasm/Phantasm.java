@@ -20,18 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.StringArgGenerator;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 
 /**
  * @author hhildebrand
  *
  */
-public interface Phantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>> {
-    final StringArgGenerator generator = Generators.nameBasedGenerator();
+public interface Phantasm {
 
     String getDescription();
 
@@ -39,7 +34,5 @@ public interface Phantasm<RuleForm extends ExistentialRuleform<RuleForm, ? exten
 
     String getNotes();
 
-    RuleForm getRuleform();
-
-    Agency getUpdatedBy();
+    ExistentialRuleform getRuleform();
 }

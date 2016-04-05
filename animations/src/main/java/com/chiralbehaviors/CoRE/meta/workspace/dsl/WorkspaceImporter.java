@@ -275,8 +275,6 @@ public class WorkspaceImporter {
         model.getPhantasmModel()
              .setValue(attributeValue,
                        WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
-        model.getPhantasmModel()
-             .setAttributeValue(attributeValue);
         loadWorkspace();
         return workspace;
     }

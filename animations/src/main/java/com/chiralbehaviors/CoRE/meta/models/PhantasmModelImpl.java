@@ -905,40 +905,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public void setAttributeValue(ExistentialAttributeRecord value) {
-        //        Attribute attribute = value.getAttribute();
-        //        Attribute validatingAttribute = model.getAttributeModel()
-        //                                             .getSingleChild(attribute,
-        //                                                             model.getKernel()
-        //                                                                  .getIsValidatedBy());
-        //        if (validatingAttribute != null) {
-        //            TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
-        //                                                                           AttributeMetaAttribute.class);
-        //            query.setParameter("ruleform", validatingAttribute);
-        //            query.setParameter("attribute", attribute);
-        //            List<AttributeMetaAttribute> attrs = query.getResultList();
-        //            if (attrs == null || attrs.size() == 0) {
-        //                throw new IllegalArgumentException("No valid values for attribute "
-        //                                                   + attribute.getName());
-        //            }
-        //            boolean valid = false;
-        //            for (AttributeMetaAttribute ama : attrs) {
-        //                if (ama.getValue() != null && ama.getValue()
-        //                                                 .equals(value.getValue())) {
-        //                    valid = true;
-        //                    em.persist(value);
-        //                }
-        //            }
-        //            if (!valid) {
-        //                throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
-        //                                                                 value.getValue(),
-        //                                                                 attribute));
-        //            }
-        //        }
-
-    }
-
-    @Override
     public void setAuthorized(ExistentialRuleform ruleform,
                               Relationship relationship,
                               List<? extends ExistentialRuleform> authorized,

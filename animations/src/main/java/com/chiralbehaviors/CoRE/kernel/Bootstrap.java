@@ -170,8 +170,6 @@ public class Bootstrap {
                                                                                  .getIRI());
         model.getPhantasmModel()
              .setValue(attributeValue, WellKnownObject.KERNEL_IRI);
-        model.getPhantasmModel()
-             .setAttributeValue(attributeValue);
         connection.commit();
 
         model.close();

@@ -394,13 +394,6 @@ public interface PhantasmModel {
                                                                    Relationship r,
                                                                    ExistentialRuleform child);
 
-    /**
-     * Sets a value for an attribute after validating it first
-     *
-     * @param value
-     */
-    void setAttributeValue(ExistentialAttributeRecord value);
-
     void setAuthorized(ExistentialRuleform ruleform, Relationship relationship,
                        List<? extends ExistentialRuleform> authorized,
                        ExistentialDomain domain);

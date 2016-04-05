@@ -164,6 +164,7 @@
                         <phase>test</phase>
                         <goals>
                             <goal>copy</goal>
+                            
                         </goals>
                         <configuration>
                             <artifactItems>

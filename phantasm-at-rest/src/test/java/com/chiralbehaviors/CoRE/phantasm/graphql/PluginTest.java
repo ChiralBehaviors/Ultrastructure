@@ -24,12 +24,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
@@ -41,6 +43,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
@@ -56,35 +59,13 @@ import graphql.schema.GraphQLSchema;
  */
 public class PluginTest extends AbstractModelTest {
 
-    private Plugin constructPlugin() throws InstantiationException {
-        Plugin testPlugin = model.construct(Plugin.class,
-                                            ExistentialDomain.Product,
-                                            "Test Plugin",
-                                            "My super green test plugin");
-        testPlugin.setFacetName("Thing1");
-        testPlugin.setPackageName(COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST);
-        testPlugin.setConstructor(model.construct(Constructor.class,
-                                                  ExistentialDomain.Product,
-                                                  "constructor",
-                                                  "For all your construction needs"));
-        testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
-                                                     ExistentialDomain.Product,
-                                                     "instanceMethod",
-                                                     "For instance"));
-        InstanceMethod methodWithArg = model.construct(InstanceMethod.class,
-                                                       ExistentialDomain.Product,
-                                                       "instanceMethodWithArgument",
-                                                       "For all your argument needs");
-        Argument argument = model.construct(Argument.class,
-                                            ExistentialDomain.Product, "arg1",
-                                            "Who needs an argument?");
-        methodWithArg.addArgument(argument);
-        argument.setInputType("String");
-        testPlugin.addInstanceMethod(methodWithArg);
-        return testPlugin;
-    }
-
     private static final String COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST = "com.chiralbehaviors.CoRE.phantasm.plugin.test";
+
+    @Before
+    public void initializeScope() throws IOException {
+        WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream("/thing.wsp"),
+                                   model);
+    }
 
     @SuppressWarnings("unchecked")
     @Test
@@ -159,5 +140,33 @@ public class PluginTest extends AbstractModelTest {
         assertEquals(apple, thing1Result.get("instanceMethod"));
         assertEquals("me", passThrough.get());
         assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
+    }
+
+    private Plugin constructPlugin() throws InstantiationException {
+        Plugin testPlugin = model.construct(Plugin.class,
+                                            ExistentialDomain.Product,
+                                            "Test Plugin",
+                                            "My super green test plugin");
+        testPlugin.setFacetName("Thing1");
+        testPlugin.setPackageName(COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST);
+        testPlugin.setConstructor(model.construct(Constructor.class,
+                                                  ExistentialDomain.Product,
+                                                  "constructor",
+                                                  "For all your construction needs"));
+        testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
+                                                     ExistentialDomain.Product,
+                                                     "instanceMethod",
+                                                     "For instance"));
+        InstanceMethod methodWithArg = model.construct(InstanceMethod.class,
+                                                       ExistentialDomain.Product,
+                                                       "instanceMethodWithArgument",
+                                                       "For all your argument needs");
+        Argument argument = model.construct(Argument.class,
+                                            ExistentialDomain.Product, "arg1",
+                                            "Who needs an argument?");
+        methodWithArg.addArgument(argument);
+        argument.setInputType("String");
+        testPlugin.addInstanceMethod(methodWithArg);
+        return testPlugin;
     }
 }

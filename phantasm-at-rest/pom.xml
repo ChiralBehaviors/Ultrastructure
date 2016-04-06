@@ -161,10 +161,9 @@
                 <executions>
                     <execution>
                         <id>copy</id>
-                        <phase>test</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
-                            
                         </goals>
                         <configuration>
                             <artifactItems>
@@ -229,10 +228,10 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId> 
+                        <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludes>
-                                <exclude>**/PluginTest.java</exclude> 
+                                <exclude>**/PluginTest.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

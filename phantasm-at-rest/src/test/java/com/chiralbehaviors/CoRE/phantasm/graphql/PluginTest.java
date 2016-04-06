@@ -76,7 +76,7 @@ public class PluginTest extends AbstractModelTest {
         Workspace workspace = model.wrap(Workspace.class, scope.getWorkspace()
                                                                .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
-        ClassLoader executionScope = FacetType.configureExecutionScope(Collections.singletonList("target/test-plugin.jar"));
+        ClassLoader executionScope = FacetType.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
                                                                        COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")

@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -146,8 +147,6 @@ public interface Model extends AutoCloseable {
      */
     AuthorizedPrincipal getCurrentPrincipal();
 
-    ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain);
-
     /**
      * @return the Interval model
      */
@@ -185,7 +184,7 @@ public interface Model extends AutoCloseable {
     /**
      * @return the StatusCode model
      */
-    StatusCodeModel getStatusCodeModel();
+    ExistentialModel<StatusCode> getStatusCodeModel();
 
     /**
      * @return the UnitCode model

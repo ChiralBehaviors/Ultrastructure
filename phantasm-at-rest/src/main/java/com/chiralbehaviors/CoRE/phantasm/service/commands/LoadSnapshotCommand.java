@@ -23,16 +23,17 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.io.InputStream;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
-import io.dropwizard.cli.ConfiguredCommand;
+import io.dropwizard.cli.Command;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -41,8 +42,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class LoadSnapshotCommand
-        extends ConfiguredCommand<PhantasmConfiguration> {
+public class LoadSnapshotCommand extends Command {
 
     public LoadSnapshotCommand() {
         super("load-snap", "load snapsot state into the CoRE instance");
@@ -56,12 +56,13 @@ public class LoadSnapshotCommand
     }
 
     @Override
-    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
-                    Namespace namespace,
-                    PhantasmConfiguration configuration) throws Exception {
-        DSLContext create = configuration.create();
-        create.transaction(c -> {
-            try (Model model = new ModelImpl(create)) {
+    public void run(Bootstrap<?> bootstrap,
+                    Namespace namespace) throws Exception {
+        CoreDbConfiguration config = new CoreDbConfiguration();
+        config.initializeFromEnvironment();
+        DSLContext create = DSL.using(config.getCoreConnection());
+        try (Model model = new ModelImpl(create)) {
+            create.transaction(c -> {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new CoREModule());
                 try (InputStream is = Utils.resolveResource(getClass(),
@@ -70,8 +71,8 @@ public class LoadSnapshotCommand
                                                                     StateSnapshot.class);
                     snapshot.load(model.create());
                 }
-            }
-        });
+            });
+        }
     }
 
 }

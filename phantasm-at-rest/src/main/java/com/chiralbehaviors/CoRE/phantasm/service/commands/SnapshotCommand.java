@@ -24,14 +24,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.dropwizard.cli.ConfiguredCommand;
+import io.dropwizard.cli.Command;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -40,7 +41,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class SnapshotCommand extends ConfiguredCommand<PhantasmConfiguration> {
+public class SnapshotCommand extends Command {
 
     public SnapshotCommand() {
         super("snap", "Capture the snapshot state of the CoRE instance");
@@ -54,18 +55,19 @@ public class SnapshotCommand extends ConfiguredCommand<PhantasmConfiguration> {
     }
 
     @Override
-    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
-                    Namespace namespace,
-                    PhantasmConfiguration configuration) throws Exception {
-        DSLContext create = configuration.create();
-        create.transaction(c -> {
-            try (Model model = new ModelImpl(create)) {
+    public void run(Bootstrap<?> bootstrap,
+                    Namespace namespace) throws Exception {
+        CoreDbConfiguration config = new CoreDbConfiguration();
+        config.initializeFromEnvironment();
+        DSLContext create = DSL.using(config.getCoreConnection());
+        try (Model model = new ModelImpl(create)) {
+            create.transaction(c -> {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new CoREModule());
                 try (FileOutputStream os = new FileOutputStream(new File(namespace.getString("file")))) {
                     objectMapper.writeValue(os, model.snapshot());
                 }
-            }
-        });
+            });
+        }
     }
 }

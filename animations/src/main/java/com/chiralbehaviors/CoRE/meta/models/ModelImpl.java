@@ -58,6 +58,7 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -67,7 +68,6 @@ import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
-import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
@@ -93,6 +93,28 @@ public class ModelImpl implements Model {
         cache.clear();
     }
 
+    public static Configuration configuration() {
+        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_9_5);
+        Settings settings = new Settings();
+        settings.setExecuteWithOptimisticLocking(true);
+        settings.withRenderFormatted(false);
+        configuration.set(settings);
+        return configuration;
+    }
+
+    public static Configuration configuration(Connection connection) throws SQLException {
+        Configuration configuration = configuration();
+        connection.setAutoCommit(false);
+        configuration.set(connection);
+        return configuration;
+    }
+
+    public static Configuration configuration(DataSource ds) throws SQLException {
+        Configuration configuration = configuration();
+        configuration.set(ds);
+        return configuration;
+    }
+
     public static DSLContext newCreate(Connection connection) throws SQLException {
         return PostgresDSL.using(configuration(connection));
     }
@@ -109,28 +131,6 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private static Configuration configuration() {
-        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_9_5);
-        Settings settings = new Settings();
-        settings.setExecuteWithOptimisticLocking(true);
-        settings.withRenderFormatted(false);
-        configuration.set(settings);
-        return configuration;
-    }
-
-    private static Configuration configuration(Connection connection) throws SQLException {
-        Configuration configuration = configuration();
-        connection.setAutoCommit(false);
-        configuration.set(connection);
-        return configuration;
-    }
-
-    private static Configuration configuration(DataSource ds) throws SQLException {
-        Configuration configuration = configuration();
-        configuration.set(ds);
-        return configuration;
-    }
-
     private final ExistentialModel<Agency>       agencyModel;
     private final Animations                     animations;
     private final ExistentialModel<Attribute>    attributeModel;
@@ -144,7 +144,7 @@ public class ModelImpl implements Model {
     private final PhantasmModel                  phantasmModel;
     private final ExistentialModel<Product>      productModel;
     private final ExistentialModel<Relationship> relationshipModel;
-    private final StatusCodeModel                statusCodeModel;
+    private final ExistentialModel<StatusCode>   statusCodeModel;
 
     private final ExistentialModel<Unit>         unitModel;
 
@@ -207,7 +207,9 @@ public class ModelImpl implements Model {
         relationshipModel = new ExistentialModelImpl<>(this,
                                                        ExistentialDomain.Relationship,
                                                        Agency.class);
-        statusCodeModel = new StatusCodeModelImpl(this);
+        statusCodeModel = new ExistentialModelImpl<>(this,
+                                                     ExistentialDomain.StatusCode,
+                                                     StatusCode.class);
         unitModel = new ExistentialModelImpl<>(this, ExistentialDomain.Unit,
                                                Unit.class);
         phantasmModel = new PhantasmModelImpl(this);
@@ -330,34 +332,6 @@ public class ModelImpl implements Model {
                                            : authorizedPrincipal;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getExistentialModel(com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain)
-     */
-    @Override
-    public ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain) {
-        switch (domain) {
-            case Agency:
-                return getAgencyModel();
-            case Attribute:
-                return getAttributeModel();
-            case Interval:
-                return getIntervalModel();
-            case Location:
-                return getLocationModel();
-            case Product:
-                return getLocationModel();
-            case Relationship:
-                return getRelationshipModel();
-            case StatusCode:
-                return getStatusCodeModel();
-            case Unit:
-                return getUnitModel();
-            default:
-                throw new IllegalArgumentException(String.format("Invalid domain: %s",
-                                                                 domain));
-        }
-    }
-
     @Override
     public ExistentialModel<Interval> getIntervalModel() {
         return intervalModel;
@@ -394,38 +368,13 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public StatusCodeModel getStatusCodeModel() {
+    public ExistentialModel<StatusCode> getStatusCodeModel() {
         return statusCodeModel;
     }
 
     @Override
     public ExistentialModel<Unit> getUnitModel() {
         return unitModel;
-    }
-
-    public <RuleForm extends ExistentialRuleform> ExistentialModel<?> getUnknownNetworkedModel(RuleForm ruleform) {
-        switch (ruleform.getClass()
-                        .getSimpleName()) {
-            case "Agency":
-                return getAgencyModel();
-            case "Attribute":
-                return getAttributeModel();
-            case "Interval":
-                return getIntervalModel();
-            case "Location":
-                return getLocationModel();
-            case "Product":
-                return getProductModel();
-            case "Relationship":
-                return getRelationshipModel();
-            case "StatusCode":
-                return getStatusCodeModel();
-            case "Unit":
-                return getUnitModel();
-            default:
-                throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
-                                                                 ruleform.getClass()));
-        }
     }
 
     @Override

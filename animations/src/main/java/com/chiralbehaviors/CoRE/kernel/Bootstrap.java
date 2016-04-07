@@ -62,12 +62,22 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  *
  */
 public class Bootstrap {
+    public static void boostrap(String outputFile,
+                                DSLContext create) throws SQLException,
+                                                   IOException {
+        Bootstrap bootstrap = new Bootstrap(create);
+        bootstrap.clear();
+        create.transaction(config -> bootstrap.bootstrap());
+        bootstrap.serialize(outputFile);
+    }
+
     public static void main(String[] argv) throws Exception {
         if (argv.length != 2) {
             System.err.println("Usage: Bootstrap <db.properties> <output file>");
             System.exit(1);
         }
         Properties properties = new Properties();
+        String outputFile = argv[1];
         try (InputStream is = new FileInputStream(new File(argv[0]))) {
             properties.load(is);
         }
@@ -77,11 +87,9 @@ public class Bootstrap {
                                                       (String) properties.get("password"));
         conn.setAutoCommit(false);
 
-        DSLContext create = DSL.using(conn);
-        Bootstrap bootstrap = new Bootstrap(create);
-        bootstrap.clear();
-        create.transaction(config -> bootstrap.bootstrap());
-        bootstrap.serialize(argv[1]);
+        try (DSLContext create = DSL.using(conn)) {
+            boostrap(outputFile, create);
+        }
     }
 
     private final Connection     connection;

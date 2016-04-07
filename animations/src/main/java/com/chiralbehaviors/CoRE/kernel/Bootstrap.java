@@ -140,7 +140,6 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
-        connection.commit();
         constructKernelWorkspace();
     }
 
@@ -162,7 +161,6 @@ public class Bootstrap {
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
-        connection.commit();
 
         // Ain Soph
         ModelImpl model = new ModelImpl(create.configuration()
@@ -178,9 +176,6 @@ public class Bootstrap {
                                                                                  .getIRI());
         model.getPhantasmModel()
              .setValue(attributeValue, WellKnownObject.KERNEL_IRI);
-        connection.commit();
-
-        model.close();
 
         // Ain Soph Aur
 

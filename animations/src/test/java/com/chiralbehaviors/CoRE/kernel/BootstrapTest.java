@@ -20,7 +20,10 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import org.jooq.DSLContext;
 import org.junit.Test;
+
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
 /**
  * If you forget to disable this during non bootstrap debugging, you will be
@@ -32,7 +35,12 @@ import org.junit.Test;
 public class BootstrapTest {
     @Test
     public void testBootstrap() throws Exception {
-        Bootstrap.main(new String[] { "target/test-classes/db.properties",
-                                      "target/bootstrap-out.json" });
+        try (DSLContext create = AbstractModelTest.newCreate()) {
+            Bootstrap.boostrap("target/bootstrap-out.json", create);
+            create.configuration()
+                  .connectionProvider()
+                  .acquire()
+                  .rollback();
+        }
     }
 }

@@ -147,6 +147,7 @@ public class WorkspaceImporter {
      * @return
      */
     public WorkspaceAccessor load(Product definingProduct) {
+        definingProduct.refresh();
         definingProduct.setName(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
         Token description = wsp.getWorkspaceDefinition().description;
         definingProduct.setDescription(description == null ? null

@@ -11,9 +11,7 @@
     <name>CoRE Animations</name>
     <description>Animations for the CoRE model</description>
     <properties>
-        <animation.jar.name>model</animation.jar.name>
-        <animation.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</animation.jar.file>
-        <main.sql>${project.basedir}/src/main/sql</main.sql>
+        <kernel.workspace.json>src/main/kernel/kernel.3.json</kernel.workspace.json>
     </properties>
     <dependencies>
         <dependency>
@@ -105,7 +103,7 @@
                         </goals>
                         <configuration>
                             <generator>
-                                <resource>${basedir}/src/main/resources/kernel.2.wsp</resource>
+                                <resource>${basedir}/src/main/resources/kernel.3.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
                                 <packageName>com.chiralbehaviors.CoRE.kernel.phantasm</packageName>
                                 <appendTypeToPackage>true</appendTypeToPackage>
@@ -186,7 +184,7 @@
                             <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
                             <arguments>
                                 <argument>${project.build.directory}/test-classes/db.properties</argument>
-                                <argument>src/main/kernel/kernel.2.json</argument>
+                                <argument>${kernel.workspace.json}</argument>
                             </arguments>
                         </configuration>
                     </plugin>

@@ -46,7 +46,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 public class KernelUtil {
 
     public static final List<URL> KERNEL_LOADS;
-    private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
+    private static final String[] KERNEL_VERSIONS = { "/kernel.3.json" };
 
     static {
         KERNEL_LOADS = Collections.unmodifiableList(Arrays.asList(KERNEL_VERSIONS)

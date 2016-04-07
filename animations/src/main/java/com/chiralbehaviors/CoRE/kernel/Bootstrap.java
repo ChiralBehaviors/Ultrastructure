@@ -62,12 +62,14 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  *
  */
 public class Bootstrap {
+    private static final String KERNEL_3_WSP = "/kernel.3.wsp";
+
     public static void boostrap(String outputFile,
                                 DSLContext create) throws SQLException,
                                                    IOException {
         Bootstrap bootstrap = new Bootstrap(create);
-        bootstrap.clear();
-        create.transaction(config -> bootstrap.bootstrap());
+        RecordsFactory.clear(bootstrap.create);
+        bootstrap.bootstrap();
         bootstrap.serialize(outputFile);
     }
 
@@ -92,15 +94,10 @@ public class Bootstrap {
         }
     }
 
-    private final Connection     connection;
     private final DSLContext     create;
     private final RecordsFactory records;
 
     public Bootstrap(DSLContext create) throws SQLException {
-        connection = create.configuration()
-                           .connectionProvider()
-                           .acquire();
-        connection.setAutoCommit(false);
         records = new RecordsFactory() {
             @Override
             public DSLContext create() {
@@ -143,10 +140,6 @@ public class Bootstrap {
         constructKernelWorkspace();
     }
 
-    public void clear() throws SQLException {
-        RecordsFactory.clear(create);
-    }
-
     private void constructKernelWorkspace() throws IOException, SQLException {
         Agency core = records.resolve(WellKnownAgency.CORE.id());
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
@@ -167,7 +160,7 @@ public class Bootstrap {
                                               .connectionProvider()
                                               .acquire());
 
-        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
+        new WorkspaceImporter(getClass().getResourceAsStream(KERNEL_3_WSP),
                               model).initialize()
                                     .load(kernelWorkspace);
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
@@ -230,6 +223,7 @@ public class Bootstrap {
     }
 
     private void populate(FacetRecord auth, Product kernelWorkspace) {
+        auth.insert();
         records.newWorkspaceAuthorization(null, kernelWorkspace, auth)
                .insert();
     }

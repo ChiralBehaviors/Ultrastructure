@@ -181,7 +181,7 @@
                         <configuration>
                             <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
                             <classpathScope>test</classpathScope>
-                            <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
+                            <mainClass>com.chiralbehaviors.CoRE.kernel.BootstrapModel</mainClass>
                             <arguments>
                                 <argument>${project.build.directory}/test-classes/db.properties</argument>
                                 <argument>${kernel.workspace.json}</argument>

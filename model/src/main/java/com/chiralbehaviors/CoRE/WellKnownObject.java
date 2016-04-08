@@ -209,14 +209,6 @@ public interface WellKnownObject {
         public UUID id() {
             return new UUID(WellKnownTypes.AGENCY.ordinal(), ordinal() + 1);
         }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.agency";
-        }
     }
 
     public static enum WellKnownAttribute
@@ -363,14 +355,6 @@ public interface WellKnownObject {
             return false;
         }
 
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.attribute";
-        }
-
         abstract public ValueType valueType();
     }
 
@@ -449,14 +433,6 @@ public interface WellKnownObject {
         @Override
         public UUID id() {
             return new UUID(WellKnownTypes.INTERVAL.ordinal(), ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.interval";
         }
     }
 
@@ -538,14 +514,6 @@ public interface WellKnownObject {
         @Override
         public UUID id() {
             return new UUID(WellKnownTypes.LOCATION.ordinal(), ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.location";
         }
     }
 
@@ -655,14 +623,6 @@ public interface WellKnownObject {
         @Override
         public UUID id() {
             return new UUID(WellKnownTypes.PRODUCT.ordinal(), ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.product";
         }
     }
 
@@ -1415,13 +1375,6 @@ public interface WellKnownObject {
 
         abstract public WellKnownRelationship inverse();
 
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.relationship";
-        }
     }
 
     public static enum WellKnownStatusCode
@@ -1515,14 +1468,6 @@ public interface WellKnownObject {
         public UUID id() {
             return new UUID(WellKnownTypes.STATUS_CODE.ordinal(),
                             ordinal() + 1);
-        }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.status_code";
         }
     }
 
@@ -1735,14 +1680,6 @@ public interface WellKnownObject {
         public UUID id() {
             return new UUID(WellKnownTypes.UNIT.ordinal(), ordinal() + 1);
         }
-
-        /* (non-Javadoc)
-         * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
-         */
-        @Override
-        public String tableName() {
-            return "ruleform.unit";
-        }
     }
 
     String                     ANY                       = "(ANY)";
@@ -1830,13 +1767,7 @@ public interface WellKnownObject {
      *
      * @return the id of the wko
      */
-    UUID id();
-
-    /**
-     *
-     * @return the table name of the class of wko
-     */
-    String tableName();
+    UUID id(); 
 
     /**
      *

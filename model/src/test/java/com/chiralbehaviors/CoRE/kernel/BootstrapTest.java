@@ -20,27 +20,21 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
-import org.jooq.DSLContext;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
- * If you forget to disable this during non bootstrap debugging, you will be
- * lost in a twisty maze of uuids that look all alike. This test is stateful.
- * 
  * @author hhildebrand
  *
  */
-public class BootstrapTest {
+public class BootstrapTest extends DatabaseTest {
     @Test
     public void testBootstrap() throws Exception {
-        try (DSLContext create = AbstractModelTest.newCreate()) {
-            Bootstrap.boostrap("target/bootstrap-out.json", create);
-            create.configuration()
-                  .connectionProvider()
-                  .acquire()
-                  .rollback();
-        }
+        Bootstrap.boostrap("target/bootstrap-out.json", new Bootstrap(create));
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .rollback();
     }
 }

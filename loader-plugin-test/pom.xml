@@ -13,7 +13,7 @@
 
     <profiles>
         <profile>
-            <id>functional.test</id>
+            <id>plugin.functional.test</id>
             <build>
                 <plugins>
                     <plugin>

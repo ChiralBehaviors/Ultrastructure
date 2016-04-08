@@ -10,16 +10,16 @@
     <artifactId>navi</artifactId>
     <name>Navi</name>
     <description>Ultrastructure as a Service</description>
-    
+
     <properties>
         <main.class>HandiNAVI</main.class>
     </properties>
-    
-    <dependencies>  
+
+    <dependencies>
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>phantasm-at-rest</artifactId>
-        </dependency>   
+        </dependency>
     </dependencies>
     <build>
         <plugins>

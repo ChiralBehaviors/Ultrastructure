@@ -1,11 +1,11 @@
 auth: BEARER_TOKEN 
 
 logging:
-  level: INFO
+  level: WARN
   loggers:
-    org.jooq: INFO
-    org.glassfish: INFO
-    graphql: INFO
+    org.jooq: WARN
+    org.glassfish: WARN
+    graphql: WARN
 
 database:
     url: jdbc:postgresql://${db.server}:${db.port}/${db.database}

@@ -42,6 +42,7 @@
         <postgresql.driver.version>9.4.1208</postgresql.driver.version>
         <jackson.version>2.6.3 </jackson.version>
         <hibernate.version>5.0.2.Final</hibernate.version>
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -244,7 +245,7 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>phantasm-plugin</artifactId>
                 <version>${project.version}</version>
-            </dependency>  
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>animations</artifactId>
@@ -274,6 +275,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>create-database</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>test-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -444,11 +450,11 @@
                 <artifactId>dropwizard-file-assets</artifactId>
                 <version>0.0.1</version>
             </dependency>
-        <dependency>
-            <groupId>com.loginbox.heroku</groupId>
-            <artifactId>dropwizard-heroku-db</artifactId> 
-            <version>1.0.0</version>
-        </dependency>
+            <dependency>
+                <groupId>com.loginbox.heroku</groupId>
+                <artifactId>dropwizard-heroku-db</artifactId>
+                <version>1.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -558,7 +564,7 @@
                         <enableAssertions>true</enableAssertions>
                     </configuration>
                     <version>2.17</version>
-                </plugin> 
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
@@ -623,7 +629,7 @@
                         <port>9999</port>
                         <tempWebappDirectory>${basedir}/target/site/tempdir</tempWebappDirectory>
                     </configuration>
-                </plugin> 
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
@@ -648,7 +654,6 @@
                     </configuration>
                     <executions>
                         <execution>
-                            <phase>package</phase>
                             <goals>
                                 <goal>shade</goal>
                             </goals>
@@ -666,8 +671,8 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.8</version>
-                </plugin> 
+                    <version>2.10</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -688,5 +693,47 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-    </build> 
+    </build>
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.7.5.201505241946</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
+                                <exclude>com/chiralbehaviors/CoRE/workspace/dsl/**/*</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.eluder.coveralls</groupId>
+                        <artifactId>coveralls-maven-plugin</artifactId>
+                        <version>4.1.0</version>
+                        <configuration>
+                            <repoToken>${coveralls.repo.token}</repoToken>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

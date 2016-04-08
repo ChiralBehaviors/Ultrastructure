@@ -23,14 +23,15 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.hellblazer.utils.Utils;
 
-import io.dropwizard.cli.ConfiguredCommand;
+import io.dropwizard.cli.Command;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -39,7 +40,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class ManifestCommand extends ConfiguredCommand<PhantasmConfiguration> {
+public class ManifestCommand extends Command {
 
     public ManifestCommand() {
         super("manifest",
@@ -54,12 +55,13 @@ public class ManifestCommand extends ConfiguredCommand<PhantasmConfiguration> {
     }
 
     @Override
-    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
-                    Namespace namespace,
-                    PhantasmConfiguration configuration) throws Exception {
-        DSLContext create = configuration.create();
-        create.transaction(c -> {
-            try (Model model = new ModelImpl(create)) {
+    public void run(Bootstrap<?> bootstrap,
+                    Namespace namespace) throws Exception {
+        CoreDbConfiguration config = new CoreDbConfiguration();
+        config.initializeFromEnvironment();
+        DSLContext create = DSL.using(config.getCoreConnection());
+        try (Model model = new ModelImpl(create)) {
+            create.transaction(c -> {
                 WorkspaceImporter.manifest(namespace.getList("files")
                                                     .stream()
                                                     .map(file -> {
@@ -74,8 +76,8 @@ public class ManifestCommand extends ConfiguredCommand<PhantasmConfiguration> {
                                                     })
                                                     .collect(Collectors.toList()),
                                            model);
-            }
-        });
+            });
+        }
     }
 
 }

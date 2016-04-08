@@ -23,14 +23,15 @@ package com.chiralbehaviors.CoRE.phantasm.service.commands;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
 
-import io.dropwizard.cli.ConfiguredCommand;
+import io.dropwizard.cli.Command;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -39,8 +40,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class LoadWorkspaceCommand
-        extends ConfiguredCommand<PhantasmConfiguration> {
+public class LoadWorkspaceCommand extends Command {
 
     public LoadWorkspaceCommand() {
         super("load", "load workspace snapshots into the CoRE instance");
@@ -54,12 +54,13 @@ public class LoadWorkspaceCommand
     }
 
     @Override
-    public void run(Bootstrap<PhantasmConfiguration> bootstrap,
-                    Namespace namespace,
-                    PhantasmConfiguration configuration) throws Exception {
-        DSLContext create = configuration.create();
-        create.transaction(c -> {
-            try (Model model = new ModelImpl(create)) {
+    public void run(Bootstrap<?> bootstrap,
+                    Namespace namespace) throws Exception {
+        CoreDbConfiguration config = new CoreDbConfiguration();
+        config.initializeFromEnvironment();
+        DSLContext create = DSL.using(config.getCoreConnection());
+        try (Model model = new ModelImpl(create)) {
+            create.transaction(c -> {
                 WorkspaceSnapshot.load(model.create(),
                                        namespace.getList("files")
                                                 .stream()
@@ -74,8 +75,8 @@ public class LoadWorkspaceCommand
                                                     }
                                                 })
                                                 .collect(Collectors.toList()));
-            }
-        });
+            });
+        }
     }
 
 }

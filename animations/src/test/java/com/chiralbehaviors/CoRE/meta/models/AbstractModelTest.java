@@ -31,6 +31,7 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -51,7 +52,8 @@ public class AbstractModelTest {
     public static Connection newConnection() throws IOException, SQLException {
         Properties properties = new Properties();
         properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
-        System.out.println(String.format(" ---------> Connecting to DB: %s",
+        LoggerFactory.getLogger(AbstractModelTest.class)
+                     .info(String.format(" ---------> Connecting to DB: %s",
                                          properties.get("url")));
         Connection conn = DriverManager.getConnection((String) properties.get("url"),
                                                       (String) properties.get("user"),

@@ -459,13 +459,14 @@ public class ModelImpl implements Model {
 
             @Override
             public void begin(TransactionContext ctx) throws DataAccessException {
+                animations.begin();
                 inner.begin(ctx);
             }
 
             @Override
             public void commit(TransactionContext ctx) throws DataAccessException {
                 try {
-                    flush();
+                    animations.commit();
                     inner.commit(ctx);
                 } finally {
                     configuration.set(inner);
@@ -475,6 +476,7 @@ public class ModelImpl implements Model {
             @Override
             public void rollback(TransactionContext ctx) throws DataAccessException {
                 configuration.set(inner);
+                animations.rollback();
                 inner.rollback(ctx);
             }
         });

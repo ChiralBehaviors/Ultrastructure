@@ -140,7 +140,7 @@ public class Loader {
         try (Connection conn = configuration.getCoreConnection()) {
             conn.setAutoCommit(false);
             DSLContext create = PostgresDSL.using(conn);
-            create.transaction(config -> KernelUtil.loadKernel(create));
+            create.transaction(config -> KernelUtil.clearAndLoadKernel(create));
             try (Model model = new ModelImpl(conn)) {
                 create.transaction(config -> KernelUtil.initializeInstance(model,
                                                                            configuration.coreDb,

@@ -23,18 +23,12 @@ package com.chiralbehaviors.CoRE.kernel;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -49,12 +43,9 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -62,45 +53,19 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  *
  */
 public class Bootstrap {
+
     public static void boostrap(String outputFile,
-                                DSLContext create) throws SQLException,
-                                                   IOException {
-        Bootstrap bootstrap = new Bootstrap(create);
-        bootstrap.clear();
-        create.transaction(config -> bootstrap.bootstrap());
+                                Bootstrap bootstrap) throws SQLException,
+                                                     IOException {
+        RecordsFactory.clear(bootstrap.create);
+        bootstrap.bootstrap();
         bootstrap.serialize(outputFile);
     }
 
-    public static void main(String[] argv) throws Exception {
-        if (argv.length != 2) {
-            System.err.println("Usage: Bootstrap <db.properties> <output file>");
-            System.exit(1);
-        }
-        Properties properties = new Properties();
-        String outputFile = argv[1];
-        try (InputStream is = new FileInputStream(new File(argv[0]))) {
-            properties.load(is);
-        }
-
-        Connection conn = DriverManager.getConnection((String) properties.get("url"),
-                                                      (String) properties.get("user"),
-                                                      (String) properties.get("password"));
-        conn.setAutoCommit(false);
-
-        try (DSLContext create = DSL.using(conn)) {
-            boostrap(outputFile, create);
-        }
-    }
-
-    private final Connection     connection;
-    private final DSLContext     create;
+    protected final DSLContext   create;
     private final RecordsFactory records;
 
     public Bootstrap(DSLContext create) throws SQLException {
-        connection = create.configuration()
-                           .connectionProvider()
-                           .acquire();
-        connection.setAutoCommit(false);
         records = new RecordsFactory() {
             @Override
             public DSLContext create() {
@@ -140,15 +105,11 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
-        connection.commit();
         constructKernelWorkspace();
     }
 
-    public void clear() throws SQLException {
-        RecordsFactory.clear(create);
-    }
-
-    private void constructKernelWorkspace() throws IOException, SQLException {
+    protected Product constructKernelWorkspace() throws IOException,
+                                                 SQLException {
         Agency core = records.resolve(WellKnownAgency.CORE.id());
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
 
@@ -162,28 +123,7 @@ public class Bootstrap {
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
-        connection.commit();
-
-        // Ain Soph
-        ModelImpl model = new ModelImpl(create.configuration()
-                                              .connectionProvider()
-                                              .acquire());
-
-        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
-                              model).initialize()
-                                    .load(kernelWorkspace);
-        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
-                                                         .getAttributeValue(kernelWorkspace,
-                                                                            model.getKernel()
-                                                                                 .getIRI());
-        model.getPhantasmModel()
-             .setValue(attributeValue, WellKnownObject.KERNEL_IRI);
-        connection.commit();
-
-        model.close();
-
-        // Ain Soph Aur
-
+        return kernelWorkspace;
     }
 
     /**
@@ -235,6 +175,7 @@ public class Bootstrap {
     }
 
     private void populate(FacetRecord auth, Product kernelWorkspace) {
+        auth.insert();
         records.newWorkspaceAuthorization(null, kernelWorkspace, auth)
                .insert();
     }

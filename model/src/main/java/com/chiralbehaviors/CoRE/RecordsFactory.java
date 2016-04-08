@@ -94,20 +94,18 @@ public interface RecordsFactory {
     static String         SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
     static void clear(DSLContext create) throws SQLException {
-        create.transaction(c -> {
-            Connection connection = c.connectionProvider()
-                                     .acquire();
-            ResultSet r = connection.createStatement()
-                                    .executeQuery(SELECT_TABLE);
-            while (r.next()) {
-                String table = r.getString("name");
-                String query = String.format("TRUNCATE TABLE %s CASCADE",
-                                             table);
-                connection.createStatement()
-                          .execute(query);
-            }
-            r.close();
-        });
+        Connection connection = create.configuration()
+                                      .connectionProvider()
+                                      .acquire();
+        ResultSet r = connection.createStatement()
+                                .executeQuery(SELECT_TABLE);
+        while (r.next()) {
+            String table = r.getString("name");
+            String query = String.format("TRUNCATE TABLE %s CASCADE", table);
+            connection.createStatement()
+                      .execute(query);
+        }
+        r.close();
     }
 
     default ExistentialRecord copy(ExistentialRecord rf) {

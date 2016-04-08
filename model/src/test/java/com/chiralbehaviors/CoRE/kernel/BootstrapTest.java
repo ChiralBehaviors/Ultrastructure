@@ -20,17 +20,21 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import org.junit.Test;
+
+import com.chiralbehaviors.CoRE.test.DatabaseTest;
+
 /**
- * If you forget to disable this during non bootstrap debugging, you will be
- * lost in a twisty maze of uuids that look all alike. This test is stateful.
- * 
  * @author hhildebrand
  *
  */
-public class BootstrapTest {
-    //@Test
+public class BootstrapTest extends DatabaseTest {
+    @Test
     public void testBootstrap() throws Exception {
-        Bootstrap.main(new String[] { "target/test-classes/db.properties",
-                                      "target/bootstrap-out.json" });
+        Bootstrap.boostrap("target/bootstrap-out.json", new Bootstrap(create));
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .rollback();
     }
 }

@@ -61,7 +61,7 @@
         <db.login>core</db.login>
         <db.password>password</db.password>
 
-        <logging.core>INFO</logging.core>
+        <core.log.level>WARN</core.log.level>
         <logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</logging.consoleLayoutPattern>
         <testing.logging.consoleLayoutPattern>[%-6r] %-5p [%c{3}] : %m%n</testing.logging.consoleLayoutPattern>
     </properties>

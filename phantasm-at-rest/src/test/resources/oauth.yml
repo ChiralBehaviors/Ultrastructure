@@ -3,6 +3,7 @@ auth: BEARER_TOKEN
 logging:
   level: WARN
   loggers:
+    com.chiralbehaviors: ${core.log.level}
     org.jooq: WARN
     org.glassfish: WARN
     graphql: WARN

@@ -37,6 +37,7 @@ public class LoaderTest {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         DbaConfiguration config = mapper.readValue(getClass().getResourceAsStream("/loader.yml"),
                                                    DbaConfiguration.class);
+        config.dropDatabase = true;
         Loader loader = new Loader(config);
         try {
             loader.execute();

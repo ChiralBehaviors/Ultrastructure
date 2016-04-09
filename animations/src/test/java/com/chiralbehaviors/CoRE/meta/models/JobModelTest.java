@@ -67,7 +67,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Before
     public void loadOrderProcessing() throws Exception {
-        WorkspaceImporter scope = WorkspaceImporter.manifest(getClass().getResourceAsStream("/acm-95.wsp"),
+        WorkspaceImporter scope = WorkspaceImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
                                                              model);
         scenario = scope.getWorkspace()
                         .getAccessor(OrderProcessing.class);

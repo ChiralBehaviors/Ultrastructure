@@ -43,6 +43,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
+    public static final String ACM_95_WSP                    = "/acm-95.1.wsp";
     public static final String TARGET_CLASSES_THING_1_2_JSON = "target/test-classes/thing.1.2.json";
     public static final String TARGET_CLASSES_THING_1_JSON   = "target/test-classes/thing.1.json";
     public static final String TARGET_CLASSES_THING_2_JSON   = "target/test-classes/thing.2.json";

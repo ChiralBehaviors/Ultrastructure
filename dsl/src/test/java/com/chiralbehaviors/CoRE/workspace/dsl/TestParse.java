@@ -53,7 +53,7 @@ public class TestParse {
 
     @Test
     public void testPresentation() throws Exception {
-        WorkspacePresentation presentation = new WorkspacePresentation(getClass().getResourceAsStream("/thing.wsp"));
+        WorkspacePresentation presentation = new WorkspacePresentation(getClass().getResourceAsStream("/acm-95.1.wsp"));
         presentation.getAgencies();
         presentation.getAgencyFacets();
         presentation.getAgencyNetworks();

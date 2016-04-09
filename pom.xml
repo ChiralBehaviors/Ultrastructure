@@ -697,6 +697,9 @@
     <profiles>
         <profile>
             <id>coverage</id>
+            <properties>
+                <core.log.level>TRACE</core.log.level>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -707,6 +710,7 @@
                             <excludes>
                                 <exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/workspace/dsl/**/*</exclude>
+                                <exclude>/**/HelpMojo.*</exclude>
                             </excludes>
                         </configuration>
                         <executions>

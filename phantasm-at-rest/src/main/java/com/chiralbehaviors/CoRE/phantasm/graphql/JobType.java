@@ -106,15 +106,9 @@ public class JobType {
 
         mutation.field(createInstance());
         mutation.field(createInstances());
-        mutation.field(apply());
         mutation.field(update());
         mutation.field(updateInstances());
         mutation.field(remove());
-    }
-
-    private GraphQLFieldDefinition apply() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     private void build() {

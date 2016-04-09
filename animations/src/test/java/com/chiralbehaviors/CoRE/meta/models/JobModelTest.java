@@ -214,6 +214,20 @@ public class JobModelTest extends AbstractModelTest {
 
         List<JobRecord> jobs = jobModel.generateImplicitJobs(job);
         TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getActiveExplicitJobs();
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getActiveJobsFor(scenario.getOrderFullfillment());
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getActiveJobsFor(scenario.getOrderFullfillment(),
+                                         scenario.getAvailable());
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getChildJobsByService(job, scenario.getDeliver());
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getChildren(job);
+        TestDebuggingUtil.printJobs(jobs);
+        jobModel.getMostRecentChronologyEntry(job);
+        jobModel.getTerminalStates(job);
+        jobModel.getTopLevelJobs();
     }
 
     @Test

@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -121,11 +122,50 @@ public class JobSchema {
     }
 
     private GraphQLInputObjectType buildCreateType() {
-        graphql.schema.GraphQLInputObjectType.Builder createTypeBuilder;
-        createTypeBuilder = newInputObject().name(String.format(CREATE_TYPE,
-                                                                JOB))
-                                            .description("Job Creation");
-        return createTypeBuilder.build();
+        graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(String.format(CREATE_TYPE,
+                                                                                                    JOB))
+                                                                                .description("Job creation");
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_SERVICE)
+                                           .description("The service performed")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_ASSIGN_TO)
+                                           .description("The agency assigned to this job")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_DELIVER_FROM)
+                                           .description("The location the job's product is delivered from")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_DELIVER_TO)
+                                           .description("The location the job's product is delivered to")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLFloat)
+                                           .name(SET_QUANTITY)
+                                           .description("The job quantity")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_QUANTITY_UNIT)
+                                           .description("The unit of the job quantity")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_REQUESTER)
+                                           .description("The agency requesting the job")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_STATUS)
+                                           .description("The status of the job")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_NOTES)
+                                           .description("The job's notes")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_PRODUCT)
+                                           .description("The job's product")
+                                           .build());
+        return builder.build();
     }
 
     private GraphQLObjectType buildType() {
@@ -365,12 +405,17 @@ public class JobSchema {
     private Object newJob(DataFetchingEnvironment env,
                           Map<String, Object> createState,
                           Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
-        JobRecord job = ctx(env).records()
-                                .newJob();
+        Product product = ctx(env).records()
+                                  .resolve(UUID.fromString((String) createState.get(SET_SERVICE)));
+        if (product == null) {
+            return null;
+        }
+        JobRecord job = ctx(env).getJobModel()
+                                .newInitializedJob(product);
         createState.forEach((k, v) -> updateTemplate.get(k)
                                                     .accept(job,
                                                             createState.get(k)));
-        job.insert();
+        job.update();
         return job;
     }
 
@@ -425,7 +470,14 @@ public class JobSchema {
     private Object updateJob(DataFetchingEnvironment env,
                              Map<String, Object> updateState,
                              Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
-        JobRecord job = (JobRecord) ctx(env);
+        JobRecord job = ctx(env).create()
+                                .selectFrom(Tables.JOB)
+                                .where(Tables.JOB.ID.equal(UUID.fromString((String) updateState.get(ID))))
+                                .fetchOne();
+        updateState.remove(ID);
+        if (job == null) {
+            return null;
+        }
         updateState.forEach((k, v) -> updateTemplate.get(k)
                                                     .accept(job,
                                                             updateState.get(k)));

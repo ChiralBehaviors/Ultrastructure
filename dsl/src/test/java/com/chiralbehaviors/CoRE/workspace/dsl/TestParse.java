@@ -27,13 +27,15 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
+
 /**
  * @author hhildebrand
  *
  */
 public class TestParse {
     @Test
-    public void testExampleWorkspace() throws Exception {
+    public void testParse() throws Exception {
         WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(getClass().getResourceAsStream("/thing.wsp")));
         WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
         p.addErrorListener(new BaseErrorListener() {
@@ -47,6 +49,46 @@ public class TestParse {
             }
         });
         p.workspace();
+    }
+
+    @Test
+    public void testPresentation() throws Exception {
+        WorkspacePresentation presentation = new WorkspacePresentation(getClass().getResourceAsStream("/thing.wsp"));
+        presentation.getAgencies();
+        presentation.getAgencyFacets();
+        presentation.getAgencyNetworks();
+        presentation.getAttributes();
+        presentation.getAttributeFacets();
+        presentation.getAttributeNetworks();
+        presentation.getChildSequencings();
+        presentation.getImports();
+        presentation.getInferences();
+        presentation.getIntervalFacets();
+        presentation.getIntervalNetworks();
+        presentation.getIntervals();
+        presentation.getLocationFacets();
+        presentation.getLocationNetworks();
+        presentation.getLocations();
+        presentation.getMetaProtocols();
+        presentation.getParentSequencings();
+        presentation.getProductFacets();
+        presentation.getProductNetworks();
+        presentation.getProducts();
+        presentation.getProtocols();
+        presentation.getRelationshipFacets();
+        presentation.getRelationshipNetworks();
+        presentation.getRelationships();
+        presentation.getSelfSequencings();
+        presentation.getSiblingSequencings();
+        presentation.getStatusCodeFacets();
+        presentation.getStatusCodeNetworks();
+        presentation.getStatusCodes();
+        presentation.getStatusCodeSequencings();
+        presentation.getUnitFacets();
+        presentation.getUnitNetworks();
+        presentation.getUnits();
+        presentation.getWorkspaceDefinition();
+
     }
 
 }

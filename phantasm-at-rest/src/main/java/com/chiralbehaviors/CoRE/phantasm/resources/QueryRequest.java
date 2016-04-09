@@ -24,9 +24,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class QueryRequest {
     private String              query;
     private Map<String, Object> variables = Collections.emptyMap();
+    static final String         VARIABLES = "variables";
+    static final String         QUERY     = "query";
 
     public QueryRequest() {
     }
@@ -52,9 +59,36 @@ public class QueryRequest {
     public Map<String, Object> toMap() {
         return new HashMap<String, Object>() {
             {
-                put(GraphQlResource.QUERY, query);
-                put(GraphQlResource.VARIABLES, variables);
+                put(QueryRequest.QUERY, query);
+                put(QueryRequest.VARIABLES, variables);
             }
         };
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Map<String, Object> getVariables(Map request) {
+        Map<String, Object> variables = Collections.emptyMap();
+        Object provided = request.get(VARIABLES);
+        if (provided != null) {
+            if (provided instanceof Map) {
+                variables = (Map<String, Object>) provided;
+            } else if (provided instanceof String) {
+                try {
+                    String variableString = ((String) provided).trim();
+                    if (!variableString.isEmpty()) {
+                        variables = new ObjectMapper().readValue(variableString,
+                                                                 Map.class);
+                    }
+                } catch (Exception e) {
+                    throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
+                                                                    e.getMessage()),
+                                                      Status.BAD_REQUEST);
+                }
+            } else {
+                throw new WebApplicationException("Invalid variables parameter",
+                                                  Status.BAD_REQUEST);
+            }
+        }
+        return variables;
     }
 }

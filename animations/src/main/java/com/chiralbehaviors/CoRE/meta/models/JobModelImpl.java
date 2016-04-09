@@ -592,6 +592,14 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public List<JobRecord> getChildren(JobRecord parent) {
+        return model.create()
+                    .selectFrom(JOB)
+                    .where(JOB.PARENT.equal(parent.getId()))
+                    .fetch();
+    }
+
+    @Override
     public List<JobChronologyRecord> getChronologyForJob(JobRecord job) {
         return model.create()
                     .selectFrom(JOB_CHRONOLOGY)

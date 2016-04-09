@@ -265,6 +265,8 @@ public interface JobModel {
      */
     List<JobRecord> getChildJobsByService(JobRecord parent, Product service);
 
+    List<JobRecord> getChildren(JobRecord job);
+
     /**
      * Returns an ordered list of all JobChronologyRecord rules for the given
      * job. Entries are ordered by the ascending timeStamp (oldest is first,

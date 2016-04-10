@@ -22,8 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.java;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -126,10 +124,6 @@ public class PhantasmTwo extends PhantasmCRUD
                                         .getScoped(definition.getWorkspace());
             return function.invoke(this, scope, args);
         }
-        final Class<?> declaringClass = method.getDeclaringClass();
-        if (method.isDefault()) {
-            return invokeDefault(proxy, method, args, declaringClass);
-        }
         // equals() and hashCode().  Becauase invariance.
         if (method.getName()
                   .equals("equals")
@@ -175,21 +169,5 @@ public class PhantasmTwo extends PhantasmCRUD
     public <T extends ExistentialRuleform, R extends Phantasm> R wrap(Class<R> phantasm,
                                                                       T ruleform) {
         return model.wrap(phantasm, ruleform);
-    }
-
-    private Object invokeDefault(Object proxy, Method method, Object[] args,
-                                 final Class<?> declaringClass) throws NoSuchMethodException,
-                                                                Throwable,
-                                                                IllegalAccessException,
-                                                                InstantiationException,
-                                                                InvocationTargetException {
-        Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
-                                                                                                          int.class);
-        constructor.setAccessible(true);
-        return constructor.newInstance(declaringClass,
-                                       MethodHandles.Lookup.PRIVATE)
-                          .unreflectSpecial(method, declaringClass)
-                          .bindTo(proxy)
-                          .invokeWithArguments(args);
     }
 }

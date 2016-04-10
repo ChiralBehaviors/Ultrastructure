@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectQuery;
 import org.jooq.TableField;
@@ -86,7 +85,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -433,63 +431,6 @@ public class JobModelImpl implements JobModel {
                              .where(JOB.PARENT.equal(job.getId()))).fetch();
     }
 
-    /**
-     * Recursively retrieve all the active or terminated sub jobs of a given job
-     *
-     * @param job
-     * @return
-     */
-    @Override
-    public Collection<JobRecord> getAllActiveOrTerminatedSubJobsOf(JobRecord job) {
-        Set<JobRecord> tally = new HashSet<JobRecord>();
-        return recursivelyGetActiveOrTerminalSubJobsOf(job, tally);
-    }
-
-    @Override
-    public Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job) {
-        return getAllActiveSubJobsOf(job, new HashSet<JobRecord>());
-    }
-
-    @Override
-    public List<JobRecord> getAllActiveSubJobsOf(JobRecord parent,
-                                                 Agency agency) {
-        List<JobRecord> jobs = new ArrayList<JobRecord>();
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", parent);
-        //        query.setParameter("agency", agency);
-        //        for (JobRecord subJob : query.getResultList()) {
-        //            jobs.add(subJob);
-        //            getAllActiveSubJobsOf(subJob, agency);
-        //        }
-        return jobs;
-    }
-
-    @Override
-    public void getAllActiveSubJobsOf(JobRecord parent, Agency agency,
-                                      List<JobRecord> jobs) {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", parent);
-        //        query.setParameter("agency", agency);
-        //        for (JobRecord subJob : query.getResultList()) {
-        //            jobs.add(subJob);
-        //            getAllActiveSubJobsOf(parent, agency, jobs);
-        //        }
-    }
-
-    @Override
-    public Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job,
-                                                       Collection<JobRecord> tally) {
-        List<JobRecord> myJobs = getActiveSubJobsOf(job);
-        if (tally.addAll(myJobs)) {
-            for (JobRecord j : myJobs) {
-                getAllActiveSubJobsOf(j, tally);
-            }
-        }
-        return tally;
-    }
-
     @Override
     public List<JobRecord> getAllChildren(JobRecord job) {
         List<JobRecord> jobs = getActiveSubJobsOf(job);
@@ -668,14 +609,6 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public Map<ProtocolRecord, InferenceMap> getProtocols(JobRecord job) {
-        if (job.getStatus() == null) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("job has no status set %s",
-                                        toString(job)));
-            }
-            // Bail because, dude.  We haven't even been initialized
-            return Collections.emptyMap();
-        }
         // First we try for protocols which match the current job
         List<ProtocolRecord> protocols = getProtocolsMatching(job);
         Map<ProtocolRecord, InferenceMap> matches = new LinkedHashMap<>();
@@ -760,29 +693,12 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    @Override
-    public List<SiblingSequencingAuthorizationRecord> getSiblingActions(Product parent) {
-        return model.create()
-                    .selectFrom(SIBLING_SEQUENCING_AUTHORIZATION)
-                    .where(SIBLING_SEQUENCING_AUTHORIZATION.PARENT.equal(parent.getId()))
-                    .fetch();
-    }
-
     public List<JobRecord> getSiblings(JobRecord job) {
         return model.create()
                     .selectFrom(JOB)
                     .where(JOB.PARENT.equal(job.getParent()))
                     .and(JOB.ID.notEqual(job.getId()))
                     .fetch();
-    }
-
-    @Override
-    public Result<StatusCodeSequencingRecord> getStatusCodeSequencingsFor(Product service) {
-        return model.create()
-                    .selectFrom(STATUS_CODE_SEQUENCING)
-                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
-                    .fetch();
-
     }
 
     @Override
@@ -826,34 +742,10 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<JobRecord> getTopLevelJobs() {
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.PARENT.isNull())
-                    .fetch();
-    }
-
-    @Override
-    public List<JobRecord> getUnsetSiblings(JobRecord parent, Product service) {
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.SERVICE.equal(service.getId()))
-                    .and(JOB.STATUS.equal(kernel.getUnset()
-                                                .getId()))
-                    .and(JOB.PARENT.equal(parent.getId()))
-                    .fetch();
-    }
-
-    @Override
     public boolean hasActiveSiblings(JobRecord job) {
         return isActive(model.create()
                              .selectFrom(JOB)
                              .where(JOB.PARENT.equal(job.getParent()))).fetchOne() != null;
-    }
-
-    @Override
-    public boolean hasInitialState(Product service) {
-        return getInitialState(service).size() == 1;
     }
 
     @Override
@@ -952,10 +844,6 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void log(JobRecord job, String notes) {
-        if (job.getStatus() == null) {
-            job.setStatus(kernel.getUnset()
-                                .getId()); // Prophylactic against recursive error disease
-        }
         Integer currentGrain = model.create()
                                     .select(DSL.max(JOB_CHRONOLOGY.SEQUENCE_NUMBER))
                                     .from(JOB_CHRONOLOGY)
@@ -1926,24 +1814,6 @@ public class JobModelImpl implements JobModel {
                 }
             }
         }
-    }
-
-    /**
-     * Answer the list of the active or terminated sub jobs of a given job,
-     * recursively
-     *
-     * @param job
-     * @return
-     */
-    private Collection<JobRecord> recursivelyGetActiveOrTerminalSubJobsOf(JobRecord job,
-                                                                          Collection<JobRecord> tally) {
-        List<JobRecord> myJobs = getDirectActiveOrTerminalSubJobsOf(job);
-        if (tally.addAll(myJobs)) {
-            for (JobRecord sub : myJobs) {
-                recursivelyGetActiveOrTerminalSubJobsOf(sub, tally);
-            }
-        }
-        return tally;
     }
 
     private UUID resolve(boolean inferred, UUID protocol, UUID parent,

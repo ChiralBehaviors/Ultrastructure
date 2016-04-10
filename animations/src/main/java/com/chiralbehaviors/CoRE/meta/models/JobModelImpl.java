@@ -768,11 +768,11 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    public List<JobRecord> getSiblings(JobRecord parent) {
+    public List<JobRecord> getSiblings(JobRecord job) {
         return model.create()
                     .selectFrom(JOB)
-                    .where(JOB.PARENT.equal(parent.getId()))
-                    .and(JOB.ID.notEqual(parent.getId()))
+                    .where(JOB.PARENT.equal(job.getParent()))
+                    .and(JOB.ID.notEqual(job.getId()))
                     .fetch();
     }
 

@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
@@ -114,5 +115,39 @@ public class RecordsFactoryTest extends DatabaseTest {
         RECORDS.newUnit();
         RECORDS.newUnit("", "");
         RECORDS.newWorkspaceAuthorization();
+        Product p = RECORDS.newProduct();
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newChildSequencingAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialAttribute());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialAttributeAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialGrouping());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialNetwork());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialNetworkAttribute());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialNetworkAttributeAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newExistentialNetworkAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newFacet());
+        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newJob());
+        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newJobChronology());
+        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newMetaProtocol());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newNetworkInferrence());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newParentSequencingAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newProtocol());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newSelfSequencingAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newSiblingSequencingAuthorization());
+        RECORDS.newWorkspaceAuthorization("", p,
+                                          RECORDS.newStatusCodeSequencing());
+        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newAgency());
+
     }
 }

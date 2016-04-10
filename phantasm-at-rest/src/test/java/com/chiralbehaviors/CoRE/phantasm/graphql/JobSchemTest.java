@@ -106,14 +106,20 @@ public class JobSchemTest extends AbstractModelTest {
                                               + "          $deliverFrom: String, $requester: String) { "
                                               + "  CreateJob(state: { setService: $service, setAssignTo: $assignTo, setProduct: $product, "
                                               + "                     setDeliverTo: $deliverTo, setDeliverFrom: $deliverFrom, setRequester: $requester}) { "
-                                              + "      id, status " + "   } "
-                                              + "}", variables);
+                                              + "      id, status {id, name} "
+                                              + "   } " + "}", variables);
         Map<String, Object> result = execute(schema, query);
 
         result = (Map<String, Object>) result.get("CreateJob");
         assertNotNull(result);
         String order = (String) result.get("id");
         assertNotNull(order);
+
+        assertEquals(model.getKernel()
+                          .getUnset()
+                          .getId()
+                          .toString(),
+                     ((Map<String, Object>) result.get("status")).get("id"));
 
         model.flush();
 
@@ -126,8 +132,8 @@ public class JobSchemTest extends AbstractModelTest {
 
         query = new QueryRequest("mutation m ($id: String!, $status: String, $notes: String) { "
                                  + "  UpdateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
-                                 + "      id, status " + "   } " + "}",
-                                 variables);
+                                 + "      id, status {id, name} " + "   } "
+                                 + "}", variables);
         result = execute(schema, query);
 
         result = (Map<String, Object>) result.get("UpdateJob");
@@ -135,7 +141,7 @@ public class JobSchemTest extends AbstractModelTest {
         assertEquals(scenario.getAvailable()
                              .getId()
                              .toString(),
-                     result.get("status"));
+                     ((Map<String, Object>) result.get("status")).get("id"));
 
         model.flush();
 
@@ -148,8 +154,8 @@ public class JobSchemTest extends AbstractModelTest {
 
         query = new QueryRequest("mutation m ($id: String!, $status: String, $notes: String) { "
                                  + "  UpdateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
-                                 + "      id, status " + "   } " + "}",
-                                 variables);
+                                 + "      id, status {id, name} " + "   } "
+                                 + "}", variables);
         result = execute(schema, query);
 
         result = (Map<String, Object>) result.get("UpdateJob");
@@ -157,7 +163,7 @@ public class JobSchemTest extends AbstractModelTest {
         assertEquals(scenario.getActive()
                              .getId()
                              .toString(),
-                     result.get("status"));
+                     ((Map<String, Object>) result.get("status")).get("id"));
 
         //        List<JobRecord> jobs = jobModel.getAllChildren(order);
         //        assertEquals(jobs.stream()
@@ -170,7 +176,7 @@ public class JobSchemTest extends AbstractModelTest {
     public Map<String, Object> execute(GraphQLSchema schema,
                                        QueryRequest query) {
         ExecutionResult execute = new GraphQL(schema).execute(query.getQuery(),
-                                                              model,
+                                                              new PhantasmCRUD(model),
                                                               query.getVariables());
         assertTrue(execute.getErrors()
                           .toString(),

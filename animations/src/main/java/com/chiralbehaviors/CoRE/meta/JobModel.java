@@ -424,14 +424,6 @@ public interface JobModel {
     List<JobRecord> getTopLevelJobs();
 
     /**
-     * answer the list of jobs with children assigned to an agency
-     *
-     * @param agency
-     * @return
-     */
-    List<JobRecord> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency);
-
-    /**
      * Answer the list of siblings of a service that have the unset status
      *
      * @param parent

@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.jooq.DSLContext;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.JobSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialSchema;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
 
@@ -42,12 +42,12 @@ import io.dropwizard.auth.Auth;
  * @author hhildebrand
  *
  */
-@Path("job")
+@Path("existential")
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
-public class JobResource extends SchemaResource {
-    public JobResource() {
-        super(JobSchema.build());
+public class ExistentialResource extends SchemaResource {
+    public ExistentialResource() {
+        super(ExistentialSchema.build());
     }
 
     @Override

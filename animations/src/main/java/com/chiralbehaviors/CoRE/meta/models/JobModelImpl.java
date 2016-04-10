@@ -384,113 +384,53 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<JobRecord> getActiveExplicitJobs() {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.PARENT.isNull())
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.PARENT.isNull())).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.ASSIGN_TO.equal(agency.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.ASSIGN_TO.equal(agency.getId()))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency,
                                             List<StatusCode> desiredStates) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.ASSIGN_TO.equal(agency.getId()))
-                    .and(JOB.STATUS.in(desiredStates.stream()
-                                                    .map(s -> s.getId())
-                                                    .collect(Collectors.toList())))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.ASSIGN_TO.equal(agency.getId()))
+                             .and(JOB.STATUS.in(desiredStates.stream()
+                                                             .map(s -> s.getId())
+                                                             .collect(Collectors.toList())))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency,
                                             StatusCode desiredState) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.ASSIGN_TO.equal(agency.getId()))
-                    .and(JOB.STATUS.equal(desiredState.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.ASSIGN_TO.equal(agency.getId()))
+                             .and(JOB.STATUS.equal(desiredState.getId()))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveSubJobsForService(JobRecord job,
                                                       Product service) {
         assert job != null;
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.SERVICE.equal(service.getId()))
-                    .and(JOB.PARENT.equal(job.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.SERVICE.equal(service.getId()))
+                             .and(JOB.PARENT.equal(job.getId()))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveSubJobsOf(JobRecord job) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.PARENT.equal(job.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.PARENT.equal(job.getId()))).fetch();
     }
 
     /**
@@ -828,6 +768,14 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
+    public List<JobRecord> getSiblings(JobRecord parent) {
+        return model.create()
+                    .selectFrom(JOB)
+                    .where(JOB.PARENT.equal(parent.getId()))
+                    .and(JOB.ID.notEqual(parent.getId()))
+                    .fetch();
+    }
+
     @Override
     public Result<StatusCodeSequencingRecord> getStatusCodeSequencingsFor(Product service) {
         return model.create()
@@ -886,24 +834,6 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<JobRecord> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency) {
-        List<JobRecord> jobs = new ArrayList<JobRecord>();
-        //        for (JobRecord job : getActiveExplicitJobs()) {
-        //            TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-        //                                                              JobRecord.class);
-        //            query.setParameter("parent", job);
-        //            query.setParameter("agency", agency);
-        //            for (JobRecord subJob : query.getResultList()) {
-        //                if (isActive(subJob)) {
-        //                    jobs.add(job);
-        //                    break;
-        //                }
-        //            }
-        //        }
-        return jobs;
-    }
-
-    @Override
     public List<JobRecord> getUnsetSiblings(JobRecord parent, Product service) {
         return model.create()
                     .selectFrom(JOB)
@@ -916,12 +846,9 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public boolean hasActiveSiblings(JobRecord job) {
-        //        TypedQuery<Long> query = em.createNamedQuery(JobRecord.HAS_ACTIVE_CHILD_JOBS,
-        //                                                     Long.class);
-        //        query.setParameter("parent", job.getParent());
-        //
-        //        return query.getSingleResult() > 0;
-        return false;
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.PARENT.equal(job.getParent()))).fetchOne() != null;
     }
 
     @Override
@@ -1004,6 +931,18 @@ public class JobModelImpl implements JobModel {
     @Override
     public boolean isActive(JobRecord job) {
         return !isTerminalState(job.getStatus(), job.getService());
+    }
+
+    public SelectConditionStep<JobRecord> isActive(SelectConditionStep<JobRecord> where) {
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        return where.andNotExists(model.create()
+                                       .selectFrom(seq)
+                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                 .equal(JOB.STATUS))
+                                       .andNotExists(model.create()
+                                                          .selectFrom(STATUS_CODE_SEQUENCING)
+                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))));
     }
 
     @Override

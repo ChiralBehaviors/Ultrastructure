@@ -165,6 +165,8 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));
         }
+        new JobSchema().build(topLevelQuery, topLevelMutation);
+        new ExistentialSchema().build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
@@ -219,11 +221,13 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
             return null;
         }
     }
+
     private static String capitalized(String field) {
         char[] chars = field.toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);
         return new String(chars);
     }
+
     private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
     private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
     private String                                                                          name;
@@ -1067,8 +1071,8 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                     resolved = new File(url).toURI()
                                             .toURL();
                 } catch (MalformedURLException e1) {
-                    PhantasmBundle.log.error("Invalid configured execution scope url: {}", url,
-                              e1);
+                    PhantasmBundle.log.error("Invalid configured execution scope url: {}",
+                                             url, e1);
                     throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
                                                                      url),
                                                        e1);

@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.ExistentialResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.JobResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
@@ -108,6 +109,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                    .register(new WorkspaceResource(FacetType.configureExecutionScope(configuration.getExecutionScope())));
         environment.jersey()
                    .register(new JobResource());
+        environment.jersey()
+                   .register(new ExistentialResource());
 
         configuration.getAssets()
                      .forEach(asset -> {

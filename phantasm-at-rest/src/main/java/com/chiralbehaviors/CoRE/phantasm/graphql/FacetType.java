@@ -481,7 +481,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.addChildren(facet,
                                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(addChildren))));
+                                                        (List<ExistentialRuleform>) crud.lookup((List<String>) update.get(addChildren))));
     }
 
     private void addPlugins(Aspect facet, List<Plugin> plugins,
@@ -941,7 +941,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.removeChildren(facet,
                                                            (ExistentialRuleform) update.get(AT_RULEFORM),
                                                            auth,
-                                                           (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(removeChildren))));
+                                                           (List<ExistentialRuleform>) crud.lookup((List<String>) update.get(removeChildren))));
     }
 
     @SuppressWarnings("unchecked")
@@ -959,7 +959,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.setChildren(facet,
                                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<ExistentialRuleform>) crud.lookupRuleForm((List<String>) update.get(setter))));
+                                                        (List<ExistentialRuleform>) crud.lookup((List<String>) update.get(setter))));
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {

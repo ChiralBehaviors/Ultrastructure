@@ -344,21 +344,6 @@ public class JobModelImpl implements JobModel {
             ProtocolRecord protocol = txfm.getKey();
             assert protocol != null;
             jobs.addAll(insert(job, protocol, txfm.getValue()));
-            //            if (model.create()
-            //                     .selectCount()
-            //                     .from(JOB)
-            //                     .where(JOB.PARENT.equal(job.getParent()))
-            //                     .and(JOB.PROTOCOL.equal(job.getProtocol()))
-            //                     .fetchOne()
-            //                     .value1()
-            //                     .equals(ZERO)) {
-            //                jobs.addAll(insert(job, protocol, txfm.getValue()));
-            //            } else {
-            //                if (log.isInfoEnabled()) {
-            //                    log.info(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
-            //                                           toString(job), toString(protocol)));
-            //                }
-            //            }
         }
         return jobs;
     }
@@ -487,17 +472,6 @@ public class JobModelImpl implements JobModel {
                     .where(JOB_CHRONOLOGY.JOB.equal(job.getId()))
                     .orderBy(JOB_CHRONOLOGY.SEQUENCE_NUMBER.asc())
                     .fetch();
-    }
-
-    @Override
-    public List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job) {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_OR_TERMINATED_SUB_JOBS,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", job);
-        //        query.setParameter("unset", kernel.getUnset());
-        //
-        //        return query.getResultList();
-        return null;
     }
 
     @Override

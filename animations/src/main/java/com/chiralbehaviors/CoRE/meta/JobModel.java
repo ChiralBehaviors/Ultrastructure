@@ -233,14 +233,6 @@ public interface JobModel {
     List<JobChronologyRecord> getChronologyForJob(JobRecord job);
 
     /**
-     * Answer the immediate child jobs of the job that are active or terminal
-     *
-     * @param job
-     * @return the immediate child jobs of the job that are active or terminal
-     */
-    List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job);
-
-    /**
      * Answer the initial state of a service
      *
      * @param service

@@ -155,10 +155,6 @@ public class JobSchema {
                                            .description("The agency requesting the job")
                                            .build());
         builder.field(newInputObjectField().type(GraphQLString)
-                                           .name(SET_STATUS)
-                                           .description("The status of the job")
-                                           .build());
-        builder.field(newInputObjectField().type(GraphQLString)
                                            .name(SET_NOTES)
                                            .description("The job's notes")
                                            .build());
@@ -357,6 +353,10 @@ public class JobSchema {
                                                           .description("the initial state of the job")
                                                           .type(new GraphQLNonNull(createType))
                                                           .build())
+                                   .argument(newArgument().type(GraphQLString)
+                                                          .name(STATUS)
+                                                          .description("The status to transition the job from its initial state")
+                                                          .build())
                                    .dataFetcher(env -> {
                                        @SuppressWarnings("unchecked")
                                        Map<String, Object> createState = (Map<String, Object>) env.getArgument(STATE);
@@ -374,6 +374,10 @@ public class JobSchema {
                                    .argument(newArgument().name(STATE)
                                                           .description("the initial states of the jobs")
                                                           .type(new GraphQLNonNull(new GraphQLList(createType)))
+                                                          .build())
+                                   .argument(newArgument().type(new GraphQLList(GraphQLString))
+                                                          .name(STATUS)
+                                                          .description("The statuses to transition the jobs from their initial state")
                                                           .build())
                                    .dataFetcher(env -> {
                                        @SuppressWarnings("unchecked")
@@ -439,6 +443,12 @@ public class JobSchema {
                                                     .accept(job,
                                                             createState.get(k)));
         job.update();
+        String status = env.getArgument(STATUS);
+        if (status != null) {
+            ctx(env).flush(); // We need to generate all the jobs from the initial state
+            job.setStatus(UUID.fromString(status));
+            job.update();
+        }
         return job;
     }
 

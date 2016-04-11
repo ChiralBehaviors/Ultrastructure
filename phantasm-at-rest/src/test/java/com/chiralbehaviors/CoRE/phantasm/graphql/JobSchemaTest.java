@@ -47,7 +47,7 @@ import graphql.schema.GraphQLSchema;
  * @author hhildebrand
  *
  */
-public class JobSchemTest extends AbstractModelTest {
+public class JobSchemaTest extends AbstractModelTest {
 
     private WorkspaceImporter scope;
     private OrderProcessing   scenario;

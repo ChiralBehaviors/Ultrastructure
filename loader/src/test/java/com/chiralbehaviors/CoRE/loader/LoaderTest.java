@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.loader;
 
+import java.sql.Connection;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
@@ -37,6 +39,12 @@ public class LoaderTest {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         DbaConfiguration config = mapper.readValue(getClass().getResourceAsStream("/loader.yml"),
                                                    DbaConfiguration.class);
+        try (Connection dbaConnection = config.getDbaConnection()) {
+            dbaConnection.prepareStatement("DROP DATABASE IF EXISTS testme")
+                         .execute();
+            dbaConnection.prepareStatement("DROP ROLE IF EXISTS scott")
+                         .execute();
+        }
         config.dropDatabase = true;
         Loader loader = new Loader(config);
         try {

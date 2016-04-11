@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
+import static graphql.Scalars.GraphQLLong;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
@@ -58,7 +60,13 @@ import graphql.schema.GraphQLTypeReference;
  *
  */
 public class JobSchema {
+    private static final String UPDATE_DATE               = "updateDate";
+    private static final String ALL_CHILDREN              = "allChildren";
+    private static final String CHRONOLOGY                = "chronology";
+    private static final String JOB_CHRONOLOGY            = "JobChronology";
+    private static final String ACTIVE_SUB_JOBS           = "activeSubJobs";
     private static final String ASSIGN_TO                 = "assignTo";
+    private static final String CHILDREN                  = "children";
     private static final String CREATE_INSTANCES_MUTATION = "CreateInstancesOfJob";
     private static final String CREATE_MUTATION           = "CreateJob";
     private static final String CREATE_TYPE               = "JobCreate";
@@ -74,6 +82,7 @@ public class JobSchema {
     private static final String QUANTITY                  = "quantity";
     private static final String QUANTITY_UNIT             = "quantityUnit";
     private static final String REQUESTER                 = "requester";
+    private static final String SEQUENCE_NUMBER           = "sequenceNumber";
     private static final String SERVICE                   = "service";
     private static final String SET_ASSIGN_TO             = "setAssignTo";
     private static final String SET_DELIVER_FROM          = "setDeliverFrom";
@@ -121,6 +130,8 @@ public class JobSchema {
         mutation.field(update(updateType, updateTemplate));
         mutation.field(updateInstances(updateType, updateTemplate));
         mutation.field(remove());
+
+        query.field(chronInstance(buildJobChronType()));
     }
 
     private GraphQLInputObjectType buildCreateType() {
@@ -162,6 +173,93 @@ public class JobSchema {
                                            .name(SET_PRODUCT)
                                            .description("The job's product")
                                            .build());
+        return builder.build();
+    }
+
+    private GraphQLObjectType buildJobChronType() {
+        GraphQLTypeReference existentialType = new GraphQLTypeReference(ExistentialSchema.EXISTENTIAL);
+        Builder builder = newObject().name(JOB_CHRONOLOGY)
+                                     .description("The change audit trail entry Job");
+        builder.field(newFieldDefinition().type(GraphQLString)
+                                          .name(ID)
+                                          .description("The id of the job chronology instance")
+                                          .build());
+        builder.field(newFieldDefinition().type(new GraphQLTypeReference(JOB))
+                                          .name(JOB)
+                                          .dataFetcher(env -> fetch(env,
+                                                                    ((JobChronologyRecord) env.getSource()).getJob()))
+                                          .description("The job")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(ASSIGN_TO)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getAssignTo()))
+                                          .description("The agency assigned to this job")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(DELIVER_FROM)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getDeliverFrom()))
+                                          .description("The location the job's product is delivered from")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(DELIVER_TO)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getDeliverTo()))
+                                          .description("The location the job's product is delivered to")
+                                          .build());
+        builder.field(newFieldDefinition().type(GraphQLFloat)
+                                          .name(QUANTITY)
+                                          .description("The job quantity")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(QUANTITY_UNIT)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getQuantityUnit()))
+                                          .description("The unit of the job quantity")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(REQUESTER)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getRequester()))
+                                          .description("The agency requesting the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(SERVICE)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getService()))
+                                          .description("The service the job performs")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(STATUS)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getStatus()))
+                                          .description("The status of the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(GraphQLString)
+                                          .name(NOTES)
+                                          .description("The notes of the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(UPDATED_BY)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getUpdatedBy()))
+                                          .description("The agency that updated the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(existentialType)
+                                          .name(PRODUCT)
+                                          .description("The product of the job")
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobChronologyRecord) env.getSource()).getProduct()))
+                                          .build());
+        builder.field(newFieldDefinition().type(GraphQLLong)
+                                          .name(UPDATE_DATE)
+                                          .description("The update timestamp of the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(GraphQLInt)
+                                          .name(SEQUENCE_NUMBER)
+                                          .description("The sequence number of the chronology")
+                                          .build());
         return builder.build();
     }
 
@@ -237,6 +335,8 @@ public class JobSchema {
                                           .build());
         builder.field(newFieldDefinition().type(existentialType)
                                           .name(PRODUCT)
+                                          .dataFetcher(env -> ctx(env).records()
+                                                                      .resolve(((JobRecord) env.getSource()).getProduct()))
                                           .description("The product of the job")
                                           .build());
         builder.field(newFieldDefinition().type(GraphQLInt)
@@ -244,25 +344,30 @@ public class JobSchema {
                                           .description("The depth of the job relative to its parent")
                                           .build());
         builder.field(newFieldDefinition().type(new GraphQLList(new GraphQLTypeReference(JOB)))
-                                          .name("children")
+                                          .name(CHILDREN)
                                           .dataFetcher(env -> ctx(env).getJobModel()
                                                                       .getChildren(job(env)))
-                                          .description("The children of the job")
+                                          .description("The immediate sub jobs of the job")
                                           .build());
         builder.field(newFieldDefinition().type(new GraphQLList(new GraphQLTypeReference(JOB)))
-                                          .name("activeChildren")
+                                          .name(ALL_CHILDREN)
+                                          .dataFetcher(env -> ctx(env).getJobModel()
+                                                                      .getAllChildren(job(env)))
+                                          .description("All the sub jobs of the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(new GraphQLList(new GraphQLTypeReference(JOB)))
+                                          .name(ACTIVE_SUB_JOBS)
                                           .dataFetcher(env -> ctx(env).getJobModel()
                                                                       .getActiveSubJobsOf(job(env)))
-                                          .description("The children of the job")
+                                          .description("The active sub jobs of the job")
+                                          .build());
+        builder.field(newFieldDefinition().type(new GraphQLList(new GraphQLTypeReference(JOB_CHRONOLOGY)))
+                                          .name(CHRONOLOGY)
+                                          .dataFetcher(env -> ctx(env).getJobModel()
+                                                                      .getChronologyForJob(job(env)))
+                                          .description("The change audit record of the job")
                                           .build());
         return builder.build();
-    }
-
-    private JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
-        return ctx(env).create()
-                       .selectFrom(Tables.JOB)
-                       .where(Tables.JOB.ID.equal(uuid))
-                       .fetchOne();
     }
 
     private GraphQLInputObjectType buildUpdateType(Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
@@ -344,6 +449,21 @@ public class JobSchema {
         return builder.build();
     }
 
+    private GraphQLFieldDefinition chronInstance(GraphQLObjectType type) {
+        return newFieldDefinition().name(JOB_CHRONOLOGY)
+                                   .type(type)
+                                   .argument(newArgument().name(ID)
+                                                          .description("id of the job chronology")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .dataFetcher(env -> {
+                                       return ctx(env).create()
+                                                      .selectFrom(Tables.JOB_CHRONOLOGY)
+                                                      .where(Tables.JOB_CHRONOLOGY.ID.equal(UUID.fromString(env.getArgument(ID))));
+                                   })
+                                   .build();
+    }
+
     private GraphQLFieldDefinition createInstance(GraphQLInputObjectType createType,
                                                   Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(CREATE_MUTATION)
@@ -395,7 +515,14 @@ public class JobSchema {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
-    private JobRecord fetchJob(DataFetchingEnvironment env) {
+    private JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
+        return ctx(env).create()
+                       .selectFrom(Tables.JOB)
+                       .where(Tables.JOB.ID.equal(uuid))
+                       .fetchOne();
+    }
+
+    private JobRecord fetch(DataFetchingEnvironment env) {
         return fetch(env, UUID.fromString((String) env.getArgument(ID)));
     }
 
@@ -407,7 +534,7 @@ public class JobSchema {
                                                           .type(new GraphQLNonNull(GraphQLString))
                                                           .build())
                                    .dataFetcher(env -> {
-                                       return fetchJob(env);
+                                       return fetch(env);
                                    })
                                    .build();
     }
@@ -420,7 +547,7 @@ public class JobSchema {
                                                           .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
                                                           .build())
                                    .dataFetcher(env -> {
-                                       return fetchJob(env);
+                                       return fetch(env);
                                    })
                                    .build();
     }
@@ -460,7 +587,7 @@ public class JobSchema {
                                                           .description("the id of the instance")
                                                           .type(GraphQLString)
                                                           .build())
-                                   .dataFetcher(env -> fetchJob(env).delete())
+                                   .dataFetcher(env -> fetch(env).delete())
                                    .build();
     }
 

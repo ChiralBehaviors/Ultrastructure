@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -165,12 +166,17 @@ public class JobSchemaTest extends AbstractModelTest {
                              .toString(),
                      ((Map<String, Object>) result.get("status")).get("id"));
 
-        //        List<JobRecord> jobs = jobModel.getAllChildren(order);
-        //        assertEquals(jobs.stream()
-        //                         .map(j -> jobModel.toString(j))
-        //                         .collect(Collectors.toList())
-        //                         .toString(),
-        //                     6, jobs.size());
+        variables = new HashMap<>();
+        variables.put("id", order);
+
+        query = new QueryRequest("query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeSubJobs {id } children {id } chronology {id} } }",
+                                 variables);
+        result = execute(schema, query);
+
+        result = (Map<String, Object>) result.get("Job");
+        assertNotNull(result);
+
+        assertEquals(6, ((List<?>) result.get("allChildren")).size());
     }
 
     public Map<String, Object> execute(GraphQLSchema schema,

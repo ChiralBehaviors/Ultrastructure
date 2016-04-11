@@ -40,6 +40,7 @@ public class LoaderTest {
         DbaConfiguration config = mapper.readValue(getClass().getResourceAsStream("/loader.yml"),
                                                    DbaConfiguration.class);
         try (Connection dbaConnection = config.getDbaConnection()) {
+            dbaConnection.setAutoCommit(true);
             dbaConnection.prepareStatement("DROP DATABASE IF EXISTS testme")
                          .execute();
             dbaConnection.prepareStatement("DROP ROLE IF EXISTS scott")

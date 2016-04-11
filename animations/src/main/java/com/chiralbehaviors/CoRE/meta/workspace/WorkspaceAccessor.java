@@ -52,8 +52,6 @@ public interface WorkspaceAccessor {
 
     <T> T getAccessor(Class<T> accessorInterface);
 
-    <T> List<T> getCollection(Class<T> ruleformClass);
-
     Product getDefiningProduct();
 
     UUID getId(String name);

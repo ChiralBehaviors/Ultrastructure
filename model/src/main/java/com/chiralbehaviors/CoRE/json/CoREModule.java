@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.json;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Record;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
@@ -39,15 +38,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 public class CoREModule extends SimpleModule {
 
     private static final long serialVersionUID = 1L;
-    private final DSLContext  create;
 
     public CoREModule() {
-        this(null);
-    }
-
-    public CoREModule(DSLContext create) {
         super("CoREModule");
-        this.create = create;
     }
 
     @Override
@@ -61,11 +54,6 @@ public class CoREModule extends SimpleModule {
         Ruleform.RULEFORM.getTables()
                          .forEach(table -> {
                              subTypes.add(table.getRecordType());
-                             if (create != null) {
-                                 addValueInstantiator(table.getRecordType(),
-                                                      new RecordResolver(create,
-                                                                         table));
-                             }
                          });
         registerSubtypes(subTypes.toArray(new Class<?>[subTypes.size()]));
 

@@ -73,7 +73,7 @@ public class WorkspaceSnapshot {
                             List<URL> resources) throws IOException,
                                                  SQLException {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new CoREModule(create));
+        mapper.registerModule(new CoREModule());
         for (URL resource : resources) {
             WorkspaceSnapshot workspace;
             try (InputStream is = resource.openStream();) {
@@ -147,6 +147,7 @@ public class WorkspaceSnapshot {
     }
 
     public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
+        assert definingProduct.getWorkspace() != null : "Defining product's workspace is null!";
         this.definingProduct = definingProduct;
         records = selectWorkspaceClosure(create, definingProduct);
     }
@@ -199,6 +200,8 @@ public class WorkspaceSnapshot {
     }
 
     public void load(DSLContext create) throws SQLException {
+        assert definingProduct == null
+               || definingProduct.getWorkspace() != null : "defining product's workspace is null";
         loadDefiningProduct(create);
         try {
             create.batchInsert(records)

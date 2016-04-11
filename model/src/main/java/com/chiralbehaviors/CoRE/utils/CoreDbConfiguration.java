@@ -32,7 +32,9 @@ import java.sql.SQLException;
  */
 public class CoreDbConfiguration {
 
-    public static String JDBC_URL = "jdbc:postgresql://%s:%s/%s";
+    public static String              JDBC_URL = "jdbc:postgresql://%s:%s/%s";
+
+    public static CoreDbConfiguration TEST_ENV_CONFIGURATION;
 
     /**
      * The comma seperated list of contexts to use for loading ("local" or
@@ -40,38 +42,38 @@ public class CoreDbConfiguration {
      * 
      * @parameter
      */
-    public String        contexts = "local";
+    public String                     contexts = "local";
 
     /**
      * the name the core database
      * 
      * @parameter
      */
-    public String        coreDb   = "core";
+    public String                     coreDb   = "core";
     /**
      * the password of the core user
      * 
      * @parameter
      */
-    public String        corePassword;
+    public String                     corePassword;
     /**
      * the port of the core database
      * 
      * @parameter
      */
-    public int           corePort;
+    public int                        corePort;
     /**
      * the server host of the core database
      * 
      * @parameter
      */
-    public String        coreServer;
+    public String                     coreServer;
     /**
      * the core user name
      * 
      * @parameter
      */
-    public String        coreUsername;
+    public String                     coreUsername;
 
     /**
      * 
@@ -99,6 +101,10 @@ public class CoreDbConfiguration {
     }
 
     public void initializeFromEnvironment() {
+        if (TEST_ENV_CONFIGURATION != null) {
+            initializeFromTest();
+            return;
+        }
         URI dbUri;
         String envURI = System.getenv("DATABASE_URL");
         if (envURI == null) {
@@ -133,6 +139,14 @@ public class CoreDbConfiguration {
                              corePassword == null ? ":: undefined :: "
                                                   : "**********",
                              corePort, coreServer, coreUsername);
+    }
+
+    private void initializeFromTest() {
+        coreDb = TEST_ENV_CONFIGURATION.coreDb;
+        corePassword = TEST_ENV_CONFIGURATION.corePassword;
+        coreUsername = TEST_ENV_CONFIGURATION.coreUsername;
+        corePort = TEST_ENV_CONFIGURATION.corePort;
+        coreServer = TEST_ENV_CONFIGURATION.coreServer;
     }
 
 }

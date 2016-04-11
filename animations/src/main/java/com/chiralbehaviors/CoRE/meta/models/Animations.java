@@ -122,6 +122,7 @@ public class Animations extends DefaultRecordListener {
     }
 
     public void flush() {
+        model.flushWorkspaces();
         try {
             animate();
         } finally {

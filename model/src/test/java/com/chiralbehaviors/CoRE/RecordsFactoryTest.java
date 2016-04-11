@@ -20,14 +20,26 @@
 
 package com.chiralbehaviors.CoRE;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.UUID;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -39,9 +51,12 @@ public class RecordsFactoryTest extends DatabaseTest {
     public void testRecordsFactory() throws Exception {
         RECORDS.newAgency();
         RECORDS.newAgency("");
+        Agency agency = RECORDS.newAgency("foo", "bar");
+        agency.insert();
         RECORDS.newAttribute();
-        RECORDS.newAttribute("", "");
-        RECORDS.newAttribute("", "", ValueType.Integer);
+        Attribute attribute = (Attribute) RECORDS.newAttribute("", "",
+                                                               ValueType.Integer);
+        attribute.insert();
         RECORDS.newChildSequencingAuthorization();
         RECORDS.newChildSequencingAuthorization(RECORDS.newProduct(),
                                                 RECORDS.newStatusCode(),
@@ -50,27 +65,53 @@ public class RecordsFactoryTest extends DatabaseTest {
         RECORDS.newChildSequencingAuthorization(UUID.randomUUID(), null, null,
                                                 null);
         RECORDS.newExistential(ExistentialDomain.Agency);
+        RECORDS.newExistential(ExistentialDomain.Attribute);
+        Interval interval = (Interval) RECORDS.newExistential(ExistentialDomain.Interval);
+        interval.setName("foo");
+        interval.insert();
+        Location location = (Location) RECORDS.newExistential(ExistentialDomain.Location);
+        location.setName("foo");
+        location.insert();
+        Product product = (Product) RECORDS.newExistential(ExistentialDomain.Product);
+        product.setName("foo");
+        product.insert();
+        RECORDS.newExistential(ExistentialDomain.Relationship);
+        Tuple<Relationship, Relationship> relationships = RECORDS.newRelationship("a",
+                                                                                  "a",
+                                                                                  "b",
+                                                                                  "b");
+        relationships.a.insert();
+        relationships.b.insert();
+        StatusCode statusCode = (StatusCode) RECORDS.newExistential(ExistentialDomain.StatusCode);
+        statusCode.setName("foo");
+        statusCode.insert();
+        Unit unit = (Unit) RECORDS.newExistential(ExistentialDomain.Unit);
+        unit.setName("foo");
+        unit.insert();
         RECORDS.newExistential(ExistentialDomain.Agency, "", "");
         RECORDS.newExistentialAttribute();
         RECORDS.newExistentialAttribute(RECORDS.newAttribute());
         RECORDS.newExistentialAttribute(RECORDS.newAttribute(),
                                         RECORDS.newAttribute());
-        RECORDS.newExistentialAttributeAuthorization(RECORDS.newFacet(),
+        FacetRecord facet = RECORDS.newFacet();
+
+        facet.setClassification(agency.getId());
+        facet.setClassifier(relationships.a.getId());
+        facet.insert();
+        RECORDS.newExistentialAttributeAuthorization(facet,
                                                      RECORDS.newAttribute());
         RECORDS.newExistentialGrouping();
         RECORDS.newExistentialNetwork();
         RECORDS.newExistentialNetworkAuthorization();
         RECORDS.newExistentialNetworkAttributeAuthorization();
-        RECORDS.newExistentialNetwork(RECORDS.newAgency(),
-                                      RECORDS.newRelationship(),
-                                      RECORDS.newAgency());
+        RECORDS.newExistentialNetwork(agency, RECORDS.newRelationship(),
+                                      agency);
         RECORDS.newExistentialNetworkAttribute();
         RECORDS.newExistentialNetworkAttribute(RECORDS.newAttribute());
         RECORDS.newExistentialAttributeAuthorization();
-        RECORDS.newExistentialAttributeAuthorization(RECORDS.newFacet(),
+        RECORDS.newExistentialAttributeAuthorization(facet,
                                                      RECORDS.newAttribute());
-        RECORDS.newFacet();
-        RECORDS.newFacet(RECORDS.newRelationship(), RECORDS.newAgency());
+        RECORDS.newFacet(RECORDS.newRelationship(), agency);
         RECORDS.newInterval();
         RECORDS.newJob();
         RECORDS.newJobChronology();
@@ -80,6 +121,11 @@ public class RecordsFactoryTest extends DatabaseTest {
         RECORDS.newLocation("", "");
         RECORDS.newMetaProtocol();
         RECORDS.newNetworkInferrence();
+        RECORDS.newNetworkInference(RECORDS.newRelationship(),
+                                    RECORDS.newRelationship(),
+                                    RECORDS.newRelationship());
+        RECORDS.newNetworkInference(UUID.randomUUID(), UUID.randomUUID(),
+                                    UUID.randomUUID());
         RECORDS.newParentSequencingAuthorization();
         RECORDS.newParentSequencingAuthorization(RECORDS.newProduct(),
                                                  RECORDS.newStatusCode(),
@@ -96,6 +142,8 @@ public class RecordsFactoryTest extends DatabaseTest {
         RECORDS.newRelationship();
         RECORDS.newRelationship("");
         RECORDS.newRelationship("", "");
+        RECORDS.newRelationship("", RECORDS.newRelationship());
+        RECORDS.newRelationship("", "", RECORDS.newRelationship());
         RECORDS.newSelfSequencingAuthorization();
         RECORDS.newSelfSequencingAuthorization(RECORDS.newProduct(),
                                                RECORDS.newStatusCode(),
@@ -132,7 +180,7 @@ public class RecordsFactoryTest extends DatabaseTest {
                                           RECORDS.newExistentialNetworkAttributeAuthorization());
         RECORDS.newWorkspaceAuthorization("", p,
                                           RECORDS.newExistentialNetworkAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newFacet());
+        RECORDS.newWorkspaceAuthorization("", p, facet);
         RECORDS.newWorkspaceAuthorization("", p, RECORDS.newJob());
         RECORDS.newWorkspaceAuthorization("", p, RECORDS.newJobChronology());
         RECORDS.newWorkspaceAuthorization("", p, RECORDS.newMetaProtocol());
@@ -147,7 +195,45 @@ public class RecordsFactoryTest extends DatabaseTest {
                                           RECORDS.newSiblingSequencingAuthorization());
         RECORDS.newWorkspaceAuthorization("", p,
                                           RECORDS.newStatusCodeSequencing());
-        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newAgency());
+        RECORDS.newWorkspaceAuthorization("", p, agency);
+        assertNotNull(RECORDS.createExistential(agency.getId(), "foo", "bar"));
+        assertNotNull(RECORDS.copy(agency));
+        assertEquals("foo", RECORDS.existentialName(agency.getId()));
+        assertEquals(facet.getId(), RECORDS.findFacetRecord(facet.getId())
+                                           .getId());
+        assertEquals(agency.getId(), RECORDS.resolve(agency)
+                                            .getId());
+        assertEquals(attribute.getId(), RECORDS.resolve(attribute)
+                                               .getId());
+        assertEquals(interval.getId(), RECORDS.resolve(interval)
+                                              .getId());
+        assertEquals(location.getId(), RECORDS.resolve(location)
+                                              .getId());
+        assertEquals(product.getId(), RECORDS.resolve(product)
+                                             .getId());
+        assertEquals(relationships.a.getId(), RECORDS.resolve(relationships.a)
+                                                     .getId());
+        assertEquals(statusCode.getId(), RECORDS.resolve(statusCode)
+                                                .getId());
+        assertEquals(unit.getId(), RECORDS.resolve(unit)
+                                          .getId());
 
+        assertEquals(agency.getId(), RECORDS.resolve(agency.getId())
+                                            .getId());
+        assertEquals(attribute.getId(), RECORDS.resolve(attribute.getId())
+                                               .getId());
+        assertEquals(interval.getId(), RECORDS.resolve(interval.getId())
+                                              .getId());
+        assertEquals(location.getId(), RECORDS.resolve(location.getId())
+                                              .getId());
+        assertEquals(product.getId(), RECORDS.resolve(product.getId())
+                                             .getId());
+        assertEquals(relationships.a.getId(),
+                     RECORDS.resolve(relationships.a.getId())
+                            .getId());
+        assertEquals(statusCode.getId(), RECORDS.resolve(statusCode.getId())
+                                                .getId());
+        assertEquals(unit.getId(), RECORDS.resolve(unit.getId())
+                                          .getId());
     }
 }

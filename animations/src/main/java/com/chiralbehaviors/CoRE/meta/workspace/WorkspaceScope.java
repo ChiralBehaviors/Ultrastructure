@@ -38,14 +38,6 @@ public class WorkspaceScope {
     private final WorkspaceAccessor              workspace;
     private List<WorkspaceAccessor>              sortedImports = new ArrayList<>();
 
-    public WorkspaceScope(Map<String, WorkspaceAccessor> imports,
-                          WorkspaceAccessor workspace) {
-        if (imports != null) {
-            this.imports.putAll(imports);
-        }
-        this.workspace = workspace;
-    }
-
     public WorkspaceScope(WorkspaceAccessor workspace) {
         this.workspace = workspace;
     }

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -106,6 +107,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                                                                .getCoreUser())
                                                      .getId());
         credential.capabilities = capabilities;
+        credential.isValid(new Timestamp(0), new Timestamp(0));
 
         ExistentialAttributeRecord accessToken = model.records()
                                                       .newExistentialAttribute();

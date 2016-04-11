@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -100,5 +101,24 @@ public class ModelTest extends AbstractModelTest {
         assertNotNull(foundAgencies);
         assertEquals(1, foundAgencies.size());
         assertEquals(agency, foundAgencies.get(0));
+    }
+
+    @Test
+    public void testExecuteAs() {
+        Agency agency = model.records()
+                             .newAgency("Test Agency");
+        agency.insert();
+        assertEquals(model.getKernel()
+                          .getCoreAnimationSoftware()
+                          .getId(),
+                     agency.getUpdatedBy());
+    }
+
+    @Test
+    public void testPrincipalFrom() {
+        Agency agency = model.records()
+                             .newAgency("Test Agency");
+        agency.insert();
+        assertNotNull(model.principalFrom(agency, Collections.emptyList()));
     }
 }

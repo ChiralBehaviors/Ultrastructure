@@ -119,18 +119,6 @@ public class ModelImpl implements Model {
         return PostgresDSL.using(configuration(connection));
     }
 
-    public static DSLContext newCreate(DataSource ds) throws SQLException {
-        return PostgresDSL.using(configuration(ds));
-    }
-
-    public static String prefixFor(Class<?> ruleform) {
-        String simpleName = ruleform.getSimpleName();
-        StringBuilder builder = new StringBuilder(simpleName.length());
-        builder.append(Character.toLowerCase(simpleName.charAt(0)));
-        builder.append(simpleName.substring(1));
-        return builder.toString();
-    }
-
     private final ExistentialModel<Agency>       agencyModel;
     private final Animations                     animations;
     private final ExistentialModel<Attribute>    attributeModel;
@@ -152,10 +140,6 @@ public class ModelImpl implements Model {
 
     public ModelImpl(Connection connection) throws SQLException {
         this(newCreate(connection));
-    }
-
-    public ModelImpl(DataSource ds) throws SQLException {
-        this(newCreate(ds));
     }
 
     public ModelImpl(DSLContext create) {

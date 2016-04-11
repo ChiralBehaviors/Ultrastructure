@@ -34,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import javax.sql.DataSource;
-
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -106,12 +104,6 @@ public class ModelImpl implements Model {
         Configuration configuration = configuration();
         connection.setAutoCommit(false);
         configuration.set(connection);
-        return configuration;
-    }
-
-    public static Configuration configuration(DataSource ds) throws SQLException {
-        Configuration configuration = configuration();
-        configuration.set(ds);
         return configuration;
     }
 
@@ -369,24 +361,6 @@ public class ModelImpl implements Model {
     @Override
     public void inferNetworks() {
         animations.inferNetworks();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends ExistentialRuleform, R extends Phantasm> R lookup(Class<R> phantasm,
-                                                                        UUID uuid) {
-        T ruleform = (T) factory.resolve(uuid);
-        if (ruleform == null) {
-            return null;
-        }
-        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
-                                                                    this);
-        return (R) definition.wrap(ruleform, this);
-    }
-
-    @Override
-    public ExistentialRecord lookupExistential(UUID id) {
-        return records().resolve(id);
     }
 
     /* (non-Javadoc)

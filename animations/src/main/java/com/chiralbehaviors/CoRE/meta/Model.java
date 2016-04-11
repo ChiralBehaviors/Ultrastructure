@@ -37,7 +37,6 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
@@ -197,19 +196,6 @@ public interface Model extends AutoCloseable {
     WorkspaceModel getWorkspaceModel();
 
     void inferNetworks();
-
-    /**
-     * Lookup the ruleform using the UUID and wrap an instance of a phantasm
-     * using the model
-     *
-     * @param phantasm
-     * @param uuid
-     * @return
-     */
-    <T extends ExistentialRuleform, R extends Phantasm> R lookup(Class<R> phantasm,
-                                                                 UUID uuid);
-
-    ExistentialRecord lookupExistential(UUID id);
 
     AuthorizedPrincipal principalFrom(Agency agency, List<UUID> capabilities);
 

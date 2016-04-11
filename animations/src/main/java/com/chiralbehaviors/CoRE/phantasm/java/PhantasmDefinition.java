@@ -89,11 +89,10 @@ public class PhantasmDefinition extends Phantasmagoria {
     }
 
     public static String factString(Model model, FacetRecord aspect) {
-        return String.format("%s:%s",
-                             model.lookupExistential(aspect.getClassifier())
-                                  .getName(),
-                             model.lookupExistential(aspect.getClassification())
-                                  .getName());
+        return String.format("%s:%s", model.records()
+                                           .existentialName(aspect.getClassifier()),
+                             model.records()
+                                  .existentialName(aspect.getClassification()));
     }
 
     public static PhantasmDefinition getCached(Class<? extends Phantasm> returnPhantasm) {

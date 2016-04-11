@@ -333,6 +333,8 @@ public interface JobModel {
      */
     List<SiblingSequencingAuthorizationRecord> getSiblingActions(JobRecord job);
 
+    List<JobRecord> getSiblings(JobRecord job);
+
     /**
      * Answer the collection of status codes for a service
      *

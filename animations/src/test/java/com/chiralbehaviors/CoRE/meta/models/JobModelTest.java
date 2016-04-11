@@ -227,6 +227,7 @@ public class JobModelTest extends AbstractModelTest {
         TestDebuggingUtil.printJobs(jobs);
         jobModel.getMostRecentChronologyEntry(job);
         jobModel.getTerminalStates(job);
+        jobModel.getSiblings(job);
     }
 
     @Test

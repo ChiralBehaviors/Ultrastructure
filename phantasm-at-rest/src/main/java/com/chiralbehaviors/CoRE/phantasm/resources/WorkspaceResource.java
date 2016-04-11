@@ -84,7 +84,7 @@ public class WorkspaceResource extends TransactionalResource {
     @GET
     public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal,
                                                    @Context DSLContext create) {
-        return read(principal, readOnlyModel -> {
+        return mutate(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
             List<Map<String, Object>> workspaces = new ArrayList<>();
             for (ExistentialRuleform definingProduct : readOnlyModel.getPhantasmModel()

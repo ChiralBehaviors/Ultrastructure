@@ -95,30 +95,4 @@ public class TransactionalResource {
             throw new WebApplicationException(e, 500);
         }
     }
-
-    protected <T> T read(AuthorizedPrincipal principal, Function<Model, T> txn,
-                         DSLContext create) throws WebApplicationException {
-        Model model = new ModelImpl(create);
-        if (principal == null) {
-            principal = new AuthorizedPrincipal(model.getKernel()
-                                                     .getUnauthenticatedAgency());
-        }
-        try {
-            return model.executeAs(principal, () -> {
-                try {
-                    return create.transactionResult(c -> {
-                        return txn.apply(model);
-                    });
-                } catch (Throwable e) {
-                    log.error("error applying transaction", e);
-                    throw new WebApplicationException(e, 500);
-                }
-            });
-        } catch (WebApplicationException e) {
-            throw e;
-        } catch (Exception e) {
-            log.error("error applying transaction", e);
-            throw new WebApplicationException(e, 500);
-        }
-    }
 }

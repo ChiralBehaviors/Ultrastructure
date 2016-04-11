@@ -77,6 +77,20 @@ public class AuthenticatorsTest extends AbstractModelTest {
     }
 
     @Test
+    public void testNull() throws Exception {
+        NullAuthenticator authenticator = new NullAuthenticator();
+        authenticator.setModel(model);
+        Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(null);
+        assertTrue(authenticated.isPresent());
+        assertEquals(model.getKernel()
+                          .getUnauthenticatedAgency()
+                          .getId(),
+                     authenticated.get()
+                                  .getPrincipal()
+                                  .getId());
+    }
+
+    @Test
     public void testBearerToken() throws Exception {
         String username = "bob@slack.com";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,

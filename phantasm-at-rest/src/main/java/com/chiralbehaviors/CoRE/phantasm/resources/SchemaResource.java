@@ -35,7 +35,6 @@ import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 import graphql.ExecutionResult;
@@ -69,9 +68,6 @@ abstract public class SchemaResource extends TransactionalResource {
                                               Status.BAD_REQUEST);
         }
         return mutate(principal, model -> {
-            if (!checkQueryCapability(model)) {
-                return null;
-            }
             Map<String, Object> variables = getVariables(request);
             ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
                                                                  model,
@@ -84,21 +80,5 @@ abstract public class SchemaResource extends TransactionalResource {
                      result.getErrors());
             return result;
         }, create);
-    }
-
-    private boolean checkQueryCapability(Model model) {
-        //        if (!model.getPhantasmModel()
-        //                  .checkCapability(definingProduct, crud.getREAD())
-        //            || !model.getPhantasmModel()
-        //                     .checkCapability(definingProduct, model.getKernel()
-        //                                                            .getEXECUTE_QUERY())) {
-        //            Agency p = model.getCurrentPrincipal()
-        //                            .getPrincipal();
-        //            log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",
-        //                                   definingProduct.getName(), uuid,
-        //                                   p.getName(), p.getId()));
-        //            return false;
-        //        }
-        return true;
     }
 }

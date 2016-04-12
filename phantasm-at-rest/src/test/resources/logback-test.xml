@@ -7,13 +7,13 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="TRACE" />
+        <level value="${core.log.level}" />
     </logger>
     <logger name="org.jooq">
         <level value="WARN" />
     </logger> 
     <root>
-        <level value="TRACE" />
+        <level value="WARN" />
         <appender-ref ref="C" />
     </root>
 </configuration>

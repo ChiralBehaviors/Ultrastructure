@@ -42,7 +42,6 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.security.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 

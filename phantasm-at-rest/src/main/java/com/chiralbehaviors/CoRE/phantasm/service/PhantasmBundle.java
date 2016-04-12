@@ -201,7 +201,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             FilterRegistration.Dynamic filter = environment.servlets()
                                                            .addFilter("CORS",
                                                                       CrossOriginFilter.class);
-            log.warn("Using CORS configuration: %s", cors);
+            log.warn(String.format("Using CORS configuration: %s", cors));
             // Add URL mapping
             filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class),
                                             true, "/*");

@@ -1,0 +1,18 @@
+auth: BASIC_DIGEST
+
+useCORS: true
+
+logging:
+  level: WARN
+  loggers:
+    com.chiralbehaviors: ${core.log.level}
+    org.jooq: WARN
+    org.glassfish: WARN
+    graphql: WARN
+
+database:
+    url: jdbc:postgresql://${db.server}:${db.port}/${db.database}
+    user: ${db.login}
+    password: ${db.password}
+    driverClass: org.postgresql.Driver
+    maxSize: 2

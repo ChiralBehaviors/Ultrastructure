@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.net.URLEncoder;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -34,46 +35,54 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
+import com.google.common.io.BaseEncoding;
 
 /**
  * @author hhildebrand
  *
  */
-public class RoundTripFunctionalTest extends AbstractModelTest {
+public class RoundTripFunctionalTest {
+    private static final String   PASSWORD    = "give me food or give me slack or kill me";
+
+    private static final String   USER        = "bob@slack.com";
+
     protected PhantasmApplication application = new PhantasmApplication();
 
-    @After
-    public void shutdown() {
-        application.stop();
-    }
+    static Model                  model;
 
-    @Test
-    public void functionalAuthRoundTripTest() throws Exception {
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
-        application.run("server", "target/test-classes/oauth.yml");
-        String username = "bob@slack.com";
-        String password = "give me food or give me slack or kill me";
+    @BeforeClass
+    public static void initializeDb() throws Exception {
+        Connection connection = AbstractModelTest.newConnection();
+        KernelUtil.clearAndLoadKernel(PostgresDSL.using(connection));
+        model = new ModelImpl(connection);
+        KernelUtil.initializeInstance(model,
+                                      "Abstract Model Test CoRE Instance",
+                                      "CoRE instance for an Abstract Model Test");
+        String username = USER;
+        String password = PASSWORD;
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
@@ -85,14 +94,24 @@ public class RoundTripFunctionalTest extends AbstractModelTest {
              .connectionProvider()
              .acquire()
              .commit();
+    }
+
+    @After
+    public void shutdown() {
+        application.stop();
+    }
+
+    @Test
+    public void functionalBearerAuthRoundTripTest() throws Exception {
+        application.run("server", "target/test-classes/oauth.yml");
 
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(String.format("http://localhost:%s/oauth2/token/login",
                                                           application.getPort()));
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         Form creds = new Form();
-        creds.param("username", username);
-        creds.param("password", password);
+        creds.param("username", USER);
+        creds.param("password", PASSWORD);
         UUID token = invocationBuilder.post(Entity.entity(creds,
                                                           MediaType.APPLICATION_FORM_URLENCODED),
                                             UUID.class);
@@ -139,8 +158,8 @@ public class RoundTripFunctionalTest extends AbstractModelTest {
                                                               .getCoreUser());
 
         CapabilityRequest capReq = new CapabilityRequest();
-        capReq.username = username;
-        capReq.password = password;
+        capReq.username = USER;
+        capReq.password = PASSWORD;
         capReq.capabilities = Arrays.asList(asserted.getId());
 
         webTarget = client.target(String.format("http://localhost:%s/oauth2/token/capability",
@@ -155,5 +174,54 @@ public class RoundTripFunctionalTest extends AbstractModelTest {
                                  String.format("Bearer %s", token));
         resp = invocationBuilder.post(null);
         assertEquals(204, resp.getStatus());
+    }
+
+    @Test
+    public void functionalBasicAuthRoundTripTest() throws Exception {
+        application.run("server", "target/test-classes/basic.yml");
+        String creds = BaseEncoding.base64()
+                                   .encode(String.format("%s:%s", USER,
+                                                         PASSWORD)
+                                                 .getBytes());
+
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+                                                          application.getPort()));
+        webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
+                                                     "UTF-8"));
+        Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+        QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");
+
+        @SuppressWarnings("rawtypes")
+        Map response;
+        try {
+            response = invocationBuilder.post(Entity.entity(request,
+                                                            MediaType.APPLICATION_JSON_TYPE),
+                                              Map.class);
+            fail("Should not have succeeded, expecting 401");
+        } catch (NotAuthorizedException e) {
+            // expected;
+        }
+        invocationBuilder.header(HttpHeaders.AUTHORIZATION,
+                                 String.format("Basic %s", creds));
+        response = invocationBuilder.post(Entity.json(request), Map.class);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void functionalNullAuthRoundTripTest() throws Exception {
+        application.run("server", "target/test-classes/null.yml");
+
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+                                                          application.getPort()));
+        webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
+                                                     "UTF-8"));
+        Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+        QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");
+
+        @SuppressWarnings("rawtypes")
+        Map response = invocationBuilder.post(Entity.json(request), Map.class);
+        assertNotNull(response);
     }
 }

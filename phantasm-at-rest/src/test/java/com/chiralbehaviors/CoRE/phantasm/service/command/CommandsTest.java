@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.util.Collections;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
@@ -45,6 +46,10 @@ import net.sourceforge.argparse4j.inf.Namespace;
  *
  */
 public class CommandsTest {
+    @After
+    public void after() {
+        CoreDbConfiguration.TEST_ENV_CONFIGURATION = null;
+    }
 
     @Test
     public void testCommands() throws Exception {

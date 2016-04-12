@@ -50,12 +50,11 @@ public class JobResource extends SchemaResource {
         super(JobSchema.build());
     }
 
-    @Override
     @Timed
     @POST
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
                                  @SuppressWarnings("rawtypes") Map request,
                                  @Context DSLContext create) {
-        return super.query(principal, request, create);
+        return queryResult(principal, request, create);
     }
 }

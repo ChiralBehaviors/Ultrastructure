@@ -57,9 +57,9 @@ abstract public class SchemaResource extends TransactionalResource {
         this.schema = schema;
     }
 
-    protected ExecutionResult query(AuthorizedPrincipal principal,
-                                    @SuppressWarnings("rawtypes") Map request,
-                                    DSLContext create) {
+    protected ExecutionResult queryResult(AuthorizedPrincipal principal,
+                                          @SuppressWarnings("rawtypes") Map request,
+                                          DSLContext create) {
         if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);

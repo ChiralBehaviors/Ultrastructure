@@ -59,10 +59,6 @@ import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.PermitAllAuthorizer;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter.Builder;
-import io.dropwizard.jetty.HttpConnectorFactory;
-import io.dropwizard.server.DefaultServerFactory;
-import io.dropwizard.server.ServerFactory;
-import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -224,23 +220,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             filter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM,
                                     Boolean.toString(cors.chainPreflight));
 
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void configureRandomPort(PhantasmConfiguration configuration) {
-        ServerFactory serverFactory = configuration.getServerFactory();
-        if (serverFactory instanceof DefaultServerFactory) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getApplicationConnectors()
-                                                                          .get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getAdminConnectors()
-                                                                          .get(0)).setPort(0);
-        } else if (serverFactory instanceof SimpleServerFactory) {
-            ((HttpConnectorFactory) ((SimpleServerFactory) serverFactory).getConnector()).setPort(0);
-        } else {
-            log.warn("Unknown server factory type: {}, unable to set random port",
-                     serverFactory.getClass()
-                                  .getSimpleName());
         }
     }
 }

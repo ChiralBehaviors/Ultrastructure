@@ -44,9 +44,11 @@ import javax.ws.rs.core.Response;
 
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -65,13 +67,20 @@ import com.google.common.io.BaseEncoding;
  *
  */
 public class RoundTripFunctionalTest {
-    private static final String   PASSWORD    = "give me food or give me slack or kill me";
+    private static final String PASSWORD = "give me food or give me slack or kill me";
 
-    private static final String   USER        = "bob@slack.com";
+    private static final String USER     = "bob@slack.com";
 
-    protected PhantasmApplication application = new PhantasmApplication();
+    static Model                model;
 
-    static Model                  model;
+    @AfterClass
+    public static void clearDb() throws Exception {
+        try {
+            RecordsFactory.clear(model.create());
+        } finally {
+            model.close();
+        }
+    }
 
     @BeforeClass
     public static void initializeDb() throws Exception {
@@ -96,9 +105,38 @@ public class RoundTripFunctionalTest {
              .commit();
     }
 
-    @After
-    public void shutdown() {
-        application.stop();
+    protected PhantasmApplication application = new PhantasmApplication();
+
+    @Test
+    public void functionalBasicAuthRoundTripTest() throws Exception {
+        application.run("server", "target/test-classes/basic.yml");
+        String creds = BaseEncoding.base64()
+                                   .encode(String.format("%s:%s", USER,
+                                                         PASSWORD)
+                                                 .getBytes());
+
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+                                                          application.getPort()));
+        webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
+                                                     "UTF-8"));
+        Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+        QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");
+
+        @SuppressWarnings("rawtypes")
+        Map response;
+        try {
+            response = invocationBuilder.post(Entity.entity(request,
+                                                            MediaType.APPLICATION_JSON_TYPE),
+                                              Map.class);
+            fail("Should not have succeeded, expecting 401");
+        } catch (NotAuthorizedException e) {
+            // expected;
+        }
+        invocationBuilder.header(HttpHeaders.AUTHORIZATION,
+                                 String.format("Basic %s", creds));
+        response = invocationBuilder.post(Entity.json(request), Map.class);
+        assertNotNull(response);
     }
 
     @Test
@@ -177,38 +215,6 @@ public class RoundTripFunctionalTest {
     }
 
     @Test
-    public void functionalBasicAuthRoundTripTest() throws Exception {
-        application.run("server", "target/test-classes/basic.yml");
-        String creds = BaseEncoding.base64()
-                                   .encode(String.format("%s:%s", USER,
-                                                         PASSWORD)
-                                                 .getBytes());
-
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
-                                                          application.getPort()));
-        webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
-                                                     "UTF-8"));
-        Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-        QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");
-
-        @SuppressWarnings("rawtypes")
-        Map response;
-        try {
-            response = invocationBuilder.post(Entity.entity(request,
-                                                            MediaType.APPLICATION_JSON_TYPE),
-                                              Map.class);
-            fail("Should not have succeeded, expecting 401");
-        } catch (NotAuthorizedException e) {
-            // expected;
-        }
-        invocationBuilder.header(HttpHeaders.AUTHORIZATION,
-                                 String.format("Basic %s", creds));
-        response = invocationBuilder.post(Entity.json(request), Map.class);
-        assertNotNull(response);
-    }
-
-    @Test
     public void functionalNullAuthRoundTripTest() throws Exception {
         application.run("server", "target/test-classes/null.yml");
 
@@ -223,5 +229,10 @@ public class RoundTripFunctionalTest {
         @SuppressWarnings("rawtypes")
         Map response = invocationBuilder.post(Entity.json(request), Map.class);
         assertNotNull(response);
+    }
+
+    @After
+    public void shutdown() {
+        application.stop();
     }
 }

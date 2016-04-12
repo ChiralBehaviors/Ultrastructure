@@ -107,8 +107,13 @@ public class JobSchemaTest extends AbstractModelTest {
                                               + "          $deliverFrom: String, $requester: String) { "
                                               + "  CreateJob(state: { setService: $service, setAssignTo: $assignTo, setProduct: $product, "
                                               + "                     setDeliverTo: $deliverTo, setDeliverFrom: $deliverFrom, setRequester: $requester}) { "
-                                              + "      id, status {id, name} "
-                                              + "   } " + "}", variables);
+                                              + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
+                                              + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} "
+                                              + "      chronology {"
+                                              + "      id, status {id, name} product {name} service {name} requester {name} assignTo {name} "
+                                              + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
+                                              + "      } " + "   } " + "}",
+                                              variables);
         Map<String, Object> result = execute(schema, query);
 
         result = (Map<String, Object>) result.get("CreateJob");

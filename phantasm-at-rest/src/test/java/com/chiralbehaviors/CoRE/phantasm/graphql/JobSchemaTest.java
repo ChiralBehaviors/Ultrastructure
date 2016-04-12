@@ -110,8 +110,8 @@ public class JobSchemaTest extends AbstractModelTest {
                                               + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
                                               + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} "
                                               + "      chronology {"
-                                              + "      id, status {id, name} product {name} service {name} requester {name} assignTo {name} "
-                                              + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
+                                              + "          id, job {id} status {id, name} product {name} service {name} requester {name} assignTo {name} "
+                                              + "          deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
                                               + "      } " + "   } " + "}",
                                               variables);
         Map<String, Object> result = execute(schema, query);

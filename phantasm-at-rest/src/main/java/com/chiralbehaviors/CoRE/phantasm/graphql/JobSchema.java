@@ -185,7 +185,7 @@ public class JobSchema {
                                           .description("The id of the job chronology instance")
                                           .build());
         builder.field(newFieldDefinition().type(new GraphQLTypeReference(JOB))
-                                          .name(JOB)
+                                          .name("job")
                                           .dataFetcher(env -> fetch(env,
                                                                     ((JobChronologyRecord) env.getSource()).getJob()))
                                           .description("The job")

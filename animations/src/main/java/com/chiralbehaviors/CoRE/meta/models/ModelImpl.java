@@ -34,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import javax.sql.DataSource;
-
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -109,26 +107,8 @@ public class ModelImpl implements Model {
         return configuration;
     }
 
-    public static Configuration configuration(DataSource ds) throws SQLException {
-        Configuration configuration = configuration();
-        configuration.set(ds);
-        return configuration;
-    }
-
     public static DSLContext newCreate(Connection connection) throws SQLException {
         return PostgresDSL.using(configuration(connection));
-    }
-
-    public static DSLContext newCreate(DataSource ds) throws SQLException {
-        return PostgresDSL.using(configuration(ds));
-    }
-
-    public static String prefixFor(Class<?> ruleform) {
-        String simpleName = ruleform.getSimpleName();
-        StringBuilder builder = new StringBuilder(simpleName.length());
-        builder.append(Character.toLowerCase(simpleName.charAt(0)));
-        builder.append(simpleName.substring(1));
-        return builder.toString();
     }
 
     private final ExistentialModel<Agency>       agencyModel;
@@ -152,10 +132,6 @@ public class ModelImpl implements Model {
 
     public ModelImpl(Connection connection) throws SQLException {
         this(newCreate(connection));
-    }
-
-    public ModelImpl(DataSource ds) throws SQLException {
-        this(newCreate(ds));
     }
 
     public ModelImpl(DSLContext create) {
@@ -385,24 +361,6 @@ public class ModelImpl implements Model {
     @Override
     public void inferNetworks() {
         animations.inferNetworks();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends ExistentialRuleform, R extends Phantasm> R lookup(Class<R> phantasm,
-                                                                        UUID uuid) {
-        T ruleform = (T) factory.resolve(uuid);
-        if (ruleform == null) {
-            return null;
-        }
-        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
-                                                                    this);
-        return (R) definition.wrap(ruleform, this);
-    }
-
-    @Override
-    public ExistentialRecord lookupExistential(UUID id) {
-        return records().resolve(id);
     }
 
     /* (non-Javadoc)

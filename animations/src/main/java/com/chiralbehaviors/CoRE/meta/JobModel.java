@@ -36,7 +36,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -191,53 +190,6 @@ public interface JobModel {
     List<JobRecord> getActiveSubJobsOf(JobRecord job);
 
     /**
-     * Answer the recursive list of all sub jobs - at any level - of a job that
-     * are active or terminated
-     *
-     * @param job
-     * @return the full list of all sub jobs of a job that are active or
-     *         terminated
-     */
-    Collection<JobRecord> getAllActiveOrTerminatedSubJobsOf(JobRecord job);
-
-    /**
-     * Answer the recursive list of all sub jobs - at any level - of a job that
-     * are active
-     *
-     * @param job
-     * @return the recursive list of all sub jobs - at any level - of a job that
-     *         are active
-     */
-    Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job);
-
-    /**
-     *
-     * @param parent
-     * @param agency
-     * @return
-     */
-    List<JobRecord> getAllActiveSubJobsOf(JobRecord parent, Agency agency);
-
-    /**
-     *
-     * @param parent
-     * @param agency
-     * @param jobs
-     */
-    void getAllActiveSubJobsOf(JobRecord parent, Agency agency,
-                               List<JobRecord> jobs);
-
-    /**
-     * Answer the list of all active subjobs
-     *
-     * @param job
-     * @param tally
-     * @return
-     */
-    Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job,
-                                                Collection<JobRecord> tally);
-
-    /**
      * Get all direct and indirect child jobs of this job, regardless of status
      *
      * @param job
@@ -265,6 +217,8 @@ public interface JobModel {
      */
     List<JobRecord> getChildJobsByService(JobRecord parent, Product service);
 
+    List<JobRecord> getChildren(JobRecord job);
+
     /**
      * Returns an ordered list of all JobChronologyRecord rules for the given
      * job. Entries are ordered by the ascending timeStamp (oldest is first,
@@ -277,14 +231,6 @@ public interface JobModel {
      * @return
      */
     List<JobChronologyRecord> getChronologyForJob(JobRecord job);
-
-    /**
-     * Answer the immediate child jobs of the job that are active or terminal
-     *
-     * @param job
-     * @return the immediate child jobs of the job that are active or terminal
-     */
-    List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job);
 
     /**
      * Answer the initial state of a service
@@ -387,17 +333,7 @@ public interface JobModel {
      */
     List<SiblingSequencingAuthorizationRecord> getSiblingActions(JobRecord job);
 
-    /**
-     * @param node
-     * @return
-     */
-    List<SiblingSequencingAuthorizationRecord> getSiblingActions(Product node);
-
-    /**
-     * @param service
-     * @return
-     */
-    List<StatusCodeSequencingRecord> getStatusCodeSequencingsFor(Product service);
+    List<JobRecord> getSiblings(JobRecord job);
 
     /**
      * Answer the collection of status codes for a service
@@ -417,44 +353,12 @@ public interface JobModel {
     List<StatusCode> getTerminalStates(JobRecord job);
 
     /**
-     * @return the list of jobs that have no parent
-     */
-    List<JobRecord> getTopLevelJobs();
-
-    /**
-     * answer the list of jobs with children assigned to an agency
-     *
-     * @param agency
-     * @return
-     */
-    List<JobRecord> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency);
-
-    /**
-     * Answer the list of siblings of a service that have the unset status
-     *
-     * @param parent
-     *            - the parent who children are the siblings
-     * @param service
-     *            - the service
-     * @return the list of siblings of a service that have the unset status
-     */
-    List<JobRecord> getUnsetSiblings(JobRecord parent, Product service);
-
-    /**
      * Answer true if the job has active siblings, false otherwise
      *
      * @param job
      * @return true if the job has active siblings, false otherwise
      */
     boolean hasActiveSiblings(JobRecord job);
-
-    /**
-     * Answer true if the service has an initial state, false otherwise
-     *
-     * @param service
-     * @return true if the service has an initial state, false otherwise
-     */
-    boolean hasInitialState(Product service);
 
     /**
      * Answer true if the service's status graph has terminal strongly connected

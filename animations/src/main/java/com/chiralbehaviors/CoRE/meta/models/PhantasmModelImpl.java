@@ -84,53 +84,11 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public void authorize(ExistentialRuleform ruleform,
-                          Relationship relationship,
-                          ExistentialRuleform authorized) {
-        ExistentialNetworkRecord auth = create.newRecord(EXISTENTIAL_NETWORK);
-        auth.setParent(ruleform.getId());
-        auth.setRelationship(relationship.getId());
-        auth.setChild(authorized.getId());
-        auth.setUpdatedBy(model.getCurrentPrincipal()
-                               .getPrincipal()
-                               .getId());
-        auth.insert();
-
-        ExistentialNetworkRecord inverse = create.newRecord(EXISTENTIAL_NETWORK);
-        inverse.setParent(authorized.getId());
-        inverse.setRelationship(relationship.getInverse());
-        inverse.setChild(ruleform.getId());
-        inverse.setUpdatedBy(model.getCurrentPrincipal()
-                                  .getPrincipal()
-                                  .getId());
-        inverse.insert();
-    }
-
-    @Override
     public void authorize(FacetRecord facet, Attribute attribute) {
         ExistentialAttributeAuthorizationRecord record = model.records()
                                                               .newExistentialAttributeAuthorization(facet,
                                                                                                     attribute);
         record.insert();
-    }
-
-    @Override
-    public void authorizeAll(ExistentialRuleform ruleform,
-                             Relationship relationship,
-                             List<? extends ExistentialRuleform> authorized) {
-        for (ExistentialRuleform agency : authorized) {
-            authorize(ruleform, relationship, agency);
-        }
-    }
-
-    @Override
-    public void authorizeSingular(ExistentialRuleform ruleform,
-                                  Relationship relationship,
-                                  ExistentialRuleform authorized) {
-        deauthorize(ruleform, relationship,
-                    getImmediateChild(ruleform, relationship,
-                                      authorized.getDomain()));
-        authorize(ruleform, relationship, authorized);
     }
 
     @Override
@@ -320,31 +278,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public void deauthorize(ExistentialRuleform existential,
-                            Relationship relationship,
-                            ExistentialRuleform authorized) {
-        create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.PARENT.equal(existential.getId()))
-              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-              .and(EXISTENTIAL_NETWORK.PARENT.equal(authorized.getId()))
-              .execute();
-        create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.PARENT.equal(authorized.getId()))
-              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
-              .and(EXISTENTIAL_NETWORK.PARENT.equal(existential.getId()))
-              .execute();
-    }
-
-    @Override
-    public void deauthorizeAll(ExistentialRuleform existential,
-                               Relationship relationship,
-                               List<? extends ExistentialRuleform> authorized) {
-        for (ExistentialRuleform e : authorized) {
-            deauthorize(existential, relationship, e);
-        }
-    }
-
-    @Override
     public List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
                                                                     Object query) {
         Condition valueEq;
@@ -390,42 +323,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
-                                                                Relationship relationship,
-                                                                ExistentialDomain domain) {
-        return create.selectDistinct(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                     .where(EXISTENTIAL.DOMAIN.equal(domain))
-                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
-                                                                                    Attribute attribute) {
-
-        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
-                     .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
-                     .join(FACET.as("na"))
-                     .on(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET))
-                     .join(EXISTENTIAL_NETWORK.as("network"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(aspect.getClassifier()))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(aspect.getClassification()))
-                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(attribute.getId()))
-                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull())
-                     .fetch()
-                     .into(ExistentialAttributeAuthorizationRecord.class);
-    }
-
-    @Override
     public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
                                                                                     boolean includeGrouping) {
 
@@ -449,24 +346,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
                      .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE))
                      .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.equal(ruleform.getId()))
-                     .fetch()
-                     .into(ExistentialAttributeRecord.class);
-    }
-
-    @Override
-    public List<ExistentialAttributeRecord> getAttributesGroupedBy(ExistentialRuleform ruleform,
-                                                                   Agency groupingAgency) {
-        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
-                     .from(EXISTENTIAL_ATTRIBUTE)
-                     .join(FACET)
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
-                     .join(FACET)
-                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.eq(FACET.ID))
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(FACET.CLASSIFICATION))
-                     .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
-                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.eq(groupingAgency.getId()))
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
     }
@@ -666,61 +545,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(ExistentialRuleform parent,
-                                                                         ExistentialDomain domain) {
-        return create.selectDistinct(EXISTENTIAL_NETWORK.fields())
-                     .from(EXISTENTIAL_NETWORK)
-                     .join(EXISTENTIAL)
-                     .on(EXISTENTIAL.DOMAIN.equal(domain))
-                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                     .fetch()
-                     .into(ExistentialNetworkRecord.class);
-    }
-
-    @Override
-    public List<ExistentialRuleform> getInferredChildren(ExistentialRuleform parent,
-                                                         Relationship relationship,
-                                                         ExistentialDomain domain) {
-        return create.selectDistinct(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                     .and(EXISTENTIAL_NETWORK.INFERENCE.isNotNull())
-                     .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ExistentialRuleform> getInGroup(ExistentialRuleform parent,
-                                                Relationship relationship,
-                                                ExistentialDomain domain) {
-        return create.selectDistinct(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                     .and(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                     .and(EXISTENTIAL_NETWORK.CHILD.notEqual(parent.getId()))
-                     .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
-    }
-
-    @Override
     public List<ExistentialNetworkRecord> getInterconnections(Collection<ExistentialRuleform> parents,
                                                               Collection<Relationship> relationships,
                                                               Collection<ExistentialRuleform> children) {
@@ -902,16 +726,6 @@ public class PhantasmModelImpl implements PhantasmModel {
         inverse.setChild(parent);
         inverse.insert();
         return new Tuple<>(forward, inverse);
-    }
-
-    @Override
-    public void setAuthorized(ExistentialRuleform ruleform,
-                              Relationship relationship,
-                              List<? extends ExistentialRuleform> authorized,
-                              ExistentialDomain domain) {
-        deauthorizeAll(ruleform, relationship,
-                       getAllAuthorized(ruleform, relationship, domain));
-        authorizeAll(ruleform, relationship, authorized);
     }
 
     @Override

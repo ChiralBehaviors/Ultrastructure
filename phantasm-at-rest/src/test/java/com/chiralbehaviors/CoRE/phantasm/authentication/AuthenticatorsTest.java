@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +42,6 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.security.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 
@@ -77,6 +77,20 @@ public class AuthenticatorsTest extends AbstractModelTest {
     }
 
     @Test
+    public void testNull() throws Exception {
+        NullAuthenticator authenticator = new NullAuthenticator();
+        authenticator.setModel(model);
+        Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(null);
+        assertTrue(authenticated.isPresent());
+        assertEquals(model.getKernel()
+                          .getUnauthenticatedAgency()
+                          .getId(),
+                     authenticated.get()
+                                  .getPrincipal()
+                                  .getId());
+    }
+
+    @Test
     public void testBearerToken() throws Exception {
         String username = "bob@slack.com";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
@@ -92,6 +106,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
                                                                                .getCoreUser())
                                                      .getId());
         credential.capabilities = capabilities;
+        credential.isValid(new Timestamp(0), new Timestamp(0));
 
         ExistentialAttributeRecord accessToken = model.records()
                                                       .newExistentialAttribute();

@@ -39,7 +39,9 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.ExistentialResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.JobResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadSnapshotCommand;
@@ -57,10 +59,6 @@ import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.PermitAllAuthorizer;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter.Builder;
-import io.dropwizard.jetty.HttpConnectorFactory;
-import io.dropwizard.server.DefaultServerFactory;
-import io.dropwizard.server.ServerFactory;
-import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -104,7 +102,11 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
         environment.jersey()
-                   .register(new GraphQlResource(FacetType.configureExecutionScope(configuration.getExecutionScope())));
+                   .register(new WorkspaceResource(FacetType.configureExecutionScope(configuration.getExecutionScope())));
+        environment.jersey()
+                   .register(new JobResource());
+        environment.jersey()
+                   .register(new ExistentialResource());
 
         configuration.getAssets()
                      .forEach(asset -> {
@@ -195,7 +197,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             FilterRegistration.Dynamic filter = environment.servlets()
                                                            .addFilter("CORS",
                                                                       CrossOriginFilter.class);
-            log.warn("Using CORS configuration: %s", cors);
+            log.warn(String.format("Using CORS configuration: %s", cors));
             // Add URL mapping
             filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class),
                                             true, "/*");
@@ -218,23 +220,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             filter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM,
                                     Boolean.toString(cors.chainPreflight));
 
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void configureRandomPort(PhantasmConfiguration configuration) {
-        ServerFactory serverFactory = configuration.getServerFactory();
-        if (serverFactory instanceof DefaultServerFactory) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getApplicationConnectors()
-                                                                          .get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getAdminConnectors()
-                                                                          .get(0)).setPort(0);
-        } else if (serverFactory instanceof SimpleServerFactory) {
-            ((HttpConnectorFactory) ((SimpleServerFactory) serverFactory).getConnector()).setPort(0);
-        } else {
-            log.warn("Unknown server factory type: {}, unable to set random port",
-                     serverFactory.getClass()
-                                  .getSimpleName());
         }
     }
 }

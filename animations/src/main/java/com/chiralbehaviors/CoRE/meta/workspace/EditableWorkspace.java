@@ -20,11 +20,8 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
-import java.util.List;
-
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -89,8 +86,6 @@ public interface EditableWorkspace extends WorkspaceAccessor {
     void add(StatusCodeSequencingRecord ruleform);
 
     void addImport(String namespace, Product workspace);
-
-    <T> List<T> getCollection(ReferenceType type);
 
     void put(String key, AgencyExistentialGroupingRecord ruleform);
 

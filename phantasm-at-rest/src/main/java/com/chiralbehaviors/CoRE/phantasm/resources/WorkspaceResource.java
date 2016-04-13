@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,7 +54,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -68,28 +66,25 @@ import io.dropwizard.auth.Auth;
  * @author hhildebrand
  *
  */
-@Path("graphql")
+@Path("workspace")
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
-public class GraphQlResource extends TransactionalResource {
+public class WorkspaceResource extends TransactionalResource {
 
-    private static final Logger                      log       = LoggerFactory.getLogger(GraphQlResource.class);
-    static final String                              QUERY     = "query";
-    static final String                              VARIABLES = "variables";
+    private static final Logger                      log   = LoggerFactory.getLogger(WorkspaceResource.class);
+    private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
 
-    private final ConcurrentMap<UUID, GraphQLSchema> cache     = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
 
-    public GraphQlResource(ClassLoader executionScope) {
+    public WorkspaceResource(ClassLoader executionScope) {
         this.executionScope = executionScope;
     }
 
     @Timed
     @GET
-    @Path("workspace")
     public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal,
                                                    @Context DSLContext create) {
-        return read(principal, readOnlyModel -> {
+        return mutate(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
             List<Map<String, Object>> workspaces = new ArrayList<>();
             for (ExistentialRuleform definingProduct : readOnlyModel.getPhantasmModel()
@@ -110,7 +105,7 @@ public class GraphQlResource extends TransactionalResource {
     }
 
     @Timed
-    @Path("workspace/{workspace}")
+    @Path("{workspace}")
     @POST
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
                                  @PathParam("workspace") String workspace,
@@ -120,7 +115,7 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        if (request.get(QUERY) == null) {
+        if (request.get(QueryRequest.QUERY) == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
@@ -165,44 +160,17 @@ public class GraphQlResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = getVariables(request);
-            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
+            Map<String, Object> variables = QueryRequest.getVariables(request);
+            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QueryRequest.QUERY),
                                                                  crud,
                                                                  variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QUERY),
+            log.info("Query: {} Errors: {}", request.get(QueryRequest.QUERY),
                      result.getErrors());
             return result;
         }, create);
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Map<String, Object> getVariables(Map request) {
-        Map<String, Object> variables = Collections.emptyMap();
-        Object provided = request.get(VARIABLES);
-        if (provided != null) {
-            if (provided instanceof Map) {
-                variables = (Map<String, Object>) provided;
-            } else if (provided instanceof String) {
-                try {
-                    String variableString = ((String) provided).trim();
-                    if (!variableString.isEmpty()) {
-                        variables = new ObjectMapper().readValue(variableString,
-                                                                 Map.class);
-                    }
-                } catch (Exception e) {
-                    throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
-                                                                    e.getMessage()),
-                                                      Status.BAD_REQUEST);
-                }
-            } else {
-                throw new WebApplicationException("Invalid variables parameter",
-                                                  Status.BAD_REQUEST);
-            }
-        }
-        return variables;
     }
 }

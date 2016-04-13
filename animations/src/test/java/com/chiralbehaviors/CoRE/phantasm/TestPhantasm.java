@@ -617,6 +617,25 @@ public class TestPhantasm extends AbstractModelTest {
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
+        model.executeAs(model.principalFrom(model.getKernel()
+                                                 .getCore(),
+                                            Collections.emptyList()),
+                        () -> {
+                            assertTrue(model.getPhantasmModel()
+                                            .checkCapability(stateAuth,
+                                                             model.getKernel()
+                                                                  .getHadMember()));
+                            return null;
+                        });
+
+        model.getPhantasmModel()
+             .getAttributeValue(model.getKernel()
+                                     .getCore(),
+                                model.getKernel()
+                                     .getHadMember(),
+                                model.getKernel()
+                                     .getSameAgency(),
+                                aliases);
     }
 
     @Test

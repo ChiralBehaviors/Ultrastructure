@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -78,4 +79,31 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                 .anyMatch(r -> definingProduct.equals(r)));
 
     }
+
+    @Test
+    public void testSerializeSnapshot() throws Exception {
+        Agency pseudoScientist = RECORDS.newAgency("Behold the Pseudo Scientist!");
+        pseudoScientist.insert();
+        Product definingProduct = RECORDS.newProduct("zee product");
+        definingProduct.insert();
+
+        StateSnapshot retrieved = new StateSnapshot(RECORDS.create(),
+                                                    Collections.emptyList());
+        assertEquals(2, retrieved.getRecords()
+                                 .size());
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new CoREModule());
+        mapper.writeValue(os, retrieved);
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+        StateSnapshot deserialized = mapper.readValue(is, StateSnapshot.class);
+        assertEquals(2, deserialized.getRecords()
+                                    .size());
+
+        assertTrue(deserialized.getRecords()
+                               .stream()
+                               .anyMatch(r -> pseudoScientist.equals(r)));
+
+    }
+
 }

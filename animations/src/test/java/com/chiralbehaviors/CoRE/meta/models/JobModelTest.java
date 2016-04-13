@@ -53,6 +53,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -66,10 +67,10 @@ public class JobModelTest extends AbstractModelTest {
 
     @Before
     public void loadOrderProcessing() throws Exception {
-        OrderProcessingLoader loader = new OrderProcessingLoader(model);
-        loader.load();
-        scenario = loader.createWorkspace(model)
-                         .getAccessor(OrderProcessing.class);
+        WorkspaceImporter scope = WorkspaceImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
+                                                             model);
+        scenario = scope.getWorkspace()
+                        .getAccessor(OrderProcessing.class);
         jobModel = model.getJobModel();
     }
 
@@ -169,13 +170,13 @@ public class JobModelTest extends AbstractModelTest {
                                .newInitializedJob(scenario.getDeliver());
         order.setAssignTo(scenario.getOrderFullfillment()
                                   .getId());
-        order.setProduct(scenario.getABC486()
+        order.setProduct(scenario.getAbc486()
                                  .getId());
-        order.setDeliverTo(scenario.getRC31()
+        order.setDeliverTo(scenario.getRc31()
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());
-        order.setRequester(scenario.getCarfleurBon()
+        order.setRequester(scenario.getCafleurBon()
                                    .getId());
         order.update();
         model.flush();
@@ -201,9 +202,9 @@ public class JobModelTest extends AbstractModelTest {
                              .newInitializedJob(scenario.getDeliver());
         job.setAssignTo(scenario.getOrderFullfillment()
                                 .getId());
-        job.setProduct(scenario.getABC486()
+        job.setProduct(scenario.getAbc486()
                                .getId());
-        job.setDeliverTo(scenario.getRSB225()
+        job.setDeliverTo(scenario.getRsb225()
                                  .getId());
         job.setDeliverFrom(scenario.getFactory1()
                                    .getId());
@@ -213,6 +214,20 @@ public class JobModelTest extends AbstractModelTest {
 
         List<JobRecord> jobs = jobModel.generateImplicitJobs(job);
         TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getActiveExplicitJobs();
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getActiveJobsFor(scenario.getOrderFullfillment());
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getActiveJobsFor(scenario.getOrderFullfillment(),
+                                         scenario.getAvailable());
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getChildJobsByService(job, scenario.getDeliver());
+        TestDebuggingUtil.printJobs(jobs);
+        jobs = jobModel.getChildren(job);
+        TestDebuggingUtil.printJobs(jobs);
+        jobModel.getMostRecentChronologyEntry(job);
+        jobModel.getTerminalStates(job);
+        jobModel.getSiblings(job);
     }
 
     @Test
@@ -268,9 +283,9 @@ public class JobModelTest extends AbstractModelTest {
                                .newInitializedJob(scenario.getDeliver());
         order.setAssignTo(scenario.getOrderFullfillment()
                                   .getId());
-        order.setProduct(scenario.getABC486()
+        order.setProduct(scenario.getAbc486()
                                  .getId());
-        order.setDeliverTo(scenario.getRSB225()
+        order.setDeliverTo(scenario.getRsb225()
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());
@@ -380,9 +395,9 @@ public class JobModelTest extends AbstractModelTest {
                                .newInitializedJob(scenario.getDeliver());
         order.setAssignTo(scenario.getOrderFullfillment()
                                   .getId());
-        order.setProduct(scenario.getABC486()
+        order.setProduct(scenario.getAbc486()
                                  .getId());
-        order.setDeliverTo(scenario.getRSB225()
+        order.setDeliverTo(scenario.getRsb225()
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());
@@ -486,9 +501,9 @@ public class JobModelTest extends AbstractModelTest {
                              .newInitializedJob(scenario.getDeliver());
         job.setAssignTo(scenario.getOrderFullfillment()
                                 .getId());
-        job.setProduct(scenario.getABC486()
+        job.setProduct(scenario.getAbc486()
                                .getId());
-        job.setDeliverTo(scenario.getRSB225()
+        job.setDeliverTo(scenario.getRsb225()
                                  .getId());
         job.setDeliverFrom(scenario.getFactory1()
                                    .getId());
@@ -510,7 +525,7 @@ public class JobModelTest extends AbstractModelTest {
                      protocols.get(1)
                               .getService());
         assertEquals(model.getKernel()
-                          .getAnyAgency()
+                          .getNotApplicableAgency()
                           .getId(),
                      protocols.get(0)
                               .getRequester());
@@ -580,13 +595,13 @@ public class JobModelTest extends AbstractModelTest {
                    .newInitializedJob(scenario.getPrintPurchaseOrder());
         job.setAssignTo(scenario.getOrderFullfillment()
                                 .getId());
-        job.setProduct(scenario.getABC486()
+        job.setProduct(scenario.getAbc486()
                                .getId());
-        job.setDeliverTo(scenario.getRSB225()
+        job.setDeliverTo(scenario.getRsb225()
                                  .getId());
         job.setDeliverFrom(scenario.getFactory1()
                                    .getId());
-        job.setRequester(scenario.getCarfleurBon()
+        job.setRequester(scenario.getCafleurBon()
                                  .getId());
         jobModel.changeStatus(job, model.getKernel()
                                         .getUnset(),
@@ -604,9 +619,9 @@ public class JobModelTest extends AbstractModelTest {
                                .newInitializedJob(scenario.getDeliver());
         order.setAssignTo(scenario.getOrderFullfillment()
                                   .getId());
-        order.setProduct(scenario.getABC486()
+        order.setProduct(scenario.getAbc486()
                                  .getId());
-        order.setDeliverTo(scenario.getBHT37()
+        order.setDeliverTo(scenario.getBht37()
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());
@@ -634,9 +649,9 @@ public class JobModelTest extends AbstractModelTest {
                                .newInitializedJob(scenario.getDeliver());
         order.setAssignTo(scenario.getOrderFullfillment()
                                   .getId());
-        order.setProduct(scenario.getABC486()
+        order.setProduct(scenario.getAbc486()
                                  .getId());
-        order.setDeliverTo(scenario.getRSB225()
+        order.setDeliverTo(scenario.getRsb225()
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());

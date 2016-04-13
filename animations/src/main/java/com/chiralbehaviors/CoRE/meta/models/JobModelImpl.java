@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectQuery;
 import org.jooq.TableField;
@@ -86,7 +85,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -346,21 +344,6 @@ public class JobModelImpl implements JobModel {
             ProtocolRecord protocol = txfm.getKey();
             assert protocol != null;
             jobs.addAll(insert(job, protocol, txfm.getValue()));
-            //            if (model.create()
-            //                     .selectCount()
-            //                     .from(JOB)
-            //                     .where(JOB.PARENT.equal(job.getParent()))
-            //                     .and(JOB.PROTOCOL.equal(job.getProtocol()))
-            //                     .fetchOne()
-            //                     .value1()
-            //                     .equals(ZERO)) {
-            //                jobs.addAll(insert(job, protocol, txfm.getValue()));
-            //            } else {
-            //                if (log.isInfoEnabled()) {
-            //                    log.info(String.format("Not inserting job, as there is an existing job with parent %s from protocol %s",
-            //                                           toString(job), toString(protocol)));
-            //                }
-            //            }
         }
         return jobs;
     }
@@ -384,170 +367,53 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<JobRecord> getActiveExplicitJobs() {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.PARENT.isNull())
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.PARENT.isNull())).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.ASSIGN_TO.equal(agency.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.ASSIGN_TO.equal(agency.getId()))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency,
                                             List<StatusCode> desiredStates) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.ASSIGN_TO.equal(agency.getId()))
-                    .and(JOB.STATUS.in(desiredStates.stream()
-                                                    .map(s -> s.getId())
-                                                    .collect(Collectors.toList())))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.ASSIGN_TO.equal(agency.getId()))
+                             .and(JOB.STATUS.in(desiredStates.stream()
+                                                             .map(s -> s.getId())
+                                                             .collect(Collectors.toList())))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency,
                                             StatusCode desiredState) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.ASSIGN_TO.equal(agency.getId()))
-                    .and(JOB.STATUS.equal(desiredState.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.ASSIGN_TO.equal(agency.getId()))
+                             .and(JOB.STATUS.equal(desiredState.getId()))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveSubJobsForService(JobRecord job,
                                                       Product service) {
         assert job != null;
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.SERVICE.equal(service.getId()))
-                    .and(JOB.PARENT.equal(job.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.SERVICE.equal(service.getId()))
+                             .and(JOB.PARENT.equal(job.getId()))).fetch();
     }
 
     @Override
     public List<JobRecord> getActiveSubJobsOf(JobRecord job) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.PARENT.equal(job.getId()))
-                    .andNotExists(model.create()
-                                       .selectFrom(seq)
-                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                 .equal(JOB.STATUS))
-                                       .andNotExists(model.create()
-                                                          .selectFrom(STATUS_CODE_SEQUENCING)
-                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))))
-                    .fetch();
-    }
-
-    /**
-     * Recursively retrieve all the active or terminated sub jobs of a given job
-     *
-     * @param job
-     * @return
-     */
-    @Override
-    public Collection<JobRecord> getAllActiveOrTerminatedSubJobsOf(JobRecord job) {
-        Set<JobRecord> tally = new HashSet<JobRecord>();
-        return recursivelyGetActiveOrTerminalSubJobsOf(job, tally);
-    }
-
-    @Override
-    public Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job) {
-        return getAllActiveSubJobsOf(job, new HashSet<JobRecord>());
-    }
-
-    @Override
-    public List<JobRecord> getAllActiveSubJobsOf(JobRecord parent,
-                                                 Agency agency) {
-        List<JobRecord> jobs = new ArrayList<JobRecord>();
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", parent);
-        //        query.setParameter("agency", agency);
-        //        for (JobRecord subJob : query.getResultList()) {
-        //            jobs.add(subJob);
-        //            getAllActiveSubJobsOf(subJob, agency);
-        //        }
-        return jobs;
-    }
-
-    @Override
-    public void getAllActiveSubJobsOf(JobRecord parent, Agency agency,
-                                      List<JobRecord> jobs) {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", parent);
-        //        query.setParameter("agency", agency);
-        //        for (JobRecord subJob : query.getResultList()) {
-        //            jobs.add(subJob);
-        //            getAllActiveSubJobsOf(parent, agency, jobs);
-        //        }
-    }
-
-    @Override
-    public Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job,
-                                                       Collection<JobRecord> tally) {
-        List<JobRecord> myJobs = getActiveSubJobsOf(job);
-        if (tally.addAll(myJobs)) {
-            for (JobRecord j : myJobs) {
-                getAllActiveSubJobsOf(j, tally);
-            }
-        }
-        return tally;
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.PARENT.equal(job.getId()))).fetch();
     }
 
     @Override
@@ -592,23 +458,20 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
+    public List<JobRecord> getChildren(JobRecord parent) {
+        return model.create()
+                    .selectFrom(JOB)
+                    .where(JOB.PARENT.equal(parent.getId()))
+                    .fetch();
+    }
+
+    @Override
     public List<JobChronologyRecord> getChronologyForJob(JobRecord job) {
         return model.create()
                     .selectFrom(JOB_CHRONOLOGY)
                     .where(JOB_CHRONOLOGY.JOB.equal(job.getId()))
                     .orderBy(JOB_CHRONOLOGY.SEQUENCE_NUMBER.asc())
                     .fetch();
-    }
-
-    @Override
-    public List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job) {
-        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_OR_TERMINATED_SUB_JOBS,
-        //                                                          JobRecord.class);
-        //        query.setParameter("parent", job);
-        //        query.setParameter("unset", kernel.getUnset());
-        //
-        //        return query.getResultList();
-        return null;
     }
 
     @Override
@@ -720,14 +583,6 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public Map<ProtocolRecord, InferenceMap> getProtocols(JobRecord job) {
-        if (job.getStatus() == null) {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("job has no status set %s",
-                                        toString(job)));
-            }
-            // Bail because, dude.  We haven't even been initialized
-            return Collections.emptyMap();
-        }
         // First we try for protocols which match the current job
         List<ProtocolRecord> protocols = getProtocolsMatching(job);
         Map<ProtocolRecord, InferenceMap> matches = new LinkedHashMap<>();
@@ -812,21 +667,12 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
-    @Override
-    public List<SiblingSequencingAuthorizationRecord> getSiblingActions(Product parent) {
+    public List<JobRecord> getSiblings(JobRecord job) {
         return model.create()
-                    .selectFrom(SIBLING_SEQUENCING_AUTHORIZATION)
-                    .where(SIBLING_SEQUENCING_AUTHORIZATION.PARENT.equal(parent.getId()))
+                    .selectFrom(JOB)
+                    .where(JOB.PARENT.equal(job.getParent()))
+                    .and(JOB.ID.notEqual(job.getId()))
                     .fetch();
-    }
-
-    @Override
-    public Result<StatusCodeSequencingRecord> getStatusCodeSequencingsFor(Product service) {
-        return model.create()
-                    .selectFrom(STATUS_CODE_SEQUENCING)
-                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
-                    .fetch();
-
     }
 
     @Override
@@ -858,7 +704,8 @@ public class JobModelImpl implements JobModel {
                                        .selectFrom(STATUS_CODE_SEQUENCING)
                                        .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
                                        .and(STATUS_CODE_SEQUENCING.PARENT.equal(seq.field(STATUS_CODE_SEQUENCING.CHILD))))
-                    .and(STATUS_CODE_SEQUENCING.SERVICE.equal(job.getService()))
+                    .and(seq.field(STATUS_CODE_SEQUENCING.SERVICE)
+                            .equal(job.getService()))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()
@@ -869,55 +716,10 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<JobRecord> getTopLevelJobs() {
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.PARENT.isNull())
-                    .fetch();
-    }
-
-    @Override
-    public List<JobRecord> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency) {
-        List<JobRecord> jobs = new ArrayList<JobRecord>();
-        //        for (JobRecord job : getActiveExplicitJobs()) {
-        //            TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-        //                                                              JobRecord.class);
-        //            query.setParameter("parent", job);
-        //            query.setParameter("agency", agency);
-        //            for (JobRecord subJob : query.getResultList()) {
-        //                if (isActive(subJob)) {
-        //                    jobs.add(job);
-        //                    break;
-        //                }
-        //            }
-        //        }
-        return jobs;
-    }
-
-    @Override
-    public List<JobRecord> getUnsetSiblings(JobRecord parent, Product service) {
-        return model.create()
-                    .selectFrom(JOB)
-                    .where(JOB.SERVICE.equal(service.getId()))
-                    .and(JOB.STATUS.equal(kernel.getUnset()
-                                                .getId()))
-                    .and(JOB.PARENT.equal(parent.getId()))
-                    .fetch();
-    }
-
-    @Override
     public boolean hasActiveSiblings(JobRecord job) {
-        //        TypedQuery<Long> query = em.createNamedQuery(JobRecord.HAS_ACTIVE_CHILD_JOBS,
-        //                                                     Long.class);
-        //        query.setParameter("parent", job.getParent());
-        //
-        //        return query.getSingleResult() > 0;
-        return false;
-    }
-
-    @Override
-    public boolean hasInitialState(Product service) {
-        return getInitialState(service).size() == 1;
+        return isActive(model.create()
+                             .selectFrom(JOB)
+                             .where(JOB.PARENT.equal(job.getParent()))).fetchOne() != null;
     }
 
     @Override
@@ -997,6 +799,18 @@ public class JobModelImpl implements JobModel {
         return !isTerminalState(job.getStatus(), job.getService());
     }
 
+    public SelectConditionStep<JobRecord> isActive(SelectConditionStep<JobRecord> where) {
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        return where.andNotExists(model.create()
+                                       .selectFrom(seq)
+                                       .where(seq.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                 .equal(JOB.STATUS))
+                                       .andNotExists(model.create()
+                                                          .selectFrom(STATUS_CODE_SEQUENCING)
+                                                          .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                                          .and(STATUS_CODE_SEQUENCING.PARENT.eq(seq.field(STATUS_CODE_SEQUENCING.CHILD)))));
+    }
+
     @Override
     public boolean isTerminalState(StatusCode sc, Product service) {
         return isTerminalState(sc.getId(), service.getId());
@@ -1004,10 +818,6 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void log(JobRecord job, String notes) {
-        if (job.getStatus() == null) {
-            job.setStatus(kernel.getUnset()
-                                .getId()); // Prophylactic against recursive error disease
-        }
         Integer currentGrain = model.create()
                                     .select(DSL.max(JOB_CHRONOLOGY.SEQUENCE_NUMBER))
                                     .from(JOB_CHRONOLOGY)
@@ -1978,24 +1788,6 @@ public class JobModelImpl implements JobModel {
                 }
             }
         }
-    }
-
-    /**
-     * Answer the list of the active or terminated sub jobs of a given job,
-     * recursively
-     *
-     * @param job
-     * @return
-     */
-    private Collection<JobRecord> recursivelyGetActiveOrTerminalSubJobsOf(JobRecord job,
-                                                                          Collection<JobRecord> tally) {
-        List<JobRecord> myJobs = getDirectActiveOrTerminalSubJobsOf(job);
-        if (tally.addAll(myJobs)) {
-            for (JobRecord sub : myJobs) {
-                recursivelyGetActiveOrTerminalSubJobsOf(sub, tally);
-            }
-        }
-        return tally;
     }
 
     private UUID resolve(boolean inferred, UUID protocol, UUID parent,

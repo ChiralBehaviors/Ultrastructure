@@ -50,8 +50,8 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.authentication.Credential;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.security.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.auth.Auth;
@@ -104,6 +104,9 @@ public class AuthxResource extends TransactionalResource {
 
     public static void deauthorize(AuthorizedPrincipal principal,
                                    String bearerToken, Model model) {
+        if (bearerToken == null) {
+            throw new WebApplicationException(Status.BAD_REQUEST);
+        }
         UUID uuid = UUID.fromString(parse(bearerToken));
         ExistentialAttributeRecord record = model.create()
                                                  .selectFrom(EXISTENTIAL_ATTRIBUTE)

@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.security;
+package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.sql.Timestamp;
 import java.util.Collections;

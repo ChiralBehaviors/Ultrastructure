@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,32 +68,7 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
-    public class EntityList<T> extends AbstractList<T> {
-        private final List<WorkspaceAuthorizationRecord> backingList;
 
-        public EntityList(List<WorkspaceAuthorizationRecord> backingList) {
-            this.backingList = backingList;
-        }
-
-        /* (non-Javadoc)
-         * @see java.util.AbstractList#get(int)
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        public T get(int index) {
-            return (T) getRuleform(backingList.get(index));
-        }
-
-        /* (non-Javadoc)
-         * @see java.util.AbstractCollection#size()
-         */
-        @Override
-        public int size() {
-            return backingList.size();
-        }
-    }
-
-    private Product                     definingProductCache;
     private final UUID                  definingProductId;
     protected final Map<String, Object> cache = new HashMap<>();
     protected final Model               model;
@@ -258,8 +232,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(SiblingSequencingAuthorizationRecord ruleform) {
-        // TODO Auto-generated method stub
-
+        put(null, ruleform);
     }
 
     /* (non-Javadoc)
@@ -314,7 +287,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void flushCache() {
         cache.clear();
-        definingProductCache = null;
     }
 
     /* (non-Javadoc)
@@ -350,7 +322,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                 throw new IllegalStateException(String.format("Unable to find result type: %s",
                                                               result.value2()));
         }
-        cache.put(key, ruleform);
+        if (key != null) {
+            if (key != null) {
+                cache.put(key, ruleform);
+            }
+        }
         return ruleform;
     }
 
@@ -363,27 +339,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     @Override
-    public <T> List<T> getCollection(Class<T> ruleformClass) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor#getCollection(java.lang.Class)
-     */
-    @Override
-    public <T> List<T> getCollection(ReferenceType type) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Product getDefiningProduct() {
-        if (definingProductCache == null) {
-            definingProductCache = model.records()
-                                        .resolve(definingProductId);
-        }
-        return definingProductCache;
+        return model.records()
+                    .resolve(definingProductId);
     }
 
     @Override
@@ -449,11 +407,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                     .collect(Collectors.toList());
     }
 
-    public Object getRuleform(WorkspaceAuthorizationRecord workspaceAuthorizationRecord) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getScope()
      */
@@ -488,7 +441,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public void put(String key, AgencyExistentialGroupingRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -499,7 +454,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, ChildSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -511,7 +468,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key,
                     ExistentialAttributeAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -523,7 +482,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, ExistentialAttributeRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -535,7 +496,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key,
                     ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -546,7 +509,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, ExistentialNetworkAttributeRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -555,7 +520,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key,
                     ExistentialNetworkAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -566,7 +533,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, ExistentialNetworkRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform
 
@@ -576,7 +545,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public void put(String key, ExistentialRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -587,7 +558,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, FacetRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -598,7 +571,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, JobChronologyRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -609,7 +584,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, JobRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -620,7 +597,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, MetaProtocolRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -631,7 +610,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, NetworkInferenceRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -642,7 +623,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, ParentSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -653,7 +636,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, ProtocolRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -664,7 +649,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, SelfSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -675,7 +662,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, SiblingSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
@@ -686,7 +675,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, StatusCodeSequencingRecord ruleform) {
-        cache.put(key, ruleform);
+        if (key != null) {
+            cache.put(key, ruleform);
+        }
         model.records()
              .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();

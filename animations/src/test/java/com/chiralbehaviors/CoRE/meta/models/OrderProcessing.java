@@ -32,17 +32,17 @@ public interface OrderProcessing {
 
     StatusCode getAbandoned();
 
-    Product getABC486();
+    Product getAbc486();
 
     StatusCode getActive();
 
     StatusCode getAvailable();
 
-    Location getBHT37();
+    Location getBht37();
 
     Agency getBillingComputer();
 
-    Agency getCarfleurBon();
+    Agency getCafleurBon();
 
     Product getCheckCredit();
 
@@ -66,9 +66,9 @@ public interface OrderProcessing {
 
     Product getPrintPurchaseOrder();
 
-    Location getRC31();
+    Location getRc31();
 
-    Location getRSB225();
+    Location getRsb225();
 
     Product getShip();
 

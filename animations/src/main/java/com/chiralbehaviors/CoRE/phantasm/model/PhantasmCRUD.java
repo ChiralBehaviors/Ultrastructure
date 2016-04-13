@@ -398,15 +398,6 @@ public class PhantasmCRUD {
                        .orElse(null);
     }
 
-    public List<ExistentialRuleform> lookupRuleForm(List<String> ids) {
-        return ids.stream()
-                  .map(id -> existential(id))
-                  .map(r -> model.records()
-                                 .resolve(r))
-                  .map(r -> r)
-                  .collect(Collectors.toList());
-    }
-
     /**
      * Remove the facet from the instance
      *

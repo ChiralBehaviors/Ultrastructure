@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.security.Credential;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;

@@ -100,7 +100,7 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class FacetType implements PhantasmTraversal.PhantasmVisitor {
+public class FacetQueries implements PhantasmTraversal.PhantasmVisitor {
 
     private static final String ADD_TEMPLATE              = "add%s";
     private static final String APPLY_MUTATION            = "Apply%s";
@@ -113,7 +113,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
     private static final String IDS                       = "ids";
     private static final String IMMEDIATE_TEMPLATE        = "immediate%s";
     private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
-    private static final Logger log                       = LoggerFactory.getLogger(FacetType.class);
+    private static final Logger log                       = LoggerFactory.getLogger(FacetQueries.class);
     private static final String NAME                      = "name";
     private static final String REMOVE_MUTATION           = "Remove%s";
     private static final String REMOVE_TEMPLATE           = "remove%s";
@@ -137,8 +137,8 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
 
     public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,
                                       ClassLoader executionScope) {
-        Deque<FacetRecord> unresolved = FacetType.initialState(accessor, model);
-        Map<FacetRecord, FacetType> resolved = new HashMap<>();
+        Deque<FacetRecord> unresolved = FacetQueries.initialState(accessor, model);
+        Map<FacetRecord, FacetQueries> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace workspace = model.wrap(Workspace.class, definingProduct);
         Builder topLevelQuery = newObject().name("Query")
@@ -153,7 +153,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
             if (resolved.containsKey(facet)) {
                 continue;
             }
-            FacetType type = new FacetType(facet);
+            FacetQueries type = new FacetQueries(facet);
             resolved.put(facet, type);
             List<Plugin> facetPlugins = plugins.stream()
                                                .filter(plugin -> facet.getName()
@@ -165,8 +165,8 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));
         }
-        new JobSchema().build(topLevelQuery, topLevelMutation);
-        new ExistentialSchema().build(topLevelQuery, topLevelMutation);
+        new JobQueries().build(topLevelQuery, topLevelMutation);
+        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
@@ -239,7 +239,7 @@ public class FacetType implements PhantasmTraversal.PhantasmVisitor {
 
     private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
 
-    public FacetType(FacetRecord facet) {
+    public FacetQueries(FacetRecord facet) {
         this.name = WorkspacePresentation.toTypeName(facet.getName());
         typeBuilder = newObject().name(getName())
                                  .description(facet.getNotes());

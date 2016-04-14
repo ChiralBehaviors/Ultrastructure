@@ -63,7 +63,7 @@ public class JobSchemaTest extends AbstractModelTest {
 
     @Test
     public void testIntrospection() throws Exception {
-        GraphQLSchema schema = JobSchema.build();
+        GraphQLSchema schema = JobQueries.build();
         String query = getIntrospectionQuery();
         ExecutionResult execute = new GraphQL(schema).execute(query,
                                                               new PhantasmCRUD(model));
@@ -81,7 +81,7 @@ public class JobSchemaTest extends AbstractModelTest {
     @Test
     public void testEuOrder() throws Exception {
 
-        GraphQLSchema schema = JobSchema.build();
+        GraphQLSchema schema = JobQueries.build();
         Map<String, Object> variables = new HashMap<>();
 
         variables.put("service", scenario.getDeliver()

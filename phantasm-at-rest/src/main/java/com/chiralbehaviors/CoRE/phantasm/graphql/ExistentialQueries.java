@@ -64,7 +64,7 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class ExistentialSchema {
+public class ExistentialQueries {
     public static final String  CREATE_INSTANCES_MUTATION = "Create%sInstances";
     public static final String  CREATE_MUTATION           = "Create%s";
     public static final String  CREATE_STATE              = "%sCreateState";
@@ -94,7 +94,7 @@ public class ExistentialSchema {
                                            .description("Top level query");
         Builder topLevelMutation = newObject().name("Mutation")
                                               .description("Top level mutation");
-        new ExistentialSchema().build(topLevelQuery, topLevelMutation);
+        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())

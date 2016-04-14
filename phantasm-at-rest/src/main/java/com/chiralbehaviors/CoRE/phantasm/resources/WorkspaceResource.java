@@ -50,7 +50,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
@@ -134,7 +134,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return FacetType.build(scoped.getWorkspace(), model,
+                return FacetQueries.build(scoped.getWorkspace(), model,
                                        executionScope);
             });
 

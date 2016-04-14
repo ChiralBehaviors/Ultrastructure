@@ -59,7 +59,7 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class JobSchema {
+public class JobQueries {
     private static final String CREATE_INSTANCES_MUTATION = "CreateInstancesOfJob";
     private static final String CREATE_MUTATION           = "CreateJob";
     private static final String CREATE_TYPE               = "JobCreate";
@@ -89,8 +89,8 @@ public class JobSchema {
                                            .description("Top level query");
         Builder topLevelMutation = newObject().name("Mutation")
                                               .description("Top level mutation");
-        new ExistentialSchema().build(topLevelQuery, topLevelMutation);
-        new JobSchema().build(topLevelQuery, topLevelMutation);
+        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
+        new JobQueries().build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())

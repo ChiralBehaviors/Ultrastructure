@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.ExistentialResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.JobResource;
@@ -102,7 +102,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
         environment.jersey()
-                   .register(new WorkspaceResource(FacetType.configureExecutionScope(configuration.getExecutionScope())));
+                   .register(new WorkspaceResource(FacetQueries.configureExecutionScope(configuration.getExecutionScope())));
         environment.jersey()
                    .register(new JobResource());
         environment.jersey()

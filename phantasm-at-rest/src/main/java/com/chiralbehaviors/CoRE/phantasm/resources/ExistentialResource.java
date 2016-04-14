@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.jooq.DSLContext;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialQueries;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
 
@@ -47,7 +47,7 @@ import io.dropwizard.auth.Auth;
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class ExistentialResource extends SchemaResource {
     public ExistentialResource() {
-        super(ExistentialSchema.build());
+        super(ExistentialQueries.build());
     }
 
     @Timed

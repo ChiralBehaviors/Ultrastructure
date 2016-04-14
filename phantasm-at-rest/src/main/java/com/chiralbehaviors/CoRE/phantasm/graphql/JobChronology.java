@@ -83,9 +83,8 @@ public class JobChronology {
     }
 
     @GraphQLField
-    public String getId(DataFetchingEnvironment env) {
-        return record.getId()
-                     .toString();
+    public UUID getId() {
+        return record.getId();
     }
 
     @GraphQLField

@@ -58,30 +58,14 @@ import graphql.schema.GraphQLTypeReference;
  *
  */
 public class JobSchema {
-    private static final String UPDATE_DATE               = "updateDate";
-    private static final String ALL_CHILDREN              = "allChildren";
-    private static final String CHRONOLOGY                = "chronology";
-    private static final String JOB_CHRONOLOGY            = "JobChronology";
-    private static final String ACTIVE_SUB_JOBS           = "activeSubJobs";
-    private static final String ASSIGN_TO                 = "assignTo";
-    private static final String CHILDREN                  = "children";
     private static final String CREATE_INSTANCES_MUTATION = "CreateInstancesOfJob";
     private static final String CREATE_MUTATION           = "CreateJob";
     private static final String CREATE_TYPE               = "JobCreate";
     private static final String DELETE_MUTATION           = "DeleteJob";
-    private static final String DELIVER_FROM              = "deliverFrom";
-    private static final String DELIVER_TO                = "deliverTo";
     private static final String ID                        = "id";
     private static final String INSTANCES_OF_QUERY        = "InstancesOfJob";
     private static final String JOB                       = "Job";
-    private static final String NOTES                     = "notes";
-    private static final String PARENT                    = "parent";
-    private static final String PRODUCT                   = "product";
-    private static final String QUANTITY                  = "quantity";
-    private static final String QUANTITY_UNIT             = "quantityUnit";
-    private static final String REQUESTER                 = "requester";
-    private static final String SEQUENCE_NUMBER           = "sequenceNumber";
-    private static final String SERVICE                   = "service";
+    private static final String JOB_CHRONOLOGY            = "JobChronology";
     private static final String SET_ASSIGN_TO             = "setAssignTo";
     private static final String SET_DELIVER_FROM          = "setDeliverFrom";
     private static final String SET_DELIVER_TO            = "setDeliverTo";
@@ -97,7 +81,6 @@ public class JobSchema {
     private static final String UPDATE_INSTANCES_MUTATION = "UpdateInstancesOfJob";
     private static final String UPDATE_MUTATION           = "UpdateJob";
     private static final String UPDATE_TYPE               = "JobUpdate";
-    private static final String UPDATED_BY                = "updatedBy";
 
     public static GraphQLSchema build() {
         Builder topLevelQuery = newObject().name("Query")
@@ -338,15 +321,15 @@ public class JobSchema {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
+    private JobRecord fetch(DataFetchingEnvironment env) {
+        return fetch(env, UUID.fromString((String) env.getArgument(ID)));
+    }
+
     private JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
         return ctx(env).create()
                        .selectFrom(Tables.JOB)
                        .where(Tables.JOB.ID.equal(uuid))
                        .fetchOne();
-    }
-
-    private JobRecord fetch(DataFetchingEnvironment env) {
-        return fetch(env, UUID.fromString((String) env.getArgument(ID)));
     }
 
     private GraphQLFieldDefinition instance(GraphQLObjectType type) {

@@ -138,9 +138,8 @@ public class Job {
     }
 
     @GraphQLField
-    public String getId() {
-        return record.getId()
-                     .toString();
+    public UUID getId() {
+        return record.getId();
     }
 
     @GraphQLField

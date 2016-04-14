@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import static graphql.Scalars.GraphQLString;
 
 import java.lang.reflect.AnnotatedType;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -39,6 +40,7 @@ import graphql.annotations.GraphQLTypeResolver;
 import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.TypeResolver;
 
@@ -85,9 +87,8 @@ public interface Existential {
         }
 
         @Override
-        public String getId() {
-            return record.getId()
-                         .toString();
+        public UUID getId() {
+            return record.getId();
         }
 
         @Override
@@ -130,6 +131,13 @@ public interface Existential {
             }
         }
 
+    }
+
+    class ExistentialTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return ExistentialType;
+        }
     }
 
     @GraphQLDescription("The Interval existential ruleform")
@@ -234,24 +242,35 @@ public interface Existential {
         }
     }
 
-    GraphQLObjectType AgencyType       = objectTypeOf(Agency.class);
+    GraphQLObjectType    AgencyType       = objectTypeOf(Agency.class);
 
-    GraphQLObjectType AttributeType    = objectTypeOf(Attribute.class);
+    GraphQLObjectType    AttributeType    = objectTypeOf(Attribute.class);
 
-    GraphQLObjectType IntervalType     = objectTypeOf(Interval.class);
+    GraphQLInterfaceType ExistentialType  = interfaceTypeOf(Existential.class);
 
-    GraphQLObjectType LocationType     = objectTypeOf(Location.class);
+    GraphQLObjectType    IntervalType     = objectTypeOf(Interval.class);
 
-    GraphQLObjectType ProductType      = objectTypeOf(Product.class);
+    GraphQLObjectType    LocationType     = objectTypeOf(Location.class);
 
-    GraphQLObjectType RelationshipType = objectTypeOf(Relationship.class);
+    GraphQLObjectType    ProductType      = objectTypeOf(Product.class);
 
-    GraphQLObjectType StatusCodeType   = objectTypeOf(StatusCode.class);
+    GraphQLObjectType    RelationshipType = objectTypeOf(Relationship.class);
 
-    GraphQLObjectType UnitType         = objectTypeOf(Unit.class);
+    GraphQLObjectType    StatusCodeType   = objectTypeOf(StatusCode.class);
+
+    GraphQLObjectType    UnitType         = objectTypeOf(Unit.class);
 
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
+    }
+
+    public static GraphQLInterfaceType interfaceTypeOf(Class<?> clazz) {
+        try {
+            return GraphQLAnnotations.iface(clazz);
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new IllegalStateException(String.format("Unable to create interface  type for %s",
+                                                          clazz.getSimpleName()));
+        }
     }
 
     public static GraphQLObjectType objectTypeOf(Class<?> clazz) {
@@ -264,11 +283,35 @@ public interface Existential {
         }
     }
 
+    static Existential wrap(ExistentialRuleform record) throws IllegalStateException {
+        switch (record.getDomain()) {
+            case Agency:
+                return new Agency(record);
+            case Attribute:
+                return new Attribute(record);
+            case Interval:
+                return new Interval(record);
+            case Location:
+                return new Location(record);
+            case Product:
+                return new Product(record);
+            case Relationship:
+                return new Relationship(record);
+            case StatusCode:
+                return new StatusCode(record);
+            case Unit:
+                return new Unit(record);
+            default:
+                throw new IllegalStateException(String.format("Unknown domain: %s",
+                                                              record.getDomain()));
+        }
+    }
+
     @GraphQLField
     String getDescription();
 
     @GraphQLField
-    String getId();
+    UUID getId();
 
     @GraphQLField
     String getName();

@@ -77,13 +77,18 @@ public class Facet {
 
     public static final GraphQLObjectType FacetType;
 
+    private static final String           CREATE             = "CreateFacet";
+    private static final String           DELETE             = "DeleteFacet";
     private static final String           FACET_STATE        = "FacetState";
     private static final String           ID                 = "id";
-    private static final String           INSTANCES_OF_QUERY = "InstancesOfFacet";
+    private static final String           INSTANCES          = "InstancesOfFacet";
+    private static final String           SET_AUTHORITY      = "setAuthority";
     private static final String           SET_CLASSIFICATION = "setClassification";
     private static final String           SET_CLASSIFIER     = "setClassifier";
     private static final String           SET_NAME           = "setName";
+    private static final String           SET_NOTES          = "setNotes";
     private static final String           STATE              = "state";
+    private static final String           UPDATE             = "UpdateFacet";
 
     static {
         DefaultTypeFunction.register(Cardinality.class,
@@ -92,10 +97,11 @@ public class Facet {
     }
 
     public static void build(Builder query, Builder mutation) {
-        Map<String, BiConsumer<FacetRecord, Object>> updateTemplate = new HashMap<>();
+        Map<String, BiConsumer<FacetRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 
         query.field(instance());
+        query.field(instances());
         mutation.field(create(stateType, updateTemplate));
         mutation.field(update(stateType, updateTemplate));
         mutation.field(remove());
@@ -108,38 +114,16 @@ public class Facet {
                                  .fetchOne());
     }
 
-    public static GraphQLFieldDefinition instance() {
-        return newFieldDefinition().name(FacetType.getName())
-                                   .type(FacetType)
-                                   .argument(newArgument().name(ID)
-                                                          .description("id of the job")
-                                                          .type(new GraphQLNonNull(GraphQLString))
-                                                          .build())
-                                   .dataFetcher(env -> {
-                                       return new Facet(fetch(env));
-                                   })
-                                   .build();
-    }
-
-    public static GraphQLFieldDefinition instances(GraphQLObjectType type) {
-        return newFieldDefinition().name(INSTANCES_OF_QUERY)
-                                   .type(type)
-                                   .argument(newArgument().name(ID)
-                                                          .description("facet ids")
-                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                          .build())
-                                   .dataFetcher(env -> {
-                                       return fetch(env);
-                                   })
-                                   .build();
-    }
-
     private static GraphQLInputObjectType buildStateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(FACET_STATE)
                                                                                 .description("Facet creation/update state");
         builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
                                            .name(SET_NAME)
                                            .description("The name of the facet")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_AUTHORITY)
+                                           .description("The relationship classifier of the facet")
                                            .build());
         builder.field(newInputObjectField().type(GraphQLString)
                                            .name(SET_CLASSIFIER)
@@ -152,13 +136,29 @@ public class Facet {
         return builder.build();
     }
 
+    private static Map<String, BiConsumer<FacetRecord, Object>> buildUpdateTemplate() {
+        Map<String, BiConsumer<FacetRecord, Object>> updateTemplate = new HashMap<>();
+        updateTemplate.put(SET_NAME, (e, value) -> e.setName((String) value));
+        updateTemplate.put(SET_AUTHORITY,
+                           (e,
+                            value) -> e.setAuthority(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CLASSIFIER,
+                           (e,
+                            value) -> e.setClassification(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CLASSIFICATION,
+                           (e,
+                            value) -> e.setClassification(UUID.fromString((String) value)));
+        updateTemplate.put(SET_NOTES, (e, value) -> e.setNotes((String) value));
+        return updateTemplate;
+    }
+
     private static GraphQLFieldDefinition create(GraphQLInputObjectType createType,
                                                  Map<String, BiConsumer<FacetRecord, Object>> updateTemplate) {
-        return newFieldDefinition().name("CreateFacet")
+        return newFieldDefinition().name(CREATE)
                                    .description("Create an instance of Facet")
-                                   .type(new GraphQLTypeReference("Facet"))
+                                   .type(new GraphQLTypeReference(FacetType.getName()))
                                    .argument(newArgument().name(FACET_STATE)
-                                                          .description("the initial state of the job")
+                                                          .description("the initial state of the facet")
                                                           .type(new GraphQLNonNull(createType))
                                                           .build())
                                    .dataFetcher(env -> {
@@ -177,6 +177,32 @@ public class Facet {
                        .fetchOne();
     }
 
+    private static GraphQLFieldDefinition instance() {
+        return newFieldDefinition().name(FacetType.getName())
+                                   .type(FacetType)
+                                   .argument(newArgument().name(ID)
+                                                          .description("id of the facet")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .dataFetcher(env -> {
+                                       return new Facet(fetch(env));
+                                   })
+                                   .build();
+    }
+
+    private static GraphQLFieldDefinition instances() {
+        return newFieldDefinition().name(INSTANCES)
+                                   .type(FacetType)
+                                   .argument(newArgument().name(ID)
+                                                          .description("facet ids")
+                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
+                                                          .build())
+                                   .dataFetcher(env -> {
+                                       return fetch(env);
+                                   })
+                                   .build();
+    }
+
     private static Object newFacet(DataFetchingEnvironment env,
                                    Map<String, Object> createState,
                                    Map<String, BiConsumer<FacetRecord, Object>> updateTemplate) {
@@ -190,9 +216,9 @@ public class Facet {
     }
 
     private static GraphQLFieldDefinition remove() {
-        return newFieldDefinition().name("DeleteFacet")
+        return newFieldDefinition().name(DELETE)
                                    .type(new GraphQLTypeReference(FacetType.getName()))
-                                   .description("Delete the %s facet")
+                                   .description("Delete the facet")
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the facet instance")
                                                           .type(GraphQLString)
@@ -203,7 +229,7 @@ public class Facet {
 
     private static GraphQLFieldDefinition update(GraphQLInputObjectType type,
                                                  Map<String, BiConsumer<FacetRecord, Object>> updateTemplate) {
-        return newFieldDefinition().name("UpdateFacet")
+        return newFieldDefinition().name(UPDATE)
                                    .type(new GraphQLTypeReference(FacetType.getName()))
                                    .description("Update the instance of a facet")
                                    .argument(newArgument().name(STATE)

@@ -22,26 +22,56 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
+import static graphql.Scalars.GraphQLString;
 
+import java.lang.reflect.AnnotatedType;
+import java.util.List;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.NeworkAuthorizationTypeFunction;
 
+import graphql.annotations.DefaultTypeFunction;
+import graphql.annotations.GraphQLAnnotations;
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
+import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLObjectType;
 
 /**
  * @author hhildebrand
  *
  */
 public class Facet {
+
+    class FacetTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return FacetType;
+        }
+    }
+
+    public static GraphQLObjectType FacetType;
+
+    static {
+        DefaultTypeFunction.register(Cardinality.class,
+                                     (u, t) -> GraphQLString);
+        try {
+            FacetType = GraphQLAnnotations.object(Facet.class);
+        } catch (IllegalAccessException | InstantiationException
+                | NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private final FacetRecord record;
 
     public Facet(FacetRecord record) {
@@ -52,6 +82,12 @@ public class Facet {
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getAuthority(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAuthority()));
+    }
+
+    @GraphQLField
+    @GraphQLType(NeworkAuthorizationTypeFunction.class)
+    public List<NetworkAuthorization> getChildConstraints() {
+        return null;
     }
 
     @GraphQLField

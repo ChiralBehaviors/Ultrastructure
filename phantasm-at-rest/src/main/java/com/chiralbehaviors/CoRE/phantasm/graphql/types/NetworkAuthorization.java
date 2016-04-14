@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
+import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
@@ -31,13 +32,24 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLObjectType;
 
 /**
  * @author hhildebrand
  *
  */
 public class NetworkAuthorization {
+    public static GraphQLObjectType NetworkAuthorizationType;
+
+    class NeworkAuthorizationTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return NetworkAuthorizationType;
+        }
+    }
+
     private final ExistentialNetworkAuthorizationRecord record;
 
     public NetworkAuthorization(ExistentialNetworkAuthorizationRecord record) {
@@ -45,8 +57,8 @@ public class NetworkAuthorization {
     }
 
     @GraphQLField
-    public UUID getAuthority() {
-        return record.getAuthority();
+    public Agency getAuthority(DataFetchingEnvironment env) {
+        return resolve(env, record.getAuthority());
     }
 
     @GraphQLField

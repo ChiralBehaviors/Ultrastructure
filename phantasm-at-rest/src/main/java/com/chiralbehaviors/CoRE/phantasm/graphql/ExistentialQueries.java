@@ -65,28 +65,28 @@ import graphql.schema.GraphQLTypeReference;
  *
  */
 public class ExistentialQueries {
-    public static final String  CREATE_INSTANCES_MUTATION = "Create%sInstances";
-    public static final String  CREATE_MUTATION           = "Create%s";
-    public static final String  CREATE_STATE              = "%sCreateState";
-    public static final String  DELETE_MUTATION           = "Delete%s";
-
-    public static final String  ID                        = "id";
-
-    public static final String  INSTANCES_OF_QUERY        = "InstancesOf%s";
-    public static final String  SET_DESCRIPTION           = "setDescription";
-    public static final String  SET_NAME                  = "setName";
-    public static final String  SET_NOTES                 = "setNotes";
-    public static final String  STATE                     = "state";
-    public static final String  UPDATE_INSTANCES_MUTATION = "Update%sInstances";
-    public static final String  UPDATE_MUTATION           = "Update%s";
-    public static final String  UPDATE_STATE              = "Update%sState";
+    private static final String CREATE_INSTANCES_MUTATION = "Create%sInstances";
+    private static final String CREATE_MUTATION           = "Create%s";
+    private static final String CREATE_STATE              = "%sCreateState";
+    private static final String DELETE_MUTATION           = "Delete%s";
+    private static final String ID                        = "id";
+    private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
+    private static final String SET_DESCRIPTION           = "setDescription";
+    private static final String SET_NAME                  = "setName";
+    private static final String SET_NOTES                 = "setNotes";
+    private static final String STATE                     = "state";
+    private static final String UPDATE_INSTANCES_MUTATION = "Update%sInstances";
+    private static final String UPDATE_MUTATION           = "Update%s";
+    private static final String UPDATE_STATE              = "Update%sState";
     private static final String SET_INDEXED               = "setIndexed";
     private static final String SET_INVERSE               = "setInverse";
     private static final String SET_KEYED                 = "setKeyed";
     private static final String SET_PROPAGATE_CHILDREN    = "setPropagateChildren";
     private static final String SET_VALUE_TYPE            = "setValueType";
+
     static {
         DefaultTypeFunction.register(UUID.class, (u, t) -> GraphQLString);
+        DefaultTypeFunction.register(ValueType.class, (u, t) -> GraphQLString);
     }
 
     public static GraphQLSchema build() {
@@ -289,8 +289,7 @@ public class ExistentialQueries {
     }
 
     private GraphQLFieldDefinition instance(GraphQLObjectType type) {
-        return newFieldDefinition().name(String.format(CREATE_MUTATION,
-                                                       type.getName()))
+        return newFieldDefinition().name(type.getName())
                                    .type(type)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the existential")
@@ -303,7 +302,7 @@ public class ExistentialQueries {
     }
 
     private GraphQLFieldDefinition instances(GraphQLObjectType type) {
-        return newFieldDefinition().name(String.format(CREATE_MUTATION,
+        return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        type.getName()))
                                    .type(type)
                                    .argument(newArgument().name(ID)

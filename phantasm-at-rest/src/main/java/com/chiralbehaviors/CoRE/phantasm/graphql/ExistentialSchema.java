@@ -69,7 +69,6 @@ public class ExistentialSchema {
     public static final String  CREATE_MUTATION           = "Create%s";
     public static final String  CREATE_STATE              = "%sCreateState";
     public static final String  DELETE_MUTATION           = "Delete%s";
-    public static final String  DOMAIN                    = "domain";
 
     public static final String  ID                        = "id";
 
@@ -194,10 +193,6 @@ public class ExistentialSchema {
                                                                                                            type.getName()));
         builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
                                            .name(SET_NAME)
-                                           .description("The name of the existential")
-                                           .build());
-        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
-                                           .name(DOMAIN)
                                            .description("The name of the existential")
                                            .build());
         builder.field(newInputObjectField().type(GraphQLString)

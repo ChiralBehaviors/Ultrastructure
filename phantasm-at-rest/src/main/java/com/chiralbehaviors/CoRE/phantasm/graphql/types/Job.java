@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.List;
@@ -198,10 +199,5 @@ public class Job {
     @GraphQLField
     public Integer getVersion(DataFetchingEnvironment env) {
         return record.getVersion();
-    }
-
-    private <T> T resolve(DataFetchingEnvironment env, UUID id) {
-        return ctx(env).records()
-                       .resolve(id);
     }
 }

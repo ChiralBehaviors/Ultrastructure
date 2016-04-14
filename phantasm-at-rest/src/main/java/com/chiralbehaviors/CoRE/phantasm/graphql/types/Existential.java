@@ -74,6 +74,13 @@ public interface Existential {
         }
     }
 
+    class AttributeTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return AttributeType;
+        }
+    }
+
     abstract class ExistentialCommon implements Existential {
         protected final ExistentialRecord record;
 
@@ -283,7 +290,12 @@ public interface Existential {
         }
     }
 
-    static Existential wrap(ExistentialRuleform record) throws IllegalStateException {
+    public static <T> T resolve(DataFetchingEnvironment env, UUID id) {
+        return ctx(env).records()
+                       .resolve(id);
+    }
+
+    public static Existential wrap(ExistentialRuleform record) throws IllegalStateException {
         switch (record.getDomain()) {
             case Agency:
                 return new Agency(record);

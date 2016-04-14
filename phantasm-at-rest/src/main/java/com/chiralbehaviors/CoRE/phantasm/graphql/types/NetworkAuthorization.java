@@ -20,12 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.fetch;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -41,14 +41,14 @@ import graphql.schema.GraphQLObjectType;
  *
  */
 public class NetworkAuthorization {
-    public static GraphQLObjectType NetworkAuthorizationType;
-
     class NeworkAuthorizationTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return NetworkAuthorizationType;
         }
     }
+
+    public static final GraphQLObjectType NetworkAuthorizationType = Existential.objectTypeOf(NetworkAuthorization.class);
 
     private final ExistentialNetworkAuthorizationRecord record;
 
@@ -104,17 +104,5 @@ public class NetworkAuthorization {
     @GraphQLField
     public Integer getVersion() {
         return record.getVersion();
-    }
-
-    private Facet fetch(DataFetchingEnvironment env, UUID id) {
-        return new Facet(ctx(env).create()
-                                 .selectFrom(Tables.FACET)
-                                 .where(Tables.FACET.ID.equal(id))
-                                 .fetchOne());
-    }
-
-    private <T> T resolve(DataFetchingEnvironment env, UUID id) {
-        return ctx(env).records()
-                       .resolve(id);
     }
 }

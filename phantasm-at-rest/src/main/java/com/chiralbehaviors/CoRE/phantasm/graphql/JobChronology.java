@@ -23,11 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ctx;
 
 import java.lang.reflect.AnnotatedType;
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Location;
@@ -50,7 +48,6 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class JobChronology {
-
     class JobChronologyTypeFunction implements TypeFunction {
 
         @Override
@@ -61,93 +58,103 @@ public class JobChronology {
 
     public static final graphql.schema.GraphQLType JobChronologyType = Existential.objectTypeOf(JobChronology.class);
 
+    private final JobChronologyRecord              record;
+
+    public JobChronology(JobChronologyRecord record) {
+        this.record = record;
+    }
+
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getAssignTo(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getAssignTo());
+        return new Agency(resolve(env, record.getAssignTo()));
     }
 
     @GraphQLField
     @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverFrom(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getDeliverFrom());
+        return new Location(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
     @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverTo(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getDeliverTo());
+        return new Location(resolve(env, record.getDeliverTo()));
     }
 
     @GraphQLField
-    public UUID getId(DataFetchingEnvironment env) {
-        return fetch(env).getId();
+    public String getId(DataFetchingEnvironment env) {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField
     @GraphQLType(JobTypeFunction.class)
-    public JobRecord getJob(DataFetchingEnvironment env) {
-        return Job.fetch(env, fetch(env).getJob());
+    public Job getJob(DataFetchingEnvironment env) {
+        return new Job(Job.fetch(env, record.getJob()));
     }
 
     @GraphQLField
     public String getNotes(DataFetchingEnvironment env) {
-        return fetch(env).getNotes();
+        return record.getNotes();
     }
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
     public Product getProduct(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getProduct());
+        return new Product(resolve(env, record.getProduct()));
     }
 
     @GraphQLField
-    public BigDecimal getQuantity(DataFetchingEnvironment env) {
-        return fetch(env).getQuantity();
+    public Long getQuantity() {
+        return record.getQuantity()
+                     .longValue();
     }
 
     @GraphQLField
     @GraphQLType(UnitTypeFunction.class)
     public Unit getQuantityUnit(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getQuantityUnit());
+        return new Unit(resolve(env, record.getQuantityUnit()));
     }
 
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getRequester(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getRequester());
+        return new Agency(resolve(env, record.getRequester()));
     }
 
     @GraphQLField
     public Integer getSequenceNumber(DataFetchingEnvironment env) {
-        return fetch(env).getSequenceNumber();
+        return record.getSequenceNumber();
     }
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
     public Product getService(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getService());
+        return new Product(resolve(env, record.getService()));
     }
 
     @GraphQLField
     @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getStatus(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getStatus());
+        return new StatusCode(resolve(env, record.getStatus()));
+    }
+
+    @GraphQLField
+    public Long getUpdateDate() {
+        return record.getUpdateDate()
+                     .getTime();
     }
 
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getUpdatedBy());
+        return new Agency(resolve(env, record.getUpdatedBy()));
     }
 
     @GraphQLField
     public Integer getVersion(DataFetchingEnvironment env) {
-        return fetch(env).getVersion();
-    }
-
-    private JobChronologyRecord fetch(DataFetchingEnvironment env) {
-        return (JobChronologyRecord) env.getSource();
+        return record.getVersion();
     }
 
     private <T> T resolve(DataFetchingEnvironment env, UUID id) {

@@ -40,6 +40,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
+import graphql.annotations.GraphQLAnnotations;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectType;
@@ -128,29 +129,12 @@ public class ExistentialSchema {
     }
 
     private GraphQLObjectType buildType() {
-        Builder builder = newObject().name(EXISTENTIAL)
-                                     .description("An Existential");
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name(ID)
-                                          .description("The id of the existential")
-                                          .build());
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name(NAME)
-                                          .description("The name of the existential")
-                                          .build());
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name(DESCRIPTION)
-                                          .description("The description of the existential")
-                                          .build());
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name(DOMAIN)
-                                          .description("The domain of the existential")
-                                          .build());
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name(NOTES)
-                                          .description("The notes of the existential")
-                                          .build());
-        return builder.build();
+        try {
+            return GraphQLAnnotations.object(Existential.class);
+        } catch (IllegalAccessException | InstantiationException
+                | NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private GraphQLInputObjectType buildUpdateType(Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {

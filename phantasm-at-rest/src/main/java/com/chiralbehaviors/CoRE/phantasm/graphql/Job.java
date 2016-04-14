@@ -23,8 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ctx;
 
 import java.lang.reflect.AnnotatedType;
-import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -38,6 +39,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.UnitTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.JobChronology.JobChronologyTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
@@ -49,7 +51,6 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class Job {
-
     class JobTypeFunction implements TypeFunction {
 
         @Override
@@ -67,93 +68,137 @@ public class Job {
                        .fetchOne();
     }
 
+    private final JobRecord record;
+
+    public Job(JobRecord record) {
+        this.record = record;
+    }
+
+    @GraphQLField
+    @GraphQLType(JobTypeFunction.class)
+    public List<Job> getActiveSubJobs(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getActiveSubJobsOf(record)
+                       .stream()
+                       .map(r -> new Job(r))
+                       .collect(Collectors.toList());
+    }
+
+    @GraphQLField
+    @GraphQLType(JobTypeFunction.class)
+    public List<Job> getAllChildren(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getAllChildren(record)
+                       .stream()
+                       .map(r -> new Job(r))
+                       .collect(Collectors.toList());
+    }
+
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getAssignTo(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getAssignTo());
+        return new Agency(resolve(env, record.getAssignTo()));
+    }
+
+    @GraphQLField
+    @GraphQLType(JobTypeFunction.class)
+    public List<Job> getChildren(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getChildren(record)
+                       .stream()
+                       .map(r -> new Job(r))
+                       .collect(Collectors.toList());
+    }
+
+    @GraphQLField
+    @GraphQLType(JobChronologyTypeFunction.class)
+    public List<JobChronology> getChronology(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getChronologyForJob(record)
+                       .stream()
+                       .map(r -> new JobChronology(r))
+                       .collect(Collectors.toList());
     }
 
     @GraphQLField
     @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverFrom(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getDeliverFrom());
+        return new Location(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
     @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverTo(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getDeliverTo());
+        return new Location(resolve(env, record.getDeliverTo()));
     }
 
     @GraphQLField
     public Integer getDepth(DataFetchingEnvironment env) {
-        return fetch(env).getDepth();
+        return record.getDepth();
     }
 
     @GraphQLField
-    public UUID getId(DataFetchingEnvironment env) {
-        return fetch(env).getId();
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField
-    public String getNotes(DataFetchingEnvironment env) {
-        return fetch(env).getNotes();
+    public String getNotes() {
+        return record.getNotes();
     }
 
     @GraphQLField
     @GraphQLType(JobTypeFunction.class)
-    public JobRecord getParent(DataFetchingEnvironment env) {
-        return fetch(env, fetch(env).getParent());
+    public Job getParent(DataFetchingEnvironment env) {
+        return new Job(fetch(env, record.getParent()));
     }
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
     public Product getProduct(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getProduct());
+        return new Product(resolve(env, record.getProduct()));
     }
 
     @GraphQLField
-    public BigDecimal getQuantity(DataFetchingEnvironment env) {
-        return fetch(env).getQuantity();
+    public Long getQuantity() {
+        return record.getQuantity()
+                     .longValue();
     }
 
     @GraphQLField
     @GraphQLType(UnitTypeFunction.class)
     public Unit getQuantityUnit(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getQuantityUnit());
+        return new Unit(resolve(env, record.getQuantityUnit()));
     }
 
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getRequester(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getRequester());
+        return new Agency(resolve(env, record.getRequester()));
     }
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
     public Product getService(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getService());
+        return new Product(resolve(env, record.getService()));
     }
 
     @GraphQLField
     @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getStatus(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getStatus());
+        return new StatusCode(resolve(env, record.getStatus()));
     }
 
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return resolve(env, fetch(env).getUpdatedBy());
+        return new Agency(resolve(env, record.getUpdatedBy()));
     }
 
     @GraphQLField
     public Integer getVersion(DataFetchingEnvironment env) {
-        return fetch(env).getVersion();
-    }
-
-    private JobRecord fetch(DataFetchingEnvironment env) {
-        return (JobRecord) env.getSource();
+        return record.getVersion();
     }
 
     private <T> T resolve(DataFetchingEnvironment env, UUID id) {

@@ -18,25 +18,25 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ctx;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.AgencyTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Location;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.LocationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Product;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ProductTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCode;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCodeTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.UnitTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Job.JobTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.LocationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ProductTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;

@@ -40,6 +40,8 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 import graphql.annotations.GraphQLAnnotations;

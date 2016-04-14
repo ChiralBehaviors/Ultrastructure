@@ -20,14 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.AgencyType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.AttributeType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.IntervalType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.LocationType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ProductType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.RelationshipType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCodeType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.UnitType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.IntervalType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.LocationType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ProductType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitType;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;

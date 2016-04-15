@@ -29,6 +29,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -47,6 +48,7 @@ import org.jooq.SelectConditionStep;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
@@ -267,6 +269,26 @@ public class PhantasmModelImpl implements PhantasmModel {
                                  .value1());
     }
 
+    @SafeVarargs
+    @Override
+    public final <T extends ExistentialRuleform> T create(ExistentialDomain domain,
+                                                          String name,
+                                                          String description,
+                                                          FacetRecord aspect,
+                                                          FacetRecord... aspects) {
+        ExistentialRuleform instance = model.records()
+                                            .newExistential(domain);
+        model.getPhantasmModel()
+             .initialize(instance, aspect);
+        for (FacetRecord additional : aspects) {
+            model.getPhantasmModel()
+                 .initialize(instance, additional);
+        }
+        @SuppressWarnings("unchecked")
+        T cazt = (T) instance;
+        return cazt;
+    }
+
     @Override
     public ExistentialAttributeRecord create(ExistentialRuleform existential,
                                              Attribute attribute) {
@@ -428,6 +450,16 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
+                                                           Relationship relationship) {
+
+        return create.selectFrom(EXISTENTIAL_NETWORK)
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                     .fetch();
+    }
+
+    @Override
     public List<ExistentialRuleform> getChildrenUuid(UUID parent,
                                                      UUID relationship,
                                                      ExistentialDomain domain) {
@@ -447,22 +479,26 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
-                                                           Relationship relationship) {
-
-        return create.selectFrom(EXISTENTIAL_NETWORK)
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                     .fetch();
-    }
-
-    @Override
     public FacetRecord getFacetDeclaration(Relationship classifier,
                                            ExistentialRuleform classification) {
         return create.selectFrom(FACET)
                      .where(FACET.CLASSIFIER.equal(classifier.getId()))
                      .and(FACET.CLASSIFICATION.equal(classification.getId()))
                      .fetchOne();
+    }
+
+    @Override
+    public List<FacetRecord> getFacets(Product workspace) {
+        return create.selectDistinct(FACET.fields())
+                     .from(FACET)
+                     .join(WORKSPACE_AUTHORIZATION)
+                     .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                     .and(WORKSPACE_AUTHORIZATION.REFERENCE.equal(FACET.ID))
+                     .join(EXISTENTIAL)
+                     .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
+                     .and(FACET.AUTHORITY.isNull())
+                     .fetch()
+                     .into(FacetRecord.class);
     }
 
     @Override

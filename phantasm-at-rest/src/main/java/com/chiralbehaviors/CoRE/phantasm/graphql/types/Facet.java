@@ -72,6 +72,8 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class Facet {
 
+    private static final String IDS = "ids";
+
     class FacetTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
@@ -82,8 +84,10 @@ public class Facet {
     public static final GraphQLObjectType FacetType;
 
     private static final String           CREATE             = "CreateFacet";
+
     private static final String           DELETE             = "DeleteFacet";
     private static final String           FACET_STATE        = "FacetState";
+    private static final String           FACETS             = "Facets";
     private static final String           ID                 = "id";
     private static final String           INSTANCES          = "InstancesOfFacet";
     private static final String           SET_AUTHORITY      = "setAuthority";
@@ -105,11 +109,31 @@ public class Facet {
         Map<String, BiConsumer<FacetRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 
+        query.field(facets(currentWorkspace));
         query.field(instance(currentWorkspace));
         query.field(instances(currentWorkspace));
+
         mutation.field(create(stateType, updateTemplate, currentWorkspace));
         mutation.field(update(stateType, updateTemplate, currentWorkspace));
         mutation.field(remove(currentWorkspace));
+    }
+
+    public static GraphQLSchema build(ThreadLocal<Product> currentWorkspace) {
+        Builder topLevelQuery = newObject().name("Query")
+                                           .description("Top level metadata query");
+        Builder topLevelMutation = newObject().name("Mutation")
+                                              .description("Top level metadata mutation");
+        ExistentialQueries.build(topLevelQuery, topLevelMutation);
+        AttributeAuthorization.build(topLevelQuery, topLevelMutation,
+                                     currentWorkspace);
+        NetworkAuthorization.build(topLevelQuery, topLevelMutation,
+                                   currentWorkspace);
+        Facet.build(topLevelQuery, topLevelMutation, currentWorkspace);
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                                            .query(topLevelQuery.build())
+                                            .mutation(topLevelMutation.build())
+                                            .build();
+        return schema;
     }
 
     public static Facet fetch(DataFetchingEnvironment env, UUID id) {
@@ -176,11 +200,34 @@ public class Facet {
                                    .build();
     }
 
+    private static GraphQLFieldDefinition facets(ThreadLocal<Product> currentWorkspace) {
+        return newFieldDefinition().name(FACETS)
+                                   .type(new GraphQLList(FacetType))
+                                   .dataFetcher(env -> {
+                                       return fetchIn(env, currentWorkspace);
+                                   })
+                                   .build();
+    }
+
     private static FacetRecord fetch(DataFetchingEnvironment env) {
         return ctx(env).create()
                        .selectFrom(Tables.FACET)
                        .where(Tables.FACET.ID.equal(UUID.fromString((String) env.getArgument(ID))))
                        .fetchOne();
+    }
+
+    private static FacetRecord fetchIn(DataFetchingEnvironment env,
+                                       ThreadLocal<Product> currentWorkspace) {
+        return ctx(env).create()
+                       .selectDistinct(Tables.FACET.fields())
+                       .from(Tables.FACET)
+                       .join(Tables.WORKSPACE_AUTHORIZATION)
+                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.FACET.WORKSPACE))
+                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(currentWorkspace.get()
+                                                                                                  .getId()))
+                       .where(Tables.FACET.ID.equal(UUID.fromString((String) env.getArgument(ID))))
+                       .fetchOne()
+                       .into(FacetRecord.class);
     }
 
     private static GraphQLFieldDefinition instance(ThreadLocal<Product> currentWorkspace) {
@@ -196,15 +243,20 @@ public class Facet {
                                    .build();
     }
 
+    @SuppressWarnings("unchecked")
     private static GraphQLFieldDefinition instances(ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(INSTANCES)
                                    .type(FacetType)
-                                   .argument(newArgument().name(ID)
+                                   .argument(newArgument().name(IDS)
                                                           .description("facet ids")
                                                           .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
                                                           .build())
                                    .dataFetcher(env -> {
-                                       return fetch(env);
+                                       return ((List<String>) env.getArgument(IDS)).stream()
+                                                                                   .map(s -> UUID.fromString(s))
+                                                                                   .map(id -> fetch(env,
+                                                                                                    id))
+                                                                                   .collect(Collectors.toList());
                                    })
                                    .build();
     }
@@ -339,23 +391,5 @@ public class Facet {
     @GraphQLField
     public Integer getVersin() {
         return record.getVersion();
-    }
-
-    public static GraphQLSchema build(ThreadLocal<Product> currentWorkspace) {
-        Builder topLevelQuery = newObject().name("Query")
-                                           .description("Top level metadata query");
-        Builder topLevelMutation = newObject().name("Mutation")
-                                              .description("Top level metadata mutation");
-        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
-        AttributeAuthorization.build(topLevelQuery, topLevelMutation,
-                                     currentWorkspace);
-        NetworkAuthorization.build(topLevelQuery, topLevelMutation,
-                                   currentWorkspace);
-        Facet.build(topLevelQuery, topLevelMutation, currentWorkspace);
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
-        return schema;
     }
 }

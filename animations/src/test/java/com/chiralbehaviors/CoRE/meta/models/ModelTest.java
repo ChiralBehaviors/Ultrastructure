@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -64,8 +65,9 @@ public class ModelTest extends AbstractModelTest {
         model.getPhantasmModel()
              .authorize(facet, attribute);
 
-        Agency agency = model.getAgencyModel()
-                             .create("aspect test", "testy", facet);
+        Agency agency = model.getPhantasmModel()
+                             .create(ExistentialDomain.Agency, "aspect test",
+                                     "testy", facet);
         assertNotNull(agency);
 
         List<ExistentialAttributeRecord> attributes = model.getPhantasmModel()

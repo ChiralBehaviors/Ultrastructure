@@ -27,6 +27,7 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -47,6 +48,8 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public interface PhantasmModel {
+
+    public List<FacetRecord> getFacets(Product workspace);
 
     void authorize(FacetRecord facet, Attribute attribute);
 
@@ -116,6 +119,11 @@ public interface PhantasmModel {
      */
     boolean checkCapability(List<Agency> agencies, FacetRecord facet,
                             Relationship capability);
+
+    <T extends ExistentialRuleform> T create(ExistentialDomain domain,
+                                             String name, String description,
+                                             FacetRecord aspect,
+                                             FacetRecord... aspects);
 
     ExistentialAttributeRecord create(ExistentialRuleform ruleform,
                                       Attribute attribute);
@@ -189,9 +197,6 @@ public interface PhantasmModel {
                                           Relationship relationship,
                                           ExistentialDomain domain);
 
-    List<ExistentialRuleform> getChildrenUuid(UUID id, UUID inverse,
-                                              ExistentialDomain domain);
-
     /**
      *
      * @param parent
@@ -200,6 +205,9 @@ public interface PhantasmModel {
      */
     List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
                                                     Relationship relationship);
+
+    List<ExistentialRuleform> getChildrenUuid(UUID id, UUID inverse,
+                                              ExistentialDomain domain);
 
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);

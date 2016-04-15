@@ -283,7 +283,8 @@ public class PhantasmTraversal {
                                                                                              false)) {
             visitor.visit(facet,
                           new AttributeAuthorization(model.create(), auth),
-                          WorkspacePresentation.toFieldName(model.getAttribute(auth.getAuthorizedAttribute())
+                          WorkspacePresentation.toFieldName(model.records()
+                                                                 .resolve(auth.getAuthorizedAttribute())
                                                                  .getName()));
         }
     }

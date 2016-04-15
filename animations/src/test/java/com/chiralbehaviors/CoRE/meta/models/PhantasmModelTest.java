@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
@@ -555,5 +556,14 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                    ExistentialDomain.Agency);
         assertNotNull(notInGroup);
         assertTrue(!notInGroup.isEmpty());
+    }
+
+    @Test
+    public void testGetFacets() {
+        Product kernelWorkspace = model.getKernel()
+                                       .getKernelWorkspace();
+        assertEquals(18, model.getPhantasmModel()
+                              .getFacets(kernelWorkspace)
+                              .size());
     }
 }

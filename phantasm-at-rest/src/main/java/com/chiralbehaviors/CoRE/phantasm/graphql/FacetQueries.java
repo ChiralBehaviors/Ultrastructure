@@ -137,7 +137,8 @@ public class FacetQueries implements PhantasmTraversal.PhantasmVisitor {
 
     public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,
                                       ClassLoader executionScope) {
-        Deque<FacetRecord> unresolved = FacetQueries.initialState(accessor, model);
+        Deque<FacetRecord> unresolved = FacetQueries.initialState(accessor,
+                                                                  model);
         Map<FacetRecord, FacetQueries> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace workspace = model.wrap(Workspace.class, definingProduct);
@@ -165,8 +166,8 @@ public class FacetQueries implements PhantasmTraversal.PhantasmVisitor {
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));
         }
-        new JobQueries().build(topLevelQuery, topLevelMutation);
-        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
+        JobQueries.build(topLevelQuery, topLevelMutation);
+        ExistentialQueries.build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
@@ -178,21 +179,7 @@ public class FacetQueries implements PhantasmTraversal.PhantasmVisitor {
                                                   Model model) {
         Product definingProduct = workspace.getDefiningProduct();
         Deque<FacetRecord> unresolved = new ArrayDeque<>();
-        unresolved.addAll(model.getAgencyModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getAttributeModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getIntervalModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getLocationModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getProductModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getRelationshipModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getStatusCodeModel()
-                               .getFacets(definingProduct));
-        unresolved.addAll(model.getUnitModel()
+        unresolved.addAll(model.getPhantasmModel()
                                .getFacets(definingProduct));
         return unresolved;
     }

@@ -89,8 +89,8 @@ public class JobQueries {
                                            .description("Top level query");
         Builder topLevelMutation = newObject().name("Mutation")
                                               .description("Top level mutation");
-        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
-        new JobQueries().build(topLevelQuery, topLevelMutation);
+        ExistentialQueries.build(topLevelQuery, topLevelMutation);
+        JobQueries.build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
@@ -98,7 +98,7 @@ public class JobQueries {
         return schema;
     }
 
-    public void build(Builder query, Builder mutation) {
+    public static void build(Builder query, Builder mutation) {
         Map<String, BiConsumer<JobRecord, Object>> updateTemplate = new HashMap<>();
 
         GraphQLObjectType type = buildType();
@@ -117,7 +117,7 @@ public class JobQueries {
         query.field(chronInstance(buildJobChronType()));
     }
 
-    private GraphQLInputObjectType buildCreateType() {
+    private static GraphQLInputObjectType buildCreateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(CREATE_TYPE)
                                                                                 .description("Job creation");
         builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
@@ -159,7 +159,7 @@ public class JobQueries {
         return builder.build();
     }
 
-    private GraphQLObjectType buildJobChronType() {
+    private static GraphQLObjectType buildJobChronType() {
         try {
             return GraphQLAnnotations.object(JobChronology.class);
         } catch (IllegalAccessException | InstantiationException
@@ -168,7 +168,7 @@ public class JobQueries {
         }
     }
 
-    private GraphQLObjectType buildType() {
+    private static GraphQLObjectType buildType() {
         try {
             return GraphQLAnnotations.object(Job.class);
         } catch (IllegalAccessException | InstantiationException
@@ -177,7 +177,7 @@ public class JobQueries {
         }
     }
 
-    private GraphQLInputObjectType buildUpdateType(Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static GraphQLInputObjectType buildUpdateType(Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(UPDATE_TYPE)
                                                                                 .description("Job update");
         builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
@@ -256,7 +256,7 @@ public class JobQueries {
         return builder.build();
     }
 
-    private GraphQLFieldDefinition chronInstance(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition chronInstance(GraphQLObjectType type) {
         return newFieldDefinition().name(JOB_CHRONOLOGY)
                                    .type(type)
                                    .argument(newArgument().name(ID)
@@ -272,8 +272,8 @@ public class JobQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition createInstance(GraphQLInputObjectType createType,
-                                                  Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition createInstance(GraphQLInputObjectType createType,
+                                                         Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(CREATE_MUTATION)
                                    .description("Create an instance of Job")
                                    .type(new GraphQLTypeReference(JOB))
@@ -294,8 +294,8 @@ public class JobQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition createInstances(GraphQLInputObjectType createType,
-                                                   Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition createInstances(GraphQLInputObjectType createType,
+                                                          Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(CREATE_INSTANCES_MUTATION)
                                    .description("Create instances of Job")
                                    .type(new GraphQLList(new GraphQLTypeReference(JOB)))
@@ -319,22 +319,22 @@ public class JobQueries {
                                    .build();
     }
 
-    private Model ctx(DataFetchingEnvironment env) {
+    private static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
-    private JobRecord fetch(DataFetchingEnvironment env) {
+    private static JobRecord fetch(DataFetchingEnvironment env) {
         return fetch(env, UUID.fromString((String) env.getArgument(ID)));
     }
 
-    private JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
+    private static JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
         return ctx(env).create()
                        .selectFrom(Tables.JOB)
                        .where(Tables.JOB.ID.equal(uuid))
                        .fetchOne();
     }
 
-    private GraphQLFieldDefinition instance(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition instance(GraphQLObjectType type) {
         return newFieldDefinition().name(JOB)
                                    .type(type)
                                    .argument(newArgument().name(ID)
@@ -347,7 +347,7 @@ public class JobQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition instances(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition instances(GraphQLObjectType type) {
         return newFieldDefinition().name(INSTANCES_OF_QUERY)
                                    .type(type)
                                    .argument(newArgument().name(ID)
@@ -360,9 +360,9 @@ public class JobQueries {
                                    .build();
     }
 
-    private Object newJob(DataFetchingEnvironment env,
-                          Map<String, Object> createState,
-                          Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static Object newJob(DataFetchingEnvironment env,
+                                 Map<String, Object> createState,
+                                 Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         Product product = ctx(env).records()
                                   .resolve(UUID.fromString((String) createState.get(SET_SERVICE)));
         if (product == null) {
@@ -383,7 +383,7 @@ public class JobQueries {
         return new Job(job);
     }
 
-    private GraphQLFieldDefinition remove() {
+    private static GraphQLFieldDefinition remove() {
         return newFieldDefinition().name(DELETE_MUTATION)
                                    .type(new GraphQLTypeReference(JOB))
                                    .description("Remove the %s facet from the instance")
@@ -395,8 +395,8 @@ public class JobQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition update(GraphQLInputObjectType type,
-                                          Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition update(GraphQLInputObjectType type,
+                                                 Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(UPDATE_MUTATION)
                                    .type(new GraphQLTypeReference(JOB))
                                    .description("Update the instance of a job")
@@ -413,8 +413,8 @@ public class JobQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition updateInstances(GraphQLInputObjectType type,
-                                                   Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition updateInstances(GraphQLInputObjectType type,
+                                                          Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(UPDATE_INSTANCES_MUTATION)
                                    .type(new GraphQLTypeReference(JOB))
                                    .description("Update the job instances")
@@ -431,9 +431,9 @@ public class JobQueries {
                                    .build();
     }
 
-    private Object updateJob(DataFetchingEnvironment env,
-                             Map<String, Object> updateState,
-                             Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
+    private static Object updateJob(DataFetchingEnvironment env,
+                                    Map<String, Object> updateState,
+                                    Map<String, BiConsumer<JobRecord, Object>> updateTemplate) {
         JobRecord job = ctx(env).create()
                                 .selectFrom(Tables.JOB)
                                 .where(Tables.JOB.ID.equal(UUID.fromString((String) updateState.get(ID))))

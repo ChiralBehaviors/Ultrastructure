@@ -70,24 +70,24 @@ public class ExistentialQueries {
     private static final String ID                        = "id";
     private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
     private static final String SET_DESCRIPTION           = "setDescription";
+    private static final String SET_INDEXED               = "setIndexed";
+    private static final String SET_INVERSE               = "setInverse";
+    private static final String SET_KEYED                 = "setKeyed";
     private static final String SET_NAME                  = "setName";
     private static final String SET_NOTES                 = "setNotes";
+    private static final String SET_PROPAGATE_CHILDREN    = "setPropagateChildren";
+    private static final String SET_VALUE_TYPE            = "setValueType";
     private static final String STATE                     = "state";
     private static final String UPDATE_INSTANCES_MUTATION = "Update%sInstances";
     private static final String UPDATE_MUTATION           = "Update%s";
     private static final String UPDATE_STATE              = "Update%sState";
-    private static final String SET_INDEXED               = "setIndexed";
-    private static final String SET_INVERSE               = "setInverse";
-    private static final String SET_KEYED                 = "setKeyed";
-    private static final String SET_PROPAGATE_CHILDREN    = "setPropagateChildren";
-    private static final String SET_VALUE_TYPE            = "setValueType";
 
     static {
         DefaultTypeFunction.register(UUID.class, (u, t) -> GraphQLString);
         DefaultTypeFunction.register(ValueType.class, (u, t) -> GraphQLString);
     }
 
-    public void build(Builder query, Builder mutation) {
+    public static void build(Builder query, Builder mutation) {
         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate = buildUpdateTemplate();
 
         buildCommonExistentials(query, mutation, updateTemplate);
@@ -102,12 +102,12 @@ public class ExistentialQueries {
                     attributeCreateType());
     }
 
-    public void buildFields(ExistentialDomain domain, Builder query,
-                            Builder mutation,
-                            Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
-                            GraphQLInputObjectType updateType,
-                            GraphQLObjectType type,
-                            GraphQLInputObjectType createType) {
+    public static void buildFields(ExistentialDomain domain, Builder query,
+                                   Builder mutation,
+                                   Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
+                                   GraphQLInputObjectType updateType,
+                                   GraphQLObjectType type,
+                                   GraphQLInputObjectType createType) {
 
         query.field(instance(type));
         query.field(instances(type));
@@ -120,18 +120,18 @@ public class ExistentialQueries {
         mutation.field(remove(type));
     }
 
-    private GraphQLInputObjectType attributeCreateType() {
+    private static GraphQLInputObjectType attributeCreateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(AttributeType);
         return builder.build();
     }
 
-    private GraphQLInputObjectType attributeUpdateType() {
+    private static GraphQLInputObjectType attributeUpdateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonUpdateType(AttributeType);
         return builder.build();
     }
 
-    private void buildCommonExistentials(Builder query, Builder mutation,
-                                         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static void buildCommonExistentials(Builder query, Builder mutation,
+                                                Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         buildFields(ExistentialDomain.Agency, query, mutation, updateTemplate,
                     commonUpdateType(AgencyType).build(), AgencyType,
                     commonCreateType(AgencyType).build());
@@ -149,7 +149,7 @@ public class ExistentialQueries {
                     commonCreateType(UnitType).build());
     }
 
-    private Map<String, BiConsumer<ExistentialRecord, Object>> buildUpdateTemplate() {
+    private static Map<String, BiConsumer<ExistentialRecord, Object>> buildUpdateTemplate() {
         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate = new HashMap<>();
         updateTemplate.put(SET_NAME, (e, value) -> e.setName((String) value));
         updateTemplate.put(SET_DESCRIPTION,
@@ -171,7 +171,7 @@ public class ExistentialQueries {
         return updateTemplate;
     }
 
-    private graphql.schema.GraphQLInputObjectType.Builder commonCreateType(GraphQLObjectType type) {
+    private static graphql.schema.GraphQLInputObjectType.Builder commonCreateType(GraphQLObjectType type) {
         graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(String.format(CREATE_STATE,
                                                                                                     type.getName()))
                                                                                 .description(String.format("%s creation",
@@ -191,7 +191,7 @@ public class ExistentialQueries {
         return builder;
     }
 
-    private graphql.schema.GraphQLInputObjectType.Builder commonUpdateType(GraphQLObjectType type) {
+    private static graphql.schema.GraphQLInputObjectType.Builder commonUpdateType(GraphQLObjectType type) {
         graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(String.format(UPDATE_STATE,
                                                                                                     type.getName()))
                                                                                 .description(String.format("%s update",
@@ -215,10 +215,10 @@ public class ExistentialQueries {
         return builder;
     }
 
-    private GraphQLFieldDefinition createInstance(ExistentialDomain domain,
-                                                  GraphQLObjectType type,
-                                                  GraphQLInputObjectType createType,
-                                                  Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition createInstance(ExistentialDomain domain,
+                                                         GraphQLObjectType type,
+                                                         GraphQLInputObjectType createType,
+                                                         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        type.getName()))
                                    .description("Create an instance of Job")
@@ -237,10 +237,10 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition createInstances(ExistentialDomain domain,
-                                                   GraphQLObjectType type,
-                                                   GraphQLInputObjectType createType,
-                                                   Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition createInstances(ExistentialDomain domain,
+                                                          GraphQLObjectType type,
+                                                          GraphQLInputObjectType createType,
+                                                          Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(String.format(CREATE_INSTANCES_MUTATION,
                                                        type.getName()))
                                    .description("Create instances of Job")
@@ -262,18 +262,18 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private Model ctx(DataFetchingEnvironment env) {
+    private static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
-    private ExistentialRecord fetch(DataFetchingEnvironment env) {
+    private static ExistentialRecord fetch(DataFetchingEnvironment env) {
         return ctx(env).create()
                        .selectFrom(Tables.EXISTENTIAL)
                        .where(Tables.EXISTENTIAL.ID.equal(UUID.fromString((String) env.getArgument(ID))))
                        .fetchOne();
     }
 
-    private GraphQLFieldDefinition instance(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition instance(GraphQLObjectType type) {
         return newFieldDefinition().name(type.getName())
                                    .type(type)
                                    .argument(newArgument().name(ID)
@@ -286,7 +286,7 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition instances(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition instances(GraphQLObjectType type) {
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        type.getName()))
                                    .type(type)
@@ -300,10 +300,10 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private Object newExistential(ExistentialDomain domain,
-                                  DataFetchingEnvironment env,
-                                  Map<String, Object> createState,
-                                  Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static Object newExistential(ExistentialDomain domain,
+                                         DataFetchingEnvironment env,
+                                         Map<String, Object> createState,
+                                         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         ExistentialRecord ruleform = (ExistentialRecord) ctx(env).records()
                                                                  .newExistential(domain);
         if (ruleform == null) {
@@ -316,17 +316,17 @@ public class ExistentialQueries {
         return ruleform;
     }
 
-    private GraphQLInputObjectType relationshipCreateType() {
+    private static GraphQLInputObjectType relationshipCreateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(RelationshipType);
         return builder.build();
     }
 
-    private GraphQLInputObjectType relationshipUpdateType() {
+    private static GraphQLInputObjectType relationshipUpdateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonUpdateType(RelationshipType);
         return builder.build();
     }
 
-    private GraphQLFieldDefinition remove(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition remove(GraphQLObjectType type) {
         return newFieldDefinition().name(String.format(DELETE_MUTATION,
                                                        type.getName()))
                                    .type(new GraphQLTypeReference(String.format(type.getName())))
@@ -339,19 +339,19 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private GraphQLInputObjectType statusCodeCreateType() {
+    private static GraphQLInputObjectType statusCodeCreateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(StatusCodeType);
         return builder.build();
     }
 
-    private GraphQLInputObjectType statusCodeUpdateType() {
+    private static GraphQLInputObjectType statusCodeUpdateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonUpdateType(StatusCodeType);
         return builder.build();
     }
 
-    private GraphQLFieldDefinition update(GraphQLObjectType type,
-                                          GraphQLInputObjectType inputType,
-                                          Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition update(GraphQLObjectType type,
+                                                 GraphQLInputObjectType inputType,
+                                                 Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(String.format(UPDATE_MUTATION,
                                                        type.getName()))
                                    .type(new GraphQLTypeReference(type.getName()))
@@ -369,9 +369,9 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private GraphQLFieldDefinition updateInstances(GraphQLObjectType type,
-                                                   GraphQLInputObjectType inputType,
-                                                   Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static GraphQLFieldDefinition updateInstances(GraphQLObjectType type,
+                                                          GraphQLInputObjectType inputType,
+                                                          Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(String.format(UPDATE_INSTANCES_MUTATION,
                                                        type.getName()))
                                    .type(new GraphQLTypeReference(type.getName()))
@@ -389,9 +389,9 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private Object updateJob(DataFetchingEnvironment env,
-                             Map<String, Object> updateState,
-                             Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+    private static Object updateJob(DataFetchingEnvironment env,
+                                    Map<String, Object> updateState,
+                                    Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
         ExistentialRecord existential = ctx(env).create()
                                                 .selectFrom(Tables.EXISTENTIAL)
                                                 .where(Tables.EXISTENTIAL.ID.equal(UUID.fromString((String) updateState.get(ID))))

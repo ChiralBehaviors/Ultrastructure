@@ -188,7 +188,7 @@ public class WorkspaceResource extends TransactionalResource {
                                      @SuppressWarnings("rawtypes") Map request,
                                      @Context DSLContext create) {
         if (request == null) {
-            throw new WebApplicationException("Query cannot be null",
+            throw new WebApplicationException("Query request cannot be null",
                                               Status.BAD_REQUEST);
         }
         if (request.get(QueryRequest.QUERY) == null) {

@@ -105,11 +105,11 @@ public class Facet {
         Map<String, BiConsumer<FacetRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 
-        query.field(instance());
-        query.field(instances());
-        mutation.field(create(stateType, updateTemplate));
-        mutation.field(update(stateType, updateTemplate));
-        mutation.field(remove());
+        query.field(instance(currentWorkspace));
+        query.field(instances(currentWorkspace));
+        mutation.field(create(stateType, updateTemplate, currentWorkspace));
+        mutation.field(update(stateType, updateTemplate, currentWorkspace));
+        mutation.field(remove(currentWorkspace));
     }
 
     public static Facet fetch(DataFetchingEnvironment env, UUID id) {
@@ -158,7 +158,8 @@ public class Facet {
     }
 
     private static GraphQLFieldDefinition create(GraphQLInputObjectType createType,
-                                                 Map<String, BiConsumer<FacetRecord, Object>> updateTemplate) {
+                                                 Map<String, BiConsumer<FacetRecord, Object>> updateTemplate,
+                                                 ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(CREATE)
                                    .description("Create an instance of Facet")
                                    .type(new GraphQLTypeReference(FacetType.getName()))
@@ -182,7 +183,7 @@ public class Facet {
                        .fetchOne();
     }
 
-    private static GraphQLFieldDefinition instance() {
+    private static GraphQLFieldDefinition instance(ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(FacetType.getName())
                                    .type(FacetType)
                                    .argument(newArgument().name(ID)
@@ -195,7 +196,7 @@ public class Facet {
                                    .build();
     }
 
-    private static GraphQLFieldDefinition instances() {
+    private static GraphQLFieldDefinition instances(ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(INSTANCES)
                                    .type(FacetType)
                                    .argument(newArgument().name(ID)
@@ -220,7 +221,7 @@ public class Facet {
         return new Facet(record);
     }
 
-    private static GraphQLFieldDefinition remove() {
+    private static GraphQLFieldDefinition remove(ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(DELETE)
                                    .type(new GraphQLTypeReference(FacetType.getName()))
                                    .description("Delete the facet")
@@ -233,7 +234,8 @@ public class Facet {
     }
 
     private static GraphQLFieldDefinition update(GraphQLInputObjectType type,
-                                                 Map<String, BiConsumer<FacetRecord, Object>> updateTemplate) {
+                                                 Map<String, BiConsumer<FacetRecord, Object>> updateTemplate,
+                                                 ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(UPDATE)
                                    .type(new GraphQLTypeReference(FacetType.getName()))
                                    .description("Update the instance of a facet")

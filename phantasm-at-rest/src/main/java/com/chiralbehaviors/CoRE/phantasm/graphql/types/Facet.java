@@ -204,7 +204,11 @@ public class Facet {
         return newFieldDefinition().name(FACETS)
                                    .type(new GraphQLList(FacetType))
                                    .dataFetcher(env -> {
-                                       return fetchIn(env, currentWorkspace);
+                                       return ctx(env).getPhantasmModel()
+                                                      .getFacets(currentWorkspace.get())
+                                                      .stream()
+                                                      .map(r -> new Facet(r))
+                                                      .collect(Collectors.toList());
                                    })
                                    .build();
     }
@@ -214,20 +218,6 @@ public class Facet {
                        .selectFrom(Tables.FACET)
                        .where(Tables.FACET.ID.equal(UUID.fromString((String) env.getArgument(ID))))
                        .fetchOne();
-    }
-
-    private static FacetRecord fetchIn(DataFetchingEnvironment env,
-                                       ThreadLocal<Product> currentWorkspace) {
-        return ctx(env).create()
-                       .selectDistinct(Tables.FACET.fields())
-                       .from(Tables.FACET)
-                       .join(Tables.WORKSPACE_AUTHORIZATION)
-                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.FACET.WORKSPACE))
-                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(currentWorkspace.get()
-                                                                                                  .getId()))
-                       .where(Tables.FACET.ID.equal(UUID.fromString((String) env.getArgument(ID))))
-                       .fetchOne()
-                       .into(FacetRecord.class);
     }
 
     private static GraphQLFieldDefinition instance(ThreadLocal<Product> currentWorkspace) {

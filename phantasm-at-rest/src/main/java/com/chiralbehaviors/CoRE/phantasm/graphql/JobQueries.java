@@ -107,14 +107,13 @@ public class JobQueries {
 
         query.field(instance(type));
         query.field(instances(type));
+        query.field(chronInstance(buildJobChronType()));
 
         mutation.field(createInstance(createType, updateTemplate));
         mutation.field(createInstances(createType, updateTemplate));
         mutation.field(update(updateType, updateTemplate));
         mutation.field(updateInstances(updateType, updateTemplate));
         mutation.field(remove());
-
-        query.field(chronInstance(buildJobChronType()));
     }
 
     private static GraphQLInputObjectType buildCreateType() {

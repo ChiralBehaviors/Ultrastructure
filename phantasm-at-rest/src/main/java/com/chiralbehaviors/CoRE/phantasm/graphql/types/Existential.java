@@ -94,8 +94,9 @@ public interface Existential {
         }
 
         @Override
-        public UUID getId() {
-            return record.getId();
+        public String getId() {
+            return record.getId()
+                         .toString();
         }
 
         @Override
@@ -323,7 +324,7 @@ public interface Existential {
     String getDescription();
 
     @GraphQLField
-    UUID getId();
+    String getId();
 
     @GraphQLField
     String getName();

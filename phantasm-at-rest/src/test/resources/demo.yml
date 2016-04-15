@@ -1,10 +1,12 @@
 auth: NULL
 
-jpa:
-    properties: 
-        javax.persistence.jdbc.user: ${db.login}
-        javax.persistence.jdbc.password: ${db.password}
-        javax.persistence.jdbc.url: jdbc:postgresql://${db.server}:${db.port}/${db.database}
+
+database:
+    url: jdbc:postgresql://${db.server}:${db.port}/${db.database}
+    user: ${db.login}
+    password: ${db.password}
+    driverClass: org.postgresql.Driver
+    maxSize: 2
         
 logging:
     level: INFO
@@ -12,3 +14,14 @@ logging:
         "org.hibernate": ERROR
         "org.glassfish": ERROR
         graphql: WARN
+        
+assetsConfiguration:
+  overrides:
+    /: target/classes/workspace-explorer
+        
+assets:
+  - name: ide
+    uri: /ide
+    path: /workspace-explorer
+    index: index.html
+        

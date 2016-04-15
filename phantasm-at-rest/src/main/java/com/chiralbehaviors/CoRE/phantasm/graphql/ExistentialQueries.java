@@ -102,24 +102,6 @@ public class ExistentialQueries {
                     attributeCreateType());
     }
 
-    public static void buildFields(ExistentialDomain domain, Builder query,
-                                   Builder mutation,
-                                   Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
-                                   GraphQLInputObjectType updateType,
-                                   GraphQLObjectType type,
-                                   GraphQLInputObjectType createType) {
-
-        query.field(instance(type));
-        query.field(instances(type));
-        mutation.field(createInstance(domain, type, createType,
-                                      updateTemplate));
-        mutation.field(createInstances(domain, type, createType,
-                                       updateTemplate));
-        mutation.field(update(type, updateType, updateTemplate));
-        mutation.field(updateInstances(type, updateType, updateTemplate));
-        mutation.field(remove(type));
-    }
-
     private static GraphQLInputObjectType attributeCreateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(AttributeType);
         return builder.build();
@@ -147,6 +129,24 @@ public class ExistentialQueries {
         buildFields(ExistentialDomain.Unit, query, mutation, updateTemplate,
                     commonUpdateType(UnitType).build(), UnitType,
                     commonCreateType(UnitType).build());
+    }
+
+    private static void buildFields(ExistentialDomain domain, Builder query,
+                                    Builder mutation,
+                                    Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
+                                    GraphQLInputObjectType updateType,
+                                    GraphQLObjectType type,
+                                    GraphQLInputObjectType createType) {
+
+        query.field(instance(type));
+        query.field(instances(type));
+        mutation.field(createInstance(domain, type, createType,
+                                      updateTemplate));
+        mutation.field(createInstances(domain, type, createType,
+                                       updateTemplate));
+        mutation.field(update(type, updateType, updateTemplate));
+        mutation.field(updateInstances(type, updateType, updateTemplate));
+        mutation.field(remove(type));
     }
 
     private static Map<String, BiConsumer<ExistentialRecord, Object>> buildUpdateTemplate() {

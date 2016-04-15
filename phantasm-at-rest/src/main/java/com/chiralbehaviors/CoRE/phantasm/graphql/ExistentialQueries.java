@@ -33,7 +33,6 @@ import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
-import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +56,6 @@ import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
-import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
 
 /**
@@ -87,19 +85,6 @@ public class ExistentialQueries {
     static {
         DefaultTypeFunction.register(UUID.class, (u, t) -> GraphQLString);
         DefaultTypeFunction.register(ValueType.class, (u, t) -> GraphQLString);
-    }
-
-    public static GraphQLSchema build() {
-        Builder topLevelQuery = newObject().name("Query")
-                                           .description("Top level query");
-        Builder topLevelMutation = newObject().name("Mutation")
-                                              .description("Top level mutation");
-        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
-        return schema;
     }
 
     public void build(Builder query, Builder mutation) {

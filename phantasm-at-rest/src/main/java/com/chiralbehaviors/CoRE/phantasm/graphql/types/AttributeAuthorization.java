@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -49,6 +50,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import graphql.Scalars;
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
 import graphql.annotations.TypeFunction;
@@ -90,17 +92,14 @@ public class AttributeAuthorization {
     private static final String           SET_AUTHORIZED_ATTRIBUTE      = "setAuthorizedAttribute";
     private static final String           SET_BINARY_VALUE              = "setBinaryValue";
     private static final String           SET_BOOLEAN_VALUE             = "setBooleanValue";
-    private static final String           SET_CARDINALITY               = "setCardinality";
-    private static final String           SET_CHILD                     = "setChild";
     private static final String           SET_INTEGER_VALUE             = "setIntegerValue";
     private static final String           SET_JSON_VALUE                = "setJsonValue";
     private static final String           SET_NOTES                     = "setNotes";
-    private static final String           SET_PARENT                    = "setParent";
-    private static final String           SET_RELATIONSHIP              = "setRelationship";
     private static final String           STATE                         = "state";
     private static final String           UPDATE                        = "UpdateAttributeAuthorization";
 
-    public static void build(Builder query, Builder mutation) {
+    public static void build(Builder query, Builder mutation,
+                             ThreadLocal<Product> currentWorkspace) {
         Map<String, BiConsumer<ExistentialAttributeAuthorizationRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 
@@ -122,20 +121,32 @@ public class AttributeAuthorization {
                                            .description("The authority of the attribute authorization")
                                            .build());
         builder.field(newInputObjectField().type(GraphQLString)
-                                           .name(SET_CARDINALITY)
-                                           .description("The authorized cardinality of the children")
+                                           .name(SET_AUTHORIZED_ATTRIBUTE)
+                                           .description("The authorized attribute")
                                            .build());
         builder.field(newInputObjectField().type(GraphQLString)
-                                           .name(SET_PARENT)
-                                           .description("The authorized parent facet")
+                                           .name(SET_BINARY_VALUE)
+                                           .description("Set the binary value of the authorization")
                                            .build());
-        builder.field(newInputObjectField().type(GraphQLString)
-                                           .name(SET_RELATIONSHIP)
-                                           .description("The authorize relationship between the parent and child facets")
+        builder.field(newInputObjectField().type(Scalars.GraphQLInt)
+                                           .name(SET_INTEGER_VALUE)
+                                           .description("Set the integer value of the authorization")
                                            .build());
-        builder.field(newInputObjectField().type(GraphQLString)
-                                           .name(SET_CHILD)
-                                           .description("The authorized child facet")
+        builder.field(newInputObjectField().type(Scalars.GraphQLString)
+                                           .name(SET_JSON_VALUE)
+                                           .description("Set the json value of the authorization")
+                                           .build());
+        builder.field(newInputObjectField().type(Scalars.GraphQLLong)
+                                           .name(SET_NUMERIC_VALUE)
+                                           .description("Set the numer value of the authorization")
+                                           .build());
+        builder.field(newInputObjectField().type(Scalars.GraphQLString)
+                                           .name(SET_TEXT_VALUE)
+                                           .description("Set the text value of the authorization")
+                                           .build());
+        builder.field(newInputObjectField().type(Scalars.GraphQLLong)
+                                           .name(SET_TIMESTAMP_VALUE)
+                                           .description("Set the timestamp value of the authorization")
                                            .build());
         return builder.build();
     }

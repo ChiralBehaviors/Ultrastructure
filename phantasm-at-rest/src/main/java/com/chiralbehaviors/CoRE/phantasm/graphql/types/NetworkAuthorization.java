@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
@@ -81,7 +82,8 @@ public class NetworkAuthorization {
     private static final String           STATE                       = "state";
     private static final String           UPDATE                      = "UpdateNetworkAuthorization";
 
-    public static void build(Builder query, Builder mutation) {
+    public static void build(Builder query, Builder mutation,
+                             ThreadLocal<Product> currentWorkspace) {
         Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 

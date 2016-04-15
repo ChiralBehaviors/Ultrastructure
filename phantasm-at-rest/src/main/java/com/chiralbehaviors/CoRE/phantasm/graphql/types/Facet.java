@@ -28,6 +28,7 @@ import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
+import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.HashMap;
@@ -38,9 +39,11 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.AttributeAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -60,6 +63,7 @@ import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
+import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
 
 /**
@@ -96,7 +100,8 @@ public class Facet {
         FacetType = Existential.objectTypeOf(Facet.class);
     }
 
-    public static void build(Builder query, Builder mutation) {
+    public static void build(Builder query, Builder mutation,
+                             ThreadLocal<Product> currentWorkspace) {
         Map<String, BiConsumer<FacetRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 
@@ -332,5 +337,23 @@ public class Facet {
     @GraphQLField
     public Integer getVersin() {
         return record.getVersion();
+    }
+
+    public static GraphQLSchema build(ThreadLocal<Product> currentWorkspace) {
+        Builder topLevelQuery = newObject().name("Query")
+                                           .description("Top level metadata query");
+        Builder topLevelMutation = newObject().name("Mutation")
+                                              .description("Top level metadata mutation");
+        new ExistentialQueries().build(topLevelQuery, topLevelMutation);
+        AttributeAuthorization.build(topLevelQuery, topLevelMutation,
+                                     currentWorkspace);
+        NetworkAuthorization.build(topLevelQuery, topLevelMutation,
+                                   currentWorkspace);
+        Facet.build(topLevelQuery, topLevelMutation, currentWorkspace);
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                                            .query(topLevelQuery.build())
+                                            .mutation(topLevelMutation.build())
+                                            .build();
+        return schema;
     }
 }

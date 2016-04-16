@@ -83,6 +83,7 @@
         <module>navi</module>
         <module>test-plugin</module>
         <module>acm-95-ontology</module>
+        <module>ide</module>
     </modules>
 
     <dependencyManagement>
@@ -465,6 +466,11 @@
                 <groupId>com.loginbox.heroku</groupId>
                 <artifactId>dropwizard-heroku-db</artifactId>
                 <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.controlsfx</groupId>
+                <artifactId>controlsfx</artifactId>
+                <version>8.40.10</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

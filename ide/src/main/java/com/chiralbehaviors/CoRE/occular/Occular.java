@@ -17,24 +17,19 @@ public class Occular extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("AddressApp");
+        this.primaryStage.setTitle("Workspace View");
 
         initRootLayout();
 
-        showPersonOverview();
+        showView();
     }
 
-    /**
-     * Initializes the root layout.
-     */
     public void initRootLayout() {
         try {
-            // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Occular.class.getResource("view/RootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
 
-            // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -43,28 +38,18 @@ public class Occular extends Application {
         }
     }
 
-    /**
-     * Shows the person overview inside the root layout.
-     */
-    public void showPersonOverview() {
+    public void showView() {
         try {
-            // Load person overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Occular.class.getResource("view/FacetView.fxml"));
-            AnchorPane personOverview = (AnchorPane) loader.load();
+            loader.setLocation(Occular.class.getResource("view/FacetsView.fxml"));
+            AnchorPane workspaceView = (AnchorPane) loader.load();
 
-            // Set person overview into the center of root layout.
-            rootLayout.setCenter(personOverview);
+            rootLayout.setCenter(workspaceView);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Returns the main stage.
-     * 
-     * @return
-     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }

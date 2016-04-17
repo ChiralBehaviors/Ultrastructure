@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -28,12 +29,11 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Facet Name" GridPane.halignment="CENTER" />
-            <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
-            <ComboBox prefWidth="150.0" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+            <ComboBox fx:id="classifier" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+            <ComboBox fx:id="classification" prefWidth="150.0" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
             <Label text="Attributes" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
             <Label text="Children" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <TableView fx:id="attributes" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
               <columns>
                 <TableColumn prefWidth="75.0" text="Name" />
                 <TableColumn prefWidth="75.0" text="Type" />
@@ -55,7 +55,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
             </TableView>
-            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+            <TableView fx:id="children" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
               <columns>
                 <TableColumn prefWidth="75.0" text="Cardinality" />
                 <TableColumn prefWidth="75.0" text="Name" />
@@ -78,6 +78,7 @@
                   </ContextMenu>
                </contextMenu>
             </TableView>
+            <TextField fx:id="name" text="Facet Name" />
          </children>
       </GridPane>
    </children>

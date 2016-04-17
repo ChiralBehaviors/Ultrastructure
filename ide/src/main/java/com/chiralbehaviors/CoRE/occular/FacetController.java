@@ -32,6 +32,9 @@ import javafx.scene.control.TextField;
  *
  */
 public class FacetController {
+    private static String         QUERY = "";
+
+    private GraphQlApi            api;
 
     @FXML
     private TableView<ObjectNode> attributes;
@@ -47,4 +50,17 @@ public class FacetController {
 
     @FXML
     private TextField             name;
+
+    public void setFacet(String id) {
+
+    }
+
+    public GraphQlApi getApi() {
+        return api;
+    }
+
+    public void setApi(GraphQlApi api) {
+        this.api = api;
+    }
+
 }

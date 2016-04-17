@@ -51,8 +51,8 @@ import graphql.schema.GraphQLSchema;
  */
 public class JobSchemaTest extends AbstractModelTest {
 
-    private WorkspaceImporter scope;
     private OrderProcessing   scenario;
+    private WorkspaceImporter scope;
 
     @Before
     public void initializeScope() throws IOException {
@@ -60,22 +60,6 @@ public class JobSchemaTest extends AbstractModelTest {
                                            model);
         scenario = scope.getWorkspace()
                         .getAccessor(OrderProcessing.class);
-    }
-
-    @Test
-    public void testIntrospection() throws Exception {
-        GraphQLSchema schema = JobQueries.build();
-        String query = getIntrospectionQuery();
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model));
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
-
-        assertNotNull(result);
     }
 
     @Test
@@ -192,7 +176,23 @@ public class JobSchemaTest extends AbstractModelTest {
                               .size());
     }
 
-    public ObjectNode execute(GraphQLSchema schema, QueryRequest query) {
+    @Test
+    public void testIntrospection() throws Exception {
+        GraphQLSchema schema = JobQueries.build();
+        String query = getIntrospectionQuery();
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model));
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result = (Map<String, Object>) execute.getData();
+
+        assertNotNull(result);
+    }
+
+    private ObjectNode execute(GraphQLSchema schema, QueryRequest query) {
         ExecutionResult execute = new GraphQL(schema).execute(query.getQuery(),
                                                               new PhantasmCRUD(model),
                                                               query.getVariables());

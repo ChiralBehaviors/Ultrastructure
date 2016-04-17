@@ -24,4 +24,8 @@ assets:
     uri: /ide
     path: /workspace-explorer
     index: index.html
+  - name: ide
+    uri: /meta/
+    path: /workspace-explorer/meta
+    index: index.html
         

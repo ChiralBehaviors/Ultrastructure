@@ -358,8 +358,9 @@ public class Facet {
     }
 
     @GraphQLField
-    public UUID getId() {
-        return record.getId();
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField

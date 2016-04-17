@@ -69,10 +69,20 @@ import graphql.schema.GraphQLTypeReference;
 public class AttributeAuthorization {
 
     private static final String SET_TIMESTAMP_VALUE = "setTimestampValue";
-
     private static final String SET_TEXT_VALUE      = "setTextValue";
-
     private static final String SET_NUMERIC_VALUE   = "setNumericValue";
+
+    class BigDecimalTypeFunction implements TypeFunction {
+
+        /* (non-Javadoc)
+         * @see java.util.function.BiFunction#apply(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return Scalars.GraphQLLong;
+        }
+
+    }
 
     class AttributeAuthorizationTypeFunction implements TypeFunction {
 
@@ -325,8 +335,9 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public UUID getId() {
-        return record.getId();
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField
@@ -345,8 +356,9 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public BigDecimal getNumericValue() {
-        return record.getNumericValue();
+    public Long getNumericValue() {
+        return record.getNumericValue()
+                     .longValue();
     }
 
     @GraphQLField
@@ -355,8 +367,9 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public Timestamp getTimestampValue() {
-        return record.getTimestampValue();
+    public Long getTimestampValue() {
+        return record.getTimestampValue()
+                     .getTime();
     }
 
     @GraphQLField

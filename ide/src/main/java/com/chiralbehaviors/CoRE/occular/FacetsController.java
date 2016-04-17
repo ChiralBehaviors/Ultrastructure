@@ -18,17 +18,17 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.occular.controller;
+package com.chiralbehaviors.CoRE.occular;
+
+import java.io.IOException;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 /**
  * @author hhildebrand
@@ -37,36 +37,25 @@ import javafx.scene.control.TextField;
 public class FacetsController {
 
     @FXML
-    private TableView<ObjectNode> attributes;
+    private ListView<ObjectNode> facets;
 
     @FXML
-    private TableView<ObjectNode> children;
+    private AnchorPane           facetAnchor;
+
+    @SuppressWarnings("unused")
+    private FacetController      facetController;
 
     @FXML
-    private ComboBox<ObjectNode>  classification;
-
-    @FXML
-    private ComboBox<ObjectNode>  classifier;
-
-    @FXML
-    private TextArea              description;
-
-    @FXML
-    private TextField             facetName;
-
-    @FXML
-    private ListView<ObjectNode>  facets;
-
-    @FXML
-    private TextField             iri;
-
-    @FXML
-    private Label                 version;
-
-    @FXML
-    private TextField             workspaceName;
-
-    public void initialize() {
-        System.out.println("Hello");
+    private void initialize() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Occular.class.getResource("view/FacetView.fxml"));
+        GridPane facetsView = (GridPane) loader.load();
+        AnchorPane.setTopAnchor(facetsView, 10.0);
+        AnchorPane.setBottomAnchor(facetsView, 10.0);
+        AnchorPane.setLeftAnchor(facetsView, 10.0);
+        AnchorPane.setRightAnchor(facetsView, 10.0);
+        facetAnchor.getChildren()
+                   .add(facetsView);
+        facetController = loader.getController();
     }
 }

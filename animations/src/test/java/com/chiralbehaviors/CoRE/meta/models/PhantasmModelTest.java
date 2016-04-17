@@ -39,7 +39,9 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -135,11 +137,6 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testAttributeNetworkAuthDefaultValues() {
-        FacetRecord facet = model.records()
-                                 .newFacet(model.getKernel()
-                                                .getAnyRelationship(),
-                                           model.getKernel()
-                                                .getCore());
         Attribute binary = model.records()
                                 .newAttribute("binary", "binary attribute",
                                               ValueType.Binary);
@@ -170,45 +167,51 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                  ValueType.Timestamp);
         timestamp.insert();
 
-        ExistentialAttributeAuthorizationRecord value = model.records()
-                                                             .newExistentialAttributeAuthorization(facet,
-                                                                                                   binary);
+        ExistentialNetworkAuthorizationRecord auth = model.records()
+                                                          .newExistentialNetworkAuthorization();
+        ExistentialNetworkAttributeAuthorizationRecord value = model.records()
+                                                                    .newExistentialNetworkAttributeAuthorization(auth,
+                                                                                                                 binary);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, "hello world".getBytes());
 
         value = model.records()
-                     .newExistentialAttributeAuthorization(facet, booleanA);
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  booleanA);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, true);
 
         value = model.records()
-                     .newExistentialAttributeAuthorization(facet, integer);
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  integer);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, 1);
 
         value = model.records()
-                     .newExistentialAttributeAuthorization(facet, json);
+                     .newExistentialNetworkAttributeAuthorization(auth, json);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, new ObjectMapper().valueToTree("Hello"));
 
         value = model.records()
-                     .newExistentialAttributeAuthorization(facet, numeric);
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  numeric);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, BigDecimal.valueOf(4.5));
 
         value = model.records()
-                     .newExistentialAttributeAuthorization(facet, text);
+                     .newExistentialNetworkAttributeAuthorization(auth, text);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, "hello");
 
         value = model.records()
-                     .newExistentialAttributeAuthorization(facet, timestamp);
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  timestamp);
         value.insert();
         model.getPhantasmModel()
              .setValue(value, new Timestamp(System.currentTimeMillis()));

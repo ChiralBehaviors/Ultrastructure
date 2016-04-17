@@ -358,6 +358,16 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(ExistentialNetworkAuthorizationRecord auth,
+                                                                                                       Attribute attribute) {
+        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
+        record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipalId());
+        record.setAuthorizedAttribute(attribute.getId());
+        record.setNetworkAuthorization(auth.getId());
+        return record;
+    }
+
     default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
         ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
         record.setId(GENERATOR.generate());

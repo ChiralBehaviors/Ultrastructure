@@ -100,10 +100,15 @@ public class RecordsFactoryTest extends DatabaseTest {
         facet.insert();
         RECORDS.newExistentialAttributeAuthorization(facet,
                                                      RECORDS.newAttribute());
+        RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
+                                                            attribute);
         RECORDS.newExistentialGrouping();
         RECORDS.newExistentialNetwork();
         RECORDS.newExistentialNetworkAuthorization();
         RECORDS.newExistentialNetworkAttributeAuthorization();
+
+        RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
+                                                            attribute);
         RECORDS.newExistentialNetwork(agency, RECORDS.newRelationship(),
                                       agency);
         RECORDS.newExistentialNetworkAttribute();

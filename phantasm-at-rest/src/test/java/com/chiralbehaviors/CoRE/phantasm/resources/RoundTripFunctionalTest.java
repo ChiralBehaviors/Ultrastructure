@@ -60,6 +60,7 @@ import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.io.BaseEncoding;
 
 /**
@@ -160,19 +161,18 @@ public class RoundTripFunctionalTest {
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");
 
-        @SuppressWarnings("rawtypes")
-        Map response;
+        JsonNode response;
         try {
             response = invocationBuilder.post(Entity.entity(request,
                                                             MediaType.APPLICATION_JSON_TYPE),
-                                              Map.class);
+                                              JsonNode.class);
             fail("Should not have succeeded, expecting 401");
         } catch (NotAuthorizedException e) {
             // expected;
         }
         invocationBuilder.header(HttpHeaders.AUTHORIZATION,
                                  String.format("Bearer %s", token));
-        response = invocationBuilder.post(Entity.json(request), Map.class);
+        response = invocationBuilder.post(Entity.json(request), JsonNode.class);
         assertNotNull(response);
 
         webTarget = client.target(String.format("http://localhost:%s/oauth2/token/deauthorize",

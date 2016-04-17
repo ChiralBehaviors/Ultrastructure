@@ -28,7 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -39,6 +38,8 @@ import com.chiralbehaviors.CoRE.meta.models.OrderProcessing;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -77,7 +78,6 @@ public class JobSchemaTest extends AbstractModelTest {
         assertNotNull(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testEuOrder() throws Exception {
 
@@ -114,18 +114,21 @@ public class JobSchemaTest extends AbstractModelTest {
                                               + "          deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
                                               + "      } " + "   } " + "}",
                                               variables);
-        Map<String, Object> result = execute(schema, query);
+        ObjectNode result = execute(schema, query);
 
-        result = (Map<String, Object>) result.get("CreateJob");
+        result = (ObjectNode) result.get("CreateJob");
         assertNotNull(result);
-        String order = (String) result.get("id");
+        String order = result.get("id")
+                             .asText();
         assertNotNull(order);
 
         assertEquals(model.getKernel()
                           .getUnset()
                           .getId()
                           .toString(),
-                     ((Map<String, Object>) result.get("status")).get("id"));
+                     result.get("status")
+                           .get("id")
+                           .asText());
 
         model.flush();
 
@@ -142,12 +145,14 @@ public class JobSchemaTest extends AbstractModelTest {
                                  + "}", variables);
         result = execute(schema, query);
 
-        result = (Map<String, Object>) result.get("UpdateJob");
+        result = (ObjectNode) result.get("UpdateJob");
         assertNotNull(result);
         assertEquals(scenario.getAvailable()
                              .getId()
                              .toString(),
-                     ((Map<String, Object>) result.get("status")).get("id"));
+                     result.get("status")
+                           .get("id")
+                           .asText());
 
         model.flush();
 
@@ -164,12 +169,14 @@ public class JobSchemaTest extends AbstractModelTest {
                                  + "}", variables);
         result = execute(schema, query);
 
-        result = (Map<String, Object>) result.get("UpdateJob");
+        result = (ObjectNode) result.get("UpdateJob");
         assertNotNull(result);
         assertEquals(scenario.getActive()
                              .getId()
                              .toString(),
-                     ((Map<String, Object>) result.get("status")).get("id"));
+                     result.get("status")
+                           .get("id")
+                           .asText());
 
         variables = new HashMap<>();
         variables.put("id", order);
@@ -178,14 +185,14 @@ public class JobSchemaTest extends AbstractModelTest {
                                  variables);
         result = execute(schema, query);
 
-        result = (Map<String, Object>) result.get("Job");
+        result = (ObjectNode) result.get("Job");
         assertNotNull(result);
 
-        assertEquals(6, ((List<?>) result.get("allChildren")).size());
+        assertEquals(6, result.withArray("allChildren")
+                              .size());
     }
 
-    public Map<String, Object> execute(GraphQLSchema schema,
-                                       QueryRequest query) {
+    public ObjectNode execute(GraphQLSchema schema, QueryRequest query) {
         ExecutionResult execute = new GraphQL(schema).execute(query.getQuery(),
                                                               new PhantasmCRUD(model),
                                                               query.getVariables());
@@ -193,8 +200,7 @@ public class JobSchemaTest extends AbstractModelTest {
                           .toString(),
                    execute.getErrors()
                           .isEmpty());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
+        ObjectNode result = new ObjectMapper().valueToTree(execute.getData());
         assertNotNull(result);
         return result;
     }

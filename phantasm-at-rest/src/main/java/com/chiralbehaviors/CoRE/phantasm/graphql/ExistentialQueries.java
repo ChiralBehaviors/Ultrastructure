@@ -42,6 +42,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
@@ -91,18 +92,25 @@ public class ExistentialQueries {
     }
 
     public static void build(Builder query, Builder mutation) {
+        build(query, mutation, null);
+
+    }
+
+    public static void build(Builder query, Builder mutation,
+                             ThreadLocal<Product> currentWorkspace) {
         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate = buildUpdateTemplate();
 
-        buildCommonExistentials(query, mutation, updateTemplate);
+        buildCommonExistentials(query, mutation, updateTemplate,
+                                currentWorkspace);
         buildFields(ExistentialDomain.Relationship, query, mutation,
                     updateTemplate, relationshipUpdateType(), RelationshipType,
-                    relationshipCreateType());
+                    relationshipCreateType(), currentWorkspace);
         buildFields(ExistentialDomain.StatusCode, query, mutation,
                     updateTemplate, statusCodeUpdateType(), StatusCodeType,
-                    statusCodeCreateType());
+                    statusCodeCreateType(), currentWorkspace);
         buildFields(ExistentialDomain.Attribute, query, mutation,
                     updateTemplate, attributeUpdateType(), AttributeType,
-                    attributeCreateType());
+                    attributeCreateType(), currentWorkspace);
     }
 
     private static GraphQLInputObjectType attributeCreateType() {
@@ -116,22 +124,23 @@ public class ExistentialQueries {
     }
 
     private static void buildCommonExistentials(Builder query, Builder mutation,
-                                                Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+                                                Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
+                                                ThreadLocal<Product> currentWorkspace) {
         buildFields(ExistentialDomain.Agency, query, mutation, updateTemplate,
                     commonUpdateType(AgencyType).build(), AgencyType,
-                    commonCreateType(AgencyType).build());
+                    commonCreateType(AgencyType).build(), currentWorkspace);
         buildFields(ExistentialDomain.Interval, query, mutation, updateTemplate,
                     commonUpdateType(IntervalType).build(), IntervalType,
-                    commonCreateType(IntervalType).build());
+                    commonCreateType(IntervalType).build(), currentWorkspace);
         buildFields(ExistentialDomain.Location, query, mutation, updateTemplate,
                     commonUpdateType(LocationType).build(), LocationType,
-                    commonCreateType(LocationType).build());
+                    commonCreateType(LocationType).build(), currentWorkspace);
         buildFields(ExistentialDomain.Product, query, mutation, updateTemplate,
                     commonUpdateType(ProductType).build(), ProductType,
-                    commonCreateType(ProductType).build());
+                    commonCreateType(ProductType).build(), currentWorkspace);
         buildFields(ExistentialDomain.Unit, query, mutation, updateTemplate,
                     commonUpdateType(UnitType).build(), UnitType,
-                    commonCreateType(UnitType).build());
+                    commonCreateType(UnitType).build(), currentWorkspace);
     }
 
     private static void buildFields(ExistentialDomain domain, Builder query,
@@ -139,14 +148,15 @@ public class ExistentialQueries {
                                     Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
                                     GraphQLInputObjectType updateType,
                                     GraphQLObjectType type,
-                                    GraphQLInputObjectType createType) {
+                                    GraphQLInputObjectType createType,
+                                    ThreadLocal<Product> currentWorkspace) {
 
         query.field(instance(type));
-        query.field(instances(type, domain));
-        mutation.field(createInstance(domain, type, createType,
-                                      updateTemplate));
-        mutation.field(createInstances(domain, type, createType,
-                                       updateTemplate));
+        query.field(instances(type, domain, currentWorkspace));
+        mutation.field(createInstance(domain, type, createType, updateTemplate,
+                                      currentWorkspace));
+        mutation.field(createInstances(domain, type, createType, updateTemplate,
+                                       currentWorkspace));
         mutation.field(update(type, updateType, updateTemplate));
         mutation.field(updateInstances(type, updateType, updateTemplate));
         mutation.field(remove(type));
@@ -221,7 +231,8 @@ public class ExistentialQueries {
     private static GraphQLFieldDefinition createInstance(ExistentialDomain domain,
                                                          GraphQLObjectType type,
                                                          GraphQLInputObjectType createType,
-                                                         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+                                                         Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
+                                                         ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        type.getName()))
                                    .description("Create an instance of Job")
@@ -243,7 +254,8 @@ public class ExistentialQueries {
     private static GraphQLFieldDefinition createInstances(ExistentialDomain domain,
                                                           GraphQLObjectType type,
                                                           GraphQLInputObjectType createType,
-                                                          Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate) {
+                                                          Map<String, BiConsumer<ExistentialRecord, Object>> updateTemplate,
+                                                          ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(String.format(CREATE_INSTANCES_MUTATION,
                                                        type.getName()))
                                    .description("Create instances of Job")
@@ -315,7 +327,8 @@ public class ExistentialQueries {
     }
 
     private static GraphQLFieldDefinition instances(GraphQLObjectType type,
-                                                    ExistentialDomain domain) {
+                                                    ExistentialDomain domain,
+                                                    ThreadLocal<Product> currentWorkspace) {
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        type.getName()))
                                    .type(new GraphQLList(type))

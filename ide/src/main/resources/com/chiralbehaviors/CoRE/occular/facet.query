@@ -1,0 +1,29 @@
+query facet ($id: String!) {
+  Facet(id: $id) {
+    id
+    name
+    attributes {
+      id
+      authorizedAttribute {
+        id
+        name
+      }
+    }
+    children {
+      id
+      name
+      parent {
+        id
+        name
+      }
+      relationship {
+        id
+        name
+      }
+      child {
+        id
+        name
+      }
+    }
+  }
+}

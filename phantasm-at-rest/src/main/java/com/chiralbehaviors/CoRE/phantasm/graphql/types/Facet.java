@@ -38,7 +38,6 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
@@ -347,8 +346,7 @@ public class Facet {
     @GraphQLField
     @GraphQLType(ExistentialTypeFunction.class)
     public Existential getClassification(DataFetchingEnvironment env) {
-        ExistentialRuleform resolved = resolve(env, record.getClassifier());
-        return wrap(resolved);
+        return wrap(resolve(env, record.getClassifier()));
     }
 
     @GraphQLField

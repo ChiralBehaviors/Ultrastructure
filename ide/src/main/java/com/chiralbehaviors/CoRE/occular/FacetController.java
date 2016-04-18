@@ -20,10 +20,17 @@
 
 package com.chiralbehaviors.CoRE.occular;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.chiralbehaviors.CoRE.occular.GraphQlApi.QueryException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.hellblazer.utils.Utils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
@@ -32,28 +39,52 @@ import javafx.scene.control.TextField;
  *
  */
 public class FacetController {
-    private static String         QUERY = "";
-
-    private GraphQlApi            api;
-
-    @FXML
-    private TableView<ObjectNode> attributes;
-
-    @FXML
-    private TableView<ObjectNode> children;
-
-    @FXML
-    private ComboBox<ObjectNode>  classification;
-
-    @FXML
-    private ComboBox<ObjectNode>  classifier;
-
-    @FXML
-    private TextField             name;
-
-    public void setFacet(String id) {
-
+    static {
+        try {
+            QUERY = Utils.getDocument(FacetController.class.getResourceAsStream("facet.query"));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
+    private static String                   QUERY;
+
+    private GraphQlApi                      api;
+
+    @FXML
+    private TableColumn<ObjectNode, String> attributeNameColumn;
+
+    @FXML
+    private TableView<ObjectNode>           attributes;
+
+    @FXML
+    private TableColumn<ObjectNode, String> attributeTypeColumn;
+
+    @FXML
+    private TableColumn<ObjectNode, String> cardinalityColumn;
+
+    @FXML
+    private TableColumn<ObjectNode, String> childColumn;
+
+    @FXML
+    private TableColumn<ObjectNode, String> childNameColumn;
+
+    @FXML
+    private TableView<ObjectNode>           children;
+
+    @FXML
+    private ComboBox<ObjectNode>            classification;
+
+    @FXML
+    private ComboBox<ObjectNode>            classifier;
+
+    @FXML
+    private TableColumn<ObjectNode, String> defaultValueColumn;
+
+    @FXML
+    private TextField                       name;
+
+    @FXML
+    private TableColumn<ObjectNode, String> relationshipColumn;
 
     public GraphQlApi getApi() {
         return api;
@@ -61,6 +92,20 @@ public class FacetController {
 
     public void setApi(GraphQlApi api) {
         this.api = api;
+    }
+
+    public void setFacet(String id) {
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", id);
+        ObjectNode facet;
+        try {
+            facet = api.query(QUERY, variables);
+        } catch (QueryException e) {
+            throw new IllegalStateException(e);
+        }
+        name.setText(facet.get("name")
+                          .asText());
     }
 
 }

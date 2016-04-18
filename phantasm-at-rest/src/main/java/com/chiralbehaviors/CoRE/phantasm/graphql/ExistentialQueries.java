@@ -28,6 +28,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Produc
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
@@ -46,6 +47,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 import graphql.annotations.DefaultTypeFunction;
@@ -68,6 +70,7 @@ public class ExistentialQueries {
     private static final String CREATE_STATE              = "%sCreateState";
     private static final String DELETE_MUTATION           = "Delete%s";
     private static final String ID                        = "id";
+    private static final String IDS                       = "ids";
     private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
     private static final String SET_DESCRIPTION           = "setDescription";
     private static final String SET_INDEXED               = "setIndexed";
@@ -139,7 +142,7 @@ public class ExistentialQueries {
                                     GraphQLInputObjectType createType) {
 
         query.field(instance(type));
-        query.field(instances(type));
+        query.field(instances(type, domain));
         mutation.field(createInstance(domain, type, createType,
                                       updateTemplate));
         mutation.field(createInstances(domain, type, createType,
@@ -266,10 +269,35 @@ public class ExistentialQueries {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
-    private static ExistentialRecord fetch(DataFetchingEnvironment env) {
+    private static Existential fetch(DataFetchingEnvironment env) {
+        return wrap(ctx(env).create()
+                            .selectFrom(Tables.EXISTENTIAL)
+                            .where(Tables.EXISTENTIAL.ID.equal(UUID.fromString(env.getArgument(ID))))
+                            .fetchOne());
+    }
+
+    private static List<Existential> fetch(DataFetchingEnvironment env,
+                                           ExistentialDomain domain) {
+        List<String> ids = env.getArgument(IDS);
+        if (ids != null) {
+            return ids.stream()
+                      .map(id -> wrap(fetch(env, id)))
+                      .collect(Collectors.toList());
+        }
         return ctx(env).create()
                        .selectFrom(Tables.EXISTENTIAL)
-                       .where(Tables.EXISTENTIAL.ID.equal(UUID.fromString((String) env.getArgument(ID))))
+                       .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                       .fetch()
+                       .stream()
+                       .map(r -> wrap(r))
+                       .collect(Collectors.toList());
+    }
+
+    private static ExistentialRecord fetch(DataFetchingEnvironment env,
+                                           String id) {
+        return ctx(env).create()
+                       .selectFrom(Tables.EXISTENTIAL)
+                       .where(Tables.EXISTENTIAL.ID.equal(UUID.fromString(id)))
                        .fetchOne();
     }
 
@@ -286,16 +314,17 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private static GraphQLFieldDefinition instances(GraphQLObjectType type) {
+    private static GraphQLFieldDefinition instances(GraphQLObjectType type,
+                                                    ExistentialDomain domain) {
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        type.getName()))
-                                   .type(type)
-                                   .argument(newArgument().name(ID)
+                                   .type(new GraphQLList(type))
+                                   .argument(newArgument().name(IDS)
                                                           .description("existential ids")
-                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
+                                                          .type(new GraphQLList(GraphQLString))
                                                           .build())
                                    .dataFetcher(env -> {
-                                       return fetch(env);
+                                       return fetch(env, domain);
                                    })
                                    .build();
     }
@@ -335,7 +364,10 @@ public class ExistentialQueries {
                                                           .description("the id of the instance")
                                                           .type(GraphQLString)
                                                           .build())
-                                   .dataFetcher(env -> fetch(env).delete())
+                                   .dataFetcher(env -> {
+                                       fetch(env).delete();
+                                       return null;
+                                   })
                                    .build();
     }
 

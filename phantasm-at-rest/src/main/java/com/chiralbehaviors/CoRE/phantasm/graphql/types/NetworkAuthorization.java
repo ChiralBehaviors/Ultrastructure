@@ -263,7 +263,7 @@ public class NetworkAuthorization {
 
     @GraphQLField
     public Agency getAuthority(DataFetchingEnvironment env) {
-        return resolve(env, record.getAuthority());
+        return new Agency(resolve(env, record.getAuthority()));
     }
 
     @GraphQLField

@@ -22,8 +22,11 @@ package com.chiralbehaviors.CoRE.occular;
 
 import java.io.IOException;
 
+import com.chiralbehaviors.CoRE.occular.GraphQlApi.QueryException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
@@ -35,6 +38,8 @@ import javafx.scene.layout.GridPane;
  *
  */
 public class FacetsController {
+    private static String        QUERY = "{ Facets { id name } }";
+    private GraphQlApi           api;
 
     @FXML
     private ListView<ObjectNode> facets;
@@ -42,7 +47,6 @@ public class FacetsController {
     @FXML
     private AnchorPane           facetAnchor;
 
-    @SuppressWarnings("unused")
     private FacetController      facetController;
 
     @FXML
@@ -57,5 +61,27 @@ public class FacetsController {
         facetAnchor.getChildren()
                    .add(facetsView);
         facetController = loader.getController();
+    }
+
+    public GraphQlApi getApi() {
+        return api;
+    }
+
+    public void setApi(GraphQlApi api) {
+        this.api = api;
+        facetController.setApi(api);
+    }
+
+    public void update() {
+        ObjectNode f;
+        try {
+            f = api.query(QUERY, null);
+        } catch (QueryException e) {
+            throw new IllegalStateException(e);
+        }
+        ObservableList<ObjectNode> facetList = FXCollections.observableArrayList();
+        f.withArray("Facets")
+         .forEach(o -> facetList.add((ObjectNode) o));
+        facets.setItems(facetList);
     }
 }

@@ -25,7 +25,6 @@ import static graphql.Scalars.GraphQLString;
 import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
@@ -54,7 +53,7 @@ public interface Existential {
     @GraphQLDescription("The Agency existential ruleform")
     class Agency extends ExistentialCommon {
 
-        public Agency(ExistentialRuleform record) {
+        public Agency(ExistentialRecord record) {
             super(record);
         }
     }
@@ -69,7 +68,7 @@ public interface Existential {
     @GraphQLDescription("The Attribute existential ruleform")
     class Attribute extends ExistentialCommon {
 
-        public Attribute(ExistentialRuleform record) {
+        public Attribute(ExistentialRecord record) {
             super(record);
         }
     }
@@ -84,8 +83,13 @@ public interface Existential {
     abstract class ExistentialCommon implements Existential {
         protected final ExistentialRecord record;
 
-        public ExistentialCommon(ExistentialRuleform record) {
-            this.record = (ExistentialRecord) record;
+        public ExistentialCommon(ExistentialRecord record) {
+            this.record = record;
+        }
+
+        @Override
+        public void delete() {
+            record.delete();
         }
 
         @Override
@@ -101,14 +105,14 @@ public interface Existential {
 
         @Override
         public String getName() {
-            return record.getDescription();
+            return record.getName();
         }
 
         @Override
         public @GraphQLType(AgencyTypeFunction.class) Agency getUpdatedBy(DataFetchingEnvironment env) {
-            return new Agency(Existential.ctx(env)
-                                         .records()
-                                         .resolve(record.getUpdatedBy()));
+            return new Agency((ExistentialRecord) Existential.ctx(env)
+                                                             .records()
+                                                             .resolve(record.getUpdatedBy()));
         }
     }
 
@@ -151,7 +155,7 @@ public interface Existential {
     @GraphQLDescription("The Interval existential ruleform")
     class Interval extends ExistentialCommon {
 
-        public Interval(ExistentialRuleform record) {
+        public Interval(ExistentialRecord record) {
             super(record);
         }
     }
@@ -159,10 +163,7 @@ public interface Existential {
     @GraphQLDescription("The Location existential ruleform")
     class Location extends ExistentialCommon {
 
-        /**
-         * @param record
-         */
-        public Location(ExistentialRuleform record) {
+        public Location(ExistentialRecord record) {
             super(record);
         }
     }
@@ -177,7 +178,7 @@ public interface Existential {
     @GraphQLDescription("The Product existential ruleform")
     class Product extends ExistentialCommon {
 
-        public Product(ExistentialRuleform record) {
+        public Product(ExistentialRecord record) {
             super(record);
         }
     }
@@ -192,7 +193,7 @@ public interface Existential {
     @GraphQLDescription("The Relationship existential ruleform")
     class Relationship extends ExistentialCommon {
 
-        public Relationship(ExistentialRuleform record) {
+        public Relationship(ExistentialRecord record) {
             super(record);
         }
     }
@@ -207,7 +208,7 @@ public interface Existential {
     @GraphQLDescription("The StatusCode existential ruleform")
     class StatusCode extends ExistentialCommon {
 
-        public StatusCode(ExistentialRuleform record) {
+        public StatusCode(ExistentialRecord record) {
             super(record);
         }
     }
@@ -222,7 +223,7 @@ public interface Existential {
     @GraphQLDescription("The Unit existential ruleform")
     class Unit extends ExistentialCommon {
 
-        public Unit(ExistentialRuleform record) {
+        public Unit(ExistentialRecord record) {
             super(record);
         }
     }
@@ -291,12 +292,13 @@ public interface Existential {
         }
     }
 
-    public static <T> T resolve(DataFetchingEnvironment env, UUID id) {
+    public static <T extends ExistentialRecord> T resolve(DataFetchingEnvironment env,
+                                                          UUID id) {
         return ctx(env).records()
                        .resolve(id);
     }
 
-    public static Existential wrap(ExistentialRuleform record) throws IllegalStateException {
+    public static Existential wrap(ExistentialRecord record) throws IllegalStateException {
         switch (record.getDomain()) {
             case Agency:
                 return new Agency(record);
@@ -319,6 +321,8 @@ public interface Existential {
                                                               record.getDomain()));
         }
     }
+
+    void delete();
 
     @GraphQLField
     String getDescription();

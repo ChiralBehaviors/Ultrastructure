@@ -34,6 +34,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -110,10 +111,43 @@ public class FacetController {
         childNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
                                                                                          .get("name")
                                                                                          .asText()));
+
+        childColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                     .get("child")
+                                                                                     .get("name")
+                                                                                     .asText()));
+        relationshipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                            .get("relationship")
+                                                                                            .get("name")
+                                                                                            .asText()));
+        classifier.setCellFactory(cellData -> new ListCell<ObjectNode>() {
+
+            @Override
+            protected void updateItem(ObjectNode item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && (item != null)) {
+                    setText(item.get("name")
+                                .asText());
+                } else {
+                    setText(null);
+                }
+            }
+        });
+        classification.setCellFactory(cellData -> new ListCell<ObjectNode>() {
+            @Override
+            protected void updateItem(ObjectNode item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && (item != null)) {
+                    setText(item.get("name")
+                                .asText());
+                } else {
+                    setText(null);
+                }
+            }
+        });
     }
 
     public void setFacet(String id) {
-
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", id);
         ObjectNode result;
@@ -139,6 +173,32 @@ public class FacetController {
         facet.withArray("children")
              .forEach(c -> childrenList.add((ObjectNode) c));
         children.setItems(childrenList);
+
+        ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
+        result.withArray("InstancesOfRelationship")
+              .forEach(r -> relationships.add((ObjectNode) r));
+        classifier.setItems(relationships);
+        classifier.setValue((ObjectNode) facet.get("classifier"));
+
+        ObservableList<ObjectNode> existentials = FXCollections.observableArrayList();
+        result.withArray("InstancesOfAgency")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfAttribute")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfInterval")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfLocation")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfProduct")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfRelationship")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfStatusCode")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        result.withArray("InstancesOfUnits")
+              .forEach(r -> existentials.add((ObjectNode) r));
+        classification.setItems(existentials);
+        classification.setValue((ObjectNode) facet.get("classification"));
     }
 
 }

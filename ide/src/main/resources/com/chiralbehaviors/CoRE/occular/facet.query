@@ -1,4 +1,48 @@
-query facet ($id: String!) {
+query facet($id: String!) {
+  Facets {
+    id
+    name
+  }
+  InstancesOfAgency {
+    id
+    name
+    description
+  }
+  InstancesOfAttribute {
+    id
+    name
+    description
+  }
+  InstancesOfInterval {
+    id
+    name
+    description
+  }
+  InstancesOfLocation {
+    id
+    name
+    description
+  }
+  InstancesOfProduct {
+    id
+    name
+    description
+  }
+  InstancesOfRelationship {
+    id
+    name
+    description
+  }
+  InstancesOfStatusCode {
+    id
+    name
+    description
+  }
+  InstancesOfUnit {
+    id
+    name
+    description
+  }
   Facet(id: $id) {
     id
     name
@@ -12,10 +56,7 @@ query facet ($id: String!) {
     children {
       id
       name
-      parent {
-        id
-        name
-      }
+      cardinality
       relationship {
         id
         name

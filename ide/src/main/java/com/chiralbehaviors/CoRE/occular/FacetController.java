@@ -98,14 +98,15 @@ public class FacetController {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", id);
-        ObjectNode facet;
+        ObjectNode result;
         try {
-            facet = api.query(QUERY, variables);
+            result = api.query(QUERY, variables);
         } catch (QueryException e) {
             throw new IllegalStateException(e);
         }
-        name.setText(facet.get("name")
-                          .asText());
+        name.setText(result.get("Facet")
+                           .get("name")
+                           .asText());
     }
 
 }

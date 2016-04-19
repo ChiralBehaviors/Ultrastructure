@@ -25,10 +25,13 @@ import java.io.IOException;
 import com.chiralbehaviors.CoRE.occular.GraphQlApi.QueryException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -61,6 +64,19 @@ public class FacetsController {
         facetAnchor.getChildren()
                    .add(facetsView);
         facetController = loader.getController();
+        facets.setCellFactory(cellData -> new ListCell<ObjectNode>() {
+
+            @Override
+            protected void updateItem(ObjectNode item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && (item != null)) {
+                    setText(item.get("name")
+                                .asText());
+                } else {
+                    setText(null);
+                }
+            }
+        });
     }
 
     public GraphQlApi getApi() {
@@ -83,5 +99,15 @@ public class FacetsController {
         f.withArray("Facets")
          .forEach(o -> facetList.add((ObjectNode) o));
         facets.setItems(facetList);
+        facets.getSelectionModel()
+              .selectedItemProperty()
+              .addListener(new ChangeListener<ObjectNode>() {
+                  @Override
+                  public void changed(ObservableValue<? extends ObjectNode> ov,
+                                      ObjectNode old_val, ObjectNode new_val) {
+                      facetController.setFacet(new_val.get("id")
+                                                      .asText());
+                  }
+              });
     }
 }

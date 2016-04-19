@@ -57,6 +57,25 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   "{ Facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
                                   variables);
         assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfAgency { id name description } InstancesOfAttribute { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfInterval { id name description } InstancesOfLocation { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfProduct { id name description } InstancesOfRelationship { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfStatusCode { id name description } InstancesOfStatusCode{ id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema, "{ Existentials { id name description } }",
+                       variables);
+        assertNotNull(data);
     }
 
     private ObjectNode execute(GraphQLSchema schema, String query,

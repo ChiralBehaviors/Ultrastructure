@@ -68,22 +68,6 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class AttributeAuthorization {
 
-    private static final String SET_TIMESTAMP_VALUE = "setTimestampValue";
-    private static final String SET_TEXT_VALUE      = "setTextValue";
-    private static final String SET_NUMERIC_VALUE   = "setNumericValue";
-
-    class BigDecimalTypeFunction implements TypeFunction {
-
-        /* (non-Javadoc)
-         * @see java.util.function.BiFunction#apply(java.lang.Object, java.lang.Object)
-         */
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return Scalars.GraphQLLong;
-        }
-
-    }
-
     class AttributeAuthorizationTypeFunction implements TypeFunction {
 
         @Override
@@ -105,6 +89,9 @@ public class AttributeAuthorization {
     private static final String           SET_INTEGER_VALUE             = "setIntegerValue";
     private static final String           SET_JSON_VALUE                = "setJsonValue";
     private static final String           SET_NOTES                     = "setNotes";
+    private static final String           SET_NUMERIC_VALUE             = "setNumericValue";
+    private static final String           SET_TEXT_VALUE                = "setTextValue";
+    private static final String           SET_TIMESTAMP_VALUE           = "setTimestampValue";
     private static final String           STATE                         = "state";
     private static final String           UPDATE                        = "UpdateAttributeAuthorization";
 

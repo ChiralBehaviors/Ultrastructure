@@ -37,7 +37,6 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.OrderProcessing;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -87,18 +86,18 @@ public class JobSchemaTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
 
-        QueryRequest query = new QueryRequest("mutation m ($service: String!, $assignTo: String, $product: String, $deliverTo: String, "
-                                              + "          $deliverFrom: String, $requester: String) { "
-                                              + "  CreateJob(state: { setService: $service, setAssignTo: $assignTo, setProduct: $product, "
-                                              + "                     setDeliverTo: $deliverTo, setDeliverFrom: $deliverFrom, setRequester: $requester}) { "
-                                              + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
-                                              + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} "
-                                              + "      chronology {"
-                                              + "          id, job {id} status {id, name} product {name} service {name} requester {name} assignTo {name} "
-                                              + "          deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
-                                              + "      } " + "   } " + "}",
-                                              variables);
-        ObjectNode result = execute(schema, query);
+        ObjectNode result = execute(schema,
+                                    "mutation m ($service: String!, $assignTo: String, $product: String, $deliverTo: String, "
+                                            + "          $deliverFrom: String, $requester: String) { "
+                                            + "  CreateJob(state: { setService: $service, setAssignTo: $assignTo, setProduct: $product, "
+                                            + "                     setDeliverTo: $deliverTo, setDeliverFrom: $deliverFrom, setRequester: $requester}) { "
+                                            + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
+                                            + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} "
+                                            + "      chronology {"
+                                            + "          id, job {id} status {id, name} product {name} service {name} requester {name} assignTo {name} "
+                                            + "          deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
+                                            + "      } " + "   } " + "}",
+                                    variables);
 
         result = (ObjectNode) result.get("CreateJob");
         assertNotNull(result);
@@ -123,11 +122,12 @@ public class JobSchemaTest extends AbstractModelTest {
                                         .toString());
         variables.put("notes", "transition during test");
 
-        query = new QueryRequest("mutation m ($id: String!, $status: String, $notes: String) { "
+        result = execute(schema,
+                         "mutation m ($id: String!, $status: String, $notes: String) { "
                                  + "  UpdateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
-                                 + "}", variables);
-        result = execute(schema, query);
+                                 + "}",
+                         variables);
 
         result = (ObjectNode) result.get("UpdateJob");
         assertNotNull(result);
@@ -147,11 +147,12 @@ public class JobSchemaTest extends AbstractModelTest {
                                         .toString());
         variables.put("notes", "transition during test");
 
-        query = new QueryRequest("mutation m ($id: String!, $status: String, $notes: String) { "
+        result = execute(schema,
+                         "mutation m ($id: String!, $status: String, $notes: String) { "
                                  + "  UpdateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
-                                 + "}", variables);
-        result = execute(schema, query);
+                                 + "}",
+                         variables);
 
         result = (ObjectNode) result.get("UpdateJob");
         assertNotNull(result);
@@ -165,15 +166,34 @@ public class JobSchemaTest extends AbstractModelTest {
         variables = new HashMap<>();
         variables.put("id", order);
 
-        query = new QueryRequest("query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeSubJobs {id } children {id } chronology {id} } }",
-                                 variables);
-        result = execute(schema, query);
+        result = execute(schema,
+                         "query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeSubJobs {id } children {id } chronology {id} } }",
+                         variables);
 
         result = (ObjectNode) result.get("Job");
         assertNotNull(result);
 
         assertEquals(6, result.withArray("allChildren")
                               .size());
+        ObjectNode data = execute(schema,
+                                  "{ InstancesOfAgency { id name description } InstancesOfAttribute { id name description } }",
+                                  variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfInterval { id name description } InstancesOfLocation { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfProduct { id name description } InstancesOfRelationship { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfStatusCode { id name description } InstancesOfStatusCode{ id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema, "{ Existentials { id name description } }",
+                       variables);
+        assertNotNull(data);
     }
 
     @Test
@@ -192,10 +212,11 @@ public class JobSchemaTest extends AbstractModelTest {
         assertNotNull(result);
     }
 
-    private ObjectNode execute(GraphQLSchema schema, QueryRequest query) {
-        ExecutionResult execute = new GraphQL(schema).execute(query.getQuery(),
+    private ObjectNode execute(GraphQLSchema schema, String query,
+                               Map<String, Object> variables) {
+        ExecutionResult execute = new GraphQL(schema).execute(query,
                                                               new PhantasmCRUD(model),
-                                                              query.getVariables());
+                                                              variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()

@@ -122,7 +122,8 @@ public class Facet {
                                            .description("Top level metadata query");
         Builder topLevelMutation = newObject().name("Mutation")
                                               .description("Top level metadata mutation");
-        ExistentialQueries.build(topLevelQuery, topLevelMutation);
+        ExistentialQueries.build(topLevelQuery, topLevelMutation,
+                                 currentWorkspace);
         AttributeAuthorization.build(topLevelQuery, topLevelMutation,
                                      currentWorkspace);
         NetworkAuthorization.build(topLevelQuery, topLevelMutation,

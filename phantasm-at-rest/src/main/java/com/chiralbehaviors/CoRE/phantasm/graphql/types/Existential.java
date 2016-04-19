@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ import static graphql.Scalars.GraphQLString;
 import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
@@ -98,6 +99,11 @@ public interface Existential {
         }
 
         @Override
+        public ExistentialDomain getDomain() {
+            return record.getDomain();
+        }
+
+        @Override
         public String getId() {
             return record.getId()
                          .toString();
@@ -119,7 +125,7 @@ public interface Existential {
     class ExistentialResolver implements TypeResolver {
         @Override
         public GraphQLObjectType getType(Object object) {
-            ExistentialRecord record = (ExistentialRecord) object; // If this doesn't succeed, it's a bug, so no catch
+            Existential record = (Existential) object; // If this doesn't succeed, it's a bug, so no catch
             switch (record.getDomain()) {
                 case Agency:
                     return AgencyType;
@@ -326,6 +332,8 @@ public interface Existential {
 
     @GraphQLField
     String getDescription();
+
+    ExistentialDomain getDomain();
 
     @GraphQLField
     String getId();

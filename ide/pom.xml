@@ -33,5 +33,9 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hellblazer</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
     </dependencies>
 </project>

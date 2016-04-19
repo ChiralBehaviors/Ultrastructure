@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.IntervalType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.LocationType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ProductType;
@@ -111,6 +112,7 @@ public class ExistentialQueries {
         buildFields(ExistentialDomain.Attribute, query, mutation,
                     updateTemplate, attributeUpdateType(), AttributeType,
                     attributeCreateType(), currentWorkspace);
+        query.field(existentials(currentWorkspace));
     }
 
     private static GraphQLInputObjectType attributeCreateType() {
@@ -289,17 +291,33 @@ public class ExistentialQueries {
     }
 
     private static List<Existential> fetch(DataFetchingEnvironment env,
-                                           ExistentialDomain domain) {
+                                           ExistentialDomain domain,
+                                           ThreadLocal<Product> currentWorkspace) {
         List<String> ids = env.getArgument(IDS);
         if (ids != null) {
             return ids.stream()
                       .map(id -> wrap(fetch(env, id)))
                       .collect(Collectors.toList());
         }
+        if (currentWorkspace == null) {
+            return ctx(env).create()
+                           .selectFrom(Tables.EXISTENTIAL)
+                           .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                           .fetch()
+                           .stream()
+                           .map(r -> wrap(r))
+                           .collect(Collectors.toList());
+        }
+        Product definingProduct = currentWorkspace.get();
         return ctx(env).create()
-                       .selectFrom(Tables.EXISTENTIAL)
+                       .selectDistinct(Tables.EXISTENTIAL.fields())
+                       .from(Tables.EXISTENTIAL)
+                       .join(Tables.WORKSPACE_AUTHORIZATION)
+                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
+                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
                        .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                        .fetch()
+                       .into(ExistentialRecord.class)
                        .stream()
                        .map(r -> wrap(r))
                        .collect(Collectors.toList());
@@ -337,9 +355,43 @@ public class ExistentialQueries {
                                                           .type(new GraphQLList(GraphQLString))
                                                           .build())
                                    .dataFetcher(env -> {
-                                       return fetch(env, domain);
+                                       return fetch(env, domain,
+                                                    currentWorkspace);
                                    })
                                    .build();
+    }
+
+    private static GraphQLFieldDefinition existentials(ThreadLocal<Product> currentWorkspace) {
+        return newFieldDefinition().name("Existentials")
+                                   .type(new GraphQLList(ExistentialType))
+                                   .dataFetcher(env -> {
+                                       return fetch(env, currentWorkspace);
+                                   })
+                                   .build();
+    }
+
+    private static Object fetch(DataFetchingEnvironment env,
+                                ThreadLocal<Product> currentWorkspace) {
+        if (currentWorkspace == null) {
+            return ctx(env).create()
+                           .selectFrom(Tables.EXISTENTIAL)
+                           .fetch()
+                           .stream()
+                           .map(r -> wrap(r))
+                           .collect(Collectors.toList());
+        }
+        Product definingProduct = currentWorkspace.get();
+        return ctx(env).create()
+                       .selectDistinct(Tables.EXISTENTIAL.fields())
+                       .from(Tables.EXISTENTIAL)
+                       .join(Tables.WORKSPACE_AUTHORIZATION)
+                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
+                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                       .fetch()
+                       .into(ExistentialRecord.class)
+                       .stream()
+                       .map(r -> wrap(r))
+                       .collect(Collectors.toList());
     }
 
     private static Object newExistential(ExistentialDomain domain,

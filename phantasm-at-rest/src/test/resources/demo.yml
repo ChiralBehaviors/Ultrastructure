@@ -18,13 +18,13 @@ logging:
 assetsConfiguration:
   overrides:
     /: target/classes/workspace-explorer
-        
+
 assets:
   - name: ide
     uri: /ide
     path: /workspace-explorer
     index: index.html
-  - name: ide
+  - name: meta
     uri: /meta/
     path: /workspace-explorer/meta
     index: index.html

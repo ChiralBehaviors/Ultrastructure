@@ -21,13 +21,8 @@
             <artifactId>controlsfx</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>phantasm-at-rest</artifactId>
-            <scope>test</scope>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-client</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -36,6 +31,11 @@
         <dependency>
             <groupId>com.hellblazer</groupId>
             <artifactId>utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>phantasm-at-rest</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -25,9 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.occular.GraphQlApi.QueryException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -94,6 +98,20 @@ public class FacetController {
         this.api = api;
     }
 
+    @FXML
+    public void initialize() {
+        attributeNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                             .get("authorizedAttribute")
+                                                                                             .get("name")
+                                                                                             .asText()));
+        cardinalityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                           .get("cardinality")
+                                                                                           .asText()));
+        childNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                         .get("name")
+                                                                                         .asText()));
+    }
+
     public void setFacet(String id) {
 
         Map<String, Object> variables = new HashMap<>();
@@ -104,9 +122,23 @@ public class FacetController {
         } catch (QueryException e) {
             throw new IllegalStateException(e);
         }
-        name.setText(result.get("Facet")
-                           .get("name")
-                           .asText());
+        update(result);
+    }
+
+    private void update(ObjectNode result) {
+        JsonNode facet = result.get("Facet");
+        name.setText(facet.get("name")
+                          .asText());
+
+        ObservableList<ObjectNode> attributeList = FXCollections.observableArrayList();
+        facet.withArray("attributes")
+             .forEach(a -> attributeList.add((ObjectNode) a));
+        attributes.setItems(attributeList);
+
+        ObservableList<ObjectNode> childrenList = FXCollections.observableArrayList();
+        facet.withArray("children")
+             .forEach(c -> childrenList.add((ObjectNode) c));
+        children.setItems(childrenList);
     }
 
 }

@@ -323,9 +323,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                               result.value2()));
         }
         if (key != null) {
-            if (key != null) {
-                cache.put(key, ruleform);
-            }
+            cache.put(key, ruleform);
         }
         return ruleform;
     }

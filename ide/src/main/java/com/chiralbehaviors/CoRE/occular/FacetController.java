@@ -35,9 +35,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 
 /**
  * @author hhildebrand
@@ -120,7 +122,8 @@ public class FacetController {
                                                                                             .get("relationship")
                                                                                             .get("name")
                                                                                             .asText()));
-        classifier.setCellFactory(cellData -> new ListCell<ObjectNode>() {
+
+        Callback<ListView<ObjectNode>, ListCell<ObjectNode>> useName = c -> new ListCell<ObjectNode>() {
 
             @Override
             protected void updateItem(ObjectNode item, boolean empty) {
@@ -132,19 +135,11 @@ public class FacetController {
                     setText(null);
                 }
             }
-        });
-        classification.setCellFactory(cellData -> new ListCell<ObjectNode>() {
-            @Override
-            protected void updateItem(ObjectNode item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty && (item != null)) {
-                    setText(item.get("name")
-                                .asText());
-                } else {
-                    setText(null);
-                }
-            }
-        });
+        };
+        classifier.setCellFactory(useName);
+        classifier.setButtonCell(useName.call(null));
+        classification.setCellFactory(useName);
+        classification.setButtonCell(useName.call(null));
     }
 
     public void setFacet(String id) {
@@ -164,22 +159,6 @@ public class FacetController {
         name.setText(facet.get("name")
                           .asText());
 
-        ObservableList<ObjectNode> attributeList = FXCollections.observableArrayList();
-        facet.withArray("attributes")
-             .forEach(a -> attributeList.add((ObjectNode) a));
-        attributes.setItems(attributeList);
-
-        ObservableList<ObjectNode> childrenList = FXCollections.observableArrayList();
-        facet.withArray("children")
-             .forEach(c -> childrenList.add((ObjectNode) c));
-        children.setItems(childrenList);
-
-        ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
-        result.withArray("InstancesOfRelationship")
-              .forEach(r -> relationships.add((ObjectNode) r));
-        classifier.setItems(relationships);
-        classifier.setValue((ObjectNode) facet.get("classifier"));
-
         ObservableList<ObjectNode> existentials = FXCollections.observableArrayList();
         result.withArray("InstancesOfAgency")
               .forEach(r -> existentials.add((ObjectNode) r));
@@ -197,6 +176,22 @@ public class FacetController {
               .forEach(r -> existentials.add((ObjectNode) r));
         result.withArray("InstancesOfUnits")
               .forEach(r -> existentials.add((ObjectNode) r));
+
+        ObservableList<ObjectNode> attributeList = FXCollections.observableArrayList();
+        facet.withArray("attributes")
+             .forEach(a -> attributeList.add((ObjectNode) a));
+        attributes.setItems(attributeList);
+
+        ObservableList<ObjectNode> childrenList = FXCollections.observableArrayList();
+        facet.withArray("children")
+             .forEach(c -> childrenList.add((ObjectNode) c));
+        children.setItems(childrenList);
+
+        ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
+        result.withArray("InstancesOfRelationship")
+              .forEach(r -> relationships.add((ObjectNode) r));
+        classifier.setItems(relationships);
+        classifier.setValue((ObjectNode) facet.get("classifier"));
         classification.setItems(existentials);
         classification.setValue((ObjectNode) facet.get("classification"));
     }

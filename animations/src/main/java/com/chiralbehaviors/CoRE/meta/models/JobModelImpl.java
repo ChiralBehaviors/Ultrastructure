@@ -667,6 +667,7 @@ public class JobModelImpl implements JobModel {
                     .fetch();
     }
 
+    @Override
     public List<JobRecord> getSiblings(JobRecord job) {
         return model.create()
                     .selectFrom(JOB)
@@ -1053,7 +1054,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobChronologyRecord r) {
-        return String.format("JobChronology[%s {%s:%s} {%s:%s} %s:%s:%s:%s]",
+        return String.format("JobChronology[%s {%s:%s} {%s:%s} %s:%s:%s:%s:%s:%s]",
                              r.getNotes(), r.getSequenceNumber(), r.getJob(),
                              model.records()
                                   .existentialName(r.getService()),
@@ -1075,7 +1076,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public String toString(JobRecord r) {
-        return String.format("Job[{%s:%s} %d %s %s %s %s %s %s (%s)]",
+        return String.format("Job[{%s:%s} %s %s %s %s %s %s %s (%s)]",
                              model.records()
                                   .existentialName(r.getService()),
                              model.records()

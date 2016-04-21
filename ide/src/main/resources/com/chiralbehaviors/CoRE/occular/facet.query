@@ -46,6 +46,14 @@ query facet($id: String!) {
   Facet(id: $id) {
     id
     name
+    classifier {
+        id
+        name
+    }
+    classification {
+        id
+        name
+    }
     attributes {
       id
       authorizedAttribute {

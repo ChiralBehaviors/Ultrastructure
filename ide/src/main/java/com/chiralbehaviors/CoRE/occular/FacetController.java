@@ -35,17 +35,29 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 
 /**
  * @author hhildebrand
  *
  */
 public class FacetController {
+
+    static class ExistentialCell extends ListCell<ObjectNode> {
+        @Override
+        protected void updateItem(ObjectNode item, boolean empty) {
+            super.updateItem(item, empty);
+            if (!empty && (item != null)) {
+                setText(item.get("name")
+                            .asText());
+            } else {
+                setText(null);
+            }
+        }
+    }
+
     static {
         try {
             QUERY = Utils.getDocument(FacetController.class.getResourceAsStream("facet.query"));
@@ -122,25 +134,11 @@ public class FacetController {
                                                                                             .get("relationship")
                                                                                             .get("name")
                                                                                             .asText()));
+        classifier.setCellFactory(l -> new ExistentialCell());
+        classifier.setButtonCell(new ExistentialCell());
 
-        Callback<ListView<ObjectNode>, ListCell<ObjectNode>> useName = c -> new ListCell<ObjectNode>() {
-            @Override
-            protected void updateItem(ObjectNode item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty && (item != null)) {
-                    setText(item.get("name")
-                                .asText());
-                } else {
-                    setText(null);
-                }
-            }
-        };
-
-        classifier.setCellFactory(useName);
-        classifier.setButtonCell(useName.call(null));
-
-        classification.setCellFactory(useName);
-        classification.setButtonCell(useName.call(null));
+        classification.setCellFactory(l -> new ExistentialCell());
+        classification.setButtonCell(new ExistentialCell());
     }
 
     public void setFacet(String id) {

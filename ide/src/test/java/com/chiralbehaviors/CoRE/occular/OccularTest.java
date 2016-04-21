@@ -60,7 +60,17 @@ public class OccularTest extends ApplicationTest {
                                           () -> lookup("#facets").query() != null));
         ListView<ObjectNode> facets = lookup("#facets").query();
         assertNotNull(facets);
+        ObjectNode coreUser = null;
+        for (ObjectNode f : facets.getItems()) {
+            if ("CoRE User".equals(f.get("name")
+                                    .asText())) {
+                coreUser = f;
+                break;
+            }
+        }
+        assertNotNull(coreUser);
+
         facets.getSelectionModel()
-              .selectFirst();
+              .select(coreUser);
     }
 }

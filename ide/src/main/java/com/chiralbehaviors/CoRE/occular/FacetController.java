@@ -53,45 +53,45 @@ public class FacetController {
             throw new IllegalStateException(e);
         }
     }
-    private static String                   QUERY;
+    private static String                     QUERY;
 
-    private GraphQlApi                      api;
-
-    @FXML
-    private TableColumn<ObjectNode, String> attributeNameColumn;
+    protected GraphQlApi                      api;
 
     @FXML
-    private TableView<ObjectNode>           attributes;
+    protected TableColumn<ObjectNode, String> attributeNameColumn;
 
     @FXML
-    private TableColumn<ObjectNode, String> attributeTypeColumn;
+    protected TableView<ObjectNode>           attributes;
 
     @FXML
-    private TableColumn<ObjectNode, String> cardinalityColumn;
+    protected TableColumn<ObjectNode, String> attributeTypeColumn;
 
     @FXML
-    private TableColumn<ObjectNode, String> childColumn;
+    protected TableColumn<ObjectNode, String> cardinalityColumn;
 
     @FXML
-    private TableColumn<ObjectNode, String> childNameColumn;
+    protected TableColumn<ObjectNode, String> childColumn;
 
     @FXML
-    private TableView<ObjectNode>           children;
+    protected TableColumn<ObjectNode, String> childNameColumn;
 
     @FXML
-    private ComboBox<ObjectNode>            classification;
+    protected TableView<ObjectNode>           children;
 
     @FXML
-    private ComboBox<ObjectNode>            classifier;
+    protected ComboBox<ObjectNode>            classification;
 
     @FXML
-    private TableColumn<ObjectNode, String> defaultValueColumn;
+    protected ComboBox<ObjectNode>            classifier;
 
     @FXML
-    private TextField                       name;
+    protected TableColumn<ObjectNode, String> defaultValueColumn;
 
     @FXML
-    private TableColumn<ObjectNode, String> relationshipColumn;
+    protected TextField                       name;
+
+    @FXML
+    protected TableColumn<ObjectNode, String> relationshipColumn;
 
     public GraphQlApi getApi() {
         return api;
@@ -124,7 +124,6 @@ public class FacetController {
                                                                                             .asText()));
 
         Callback<ListView<ObjectNode>, ListCell<ObjectNode>> useName = c -> new ListCell<ObjectNode>() {
-
             @Override
             protected void updateItem(ObjectNode item, boolean empty) {
                 super.updateItem(item, empty);
@@ -136,8 +135,10 @@ public class FacetController {
                 }
             }
         };
+
         classifier.setCellFactory(useName);
         classifier.setButtonCell(useName.call(null));
+
         classification.setCellFactory(useName);
         classification.setButtonCell(useName.call(null));
     }

@@ -41,19 +41,24 @@ import javafx.scene.layout.GridPane;
  *
  */
 public class FacetsController {
-    private static String        QUERY = "{ Facets { id name } }";
-    private GraphQlApi           api;
+    private static String          QUERY = "{ Facets { id name } }";
+
+    protected GraphQlApi           api;
 
     @FXML
-    private ListView<ObjectNode> facets;
+    protected AnchorPane           facetAnchor;
+
+    protected FacetController      facetController;
 
     @FXML
-    private AnchorPane           facetAnchor;
+    protected ListView<ObjectNode> facets;
 
-    private FacetController      facetController;
+    public GraphQlApi getApi() {
+        return api;
+    }
 
     @FXML
-    private void initialize() throws IOException {
+    public void initialize() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Occular.class.getResource("view/FacetView.fxml"));
         GridPane facetsView = (GridPane) loader.load();
@@ -65,7 +70,6 @@ public class FacetsController {
                    .add(facetsView);
         facetController = loader.getController();
         facets.setCellFactory(cellData -> new ListCell<ObjectNode>() {
-
             @Override
             protected void updateItem(ObjectNode item, boolean empty) {
                 super.updateItem(item, empty);
@@ -77,10 +81,16 @@ public class FacetsController {
                 }
             }
         });
-    }
-
-    public GraphQlApi getApi() {
-        return api;
+        facets.getSelectionModel()
+              .selectedItemProperty()
+              .addListener(new ChangeListener<ObjectNode>() {
+                  @Override
+                  public void changed(ObservableValue<? extends ObjectNode> ov,
+                                      ObjectNode old_val, ObjectNode new_val) {
+                      facetController.setFacet(new_val.get("id")
+                                                      .asText());
+                  }
+              });
     }
 
     public void setApi(GraphQlApi api) {
@@ -99,15 +109,5 @@ public class FacetsController {
         f.withArray("Facets")
          .forEach(o -> facetList.add((ObjectNode) o));
         facets.setItems(facetList);
-        facets.getSelectionModel()
-              .selectedItemProperty()
-              .addListener(new ChangeListener<ObjectNode>() {
-                  @Override
-                  public void changed(ObservableValue<? extends ObjectNode> ov,
-                                      ObjectNode old_val, ObjectNode new_val) {
-                      facetController.setFacet(new_val.get("id")
-                                                      .asText());
-                  }
-              });
     }
 }

@@ -47,7 +47,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
-import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -96,7 +95,7 @@ public class PluginTest extends AbstractModelTest {
         passThrough.set(bob);
 
         GraphQLSchema schema = FacetQueries.build(scope.getWorkspace(), model,
-                                               executionScope);
+                                                  executionScope);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),

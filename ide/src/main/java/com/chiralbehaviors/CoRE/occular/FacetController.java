@@ -34,10 +34,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.ComboBoxListCell;
 
 /**
  * @author hhildebrand
@@ -45,9 +45,9 @@ import javafx.scene.control.TextField;
  */
 public class FacetController {
 
-    static class ExistentialCell extends ListCell<ObjectNode> {
+    static class ExistentialCell extends ComboBoxListCell<ObjectNode> {
         @Override
-        protected void updateItem(ObjectNode item, boolean empty) {
+        public void updateItem(ObjectNode item, boolean empty) {
             super.updateItem(item, empty);
             if (!empty && (item != null)) {
                 setText(item.get("name")

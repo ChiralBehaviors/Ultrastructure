@@ -9,8 +9,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
 public class Occular extends Application {
@@ -19,44 +18,29 @@ public class Occular extends Application {
         launch(args);
     }
 
-    private Stage      primaryStage;
-    private BorderPane rootLayout;
+    private Stage             primaryStage;
+    private TabPane           rootLayout;
+    private OccularController controller;
 
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
-    public void initRootLayout() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Occular.class.getResource("view/RootLayout.fxml"));
-            rootLayout = (BorderPane) loader.load();
+    public void initRootLayout(GraphQlApi api) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Occular.class.getResource("view/OccularView.fxml"));
+        rootLayout = (TabPane) loader.load();
 
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showView(GraphQlApi api) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Occular.class.getResource("view/FacetsView.fxml"));
-            AnchorPane workspaceView = (AnchorPane) loader.load();
-
-            rootLayout.setCenter(workspaceView);
-            FacetsController facetsController = (FacetsController) loader.getController();
-            facetsController.setApi(api);
-            facetsController.update();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Scene scene = new Scene(rootLayout);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        controller = loader.getController();
+        controller.setApi(api);
     }
 
     @Override
     public void start(Stage primaryStage) {
+        Parameters params = getParameters();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Workspace View");
         String encoded;
@@ -67,10 +51,15 @@ public class Occular extends Application {
             throw new IllegalStateException(e);
         }
         GraphQlApi api = new GraphQlApi(ClientBuilder.newClient()
-                                                     .target(String.format("http://localhost:5000/workspace/%s/meta",
+                                                     .target(String.format("%s/workspace/%s/meta",
+                                                                           params.getRaw()
+                                                                                 .get(0),
                                                                            encoded)),
                                         null);
-        initRootLayout();
-        showView(api);
+        try {
+            initRootLayout(api);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

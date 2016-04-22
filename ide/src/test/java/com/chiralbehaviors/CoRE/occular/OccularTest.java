@@ -22,8 +22,11 @@ package com.chiralbehaviors.CoRE.occular;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -38,9 +41,22 @@ import javafx.stage.Stage;
  * @author hhildebrand
  *
  */
+@Ignore
 public class OccularTest extends ApplicationTest {
 
     protected PhantasmApplication application = new PhantasmApplication();
+
+    @BeforeClass
+    public static void setupSpec() throws Exception {
+        if (Boolean.getBoolean("headless")) {
+            System.setProperty("testfx.robot", "glass");
+            System.setProperty("testfx.headless", "true");
+            System.setProperty("prism.order", "sw");
+            System.setProperty("prism.text", "t2k");
+            System.setProperty("java.awt.headless", "true");
+        }
+        registerPrimaryStage();
+    }
 
     @After
     public void after() {
@@ -55,7 +71,7 @@ public class OccularTest extends ApplicationTest {
     @Test
     public void testIt() throws Exception {
         application.run("server", "target/test-classes/null.yml");
-        ApplicationTest.launch(Occular.class);
+        ApplicationTest.launch(Occular.class, "http://localhost:5000");
         assertTrue(Utils.waitForCondition(5000,
                                           () -> lookup("#facets").query() != null));
         ListView<ObjectNode> facets = lookup("#facets").query();

@@ -9,27 +9,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.3.1/graphiql.min.css" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.3.1/graphiql.min.css"</script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/fetch/0.10.0/fetch.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.3.1/graphiql.min.js"></script>
+<style>
+body {
+	height: 100%;
+	margin: 0;
+	width: 100%;
+	overflow: hidden;
+}
+
+#graphiql {
+	height: 100vh;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.7.0/graphiql.css" />
+<script src="//cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
+<script src="//cdn.jsdelivr.net/react/0.14.7/react.min.js"></script>
+<script src="//cdn.jsdelivr.net/react/0.14.7/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.7.0/graphiql.js"></script>
 </head>
 <body>
-	Loading...
+	<div id="graphiql">Loading...</div>
 	<script>
-		function getQueryStringValue(key) {
-			return decodeURIComponent((window.location.search.replace(
-					new RegExp("^(?:.*[&\\?]"
-							+ encodeURIComponent(key).replace(/[\.\+\*]/g,
-									"\\$&") + "(?:\\=([^&]*))?)?.*$", "i"),
-					"$1")));
-		}
+	    function getQueryStringValue(key) {
+	        return decodeURIComponent((window.location.search.replace(
+	                new RegExp("^(?:.*[&\\?]"
+	                        + encodeURIComponent(key).replace(/[\.\+\*]/g,
+	                                "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"),
+	                "$1")));
+	    }
 		/**
 		 * This GraphiQL example illustrates how to use some of GraphiQL's props
 		 * in order to enable reading and updating the URL parameters, making
@@ -38,7 +45,6 @@
 		 * This is only one example of this kind of feature, GraphiQL exposes
 		 * various React params to enable interesting integrations.
 		 */
-
 		// Parse the search string to get url parameters.
 		var search = window.location.search;
 		var parameters = {};
@@ -54,69 +60,77 @@
 										.slice(eq + 1));
 							}
 						});
-
 		// if variables was provided, try to format it.
 		if (parameters.variables) {
 			try {
 				parameters.variables = JSON.stringify(JSON
-						.parse(query.variables), null, 2);
+						.parse(parameters.variables), null, 2);
 			} catch (e) {
 				// Do nothing, we want to display the invalid JSON as a string, rather
 				// than present an error.
 			}
 		}
-
 		// When the query and variables string is edited, update the URL bar so
 		// that it can be easily shared
 		function onEditQuery(newQuery) {
 			parameters.query = newQuery;
 			updateURL();
 		}
-
 		function onEditVariables(newVariables) {
 			parameters.variables = newVariables;
 			updateURL();
 		}
-
+		function onEditOperationName(newOperationName) {
+			parameters.operationName = newOperationName;
+			updateURL();
+		}
 		function updateURL() {
 			var newSearch = '?'
-					+ Object.keys(parameters).map(
+					+ Object.keys(parameters).filter(function(key) {
+						return Boolean(parameters[key]);
+					}).map(
 							function(key) {
 								return encodeURIComponent(key) + '='
 										+ encodeURIComponent(parameters[key]);
 							}).join('&');
 			history.replaceState(null, null, newSearch);
 		}
-
+        var workspaceUri = getQueryStringValue('workspace');
+        if (workspaceUri) {
+            workspace = encodeURIComponent(workspaceUri);
+        } else {
+            workspace = encodeURIComponent('urn:uuid:00000000-0000-0004-0000-000000000003');
+        }
 		// Defines a GraphQL fetcher using the fetch API.
 		function graphQLFetcher(graphQLParams) {
-			var workspaceUri = getQueryStringValue('workspace');
-			if (workspaceUri) {
-				workspace = encodeURIComponent(workspaceUri);
-			} else {
-				workspace = encodeURIComponent('urn:uuid:00000000-0000-0004-0000-000000000003');
-			}
-			return fetch(
-					window.location.origin + '/graphql/workspace/' + workspace,
-					{
-						method : 'post',
-						headers : {
-							'Content-Type' : 'application/json'
-						},
-						body : JSON.stringify(graphQLParams),
-					}).then(function(response) {
-				return response.json()
+			return fetch(window.location.origin + '/workspace/' + workspace, {
+				method : 'post',
+				headers : {
+					'Accept' : 'application/json',
+					'Content-Type' : 'application/json',
+				},
+				body : JSON.stringify(graphQLParams),
+				credentials : 'include',
+			}).then(function(response) {
+				return response.text();
+			}).then(function(responseBody) {
+				try {
+					return JSON.parse(responseBody);
+				} catch (error) {
+					return responseBody;
+				}
 			});
 		}
-
 		// Render <GraphiQL /> into the body.
-		React.render(React.createElement(GraphiQL, {
+		ReactDOM.render(React.createElement(GraphiQL, {
 			fetcher : graphQLFetcher,
 			query : parameters.query,
 			variables : parameters.variables,
+			operationName : parameters.operationName,
 			onEditQuery : onEditQuery,
-			onEditVariables : onEditVariables
-		}), document.body);
+			onEditVariables : onEditVariables,
+			onEditOperationName : onEditOperationName
+		}), document.getElementById('graphiql'));
 	</script>
 </body>
 </html>

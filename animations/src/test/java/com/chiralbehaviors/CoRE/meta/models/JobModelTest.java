@@ -774,6 +774,7 @@ public class JobModelTest extends AbstractModelTest {
                      deliver.getStatus());
     }
 
+    @Test
     public void testSelfSequencing() {
         Product service = model.records()
                                .newProduct("My Service", null);
@@ -804,12 +805,15 @@ public class JobModelTest extends AbstractModelTest {
         JobRecord job = model.getJobModel()
                              .newInitializedJob(service);
         job.insert();
+        model.flush();
         model.getJobModel()
              .changeStatus(job, a, "transitions");
+        model.flush();
         model.getJobModel()
              .changeStatus(job, b, "transitions");
+        model.flush();
 
-        assertEquals(c, job.getStatus());
+        assertEquals(c.getId(), job.getStatus());
 
     }
 

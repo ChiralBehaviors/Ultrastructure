@@ -343,10 +343,28 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(ExistentialNetworkRecord edge,
+                                                                             Attribute attribute) {
+        ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
+        record.setAttribute(attribute.getId());
+        record.setEdge(edge.getId());
+        return record;
+    }
+
     default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
         ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+
+    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(ExistentialNetworkAuthorizationRecord auth,
+                                                                                                       Attribute attribute) {
+        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
+        record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipalId());
+        record.setAuthorizedAttribute(attribute.getId());
+        record.setNetworkAuthorization(auth.getId());
         return record;
     }
 

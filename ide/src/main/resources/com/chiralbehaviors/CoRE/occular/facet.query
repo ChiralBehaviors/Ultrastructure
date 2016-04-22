@@ -1,0 +1,78 @@
+query facet($id: String!) {
+  Facets {
+    id
+    name
+  }
+  InstancesOfAgency {
+    id
+    name
+    description
+  }
+  InstancesOfAttribute {
+    id
+    name
+    description
+  }
+  InstancesOfInterval {
+    id
+    name
+    description
+  }
+  InstancesOfLocation {
+    id
+    name
+    description
+  }
+  InstancesOfProduct {
+    id
+    name
+    description
+  }
+  InstancesOfRelationship {
+    id
+    name
+    description
+  }
+  InstancesOfStatusCode {
+    id
+    name
+    description
+  }
+  InstancesOfUnit {
+    id
+    name
+    description
+  }
+  Facet(id: $id) {
+    id
+    name
+    classifier {
+        id
+        name
+    }
+    classification {
+        id
+        name
+    }
+    attributes {
+      id
+      authorizedAttribute {
+        id
+        name
+      }
+    }
+    children {
+      id
+      name
+      cardinality
+      relationship {
+        id
+        name
+      }
+      child {
+        id
+        name
+      }
+    }
+  }
+}

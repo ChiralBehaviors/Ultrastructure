@@ -53,7 +53,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -293,25 +292,28 @@ public class WorkspaceImporter {
     }
 
     private void defineFacets() {
-        defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
-        defineFacets(model.getAttributeModel(), wsp.getAttributeFacets());
-        defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
-        defineFacets(model.getLocationModel(), wsp.getLocationFacets());
-        defineFacets(model.getProductModel(), wsp.getProductFacets());
-        defineFacets(model.getRelationshipModel(), wsp.getRelationshipFacets());
-        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
-        defineFacets(model.getUnitModel(), wsp.getUnitFacets());
+        defineFacets(wsp.getAgencyFacets(), ExistentialDomain.Agency);
+        defineFacets(wsp.getAttributeFacets(), ExistentialDomain.Attribute);
+        defineFacets(wsp.getIntervalFacets(), ExistentialDomain.Interval);
+        defineFacets(wsp.getLocationFacets(), ExistentialDomain.Location);
+        defineFacets(wsp.getProductFacets(), ExistentialDomain.Product);
+        defineFacets(wsp.getRelationshipFacets(),
+                     ExistentialDomain.Relationship);
+        defineFacets(wsp.getStatusCodeFacets(), ExistentialDomain.StatusCode);
+        defineFacets(wsp.getUnitFacets(), ExistentialDomain.Unit);
     }
 
-    private void defineFacets(ExistentialModel<? extends ExistentialRuleform> networkedModel,
-                              List<FacetContext> facets) {
+    private void defineFacets(List<FacetContext> facets,
+                              ExistentialDomain domain) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
-                    ExistentialRecord erf = (ExistentialRecord) networkedModel.create(facet.name == null ? facet.classification.member.getText()
-                                                                                                         : WorkspacePresentation.stripQuotes(facet.name.getText()),
-                                                                                      facet.description == null ? null
-                                                                                                                : WorkspacePresentation.stripQuotes(facet.description.getText()));
+                    ExistentialRecord erf = model.records()
+                                                 .newExistential(domain,
+                                                                 facet.name == null ? facet.classification.member.getText()
+                                                                                    : WorkspacePresentation.stripQuotes(facet.name.getText()),
+                                                                 facet.description == null ? null
+                                                                                           : WorkspacePresentation.stripQuotes(facet.description.getText()));
                     erf.insert();
                     workspace.put(facet.classification.member.getText(), erf);
                 }
@@ -667,7 +669,7 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
-        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
+        defineFacets(wsp.getStatusCodeFacets(), null);
     }
 
     private void loadStatusCodeSequencings() {

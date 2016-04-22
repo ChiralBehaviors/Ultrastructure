@@ -50,19 +50,12 @@ import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.domain.Interval;
-import com.chiralbehaviors.CoRE.domain.Location;
-import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.domain.StatusCode;
-import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
@@ -111,24 +104,14 @@ public class ModelImpl implements Model {
         return PostgresDSL.using(configuration(connection));
     }
 
-    private final ExistentialModel<Agency>       agencyModel;
-    private final Animations                     animations;
-    private final ExistentialModel<Attribute>    attributeModel;
-    private final DSLContext                     create;
-    private AuthorizedPrincipal                  currentPrincipal;
-    private final RecordsFactory                 factory;
-    private final ExistentialModel<Interval>     intervalModel;
-    private final JobModel                       jobModel;
-    private final Kernel                         kernel;
-    private final ExistentialModel<Location>     locationModel;
-    private final PhantasmModel                  phantasmModel;
-    private final ExistentialModel<Product>      productModel;
-    private final ExistentialModel<Relationship> relationshipModel;
-    private final ExistentialModel<StatusCode>   statusCodeModel;
-
-    private final ExistentialModel<Unit>         unitModel;
-
-    private final WorkspaceModel                 workspaceModel;
+    private final Animations     animations;
+    private final DSLContext     create;
+    private AuthorizedPrincipal  currentPrincipal;
+    private final RecordsFactory factory;
+    private final JobModel       jobModel;
+    private final Kernel         kernel;
+    private final PhantasmModel  phantasmModel;
+    private final WorkspaceModel workspaceModel;
 
     public ModelImpl(Connection connection) throws SQLException {
         this(newCreate(connection));
@@ -165,30 +148,8 @@ public class ModelImpl implements Model {
         }
         kernel = workspaceScope.getWorkspace()
                                .getAccessor(Kernel.class);
-        agencyModel = new ExistentialModelImpl<>(this, ExistentialDomain.Agency,
-                                                 Agency.class);
-        attributeModel = new ExistentialModelImpl<>(this,
-                                                    ExistentialDomain.Attribute,
-                                                    Attribute.class);
-        intervalModel = new ExistentialModelImpl<>(this,
-                                                   ExistentialDomain.Interval,
-                                                   Interval.class);
-        jobModel = new JobModelImpl(this);
-        locationModel = new ExistentialModelImpl<>(this,
-                                                   ExistentialDomain.Location,
-                                                   Location.class);
-        productModel = new ExistentialModelImpl<>(this,
-                                                  ExistentialDomain.Product,
-                                                  Product.class);
-        relationshipModel = new ExistentialModelImpl<>(this,
-                                                       ExistentialDomain.Relationship,
-                                                       Agency.class);
-        statusCodeModel = new ExistentialModelImpl<>(this,
-                                                     ExistentialDomain.StatusCode,
-                                                     StatusCode.class);
-        unitModel = new ExistentialModelImpl<>(this, ExistentialDomain.Unit,
-                                               Unit.class);
         phantasmModel = new PhantasmModelImpl(this);
+        jobModel = new JobModelImpl(this);
         initializeCurrentPrincipal();
     }
 
@@ -278,21 +239,6 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public ExistentialModel<Agency> getAgencyModel() {
-        return agencyModel;
-    }
-
-    @Override
-    public Attribute getAttribute(UUID id) {
-        return records().resolve(id);
-    }
-
-    @Override
-    public ExistentialModel<Attribute> getAttributeModel() {
-        return attributeModel;
-    }
-
-    @Override
     public CoreInstance getCoreInstance() {
         return wrap(CoreInstance.class,
                     phantasmModel.getChild(getKernel().getCore(),
@@ -309,11 +255,6 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public ExistentialModel<Interval> getIntervalModel() {
-        return intervalModel;
-    }
-
-    @Override
     public JobModel getJobModel() {
         return jobModel;
     }
@@ -324,33 +265,8 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public ExistentialModel<Location> getLocationModel() {
-        return locationModel;
-    }
-
-    @Override
     public PhantasmModel getPhantasmModel() {
         return phantasmModel;
-    }
-
-    @Override
-    public ExistentialModel<Product> getProductModel() {
-        return productModel;
-    }
-
-    @Override
-    public ExistentialModel<Relationship> getRelationshipModel() {
-        return relationshipModel;
-    }
-
-    @Override
-    public ExistentialModel<StatusCode> getStatusCodeModel() {
-        return statusCodeModel;
-    }
-
-    @Override
-    public ExistentialModel<Unit> getUnitModel() {
-        return unitModel;
     }
 
     @Override

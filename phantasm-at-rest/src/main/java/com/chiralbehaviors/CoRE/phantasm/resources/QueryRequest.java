@@ -67,7 +67,7 @@ public class QueryRequest {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Map<String, Object> getVariables(Map request) {
-        Map<String, Object> variables = Collections.emptyMap();
+        Map<String, Object> variables = null;
         Object provided = request.get(VARIABLES);
         if (provided != null) {
             if (provided instanceof Map) {
@@ -89,6 +89,6 @@ public class QueryRequest {
                                                   Status.BAD_REQUEST);
             }
         }
-        return variables;
+        return variables == null ? Collections.emptyMap() : variables;
     }
 }

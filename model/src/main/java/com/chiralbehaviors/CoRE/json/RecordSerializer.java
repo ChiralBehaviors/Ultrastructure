@@ -37,16 +37,6 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  *
  */
 public class RecordSerializer extends JsonSerializer<Record> {
-
-    public static class RecordSerializerException
-            extends JsonProcessingException {
-        private static final long serialVersionUID = -1;
-
-        public RecordSerializerException(Throwable cause) {
-            super(cause);
-        }
-    }
-
     @Override
     public void serializeWithType(Record value, JsonGenerator gen,
                                   SerializerProvider provider,

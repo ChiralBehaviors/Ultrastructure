@@ -12,8 +12,8 @@
     <description>A rest API for the Ultrastructure Phantasms</description>
     <dependencies>
         <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java</artifactId>
+            <groupId>graphql-java-annotations</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.bazaarvoice.dropwizard</groupId>

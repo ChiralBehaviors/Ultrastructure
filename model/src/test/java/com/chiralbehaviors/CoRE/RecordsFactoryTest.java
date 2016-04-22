@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
@@ -100,10 +101,15 @@ public class RecordsFactoryTest extends DatabaseTest {
         facet.insert();
         RECORDS.newExistentialAttributeAuthorization(facet,
                                                      RECORDS.newAttribute());
+        RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
+                                                            attribute);
         RECORDS.newExistentialGrouping();
         RECORDS.newExistentialNetwork();
         RECORDS.newExistentialNetworkAuthorization();
         RECORDS.newExistentialNetworkAttributeAuthorization();
+
+        RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
+                                                            attribute);
         RECORDS.newExistentialNetwork(agency, RECORDS.newRelationship(),
                                       agency);
         RECORDS.newExistentialNetworkAttribute();
@@ -235,5 +241,8 @@ public class RecordsFactoryTest extends DatabaseTest {
                                                 .getId());
         assertEquals(unit.getId(), RECORDS.resolve(unit.getId())
                                           .getId());
+        assertNull(RECORDS.resolveJob(UUID.randomUUID()));
+        RECORDS.newExistentialNetworkAttribute(RECORDS.newExistentialNetwork(),
+                                               attribute);
     }
 }

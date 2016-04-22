@@ -50,7 +50,8 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
@@ -71,10 +72,15 @@ import io.dropwizard.auth.Auth;
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class WorkspaceResource extends TransactionalResource {
 
-    private static final Logger                      log   = LoggerFactory.getLogger(WorkspaceResource.class);
-    private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
+    private static final Logger                      log              = LoggerFactory.getLogger(WorkspaceResource.class);
+    private final ConcurrentMap<UUID, GraphQLSchema> cache            = new ConcurrentHashMap<>();
 
     private final ClassLoader                        executionScope;
+    private final GraphQLSchema                      metaSchema;
+    private final ThreadLocal<Product>               currentWorkspace = new ThreadLocal<>();
+    {
+        metaSchema = Facet.build(currentWorkspace);
+    }
 
     public WorkspaceResource(ClassLoader executionScope) {
         this.executionScope = executionScope;
@@ -134,8 +140,8 @@ public class WorkspaceResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return FacetType.build(scoped.getWorkspace(), model,
-                                       executionScope);
+                return FacetQueries.build(scoped.getWorkspace(), model,
+                                          executionScope);
             });
 
             if (schema == null) {
@@ -164,6 +170,58 @@ public class WorkspaceResource extends TransactionalResource {
             ExecutionResult result = new GraphQL(schema).execute((String) request.get(QueryRequest.QUERY),
                                                                  crud,
                                                                  variables);
+            if (result.getErrors()
+                      .isEmpty()) {
+                return result;
+            }
+            log.info("Query: {} Errors: {}", request.get(QueryRequest.QUERY),
+                     result.getErrors());
+            return result;
+        }, create);
+    }
+
+    @Timed
+    @Path("{workspace}/meta")
+    @POST
+    public ExecutionResult queryMeta(@Auth AuthorizedPrincipal principal,
+                                     @PathParam("workspace") String workspace,
+                                     @SuppressWarnings("rawtypes") Map request,
+                                     @Context DSLContext create) {
+        if (request == null) {
+            throw new WebApplicationException("Query request cannot be null",
+                                              Status.BAD_REQUEST);
+        }
+        if (request.get(QueryRequest.QUERY) == null) {
+            throw new WebApplicationException("Query cannot be null",
+                                              Status.BAD_REQUEST);
+        }
+        return mutate(principal, model -> {
+            UUID uuid = WorkspaceAccessor.uuidOf(workspace);
+
+            PhantasmCRUD crud = new PhantasmCRUD(model);
+            Product definingProduct = model.records()
+                                           .resolve(uuid);
+            if (!model.getPhantasmModel()
+                      .checkCapability(definingProduct, crud.getREAD())
+                || !model.getPhantasmModel()
+                         .checkCapability(definingProduct, model.getKernel()
+                                                                .getEXECUTE_QUERY())) {
+                Agency p = model.getCurrentPrincipal()
+                                .getPrincipal();
+                log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",
+                                       definingProduct.getName(), uuid,
+                                       p.getName(), p.getId()));
+                return null;
+            }
+            Map<String, Object> variables = QueryRequest.getVariables(request);
+            ExecutionResult result;
+            try {
+                currentWorkspace.set(definingProduct);
+                result = new GraphQL(metaSchema).execute((String) request.get(QueryRequest.QUERY),
+                                                         crud, variables);
+            } finally {
+                currentWorkspace.set(null);
+            }
             if (result.getErrors()
                       .isEmpty()) {
                 return result;

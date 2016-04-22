@@ -83,6 +83,7 @@
         <module>navi</module>
         <module>test-plugin</module>
         <module>acm-95-ontology</module>
+        <module>ide</module>
     </modules>
 
     <dependencyManagement>
@@ -198,7 +199,7 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.10</version>
-            </dependency> 
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>acm-95-ontology</artifactId>
@@ -391,6 +392,11 @@
                 <version>2.0.0</version>
             </dependency>
             <dependency>
+                <groupId>graphql-java-annotations</groupId>
+                <artifactId>graphql-java-annotations</artifactId>
+                <version>0.7.0</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.jms</groupId>
                 <artifactId>jms</artifactId>
                 <version>1.1</version>
@@ -460,6 +466,26 @@
                 <groupId>com.loginbox.heroku</groupId>
                 <artifactId>dropwizard-heroku-db</artifactId>
                 <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.controlsfx</groupId>
+                <artifactId>controlsfx</artifactId>
+                <version>8.40.10</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-client</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testfx</groupId>
+                <artifactId>testfx-junit</artifactId>
+                <version>4.0.4-alpha</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -714,6 +740,7 @@
                         <version>0.7.5.201505241946</version>
                         <configuration>
                             <excludes>
+                                <exclude>com/chiralbehaviors/CoRE/occular/**/*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/workspace/dsl/**/*</exclude>
                                 <exclude>**/HelpMojo.*</exclude>

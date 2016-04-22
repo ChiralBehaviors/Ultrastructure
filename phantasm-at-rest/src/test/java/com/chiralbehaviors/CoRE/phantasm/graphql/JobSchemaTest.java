@@ -28,7 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -38,7 +37,8 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.OrderProcessing;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -50,8 +50,8 @@ import graphql.schema.GraphQLSchema;
  */
 public class JobSchemaTest extends AbstractModelTest {
 
-    private WorkspaceImporter scope;
     private OrderProcessing   scenario;
+    private WorkspaceImporter scope;
 
     @Before
     public void initializeScope() throws IOException {
@@ -62,26 +62,9 @@ public class JobSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testIntrospection() throws Exception {
-        GraphQLSchema schema = JobSchema.build();
-        String query = getIntrospectionQuery();
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model));
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
-
-        assertNotNull(result);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
     public void testEuOrder() throws Exception {
 
-        GraphQLSchema schema = JobSchema.build();
+        GraphQLSchema schema = JobQueries.build();
         Map<String, Object> variables = new HashMap<>();
 
         variables.put("service", scenario.getDeliver()
@@ -103,29 +86,32 @@ public class JobSchemaTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
 
-        QueryRequest query = new QueryRequest("mutation m ($service: String!, $assignTo: String, $product: String, $deliverTo: String, "
-                                              + "          $deliverFrom: String, $requester: String) { "
-                                              + "  CreateJob(state: { setService: $service, setAssignTo: $assignTo, setProduct: $product, "
-                                              + "                     setDeliverTo: $deliverTo, setDeliverFrom: $deliverFrom, setRequester: $requester}) { "
-                                              + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
-                                              + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} "
-                                              + "      chronology {"
-                                              + "          id, job {id} status {id, name} product {name} service {name} requester {name} assignTo {name} "
-                                              + "          deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
-                                              + "      } " + "   } " + "}",
-                                              variables);
-        Map<String, Object> result = execute(schema, query);
+        ObjectNode result = execute(schema,
+                                    "mutation m ($service: String!, $assignTo: String, $product: String, $deliverTo: String, "
+                                            + "          $deliverFrom: String, $requester: String) { "
+                                            + "  CreateJob(state: { setService: $service, setAssignTo: $assignTo, setProduct: $product, "
+                                            + "                     setDeliverTo: $deliverTo, setDeliverFrom: $deliverFrom, setRequester: $requester}) { "
+                                            + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
+                                            + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} "
+                                            + "      chronology {"
+                                            + "          id, job {id} status {id, name} product {name} service {name} requester {name} assignTo {name} "
+                                            + "          deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber"
+                                            + "      } " + "   } " + "}",
+                                    variables);
 
-        result = (Map<String, Object>) result.get("CreateJob");
+        result = (ObjectNode) result.get("CreateJob");
         assertNotNull(result);
-        String order = (String) result.get("id");
+        String order = result.get("id")
+                             .asText();
         assertNotNull(order);
 
         assertEquals(model.getKernel()
                           .getUnset()
                           .getId()
                           .toString(),
-                     ((Map<String, Object>) result.get("status")).get("id"));
+                     result.get("status")
+                           .get("id")
+                           .asText());
 
         model.flush();
 
@@ -136,18 +122,21 @@ public class JobSchemaTest extends AbstractModelTest {
                                         .toString());
         variables.put("notes", "transition during test");
 
-        query = new QueryRequest("mutation m ($id: String!, $status: String, $notes: String) { "
+        result = execute(schema,
+                         "mutation m ($id: String!, $status: String, $notes: String) { "
                                  + "  UpdateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
-                                 + "}", variables);
-        result = execute(schema, query);
+                                 + "}",
+                         variables);
 
-        result = (Map<String, Object>) result.get("UpdateJob");
+        result = (ObjectNode) result.get("UpdateJob");
         assertNotNull(result);
         assertEquals(scenario.getAvailable()
                              .getId()
                              .toString(),
-                     ((Map<String, Object>) result.get("status")).get("id"));
+                     result.get("status")
+                           .get("id")
+                           .asText());
 
         model.flush();
 
@@ -158,43 +147,81 @@ public class JobSchemaTest extends AbstractModelTest {
                                         .toString());
         variables.put("notes", "transition during test");
 
-        query = new QueryRequest("mutation m ($id: String!, $status: String, $notes: String) { "
+        result = execute(schema,
+                         "mutation m ($id: String!, $status: String, $notes: String) { "
                                  + "  UpdateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
-                                 + "}", variables);
-        result = execute(schema, query);
+                                 + "}",
+                         variables);
 
-        result = (Map<String, Object>) result.get("UpdateJob");
+        result = (ObjectNode) result.get("UpdateJob");
         assertNotNull(result);
         assertEquals(scenario.getActive()
                              .getId()
                              .toString(),
-                     ((Map<String, Object>) result.get("status")).get("id"));
+                     result.get("status")
+                           .get("id")
+                           .asText());
 
         variables = new HashMap<>();
         variables.put("id", order);
 
-        query = new QueryRequest("query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeSubJobs {id } children {id } chronology {id} } }",
-                                 variables);
-        result = execute(schema, query);
+        result = execute(schema,
+                         "query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeSubJobs {id } children {id } chronology {id} } }",
+                         variables);
 
-        result = (Map<String, Object>) result.get("Job");
+        result = (ObjectNode) result.get("Job");
         assertNotNull(result);
 
-        assertEquals(6, ((List<?>) result.get("allChildren")).size());
+        assertEquals(6, result.withArray("allChildren")
+                              .size());
+        ObjectNode data = execute(schema,
+                                  "{ InstancesOfAgency { id name description } InstancesOfAttribute { id name description } }",
+                                  variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfInterval { id name description } InstancesOfLocation { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfProduct { id name description } InstancesOfRelationship { id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema,
+                       "{ InstancesOfStatusCode { id name description } InstancesOfStatusCode{ id name description } }",
+                       variables);
+        assertNotNull(data);
+        data = execute(schema, "{ Existentials { id name description } }",
+                       variables);
+        assertNotNull(data);
     }
 
-    public Map<String, Object> execute(GraphQLSchema schema,
-                                       QueryRequest query) {
-        ExecutionResult execute = new GraphQL(schema).execute(query.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              query.getVariables());
+    @Test
+    public void testIntrospection() throws Exception {
+        GraphQLSchema schema = JobQueries.build();
+        String query = getIntrospectionQuery();
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model));
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
                           .isEmpty());
         @SuppressWarnings("unchecked")
         Map<String, Object> result = (Map<String, Object>) execute.getData();
+
+        assertNotNull(result);
+    }
+
+    private ObjectNode execute(GraphQLSchema schema, String query,
+                               Map<String, Object> variables) {
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model),
+                                                              variables);
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        ObjectNode result = new ObjectMapper().valueToTree(execute.getData());
         assertNotNull(result);
         return result;
     }

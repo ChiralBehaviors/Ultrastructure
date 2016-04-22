@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,6 +56,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -71,13 +73,42 @@ import io.dropwizard.auth.Auth;
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class WorkspaceResource extends TransactionalResource {
+    private static final Logger log       = LoggerFactory.getLogger(WorkspaceResource.class);
+    static final String         QUERY     = "query";
+    static final String         VARIABLES = "variables";
 
-    private static final Logger                      log              = LoggerFactory.getLogger(WorkspaceResource.class);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Map<String, Object> getVariables(Map request) {
+        Map<String, Object> variables = null;
+        Object provided = request.get(VARIABLES);
+        if (provided != null) {
+            if (provided instanceof Map) {
+                variables = (Map<String, Object>) provided;
+            } else if (provided instanceof String) {
+                try {
+                    String variableString = ((String) provided).trim();
+                    if (!variableString.isEmpty()) {
+                        variables = new ObjectMapper().readValue(variableString,
+                                                                 Map.class);
+                    }
+                } catch (Exception e) {
+                    throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
+                                                                    e.getMessage()),
+                                                      Status.BAD_REQUEST);
+                }
+            } else {
+                throw new WebApplicationException("Invalid variables parameter",
+                                                  Status.BAD_REQUEST);
+            }
+        }
+        return variables == null ? Collections.emptyMap() : variables;
+    }
+
     private final ConcurrentMap<UUID, GraphQLSchema> cache            = new ConcurrentHashMap<>();
 
+    private final ThreadLocal<Product>               currentWorkspace = new ThreadLocal<>();
     private final ClassLoader                        executionScope;
     private final GraphQLSchema                      metaSchema;
-    private final ThreadLocal<Product>               currentWorkspace = new ThreadLocal<>();
     {
         metaSchema = Facet.build(currentWorkspace);
     }
@@ -121,7 +152,7 @@ public class WorkspaceResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        if (request.get(QueryRequest.QUERY) == null) {
+        if (request.get(QUERY) == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
@@ -166,15 +197,15 @@ public class WorkspaceResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = QueryRequest.getVariables(request);
-            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QueryRequest.QUERY),
+            Map<String, Object> variables = getVariables(request);
+            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
                                                                  crud,
                                                                  variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QueryRequest.QUERY),
+            log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
         }, create);
@@ -191,7 +222,7 @@ public class WorkspaceResource extends TransactionalResource {
             throw new WebApplicationException("Query request cannot be null",
                                               Status.BAD_REQUEST);
         }
-        if (request.get(QueryRequest.QUERY) == null) {
+        if (request.get(QUERY) == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
@@ -213,11 +244,11 @@ public class WorkspaceResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = QueryRequest.getVariables(request);
+            Map<String, Object> variables = getVariables(request);
             ExecutionResult result;
             try {
                 currentWorkspace.set(definingProduct);
-                result = new GraphQL(metaSchema).execute((String) request.get(QueryRequest.QUERY),
+                result = new GraphQL(metaSchema).execute((String) request.get(QUERY),
                                                          crud, variables);
             } finally {
                 currentWorkspace.set(null);
@@ -226,7 +257,7 @@ public class WorkspaceResource extends TransactionalResource {
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QueryRequest.QUERY),
+            log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
         }, create);

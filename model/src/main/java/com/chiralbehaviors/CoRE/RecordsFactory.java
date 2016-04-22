@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL_GROUPING;
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
@@ -61,7 +61,7 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -306,8 +306,8 @@ public interface RecordsFactory {
         return record;
     }
 
-    default AgencyExistentialGroupingRecord newExistentialGrouping() {
-        AgencyExistentialGroupingRecord record = create().newRecord(AGENCY_EXISTENTIAL_GROUPING);
+    default AgencyExistentialRecord newAgencyExistential() {
+        AgencyExistentialRecord record = create().newRecord(AGENCY_EXISTENTIAL);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
@@ -692,7 +692,7 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   AgencyExistentialGroupingRecord record) {
+                                                                   AgencyExistentialRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),

@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
-import com.chiralbehaviors.CoRE.jooq.tables.NetworkInference;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
@@ -215,26 +214,9 @@ public interface Inference {
             log.trace(String.format("deduced %s rules", deductions));
 
         }
-        //        INSERT INTO current_pass_rules(id,
-        //                                       parent,
-        //                                       relationship,
-        //                                       child,
-        //                                       premise1,
-        //                                       premise2,
-        //                                       inference)
-        //         SELECT uuid_generate_v1mc() as id,
-        //                wm.parent as parent,
-        //                wm.relationship as relationship,
-        //                wm.child as child,
-        //                wm.premise1 as premise1,
-        //                wm.premise2 as premise2,
-        //                wm.inference as inference
-        //         FROM working_memory AS wm
     }
 
     default void generateInverses() {
-        //        if (true)
-        //            return;
         long then = System.currentTimeMillis();
         ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
         ExistentialNetwork net = EXISTENTIAL_NETWORK.as("net");
@@ -281,90 +263,47 @@ public interface Inference {
                                     inverses,
                                     System.currentTimeMillis() - then));
         }
-
-        //        INSERT INTO ruleform.%tableName%(id,
-        //                parent, 
-        //                relationship, 
-        //                child,
-        //                inference,
-        //                premise1, 
-        //                premise2, 
-        //                updated_by,
-        //                version)
-        //        SELECT uuid_generate_v1mc() as id,
-        //        net.child as parent,
-        //        rel.inverse as relationship,
-        //        net.parent as child,
-        //        net.inference as inference,
-        //        net.premise1 as premise1,
-        //        net.premise2 as premise2,
-        //        '00000000-0000-0000-0000-000000000007' as updated_by,
-        //        1 as version
-        //        FROM ruleform.%tableName% AS net
-        //        JOIN ruleform.relationship AS rel 
-        //        ON net.relationship = rel.id
-        //        LEFT OUTER JOIN ruleform.%tableName% AS exist
-        //        ON net.child = exist.parent
-        //        AND rel.inverse = exist.relationship
-        //        AND net.parent = exist.child
-        //        WHERE exist.id IS NULL
     }
 
     default int infer() {
         ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
         ExistentialNetwork p1 = EXISTENTIAL_NETWORK.as("p1");
         ExistentialNetwork p2 = EXISTENTIAL_NETWORK.as("p2");
-        NetworkInference deduction = NETWORK_INFERENCE.as("deduction");
 
         return create().insertInto(WORKING_MEMORY_TABLE, WorkingMemory.PARENT,
                                    WorkingMemory.RELATIONSHIP,
                                    WorkingMemory.CHILD, WorkingMemory.INFERENCE,
                                    WorkingMemory.PREMISE1,
                                    WorkingMemory.PREMISE2)
-                       .select(create().select(p1.PARENT, deduction.INFERENCE,
-                                               p2.CHILD, deduction.ID, p1.ID,
-                                               p2.ID)
+                       .select(create().select(p1.field(EXISTENTIAL_NETWORK.PARENT),
+                                               NETWORK_INFERENCE.INFERENCE,
+                                               p2.field(EXISTENTIAL_NETWORK.CHILD),
+                                               NETWORK_INFERENCE.ID,
+                                               p1.field(EXISTENTIAL_NETWORK.ID),
+                                               p2.field(EXISTENTIAL_NETWORK.ID))
                                        .from(p1)
                                        .join(p2)
-                                       .on(p2.PARENT.equal(p1.CHILD))
-                                       .and(p2.CHILD.notEqual(p1.PARENT))
-                                       .and(p2.INFERENCE.isNull())
-                                       .join(deduction)
-                                       .on(p1.RELATIONSHIP.equal(deduction.PREMISE1))
-                                       .and(p2.RELATIONSHIP.equal(deduction.PREMISE2))
+                                       .on(p2.field(EXISTENTIAL_NETWORK.PARENT)
+                                             .equal(p1.field(EXISTENTIAL_NETWORK.CHILD)))
+                                       .and(p2.field(EXISTENTIAL_NETWORK.CHILD)
+                                              .notEqual(p1.field(EXISTENTIAL_NETWORK.PARENT)))
+                                       .and(p2.field(p2.INFERENCE)
+                                              .isNull())
+                                       .join(NETWORK_INFERENCE)
+                                       .on(p1.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                             .equal(NETWORK_INFERENCE.PREMISE1))
+                                       .and(p2.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                              .equal(NETWORK_INFERENCE.PREMISE2))
                                        .leftOuterJoin(exist)
-                                       .on(exist.PARENT.equal(p1.PARENT))
-                                       .and(exist.RELATIONSHIP.equal(deduction.INFERENCE))
-                                       .and(exist.CHILD.equal(p2.CHILD))
-                                       .where(exist.ID.isNull()))
+                                       .on(exist.field(EXISTENTIAL_NETWORK.PARENT)
+                                                .equal(p1.field(EXISTENTIAL_NETWORK.PARENT)))
+                                       .and(exist.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                                 .equal(NETWORK_INFERENCE.INFERENCE))
+                                       .and(exist.field(EXISTENTIAL_NETWORK.CHILD)
+                                                 .equal(p2.field(EXISTENTIAL_NETWORK.CHILD)))
+                                       .where(exist.field(EXISTENTIAL_NETWORK.ID)
+                                                   .isNull()))
                        .execute();
-
-        //    INSERT INTO working_memory(parent,
-        //                               relationship,
-        //                               child,
-        //                               premise1,
-        //                               premise2,
-        //                               inference)
-        //         SELECT
-        //            p1.parent as parent,
-        //            deduction.inference as relationship,
-        //            p2.child as child,
-        //            p1.id as premise1,
-        //            p2.id as premise2,
-        //            deduction.id as inference
-        //         FROM existential_network AS p1
-        //         JOIN existential_network AS p2
-        //            ON p2.parent = p1.child
-        //            AND p2.child <> p1.parent
-        //            AND p2.inference IS NULL
-        //         JOIN ruleform.network_inference AS deduction
-        //            ON p1.relationship = deduction.premise1
-        //            AND p2.relationship = deduction.premise2
-        //         LEFT OUTER JOIN existential_network AS exist
-        //            ON  exist.parent = p1.parent
-        //            AND exist.relationship = deduction.inference
-        //            AND exist.child = p2.child
-        //         WHERE exist.id IS NULL
     }
 
     // Infer all possible rules
@@ -417,32 +356,6 @@ public interface Inference {
                                        .and(exist.CHILD.equal(p2.field(EXISTENTIAL_NETWORK.CHILD)))
                                        .where(exist.ID.isNull()))
                        .execute();
-        //        INSERT INTO working_memory(parent,
-        //                                   relationship,
-        //                                   child,
-        //                                   premise1,
-        //                                   premise2,
-        //                                   inference)
-        //            SELECT p1.parent as parent,
-        //                deduction.inference as relationship,
-        //                p2.child as child,
-        //                p1.id as premise1,
-        //                p2.id as premise2,
-        //                deduction.id as inference
-        //            FROM last_pass_rules as p1
-        //            JOIN ruleform.%tableName% AS p2
-        //                ON p2.parent = p1.child
-        //                AND p2.child <> p1.parent
-        //                AND p2.inference IS NULL
-        //            JOIN ruleform.network_inference AS deduction
-        //                ON p1.relationship = deduction.premise1
-        //                AND p2.relationship = deduction.premise2
-        //             LEFT OUTER JOIN %tableName% AS exist
-        //                ON  exist.parent = p1.parent
-        //                AND exist.relationship = deduction.inference
-        //                AND exist.child = p2.child
-        //             WHERE exist.id IS NULL
-
     }
 
     default int insert() {
@@ -473,31 +386,6 @@ public interface Inference {
                                        .and(CurentPassRules.CHILD.equal(EXISTENTIAL_NETWORK.CHILD))
                                        .where(EXISTENTIAL_NETWORK.ID.isNull()))
                        .execute();
-
-        //        INSERT INTO ruleform.%tableName%(id,
-        //                parent,
-        //                relationship,
-        //                child,
-        //                inference,
-        //                premise1,
-        //                premise2,
-        //                updated_by,
-        //                version)
-        //            SELECT cpr.id as id,
-        //                cpr.parent as parent,
-        //                cpr.relationship as relationship,
-        //                cpr.child as child,
-        //                cpr.inference as inference,
-        //                cpr.premise1 as premise1,
-        //                cpr.premise2 as premise2,
-        //                '00000000-0000-0000-0000-000000000009' as updated_by,
-        //                1 as version
-        //            FROM current_pass_rules cpr
-        //            LEFT OUTER JOIN ruleform.%tableName% AS exist
-        //                ON cpr.parent = exist.parent
-        //            AND cpr.relationship = exist.relationship
-        //            AND cpr.child = exist.child
-        //            WHERE exist.id IS NULL
 
     }
 

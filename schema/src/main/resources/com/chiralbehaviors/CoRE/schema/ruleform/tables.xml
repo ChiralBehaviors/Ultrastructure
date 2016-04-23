@@ -15,7 +15,11 @@
     <include relativeToChangelogFile="true" file="tables/existential_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_attr_auth.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_existential.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_facet.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_net_attr_auth.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_net_auth.xml" />
     <include relativeToChangelogFile="true" file="tables/protocol.xml" />
     <include relativeToChangelogFile="true" file="tables/job.xml" />
     <include relativeToChangelogFile="true" file="tables/job_chronology.xml" />

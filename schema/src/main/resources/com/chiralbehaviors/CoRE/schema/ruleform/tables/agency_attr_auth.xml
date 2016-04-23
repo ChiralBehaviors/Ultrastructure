@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="agency_attr_auth">
+            <column name="workspace" type="uuid" />
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="agency_attr_auth_pkey" />
+            </column>
+            <column name="name" type="TEXT" />
+            <column name="authority" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="authorization" type="uuid" />
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="notes" type="TEXT" />
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="agency_attr_auth" constraintName="agency_attr_auth_authority_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorization" baseTableName="agency_attr_auth" constraintName="agency_entity_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential_attribute_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="authorization, authority" constraintName="agency_attr_auth_key_agency"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_attr_auth" />
+
+        <createIndex schemaName="ruleform" indexName="agency_attr_auth_updated_by_fkey_idx" tableName="agency_attr_auth" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attr_auth_authorization_fkey_idx" tableName="agency_attr_auth"
+            unique="false"
+        >
+            <column name="authorization" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attr_auth_authority_fkey_idx" tableName="agency_attr_auth" unique="false">
+            <column name="authority" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="agency_attr_auth" constraintName="agency_attr_auth_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+    </changeSet>
+</databaseChangeLog>

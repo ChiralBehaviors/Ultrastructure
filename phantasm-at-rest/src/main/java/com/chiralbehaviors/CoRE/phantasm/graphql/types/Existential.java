@@ -72,6 +72,23 @@ public interface Existential {
         public Attribute(ExistentialRecord record) {
             super(record);
         }
+
+        @GraphQLField
+        public Boolean getIndexed() {
+            return record.getIndexed();
+        }
+
+        @GraphQLField
+        public Boolean getKeyed() {
+            return record.getKeyed();
+        }
+
+        @GraphQLField
+        public String getValueType() {
+            return record.getValueType()
+                         .toString();
+        }
+
     }
 
     class AttributeTypeFunction implements TypeFunction {
@@ -202,6 +219,12 @@ public interface Existential {
         public Relationship(ExistentialRecord record) {
             super(record);
         }
+
+        @GraphQLField
+        public Relationship getInverse(DataFetchingEnvironment env) {
+            return new Relationship(Existential.resolve(env,
+                                                        record.getInverse()));
+        }
     }
 
     class RelationshipTypeFunction implements TypeFunction {
@@ -216,6 +239,16 @@ public interface Existential {
 
         public StatusCode(ExistentialRecord record) {
             super(record);
+        }
+
+        @GraphQLField
+        public boolean getFailParent() {
+            return record.getFailParent();
+        }
+
+        @GraphQLField
+        public Boolean getPropagateChildren() {
+            return record.getPropagateChildren();
         }
     }
 

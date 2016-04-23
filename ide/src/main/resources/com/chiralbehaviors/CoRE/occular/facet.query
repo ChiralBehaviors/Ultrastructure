@@ -12,6 +12,9 @@ query facet($id: String!) {
     id
     name
     description
+    valueType
+    indexed
+    keyed
   }
   InstancesOfInterval {
     id
@@ -32,11 +35,17 @@ query facet($id: String!) {
     id
     name
     description
+    inverse {
+      id
+      name
+    }
   }
   InstancesOfStatusCode {
     id
     name
     description
+    failParent
+    propagateChildren
   }
   InstancesOfUnit {
     id
@@ -47,18 +56,21 @@ query facet($id: String!) {
     id
     name
     classifier {
-        id
-        name
+      id
+      name
     }
     classification {
-        id
-        name
+      id
+      name
     }
     attributes {
       id
       authorizedAttribute {
         id
         name
+        valueType
+        indexed
+        keyed
       }
     }
     children {

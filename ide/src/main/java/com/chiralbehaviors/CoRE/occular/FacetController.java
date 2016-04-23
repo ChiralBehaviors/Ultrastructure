@@ -119,6 +119,10 @@ public class FacetController {
                                                                                              .get("authorizedAttribute")
                                                                                              .get("name")
                                                                                              .asText()));
+        attributeTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                             .get("authorizedAttribute")
+                                                                                             .get("valueType")
+                                                                                             .asText()));
         cardinalityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
                                                                                            .get("cardinality")
                                                                                            .asText()));

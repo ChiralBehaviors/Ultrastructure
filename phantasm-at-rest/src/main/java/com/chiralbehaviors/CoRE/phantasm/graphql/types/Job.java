@@ -77,11 +77,22 @@ public class Job {
 
     @GraphQLField
     @GraphQLType(JobTypeFunction.class)
-    public List<Job> getActiveSubJobs(DataFetchingEnvironment env) {
+    public List<Job> getActiveChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getActiveSubJobsOf(record)
                        .stream()
                        .map(r -> new Job(r))
+                       .collect(Collectors.toList());
+    }
+
+    @GraphQLField
+    @GraphQLType(ProductTypeFunction.class)
+    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getProtocols(record)
+                       .keySet()
+                       .stream()
+                       .map(r -> new Protocol(r))
                        .collect(Collectors.toList());
     }
 

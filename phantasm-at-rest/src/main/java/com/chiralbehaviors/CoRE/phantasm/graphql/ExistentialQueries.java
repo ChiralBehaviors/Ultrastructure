@@ -30,6 +30,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relati
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
+import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
@@ -75,6 +76,7 @@ public class ExistentialQueries {
     private static final String IDS                       = "ids";
     private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
     private static final String SET_DESCRIPTION           = "setDescription";
+    private static final String SET_FAIL_PARENT           = "setFailParent";
     private static final String SET_INDEXED               = "setIndexed";
     private static final String SET_INVERSE               = "setInverse";
     private static final String SET_KEYED                 = "setKeyed";
@@ -104,24 +106,55 @@ public class ExistentialQueries {
         buildCommonExistentials(query, mutation, updateTemplate,
                                 currentWorkspace);
         buildFields(ExistentialDomain.Relationship, query, mutation,
-                    updateTemplate, relationshipUpdateType(), RelationshipType,
-                    relationshipCreateType(), currentWorkspace);
+                    updateTemplate,
+                    relationshipUpdateType(commonUpdateType(RelationshipType)),
+                    RelationshipType,
+                    relationshipCreateType(commonCreateType(RelationshipType)),
+                    currentWorkspace);
         buildFields(ExistentialDomain.StatusCode, query, mutation,
-                    updateTemplate, statusCodeUpdateType(), StatusCodeType,
-                    statusCodeCreateType(), currentWorkspace);
+                    updateTemplate,
+                    statusCodeUpdateType(commonUpdateType(StatusCodeType)),
+                    StatusCodeType,
+                    statusCodeCreateType(commonCreateType(StatusCodeType)),
+                    currentWorkspace);
         buildFields(ExistentialDomain.Attribute, query, mutation,
-                    updateTemplate, attributeUpdateType(), AttributeType,
-                    attributeCreateType(), currentWorkspace);
+                    updateTemplate,
+                    attributeUpdateType(commonUpdateType(AttributeType)),
+                    AttributeType,
+                    attributeCreateType(commonCreateType(AttributeType)),
+                    currentWorkspace);
         query.field(existentials(currentWorkspace));
     }
 
-    private static GraphQLInputObjectType attributeCreateType() {
-        graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(AttributeType);
+    private static GraphQLInputObjectType attributeCreateType(graphql.schema.GraphQLInputObjectType.Builder builder) {
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLBoolean))
+                                           .name(SET_INDEXED)
+                                           .description("Whether the attribute is indexed")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLBoolean)
+                                           .name(SET_KEYED)
+                                           .description("Whether the attribute is keyed")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_VALUE_TYPE)
+                                           .description("The value type of the attribute")
+                                           .build());
         return builder.build();
     }
 
-    private static GraphQLInputObjectType attributeUpdateType() {
-        graphql.schema.GraphQLInputObjectType.Builder builder = commonUpdateType(AttributeType);
+    private static GraphQLInputObjectType attributeUpdateType(graphql.schema.GraphQLInputObjectType.Builder builder) {
+        builder.field(newInputObjectField().type(GraphQLBoolean)
+                                           .name(SET_KEYED)
+                                           .description("Whether the attribute is keyed")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLBoolean)
+                                           .name(SET_INDEXED)
+                                           .description("Whether the attribute is indexed")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_VALUE_TYPE)
+                                           .description("The value type of the attribute")
+                                           .build());
         return builder.build();
     }
 
@@ -177,6 +210,8 @@ public class ExistentialQueries {
         updateTemplate.put(SET_PROPAGATE_CHILDREN,
                            (e,
                             value) -> e.setPropagateChildren((Boolean) value));
+        updateTemplate.put(SET_FAIL_PARENT,
+                           (e, value) -> e.setFailParent((Boolean) value));
         updateTemplate.put(SET_VALUE_TYPE,
                            (e,
                             value) -> e.setValueType(ValueType.valueOf((String) value)));
@@ -283,6 +318,15 @@ public class ExistentialQueries {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
+    private static GraphQLFieldDefinition existentials(ThreadLocal<Product> currentWorkspace) {
+        return newFieldDefinition().name("Existentials")
+                                   .type(new GraphQLList(ExistentialType))
+                                   .dataFetcher(env -> {
+                                       return fetch(env, currentWorkspace);
+                                   })
+                                   .build();
+    }
+
     private static Existential fetch(DataFetchingEnvironment env) {
         return wrap(ctx(env).create()
                             .selectFrom(Tables.EXISTENTIAL)
@@ -331,6 +375,30 @@ public class ExistentialQueries {
                        .fetchOne();
     }
 
+    private static Object fetch(DataFetchingEnvironment env,
+                                ThreadLocal<Product> currentWorkspace) {
+        if (currentWorkspace == null) {
+            return ctx(env).create()
+                           .selectFrom(Tables.EXISTENTIAL)
+                           .fetch()
+                           .stream()
+                           .map(r -> wrap(r))
+                           .collect(Collectors.toList());
+        }
+        Product definingProduct = currentWorkspace.get();
+        return ctx(env).create()
+                       .selectDistinct(Tables.EXISTENTIAL.fields())
+                       .from(Tables.EXISTENTIAL)
+                       .join(Tables.WORKSPACE_AUTHORIZATION)
+                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
+                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                       .fetch()
+                       .into(ExistentialRecord.class)
+                       .stream()
+                       .map(r -> wrap(r))
+                       .collect(Collectors.toList());
+    }
+
     private static GraphQLFieldDefinition instance(GraphQLObjectType type) {
         return newFieldDefinition().name(type.getName())
                                    .type(type)
@@ -361,39 +429,6 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private static GraphQLFieldDefinition existentials(ThreadLocal<Product> currentWorkspace) {
-        return newFieldDefinition().name("Existentials")
-                                   .type(new GraphQLList(ExistentialType))
-                                   .dataFetcher(env -> {
-                                       return fetch(env, currentWorkspace);
-                                   })
-                                   .build();
-    }
-
-    private static Object fetch(DataFetchingEnvironment env,
-                                ThreadLocal<Product> currentWorkspace) {
-        if (currentWorkspace == null) {
-            return ctx(env).create()
-                           .selectFrom(Tables.EXISTENTIAL)
-                           .fetch()
-                           .stream()
-                           .map(r -> wrap(r))
-                           .collect(Collectors.toList());
-        }
-        Product definingProduct = currentWorkspace.get();
-        return ctx(env).create()
-                       .selectDistinct(Tables.EXISTENTIAL.fields())
-                       .from(Tables.EXISTENTIAL)
-                       .join(Tables.WORKSPACE_AUTHORIZATION)
-                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
-                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
-                       .fetch()
-                       .into(ExistentialRecord.class)
-                       .stream()
-                       .map(r -> wrap(r))
-                       .collect(Collectors.toList());
-    }
-
     private static Object newExistential(ExistentialDomain domain,
                                          DataFetchingEnvironment env,
                                          Map<String, Object> createState,
@@ -410,13 +445,19 @@ public class ExistentialQueries {
         return ruleform;
     }
 
-    private static GraphQLInputObjectType relationshipCreateType() {
-        graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(RelationshipType);
+    private static GraphQLInputObjectType relationshipCreateType(graphql.schema.GraphQLInputObjectType.Builder builder) {
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_INVERSE)
+                                           .description("The inverse relationship")
+                                           .build());
         return builder.build();
     }
 
-    private static GraphQLInputObjectType relationshipUpdateType() {
-        graphql.schema.GraphQLInputObjectType.Builder builder = commonUpdateType(RelationshipType);
+    private static GraphQLInputObjectType relationshipUpdateType(graphql.schema.GraphQLInputObjectType.Builder builder) {
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_INVERSE)
+                                           .description("The inverse relationship")
+                                           .build());
         return builder.build();
     }
 
@@ -436,13 +477,27 @@ public class ExistentialQueries {
                                    .build();
     }
 
-    private static GraphQLInputObjectType statusCodeCreateType() {
-        graphql.schema.GraphQLInputObjectType.Builder builder = commonCreateType(StatusCodeType);
+    private static GraphQLInputObjectType statusCodeCreateType(graphql.schema.GraphQLInputObjectType.Builder builder) {
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLBoolean))
+                                           .name(SET_FAIL_PARENT)
+                                           .description("Fail parent if failed")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_PROPAGATE_CHILDREN)
+                                           .description("Propagate children")
+                                           .build());
         return builder.build();
     }
 
-    private static GraphQLInputObjectType statusCodeUpdateType() {
-        graphql.schema.GraphQLInputObjectType.Builder builder = commonUpdateType(StatusCodeType);
+    private static GraphQLInputObjectType statusCodeUpdateType(graphql.schema.GraphQLInputObjectType.Builder builder) {
+        builder.field(newInputObjectField().type(GraphQLBoolean)
+                                           .name(SET_FAIL_PARENT)
+                                           .description("Whether to fail the parent when failing")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLBoolean)
+                                           .name(SET_PROPAGATE_CHILDREN)
+                                           .description("Whether sub jobs are create")
+                                           .build());
         return builder.build();
     }
 

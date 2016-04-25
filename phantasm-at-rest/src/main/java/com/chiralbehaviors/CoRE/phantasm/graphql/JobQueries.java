@@ -83,6 +83,7 @@ public class JobQueries {
     private static final String UPDATE_INSTANCES_MUTATION = "UpdateInstancesOfJob";
     private static final String UPDATE_MUTATION           = "UpdateJob";
     private static final String UPDATE_TYPE               = "JobUpdate";
+    private static final String IDS                       = "ids";
 
     public static GraphQLSchema build() {
         Builder topLevelQuery = newObject().name("Query")
@@ -346,15 +347,20 @@ public class JobQueries {
                                    .build();
     }
 
+    @SuppressWarnings("unchecked")
     private static GraphQLFieldDefinition instances(GraphQLObjectType type) {
         return newFieldDefinition().name(INSTANCES_OF_QUERY)
-                                   .type(type)
-                                   .argument(newArgument().name(ID)
+                                   .type(new GraphQLList(type))
+                                   .argument(newArgument().name(IDS)
                                                           .description("job ids")
                                                           .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
                                                           .build())
                                    .dataFetcher(env -> {
-                                       return fetch(env);
+                                       return ((List<String>) env.getArgument(IDS)).stream()
+                                                                                   .map(s -> UUID.fromString(s))
+                                                                                   .map(id -> fetch(env,
+                                                                                                    id))
+                                                                                   .collect(Collectors.toList());
                                    })
                                    .build();
     }

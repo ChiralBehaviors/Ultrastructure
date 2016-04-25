@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.occular;
 
+import static com.chiralbehaviors.CoRE.occular.Occular.path;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +32,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxListCell;
+import javafx.util.Callback;
 
 /**
  * @author hhildebrand
@@ -115,29 +120,22 @@ public class FacetController {
 
     @FXML
     public void initialize() {
-        attributeNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                             .get("authorizedAttribute")
-                                                                                             .get("name")
-                                                                                             .asText()));
-        attributeTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                             .get("authorizedAttribute")
-                                                                                             .get("valueType")
-                                                                                             .asText()));
-        cardinalityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                           .get("cardinality")
-                                                                                           .asText()));
-        childNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                         .get("name")
-                                                                                         .asText()));
+        Callback<CellDataFeatures<ObjectNode, String>, ObservableValue<String>> cellValue = cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                                                                         .get("authorizedAttribute")
+                                                                                                                                         .get("name")
+                                                                                                                                         .asText());
+        attributeNameColumn.setCellValueFactory(cellValue);
+        attributeTypeColumn.setCellValueFactory(cellData -> path(cellData.getValue(),
+                                                                 "authorizedAttribute/valueType"));
+        cardinalityColumn.setCellValueFactory(cellData -> path(cellData.getValue(),
+                                                               "cardinality"));
+        childNameColumn.setCellValueFactory(cellData -> path(cellData.getValue(),
+                                                             "name"));
 
-        childColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                     .get("child")
-                                                                                     .get("name")
-                                                                                     .asText()));
-        relationshipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                            .get("relationship")
-                                                                                            .get("name")
-                                                                                            .asText()));
+        childColumn.setCellValueFactory(cellData -> path(cellData.getValue(),
+                                                         "child/name"));
+        relationshipColumn.setCellValueFactory(cellData -> path(cellData.getValue(),
+                                                                "relationship/name"));
         classifier.setCellFactory(l -> new ExistentialCell());
         classifier.setButtonCell(new ExistentialCell());
 

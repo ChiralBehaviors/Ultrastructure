@@ -6,21 +6,33 @@ import java.net.URLEncoder;
 
 import javax.ws.rs.client.ClientBuilder;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
 public class Occular extends Application {
-
     public static void main(String[] args) {
         launch(args);
     }
 
+    public static ObservableValue<String> path(ObjectNode in, String path) {
+        JsonNode node = in;
+        for (String segment : path.split("/")) {
+            node = node.get(segment);
+        }
+        return new SimpleStringProperty(node.asText());
+    }
+
+    private OccularController controller;
     private Stage             primaryStage;
     private TabPane           rootLayout;
-    private OccularController controller;
 
     public Stage getPrimaryStage() {
         return primaryStage;

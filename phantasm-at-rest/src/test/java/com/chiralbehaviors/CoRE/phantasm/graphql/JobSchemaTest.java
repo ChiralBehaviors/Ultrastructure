@@ -167,7 +167,7 @@ public class JobSchemaTest extends AbstractModelTest {
         variables.put("id", order);
 
         result = execute(schema,
-                         "query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeSubJobs {id } children {id } chronology {id} } }",
+                         "query m ($id: String!) { Job(id: $id) { parent {id} allChildren {id } activeChildren {id } children {id } chronology {id} } }",
                          variables);
 
         result = (ObjectNode) result.get("Job");

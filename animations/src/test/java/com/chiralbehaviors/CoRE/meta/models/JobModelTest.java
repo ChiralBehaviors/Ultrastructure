@@ -718,7 +718,9 @@ public class JobModelTest extends AbstractModelTest {
         List<JobRecord> pickSiblings = jobModel.getActiveSubJobsForService(pickParent,
                                                                            scenario.getShip());
         assertEquals(1, pickSiblings.size());
-        assertEquals(scenario.getWaitingOnPurchaseOrder()
+        assertEquals(model.records()
+                          .existentialName(ship.getStatus()),
+                     scenario.getWaitingOnPurchaseOrder()
                              .getId(),
                      ship.getStatus());
         JobRecord fee = model.create()

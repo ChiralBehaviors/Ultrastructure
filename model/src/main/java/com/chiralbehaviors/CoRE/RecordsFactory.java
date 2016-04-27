@@ -617,12 +617,12 @@ public interface RecordsFactory {
         return record;
     }
 
-    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(UUID parent,
+    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(UUID service,
                                                                                    UUID status,
                                                                                    UUID sibling,
                                                                                    UUID next) {
         SiblingSequencingAuthorizationRecord record = newSiblingSequencingAuthorization();
-        record.setParent(parent);
+        record.setService(service);
         record.setStatusCode(status);
         record.setNextSibling(sibling);
         record.setNextSiblingStatus(next);

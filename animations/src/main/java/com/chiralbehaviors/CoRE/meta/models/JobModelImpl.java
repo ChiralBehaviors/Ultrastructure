@@ -662,7 +662,7 @@ public class JobModelImpl implements JobModel {
     public List<SiblingSequencingAuthorizationRecord> getSiblingActions(JobRecord job) {
         return model.create()
                     .selectFrom(SIBLING_SEQUENCING_AUTHORIZATION)
-                    .where(SIBLING_SEQUENCING_AUTHORIZATION.PARENT.equal(job.getService()))
+                    .where(SIBLING_SEQUENCING_AUTHORIZATION.SERVICE.equal(job.getService()))
                     .and(SIBLING_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
                     .fetch();
     }

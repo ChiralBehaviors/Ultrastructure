@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
@@ -29,6 +30,7 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 
 import java.lang.reflect.AnnotatedType;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,8 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.LocationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ProductTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
@@ -67,7 +71,7 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class Protocol {
 
-    class protocolTypeFunction implements TypeFunction {
+    class ProtocolTypeFunction implements TypeFunction {
 
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
@@ -75,34 +79,36 @@ public class Protocol {
         }
     }
 
-    public static final GraphQLObjectType ProtocolType       = Existential.objectTypeOf(Protocol.class);
+    public static final GraphQLObjectType ProtocolType              = Existential.objectTypeOf(Protocol.class);
 
-    private static final String           PROTOCOL_STATE     = "ProtocolState";
-    private static final String           CREATE             = "CreateProtocol";
-    private static final String           DELETE             = "DeleteProtocol";
-    private static final String           ID                 = "id";
-    private static final String           IDS                = "ids";
-    private static final String           SET_NOTES          = "setNotes";
-    private static final String           STATE              = "state";
-    private static final String           UPDATE             = "UpdateProtocol";
-    private static final String           INSTANCES_OF_QUERY = "InstancesOfProtocol";
-
-    @SuppressWarnings("unchecked")
-    private static GraphQLFieldDefinition instances() {
-        return newFieldDefinition().name(INSTANCES_OF_QUERY)
-                                   .type(new GraphQLList(ProtocolType))
-                                   .argument(newArgument().name(IDS)
-                                                          .description("protocol ids")
-                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                          .build())
-                                   .dataFetcher(env -> {
-                                       return ((List<String>) env.getArgument(IDS)).stream()
-                                                                                   .map(id -> Protocol.fetch(env,
-                                                                                                             id))
-                                                                                   .collect(Collectors.toList());
-                                   })
-                                   .build();
-    }
+    private static final String           CREATE                    = "CreateProtocol";
+    private static final String           DELETE                    = "DeleteProtocol";
+    private static final String           ID                        = "id";
+    private static final String           IDS                       = "ids";
+    private static final String           INSTANCES_OF_QUERY        = "InstancesOfProtocol";
+    private static final String           PROTOCOL_STATE            = "ProtocolState";
+    private static final String           SET_ASSIGN_TO             = "setAssignTo";
+    private static final String           SET_CHILD_ASSIGN_TO       = "setChildAssignTo";
+    private static final String           SET_CHILD_DELIVER_FROM    = "setChildDeliverFrom";
+    private static final String           SET_CHILD_DELIVER_TO      = "setChildDeliverTo";
+    private static final String           SET_CHILD_PRODUCT         = "setChildProduct";
+    private static final String           SET_CHILD_QUANTITY        = "setChildQuantity";
+    private static final String           SET_CHILD_QUANTITY_UNIT   = "setChildQuantityUnit";
+    private static final String           SET_CHILD_SERVICE         = "setChildService";
+    private static final String           SET_CHILD_STATUS          = "setChildStatus";
+    private static final String           SET_CHILDREN_RELATIONSHIP = "setChildrenRelationship";
+    private static final String           SET_DELIVER_FROM          = "setDeliverFrom";
+    private static final String           SET_DELIVER_TO            = "setDeliverTo";
+    private static final String           SET_NAME                  = "setName";
+    private static final String           SET_NOTES                 = "setNotes";
+    private static final String           SET_PRODUCT               = "setProduct";
+    private static final String           SET_QUANTITY              = "setQuantity";
+    private static final String           SET_QUANTITY_UNIT         = "setQuantityUnit";
+    private static final String           SET_REQUESTER             = "setRequester";
+    private static final String           SET_SERVICE               = "setService";
+    private static final String           SET_STATUS                = "setStatus";
+    private static final String           STATE                     = "state";
+    private static final String           UPDATE                    = "UpdateProtocol";
 
     public static void build(Builder query, Builder mutation,
                              ThreadLocal<Product> currentWorkspace) {
@@ -119,15 +125,144 @@ public class Protocol {
     private static GraphQLInputObjectType buildStateType() {
         graphql.schema.GraphQLInputObjectType.Builder builder = newInputObject().name(PROTOCOL_STATE)
                                                                                 .description("Protocol creation/update state");
-        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+        builder.field(newInputObjectField().type(GraphQLString)
                                            .name(SET_NOTES)
                                            .description("The notes of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_NAME)
+                                           .description("The name of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_PRODUCT)
+                                           .description("The product of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_DELIVER_FROM)
+                                           .description("The deliver from location of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_DELIVER_TO)
+                                           .description("The deliver to location of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLFloat)
+                                           .name(SET_QUANTITY)
+                                           .description("The quqntity of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_QUANTITY_UNIT)
+                                           .description("The quantity unit of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_REQUESTER)
+                                           .description("The requester of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_SERVICE)
+                                           .description("The service of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_STATUS)
+                                           .description("The status of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_ASSIGN_TO)
+                                           .description("The assigned agency of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_CHILD_DELIVER_FROM)
+                                           .description("The child deliver from location of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_CHILD_DELIVER_TO)
+                                           .description("The child deliver to location of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLString)
+                                           .name(SET_CHILD_PRODUCT)
+                                           .description("The child product of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(GraphQLFloat)
+                                           .name(SET_CHILD_QUANTITY)
+                                           .description("The child quqntity of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_CHILD_QUANTITY_UNIT)
+                                           .description("The child quantity unit of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_CHILDREN_RELATIONSHIP)
+                                           .description("The children relationship of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_CHILD_SERVICE)
+                                           .description("The child service of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_CHILD_STATUS)
+                                           .description("The child status of the  protocol")
+                                           .build());
+        builder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                           .name(SET_CHILD_ASSIGN_TO)
+                                           .description("The child assigned agency of the  protocol")
                                            .build());
         return builder.build();
     }
 
     private static Map<String, BiConsumer<ProtocolRecord, Object>> buildUpdateTemplate() {
         Map<String, BiConsumer<ProtocolRecord, Object>> updateTemplate = new HashMap<>();
+        updateTemplate.put(SET_NAME, (e, value) -> e.setName((String) value));
+        updateTemplate.put(SET_NOTES, (e, value) -> e.setNotes((String) value));
+        updateTemplate.put(SET_ASSIGN_TO,
+                           (e,
+                            value) -> e.setAssignTo(UUID.fromString((String) value)));
+        updateTemplate.put(SET_QUANTITY,
+                           (e,
+                            value) -> e.setQuantity(BigDecimal.valueOf((float) value)));
+        updateTemplate.put(SET_QUANTITY_UNIT,
+                           (e,
+                            value) -> e.setQuantityUnit(UUID.fromString((String) value)));
+        updateTemplate.put(SET_DELIVER_FROM,
+                           (e,
+                            value) -> e.setDeliverFrom(UUID.fromString((String) value)));
+        updateTemplate.put(SET_DELIVER_TO,
+                           (e,
+                            value) -> e.setDeliverTo(UUID.fromString((String) value)));
+        updateTemplate.put(SET_PRODUCT,
+                           (e,
+                            value) -> e.setProduct(UUID.fromString((String) value)));
+        updateTemplate.put(SET_REQUESTER,
+                           (e,
+                            value) -> e.setRequester(UUID.fromString((String) value)));
+        updateTemplate.put(SET_SERVICE,
+                           (e,
+                            value) -> e.setService(UUID.fromString((String) value)));
+        updateTemplate.put(SET_STATUS,
+                           (e,
+                            value) -> e.setStatus(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD_QUANTITY,
+                           (e,
+                            value) -> e.setChildQuantity(BigDecimal.valueOf((float) value)));
+        updateTemplate.put(SET_CHILD_QUANTITY_UNIT,
+                           (e,
+                            value) -> e.setChildQuantityUnit(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD_DELIVER_FROM,
+                           (e,
+                            value) -> e.setChildDeliverFrom(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD_DELIVER_TO,
+                           (e,
+                            value) -> e.setChildDeliverTo(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD_PRODUCT,
+                           (e,
+                            value) -> e.setChildProduct(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILDREN_RELATIONSHIP,
+                           (e,
+                            value) -> e.setChildrenRelationship(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD_SERVICE,
+                           (e,
+                            value) -> e.setChildService(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD_STATUS,
+                           (e,
+                            value) -> e.setChildStatus(UUID.fromString((String) value)));
         return updateTemplate;
     }
 
@@ -170,6 +305,23 @@ public class Protocol {
                                                           .build())
                                    .dataFetcher(env -> {
                                        return new Protocol(fetch(env));
+                                   })
+                                   .build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static GraphQLFieldDefinition instances() {
+        return newFieldDefinition().name(INSTANCES_OF_QUERY)
+                                   .type(new GraphQLList(ProtocolType))
+                                   .argument(newArgument().name(IDS)
+                                                          .description("protocol ids")
+                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
+                                                          .build())
+                                   .dataFetcher(env -> {
+                                       return ((List<String>) env.getArgument(IDS)).stream()
+                                                                                   .map(id -> Protocol.fetch(env,
+                                                                                                             id))
+                                                                                   .collect(Collectors.toList());
                                    })
                                    .build();
     }
@@ -280,6 +432,12 @@ public class Protocol {
     @GraphQLType(UnitTypeFunction.class)
     public Unit getChildQuantityUnit(DataFetchingEnvironment env) {
         return new Unit(resolve(env, record.getChildQuantityUnit()));
+    }
+
+    @GraphQLField
+    @GraphQLType(RelationshipTypeFunction.class)
+    public Relationship getChildrenRelationship(DataFetchingEnvironment env) {
+        return new Relationship(resolve(env, record.getChildrenRelationship()));
     }
 
     @GraphQLField

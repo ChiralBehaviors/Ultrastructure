@@ -129,6 +129,8 @@ public class Facet {
         NetworkAuthorization.build(topLevelQuery, topLevelMutation,
                                    currentWorkspace);
         Facet.build(topLevelQuery, topLevelMutation, currentWorkspace);
+        MetaProtocol.build(topLevelQuery, topLevelMutation, currentWorkspace);
+        Protocol.build(topLevelQuery, topLevelMutation, currentWorkspace);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())

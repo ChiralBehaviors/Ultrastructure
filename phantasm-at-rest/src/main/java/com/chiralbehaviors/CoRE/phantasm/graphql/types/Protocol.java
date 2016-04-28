@@ -111,7 +111,7 @@ public class Protocol {
     private static final String           UPDATE                    = "UpdateProtocol";
 
     public static void build(Builder query, Builder mutation,
-                             ThreadLocal<Product> currentWorkspace) {
+                             ThreadLocal<com.chiralbehaviors.CoRE.domain.Product> currentWorkspace) {
         Map<String, BiConsumer<ProtocolRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 

@@ -41,7 +41,6 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipTypeFunction;
 
@@ -93,7 +92,7 @@ public class MetaProtocol {
     private static final String           UPDATE             = "UpdateMetaProtocol";
 
     public static void build(Builder query, Builder mutation,
-                             ThreadLocal<Product> currentWorkspace) {
+                             ThreadLocal<com.chiralbehaviors.CoRE.domain.Product> currentWorkspace) {
         Map<String, BiConsumer<MetaProtocolRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 

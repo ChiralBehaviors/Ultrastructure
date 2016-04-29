@@ -443,7 +443,7 @@ public class JobModelImpl implements JobModel {
         return model.create()
                     .selectFrom(CHILD_SEQUENCING_AUTHORIZATION)
                     .where(CHILD_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
-                    .and(CHILD_SEQUENCING_AUTHORIZATION.PARENT.equal(job.getService()))
+                    .and(CHILD_SEQUENCING_AUTHORIZATION.SERVICE.equal(job.getService()))
                     .fetch();
     }
 

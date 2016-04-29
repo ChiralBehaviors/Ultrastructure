@@ -30,13 +30,13 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.annotations.GraphQLAnnotations;
+import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 
 /**
@@ -46,42 +46,48 @@ import graphql.schema.GraphQLSchema;
 public class MetaSchemaTest extends AbstractModelTest {
 
     @Test
-    public void testFacets() {
+    public void testMutationType() throws Exception {
+        GraphQLObjectType object = GraphQLAnnotations.object(MetaSchema.Mutations.class);
+        assertNotNull(object);
+    }
+
+    @Test
+    public void testFacets() throws Exception {
 
         ThreadLocal<Product> currentWorkspace = new ThreadLocal<>();
         currentWorkspace.set(model.getKernel()
                                   .getKernelWorkspace());
-        GraphQLSchema schema = Facet.build(currentWorkspace);
+        GraphQLSchema schema = MetaSchema.build();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ Facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
+                                  "{ facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
                                   variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfAgency { id name description } InstancesOfAttribute { id name description } }",
+                       "{ instancesOfAgency { id name description } instancesOfAttribute { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfInterval { id name description } InstancesOfLocation { id name description } }",
+                       "{ instancesOfInterval { id name description } instancesOfLocation { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfProduct { id name description } InstancesOfRelationship { id name description } }",
+                       "{ instancesOfProduct { id name description } instancesOfRelationship { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfStatusCode { id name description } InstancesOfStatusCode{ id name description } }",
-                       variables);
-        assertNotNull(data);
-        data = execute(schema, "{ Existentials { id name description } }",
+                       "{ instancesOfStatusCode { id name description } instancesOfStatusCode{ id name description } }",
                        variables);
         assertNotNull(data);
     }
 
     private ObjectNode execute(GraphQLSchema schema, String query,
-                               Map<String, Object> variables) {
+                               Map<String, Object> variables) throws IllegalArgumentException,
+                                                              Exception {
         ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model),
+                                                              new WorkspaceContext(model,
+                                                                                   model.getKernel()
+                                                                                        .getKernelWorkspace()),
                                                               variables);
         assertTrue(execute.getErrors()
                           .toString(),
@@ -90,5 +96,6 @@ public class MetaSchemaTest extends AbstractModelTest {
         ObjectNode result = new ObjectMapper().valueToTree(execute.getData());
         assertNotNull(result);
         return result;
+
     }
 }

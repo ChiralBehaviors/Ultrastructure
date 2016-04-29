@@ -89,7 +89,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-        GraphQLSchema schema = FacetQueries.build(scope.getWorkspace(), model,
+        GraphQLSchema schema = FacetQueriesOld.build(scope.getWorkspace(), model,
                                                   getClass().getClassLoader());
 
         Map<String, Object> variables = new HashMap<>();
@@ -178,7 +178,7 @@ public class FacetTypeTest extends AbstractModelTest {
     public void testIntrospection() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "test", "testy");
-        GraphQLSchema schema = FacetQueries.build(thing1.getScope()
+        GraphQLSchema schema = FacetQueriesOld.build(thing1.getScope()
                                                         .getWorkspace(),
                                                   model,
                                                   getClass().getClassLoader());
@@ -234,7 +234,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-        GraphQLSchema schema = FacetQueries.build(scope.getWorkspace(), model,
+        GraphQLSchema schema = FacetQueriesOld.build(scope.getWorkspace(), model,
                                                   getClass().getClassLoader());
 
         Map<String, Object> variables = new HashMap<>();
@@ -307,7 +307,7 @@ public class FacetTypeTest extends AbstractModelTest {
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
 
-        GraphQLSchema schema = FacetQueries.build(thing1.getScope()
+        GraphQLSchema schema = FacetQueriesOld.build(thing1.getScope()
                                                         .getWorkspace(),
                                                   model,
                                                   getClass().getClassLoader());
@@ -399,7 +399,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-        GraphQLSchema schema = FacetQueries.build(scope.getWorkspace(), model,
+        GraphQLSchema schema = FacetQueriesOld.build(scope.getWorkspace(), model,
                                                   getClass().getClassLoader());
 
         Map<String, Object> variables = new HashMap<>();
@@ -441,7 +441,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-        GraphQLSchema schema = FacetQueries.build(scope.getWorkspace(), model,
+        GraphQLSchema schema = FacetQueriesOld.build(scope.getWorkspace(), model,
                                                   getClass().getClassLoader());
 
         Map<String, Object> variables = new HashMap<>();

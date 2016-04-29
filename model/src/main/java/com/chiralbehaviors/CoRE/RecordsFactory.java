@@ -202,20 +202,20 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(Product parent,
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(Product service,
                                                                                StatusCode status,
                                                                                Product child,
                                                                                StatusCode next) {
-        return newChildSequencingAuthorization(parent.getId(), status.getId(),
+        return newChildSequencingAuthorization(service.getId(), status.getId(),
                                                child.getId(), next.getId());
     }
 
-    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID parent,
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID service,
                                                                                UUID status,
                                                                                UUID child,
                                                                                UUID next) {
         ChildSequencingAuthorizationRecord record = newChildSequencingAuthorization();
-        record.setParent(parent);
+        record.setService(service);
         record.setStatusCode(status);
         record.setNextChild(child);
         record.setNextChildStatus(next);

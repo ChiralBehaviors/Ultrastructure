@@ -29,7 +29,6 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 
 import java.io.IOException;
-import java.lang.reflect.AnnotatedType;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Base64;
@@ -38,14 +37,18 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import org.jooq.exception.DataAccessException;
+import org.jooq.exception.TooManyRowsException;
+
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.FacetTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetTypeFunction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,12 +56,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.Scalars;
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLNonNull;
-import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLTypeReference;
 
@@ -68,32 +69,22 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class AttributeAuthorization {
 
-    class AttributeAuthorizationTypeFunction implements TypeFunction {
-
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return AttributeAuthorizationType;
-        }
-    }
-
-    public static final GraphQLObjectType AttributeAuthorizationType    = Existential.objectTypeOf(AttributeAuthorization.class);
-
-    private static final String           ATTRIBUTE_AUTHORIZATION_STATE = "AttributeAuthorizationState";
-    private static final String           CREATE                        = "CreateAttributeAuthorization";
-    private static final String           DELETE                        = "DeleteAttributeAuthorization";
-    private static final String           ID                            = "id";
-    private static final String           SET_AUTHORITY                 = "setAuthority";
-    private static final String           SET_AUTHORIZED_ATTRIBUTE      = "setAuthorizedAttribute";
-    private static final String           SET_BINARY_VALUE              = "setBinaryValue";
-    private static final String           SET_BOOLEAN_VALUE             = "setBooleanValue";
-    private static final String           SET_INTEGER_VALUE             = "setIntegerValue";
-    private static final String           SET_JSON_VALUE                = "setJsonValue";
-    private static final String           SET_NOTES                     = "setNotes";
-    private static final String           SET_NUMERIC_VALUE             = "setNumericValue";
-    private static final String           SET_TEXT_VALUE                = "setTextValue";
-    private static final String           SET_TIMESTAMP_VALUE           = "setTimestampValue";
-    private static final String           STATE                         = "state";
-    private static final String           UPDATE                        = "UpdateAttributeAuthorization";
+    private static final String ATTRIBUTE_AUTHORIZATION_STATE = "AttributeAuthorizationState";
+    private static final String CREATE                        = "CreateAttributeAuthorization";
+    private static final String DELETE                        = "DeleteAttributeAuthorization";
+    private static final String ID                            = "id";
+    private static final String SET_AUTHORITY                 = "setAuthority";
+    private static final String SET_AUTHORIZED_ATTRIBUTE      = "setAuthorizedAttribute";
+    private static final String SET_BINARY_VALUE              = "setBinaryValue";
+    private static final String SET_BOOLEAN_VALUE             = "setBooleanValue";
+    private static final String SET_INTEGER_VALUE             = "setIntegerValue";
+    private static final String SET_JSON_VALUE                = "setJsonValue";
+    private static final String SET_NOTES                     = "setNotes";
+    private static final String SET_NUMERIC_VALUE             = "setNumericValue";
+    private static final String SET_TEXT_VALUE                = "setTextValue";
+    private static final String SET_TIMESTAMP_VALUE           = "setTimestampValue";
+    private static final String STATE                         = "state";
+    private static final String UPDATE                        = "UpdateAttributeAuthorization";
 
     public static void build(Builder query, Builder mutation,
                              ThreadLocal<Product> currentWorkspace) {
@@ -182,7 +173,7 @@ public class AttributeAuthorization {
                                                  Map<String, BiConsumer<ExistentialAttributeAuthorizationRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(CREATE)
                                    .description("Create an instance of attribute authorization")
-                                   .type(new GraphQLTypeReference(AttributeAuthorizationType.getName()))
+                                   .type(new GraphQLTypeReference(MetaSchema.AttributeAuthorizationType.getName()))
                                    .argument(newArgument().name(STATE)
                                                           .description("the initial state of the attribute authorization")
                                                           .type(new GraphQLNonNull(createType))
@@ -207,15 +198,22 @@ public class AttributeAuthorization {
     }
 
     private static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env) {
+        UUID id = UUID.fromString((String) env.getArgument(ID));
+        return fetch(env, id);
+    }
+
+    public static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
+                                                                UUID id) throws DataAccessException,
+                                                                         TooManyRowsException {
         return ctx(env).create()
                        .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                       .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(UUID.fromString((String) env.getArgument(ID))))
+                       .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
                        .fetchOne();
     }
 
     private static GraphQLFieldDefinition instance() {
-        return newFieldDefinition().name(AttributeAuthorizationType.getName())
-                                   .type(AttributeAuthorizationType)
+        return newFieldDefinition().name(MetaSchema.AttributeAuthorizationType.getName())
+                                   .type(MetaSchema.AttributeAuthorizationType)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the attribute authorization")
                                                           .type(new GraphQLNonNull(GraphQLString))
@@ -240,7 +238,7 @@ public class AttributeAuthorization {
 
     private static GraphQLFieldDefinition remove() {
         return newFieldDefinition().name(DELETE)
-                                   .type(new GraphQLTypeReference(AttributeAuthorizationType.getName()))
+                                   .type(new GraphQLTypeReference(MetaSchema.AttributeAuthorizationType.getName()))
                                    .description("Delete the %s facet")
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the facet instance")
@@ -271,7 +269,7 @@ public class AttributeAuthorization {
     private static GraphQLFieldDefinition update(GraphQLInputObjectType type,
                                                  Map<String, BiConsumer<ExistentialAttributeAuthorizationRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(UPDATE)
-                                   .type(new GraphQLTypeReference(AttributeAuthorizationType.getName()))
+                                   .type(new GraphQLTypeReference(MetaSchema.AttributeAuthorizationType.getName()))
                                    .description("Update the instance of a authorization")
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply")

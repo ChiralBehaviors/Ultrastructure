@@ -51,8 +51,9 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueriesOld;
+import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
@@ -104,13 +105,15 @@ public class WorkspaceResource extends TransactionalResource {
         return variables == null ? Collections.emptyMap() : variables;
     }
 
-    private final ConcurrentMap<UUID, GraphQLSchema> cache            = new ConcurrentHashMap<>();
-
-    private final ThreadLocal<Product>               currentWorkspace = new ThreadLocal<>();
+    private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
     private final GraphQLSchema                      metaSchema;
     {
-        metaSchema = Facet.build(currentWorkspace);
+        try {
+            metaSchema = MetaSchema.build();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public WorkspaceResource(ClassLoader executionScope) {
@@ -171,8 +174,8 @@ public class WorkspaceResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return FacetQueries.build(scoped.getWorkspace(), model,
-                                          executionScope);
+                return FacetQueriesOld.build(scoped.getWorkspace(), model,
+                                             executionScope);
             });
 
             if (schema == null) {
@@ -229,9 +232,10 @@ public class WorkspaceResource extends TransactionalResource {
         return mutate(principal, model -> {
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
 
-            PhantasmCRUD crud = new PhantasmCRUD(model);
             Product definingProduct = model.records()
                                            .resolve(uuid);
+            WorkspaceContext crud = new WorkspaceContext(model,
+                                                         definingProduct);
             if (!model.getPhantasmModel()
                       .checkCapability(definingProduct, crud.getREAD())
                 || !model.getPhantasmModel()
@@ -245,14 +249,9 @@ public class WorkspaceResource extends TransactionalResource {
                 return null;
             }
             Map<String, Object> variables = getVariables(request);
-            ExecutionResult result;
-            try {
-                currentWorkspace.set(definingProduct);
-                result = new GraphQL(metaSchema).execute((String) request.get(QUERY),
-                                                         crud, variables);
-            } finally {
-                currentWorkspace.set(null);
-            }
+            ExecutionResult result = new GraphQL(metaSchema).execute((String) request.get(QUERY),
+                                                                     crud,
+                                                                     variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;

@@ -53,7 +53,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
-import graphql.annotations.DefaultTypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectType;
@@ -67,7 +66,7 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class ExistentialQueries {
+public class Existentials {
     private static final String CREATE_INSTANCES_MUTATION = "Create%sInstances";
     private static final String CREATE_MUTATION           = "Create%s";
     private static final String CREATE_STATE              = "%sCreateState";
@@ -88,11 +87,6 @@ public class ExistentialQueries {
     private static final String UPDATE_INSTANCES_MUTATION = "Update%sInstances";
     private static final String UPDATE_MUTATION           = "Update%s";
     private static final String UPDATE_STATE              = "Update%sState";
-
-    static {
-        DefaultTypeFunction.register(UUID.class, (u, t) -> GraphQLString);
-        DefaultTypeFunction.register(ValueType.class, (u, t) -> GraphQLString);
-    }
 
     public static void build(Builder query, Builder mutation) {
         build(query, mutation, null);

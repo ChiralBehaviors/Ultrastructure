@@ -90,7 +90,7 @@ public class JobQueries {
                                            .description("Top level query");
         Builder topLevelMutation = newObject().name("Mutation")
                                               .description("Top level mutation");
-        ExistentialQueries.build(topLevelQuery, topLevelMutation);
+        Existentials.build(topLevelQuery, topLevelMutation);
         JobQueries.build(topLevelQuery, topLevelMutation);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())

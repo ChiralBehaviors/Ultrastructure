@@ -88,7 +88,7 @@ public class StatusCodeSequencing {
     private static final String           UPDATE                   = "UpdateStatusCodeSequencing";
 
     public static void build(Builder query, Builder mutation,
-                             ThreadLocal<Product> currentWorkspace) {
+                             ThreadLocal<com.chiralbehaviors.CoRE.domain.Product> currentWorkspace) {
         Map<String, BiConsumer<StatusCodeSequencingRecord, Object>> updateTemplate = buildUpdateTemplate();
         GraphQLInputObjectType stateType = buildStateType();
 

@@ -20,10 +20,84 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
+
+import java.util.UUID;
+
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ProductTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeTypeFunction;
+
+import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLType;
+import graphql.schema.DataFetchingEnvironment;
+
 /**
  * @author hhildebrand
  *
  */
 public class ChildSequencing {
+    private final ChildSequencingAuthorizationRecord record;
 
+    public ChildSequencing(ChildSequencingAuthorizationRecord record) {
+        this.record = record;
+    }
+
+    public UUID getId() {
+        return record.getId();
+    }
+
+    @GraphQLField
+    @GraphQLType(ProductTypeFunction.class)
+    public Product getService(DataFetchingEnvironment env) {
+        return new Product(ctx(env).records()
+                                   .resolve(record.getService()));
+    }
+
+    @GraphQLField
+    @GraphQLType(ProductTypeFunction.class)
+    public Product getNextChild(DataFetchingEnvironment env) {
+        return new Product(ctx(env).records()
+                                   .resolve(record.getNextChild()));
+    }
+
+    @GraphQLField
+    @GraphQLType(StatusCodeTypeFunction.class)
+    public StatusCode getStatusCode(DataFetchingEnvironment env) {
+        return new StatusCode(ctx(env).records()
+                                      .resolve(record.getStatusCode()));
+    }
+
+    @GraphQLField
+    public Integer getSequenceNumber() {
+        return record.getSequenceNumber();
+    }
+
+    @GraphQLField
+    @GraphQLType(StatusCodeTypeFunction.class)
+    public StatusCode getNextChildStatus(DataFetchingEnvironment env) {
+        return new StatusCode(ctx(env).records()
+                                      .resolve(record.getNextChildStatus()));
+    }
+
+    @GraphQLField
+    public String getNotes() {
+        return record.getNotes();
+    }
+
+    @GraphQLField
+    @GraphQLType(AgencyTypeFunction.class)
+    public Agency getUpdatedBy(DataFetchingEnvironment env) {
+        return new Agency(ctx(env).records()
+                                  .resolve(record.getUpdatedBy()));
+    }
+
+    @GraphQLField
+    public Integer getVersion() {
+        return record.getVersion();
+    }
 }

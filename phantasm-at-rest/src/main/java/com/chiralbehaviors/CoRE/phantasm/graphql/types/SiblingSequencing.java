@@ -53,21 +53,9 @@ public class SiblingSequencing {
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
-    public Product getService(DataFetchingEnvironment env) {
+    public Product getNextSibling(DataFetchingEnvironment env) {
         return new Product(ctx(env).records()
-                                   .resolve(record.getService()));
-    }
-
-    @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
-    public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(ctx(env).records()
-                                      .resolve(record.getStatusCode()));
-    }
-
-    @GraphQLField
-    public Integer getSequenceNumber() {
-        return record.getSequenceNumber();
+                                   .resolve(record.getNextSibling()));
     }
 
     @GraphQLField
@@ -80,6 +68,25 @@ public class SiblingSequencing {
     @GraphQLField
     public String getNotes() {
         return record.getNotes();
+    }
+
+    @GraphQLField
+    public Integer getSequenceNumber() {
+        return record.getSequenceNumber();
+    }
+
+    @GraphQLField
+    @GraphQLType(ProductTypeFunction.class)
+    public Product getService(DataFetchingEnvironment env) {
+        return new Product(ctx(env).records()
+                                   .resolve(record.getService()));
+    }
+
+    @GraphQLField
+    @GraphQLType(StatusCodeTypeFunction.class)
+    public StatusCode getStatusCode(DataFetchingEnvironment env) {
+        return new StatusCode(ctx(env).records()
+                                      .resolve(record.getStatusCode()));
     }
 
     @GraphQLField

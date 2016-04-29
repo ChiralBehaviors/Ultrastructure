@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.NetworkAuthorizationType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 import static graphql.Scalars.GraphQLString;
@@ -28,7 +29,6 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 
-import java.lang.reflect.AnnotatedType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -42,12 +42,10 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLNonNull;
-import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLTypeReference;
 
@@ -57,30 +55,66 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class NetworkAuthorization {
 
-    private static final String SET_NOTES = "setNotes";
+    public class NetwworkAuthorizationState {
+        @GraphQLField
+        String authority;
+        @GraphQLField
+        String cardinality;
+        @GraphQLField
+        String child;
+        @GraphQLField
+        String name;
+        @GraphQLField
+        String notes;
+        @GraphQLField
+        String parent;
+        @GraphQLField
+        String relationship;
 
-    private static final String SET_NAME  = "setName";
-
-    class NeworkAuthorizationTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return NetworkAuthorizationType;
+        public void update(ExistentialNetworkAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
+            if (cardinality != null) {
+                record.setCardinality(Cardinality.valueOf(cardinality));
+            }
+            if (child != null) {
+                record.setChild(UUID.fromString(child));
+            }
+            if (name != null) {
+                record.setName(name);
+            }
+            if (notes != null) {
+                record.setName(notes);
+            }
+            if (parent != null) {
+                record.setParent(UUID.fromString(parent));
+            }
+            if (relationship != null) {
+                record.setRelationship(UUID.fromString(relationship));
+            }
         }
     }
 
-    public static final GraphQLObjectType NetworkAuthorizationType    = Existential.objectTypeOf(NetworkAuthorization.class);
+    public class NetworkAuthorizationUpdateState
+            extends NetwworkAuthorizationState {
+        @GraphQLField
+        String id;
+    }
 
-    private static final String           CREATE                      = "CreateNetworkAuthorization";
-    private static final String           DELETE                      = "DeleteNetworkAuthorization";
-    private static final String           ID                          = "id";
-    private static final String           NETWORK_AUTHORIZATION_STATE = "NetworkAuthorizationState";
-    private static final String           SET_AUTHORITY               = "setAuthority";
-    private static final String           SET_CARDINALITY             = "setCardinality";
-    private static final String           SET_CHILD                   = "setChild";
-    private static final String           SET_PARENT                  = "setParent";
-    private static final String           SET_RELATIONSHIP            = "setRelationship";
-    private static final String           STATE                       = "state";
-    private static final String           UPDATE                      = "UpdateNetworkAuthorization";
+    private static final String CREATE                      = "CreateNetworkAuthorization";
+    private static final String DELETE                      = "DeleteNetworkAuthorization";
+    private static final String ID                          = "id";
+    private static final String NETWORK_AUTHORIZATION_STATE = "NetworkAuthorizationState";
+    private static final String SET_AUTHORITY               = "setAuthority";
+    private static final String SET_CARDINALITY             = "setCardinality";
+    private static final String SET_CHILD                   = "setChild";
+    private static final String SET_NAME                    = "setName";
+    private static final String SET_NOTES                   = "setNotes";
+    private static final String SET_PARENT                  = "setParent";
+    private static final String SET_RELATIONSHIP            = "setRelationship";
+    private static final String STATE                       = "state";
+    private static final String UPDATE                      = "UpdateNetworkAuthorization";
 
     public static void build(Builder query, Builder mutation,
                              ThreadLocal<Product> currentWorkspace) {
@@ -93,26 +127,11 @@ public class NetworkAuthorization {
         mutation.field(remove());
     }
 
-    private static Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> buildUpdateTemplate() {
-        Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate = new HashMap<>();
-        updateTemplate.put(SET_NAME, (e, value) -> e.setName((String) value));
-        updateTemplate.put(SET_AUTHORITY,
-                           (e,
-                            value) -> e.setAuthority(UUID.fromString((String) value)));
-        updateTemplate.put(SET_CHILD,
-                           (e,
-                            value) -> e.setChild(UUID.fromString((String) value)));
-        updateTemplate.put(SET_PARENT,
-                           (e,
-                            value) -> e.setParent(UUID.fromString((String) value)));
-        updateTemplate.put(SET_RELATIONSHIP,
-                           (e,
-                            value) -> e.setRelationship(UUID.fromString((String) value)));
-        updateTemplate.put(SET_CARDINALITY,
-                           (e,
-                            value) -> e.setCardinality(Cardinality.valueOf((String) value)));
-        updateTemplate.put(SET_NOTES, (e, value) -> e.setNotes((String) value));
-        return updateTemplate;
+    public static ExistentialNetworkAuthorizationRecord fetch(DataFetchingEnvironment env) {
+        return ctx(env).create()
+                       .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
+                       .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(UUID.fromString((String) env.getArgument(ID))))
+                       .fetchOne();
     }
 
     public static NetworkAuthorization fetch(DataFetchingEnvironment env,
@@ -170,6 +189,28 @@ public class NetworkAuthorization {
         return builder.build();
     }
 
+    private static Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> buildUpdateTemplate() {
+        Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate = new HashMap<>();
+        updateTemplate.put(SET_NAME, (e, value) -> e.setName((String) value));
+        updateTemplate.put(SET_AUTHORITY,
+                           (e,
+                            value) -> e.setAuthority(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CHILD,
+                           (e,
+                            value) -> e.setChild(UUID.fromString((String) value)));
+        updateTemplate.put(SET_PARENT,
+                           (e,
+                            value) -> e.setParent(UUID.fromString((String) value)));
+        updateTemplate.put(SET_RELATIONSHIP,
+                           (e,
+                            value) -> e.setRelationship(UUID.fromString((String) value)));
+        updateTemplate.put(SET_CARDINALITY,
+                           (e,
+                            value) -> e.setCardinality(Cardinality.valueOf((String) value)));
+        updateTemplate.put(SET_NOTES, (e, value) -> e.setNotes((String) value));
+        return updateTemplate;
+    }
+
     private static GraphQLFieldDefinition create(GraphQLInputObjectType createType,
                                                  Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate) {
         return newFieldDefinition().name(CREATE)
@@ -186,13 +227,6 @@ public class NetworkAuthorization {
                                                       updateTemplate);
                                    })
                                    .build();
-    }
-
-    public static ExistentialNetworkAuthorizationRecord fetch(DataFetchingEnvironment env) {
-        return ctx(env).create()
-                       .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
-                       .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(UUID.fromString((String) env.getArgument(ID))))
-                       .fetchOne();
     }
 
     private static Object newAuth(DataFetchingEnvironment env,
@@ -219,24 +253,6 @@ public class NetworkAuthorization {
                                    .build();
     }
 
-    private static GraphQLFieldDefinition update(GraphQLInputObjectType type,
-                                                 Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate) {
-        return newFieldDefinition().name(UPDATE)
-                                   .type(new GraphQLTypeReference(NetworkAuthorizationType.getName()))
-                                   .description("Update the instance of a facet")
-                                   .argument(newArgument().name(STATE)
-                                                          .description("the update state to apply")
-                                                          .type(new GraphQLNonNull(type))
-                                                          .build())
-                                   .dataFetcher(env -> {
-                                       @SuppressWarnings("unchecked")
-                                       Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
-                                       return update(env, updateState,
-                                                     updateTemplate);
-                                   })
-                                   .build();
-    }
-
     private static NetworkAuthorization update(DataFetchingEnvironment env,
                                                Map<String, Object> updateState,
                                                Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate) {
@@ -253,6 +269,24 @@ public class NetworkAuthorization {
                                                             updateState.get(k)));
         auth.update();
         return new NetworkAuthorization(auth);
+    }
+
+    private static GraphQLFieldDefinition update(GraphQLInputObjectType type,
+                                                 Map<String, BiConsumer<ExistentialNetworkAuthorizationRecord, Object>> updateTemplate) {
+        return newFieldDefinition().name(UPDATE)
+                                   .type(new GraphQLTypeReference(NetworkAuthorizationType.getName()))
+                                   .description("Update the instance of a facet")
+                                   .argument(newArgument().name(STATE)
+                                                          .description("the update state to apply")
+                                                          .type(new GraphQLNonNull(type))
+                                                          .build())
+                                   .dataFetcher(env -> {
+                                       @SuppressWarnings("unchecked")
+                                       Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
+                                       return update(env, updateState,
+                                                     updateTemplate);
+                                   })
+                                   .build();
     }
 
     private final ExistentialNetworkAuthorizationRecord record;

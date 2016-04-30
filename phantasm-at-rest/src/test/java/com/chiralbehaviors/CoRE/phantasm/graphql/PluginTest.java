@@ -47,7 +47,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
-import com.chiralbehaviors.CoRE.phantasm.resources.QueryRequest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -76,7 +75,7 @@ public class PluginTest extends AbstractModelTest {
         Workspace workspace = model.wrap(Workspace.class, scope.getWorkspace()
                                                                .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
-        ClassLoader executionScope = FacetQueries.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
+        ClassLoader executionScope = FacetFields.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
                                                                        COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
@@ -95,8 +94,8 @@ public class PluginTest extends AbstractModelTest {
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
 
-        GraphQLSchema schema = FacetQueries.build(scope.getWorkspace(), model,
-                                               executionScope);
+        GraphQLSchema schema = WorkspaceSchema.build(scope.getWorkspace(),
+                                                     model, executionScope);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),

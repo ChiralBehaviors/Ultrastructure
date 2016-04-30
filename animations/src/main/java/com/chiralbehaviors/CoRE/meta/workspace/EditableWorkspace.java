@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
  *
  */
 public interface EditableWorkspace extends WorkspaceAccessor {
-    void add(AgencyExistentialGroupingRecord ruleform);
+    void add(AgencyExistentialRecord ruleform);
 
     void add(ChildSequencingAuthorizationRecord ruleform);
 
@@ -87,7 +87,7 @@ public interface EditableWorkspace extends WorkspaceAccessor {
 
     void addImport(String namespace, Product workspace);
 
-    void put(String key, AgencyExistentialGroupingRecord ruleform);
+    void put(String key, AgencyExistentialRecord ruleform);
 
     void put(String key, ChildSequencingAuthorizationRecord ruleform);
 

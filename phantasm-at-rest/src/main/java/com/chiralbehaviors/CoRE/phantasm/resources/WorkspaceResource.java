@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -50,11 +51,12 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -63,7 +65,7 @@ import io.dropwizard.auth.Auth;
 
 /**
  * A resource providing GraphQL queries on schemas generated from workspaces
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -71,15 +73,46 @@ import io.dropwizard.auth.Auth;
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class WorkspaceResource extends TransactionalResource {
+    private static final Logger log       = LoggerFactory.getLogger(WorkspaceResource.class);
+    static final String         QUERY     = "query";
+    static final String         VARIABLES = "variables";
 
-    private static final Logger                      log              = LoggerFactory.getLogger(WorkspaceResource.class);
-    private final ConcurrentMap<UUID, GraphQLSchema> cache            = new ConcurrentHashMap<>();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Map<String, Object> getVariables(Map request) {
+        Map<String, Object> variables = null;
+        Object provided = request.get(VARIABLES);
+        if (provided != null) {
+            if (provided instanceof Map) {
+                variables = (Map<String, Object>) provided;
+            } else if (provided instanceof String) {
+                try {
+                    String variableString = ((String) provided).trim();
+                    if (!variableString.isEmpty()) {
+                        variables = new ObjectMapper().readValue(variableString,
+                                                                 Map.class);
+                    }
+                } catch (Exception e) {
+                    throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
+                                                                    e.getMessage()),
+                                                      Status.BAD_REQUEST);
+                }
+            } else {
+                throw new WebApplicationException("Invalid variables parameter",
+                                                  Status.BAD_REQUEST);
+            }
+        }
+        return variables == null ? Collections.emptyMap() : variables;
+    }
 
+    private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
     private final GraphQLSchema                      metaSchema;
-    private final ThreadLocal<Product>               currentWorkspace = new ThreadLocal<>();
     {
-        metaSchema = Facet.build(currentWorkspace);
+        try {
+            metaSchema = WorkspaceSchema.buildMeta();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public WorkspaceResource(ClassLoader executionScope) {
@@ -121,7 +154,7 @@ public class WorkspaceResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        if (request.get(QueryRequest.QUERY) == null) {
+        if (request.get(QUERY) == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
@@ -140,8 +173,16 @@ public class WorkspaceResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return FacetQueries.build(scoped.getWorkspace(), model,
-                                          executionScope);
+                try {
+                    return WorkspaceSchema.build(scoped.getWorkspace(), model,
+                                                 executionScope);
+                } catch (Exception e) {
+                    throw new IllegalStateException(String.format("Unable to buidl schema for %s",
+                                                                  scoped.getWorkspace()
+                                                                        .getDefiningProduct()
+                                                                        .getName()),
+                                                    e);
+                }
             });
 
             if (schema == null) {
@@ -166,15 +207,15 @@ public class WorkspaceResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = QueryRequest.getVariables(request);
-            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QueryRequest.QUERY),
+            Map<String, Object> variables = getVariables(request);
+            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
                                                                  crud,
                                                                  variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QueryRequest.QUERY),
+            log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
         }, create);
@@ -191,16 +232,17 @@ public class WorkspaceResource extends TransactionalResource {
             throw new WebApplicationException("Query request cannot be null",
                                               Status.BAD_REQUEST);
         }
-        if (request.get(QueryRequest.QUERY) == null) {
+        if (request.get(QUERY) == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
         return mutate(principal, model -> {
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
 
-            PhantasmCRUD crud = new PhantasmCRUD(model);
             Product definingProduct = model.records()
                                            .resolve(uuid);
+            WorkspaceContext crud = new WorkspaceContext(model,
+                                                         definingProduct);
             if (!model.getPhantasmModel()
                       .checkCapability(definingProduct, crud.getREAD())
                 || !model.getPhantasmModel()
@@ -213,20 +255,15 @@ public class WorkspaceResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            Map<String, Object> variables = QueryRequest.getVariables(request);
-            ExecutionResult result;
-            try {
-                currentWorkspace.set(definingProduct);
-                result = new GraphQL(metaSchema).execute((String) request.get(QueryRequest.QUERY),
-                                                         crud, variables);
-            } finally {
-                currentWorkspace.set(null);
-            }
+            Map<String, Object> variables = getVariables(request);
+            ExecutionResult result = new GraphQL(metaSchema).execute((String) request.get(QUERY),
+                                                                     crud,
+                                                                     variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QueryRequest.QUERY),
+            log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
         }, create);

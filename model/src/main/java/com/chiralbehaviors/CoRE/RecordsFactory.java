@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL_GROUPING;
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
@@ -61,7 +61,7 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -202,20 +202,20 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(Product parent,
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(Product service,
                                                                                StatusCode status,
                                                                                Product child,
                                                                                StatusCode next) {
-        return newChildSequencingAuthorization(parent.getId(), status.getId(),
+        return newChildSequencingAuthorization(service.getId(), status.getId(),
                                                child.getId(), next.getId());
     }
 
-    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID parent,
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID service,
                                                                                UUID status,
                                                                                UUID child,
                                                                                UUID next) {
         ChildSequencingAuthorizationRecord record = newChildSequencingAuthorization();
-        record.setParent(parent);
+        record.setService(service);
         record.setStatusCode(status);
         record.setNextChild(child);
         record.setNextChildStatus(next);
@@ -306,8 +306,8 @@ public interface RecordsFactory {
         return record;
     }
 
-    default AgencyExistentialGroupingRecord newExistentialGrouping() {
-        AgencyExistentialGroupingRecord record = create().newRecord(AGENCY_EXISTENTIAL_GROUPING);
+    default AgencyExistentialRecord newAgencyExistential() {
+        AgencyExistentialRecord record = create().newRecord(AGENCY_EXISTENTIAL);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
@@ -617,12 +617,12 @@ public interface RecordsFactory {
         return record;
     }
 
-    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(UUID parent,
+    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(UUID service,
                                                                                    UUID status,
                                                                                    UUID sibling,
                                                                                    UUID next) {
         SiblingSequencingAuthorizationRecord record = newSiblingSequencingAuthorization();
-        record.setParent(parent);
+        record.setService(service);
         record.setStatusCode(status);
         record.setNextSibling(sibling);
         record.setNextSiblingStatus(next);
@@ -692,7 +692,7 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   AgencyExistentialGroupingRecord record) {
+                                                                   AgencyExistentialRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),

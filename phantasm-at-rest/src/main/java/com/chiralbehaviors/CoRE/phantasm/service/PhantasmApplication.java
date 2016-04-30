@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import io.dropwizard.setup.Environment;
 
 /**
  * Ultrastructure as Phantasm
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -44,8 +44,8 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
     }
 
     private Server                            jettyServer;
-    private PhantasmBundle                    service;
     private JooqBundle<PhantasmConfiguration> jooqBundle;
+    private PhantasmBundle                    service;
 
     public int getPort() {
         return service.getPort();

@@ -58,6 +58,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.graphql.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.fasterxml.jackson.databind.node.ObjectNode;

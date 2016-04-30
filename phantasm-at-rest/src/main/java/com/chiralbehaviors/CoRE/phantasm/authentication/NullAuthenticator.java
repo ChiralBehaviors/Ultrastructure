@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -35,8 +35,7 @@ import io.dropwizard.auth.Authenticator;
  */
 public class NullAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
-    private  Model model;
-
+    private Model model;
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(String credentials) throws AuthenticationException {

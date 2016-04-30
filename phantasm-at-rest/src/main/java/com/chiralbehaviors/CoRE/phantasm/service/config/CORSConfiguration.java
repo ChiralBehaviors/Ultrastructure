@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -65,12 +65,12 @@ import javax.validation.constraints.NotNull;
 public class CORSConfiguration {
     public boolean      allowCredentials = true;
     @NotNull
-    public List<String> allowedMethods   = Arrays.asList("GET", "PUT", "POST",
-                                                         "OPTIONS");
-    @NotNull
     public List<String> allowedHeaders   = Arrays.asList("X-Requested-With",
                                                          "Content-Type",
                                                          "Accept,Origin");
+    @NotNull
+    public List<String> allowedMethods   = Arrays.asList("GET", "PUT", "POST",
+                                                         "OPTIONS");
     @NotNull
     public List<String> allowedOrigins   = Collections.singletonList("*");
     public boolean      chainPreflight   = true;

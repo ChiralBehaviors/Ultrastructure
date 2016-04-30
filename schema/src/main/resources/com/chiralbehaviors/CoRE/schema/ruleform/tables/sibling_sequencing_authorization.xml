@@ -14,7 +14,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="sibling_sequencing_authorization_pkey" />
             </column>
-            <column name="parent" remarks="The last product of a given protocol that was completed" type="uuid">
+            <column name="service" remarks="The service of the job" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="status_code" remarks="The status of the last product completed" type="uuid">
@@ -46,7 +46,7 @@
             baseColumnNames="next_sibling_status" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_next_sibling_status_fk"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="parent" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_parent_fkey"
+            baseColumnNames="service" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_parent_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="status_code" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_status_code_fkey"
@@ -54,7 +54,7 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="parent, status_code, next_sibling, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, next_sibling, sequence_number"
             constraintName="sibling_sequencing_authorization_parent_status_code_seq" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="sibling_sequencing_authorization" />
         <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_updated_by_fkey_idx" tableName="sibling_sequencing_authorization"
@@ -62,10 +62,10 @@
         >
             <column name="updated_by" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_parent_status_idx" tableName="sibling_sequencing_authorization"
+        <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_service_status_idx" tableName="sibling_sequencing_authorization"
             unique="false"
         >
-            <column name="parent" />
+            <column name="service" />
             <column name="status_code" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

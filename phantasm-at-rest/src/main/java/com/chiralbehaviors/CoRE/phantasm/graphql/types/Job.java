@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
-import java.lang.reflect.AnnotatedType;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,18 +33,13 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.LocationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ProductTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology.JobChronologyTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -52,15 +47,70 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class Job {
-    class JobTypeFunction implements TypeFunction {
 
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return JobType;
+    public static class JobState {
+        @GraphQLField
+        public String assignTo;
+        @GraphQLField
+        public String deliverFrom;
+        @GraphQLField
+        public String deliverTo;
+        @GraphQLField
+        public String notes;
+        @GraphQLField
+        public String product;
+        @GraphQLField
+        public Float  quantity;
+        @GraphQLField
+        public String requester;
+        @GraphQLField
+        public String service;
+        @GraphQLField
+        public String status;
+        @GraphQLField
+        public String unit;
+
+        public void update(JobRecord r) {
+            if (assignTo != null) {
+                r.setAssignTo(UUID.fromString(assignTo));
+            }
+            if (deliverFrom != null) {
+                r.setDeliverFrom(UUID.fromString(deliverFrom));
+            }
+            if (deliverTo != null) {
+                r.setDeliverTo(UUID.fromString(deliverTo));
+            }
+            if (notes != null) {
+                r.setNotes(notes);
+            }
+            if (product != null) {
+                r.setProduct(UUID.fromString(product));
+            }
+            if (quantity != null) {
+                r.setQuantity(BigDecimal.valueOf(quantity));
+            }
+            if (product != null) {
+                r.setProduct(UUID.fromString(product));
+            }
+            if (requester != null) {
+                r.setRequester(UUID.fromString(requester));
+            }
+            if (service != null) {
+                r.setService(UUID.fromString(service));
+            }
+            if (status != null) {
+                r.setStatus(UUID.fromString(status));
+            }
+            if (unit != null) {
+                r.setQuantityUnit(UUID.fromString(unit));
+            }
         }
     }
 
-    public static final graphql.schema.GraphQLType JobType = Existential.objectTypeOf(Job.class);
+    public static class JobUpdateState extends JobState {
+        @GraphQLField
+        public String id;
+    }
 
     public static JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
         return ctx(env).create()
@@ -72,12 +122,12 @@ public class Job {
     private final JobRecord record;
 
     public Job(JobRecord record) {
+        assert record != null;
         this.record = record;
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
-    public List<Job> getActiveSubJobs(DataFetchingEnvironment env) {
+    public List<Job> getActiveChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getActiveSubJobsOf(record)
                        .stream()
@@ -86,7 +136,7 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
+
     public List<Job> getAllChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getAllChildren(record)
@@ -102,7 +152,7 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
+
     public List<Job> getChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getChildren(record)
@@ -122,13 +172,11 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverFrom(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverTo(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverTo()));
     }
@@ -139,8 +187,20 @@ public class Job {
     }
 
     @GraphQLField
-    public UUID getId() {
-        return record.getId();
+    public String getId() {
+        return record.getId()
+                     .toString();
+    }
+
+    @GraphQLField
+
+    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getProtocols(record)
+                       .keySet()
+                       .stream()
+                       .map(r -> new Protocol(r))
+                       .collect(Collectors.toList());
     }
 
     @GraphQLField
@@ -149,25 +209,25 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
+
     public Job getParent(DataFetchingEnvironment env) {
-        return new Job(fetch(env, record.getParent()));
+        UUID parent = record.getParent();
+        return parent == null ? null : new Job(fetch(env, parent));
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getProduct(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getProduct()));
     }
 
     @GraphQLField
     public Long getQuantity() {
-        return record.getQuantity()
-                     .longValue();
+        BigDecimal quantity = record.getQuantity();
+        return quantity == null ? null : quantity.longValue();
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
     public Unit getQuantityUnit(DataFetchingEnvironment env) {
         return new Unit(resolve(env, record.getQuantityUnit()));
     }
@@ -179,13 +239,13 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getService(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getService()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
+
     public StatusCode getStatus(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getStatus()));
     }

@@ -6,7 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="agency_existential_grouping" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="agency_existential" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT 
                 base_table.id,
                 auth.name AS authority,
@@ -18,7 +18,7 @@
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc,
                 base_table.version
-             FROM agency_existential_grouping base_table
+             FROM agency_existential base_table
                JOIN existential entity ON base_table.entity = entity.id
                JOIN existential auth ON base_table.authority = auth.id 
                JOIN existential up ON base_table.updated_by = up.id

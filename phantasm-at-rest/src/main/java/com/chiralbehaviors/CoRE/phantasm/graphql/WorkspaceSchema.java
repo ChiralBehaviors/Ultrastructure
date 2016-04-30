@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.interfaceTypeOf;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.objectTypeOf;
 import static graphql.Scalars.GraphQLString;
 import static graphql.annotations.DefaultTypeFunction.register;
 
@@ -66,6 +68,13 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.StatusCodeSequencingQue
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
@@ -78,6 +87,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 
 import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.TypeFunction;
+import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
@@ -88,32 +98,61 @@ import graphql.schema.GraphQLSchema;
  */
 public class WorkspaceSchema {
 
-    public class AttributeAuthorizationTypeFunction implements TypeFunction {
+    public static class AttributeAuthorizationTypeFunction
+            implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return WorkspaceSchema.AttributeAuthorizationType;
         }
     }
 
-    public class ChildSequencingTypeFunction implements TypeFunction {
+    public static class AttributeTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return AttributeType;
+        }
+    }
+
+    public static class ChildSequencingTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return ChildSequencingType;
         }
     }
 
-    public class FacetTypeFunction implements TypeFunction {
+    public static class ExistentialTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return ExistentialType;
+        }
+    }
+
+    public static class FacetTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return FacetType;
         }
     }
 
-    public class JobTypeFunction implements TypeFunction {
+    public static class IntervalTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return IntervalType;
+        }
+    }
+
+    public static class JobTypeFunction implements TypeFunction {
 
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return JobType;
+        }
+    }
+
+    public static class LocationTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return LocationType;
         }
     }
 
@@ -125,7 +164,7 @@ public class WorkspaceSchema {
             StatusCodeSequencingMutations {
     }
 
-    public class MetaProtocolTypeFunction implements TypeFunction {
+    public static class MetaProtocolTypeFunction implements TypeFunction {
 
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
@@ -143,21 +182,29 @@ public class WorkspaceSchema {
     public interface Mutations extends ExistentialMutations, JobMutations {
     }
 
-    public class NetworkAuthorizationTypeFunction implements TypeFunction {
+    public static class NetworkAuthorizationTypeFunction
+            implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return NetworkAuthorizationType;
         }
     }
 
-    public class ParentSequencingTypeFunction implements TypeFunction {
+    public static class ParentSequencingTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return ParentSequencingType;
         }
     }
 
-    public class ProtocolTypeFunction implements TypeFunction {
+    public static class ProductTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return ProductType;
+        }
+    }
+
+    public static class ProtocolTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return ProtocolType;
@@ -167,21 +214,29 @@ public class WorkspaceSchema {
     public interface Queries extends ExistentialQueries, JobQueries {
     }
 
-    public class SelfSequencingTypeFunction implements TypeFunction {
+    public static class RelationshipTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return RelationshipType;
+        }
+    }
+
+    public static class SelfSequencingTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return SelfSequencingType;
         }
     }
 
-    public class SiblingSequencingTypeFunction implements TypeFunction {
+    public static class SiblingSequencingTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return SiblingSequencingType;
         }
     }
 
-    public class StatusCodeSequencingTypeFunction implements TypeFunction {
+    public static class StatusCodeSequencingTypeFunction
+            implements TypeFunction {
 
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
@@ -189,22 +244,46 @@ public class WorkspaceSchema {
         }
     }
 
-    public static final GraphQLObjectType AttributeAuthorizationType = Existential.objectTypeOf(AttributeAuthorization.class);
-    public static final GraphQLObjectType ChildSequencingType        = Existential.objectTypeOf(ChildSequencing.class);
-    public static final GraphQLObjectType FacetType                  = Existential.objectTypeOf(Facet.class);
-    public static final GraphQLObjectType JobType                    = Existential.objectTypeOf(Job.class);
-    public static final GraphQLObjectType MetaProtocolType           = Existential.objectTypeOf(MetaProtocol.class);
-    public static final GraphQLObjectType NetworkAuthorizationType   = Existential.objectTypeOf(NetworkAuthorization.class);
-    public static final GraphQLObjectType ParentSequencingType       = Existential.objectTypeOf(ParentSequencing.class);
-    public static final GraphQLObjectType ProtocolType               = Existential.objectTypeOf(Protocol.class);
-    public static final GraphQLObjectType SelfSequencingType         = Existential.objectTypeOf(SelfSequencing.class);
-    public static final GraphQLObjectType SiblingSequencingType      = Existential.objectTypeOf(SiblingSequencing.class);
-    public static final GraphQLObjectType StatusCodeSequencingType   = Existential.objectTypeOf(StatusCodeSequencing.class);
+    public static class StatusCodeTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return StatusCodeType;
+        }
+    }
+
+    public static final GraphQLObjectType    AgencyType                 = objectTypeOf(Agency.class);
+    public static final GraphQLObjectType    AttributeAuthorizationType = Existential.objectTypeOf(AttributeAuthorization.class);
+    public static final GraphQLObjectType    AttributeType              = objectTypeOf(Attribute.class);
+    public static final GraphQLObjectType    ChildSequencingType        = Existential.objectTypeOf(ChildSequencing.class);
+    public static final GraphQLInterfaceType ExistentialType            = interfaceTypeOf(Existential.class);
+    public static final GraphQLObjectType    FacetType                  = Existential.objectTypeOf(Facet.class);
+    public static final GraphQLObjectType    IntervalType               = objectTypeOf(Interval.class);
+    public static final GraphQLObjectType    JobType                    = Existential.objectTypeOf(Job.class);
+    public static final GraphQLObjectType    LocationType               = objectTypeOf(Location.class);
+    public static final GraphQLObjectType    MetaProtocolType           = Existential.objectTypeOf(MetaProtocol.class);
+    public static final GraphQLObjectType    NetworkAuthorizationType   = Existential.objectTypeOf(NetworkAuthorization.class);
+    public static final GraphQLObjectType    ParentSequencingType       = Existential.objectTypeOf(ParentSequencing.class);
+    public static final GraphQLObjectType    ProductType                = objectTypeOf(Product.class);
+    public static final GraphQLObjectType    ProtocolType               = Existential.objectTypeOf(Protocol.class);
+    public static final GraphQLObjectType    RelationshipType           = objectTypeOf(Relationship.class);
+    public static final GraphQLObjectType    SelfSequencingType         = Existential.objectTypeOf(SelfSequencing.class);
+    public static final GraphQLObjectType    SiblingSequencingType      = Existential.objectTypeOf(SiblingSequencing.class);
+    public static final GraphQLObjectType    StatusCodeSequencingType   = Existential.objectTypeOf(StatusCodeSequencing.class);
+    public static final GraphQLObjectType    StatusCodeType             = objectTypeOf(StatusCode.class);
+    public static final GraphQLObjectType    UnitType                   = objectTypeOf(Unit.class);
 
     static {
         register(UUID.class, (u, t) -> GraphQLString);
         register(ValueType.class, (u, t) -> GraphQLString);
         register(Cardinality.class, (u, t) -> GraphQLString);
+        register(Agency.class, (u, t) -> AgencyType);
+        register(Attribute.class, (u, t) -> AttributeType);
+        register(Interval.class, (u, t) -> IntervalType);
+        register(Location.class, (u, t) -> LocationType);
+        register(Product.class, (u, t) -> ProductType);
+        register(Relationship.class, (u, t) -> RelationshipType);
+        register(StatusCode.class, (u, t) -> StatusCodeType);
+        register(Unit.class, (u, t) -> UnitType);
         register(Facet.class, (u, t) -> FacetType);
         register(AttributeAuthorization.class,
                  (u, t) -> AttributeAuthorizationType);

@@ -1,14 +1,14 @@
 query facet($id: String!) {
-  Facets {
+  facets {
     id
     name
   }
-  InstancesOfAgency {
+  agencies {
     id
     name
     description
   }
-  InstancesOfAttribute {
+  attributes {
     id
     name
     description
@@ -16,22 +16,22 @@ query facet($id: String!) {
     indexed
     keyed
   }
-  InstancesOfInterval {
+  intervals {
     id
     name
     description
   }
-  InstancesOfLocation {
+  locations {
     id
     name
     description
   }
-  InstancesOfProduct {
+  products {
     id
     name
     description
   }
-  InstancesOfRelationship {
+  relationships {
     id
     name
     description
@@ -40,19 +40,19 @@ query facet($id: String!) {
       name
     }
   }
-  InstancesOfStatusCode {
+  statusCodes {
     id
     name
     description
     failParent
     propagateChildren
   }
-  InstancesOfUnit {
+  units {
     id
     name
     description
   }
-  Facet(id: $id) {
+  facet(id: $id) {
     id
     name
     classifier {

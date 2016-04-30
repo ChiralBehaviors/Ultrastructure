@@ -20,6 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AgencyType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.IntervalType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
 import static graphql.Scalars.GraphQLString;
 
 import java.lang.reflect.AnnotatedType;
@@ -100,13 +108,6 @@ public interface Existential {
 
         @GraphQLField
         String  valueType;
-    }
-
-    public class AttributeTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return AttributeType;
-        }
     }
 
     public class AttributeUpdateState extends AttributeState {
@@ -202,13 +203,6 @@ public interface Existential {
         }
     }
 
-    public class ExistentialTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ExistentialType;
-        }
-    }
-
     public class ExistentialUpdateState extends ExistentialState {
         @GraphQLField
         public String id;
@@ -222,13 +216,6 @@ public interface Existential {
         }
     }
 
-    public class IntervalTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return IntervalType;
-        }
-    }
-
     @GraphQLDescription("The Location existential ruleform")
     public class Location extends ExistentialCommon {
 
@@ -237,25 +224,11 @@ public interface Existential {
         }
     }
 
-    public class LocationTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return LocationType;
-        }
-    }
-
     @GraphQLDescription("The Product existential ruleform")
     public class Product extends ExistentialCommon {
 
         public Product(ExistentialRecord record) {
             super(record);
-        }
-    }
-
-    public class ProductTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ProductType;
         }
     }
 
@@ -276,13 +249,6 @@ public interface Existential {
     public class RelationshipState extends ExistentialState {
         @GraphQLField
         String inverse;
-    }
-
-    public class RelationshipTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return RelationshipType;
-        }
     }
 
     public class RelationshipUpdateState extends RelationshipState {
@@ -314,13 +280,6 @@ public interface Existential {
 
         @GraphQLField
         Boolean propagateChildren;
-    }
-
-    public class StatusCodeTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return StatusCodeType;
-        }
     }
 
     public class StatusCodeUpdateState extends StatusCodeState {
@@ -358,24 +317,6 @@ public interface Existential {
             return GraphQLString;
         }
     }
-
-    public final GraphQLObjectType    AgencyType       = objectTypeOf(Agency.class);
-
-    public final GraphQLObjectType    AttributeType    = objectTypeOf(Attribute.class);
-
-    public final GraphQLInterfaceType ExistentialType  = interfaceTypeOf(Existential.class);
-
-    public final GraphQLObjectType    IntervalType     = objectTypeOf(Interval.class);
-
-    public final GraphQLObjectType    LocationType     = objectTypeOf(Location.class);
-
-    public final GraphQLObjectType    ProductType      = objectTypeOf(Product.class);
-
-    public final GraphQLObjectType    RelationshipType = objectTypeOf(Relationship.class);
-
-    public final GraphQLObjectType    StatusCodeType   = objectTypeOf(StatusCode.class);
-
-    public final GraphQLObjectType    UnitType         = objectTypeOf(Unit.class);
 
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();

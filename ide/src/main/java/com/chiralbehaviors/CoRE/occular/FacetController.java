@@ -156,26 +156,26 @@ public class FacetController {
     }
 
     private void update(ObjectNode result) {
-        JsonNode facet = result.get("Facet");
+        JsonNode facet = result.get("facet");
         name.setText(facet.get("name")
                           .asText());
 
         ObservableList<ObjectNode> existentials = FXCollections.observableArrayList();
-        result.withArray("InstancesOfAgency")
+        result.withArray("agencies")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfAttribute")
+        result.withArray("attributes")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfInterval")
+        result.withArray("intervals")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfLocation")
+        result.withArray("locations")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfProduct")
+        result.withArray("products")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfRelationship")
+        result.withArray("relationships")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfStatusCode")
+        result.withArray("statusCodes")
               .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("InstancesOfUnits")
+        result.withArray("units")
               .forEach(r -> existentials.add((ObjectNode) r));
 
         ObservableList<ObjectNode> attributeList = FXCollections.observableArrayList();
@@ -189,7 +189,7 @@ public class FacetController {
         children.setItems(childrenList);
 
         ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
-        result.withArray("InstancesOfRelationship")
+        result.withArray("relationship")
               .forEach(r -> relationships.add((ObjectNode) r));
         classifier.setItems(relationships);
         classifier.setValue((ObjectNode) facet.get("classifier"));

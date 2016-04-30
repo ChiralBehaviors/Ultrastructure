@@ -39,15 +39,15 @@ public interface NetworkAuthorizationQueries {
 
     @GraphQLField
     @GraphQLType(NetworkAuthorizationTypeFunction.class)
-    default NetworkAuthorization NetworkAuthorization(String id,
+    default NetworkAuthorization networkAuthorization(String id,
                                                       DataFetchingEnvironment env) {
         return NetworkAuthorization.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(NetworkAuthorizationTypeFunction.class)
-    default List<NetworkAuthorization> InstancesOfNetworkAuthorization(List<String> ids,
-                                                                       DataFetchingEnvironment env) {
+    default List<NetworkAuthorization> networkAuthorizations(List<String> ids,
+                                                             DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))
                   .map(id -> NetworkAuthorization.fetch(env, id))

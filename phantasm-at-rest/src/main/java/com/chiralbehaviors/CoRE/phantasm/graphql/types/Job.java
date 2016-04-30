@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.lang.reflect.AnnotatedType;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,12 +53,77 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class Job {
-    class JobTypeFunction implements TypeFunction {
+
+    public static class JobState {
+        @GraphQLField
+        String assignTo;
+        @GraphQLField
+        String deliverFrom;
+        @GraphQLField
+        String deliverTo;
+        @GraphQLField
+        String notes;
+        @GraphQLField
+        String product;
+        @GraphQLField
+        Float  quantity;
+        @GraphQLField
+        String requester;
+        @GraphQLField
+        String service;
+        @GraphQLField
+        String status;
+        @GraphQLField
+        String unit;
+
+        public void update(JobRecord r) {
+            if (assignTo != null) {
+                r.setAssignTo(UUID.fromString(assignTo));
+            }
+            if (deliverFrom != null) {
+                r.setDeliverFrom(UUID.fromString(deliverFrom));
+            }
+            if (deliverTo != null) {
+                r.setDeliverTo(UUID.fromString(deliverTo));
+            }
+            if (notes != null) {
+                r.setNotes(notes);
+            }
+            if (product != null) {
+                r.setProduct(UUID.fromString(product));
+            }
+            if (quantity != null) {
+                r.setQuantity(BigDecimal.valueOf(quantity));
+            }
+            if (product != null) {
+                r.setProduct(UUID.fromString(product));
+            }
+            if (requester != null) {
+                r.setRequester(UUID.fromString(requester));
+            }
+            if (service != null) {
+                r.setService(UUID.fromString(service));
+            }
+            if (status != null) {
+                r.setStatus(UUID.fromString(status));
+            }
+            if (unit != null) {
+                r.setQuantityUnit(UUID.fromString(unit));
+            }
+        }
+    }
+
+    public class JobTypeFunction implements TypeFunction {
 
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return JobType;
         }
+    }
+
+    public static class JobUpdateState extends JobState {
+        @GraphQLField
+        public String id;
     }
 
     public static final graphql.schema.GraphQLType JobType = Existential.objectTypeOf(Job.class);
@@ -82,17 +148,6 @@ public class Job {
                        .getActiveSubJobsOf(record)
                        .stream()
                        .map(r -> new Job(r))
-                       .collect(Collectors.toList());
-    }
-
-    @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
-    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
-        return ctx(env).getJobModel()
-                       .getProtocols(record)
-                       .keySet()
-                       .stream()
-                       .map(r -> new Protocol(r))
                        .collect(Collectors.toList());
     }
 
@@ -152,6 +207,17 @@ public class Job {
     @GraphQLField
     public UUID getId() {
         return record.getId();
+    }
+
+    @GraphQLField
+    @GraphQLType(ProductTypeFunction.class)
+    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
+        return ctx(env).getJobModel()
+                       .getProtocols(record)
+                       .keySet()
+                       .stream()
+                       .map(r -> new Protocol(r))
+                       .collect(Collectors.toList());
     }
 
     @GraphQLField

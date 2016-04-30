@@ -42,13 +42,13 @@ public interface FacetQueries {
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default Facet Facet(String id, DataFetchingEnvironment env) {
+    default Facet facet(String id, DataFetchingEnvironment env) {
         return Facet.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default List<Facet> Facets(List<String> ids, DataFetchingEnvironment env) {
+    default List<Facet> facets(List<String> ids, DataFetchingEnvironment env) {
         if (ids == null) {
             return ctx(env).getPhantasmModel()
                            .getFacets(((WorkspaceContext) env.getContext()).getWorkspace())

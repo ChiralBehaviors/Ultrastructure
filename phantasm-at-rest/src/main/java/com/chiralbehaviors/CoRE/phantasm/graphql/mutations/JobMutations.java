@@ -25,11 +25,11 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
-import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.FacetTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetUpdateState;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
@@ -39,36 +39,34 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-public interface FacetMutations {
+public interface JobMutations {
 
     @GraphQLField
-    @GraphQLType(FacetTypeFunction.class)
-    default Facet createFacet(FacetState state, DataFetchingEnvironment env) {
-        FacetRecord record = ctx(env).records()
-                                     .newFacet();
+    @GraphQLType(JobTypeFunction.class)
+    default Job createJob(JobState state, DataFetchingEnvironment env) {
+        JobRecord record = ctx(env).records()
+                                   .newJob();
         state.update(record);
         record.insert();
-        return new Facet(record);
+        return new Job(record);
     }
 
     @GraphQLField
-    default Boolean removeFacet(String id, DataFetchingEnvironment env) {
-        Facet.fetch(env, UUID.fromString(id))
-             .getRecord()
-             .delete();
+    default Boolean removeJob(String id, DataFetchingEnvironment env) {
+        Job.fetch(env, UUID.fromString(id))
+           .delete();
         return true;
     }
 
     @GraphQLField
-    @GraphQLType(FacetTypeFunction.class)
-    default Facet updateFacet(FacetUpdateState state,
-                              DataFetchingEnvironment env) {
-        FacetRecord record = ctx(env).create()
-                                     .selectFrom(Tables.FACET)
-                                     .where(Tables.FACET.ID.equal(UUID.fromString(state.id)))
-                                     .fetchOne();
+    @GraphQLType(JobTypeFunction.class)
+    default Job updateJob(JobUpdateState state, DataFetchingEnvironment env) {
+        JobRecord record = ctx(env).create()
+                                   .selectFrom(Tables.JOB)
+                                   .where(Tables.JOB.ID.equal(UUID.fromString(state.id)))
+                                   .fetchOne();
         state.update(record);
         record.insert();
-        return new Facet(record);
+        return new Job(record);
     }
 }

@@ -47,7 +47,7 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class Facet {
-    public class FacetState {
+    public static class FacetState {
         @GraphQLField
         String authority;
 

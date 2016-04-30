@@ -55,7 +55,13 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class NetworkAuthorization {
 
-    public class NetwworkAuthorizationState {
+    public class NetworkAuthorizationUpdateState
+            extends NetwworkAuthorizationState {
+        @GraphQLField
+        public String id;
+    }
+
+    public static class NetwworkAuthorizationState {
         @GraphQLField
         String authority;
         @GraphQLField
@@ -94,12 +100,6 @@ public class NetworkAuthorization {
                 record.setRelationship(UUID.fromString(relationship));
             }
         }
-    }
-
-    public class NetworkAuthorizationUpdateState
-            extends NetwworkAuthorizationState {
-        @GraphQLField
-        String id;
     }
 
     private static final String CREATE                      = "CreateNetworkAuthorization";
@@ -329,6 +329,10 @@ public class NetworkAuthorization {
     @GraphQLField
     public Facet getParent(DataFetchingEnvironment env) {
         return Facet.fetch(env, record.getParent());
+    }
+
+    public ExistentialNetworkAuthorizationRecord getRecord() {
+        return record;
     }
 
     @GraphQLField

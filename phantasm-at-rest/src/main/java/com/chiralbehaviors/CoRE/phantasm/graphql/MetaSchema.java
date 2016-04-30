@@ -28,8 +28,10 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
@@ -64,7 +66,8 @@ public class MetaSchema {
         }
     }
 
-    public interface Mutations extends ExistentialMutations, FacetMutations {
+    public interface Mutations extends ExistentialMutations, FacetMutations,
+            AttributeAuthorizationMutations, NetworkAuthorizationMutations {
     }
 
     public class NetworkAuthorizationTypeFunction implements TypeFunction {

@@ -24,10 +24,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.AttributeAuthorizationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.FacetTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobTypeFunction;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLNonNull;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -35,24 +37,22 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-public interface AttributeAuthorizationQueries {
+public interface JobQueries {
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default AttributeAuthorization attributeAuthorization(String id,
-                                                          DataFetchingEnvironment env) {
-        return new AttributeAuthorization(AttributeAuthorization.fetch(env,
-                                                                       UUID.fromString(id)));
+    @GraphQLType(FacetTypeFunction.class)
+    default Job job(String id, DataFetchingEnvironment env) {
+        return new Job(Job.fetch(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default List<AttributeAuthorization> instancesOfAttributeAuthorization(List<String> ids,
-                                                                           DataFetchingEnvironment env) {
+    @GraphQLType(JobTypeFunction.class)
+    default List<Job> jobs(@GraphQLNonNull List<String> ids,
+                           DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> AttributeAuthorization.fetch(env, id))
-                  .map(r -> new AttributeAuthorization(r))
+                  .map(id -> Job.fetch(env, id))
+                  .map(r -> new Job(r))
                   .collect(Collectors.toList());
     }
 }

@@ -20,8 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
+import java.util.UUID;
+
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -39,6 +43,50 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class StatusCodeSequencing {
+
+    public static class StatusCodeSequencingState {
+        @GraphQLField
+        public String  child;
+        @GraphQLField
+        public String  notes;
+        @GraphQLField
+        public String  parent;
+        @GraphQLField
+        public Integer sequenceNumber;
+        @GraphQLField
+        public String  service;
+        @GraphQLField
+        public String  statusCode;
+
+        public void update(StatusCodeSequencingRecord record) {
+            if (parent != null) {
+                record.setParent(UUID.fromString(parent));
+            }
+            if (child != null) {
+                record.setChild(UUID.fromString(child));
+            }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
+            if (service != null) {
+                record.setService(UUID.fromString(service));
+            }
+        }
+    }
+
+    public static class StatusCodeSequencingUpdateState
+            extends StatusCodeSequencingState {
+        @GraphQLField
+        public String id;
+    }
+
+    public static StatusCodeSequencing fetch(DataFetchingEnvironment env,
+                                             UUID id) {
+        return new StatusCodeSequencing(ctx(env).create()
+                                                .selectFrom(Tables.STATUS_CODE_SEQUENCING)
+                                                .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(id))
+                                                .fetchOne());
+    }
 
     private final StatusCodeSequencingRecord record;
 
@@ -62,6 +110,10 @@ public class StatusCodeSequencing {
     @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getParent(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getChild()));
+    }
+
+    public StatusCodeSequencingRecord getRecord() {
+        return record;
     }
 
     @GraphQLField

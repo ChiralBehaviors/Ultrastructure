@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ParentSequencingMutat
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ProtocolMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SelfSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.StatusCodeSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
@@ -61,6 +62,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ParentSequencingQueries
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ProtocolQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SiblingSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.StatusCodeSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
@@ -119,7 +121,8 @@ public class WorkspaceSchema {
             AttributeAuthorizationMutations, NetworkAuthorizationMutations,
             ChildSequencingMutations, ParentSequencingMutations,
             SelfSequencingMutations, SiblingSequencingMutations,
-            ProtocolMutations, MetaProtocolMutations {
+            ProtocolMutations, MetaProtocolMutations,
+            StatusCodeSequencingMutations {
     }
 
     public class MetaProtocolTypeFunction implements TypeFunction {
@@ -134,7 +137,7 @@ public class WorkspaceSchema {
             AttributeAuthorizationQueries, NetworkAuthorizationQueries,
             ChildSequencingQueries, ParentSequencingQueries,
             SelfSequencingQueries, SiblingSequencingQueries, ProtocolQueries,
-            MetaProtocolQueries {
+            MetaProtocolQueries, StatusCodeSequencingQueries {
     }
 
     public interface Mutations extends ExistentialMutations, JobMutations {
@@ -175,6 +178,14 @@ public class WorkspaceSchema {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return SiblingSequencingType;
+        }
+    }
+
+    public class StatusCodeSequencingTypeFunction implements TypeFunction {
+
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return StatusCodeSequencingType;
         }
     }
 

@@ -52,6 +52,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLNonNull;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -63,7 +64,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(AgencyTypeFunction.class)
-    default Agency createAgency(ExistentialState state,
+    default Agency createAgency(@GraphQLNonNull ExistentialState state,
                                 DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newAgency();
@@ -74,7 +75,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(AttributeTypeFunction.class)
-    default Attribute createAttribute(AttributeState state,
+    default Attribute createAttribute(@GraphQLNonNull AttributeState state,
                                       DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newAttribute();
@@ -85,7 +86,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(IntervalTypeFunction.class)
-    default Interval createInterval(ExistentialState state,
+    default Interval createInterval(@GraphQLNonNull ExistentialState state,
                                     DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newInterval();
@@ -96,7 +97,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(LocationTypeFunction.class)
-    default Location createLocation(ExistentialState state,
+    default Location createLocation(@GraphQLNonNull ExistentialState state,
                                     DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newLocation();
@@ -107,7 +108,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
-    default Product createProduct(ExistentialState state,
+    default Product createProduct(@GraphQLNonNull ExistentialState state,
                                   DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newProduct();
@@ -118,7 +119,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(RelationshipTypeFunction.class)
-    default Relationship createRelationship(RelationshipState state,
+    default Relationship createRelationship(@GraphQLNonNull RelationshipState state,
                                             DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newRelationship();
@@ -129,7 +130,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(StatusCodeTypeFunction.class)
-    default StatusCode createStatusCode(StatusCodeState state,
+    default StatusCode createStatusCode(@GraphQLNonNull StatusCodeState state,
                                         DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newStatusCode();
@@ -140,7 +141,7 @@ public interface ExistentialMutations {
 
     @GraphQLField
     @GraphQLType(UnitTypeFunction.class)
-    default Unit createUnit(ExistentialState state,
+    default Unit createUnit(@GraphQLNonNull ExistentialState state,
                             DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
                                            .newUnit();
@@ -150,56 +151,64 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    default Boolean removeAgency(String id, DataFetchingEnvironment env) {
+    default Boolean removeAgency(@GraphQLNonNull String id,
+                                 DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeAttribute(String id, DataFetchingEnvironment env) {
+    default Boolean removeAttribute(@GraphQLNonNull String id,
+                                    DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeInterval(String id, DataFetchingEnvironment env) {
+    default Boolean removeInterval(@GraphQLNonNull String id,
+                                   DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeLocation(String id, DataFetchingEnvironment env) {
+    default Boolean removeLocation(@GraphQLNonNull String id,
+                                   DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeProduct(String id, DataFetchingEnvironment env) {
+    default Boolean removeProduct(@GraphQLNonNull String id,
+                                  DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeRelationship(String id, DataFetchingEnvironment env) {
+    default Boolean removeRelationship(@GraphQLNonNull String id,
+                                       DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeStatusCode(String id, DataFetchingEnvironment env) {
+    default Boolean removeStatusCode(@GraphQLNonNull String id,
+                                     DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;
     }
 
     @GraphQLField
-    default Boolean removeUnit(String id, DataFetchingEnvironment env) {
+    default Boolean removeUnit(@GraphQLNonNull String id,
+                               DataFetchingEnvironment env) {
         Existential.resolve(env, UUID.fromString(id))
                    .delete();
         return true;

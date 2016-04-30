@@ -51,9 +51,8 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetQueriesOld;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
@@ -110,7 +109,7 @@ public class WorkspaceResource extends TransactionalResource {
     private final GraphQLSchema                      metaSchema;
     {
         try {
-            metaSchema = MetaSchema.build();
+            metaSchema = WorkspaceSchema.buildMeta();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -174,8 +173,16 @@ public class WorkspaceResource extends TransactionalResource {
                                                       Status.NOT_FOUND);
                 }
 
-                return FacetQueriesOld.build(scoped.getWorkspace(), model,
-                                             executionScope);
+                try {
+                    return WorkspaceSchema.build(scoped.getWorkspace(), model,
+                                                 executionScope);
+                } catch (Exception e) {
+                    throw new IllegalStateException(String.format("Unable to buidl schema for %s",
+                                                                  scoped.getWorkspace()
+                                                                        .getDefiningProduct()
+                                                                        .getName()),
+                                                    e);
+                }
             });
 
             if (schema == null) {

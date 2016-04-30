@@ -53,41 +53,41 @@ public class Protocol {
 
     public static class ProtocolState {
         @GraphQLField
-        String assignTo;
+        public String assignTo;
         @GraphQLField
-        String childAssignTo;
+        public String childAssignTo;
         @GraphQLField
-        String childDeliverFrom;
+        public String childDeliverFrom;
         @GraphQLField
-        String childDeliverTo;
+        public String childDeliverTo;
         @GraphQLField
-        String childProduct;
+        public String childProduct;
         @GraphQLField
-        Float  childQuantity;
+        public Float  childQuantity;
         @GraphQLField
-        String childService;
+        public String childService;
         @GraphQLField
-        String childStatus;
+        public String childStatus;
         @GraphQLField
-        String childUnit;
+        public String childUnit;
         @GraphQLField
-        String deliverFrom;
+        public String deliverFrom;
         @GraphQLField
-        String deliverTo;
+        public String deliverTo;
         @GraphQLField
-        String notes;
+        public String notes;
         @GraphQLField
-        String product;
+        public String product;
         @GraphQLField
-        Float  quantity;
+        public Float  quantity;
         @GraphQLField
-        String requester;
+        public String requester;
         @GraphQLField
-        String service;
+        public String service;
         @GraphQLField
-        String status;
+        public String status;
         @GraphQLField
-        String unit;
+        public String unit;
 
         public void update(ProtocolRecord r) {
             if (assignTo != null) {

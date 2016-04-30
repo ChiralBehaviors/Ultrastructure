@@ -20,30 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Mutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Queries;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import org.junit.Test;
 
 /**
  * @author hhildebrand
  *
  */
-public class WorkspaceContext extends PhantasmCRUD
-        implements Queries, Mutations, MetaQueries, MetaMutations {
+public class TestIt {
 
-    private final Product workspace;
-
-    public WorkspaceContext(Model model, Product workspace) {
-        super(model);
-        this.workspace = workspace;
+    @Test
+    public void testIt() {
+        String query = "mutation m ($service: String, $assignTo: String, $product: String, $deliverTo: String,           $deliverFrom: String, $requester: String) {   createJob(state: { service: $service, assignTo: $assignTo, product: $product,                      deliverTo: $deliverTo, deliverFrom: $deliverFrom, requester: $requester}) {       id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name}       deliverFrom {name} deliverTo{name} quantity quantityUnit {name}       chronology {          id, job {id} status {id, name} product {name} service {name} requester {name} assignTo {name}           deliverFrom {name} deliverTo{name} quantity quantityUnit {name} updateDate sequenceNumber      }    } }";
+        System.out.println(query.substring(153));
     }
-
-    public Product getWorkspace() {
-        return workspace;
-    }
-
 }

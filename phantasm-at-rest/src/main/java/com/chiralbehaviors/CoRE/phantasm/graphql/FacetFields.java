@@ -65,7 +65,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -90,7 +89,6 @@ import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
-import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
 
 /**
@@ -100,7 +98,7 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class FacetQueriesOld implements PhantasmTraversal.PhantasmVisitor {
+public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     private static final String ADD_TEMPLATE              = "add%s";
     private static final String APPLY_MUTATION            = "Apply%s";
@@ -113,7 +111,7 @@ public class FacetQueriesOld implements PhantasmTraversal.PhantasmVisitor {
     private static final String IDS                       = "ids";
     private static final String IMMEDIATE_TEMPLATE        = "immediate%s";
     private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
-    private static final Logger log                       = LoggerFactory.getLogger(FacetQueriesOld.class);
+    private static final Logger log                       = LoggerFactory.getLogger(FacetFields.class);
     private static final String NAME                      = "name";
     private static final String REMOVE_MUTATION           = "Remove%s";
     private static final String REMOVE_TEMPLATE           = "remove%s";
@@ -133,46 +131,6 @@ public class FacetQueriesOld implements PhantasmTraversal.PhantasmVisitor {
     static {
         SET_NAME = String.format(SET_TEMPLATE, capitalized(NAME));
         SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
-    }
-
-    public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,
-                                      ClassLoader executionScope) {
-        Deque<FacetRecord> unresolved = FacetQueriesOld.initialState(accessor,
-                                                                  model);
-        Map<FacetRecord, FacetQueriesOld> resolved = new HashMap<>();
-        Product definingProduct = accessor.getDefiningProduct();
-        Workspace workspace = model.wrap(Workspace.class, definingProduct);
-        Builder topLevelQuery = newObject().name("Query")
-                                           .description(String.format("Top level query for %s",
-                                                                      definingProduct.getName()));
-        Builder topLevelMutation = newObject().name("Mutation")
-                                              .description(String.format("Top level mutation for %s",
-                                                                         definingProduct.getName()));
-        List<Plugin> plugins = workspace.getPlugins();
-        while (!unresolved.isEmpty()) {
-            FacetRecord facet = unresolved.pop();
-            if (resolved.containsKey(facet)) {
-                continue;
-            }
-            FacetQueriesOld type = new FacetQueriesOld(facet);
-            resolved.put(facet, type);
-            List<Plugin> facetPlugins = plugins.stream()
-                                               .filter(plugin -> facet.getName()
-                                                                      .equals(plugin.getFacetName()))
-                                               .collect(Collectors.toList());
-            type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
-                       model, executionScope)
-                .stream()
-                .filter(auth -> !resolved.containsKey(auth))
-                .forEach(auth -> unresolved.add(auth));
-        }
-        JobQueries.build(topLevelQuery, topLevelMutation);
-        Existentials.build(topLevelQuery, topLevelMutation);
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
-        return schema;
     }
 
     public static Deque<FacetRecord> initialState(WorkspaceAccessor workspace,
@@ -226,7 +184,7 @@ public class FacetQueriesOld implements PhantasmTraversal.PhantasmVisitor {
 
     private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
 
-    public FacetQueriesOld(FacetRecord facet) {
+    public FacetFields(FacetRecord facet) {
         this.name = WorkspacePresentation.toTypeName(facet.getName());
         typeBuilder = newObject().name(getName())
                                  .description(facet.getNotes());

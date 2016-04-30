@@ -45,17 +45,17 @@ public class ParentSequencing {
 
     public static class ParentSequencingState {
         @GraphQLField
-        String  notes;
+        public String  notes;
         @GraphQLField
-        String  parent;
+        public String  parent;
         @GraphQLField
-        String  parentStatus;
+        public String  parentStatus;
         @GraphQLField
-        Integer sequenceNumber;
+        public Integer sequenceNumber;
         @GraphQLField
-        String  service;
+        public String  service;
         @GraphQLField
-        String  statusCode;
+        public String  statusCode;
 
         public void update(ParentSequencingAuthorizationRecord record) {
             if (parent != null) {

@@ -47,7 +47,7 @@ public class MetaSchemaTest extends AbstractModelTest {
 
     @Test
     public void testMutationType() throws Exception {
-        GraphQLObjectType object = GraphQLAnnotations.object(MetaSchema.Mutations.class);
+        GraphQLObjectType object = GraphQLAnnotations.object(WorkspaceSchema.MetaMutations.class);
         assertNotNull(object);
     }
 
@@ -57,26 +57,26 @@ public class MetaSchemaTest extends AbstractModelTest {
         ThreadLocal<Product> currentWorkspace = new ThreadLocal<>();
         currentWorkspace.set(model.getKernel()
                                   .getKernelWorkspace());
-        GraphQLSchema schema = MetaSchema.build();
+        GraphQLSchema schema = WorkspaceSchema.buildMeta();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
                                   "{ facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
                                   variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ instancesOfAgency { id name description } instancesOfAttribute { id name description } }",
+                       "{ agencies { id name description } attributes { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ instancesOfInterval { id name description } instancesOfLocation { id name description } }",
+                       "{ intervals { id name description } locations { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ instancesOfProduct { id name description } instancesOfRelationship { id name description } }",
+                       "{ products { id name description } relationships { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ instancesOfStatusCode { id name description } instancesOfStatusCode{ id name description } }",
+                       "{ statusCodes { id name description } units{ id name description } }",
                        variables);
         assertNotNull(data);
     }

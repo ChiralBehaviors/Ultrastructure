@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.NetworkAuthorizationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.NetworkAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 
 import graphql.annotations.GraphQLField;

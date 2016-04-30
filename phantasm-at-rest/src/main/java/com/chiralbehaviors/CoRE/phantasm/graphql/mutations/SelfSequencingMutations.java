@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.SelfSequencingTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SelfSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingUpdateState;

@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.FacetTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetUpdateState;

@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.AttributeAuthorizationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.NetworkAuthorizationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.NetworkAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialTypeFunction;
@@ -49,19 +49,19 @@ import graphql.schema.DataFetchingEnvironment;
 public class Facet {
     public static class FacetState {
         @GraphQLField
-        String authority;
+        public String authority;
 
         @GraphQLField
-        String classification;
+        public String classification;
 
         @GraphQLField
-        String classifier;
+        public String classifier;
 
         @GraphQLField
-        String name;
+        public String name;
 
         @GraphQLField
-        String notes;
+        public String notes;
 
         public void update(FacetRecord record) {
             if (authority != null) {

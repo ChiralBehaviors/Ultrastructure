@@ -44,27 +44,27 @@ public class MetaProtocol {
 
     public static class MetaProtocolState {
         @GraphQLField
-        String assignTo;
+        public String assignTo;
         @GraphQLField
-        String deliverFrom;
+        public String deliverFrom;
         @GraphQLField
-        String deliverTo;
+        public String deliverTo;
         @GraphQLField
-        String notes;
+        public String notes;
         @GraphQLField
-        String product;
+        public String product;
         @GraphQLField
-        Float  quantity;
+        public Float  quantity;
         @GraphQLField
-        String requester;
+        public String requester;
         @GraphQLField
-        String service;
+        public String service;
         @GraphQLField
-        String serviceType;
+        public String serviceType;
         @GraphQLField
-        String status;
+        public String status;
         @GraphQLField
-        String unit;
+        public String unit;
 
         public void update(MetaProtocolRecord r) {
             if (assignTo != null) {

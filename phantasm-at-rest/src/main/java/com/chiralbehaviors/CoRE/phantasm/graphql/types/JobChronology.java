@@ -23,9 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.lang.reflect.AnnotatedType;
-import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
@@ -36,7 +36,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
@@ -83,8 +82,9 @@ public class JobChronology {
     }
 
     @GraphQLField
-    public UUID getId() {
-        return record.getId();
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField

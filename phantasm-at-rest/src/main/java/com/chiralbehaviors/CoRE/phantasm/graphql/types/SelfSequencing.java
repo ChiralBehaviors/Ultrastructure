@@ -45,15 +45,15 @@ public class SelfSequencing {
 
     public static class SelfSequencingState {
         @GraphQLField
-        String  notes;
+        public String  notes;
         @GraphQLField
-        Integer sequenceNumber;
+        public Integer sequenceNumber;
         @GraphQLField
-        String  service;
+        public String  service;
         @GraphQLField
-        String  statusCode;
+        public String  statusCode;
         @GraphQLField
-        String  statusToSet;
+        public String  statusToSet;
 
         public void update(SelfSequencingAuthorizationRecord record) {
             if (statusToSet != null) {

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.ProtocolTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 
 import graphql.annotations.GraphQLField;

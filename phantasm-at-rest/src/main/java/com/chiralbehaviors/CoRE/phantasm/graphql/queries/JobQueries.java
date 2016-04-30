@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLNonNull;

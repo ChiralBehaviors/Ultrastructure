@@ -45,17 +45,17 @@ public class SiblingSequencing {
 
     public static class SiblingSequencingState {
         @GraphQLField
-        String  nextSibling;
+        public String  nextSibling;
         @GraphQLField
-        String  nextSiblingStatus;
+        public String  nextSiblingStatus;
         @GraphQLField
-        String  notes;
+        public String  notes;
         @GraphQLField
-        Integer sequenceNumber;
+        public Integer sequenceNumber;
         @GraphQLField
-        String  service;
+        public String  service;
         @GraphQLField
-        String  statusCode;
+        public String  statusCode;
 
         public void update(SiblingSequencingAuthorizationRecord record) {
             if (nextSibling != null) {

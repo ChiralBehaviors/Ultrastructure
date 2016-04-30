@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.SiblingSequencingTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SiblingSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 
 import graphql.annotations.GraphQLField;

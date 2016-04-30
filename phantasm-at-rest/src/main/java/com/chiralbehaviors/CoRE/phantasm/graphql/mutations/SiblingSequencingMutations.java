@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.SiblingSequencingTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SiblingSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingUpdateState;

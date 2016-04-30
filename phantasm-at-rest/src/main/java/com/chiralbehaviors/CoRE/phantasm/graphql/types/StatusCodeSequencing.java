@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeSequencingType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 import static graphql.Scalars.GraphQLString;
@@ -28,7 +29,6 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 
-import java.lang.reflect.AnnotatedType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +47,11 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeTyp
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
-import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLTypeReference;
 
@@ -63,29 +61,19 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class StatusCodeSequencing {
 
-    class MetaProtocolTypeFunction implements TypeFunction {
-
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return StatusCodeSequencingType;
-        }
-    }
-
-    public static final GraphQLObjectType StatusCodeSequencingType = Existential.objectTypeOf(StatusCodeSequencing.class);
-
-    private static final String           CREATE                   = "CreateStatusCodeSequencing";
-    private static final String           DELETE                   = "DeleteStatusCodeSequencing";
-    private static final String           ID                       = "id";
-    private static final String           IDS                      = "ids";
-    private static final String           INSTANCES_OF_QUERY       = "InstancesOfStatusCodeSequencing";
-    private static final String           PROTOCOL_STATE           = "StatusCodeSequencingState";
-    private static final String           SET_CHILD                = "setChild";
-    private static final String           SET_NOTES                = "setNotes";
-    private static final String           SET_PARENT               = "setParent";
-    private static final String           SET_SERVICE              = "setService";
-    private static final String           SET_STATUS               = "setStatus";
-    private static final String           STATE                    = "state";
-    private static final String           UPDATE                   = "UpdateStatusCodeSequencing";
+    private static final String CREATE             = "CreateStatusCodeSequencing";
+    private static final String DELETE             = "DeleteStatusCodeSequencing";
+    private static final String ID                 = "id";
+    private static final String IDS                = "ids";
+    private static final String INSTANCES_OF_QUERY = "InstancesOfStatusCodeSequencing";
+    private static final String PROTOCOL_STATE     = "StatusCodeSequencingState";
+    private static final String SET_CHILD          = "setChild";
+    private static final String SET_NOTES          = "setNotes";
+    private static final String SET_PARENT         = "setParent";
+    private static final String SET_SERVICE        = "setService";
+    private static final String SET_STATUS         = "setStatus";
+    private static final String STATE              = "state";
+    private static final String UPDATE             = "UpdateStatusCodeSequencing";
 
     public static void build(Builder query, Builder mutation,
                              ThreadLocal<com.chiralbehaviors.CoRE.domain.Product> currentWorkspace) {

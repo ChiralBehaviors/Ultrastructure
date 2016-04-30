@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
-import java.lang.reflect.AnnotatedType;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +30,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
@@ -45,7 +45,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology.JobChronolo
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -56,25 +55,25 @@ public class Job {
 
     public static class JobState {
         @GraphQLField
-        String assignTo;
+        public String assignTo;
         @GraphQLField
-        String deliverFrom;
+        public String deliverFrom;
         @GraphQLField
-        String deliverTo;
+        public String deliverTo;
         @GraphQLField
-        String notes;
+        public String notes;
         @GraphQLField
-        String product;
+        public String product;
         @GraphQLField
-        Float  quantity;
+        public Float  quantity;
         @GraphQLField
-        String requester;
+        public String requester;
         @GraphQLField
-        String service;
+        public String service;
         @GraphQLField
-        String status;
+        public String status;
         @GraphQLField
-        String unit;
+        public String unit;
 
         public void update(JobRecord r) {
             if (assignTo != null) {
@@ -113,20 +112,10 @@ public class Job {
         }
     }
 
-    public class JobTypeFunction implements TypeFunction {
-
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return JobType;
-        }
-    }
-
     public static class JobUpdateState extends JobState {
         @GraphQLField
         public String id;
     }
-
-    public static final graphql.schema.GraphQLType JobType = Existential.objectTypeOf(Job.class);
 
     public static JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
         return ctx(env).create()
@@ -205,8 +194,9 @@ public class Job {
     }
 
     @GraphQLField
-    public UUID getId() {
-        return record.getId();
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField

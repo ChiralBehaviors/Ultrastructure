@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.NetworkAuthorizationType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.NetworkAuthorizationType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 import static graphql.Scalars.GraphQLString;
@@ -63,19 +63,19 @@ public class NetworkAuthorization {
 
     public static class NetwworkAuthorizationState {
         @GraphQLField
-        String authority;
+        public String authority;
         @GraphQLField
-        String cardinality;
+        public String cardinality;
         @GraphQLField
-        String child;
+        public String child;
         @GraphQLField
-        String name;
+        public String name;
         @GraphQLField
-        String notes;
+        public String notes;
         @GraphQLField
-        String parent;
+        public String parent;
         @GraphQLField
-        String relationship;
+        public String relationship;
 
         public void update(ExistentialNetworkAuthorizationRecord record) {
             if (authority != null) {

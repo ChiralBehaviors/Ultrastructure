@@ -31,7 +31,7 @@ import org.jooq.exception.TooManyRowsException;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.FacetTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -51,23 +51,23 @@ public class AttributeAuthorization {
 
     public static class AttributeAuthorizationState {
         @GraphQLField
-        String  authority;
+        public String  authority;
         @GraphQLField
-        String  authorizedAttribute;
+        public String  authorizedAttribute;
         @GraphQLField
-        String  binaryValue;
+        public String  binaryValue;
         @GraphQLField
-        Boolean booleanValue;
+        public Boolean booleanValue;
         @GraphQLField
-        Integer integerValue;
+        public Integer integerValue;
         @GraphQLField
-        String  jsonValue;
+        public String  jsonValue;
         @GraphQLField
-        Float   numericValue;
+        public Float   numericValue;
         @GraphQLField
-        String  textValue;
+        public String  textValue;
         @GraphQLField
-        long    timestampValue;
+        public long    timestampValue;
 
         public void update(ExistentialAttributeAuthorizationRecord record) {
         }

@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.MetaProtocolTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolUpdateState;

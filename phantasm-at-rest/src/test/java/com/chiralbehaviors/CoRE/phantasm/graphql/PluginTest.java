@@ -75,7 +75,7 @@ public class PluginTest extends AbstractModelTest {
         Workspace workspace = model.wrap(Workspace.class, scope.getWorkspace()
                                                                .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
-        ClassLoader executionScope = FacetQueriesOld.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
+        ClassLoader executionScope = FacetFields.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
                                                                        COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
@@ -94,8 +94,8 @@ public class PluginTest extends AbstractModelTest {
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
 
-        GraphQLSchema schema = FacetQueriesOld.build(scope.getWorkspace(), model,
-                                                  executionScope);
+        GraphQLSchema schema = WorkspaceSchema.build(scope.getWorkspace(),
+                                                     model, executionScope);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),

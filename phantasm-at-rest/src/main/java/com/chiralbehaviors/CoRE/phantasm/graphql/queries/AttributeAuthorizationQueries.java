@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.AttributeAuthorizationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 
 import graphql.annotations.GraphQLField;

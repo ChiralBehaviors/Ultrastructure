@@ -26,8 +26,8 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.AttributeAuthorizationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.NetworkAuthorizationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.NetworkAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.NetworkAuthorizationUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.NetwworkAuthorizationState;

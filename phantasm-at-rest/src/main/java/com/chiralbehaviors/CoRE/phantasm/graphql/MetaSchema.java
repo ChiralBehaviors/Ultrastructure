@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ParentSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ProtocolMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SelfSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
@@ -42,6 +43,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ParentSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ProtocolQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SiblingSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
@@ -50,6 +52,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 
@@ -88,7 +91,8 @@ public class MetaSchema {
     public interface Mutations extends ExistentialMutations, FacetMutations,
             AttributeAuthorizationMutations, NetworkAuthorizationMutations,
             ChildSequencingMutations, ParentSequencingMutations,
-            SelfSequencingMutations, SiblingSequencingMutations {
+            SelfSequencingMutations, SiblingSequencingMutations,
+            ProtocolMutations {
     }
 
     public class NetworkAuthorizationTypeFunction implements TypeFunction {
@@ -105,10 +109,18 @@ public class MetaSchema {
         }
     }
 
+    public class ProtocolTypeFunction implements TypeFunction {
+
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return ProtocolType;
+        }
+    }
+
     public interface Queries extends ExistentialQueries, FacetQueries,
             AttributeAuthorizationQueries, NetworkAuthorizationQueries,
             ChildSequencingQueries, ParentSequencingQueries,
-            SelfSequencingQueries, SiblingSequencingQueries {
+            SelfSequencingQueries, SiblingSequencingQueries, ProtocolQueries {
     }
 
     public class SelfSequencingTypeFunction implements TypeFunction {
@@ -130,6 +142,7 @@ public class MetaSchema {
     public static final GraphQLObjectType FacetType                  = Existential.objectTypeOf(Facet.class);
     public static final GraphQLObjectType NetworkAuthorizationType   = Existential.objectTypeOf(NetworkAuthorization.class);
     public static final GraphQLObjectType ParentSequencingType       = Existential.objectTypeOf(ParentSequencing.class);
+    public static final GraphQLObjectType ProtocolType               = Existential.objectTypeOf(Protocol.class);
     public static final GraphQLObjectType SelfSequencingType         = Existential.objectTypeOf(SelfSequencing.class);
     public static final GraphQLObjectType SiblingSequencingType      = Existential.objectTypeOf(SiblingSequencing.class);
 

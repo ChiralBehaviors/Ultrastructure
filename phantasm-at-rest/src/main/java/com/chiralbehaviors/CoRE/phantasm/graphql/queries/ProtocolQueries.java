@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.MetaSchema.ProtocolTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLNonNull;
@@ -36,22 +36,22 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-public interface JobQueries {
+public interface ProtocolQueries {
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
-    default Job job(String id, DataFetchingEnvironment env) {
-        return new Job(Job.fetch(env, UUID.fromString(id)));
+    @GraphQLType(ProtocolTypeFunction.class)
+    default Protocol protocol(String id, DataFetchingEnvironment env) {
+        return new Protocol(Protocol.fetch(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
-    default List<Job> jobs(@GraphQLNonNull List<String> ids,
-                           DataFetchingEnvironment env) {
+    @GraphQLType(ProtocolTypeFunction.class)
+    default List<Protocol> protocols(@GraphQLNonNull List<String> ids,
+                                     DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> Job.fetch(env, id))
-                  .map(r -> new Job(r))
+                  .map(id -> Protocol.fetch(env, id))
+                  .map(r -> new Protocol(r))
                   .collect(Collectors.toList());
     }
 }

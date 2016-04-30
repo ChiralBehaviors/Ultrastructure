@@ -67,6 +67,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.hellblazer.utils.Tuple;
 
@@ -564,6 +565,12 @@ public class PhantasmModelImpl implements PhantasmModel {
         return result.into(ExistentialNetworkRecord.class);
     }
 
+	@Override
+	public List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
+			Relationship relationship, Aspect constraint, ExistentialDomain existentialDomain) {
+		return getImmediateConstrainedChildren(parent.getId(), relationship.getId(), constraint, existentialDomain);
+	}
+    
     @Override
     public ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                                      Relationship relationship,
@@ -997,6 +1004,19 @@ public class PhantasmModelImpl implements PhantasmModel {
                                     .resolve(r))
                      .collect(Collectors.toList());
     }
+    
+	private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent, UUID relationship, Aspect constraint, ExistentialDomain domain) {
+		return create.select(EXISTENTIAL.fields())
+				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
+				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+				.and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
+				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
+				.filter(r -> isAccessible(r, constraint.getClassifier(), constraint.getClassification()))
+				.collect(Collectors.toList());
+	}
 
     private void setValue(Attribute attribute, ExistentialAttributeRecord value,
                           ExistentialAttributeAuthorizationRecord authorization) {

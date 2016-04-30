@@ -94,6 +94,18 @@
                             </sources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/test/phantasm</source>
+                            </sources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -111,6 +123,21 @@
                                 <resource>${basedir}/src/main/resources/kernel.3.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
                                 <packageName>com.chiralbehaviors.CoRE.kernel.phantasm</packageName>
+                                <appendTypeToPackage>true</appendTypeToPackage>
+                            </generator>
+                        </configuration>
+                    </execution>
+                    <execution>
+                    	<id>generate-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generator>
+                                <resource>${basedir}/src/test/resources/humblr.wsp</resource>
+                                <outputDirectory>${project.build.directory}/generated-sources/test/phantasm</outputDirectory>
+                                <packageName>com.chiralbehaviors.CoRE.kernel.phantasm.test</packageName>
                                 <appendTypeToPackage>true</appendTypeToPackage>
                             </generator>
                         </configuration>

@@ -28,18 +28,13 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLType;
@@ -173,31 +168,31 @@ public class Protocol {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
+
     public Agency getAssignTo(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAssignTo()));
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
+
     public Agency getChildAssignTo(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getChildAssignTo()));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
+
     public Location getChildDeliverFrom(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getChildDeliverFrom()));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
+
     public Location getChildDeliverTo(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getChildDeliverTo()));
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getChildProduct(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getChildProduct()));
     }
@@ -209,7 +204,7 @@ public class Protocol {
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
+
     public Unit getChildQuantityUnit(DataFetchingEnvironment env) {
         return new Unit(resolve(env, record.getChildQuantityUnit()));
     }
@@ -221,25 +216,25 @@ public class Protocol {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getChildService(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getChildService()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
+
     public StatusCode getChildStatus(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getChildStatus()));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
+
     public Location getDeliverFrom(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
+
     public Location getDeliverTo(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverTo()));
     }
@@ -261,7 +256,7 @@ public class Protocol {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getProduct(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getProduct()));
     }
@@ -273,31 +268,31 @@ public class Protocol {
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
+
     public Unit getQuantityUnit(DataFetchingEnvironment env) {
         return new Unit(resolve(env, record.getQuantityUnit()));
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
+
     public Agency getRequester(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getRequester()));
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getService(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getService()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
+
     public StatusCode getStatus(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getStatus()));
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
+
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

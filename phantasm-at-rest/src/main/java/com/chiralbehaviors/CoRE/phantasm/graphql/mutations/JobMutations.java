@@ -29,14 +29,12 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -46,7 +44,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface JobMutations {
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
     default Job createJob(@NotNull @GraphQLName("state") JobState state,
                           DataFetchingEnvironment env) {
         Model model = ctx(env);
@@ -67,7 +64,6 @@ public interface JobMutations {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
     default Job updateJob(@NotNull @GraphQLName("state") JobUpdateState state,
                           DataFetchingEnvironment env) {
         JobRecord record = ctx(env).create()

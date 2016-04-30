@@ -28,14 +28,12 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SelfSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -45,7 +43,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface SelfSequencingMutations {
 
     @GraphQLField
-    @GraphQLType(SelfSequencingTypeFunction.class)
     default SelfSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SelfSequencingState state,
                                                         DataFetchingEnvironment env) {
         SelfSequencingAuthorizationRecord record = ctx(env).records()
@@ -65,7 +62,6 @@ public interface SelfSequencingMutations {
     }
 
     @GraphQLField
-    @GraphQLType(SelfSequencingTypeFunction.class)
     default SelfSequencing updateSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingUpdateState state,
                                                 DataFetchingEnvironment env) {
         SelfSequencingAuthorizationRecord record = ctx(env).create()

@@ -26,15 +26,11 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -114,7 +110,6 @@ public class SelfSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     public Product getService(DataFetchingEnvironment env) {
         return new Product(ctx(env).records()
                                    .resolve(record.getService()));
@@ -126,21 +121,18 @@ public class SelfSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
         return new StatusCode(ctx(env).records()
                                       .resolve(record.getStatusCode()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getStatusToSet(DataFetchingEnvironment env) {
         return new StatusCode(ctx(env).records()
                                       .resolve(record.getStatusToSet()));
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(ctx(env).records()
                                   .resolve(record.getUpdatedBy()));

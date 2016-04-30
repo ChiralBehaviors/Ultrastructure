@@ -27,15 +27,11 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -96,7 +92,6 @@ public class StatusCodeSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getChild(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getChild()));
     }
@@ -113,7 +108,6 @@ public class StatusCodeSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getParent(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getChild()));
     }
@@ -123,13 +117,11 @@ public class StatusCodeSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     public Product getService(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getChild()));
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getChild()));
     }

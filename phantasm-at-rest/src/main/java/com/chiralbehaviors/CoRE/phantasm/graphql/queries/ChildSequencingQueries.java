@@ -32,12 +32,10 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ChildSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -47,14 +45,12 @@ import graphql.schema.DataFetchingEnvironment;
 public interface ChildSequencingQueries {
 
     @GraphQLField
-    @GraphQLType(ChildSequencingTypeFunction.class)
     default ChildSequencing childSequencing(@NotNull @GraphQLName("id") String id,
                                             DataFetchingEnvironment env) {
         return ChildSequencing.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
-    @GraphQLType(ChildSequencingTypeFunction.class)
     default List<ChildSequencing> childSequencings(@GraphQLName("ids") List<String> ids,
                                                    DataFetchingEnvironment env) {
         if (ids == null) {

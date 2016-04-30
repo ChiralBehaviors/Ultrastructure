@@ -28,14 +28,12 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -45,7 +43,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface MetaProtocolMutations {
 
     @GraphQLField
-    @GraphQLType(MetaProtocolTypeFunction.class)
     default MetaProtocol createMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolState state,
                                             DataFetchingEnvironment env) {
         MetaProtocolRecord record = ctx(env).records()
@@ -65,7 +62,6 @@ public interface MetaProtocolMutations {
     }
 
     @GraphQLField
-    @GraphQLType(MetaProtocolTypeFunction.class)
     default MetaProtocol updateMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolUpdateState state,
                                             DataFetchingEnvironment env) {
         MetaProtocolRecord record = ctx(env).create()

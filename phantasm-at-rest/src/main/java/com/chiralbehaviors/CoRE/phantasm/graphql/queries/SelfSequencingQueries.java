@@ -32,12 +32,10 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SelfSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -47,14 +45,12 @@ import graphql.schema.DataFetchingEnvironment;
 public interface SelfSequencingQueries {
 
     @GraphQLField
-    @GraphQLType(SelfSequencingTypeFunction.class)
     default SelfSequencing selfSequencing(@NotNull @GraphQLName("id") String id,
                                           DataFetchingEnvironment env) {
         return SelfSequencing.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
-    @GraphQLType(SelfSequencingTypeFunction.class)
     default List<SelfSequencing> selfSequencings(@GraphQLName("ids") List<String> ids,
                                                  DataFetchingEnvironment env) {
         if (ids == null) {

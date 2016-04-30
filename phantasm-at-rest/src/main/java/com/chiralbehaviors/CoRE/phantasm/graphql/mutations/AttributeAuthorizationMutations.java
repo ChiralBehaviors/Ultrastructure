@@ -28,14 +28,12 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.AttributeAuthorizationState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.AttributeAuthorizationUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -45,7 +43,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface AttributeAuthorizationMutations {
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
     default AttributeAuthorization createAttributeAuthorization(@NotNull @GraphQLName("state") AttributeAuthorizationState state,
                                                                 DataFetchingEnvironment env) {
         ExistentialAttributeAuthorizationRecord record = ctx(env).records()
@@ -64,7 +61,6 @@ public interface AttributeAuthorizationMutations {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
     default AttributeAuthorization updateAttributeAuthorization(@NotNull @GraphQLName("state") AttributeAuthorizationUpdateState state,
                                                                 DataFetchingEnvironment env) {
         ExistentialAttributeAuthorizationRecord record = ctx(env).create()

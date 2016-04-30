@@ -30,9 +30,6 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ExistentialTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.NetworkAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -102,7 +99,6 @@ public class Facet {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
     public List<AttributeAuthorization> getAttributes(DataFetchingEnvironment env) {
         return ctx(env).getPhantasmModel()
                        .getAttributeAuthorizations(record, false)
@@ -118,7 +114,6 @@ public class Facet {
     }
 
     @GraphQLField
-    @GraphQLType(NetworkAuthorizationTypeFunction.class)
     public List<NetworkAuthorization> getChildren(DataFetchingEnvironment env) {
         return ctx(env).getPhantasmModel()
                        .getNetworkAuthorizations(record, false)
@@ -128,7 +123,6 @@ public class Facet {
     }
 
     @GraphQLField
-    @GraphQLType(ExistentialTypeFunction.class)
     public Existential getClassification(DataFetchingEnvironment env) {
         return wrap(resolve(env, record.getClassifier()));
     }

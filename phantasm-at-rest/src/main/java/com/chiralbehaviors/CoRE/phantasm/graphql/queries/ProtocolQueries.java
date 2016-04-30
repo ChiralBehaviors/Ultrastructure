@@ -32,12 +32,10 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -47,14 +45,12 @@ import graphql.schema.DataFetchingEnvironment;
 public interface ProtocolQueries {
 
     @GraphQLField
-    @GraphQLType(ProtocolTypeFunction.class)
     default Protocol protocol(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
         return new Protocol(Protocol.fetch(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(ProtocolTypeFunction.class)
     default List<Protocol> protocols(@GraphQLName("ids") List<String> ids,
                                      DataFetchingEnvironment env) {
         if (ids == null) {

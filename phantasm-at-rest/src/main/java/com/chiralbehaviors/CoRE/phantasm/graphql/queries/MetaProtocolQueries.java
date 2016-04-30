@@ -32,12 +32,10 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -47,14 +45,12 @@ import graphql.schema.DataFetchingEnvironment;
 public interface MetaProtocolQueries {
 
     @GraphQLField
-    @GraphQLType(MetaProtocolTypeFunction.class)
     default MetaProtocol metaProtocol(@NotNull @GraphQLName("id") String id,
                                       DataFetchingEnvironment env) {
         return MetaProtocol.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
-    @GraphQLType(MetaProtocolTypeFunction.class)
     default List<MetaProtocol> metaProtocols(@GraphQLName("ids") List<String> ids,
                                              DataFetchingEnvironment env) {
         if (ids == null) {

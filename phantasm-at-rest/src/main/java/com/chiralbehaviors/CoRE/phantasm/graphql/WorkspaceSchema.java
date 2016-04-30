@@ -98,78 +98,12 @@ import graphql.schema.GraphQLSchema;
  */
 public class WorkspaceSchema {
 
-    public static class AttributeAuthorizationTypeFunction
-            implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return WorkspaceSchema.AttributeAuthorizationType;
-        }
-    }
-
-    public static class AttributeTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return AttributeType;
-        }
-    }
-
-    public static class ChildSequencingTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ChildSequencingType;
-        }
-    }
-
-    public static class ExistentialTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ExistentialType;
-        }
-    }
-
-    public static class FacetTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return FacetType;
-        }
-    }
-
-    public static class IntervalTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return IntervalType;
-        }
-    }
-
-    public static class JobTypeFunction implements TypeFunction {
-
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return JobType;
-        }
-    }
-
-    public static class LocationTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return LocationType;
-        }
-    }
-
     public interface MetaMutations extends ExistentialMutations, FacetMutations,
             AttributeAuthorizationMutations, NetworkAuthorizationMutations,
             ChildSequencingMutations, ParentSequencingMutations,
             SelfSequencingMutations, SiblingSequencingMutations,
             ProtocolMutations, MetaProtocolMutations,
             StatusCodeSequencingMutations {
-    }
-
-    public static class MetaProtocolTypeFunction implements TypeFunction {
-
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return StatusCodeSequencingType;
-        }
     }
 
     public interface MetaQueries extends ExistentialQueries, FacetQueries,
@@ -182,35 +116,6 @@ public class WorkspaceSchema {
     public interface Mutations extends ExistentialMutations, JobMutations {
     }
 
-    public static class NetworkAuthorizationTypeFunction
-            implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return NetworkAuthorizationType;
-        }
-    }
-
-    public static class ParentSequencingTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ParentSequencingType;
-        }
-    }
-
-    public static class ProductTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ProductType;
-        }
-    }
-
-    public static class ProtocolTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ProtocolType;
-        }
-    }
-
     public interface Queries extends ExistentialQueries, JobQueries {
     }
 
@@ -218,36 +123,6 @@ public class WorkspaceSchema {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return RelationshipType;
-        }
-    }
-
-    public static class SelfSequencingTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return SelfSequencingType;
-        }
-    }
-
-    public static class SiblingSequencingTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return SiblingSequencingType;
-        }
-    }
-
-    public static class StatusCodeSequencingTypeFunction
-            implements TypeFunction {
-
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return StatusCodeSequencingType;
-        }
-    }
-
-    public static class StatusCodeTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return StatusCodeType;
         }
     }
 
@@ -290,6 +165,17 @@ public class WorkspaceSchema {
         register(NetworkAuthorization.class,
                  (u, t) -> NetworkAuthorizationType);
         register(Job.class, (u, t) -> JobType);
+        register(Protocol.class, (u, t) -> ProtocolType);
+        register(MetaProtocol.class, (u, t) -> MetaProtocolType);
+        register(AttributeAuthorization.class,
+                 (u, t) -> AttributeAuthorizationType);
+        register(ChildSequencing.class, (u, t) -> ChildSequencingType);
+        register(Existential.class, (u, t) -> ExistentialType);
+        register(ParentSequencing.class, (u, t) -> ParentSequencingType);
+        register(SelfSequencing.class, (u, t) -> SelfSequencingType);
+        register(SiblingSequencing.class, (u, t) -> SiblingSequencingType);
+        register(StatusCodeSequencing.class,
+                 (u, t) -> StatusCodeSequencingType);
     }
 
     public static GraphQLSchema build() throws Exception {

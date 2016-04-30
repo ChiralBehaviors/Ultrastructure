@@ -30,17 +30,12 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology.JobChronologyTypeFunction;
 
 import graphql.annotations.GraphQLField;
@@ -132,7 +127,6 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
     public List<Job> getActiveChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getActiveSubJobsOf(record)
@@ -142,7 +136,7 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
+
     public List<Job> getAllChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getAllChildren(record)
@@ -158,7 +152,7 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
+
     public List<Job> getChildren(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getChildren(record)
@@ -178,13 +172,11 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverFrom(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverTo(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverTo()));
     }
@@ -201,7 +193,7 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
         return ctx(env).getJobModel()
                        .getProtocols(record)
@@ -217,14 +209,14 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
+
     public Job getParent(DataFetchingEnvironment env) {
         UUID parent = record.getParent();
         return parent == null ? null : new Job(fetch(env, parent));
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getProduct(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getProduct()));
     }
@@ -236,7 +228,6 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
     public Unit getQuantityUnit(DataFetchingEnvironment env) {
         return new Unit(resolve(env, record.getQuantityUnit()));
     }
@@ -248,13 +239,13 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getService(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getService()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
+
     public StatusCode getStatus(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getStatus()));
     }

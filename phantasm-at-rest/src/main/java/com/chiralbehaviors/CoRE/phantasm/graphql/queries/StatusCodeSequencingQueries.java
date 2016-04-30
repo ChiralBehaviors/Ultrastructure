@@ -32,12 +32,10 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -47,14 +45,12 @@ import graphql.schema.DataFetchingEnvironment;
 public interface StatusCodeSequencingQueries {
 
     @GraphQLField
-    @GraphQLType(StatusCodeSequencingTypeFunction.class)
     default StatusCodeSequencing statusCodeSequencing(@NotNull @GraphQLName("id") String id,
                                                       DataFetchingEnvironment env) {
         return StatusCodeSequencing.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeSequencingTypeFunction.class)
     default List<StatusCodeSequencing> statusCodeSequencings(@GraphQLName("ids") List<String> ids,
                                                              DataFetchingEnvironment env) {
         if (ids == null) {

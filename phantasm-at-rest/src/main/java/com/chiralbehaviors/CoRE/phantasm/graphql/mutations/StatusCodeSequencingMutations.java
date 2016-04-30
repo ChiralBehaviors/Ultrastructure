@@ -28,14 +28,12 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing.StatusCodeSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing.StatusCodeSequencingUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -45,7 +43,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface StatusCodeSequencingMutations {
 
     @GraphQLField
-    @GraphQLType(StatusCodeSequencingTypeFunction.class)
     default StatusCodeSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") StatusCodeSequencingState state,
                                                               DataFetchingEnvironment env) {
         StatusCodeSequencingRecord record = ctx(env).records()
@@ -65,7 +62,6 @@ public interface StatusCodeSequencingMutations {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeSequencingTypeFunction.class)
     default StatusCodeSequencing updateStatusCodeSequencing(@NotNull @GraphQLName("state") StatusCodeSequencingUpdateState state,
                                                             DataFetchingEnvironment env) {
         StatusCodeSequencingRecord record = ctx(env).create()

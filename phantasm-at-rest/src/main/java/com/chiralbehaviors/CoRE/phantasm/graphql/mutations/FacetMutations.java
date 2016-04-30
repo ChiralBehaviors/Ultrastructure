@@ -28,14 +28,12 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -45,7 +43,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface FacetMutations {
 
     @GraphQLField
-    @GraphQLType(FacetTypeFunction.class)
     default Facet createFacet(@NotNull @GraphQLName("state") FacetState state,
                               DataFetchingEnvironment env) {
         FacetRecord record = ctx(env).records()
@@ -65,7 +62,6 @@ public interface FacetMutations {
     }
 
     @GraphQLField
-    @GraphQLType(FacetTypeFunction.class)
     default Facet updateFacet(@NotNull @GraphQLName("state") FacetUpdateState state,
                               DataFetchingEnvironment env) {
         FacetRecord record = ctx(env).create()

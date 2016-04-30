@@ -26,12 +26,10 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -41,14 +39,12 @@ import graphql.schema.DataFetchingEnvironment;
 public interface JobQueries {
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
     default Job job(@NotNull @GraphQLName("id") String id,
                     DataFetchingEnvironment env) {
         return new Job(Job.fetch(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(JobTypeFunction.class)
     default List<Job> jobs(@NotNull @GraphQLName("ids") List<String> ids,
                            DataFetchingEnvironment env) {
         return ids.stream()

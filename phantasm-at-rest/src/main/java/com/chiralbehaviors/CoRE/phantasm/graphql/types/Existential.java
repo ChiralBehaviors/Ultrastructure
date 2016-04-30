@@ -28,7 +28,6 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductT
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
-import static graphql.Scalars.GraphQLString;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
@@ -295,13 +294,6 @@ public interface Existential {
         }
     }
 
-    public class UnitTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return UnitType;
-        }
-    }
-
     public class UpdatedByFetcher implements DataFetcher {
         @Override
         public Object get(DataFetchingEnvironment environment) {
@@ -309,13 +301,6 @@ public interface Existential {
                                    .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
         }
 
-    }
-
-    public class UuidTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return GraphQLString;
-        }
     }
 
     public static Model ctx(DataFetchingEnvironment env) {

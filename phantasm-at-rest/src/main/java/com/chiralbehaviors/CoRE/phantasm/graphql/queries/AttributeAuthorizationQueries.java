@@ -32,12 +32,10 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -47,7 +45,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface AttributeAuthorizationQueries {
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
     default AttributeAuthorization attributeAuthorization(@NotNull @GraphQLName("id") String id,
                                                           DataFetchingEnvironment env) {
         return new AttributeAuthorization(AttributeAuthorization.fetch(env,
@@ -55,7 +52,6 @@ public interface AttributeAuthorizationQueries {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeAuthorizationTypeFunction.class)
     default List<AttributeAuthorization> attributeAuthorizations(@GraphQLName("ids") List<String> ids,
                                                                  DataFetchingEnvironment env) {
         if (ids == null) {

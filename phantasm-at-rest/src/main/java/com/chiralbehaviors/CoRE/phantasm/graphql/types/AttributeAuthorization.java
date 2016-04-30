@@ -31,8 +31,6 @@ import org.jooq.exception.TooManyRowsException;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -102,7 +100,6 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeTypeFunction.class)
     public Attribute getAuthorizedAttribute(DataFetchingEnvironment env) {
         return new Attribute(resolve(env, record.getAuthorizedAttribute()));
     }
@@ -119,7 +116,6 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    @GraphQLType(FacetTypeFunction.class)
     public Facet getFacet(DataFetchingEnvironment env) {
         return Facet.fetch(env, record.getFacet());
     }

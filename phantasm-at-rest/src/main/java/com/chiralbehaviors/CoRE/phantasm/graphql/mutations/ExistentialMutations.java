@@ -27,12 +27,7 @@ import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.IntervalTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -51,7 +46,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
@@ -76,7 +70,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeTypeFunction.class)
     default Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
                                       DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -87,7 +80,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(IntervalTypeFunction.class)
     default Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
                                     DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -98,7 +90,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     default Location createLocation(@NotNull @GraphQLName("state") ExistentialState state,
                                     DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -109,7 +100,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     default Product createProduct(@NotNull @GraphQLName("state") ExistentialState state,
                                   DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -131,7 +121,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     default StatusCode createStatusCode(@NotNull @GraphQLName("state") StatusCodeState state,
                                         DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -142,7 +131,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
     default Unit createUnit(@NotNull @GraphQLName("state") ExistentialState state,
                             DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -228,7 +216,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeTypeFunction.class)
     default Attribute updateAttribute(@NotNull @GraphQLName("state") AttributeUpdateState state,
                                       DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,
@@ -239,7 +226,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(IntervalTypeFunction.class)
     default Interval updateInterval(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                                     DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,
@@ -250,7 +236,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     default Location updateLocation(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                                     DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,
@@ -261,7 +246,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     default Product updateProduct(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                                   DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,
@@ -283,7 +267,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     default StatusCode updateStatusCode(@NotNull @GraphQLName("state") StatusCodeUpdateState state,
                                         DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,
@@ -294,7 +277,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
     default Unit updateUnit(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                             DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,

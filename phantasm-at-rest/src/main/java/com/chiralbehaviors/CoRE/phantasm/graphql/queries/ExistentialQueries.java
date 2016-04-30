@@ -32,12 +32,7 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.IntervalTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -48,7 +43,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.UnitTypeFunction;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
@@ -97,14 +91,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(AttributeTypeFunction.class)
     default Attribute attribute(@NotNull @GraphQLName("id") String id,
                                 DataFetchingEnvironment env) {
         return new Attribute(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(AttributeTypeFunction.class)
     default List<Attribute> attributes(@GraphQLName("ids") List<String> ids,
                                        DataFetchingEnvironment env) {
         if (ids == null) {
@@ -119,14 +111,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(IntervalTypeFunction.class)
     default Interval interval(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
         return new Interval(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(IntervalTypeFunction.class)
     default List<Interval> intervals(@GraphQLName("ids") List<String> ids,
                                      DataFetchingEnvironment env) {
         if (ids == null) {
@@ -141,14 +131,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     default Location location(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
         return new Location(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(LocationTypeFunction.class)
     default List<Location> locations(@GraphQLName("ids") List<String> ids,
                                      DataFetchingEnvironment env) {
         if (ids == null) {
@@ -163,14 +151,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     default Product product(@NotNull @GraphQLName("id") String id,
                             DataFetchingEnvironment env) {
         return new Product(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     default List<Product> products(@GraphQLName("ids") List<String> ids,
                                    DataFetchingEnvironment env) {
         if (ids == null) {
@@ -207,14 +193,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     default StatusCode statusCode(@NotNull @GraphQLName("id") String id,
                                   DataFetchingEnvironment env) {
         return new StatusCode(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
     default List<StatusCode> statusCodes(@GraphQLName("ids") List<String> ids,
                                          DataFetchingEnvironment env) {
         if (ids == null) {
@@ -229,14 +213,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
     default Unit unit(@NotNull @GraphQLName("id") String id,
                       DataFetchingEnvironment env) {
         return new Unit(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(UnitTypeFunction.class)
     default List<Unit> units(@GraphQLName("ids") List<String> ids,
                              DataFetchingEnvironment env) {
         if (ids == null) {

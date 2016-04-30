@@ -26,8 +26,6 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductTypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
@@ -111,14 +109,14 @@ public class ParentSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getParent(DataFetchingEnvironment env) {
         return new Product(ctx(env).records()
                                    .resolve(record.getParent()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
+
     public StatusCode getParentStatusToSet(DataFetchingEnvironment env) {
         return new StatusCode(ctx(env).records()
                                       .resolve(record.getParentStatusToSet()));
@@ -134,14 +132,14 @@ public class ParentSequencing {
     }
 
     @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
+
     public Product getService(DataFetchingEnvironment env) {
         return new Product(ctx(env).records()
                                    .resolve(record.getService()));
     }
 
     @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
+
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
         return new StatusCode(ctx(env).records()
                                       .resolve(record.getStatusCode()));

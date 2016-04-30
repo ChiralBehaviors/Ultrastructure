@@ -28,14 +28,12 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SiblingSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -45,7 +43,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface SiblingSequencingMutations {
 
     @GraphQLField
-    @GraphQLType(SiblingSequencingTypeFunction.class)
     default SiblingSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SiblingSequencingState state,
                                                            DataFetchingEnvironment env) {
         SiblingSequencingAuthorizationRecord record = ctx(env).records()
@@ -65,7 +62,6 @@ public interface SiblingSequencingMutations {
     }
 
     @GraphQLField
-    @GraphQLType(SiblingSequencingTypeFunction.class)
     default SiblingSequencing updateSiblingSequencing(@NotNull @GraphQLName("state") SiblingSequencingUpdateState state,
                                                       DataFetchingEnvironment env) {
         SiblingSequencingAuthorizationRecord record = ctx(env).create()

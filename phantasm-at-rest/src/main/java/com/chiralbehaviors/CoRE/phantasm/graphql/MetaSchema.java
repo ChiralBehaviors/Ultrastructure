@@ -29,17 +29,29 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAuthorizationMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ParentSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SelfSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAuthorizationQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ParentSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SiblingSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 
 import graphql.annotations.GraphQLAnnotations;
 import graphql.annotations.TypeFunction;
@@ -59,6 +71,13 @@ public class MetaSchema {
         }
     }
 
+    public class ChildSequencingTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return ChildSequencingType;
+        }
+    }
+
     public class FacetTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
@@ -67,7 +86,9 @@ public class MetaSchema {
     }
 
     public interface Mutations extends ExistentialMutations, FacetMutations,
-            AttributeAuthorizationMutations, NetworkAuthorizationMutations {
+            AttributeAuthorizationMutations, NetworkAuthorizationMutations,
+            ChildSequencingMutations, ParentSequencingMutations,
+            SelfSequencingMutations, SiblingSequencingMutations {
     }
 
     public class NetworkAuthorizationTypeFunction implements TypeFunction {
@@ -77,13 +98,40 @@ public class MetaSchema {
         }
     }
 
+    public class ParentSequencingTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return ParentSequencingType;
+        }
+    }
+
     public interface Queries extends ExistentialQueries, FacetQueries,
-            AttributeAuthorizationQueries, NetworkAuthorizationQueries {
+            AttributeAuthorizationQueries, NetworkAuthorizationQueries,
+            ChildSequencingQueries, ParentSequencingQueries,
+            SelfSequencingQueries, SiblingSequencingQueries {
+    }
+
+    public class SelfSequencingTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return SelfSequencingType;
+        }
+    }
+
+    public class SiblingSequencingTypeFunction implements TypeFunction {
+        @Override
+        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
+            return SiblingSequencingType;
+        }
     }
 
     public static final GraphQLObjectType AttributeAuthorizationType = Existential.objectTypeOf(AttributeAuthorization.class);
+    public static final GraphQLObjectType ChildSequencingType        = Existential.objectTypeOf(ChildSequencing.class);
     public static final GraphQLObjectType FacetType                  = Existential.objectTypeOf(Facet.class);
     public static final GraphQLObjectType NetworkAuthorizationType   = Existential.objectTypeOf(NetworkAuthorization.class);
+    public static final GraphQLObjectType ParentSequencingType       = Existential.objectTypeOf(ParentSequencing.class);
+    public static final GraphQLObjectType SelfSequencingType         = Existential.objectTypeOf(SelfSequencing.class);
+    public static final GraphQLObjectType SiblingSequencingType      = Existential.objectTypeOf(SiblingSequencing.class);
 
     static {
         register(UUID.class, (u, t) -> GraphQLString);

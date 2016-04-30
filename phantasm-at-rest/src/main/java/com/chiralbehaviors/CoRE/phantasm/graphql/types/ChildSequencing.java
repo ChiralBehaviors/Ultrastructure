@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -41,6 +42,56 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class ChildSequencing {
+
+    public static class ChildSequencingState {
+        @GraphQLField
+        String  nextChild;
+        @GraphQLField
+        String  nextChildStatus;
+        @GraphQLField
+        String  notes;
+        @GraphQLField
+        Integer sequenceNumber;
+        @GraphQLField
+        String  service;
+        @GraphQLField
+        String  statusCode;
+
+        public void update(ChildSequencingAuthorizationRecord record) {
+            if (nextChild != null) {
+                record.setNextChild(UUID.fromString(nextChild));
+            }
+            if (nextChildStatus != null) {
+                record.setNextChildStatus(UUID.fromString(nextChildStatus));
+            }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
+            if (service != null) {
+                record.setService(UUID.fromString(service));
+            }
+            if (statusCode != null) {
+                record.setStatusCode(UUID.fromString(statusCode));
+            }
+            if (sequenceNumber != null) {
+                record.setSequenceNumber(sequenceNumber);
+            }
+        }
+    }
+
+    public static class ChildSequencingUpdateState
+            extends ChildSequencingState {
+        @GraphQLField
+        public String id;
+    }
+
+    public static ChildSequencing fetch(DataFetchingEnvironment env, UUID id) {
+        return new ChildSequencing(ctx(env).create()
+                                           .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)
+                                           .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                           .fetchOne());
+    }
+
     private final ChildSequencingAuthorizationRecord record;
 
     public ChildSequencing(ChildSequencingAuthorizationRecord record) {
@@ -53,28 +104,9 @@ public class ChildSequencing {
 
     @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
-    public Product getService(DataFetchingEnvironment env) {
-        return new Product(ctx(env).records()
-                                   .resolve(record.getService()));
-    }
-
-    @GraphQLField
-    @GraphQLType(ProductTypeFunction.class)
     public Product getNextChild(DataFetchingEnvironment env) {
         return new Product(ctx(env).records()
                                    .resolve(record.getNextChild()));
-    }
-
-    @GraphQLField
-    @GraphQLType(StatusCodeTypeFunction.class)
-    public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(ctx(env).records()
-                                      .resolve(record.getStatusCode()));
-    }
-
-    @GraphQLField
-    public Integer getSequenceNumber() {
-        return record.getSequenceNumber();
     }
 
     @GraphQLField
@@ -87,6 +119,29 @@ public class ChildSequencing {
     @GraphQLField
     public String getNotes() {
         return record.getNotes();
+    }
+
+    public ChildSequencingAuthorizationRecord getRecord() {
+        return record;
+    }
+
+    @GraphQLField
+    public Integer getSequenceNumber() {
+        return record.getSequenceNumber();
+    }
+
+    @GraphQLField
+    @GraphQLType(ProductTypeFunction.class)
+    public Product getService(DataFetchingEnvironment env) {
+        return new Product(ctx(env).records()
+                                   .resolve(record.getService()));
+    }
+
+    @GraphQLField
+    @GraphQLType(StatusCodeTypeFunction.class)
+    public StatusCode getStatusCode(DataFetchingEnvironment env) {
+        return new StatusCode(ctx(env).records()
+                                      .resolve(record.getStatusCode()));
     }
 
     @GraphQLField

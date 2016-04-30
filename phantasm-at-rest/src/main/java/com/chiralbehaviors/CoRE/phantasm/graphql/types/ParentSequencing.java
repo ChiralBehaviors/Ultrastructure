@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -41,6 +42,56 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class ParentSequencing {
+
+    public static class ParentSequencingState {
+        @GraphQLField
+        String  notes;
+        @GraphQLField
+        String  parent;
+        @GraphQLField
+        String  parentStatus;
+        @GraphQLField
+        Integer sequenceNumber;
+        @GraphQLField
+        String  service;
+        @GraphQLField
+        String  statusCode;
+
+        public void update(ParentSequencingAuthorizationRecord record) {
+            if (parent != null) {
+                record.setParent(UUID.fromString(parent));
+            }
+            if (parentStatus != null) {
+                record.setParentStatusToSet(UUID.fromString(parentStatus));
+            }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
+            if (service != null) {
+                record.setService(UUID.fromString(service));
+            }
+            if (statusCode != null) {
+                record.setStatusCode(UUID.fromString(statusCode));
+            }
+            if (sequenceNumber != null) {
+                record.setSequenceNumber(sequenceNumber);
+            }
+        }
+    }
+
+    public static class ParentSequencingUpdateState
+            extends ParentSequencingState {
+        @GraphQLField
+        public String id;
+    }
+
+    public static ParentSequencing fetch(DataFetchingEnvironment env, UUID id) {
+        return new ParentSequencing(ctx(env).create()
+                                            .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
+                                            .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                            .fetchOne());
+    }
+
     private final ParentSequencingAuthorizationRecord record;
 
     public ParentSequencing(ParentSequencingAuthorizationRecord record) {
@@ -68,6 +119,10 @@ public class ParentSequencing {
     public StatusCode getParentStatusToSet(DataFetchingEnvironment env) {
         return new StatusCode(ctx(env).records()
                                       .resolve(record.getParentStatusToSet()));
+    }
+
+    public ParentSequencingAuthorizationRecord getRecord() {
+        return record;
     }
 
     @GraphQLField

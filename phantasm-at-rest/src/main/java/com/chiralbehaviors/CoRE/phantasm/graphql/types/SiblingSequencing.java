@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -41,6 +42,57 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class SiblingSequencing {
+
+    public static class SiblingSequencingState {
+        @GraphQLField
+        String  nextSibling;
+        @GraphQLField
+        String  nextSiblingStatus;
+        @GraphQLField
+        String  notes;
+        @GraphQLField
+        Integer sequenceNumber;
+        @GraphQLField
+        String  service;
+        @GraphQLField
+        String  statusCode;
+
+        public void update(SiblingSequencingAuthorizationRecord record) {
+            if (nextSibling != null) {
+                record.setNextSibling(UUID.fromString(nextSibling));
+            }
+            if (nextSiblingStatus != null) {
+                record.setNextSiblingStatus(UUID.fromString(nextSiblingStatus));
+            }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
+            if (service != null) {
+                record.setService(UUID.fromString(service));
+            }
+            if (statusCode != null) {
+                record.setStatusCode(UUID.fromString(statusCode));
+            }
+            if (sequenceNumber != null) {
+                record.setSequenceNumber(sequenceNumber);
+            }
+        }
+    }
+
+    public static class SiblingSequencingUpdateState
+            extends SiblingSequencingState {
+        @GraphQLField
+        public String id;
+    }
+
+    public static SiblingSequencing fetch(DataFetchingEnvironment env,
+                                          UUID id) {
+        return new SiblingSequencing(ctx(env).create()
+                                             .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
+                                             .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                             .fetchOne());
+    }
+
     private final SiblingSequencingAuthorizationRecord record;
 
     public SiblingSequencing(SiblingSequencingAuthorizationRecord record) {
@@ -68,6 +120,10 @@ public class SiblingSequencing {
     @GraphQLField
     public String getNotes() {
         return record.getNotes();
+    }
+
+    public SiblingSequencingAuthorizationRecord getRecord() {
+        return record;
     }
 
     @GraphQLField

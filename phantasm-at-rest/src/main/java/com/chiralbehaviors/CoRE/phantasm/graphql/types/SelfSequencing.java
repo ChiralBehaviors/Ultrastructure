@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
@@ -41,6 +42,50 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class SelfSequencing {
+
+    public static class SelfSequencingState {
+        @GraphQLField
+        String  notes;
+        @GraphQLField
+        Integer sequenceNumber;
+        @GraphQLField
+        String  service;
+        @GraphQLField
+        String  statusCode;
+        @GraphQLField
+        String  statusToSet;
+
+        public void update(SelfSequencingAuthorizationRecord record) {
+            if (statusToSet != null) {
+                record.setStatusToSet(UUID.fromString(statusToSet));
+            }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
+            if (service != null) {
+                record.setService(UUID.fromString(service));
+            }
+            if (statusCode != null) {
+                record.setStatusCode(UUID.fromString(statusCode));
+            }
+            if (sequenceNumber != null) {
+                record.setSequenceNumber(sequenceNumber);
+            }
+        }
+    }
+
+    public static class SelfSequencingUpdateState extends SelfSequencingState {
+        @GraphQLField
+        public String id;
+    }
+
+    public static SelfSequencing fetch(DataFetchingEnvironment env, UUID id) {
+        return new SelfSequencing(ctx(env).create()
+                                          .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
+                                          .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                          .fetchOne());
+    }
+
     private final SelfSequencingAuthorizationRecord record;
 
     public SelfSequencing(SelfSequencingAuthorizationRecord rec) {
@@ -52,10 +97,29 @@ public class SelfSequencing {
     }
 
     @GraphQLField
+    public String getNotes() {
+        return record.getNotes();
+    }
+
+    public SelfSequencingAuthorizationRecord getRecord() {
+        return record;
+    }
+
+    @GraphQLField
+    public Integer getSequenceNumber() {
+        return record.getSequenceNumber();
+    }
+
+    @GraphQLField
     @GraphQLType(ProductTypeFunction.class)
     public Product getService(DataFetchingEnvironment env) {
         return new Product(ctx(env).records()
                                    .resolve(record.getService()));
+    }
+
+    @GraphQLField
+    public Boolean getSetIfActiveSiblings(DataFetchingEnvironment env) {
+        return record.getSetIfActiveSiblings();
     }
 
     @GraphQLField
@@ -66,25 +130,10 @@ public class SelfSequencing {
     }
 
     @GraphQLField
-    public Integer getSequenceNumber() {
-        return record.getSequenceNumber();
-    }
-
-    @GraphQLField
     @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getStatusToSet(DataFetchingEnvironment env) {
         return new StatusCode(ctx(env).records()
                                       .resolve(record.getStatusToSet()));
-    }
-
-    @GraphQLField
-    public Boolean getSetIfActiveSiblings(DataFetchingEnvironment env) {
-        return record.getSetIfActiveSiblings();
-    }
-
-    @GraphQLField
-    public String getNotes() {
-        return record.getNotes();
     }
 
     @GraphQLField

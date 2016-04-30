@@ -52,7 +52,7 @@ public interface FacetQueries {
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default List<Facet> facets(@NotNull @GraphQLName("ids") List<String> ids,
+    default List<Facet> facets(@GraphQLName("ids") List<String> ids,
                                DataFetchingEnvironment env) {
         if (ids == null) {
             return ctx(env).getPhantasmModel()

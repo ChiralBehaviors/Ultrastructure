@@ -56,7 +56,6 @@ import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
-import lombok.SneakyThrows;
 
 /**
  * A utility class for extracting GraphQL data structures from annotated
@@ -316,7 +315,6 @@ public class GraphQLAnnotations2 {
                                            .filter(p -> !DataFetchingEnvironment.class.isAssignableFrom(p.getType()))
                                            .map(new Function<Parameter, GraphQLArgument>() {
                                                @Override
-                                               @SneakyThrows
                                                public GraphQLArgument apply(Parameter parameter) {
                                                    Class<?> t = parameter.getType();
                                                    graphql.schema.GraphQLType graphQLType = typeFunction.apply(t,
@@ -519,7 +517,6 @@ public class GraphQLAnnotations2 {
         }
 
         @Override
-        @SneakyThrows
         public Object get(DataFetchingEnvironment environment) {
             // Exclude arguments
             DataFetchingEnvironment env = new DataFetchingEnvironment(environment.getSource(),

@@ -118,6 +118,12 @@ public class NetworkAuthorization {
     }
 
     @GraphQLField
+    public String getId() {
+        return record.getId()
+                     .toString();
+    }
+
+    @GraphQLField
     public String getName() {
         return record.getName();
     }

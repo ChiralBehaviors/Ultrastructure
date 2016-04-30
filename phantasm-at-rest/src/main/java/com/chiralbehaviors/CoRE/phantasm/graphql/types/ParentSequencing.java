@@ -95,6 +95,7 @@ public class ParentSequencing {
     private final ParentSequencingAuthorizationRecord record;
 
     public ParentSequencing(ParentSequencingAuthorizationRecord record) {
+        assert record != null;
         this.record = record;
     }
 

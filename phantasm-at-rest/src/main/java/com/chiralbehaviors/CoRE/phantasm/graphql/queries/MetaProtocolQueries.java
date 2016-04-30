@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLNonNull;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -40,13 +42,14 @@ public interface MetaProtocolQueries {
 
     @GraphQLField
     @GraphQLType(MetaProtocolTypeFunction.class)
-    default MetaProtocol metaProtocol(String id, DataFetchingEnvironment env) {
+    default MetaProtocol metaProtocol(@NotNull @GraphQLName("id") String id,
+                                      DataFetchingEnvironment env) {
         return MetaProtocol.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(MetaProtocolTypeFunction.class)
-    default List<MetaProtocol> metaProtocols(@GraphQLNonNull List<String> ids,
+    default List<MetaProtocol> metaProtocols(@NotNull @GraphQLName("ids") List<String> ids,
                                              DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))

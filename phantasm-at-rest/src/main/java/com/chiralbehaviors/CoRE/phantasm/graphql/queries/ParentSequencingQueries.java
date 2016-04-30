@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ParentSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -39,14 +42,14 @@ public interface ParentSequencingQueries {
 
     @GraphQLField
     @GraphQLType(ParentSequencingTypeFunction.class)
-    default ParentSequencing parentSequencing(String id,
+    default ParentSequencing parentSequencing(@NotNull @GraphQLName("id") String id,
                                               DataFetchingEnvironment env) {
         return ParentSequencing.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(ParentSequencingTypeFunction.class)
-    default List<ParentSequencing> parentSequencings(List<String> ids,
+    default List<ParentSequencing> parentSequencings(@NotNull @GraphQLName("ids") List<String> ids,
                                                      DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))

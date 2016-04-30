@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
-import graphql.annotations.GraphQLAnnotations;
+import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -118,6 +118,7 @@ public interface Existential {
         protected final ExistentialRecord record;
 
         public ExistentialCommon(ExistentialRecord record) {
+            assert record != null;
             this.record = record;
         }
 
@@ -382,7 +383,7 @@ public interface Existential {
 
     public static GraphQLInterfaceType interfaceTypeOf(Class<?> clazz) {
         try {
-            return GraphQLAnnotations.iface(clazz);
+            return GraphQLAnnotations2.iface(clazz);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new IllegalStateException(String.format("Unable to create interface  type for %s",
                                                           clazz.getSimpleName()));
@@ -391,7 +392,7 @@ public interface Existential {
 
     public static GraphQLObjectType objectTypeOf(Class<?> clazz) {
         try {
-            return GraphQLAnnotations.object(clazz);
+            return GraphQLAnnotations2.object(clazz);
         } catch (IllegalAccessException | InstantiationException
                 | NoSuchMethodException e) {
             throw new IllegalStateException(String.format("Unable to create object type for %s",

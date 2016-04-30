@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetUpdateState;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -43,7 +46,8 @@ public interface FacetMutations {
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default Facet createFacet(FacetState state, DataFetchingEnvironment env) {
+    default Facet createFacet(@NotNull @GraphQLName("state") FacetState state,
+                              DataFetchingEnvironment env) {
         FacetRecord record = ctx(env).records()
                                      .newFacet();
         state.update(record);
@@ -52,7 +56,8 @@ public interface FacetMutations {
     }
 
     @GraphQLField
-    default Boolean removeFacet(String id, DataFetchingEnvironment env) {
+    default Boolean removeFacet(@NotNull @GraphQLName("id") String id,
+                                DataFetchingEnvironment env) {
         Facet.fetch(env, UUID.fromString(id))
              .getRecord()
              .delete();
@@ -61,7 +66,7 @@ public interface FacetMutations {
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default Facet updateFacet(FacetUpdateState state,
+    default Facet updateFacet(@NotNull @GraphQLName("state") FacetUpdateState state,
                               DataFetchingEnvironment env) {
         FacetRecord record = ctx(env).create()
                                      .selectFrom(Tables.FACET)

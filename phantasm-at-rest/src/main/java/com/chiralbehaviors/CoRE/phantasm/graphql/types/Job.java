@@ -127,6 +127,7 @@ public class Job {
     private final JobRecord record;
 
     public Job(JobRecord record) {
+        assert record != null;
         this.record = record;
     }
 
@@ -218,7 +219,8 @@ public class Job {
     @GraphQLField
     @GraphQLType(JobTypeFunction.class)
     public Job getParent(DataFetchingEnvironment env) {
-        return new Job(fetch(env, record.getParent()));
+        UUID parent = record.getParent();
+        return parent == null ? null : new Job(fetch(env, parent));
     }
 
     @GraphQLField
@@ -229,8 +231,8 @@ public class Job {
 
     @GraphQLField
     public Long getQuantity() {
-        return record.getQuantity()
-                     .longValue();
+        BigDecimal quantity = record.getQuantity();
+        return quantity == null ? null : quantity.longValue();
     }
 
     @GraphQLField

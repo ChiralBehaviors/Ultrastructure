@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ChildSequencingTypeFunction;
@@ -33,7 +35,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing.ChildSequ
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLNonNull;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -45,7 +46,7 @@ public interface ChildSequencingMutations {
 
     @GraphQLField
     @GraphQLType(ChildSequencingTypeFunction.class)
-    default ChildSequencing createAttributeAuthorization(@GraphQLNonNull @GraphQLName("state") ChildSequencingState state,
+    default ChildSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") ChildSequencingState state,
                                                          DataFetchingEnvironment env) {
         ChildSequencingAuthorizationRecord record = ctx(env).records()
                                                             .newChildSequencingAuthorization();
@@ -55,7 +56,7 @@ public interface ChildSequencingMutations {
     }
 
     @GraphQLField
-    default Boolean removeChildSequencing(@GraphQLNonNull String id,
+    default Boolean removeChildSequencing(@NotNull String id,
                                           DataFetchingEnvironment env) {
         ChildSequencing.fetch(env, UUID.fromString(id))
                        .getRecord()
@@ -65,7 +66,7 @@ public interface ChildSequencingMutations {
 
     @GraphQLField
     @GraphQLType(ChildSequencingTypeFunction.class)
-    default ChildSequencing updateChildSequencing(@GraphQLNonNull @GraphQLName("state") ChildSequencingUpdateState state,
+    default ChildSequencing updateChildSequencing(@NotNull @GraphQLName("state") ChildSequencingUpdateState state,
                                                   DataFetchingEnvironment env) {
         ChildSequencingAuthorizationRecord record = ctx(env).create()
                                                             .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)

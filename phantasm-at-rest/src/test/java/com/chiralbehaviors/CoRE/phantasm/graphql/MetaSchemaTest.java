@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
-import graphql.annotations.GraphQLAnnotations;
+import graphql.annotations.GraphQLAnnotations2;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 
@@ -47,7 +47,7 @@ public class MetaSchemaTest extends AbstractModelTest {
 
     @Test
     public void testMutationType() throws Exception {
-        GraphQLObjectType object = GraphQLAnnotations.object(WorkspaceSchema.MetaMutations.class);
+        GraphQLObjectType object = GraphQLAnnotations2.object(WorkspaceSchema.MetaMutations.class);
         assertNotNull(object);
     }
 

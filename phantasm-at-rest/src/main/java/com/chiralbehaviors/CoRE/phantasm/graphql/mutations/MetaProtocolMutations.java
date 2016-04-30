@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaProtocolTypeFunction;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocol
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolUpdateState;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -43,7 +46,7 @@ public interface MetaProtocolMutations {
 
     @GraphQLField
     @GraphQLType(MetaProtocolTypeFunction.class)
-    default MetaProtocol createMetaProtocol(MetaProtocolState state,
+    default MetaProtocol createMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolState state,
                                             DataFetchingEnvironment env) {
         MetaProtocolRecord record = ctx(env).records()
                                             .newMetaProtocol();
@@ -53,7 +56,8 @@ public interface MetaProtocolMutations {
     }
 
     @GraphQLField
-    default Boolean removeMetaProtocol(String id, DataFetchingEnvironment env) {
+    default Boolean removeMetaProtocol(@NotNull @GraphQLName("id") String id,
+                                       DataFetchingEnvironment env) {
         MetaProtocol.fetch(env, UUID.fromString(id))
                     .getRecord()
                     .delete();
@@ -62,7 +66,7 @@ public interface MetaProtocolMutations {
 
     @GraphQLField
     @GraphQLType(MetaProtocolTypeFunction.class)
-    default MetaProtocol updateMetaProtocol(MetaProtocolUpdateState state,
+    default MetaProtocol updateMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolUpdateState state,
                                             DataFetchingEnvironment env) {
         MetaProtocolRecord record = ctx(env).create()
                                             .selectFrom(Tables.META_PROTOCOL)

@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.lang.reflect.AnnotatedType;
+import java.math.BigDecimal;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
@@ -60,6 +61,7 @@ public class JobChronology {
     private final JobChronologyRecord              record;
 
     public JobChronology(JobChronologyRecord record) {
+        assert record != null;
         this.record = record;
     }
 
@@ -106,8 +108,8 @@ public class JobChronology {
 
     @GraphQLField
     public Long getQuantity() {
-        return record.getQuantity()
-                     .longValue();
+        BigDecimal quantity = record.getQuantity();
+        return quantity == null ? null : quantity.longValue();
     }
 
     @GraphQLField

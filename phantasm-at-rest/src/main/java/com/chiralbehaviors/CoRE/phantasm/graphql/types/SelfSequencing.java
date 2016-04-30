@@ -88,8 +88,9 @@ public class SelfSequencing {
 
     private final SelfSequencingAuthorizationRecord record;
 
-    public SelfSequencing(SelfSequencingAuthorizationRecord rec) {
-        this.record = rec;
+    public SelfSequencing(SelfSequencingAuthorizationRecord record) {
+        assert record != null;
+        this.record = record;
     }
 
     public UUID getId() {

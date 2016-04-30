@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
@@ -33,6 +35,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.Netw
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.NetwworkAuthorizationState;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -44,7 +47,7 @@ public interface NetworkAuthorizationMutations {
 
     @GraphQLField
     @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default NetworkAuthorization createNetworkAuthorization(NetwworkAuthorizationState state,
+    default NetworkAuthorization createNetworkAuthorization(@NotNull @GraphQLName("state") NetwworkAuthorizationState state,
                                                             DataFetchingEnvironment env) {
         ExistentialNetworkAuthorizationRecord record = ctx(env).records()
                                                                .newExistentialNetworkAuthorization();
@@ -54,7 +57,7 @@ public interface NetworkAuthorizationMutations {
     }
 
     @GraphQLField
-    default Boolean removeNetworkAuthorization(String id,
+    default Boolean removeNetworkAuthorization(@NotNull @GraphQLName("id") String id,
                                                DataFetchingEnvironment env) {
         NetworkAuthorization.fetch(env, UUID.fromString(id))
                             .getRecord()
@@ -64,7 +67,7 @@ public interface NetworkAuthorizationMutations {
 
     @GraphQLField
     @GraphQLType(NetworkAuthorizationTypeFunction.class)
-    default NetworkAuthorization updateNetworkAuthorization(NetworkAuthorizationUpdateState state,
+    default NetworkAuthorization updateNetworkAuthorization(@NotNull @GraphQLName("state") NetworkAuthorizationUpdateState state,
                                                             DataFetchingEnvironment env) {
         ExistentialNetworkAuthorizationRecord record = ctx(env).create()
                                                                .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)

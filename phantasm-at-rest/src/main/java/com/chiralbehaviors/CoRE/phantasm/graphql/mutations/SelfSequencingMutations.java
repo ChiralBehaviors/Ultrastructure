@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SelfSequencingTypeFunction;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequen
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingUpdateState;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -43,7 +46,7 @@ public interface SelfSequencingMutations {
 
     @GraphQLField
     @GraphQLType(SelfSequencingTypeFunction.class)
-    default SelfSequencing createAttributeAuthorization(SelfSequencingState state,
+    default SelfSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SelfSequencingState state,
                                                         DataFetchingEnvironment env) {
         SelfSequencingAuthorizationRecord record = ctx(env).records()
                                                            .newSelfSequencingAuthorization();
@@ -53,7 +56,7 @@ public interface SelfSequencingMutations {
     }
 
     @GraphQLField
-    default Boolean removeSelfSequencing(String id,
+    default Boolean removeSelfSequencing(@NotNull @GraphQLName("id") String id,
                                          DataFetchingEnvironment env) {
         SelfSequencing.fetch(env, UUID.fromString(id))
                       .getRecord()
@@ -63,7 +66,7 @@ public interface SelfSequencingMutations {
 
     @GraphQLField
     @GraphQLType(SelfSequencingTypeFunction.class)
-    default SelfSequencing updateSelfSequencing(SelfSequencingUpdateState state,
+    default SelfSequencing updateSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingUpdateState state,
                                                 DataFetchingEnvironment env) {
         SelfSequencingAuthorizationRecord record = ctx(env).create()
                                                            .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)

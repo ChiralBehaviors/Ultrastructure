@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
@@ -33,7 +35,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.At
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLNonNull;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -45,7 +46,7 @@ public interface AttributeAuthorizationMutations {
 
     @GraphQLField
     @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default AttributeAuthorization createAttributeAuthorization(@GraphQLNonNull @GraphQLName("state") AttributeAuthorizationState state,
+    default AttributeAuthorization createAttributeAuthorization(@NotNull @GraphQLName("state") AttributeAuthorizationState state,
                                                                 DataFetchingEnvironment env) {
         ExistentialAttributeAuthorizationRecord record = ctx(env).records()
                                                                  .newExistentialAttributeAuthorization();
@@ -55,7 +56,7 @@ public interface AttributeAuthorizationMutations {
     }
 
     @GraphQLField
-    default Boolean removeAttributeAuthorization(@GraphQLNonNull String id,
+    default Boolean removeAttributeAuthorization(@NotNull String id,
                                                  DataFetchingEnvironment env) {
         AttributeAuthorization.fetch(env, UUID.fromString(id))
                               .delete();
@@ -64,7 +65,7 @@ public interface AttributeAuthorizationMutations {
 
     @GraphQLField
     @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default AttributeAuthorization updateAttributeAuthorization(@GraphQLNonNull @GraphQLName("state") AttributeAuthorizationUpdateState state,
+    default AttributeAuthorization updateAttributeAuthorization(@NotNull @GraphQLName("state") AttributeAuthorizationUpdateState state,
                                                                 DataFetchingEnvironment env) {
         ExistentialAttributeAuthorizationRecord record = ctx(env).create()
                                                                  .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)

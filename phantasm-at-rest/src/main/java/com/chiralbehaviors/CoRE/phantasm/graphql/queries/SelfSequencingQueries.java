@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SelfSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -39,14 +42,14 @@ public interface SelfSequencingQueries {
 
     @GraphQLField
     @GraphQLType(SelfSequencingTypeFunction.class)
-    default SelfSequencing selfSequencing(String id,
+    default SelfSequencing selfSequencing(@NotNull @GraphQLName("id") String id,
                                           DataFetchingEnvironment env) {
         return SelfSequencing.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(SelfSequencingTypeFunction.class)
-    default List<SelfSequencing> selfSequencings(List<String> ids,
+    default List<SelfSequencing> selfSequencings(@NotNull @GraphQLName("ids") List<String> ids,
                                                  DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))

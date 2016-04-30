@@ -168,6 +168,7 @@ public class Protocol {
     private final ProtocolRecord record;
 
     public Protocol(ProtocolRecord record) {
+        assert record != null;
         this.record = record;
     }
 

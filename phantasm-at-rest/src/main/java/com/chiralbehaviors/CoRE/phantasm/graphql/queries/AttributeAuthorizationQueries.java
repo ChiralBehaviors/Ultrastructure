@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -39,7 +42,7 @@ public interface AttributeAuthorizationQueries {
 
     @GraphQLField
     @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default AttributeAuthorization attributeAuthorization(String id,
+    default AttributeAuthorization attributeAuthorization(@NotNull @GraphQLName("id") String id,
                                                           DataFetchingEnvironment env) {
         return new AttributeAuthorization(AttributeAuthorization.fetch(env,
                                                                        UUID.fromString(id)));
@@ -47,7 +50,7 @@ public interface AttributeAuthorizationQueries {
 
     @GraphQLField
     @GraphQLType(AttributeAuthorizationTypeFunction.class)
-    default List<AttributeAuthorization> instancesOfAttributeAuthorization(List<String> ids,
+    default List<AttributeAuthorization> instancesOfAttributeAuthorization(@NotNull @GraphQLName("ids") List<String> ids,
                                                                            DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))

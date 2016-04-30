@@ -97,6 +97,7 @@ public class Facet {
     private final FacetRecord record;
 
     public Facet(FacetRecord record) {
+        assert record != null;
         this.record = record;
     }
 

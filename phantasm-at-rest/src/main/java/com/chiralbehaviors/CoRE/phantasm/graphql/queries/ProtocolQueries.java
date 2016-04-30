@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProtocolTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLNonNull;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -40,13 +42,14 @@ public interface ProtocolQueries {
 
     @GraphQLField
     @GraphQLType(ProtocolTypeFunction.class)
-    default Protocol protocol(String id, DataFetchingEnvironment env) {
+    default Protocol protocol(@NotNull @GraphQLName("id") String id,
+                              DataFetchingEnvironment env) {
         return new Protocol(Protocol.fetch(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     @GraphQLType(ProtocolTypeFunction.class)
-    default List<Protocol> protocols(@GraphQLNonNull List<String> ids,
+    default List<Protocol> protocols(@NotNull @GraphQLName("ids") List<String> ids,
                                      DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))

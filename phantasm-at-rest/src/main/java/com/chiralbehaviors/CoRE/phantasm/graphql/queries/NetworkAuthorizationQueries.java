@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.NetworkAuthorizationTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -39,14 +42,14 @@ public interface NetworkAuthorizationQueries {
 
     @GraphQLField
     @GraphQLType(NetworkAuthorizationTypeFunction.class)
-    default NetworkAuthorization networkAuthorization(String id,
+    default NetworkAuthorization networkAuthorization(@NotNull @GraphQLName("id") String id,
                                                       DataFetchingEnvironment env) {
         return NetworkAuthorization.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(NetworkAuthorizationTypeFunction.class)
-    default List<NetworkAuthorization> networkAuthorizations(List<String> ids,
+    default List<NetworkAuthorization> networkAuthorizations(@NotNull @GraphQLName("ids") List<String> ids,
                                                              DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))

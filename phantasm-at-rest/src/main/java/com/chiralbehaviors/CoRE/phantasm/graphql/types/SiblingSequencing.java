@@ -96,6 +96,7 @@ public class SiblingSequencing {
     private final SiblingSequencingAuthorizationRecord record;
 
     public SiblingSequencing(SiblingSequencingAuthorizationRecord record) {
+        assert record != null;
         this.record = record;
     }
 

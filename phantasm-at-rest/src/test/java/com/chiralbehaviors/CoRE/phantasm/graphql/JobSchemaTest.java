@@ -98,7 +98,7 @@ public class JobSchemaTest extends AbstractModelTest {
                                             + "      } " + "   } " + "}",
                                     variables);
 
-        result = (ObjectNode) result.get("CreateJob");
+        result = (ObjectNode) result.get("createJob");
         assertNotNull(result);
         String order = result.get("id")
                              .asText();
@@ -123,12 +123,12 @@ public class JobSchemaTest extends AbstractModelTest {
 
         result = execute(schema,
                          "mutation m ($id: String!, $status: String, $notes: String) { "
-                                 + "  updateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
+                                 + "  updateJob(state: { id: $id, status: $status, notes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
                                  + "}",
                          variables);
 
-        result = (ObjectNode) result.get("UpdateJob");
+        result = (ObjectNode) result.get("updateJob");
         assertNotNull(result);
         assertEquals(scenario.getAvailable()
                              .getId()
@@ -148,12 +148,12 @@ public class JobSchemaTest extends AbstractModelTest {
 
         result = execute(schema,
                          "mutation m ($id: String!, $status: String, $notes: String) { "
-                                 + "  updateJob(state: { id: $id, setStatus: $status, setNotes: $notes}) { "
+                                 + "  updateJob(state: { id: $id, status: $status, notes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
                                  + "}",
                          variables);
 
-        result = (ObjectNode) result.get("UpdateJob");
+        result = (ObjectNode) result.get("updateJob");
         assertNotNull(result);
         assertEquals(scenario.getActive()
                              .getId()
@@ -169,7 +169,7 @@ public class JobSchemaTest extends AbstractModelTest {
                          "query m ($id: String!) { job(id: $id) { parent {id} allChildren {id } activeChildren {id } children {id } chronology {id} } }",
                          variables);
 
-        result = (ObjectNode) result.get("Job");
+        result = (ObjectNode) result.get("job");
         assertNotNull(result);
 
         assertEquals(6, result.withArray("allChildren")

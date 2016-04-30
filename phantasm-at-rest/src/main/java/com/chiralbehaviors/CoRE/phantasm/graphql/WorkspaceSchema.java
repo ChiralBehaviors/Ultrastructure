@@ -74,7 +74,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 
-import graphql.annotations.GraphQLAnnotations;
+import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.TypeFunction;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
@@ -203,8 +203,8 @@ public class WorkspaceSchema {
     }
 
     public static GraphQLSchema build() throws Exception {
-        Builder topLevelQueries = GraphQLAnnotations.objectBuilder(Queries.class);
-        Builder topLevelMutations = GraphQLAnnotations.objectBuilder(Mutations.class);
+        Builder topLevelQueries = GraphQLAnnotations2.objectBuilder(Queries.class);
+        Builder topLevelMutations = GraphQLAnnotations2.objectBuilder(Mutations.class);
         return GraphQLSchema.newSchema()
                             .query(topLevelQueries.build())
                             .mutation(topLevelMutations.build())
@@ -220,8 +220,8 @@ public class WorkspaceSchema {
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace workspace = model.wrap(Workspace.class, definingProduct);
-        Builder topLevelQuery = GraphQLAnnotations.objectBuilder(Queries.class);
-        Builder topLevelMutation = GraphQLAnnotations.objectBuilder(Mutations.class);
+        Builder topLevelQuery = GraphQLAnnotations2.objectBuilder(Queries.class);
+        Builder topLevelMutation = GraphQLAnnotations2.objectBuilder(Mutations.class);
         List<Plugin> plugins = workspace.getPlugins();
         while (!unresolved.isEmpty()) {
             FacetRecord facet = unresolved.pop();
@@ -249,8 +249,8 @@ public class WorkspaceSchema {
 
     public static GraphQLSchema buildMeta() throws Exception {
         return GraphQLSchema.newSchema()
-                            .query(GraphQLAnnotations.object(MetaQueries.class))
-                            .mutation(GraphQLAnnotations.object(MetaMutations.class))
+                            .query(GraphQLAnnotations2.object(MetaQueries.class))
+                            .mutation(GraphQLAnnotations2.object(MetaMutations.class))
                             .build();
     }
 }

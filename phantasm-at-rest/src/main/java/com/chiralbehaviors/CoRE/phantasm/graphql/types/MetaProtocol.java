@@ -118,6 +118,7 @@ public class MetaProtocol {
     private final MetaProtocolRecord record;
 
     public MetaProtocol(MetaProtocolRecord record) {
+        assert record != null;
         this.record = record;
     }
 

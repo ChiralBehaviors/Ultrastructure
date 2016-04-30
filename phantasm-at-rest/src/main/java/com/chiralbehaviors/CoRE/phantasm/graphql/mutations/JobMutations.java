@@ -24,8 +24,11 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.JobTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
@@ -33,7 +36,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLNonNull;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -45,17 +47,19 @@ public interface JobMutations {
 
     @GraphQLField
     @GraphQLType(JobTypeFunction.class)
-    default Job createJob(@GraphQLNonNull @GraphQLName("state") JobState state,
+    default Job createJob(@NotNull @GraphQLName("state") JobState state,
                           DataFetchingEnvironment env) {
-        JobRecord record = ctx(env).records()
-                                   .newJob();
+        Model model = ctx(env);
+        JobRecord record = model.getJobModel()
+                                .newInitializedJob(model.records()
+                                                        .resolve(UUID.fromString(state.service)));
         state.update(record);
-        record.insert();
+        record.update();
         return new Job(record);
     }
 
     @GraphQLField
-    default Boolean removeJob(@GraphQLName("id") String id,
+    default Boolean removeJob(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
         Job.fetch(env, UUID.fromString(id))
            .delete();
@@ -64,14 +68,14 @@ public interface JobMutations {
 
     @GraphQLField
     @GraphQLType(JobTypeFunction.class)
-    default Job updateJob(@GraphQLNonNull @GraphQLName("state") JobUpdateState state,
+    default Job updateJob(@NotNull @GraphQLName("state") JobUpdateState state,
                           DataFetchingEnvironment env) {
         JobRecord record = ctx(env).create()
                                    .selectFrom(Tables.JOB)
                                    .where(Tables.JOB.ID.equal(UUID.fromString(state.id)))
                                    .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new Job(record);
     }
 }

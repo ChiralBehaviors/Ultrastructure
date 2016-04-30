@@ -91,6 +91,7 @@ public class AttributeAuthorization {
     private final ExistentialAttributeAuthorizationRecord record;
 
     public AttributeAuthorization(ExistentialAttributeAuthorizationRecord record) {
+        assert record != null;
         this.record = record;
     }
 

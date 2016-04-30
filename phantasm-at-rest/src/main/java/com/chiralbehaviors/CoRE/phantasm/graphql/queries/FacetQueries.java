@@ -26,11 +26,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.FacetTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -42,13 +45,15 @@ public interface FacetQueries {
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default Facet facet(String id, DataFetchingEnvironment env) {
+    default Facet facet(@NotNull @GraphQLName("id") String id,
+                        DataFetchingEnvironment env) {
         return Facet.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
     @GraphQLType(FacetTypeFunction.class)
-    default List<Facet> facets(List<String> ids, DataFetchingEnvironment env) {
+    default List<Facet> facets(@NotNull @GraphQLName("ids") List<String> ids,
+                               DataFetchingEnvironment env) {
         if (ids == null) {
             return ctx(env).getPhantasmModel()
                            .getFacets(((WorkspaceContext) env.getContext()).getWorkspace())

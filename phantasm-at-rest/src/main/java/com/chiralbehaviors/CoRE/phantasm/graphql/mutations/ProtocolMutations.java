@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProtocolTypeFunction;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol.ProtocolState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol.ProtocolUpdateState;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -43,7 +46,7 @@ public interface ProtocolMutations {
 
     @GraphQLField
     @GraphQLType(ProtocolTypeFunction.class)
-    default Protocol createProtocol(ProtocolState state,
+    default Protocol createProtocol(@NotNull @GraphQLName("state") ProtocolState state,
                                     DataFetchingEnvironment env) {
         ProtocolRecord record = ctx(env).records()
                                         .newProtocol();
@@ -53,7 +56,8 @@ public interface ProtocolMutations {
     }
 
     @GraphQLField
-    default Boolean removeProtocol(String id, DataFetchingEnvironment env) {
+    default Boolean removeProtocol(@NotNull @GraphQLName("id") String id,
+                                   DataFetchingEnvironment env) {
         Protocol.fetch(env, UUID.fromString(id))
                 .delete();
         return true;
@@ -61,7 +65,7 @@ public interface ProtocolMutations {
 
     @GraphQLField
     @GraphQLType(ProtocolTypeFunction.class)
-    default Protocol updateProtocol(ProtocolUpdateState state,
+    default Protocol updateProtocol(@NotNull @GraphQLName("state") ProtocolUpdateState state,
                                     DataFetchingEnvironment env) {
         ProtocolRecord record = ctx(env).create()
                                         .selectFrom(Tables.PROTOCOL)

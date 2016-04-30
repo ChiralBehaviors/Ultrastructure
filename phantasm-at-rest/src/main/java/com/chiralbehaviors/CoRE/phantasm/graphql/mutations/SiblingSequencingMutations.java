@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SiblingSequencingTypeFunction;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.Sibling
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingUpdateState;
 
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -43,7 +46,7 @@ public interface SiblingSequencingMutations {
 
     @GraphQLField
     @GraphQLType(SiblingSequencingTypeFunction.class)
-    default SiblingSequencing createAttributeAuthorization(SiblingSequencingState state,
+    default SiblingSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SiblingSequencingState state,
                                                            DataFetchingEnvironment env) {
         SiblingSequencingAuthorizationRecord record = ctx(env).records()
                                                               .newSiblingSequencingAuthorization();
@@ -53,7 +56,7 @@ public interface SiblingSequencingMutations {
     }
 
     @GraphQLField
-    default Boolean removeSiblingSequencing(String id,
+    default Boolean removeSiblingSequencing(@NotNull @GraphQLName("id") String id,
                                             DataFetchingEnvironment env) {
         SiblingSequencing.fetch(env, UUID.fromString(id))
                          .getRecord()
@@ -63,7 +66,7 @@ public interface SiblingSequencingMutations {
 
     @GraphQLField
     @GraphQLType(SiblingSequencingTypeFunction.class)
-    default SiblingSequencing updateSiblingSequencing(SiblingSequencingUpdateState state,
+    default SiblingSequencing updateSiblingSequencing(@NotNull @GraphQLName("state") SiblingSequencingUpdateState state,
                                                       DataFetchingEnvironment env) {
         SiblingSequencingAuthorizationRecord record = ctx(env).create()
                                                               .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)

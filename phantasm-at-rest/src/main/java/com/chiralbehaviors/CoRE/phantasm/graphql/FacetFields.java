@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ import graphql.schema.GraphQLTypeReference;
 /**
  * Cannonical tranform of Phantasm metadata into GraphQL metadata. Provides
  * framework for Phantasm Plugin model;
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -131,6 +131,34 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     static {
         SET_NAME = String.format(SET_TEMPLATE, capitalized(NAME));
         SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
+    }
+
+    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
+        ClassLoader parent = Thread.currentThread()
+                                   .getContextClassLoader();
+        if (parent == null) {
+            parent = PhantasmBundle.class.getClassLoader();
+        }
+        List<URL> urls = new ArrayList<>();
+        for (String url : urlStrings) {
+            URL resolved;
+            try {
+                resolved = new URL(url);
+            } catch (MalformedURLException e) {
+                try {
+                    resolved = new File(url).toURI()
+                                            .toURL();
+                } catch (MalformedURLException e1) {
+                    PhantasmBundle.log.error("Invalid configured execution scope url: {}",
+                                             url, e1);
+                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
+                                                                     url),
+                                                       e1);
+                }
+            }
+            urls.add(resolved);
+        }
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
     public static Deque<FacetRecord> initialState(WorkspaceAccessor workspace,
@@ -176,6 +204,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
     private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
     private String                                                                          name;
+
     private Set<FacetRecord>                                                                references     = new HashSet<>();
 
     private Builder                                                                         typeBuilder;
@@ -185,7 +214,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
 
     public FacetFields(FacetRecord facet) {
-        this.name = WorkspacePresentation.toTypeName(facet.getName());
+        name = WorkspacePresentation.toTypeName(facet.getName());
         typeBuilder = newObject().name(getName())
                                  .description(facet.getNotes());
         updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE,
@@ -198,7 +227,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     /**
      * Build the top level queries and mutations
-     * 
+     *
      * @param query
      *            - top level query
      * @param mutation
@@ -326,7 +355,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                 update) -> crud.setAttributeValue(facet,
                                                                   (ExistentialRuleform) update.get(AT_RULEFORM),
                                                                   auth,
-                                                                  (Object) converter.apply(update.get(setter))));
+                                                                  converter.apply(update.get(setter))));
             builder.type(GraphQLString);
         }
         GraphQLInputObjectField field = builder.build();
@@ -407,7 +436,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.addChild(facet,
                                                      (ExistentialRuleform) update.get(AT_RULEFORM),
                                                      auth,
-                                                     (ExistentialRuleform) crud.lookup((String) update.get(add))));
+                                                     crud.lookup((String) update.get(add))));
     }
 
     @SuppressWarnings("unchecked")
@@ -426,7 +455,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.addChildren(facet,
                                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<ExistentialRuleform>) crud.lookup((List<String>) update.get(addChildren))));
+                                                        crud.lookup((List<String>) update.get(addChildren))));
     }
 
     private void addPlugins(Aspect facet, List<Plugin> plugins,
@@ -460,7 +489,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                           .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> {
-                                       ExistentialRuleform ruleform = (ExistentialRuleform) ctx(env).lookup((String) env.getArgument(ID));
+                                       ExistentialRuleform ruleform = ctx(env).lookup((String) env.getArgument(ID));
                                        PhantasmCRUD crud = ctx(env);
                                        return crud.apply(facet, ruleform,
                                                          instance -> {
@@ -628,12 +657,12 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     }
 
     private void clear() {
-        this.references = null;
-        this.typeBuilder = null;
-        this.updateTypeBuilder = null;
-        this.createTypeBuilder = null;
-        this.updateTemplate = null;
-        this.constructors = null;
+        references = null;
+        typeBuilder = null;
+        updateTypeBuilder = null;
+        createTypeBuilder = null;
+        updateTemplate = null;
+        constructors = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -809,7 +838,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .type(new GraphQLList(referenceToType(facet.getName())))
                                    .dataFetcher(context -> {
                                        @SuppressWarnings("unchecked")
-                                       List<String> ids = ((List<String>) context.getArgument(ID));
+                                       List<String> ids = (List<String>) context.getArgument(ID);
                                        return ids != null ? ctx(context).lookup(ids)
                                                           : ctx(context).getInstances(facet);
                                    })
@@ -851,7 +880,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                           .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).remove(facet,
-                                                                       (ExistentialRuleform) ctx(env).lookup((String) env.getArgument(ID)),
+                                                                       ctx(env).lookup((String) env.getArgument(ID)),
                                                                        true))
                                    .build();
     }
@@ -869,7 +898,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.removeChild(facet,
                                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (ExistentialRuleform) crud.lookup((String) update.get(remove))));
+                                                        crud.lookup((String) update.get(remove))));
     }
 
     @SuppressWarnings("unchecked")
@@ -886,7 +915,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.removeChildren(facet,
                                                            (ExistentialRuleform) update.get(AT_RULEFORM),
                                                            auth,
-                                                           (List<ExistentialRuleform>) crud.lookup((List<String>) update.get(removeChildren))));
+                                                           crud.lookup((List<String>) update.get(removeChildren))));
     }
 
     @SuppressWarnings("unchecked")
@@ -904,7 +933,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                             update) -> crud.setChildren(facet,
                                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<ExistentialRuleform>) crud.lookup((List<String>) update.get(setter))));
+                                                        crud.lookup((List<String>) update.get(setter))));
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
@@ -949,7 +978,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
-                                       ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((String) updateState.get(ID));
+                                       ExistentialRuleform ruleform = crud.lookup((String) updateState.get(ID));
                                        update(ruleform, updateState, crud,
                                               detachedUpdateTemplate);
                                        return ruleform;
@@ -988,7 +1017,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                        PhantasmCRUD crud = ctx(env);
                                        return updateStates.stream()
                                                           .map(updateState -> {
-                                                              ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((String) updateState.get(ID));
+                                                              ExistentialRuleform ruleform = crud.lookup((String) updateState.get(ID));
                                                               update(ruleform,
                                                                      updateState,
                                                                      crud,
@@ -998,34 +1027,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
-    }
-
-    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
-        ClassLoader parent = Thread.currentThread()
-                                   .getContextClassLoader();
-        if (parent == null) {
-            parent = PhantasmBundle.class.getClassLoader();
-        }
-        List<URL> urls = new ArrayList<>();
-        for (String url : urlStrings) {
-            URL resolved;
-            try {
-                resolved = new URL(url);
-            } catch (MalformedURLException e) {
-                try {
-                    resolved = new File(url).toURI()
-                                            .toURL();
-                } catch (MalformedURLException e1) {
-                    PhantasmBundle.log.error("Invalid configured execution scope url: {}",
-                                             url, e1);
-                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
-                                                                     url),
-                                                       e1);
-                }
-            }
-            urls.add(resolved);
-        }
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
 }

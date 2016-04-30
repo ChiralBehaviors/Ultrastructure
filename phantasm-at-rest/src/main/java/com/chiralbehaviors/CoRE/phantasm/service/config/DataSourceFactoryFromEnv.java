@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -40,8 +40,9 @@ public class DataSourceFactoryFromEnv extends DataSourceFactory {
     public DataSourceFactoryFromEnv() {
         setDriverClass(Driver.class.getCanonicalName());
         String url = System.getenv(envVariable);
-        if (url != null)
+        if (url != null) {
             configureFrom(url);
+        }
     }
 
     private void configureFrom(String uri) {
@@ -56,14 +57,17 @@ public class DataSourceFactoryFromEnv extends DataSourceFactory {
 
     private void setCredentials(URI uri) {
         String user = uri.getUserInfo();
-        if (user == null)
+        if (user == null) {
             return;
+        }
         String[] parts = user.split(Pattern.quote(":"), 2);
 
-        if (parts.length >= 1)
+        if (parts.length >= 1) {
             setUser(parts[0]);
-        if (parts.length >= 2)
+        }
+        if (parts.length >= 2) {
             setPassword(parts[1]);
+        }
     }
 
     private void setUrl(URI uri) throws URISyntaxException {

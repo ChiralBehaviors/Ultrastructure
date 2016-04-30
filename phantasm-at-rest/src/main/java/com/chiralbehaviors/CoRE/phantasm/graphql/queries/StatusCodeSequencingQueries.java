@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,12 +20,18 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 
@@ -49,8 +55,22 @@ public interface StatusCodeSequencingQueries {
 
     @GraphQLField
     @GraphQLType(StatusCodeSequencingTypeFunction.class)
-    default List<StatusCodeSequencing> statusCodeSequencings(@NotNull @GraphQLName("ids") List<String> ids,
+    default List<StatusCodeSequencing> statusCodeSequencings(@GraphQLName("ids") List<String> ids,
                                                              DataFetchingEnvironment env) {
+        if (ids == null) {
+            Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
+            return ctx(env).create()
+                           .selectDistinct(Tables.STATUS_CODE_SEQUENCING.fields())
+                           .from(Tables.STATUS_CODE_SEQUENCING)
+                           .join(Tables.WORKSPACE_AUTHORIZATION)
+                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.STATUS_CODE_SEQUENCING.WORKSPACE))
+                           .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                           .fetch()
+                           .into(StatusCodeSequencingRecord.class)
+                           .stream()
+                           .map(r -> new StatusCodeSequencing(r))
+                           .collect(Collectors.toList());
+        }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
                   .map(id -> StatusCodeSequencing.fetch(env, id))

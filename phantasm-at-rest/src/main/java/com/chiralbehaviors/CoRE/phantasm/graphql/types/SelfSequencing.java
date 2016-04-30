@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -93,8 +93,10 @@ public class SelfSequencing {
         this.record = record;
     }
 
-    public UUID getId() {
-        return record.getId();
+    @GraphQLField
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -99,6 +99,12 @@ public class StatusCodeSequencing {
     @GraphQLType(StatusCodeTypeFunction.class)
     public StatusCode getChild(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getChild()));
+    }
+
+    @GraphQLField
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField

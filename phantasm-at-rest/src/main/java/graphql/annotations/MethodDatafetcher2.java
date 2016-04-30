@@ -28,9 +28,9 @@ import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
 class MethodDataFetcher2 implements DataFetcher {
-    private final Method                                              method;
     private final int                                                 envIndex;
     private final Map<Integer, Function<Map<String, Object>, Object>> inputTxfms;
+    private final Method                                              method;
 
     public MethodDataFetcher2(Method method,
                               Map<Integer, Function<Map<String, Object>, Object>> inputTxfms) {
@@ -46,8 +46,9 @@ class MethodDataFetcher2 implements DataFetcher {
     @SuppressWarnings("unchecked")
     @Override
     public Object get(DataFetchingEnvironment environment) {
-        if (environment.getSource() == null)
+        if (environment.getSource() == null) {
             return null;
+        }
         ArrayList<Object> args = new ArrayList<>(environment.getArguments()
                                                             .values());
         if (envIndex >= 0) {

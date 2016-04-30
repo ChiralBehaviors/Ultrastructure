@@ -141,6 +141,12 @@ public class MetaProtocol {
     }
 
     @GraphQLField
+    public String getId() {
+        return record.getId()
+                     .toString();
+    }
+
+    @GraphQLField
     @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getProduct(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getProduct()));

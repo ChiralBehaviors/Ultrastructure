@@ -63,9 +63,65 @@ import graphql.schema.GraphQLOutputType;
  */
 public class GraphQLAnnotations2 {
 
+    private static class ConnectionDataFetcher implements DataFetcher {
+        private final DataFetcher                 actualDataFetcher;
+        private final Class<? extends Connection> connection;
+        private final Constructor<Connection>     constructor;
+
+        public ConnectionDataFetcher(Class<? extends Connection> connection,
+                                     DataFetcher actualDataFetcher) {
+            this.connection = connection;
+            Optional<Constructor<Connection>> constructor = Arrays.asList(connection.getConstructors())
+                                                                  .stream()
+                                                                  .filter(c -> c.getParameterCount() == 1)
+                                                                  .map(c -> (Constructor<Connection>) c)
+                                                                  .findFirst();
+            if (constructor.isPresent()) {
+                this.constructor = constructor.get();
+            } else {
+                throw new IllegalArgumentException(connection
+                                                   + " doesn't have a single argument constructor");
+            }
+            this.actualDataFetcher = actualDataFetcher;
+        }
+
+        @Override
+        public Object get(DataFetchingEnvironment environment) {
+            // Exclude arguments
+            DataFetchingEnvironment env = new DataFetchingEnvironment(environment.getSource(),
+                                                                      new HashMap<>(),
+                                                                      environment.getContext(),
+                                                                      environment.getFields(),
+                                                                      environment.getFieldType(),
+                                                                      environment.getParentType(),
+                                                                      environment.getGraphQLSchema());
+            Connection conn;
+            try {
+                conn = constructor.newInstance(actualDataFetcher.get(env));
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException e) {
+                throw new IllegalStateException(e);
+            }
+            return conn.get(environment);
+        }
+    }
+
+    private static class defaultGraphQLType implements GraphQLType {
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return GraphQLType.class;
+        }
+
+        @Override
+        public Class<? extends TypeFunction> value() {
+            return DefaultTypeFunction.class;
+        }
+    }
+
     /**
      * Extract GraphQLInterfaceType from an interface
-     * 
+     *
      * @param iface
      *            interface
      * @return
@@ -111,32 +167,32 @@ public class GraphQLAnnotations2 {
         return builder;
     }
 
-    private static Class<?> getDeclaringClass(Method method) {
-        Class<?> object = method.getDeclaringClass();
-        Class<?> declaringClass = object;
-        for (Class<?> iface : object.getInterfaces()) {
-            try {
-                iface.getMethod(method.getName(), method.getParameterTypes());
-                declaringClass = iface;
-            } catch (NoSuchMethodException e) {
-            }
-        }
+    public static GraphQLInputObjectType inputObject(GraphQLObjectType graphQLType) {
+        GraphQLObjectType object = graphQLType;
+        return new GraphQLInputObjectType(object.getName(),
+                                          object.getDescription(),
+                                          object.getFieldDefinitions()
+                                                .stream()
+                                                .map(field -> {
+                                                    GraphQLOutputType type = field.getType();
+                                                    GraphQLInputType inputType;
+                                                    if (type instanceof GraphQLObjectType) {
+                                                        inputType = inputObject((GraphQLObjectType) type);
+                                                    } else {
+                                                        inputType = (GraphQLInputType) type;
+                                                    }
 
-        try {
-            if (object.getSuperclass() != null) {
-                object.getSuperclass()
-                      .getMethod(method.getName(), method.getParameterTypes());
-                declaringClass = object.getSuperclass();
-            }
-        } catch (NoSuchMethodException e) {
-        }
-        return declaringClass;
-
+                                                    return new GraphQLInputObjectField(field.getName(),
+                                                                                       field.getDescription(),
+                                                                                       inputType,
+                                                                                       null);
+                                                })
+                                                .collect(Collectors.toList()));
     }
 
     /**
      * Extract GraphQLObjectType from a class
-     * 
+     *
      * @param object
      * @return
      * @throws IllegalAccessException
@@ -190,6 +246,120 @@ public class GraphQLAnnotations2 {
         return builder;
     }
 
+    private static Class<?> getDeclaringClass(Method method) {
+        Class<?> object = method.getDeclaringClass();
+        Class<?> declaringClass = object;
+        for (Class<?> iface : object.getInterfaces()) {
+            try {
+                iface.getMethod(method.getName(), method.getParameterTypes());
+                declaringClass = iface;
+            } catch (NoSuchMethodException e) {
+            }
+        }
+
+        try {
+            if (object.getSuperclass() != null) {
+                object.getSuperclass()
+                      .getMethod(method.getName(), method.getParameterTypes());
+                declaringClass = object.getSuperclass();
+            }
+        } catch (NoSuchMethodException e) {
+        }
+        return declaringClass;
+
+    }
+
+    private static GraphQLOutputType getGraphQLConnection(boolean isConnection,
+                                                          AccessibleObject field,
+                                                          GraphQLOutputType type,
+                                                          GraphQLOutputType outputType,
+                                                          GraphQLFieldDefinition.Builder builder) {
+        if (isConnection) {
+            if (type instanceof GraphQLList) {
+                graphql.schema.GraphQLType wrappedType = ((GraphQLList) type).getWrappedType();
+                assert wrappedType instanceof GraphQLObjectType;
+                String annValue = field.getAnnotation(GraphQLConnection.class)
+                                       .name();
+                String connectionName = annValue.isEmpty() ? wrappedType.getName()
+                                                           : annValue;
+                Relay relay = new Relay();
+                GraphQLObjectType edgeType = relay.edgeType(connectionName,
+                                                            (GraphQLOutputType) wrappedType,
+                                                            null,
+                                                            Collections.<GraphQLFieldDefinition> emptyList());
+                outputType = relay.connectionType(connectionName, edgeType,
+                                                  Collections.emptyList());
+                builder.argument(relay.getConnectionFieldArguments());
+            }
+        }
+        return outputType;
+    }
+
+    private static Function<Map<String, Object>, Object> inputTxfm(Class<?> t,
+                                                                   GraphQLObjectType object) {
+        List<BiConsumer<Map<String, Object>, Object>> txfms = new ArrayList<>();
+        for (GraphQLFieldDefinition f : object.getFieldDefinitions()) {
+            Field field;
+            try {
+                field = t.getField(f.getName());
+            } catch (NoSuchFieldException | SecurityException e) {
+                throw new IllegalStateException(e);
+            }
+            field.setAccessible(true);
+            txfms.add((m, in) -> {
+                try {
+                    field.set(in, m.get(f.getName()));
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            });
+        }
+        return m -> {
+            Object in;
+            try {
+                in = t.getConstructor()
+                      .newInstance();
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException | SecurityException e) {
+                throw new IllegalStateException(e);
+            }
+            txfms.forEach(f -> f.accept(m, in));
+            return in;
+        };
+    }
+
+    private static boolean isConnection(AccessibleObject obj, Class<?> klass,
+                                        GraphQLOutputType type) {
+        return obj.isAnnotationPresent(GraphQLConnection.class)
+               && type instanceof GraphQLList
+               && ((GraphQLList) type).getWrappedType() instanceof GraphQLObjectType;
+    }
+
+    protected static GraphQLArgument argument(Parameter parameter,
+                                              graphql.schema.GraphQLType t) throws IllegalAccessException,
+                                                                            InstantiationException {
+        GraphQLArgument.Builder builder = newArgument();
+        builder.name(parameter.getName());
+        builder.type(parameter.getAnnotation(NotNull.class) == null ? (GraphQLInputType) t
+                                                                    : new graphql.schema.GraphQLNonNull(t));
+        GraphQLDescription description = parameter.getAnnotation(GraphQLDescription.class);
+        if (description != null) {
+            builder.description(description.value());
+        }
+        GraphQLDefaultValue defaultValue = parameter.getAnnotation(GraphQLDefaultValue.class);
+        if (defaultValue != null) {
+            builder.defaultValue(defaultValue.value()
+                                             .newInstance()
+                                             .get());
+        }
+        GraphQLName name = parameter.getAnnotation(GraphQLName.class);
+        if (name != null) {
+            builder.name(name.value());
+        }
+        return builder.build();
+    }
+
     protected static GraphQLFieldDefinition field(Field field) throws IllegalAccessException,
                                                                InstantiationException {
         GraphQLFieldDefinition.Builder builder = newFieldDefinition();
@@ -241,39 +411,6 @@ public class GraphQLAnnotations2 {
         builder.dataFetcher(actualDataFetcher);
 
         return builder.build();
-    }
-
-    private static GraphQLOutputType getGraphQLConnection(boolean isConnection,
-                                                          AccessibleObject field,
-                                                          GraphQLOutputType type,
-                                                          GraphQLOutputType outputType,
-                                                          GraphQLFieldDefinition.Builder builder) {
-        if (isConnection) {
-            if (type instanceof GraphQLList) {
-                graphql.schema.GraphQLType wrappedType = ((GraphQLList) type).getWrappedType();
-                assert wrappedType instanceof GraphQLObjectType;
-                String annValue = field.getAnnotation(GraphQLConnection.class)
-                                       .name();
-                String connectionName = annValue.isEmpty() ? wrappedType.getName()
-                                                           : annValue;
-                Relay relay = new Relay();
-                GraphQLObjectType edgeType = relay.edgeType(connectionName,
-                                                            (GraphQLOutputType) wrappedType,
-                                                            null,
-                                                            Collections.<GraphQLFieldDefinition> emptyList());
-                outputType = relay.connectionType(connectionName, edgeType,
-                                                  Collections.emptyList());
-                builder.argument(relay.getConnectionFieldArguments());
-            }
-        }
-        return outputType;
-    }
-
-    private static boolean isConnection(AccessibleObject obj, Class<?> klass,
-                                        GraphQLOutputType type) {
-        return obj.isAnnotationPresent(GraphQLConnection.class)
-               && type instanceof GraphQLList
-               && ((GraphQLList) type).getWrappedType() instanceof GraphQLObjectType;
     }
 
     protected static GraphQLFieldDefinition field(Method method) throws InstantiationException,
@@ -398,142 +535,5 @@ public class GraphQLAnnotations2 {
         builder.dataFetcher(actualDataFetcher);
 
         return builder.build();
-    }
-
-    public static GraphQLInputObjectType inputObject(GraphQLObjectType graphQLType) {
-        GraphQLObjectType object = graphQLType;
-        return new GraphQLInputObjectType(object.getName(),
-                                          object.getDescription(),
-                                          object.getFieldDefinitions()
-                                                .stream()
-                                                .map(field -> {
-                                                    GraphQLOutputType type = field.getType();
-                                                    GraphQLInputType inputType;
-                                                    if (type instanceof GraphQLObjectType) {
-                                                        inputType = inputObject((GraphQLObjectType) type);
-                                                    } else {
-                                                        inputType = (GraphQLInputType) type;
-                                                    }
-
-                                                    return new GraphQLInputObjectField(field.getName(),
-                                                                                       field.getDescription(),
-                                                                                       inputType,
-                                                                                       null);
-                                                })
-                                                .collect(Collectors.toList()));
-    }
-
-    protected static GraphQLArgument argument(Parameter parameter,
-                                              graphql.schema.GraphQLType t) throws IllegalAccessException,
-                                                                            InstantiationException {
-        GraphQLArgument.Builder builder = newArgument();
-        builder.name(parameter.getName());
-        builder.type(parameter.getAnnotation(NotNull.class) == null ? (GraphQLInputType) t
-                                                                    : new graphql.schema.GraphQLNonNull(t));
-        GraphQLDescription description = parameter.getAnnotation(GraphQLDescription.class);
-        if (description != null) {
-            builder.description(description.value());
-        }
-        GraphQLDefaultValue defaultValue = parameter.getAnnotation(GraphQLDefaultValue.class);
-        if (defaultValue != null) {
-            builder.defaultValue(defaultValue.value()
-                                             .newInstance()
-                                             .get());
-        }
-        GraphQLName name = parameter.getAnnotation(GraphQLName.class);
-        if (name != null) {
-            builder.name(name.value());
-        }
-        return builder.build();
-    }
-
-    private static class defaultGraphQLType implements GraphQLType {
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return GraphQLType.class;
-        }
-
-        @Override
-        public Class<? extends TypeFunction> value() {
-            return DefaultTypeFunction.class;
-        }
-    }
-
-    private static Function<Map<String, Object>, Object> inputTxfm(Class<?> t,
-                                                                   GraphQLObjectType object) {
-        List<BiConsumer<Map<String, Object>, Object>> txfms = new ArrayList<>();
-        for (GraphQLFieldDefinition f : object.getFieldDefinitions()) {
-            Field field;
-            try {
-                field = t.getField(f.getName());
-            } catch (NoSuchFieldException | SecurityException e) {
-                throw new IllegalStateException(e);
-            }
-            field.setAccessible(true);
-            txfms.add((m, in) -> {
-                try {
-                    field.set(in, m.get(f.getName()));
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            });
-        }
-        return m -> {
-            Object in;
-            try {
-                in = t.getConstructor()
-                      .newInstance();
-            } catch (InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException | SecurityException e) {
-                throw new IllegalStateException(e);
-            }
-            txfms.forEach(f -> f.accept(m, in));
-            return in;
-        };
-    }
-
-    private static class ConnectionDataFetcher implements DataFetcher {
-        private final Class<? extends Connection> connection;
-        private final DataFetcher                 actualDataFetcher;
-        private final Constructor<Connection>     constructor;
-
-        public ConnectionDataFetcher(Class<? extends Connection> connection,
-                                     DataFetcher actualDataFetcher) {
-            this.connection = connection;
-            Optional<Constructor<Connection>> constructor = Arrays.asList(connection.getConstructors())
-                                                                  .stream()
-                                                                  .filter(c -> c.getParameterCount() == 1)
-                                                                  .map(c -> (Constructor<Connection>) c)
-                                                                  .findFirst();
-            if (constructor.isPresent()) {
-                this.constructor = constructor.get();
-            } else {
-                throw new IllegalArgumentException(connection
-                                                   + " doesn't have a single argument constructor");
-            }
-            this.actualDataFetcher = actualDataFetcher;
-        }
-
-        @Override
-        public Object get(DataFetchingEnvironment environment) {
-            // Exclude arguments
-            DataFetchingEnvironment env = new DataFetchingEnvironment(environment.getSource(),
-                                                                      new HashMap<>(),
-                                                                      environment.getContext(),
-                                                                      environment.getFields(),
-                                                                      environment.getFieldType(),
-                                                                      environment.getParentType(),
-                                                                      environment.getGraphQLSchema());
-            Connection conn;
-            try {
-                conn = constructor.newInstance(actualDataFetcher.get(env));
-            } catch (InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | InvocationTargetException e) {
-                throw new IllegalStateException(e);
-            }
-            return conn.get(environment);
-        }
     }
 }

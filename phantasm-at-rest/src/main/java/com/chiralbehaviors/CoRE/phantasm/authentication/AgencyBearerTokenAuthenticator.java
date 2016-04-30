@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -125,8 +124,8 @@ public class AgencyBearerTokenAuthenticator
         if (!model.getPhantasmModel()
                   .checkCapability(Arrays.asList(model.records()
                                                       .resolve(agency)),
-                                   (ExistentialRuleform) model.getCoreInstance()
-                                                              .getRuleform(),
+                                   model.getCoreInstance()
+                                        .getRuleform(),
                                    model.getKernel()
                                         .getLOGIN_TO())) {
             log.warn("requested access token {} for {}:{} has no login capability",

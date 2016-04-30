@@ -71,6 +71,24 @@ public class MetaSchemaTest extends AbstractModelTest {
                        "{ statusCodes { id name description } units{ id name description } }",
                        variables);
         assertNotNull(data);
+        data = execute(schema, "{ attributeAuthorizations { id } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ childSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ metaProtocols { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ networkAuthorizations { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ parentSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ protocols { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ selfSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ siblingSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ statusCodeSequencings { id  } }", variables);
+        assertNotNull(data);
     }
 
     private ObjectNode execute(GraphQLSchema schema, String query,

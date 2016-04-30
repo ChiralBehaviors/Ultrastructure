@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,12 +20,18 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.SiblingSequencingTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 
@@ -49,8 +55,22 @@ public interface SiblingSequencingQueries {
 
     @GraphQLField
     @GraphQLType(SiblingSequencingTypeFunction.class)
-    default List<SiblingSequencing> siblingSequencings(@NotNull @GraphQLName("ids") List<String> ids,
+    default List<SiblingSequencing> siblingSequencings(@GraphQLName("ids") List<String> ids,
                                                        DataFetchingEnvironment env) {
+        if (ids == null) {
+            Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
+            return ctx(env).create()
+                           .selectDistinct(Tables.SIBLING_SEQUENCING_AUTHORIZATION.fields())
+                           .from(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
+                           .join(Tables.WORKSPACE_AUTHORIZATION)
+                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.SIBLING_SEQUENCING_AUTHORIZATION.WORKSPACE))
+                           .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                           .fetch()
+                           .into(SiblingSequencingAuthorizationRecord.class)
+                           .stream()
+                           .map(r -> new SiblingSequencing(r))
+                           .collect(Collectors.toList());
+        }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
                   .map(id -> SiblingSequencing.fetch(env, id))

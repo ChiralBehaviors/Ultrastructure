@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -42,41 +42,6 @@ import io.dropwizard.auth.Authenticator;
 @Priority(Priorities.AUTHENTICATION)
 public class NullAuthFilter<P extends Principal> extends AuthFilter<String, P> {
 
-    private NullAuthFilter() {
-    }
-
-    @Override
-    public void filter(final ContainerRequestContext requestContext) throws IOException {
-        Optional<P> principal;
-        try {
-            principal = authenticator.authenticate(null);
-        } catch (AuthenticationException e) {
-            throw new IllegalStateException(e);
-        }
-        requestContext.setSecurityContext(new SecurityContext() {
-            @Override
-            public Principal getUserPrincipal() {
-                return principal.get();
-            }
-
-            @Override
-            public boolean isUserInRole(String role) {
-                return authorizer.authorize(principal.get(), role);
-            }
-
-            @Override
-            public boolean isSecure() {
-                return requestContext.getSecurityContext()
-                                     .isSecure();
-            }
-
-            @Override
-            public String getAuthenticationScheme() {
-                return SecurityContext.BASIC_AUTH;
-            }
-        });
-    }
-
     /**
      * Builder for {@link NullAuthFilter}.
      * <p>
@@ -93,5 +58,40 @@ public class NullAuthFilter<P extends Principal> extends AuthFilter<String, P> {
         protected NullAuthFilter<P> newInstance() {
             return new NullAuthFilter<>();
         }
+    }
+
+    private NullAuthFilter() {
+    }
+
+    @Override
+    public void filter(final ContainerRequestContext requestContext) throws IOException {
+        Optional<P> principal;
+        try {
+            principal = authenticator.authenticate(null);
+        } catch (AuthenticationException e) {
+            throw new IllegalStateException(e);
+        }
+        requestContext.setSecurityContext(new SecurityContext() {
+            @Override
+            public String getAuthenticationScheme() {
+                return SecurityContext.BASIC_AUTH;
+            }
+
+            @Override
+            public Principal getUserPrincipal() {
+                return principal.get();
+            }
+
+            @Override
+            public boolean isSecure() {
+                return requestContext.getSecurityContext()
+                                     .isSecure();
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+                return authorizer.authorize(principal.get(), role);
+            }
+        });
     }
 }

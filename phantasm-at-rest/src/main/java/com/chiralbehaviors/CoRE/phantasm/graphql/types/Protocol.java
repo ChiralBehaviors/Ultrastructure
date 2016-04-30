@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -242,6 +242,12 @@ public class Protocol {
     @GraphQLType(LocationTypeFunction.class)
     public Location getDeliverTo(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverTo()));
+    }
+
+    @GraphQLField
+    public String getId() {
+        return record.getId()
+                     .toString();
     }
 
     @GraphQLField

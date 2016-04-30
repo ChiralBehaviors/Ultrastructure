@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ public class AuthxResource extends TransactionalResource {
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
-        CoreUser user = (CoreUser) model.wrap(CoreUser.class, agencies.get(0));
+        CoreUser user = model.wrap(CoreUser.class, agencies.get(0));
 
         if (!AgencyBasicAuthenticator.authenticate(user, password)) {
             log.warn(String.format("Invalid attempt to login from username %s",
@@ -197,7 +197,7 @@ public class AuthxResource extends TransactionalResource {
                               @Context DSLContext create) {
         return mutate(null, model -> {
             return loginUuidForToken(username, password, httpRequest, model);
-        }, (DSLContext) create);
+        }, create);
     }
 
     @POST

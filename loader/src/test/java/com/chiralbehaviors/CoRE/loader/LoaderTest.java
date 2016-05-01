@@ -51,6 +51,7 @@ public class LoaderTest {
         try {
             loader.execute();
             loader.clear();
+            loader.clear();
         } finally {
             loader.dropDatabase();
         }

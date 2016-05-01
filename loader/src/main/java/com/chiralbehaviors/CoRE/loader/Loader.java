@@ -68,6 +68,7 @@ public class Loader {
     public void clear() throws SQLException, LiquibaseException {
         Liquibase liquibase = null;
         try (Connection connection = configuration.getCoreConnection()) {
+            connection.setSchema("public");
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             liquibase = new Liquibase(Loader.MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,

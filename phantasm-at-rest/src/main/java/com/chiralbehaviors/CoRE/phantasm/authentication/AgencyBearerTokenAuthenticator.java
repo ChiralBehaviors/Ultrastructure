@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -48,10 +47,11 @@ import io.dropwizard.auth.Authenticator;
  */
 public class AgencyBearerTokenAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
-    public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
-    private static final long   DWELL                        = (long) (Math.random()
-                                                                       * 1000);
-    private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
+    public static final int           ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
+    private static final long         DWELL                        = (long) (Math.random()
+                                                                             * 1000);
+    private final static Logger       log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
+    private final static ObjectMapper OBJECT_MAPPER                = new ObjectMapper();
 
     public static Optional<AuthorizedPrincipal> absent() {
         try {
@@ -67,8 +67,8 @@ public class AgencyBearerTokenAuthenticator
                                                     Model model) {
         Credential credential;
         try {
-            credential = new ObjectMapper().treeToValue(accessToken.getJsonValue(),
-                                                        Credential.class);
+            credential = OBJECT_MAPPER.treeToValue(accessToken.getJsonValue(),
+                                                   Credential.class);
         } catch (JsonProcessingException e) {
             log.warn("unable to deserialize access token {}", accessToken);
             return null;
@@ -97,8 +97,8 @@ public class AgencyBearerTokenAuthenticator
         // Validate the credential
         Credential credential;
         try {
-            credential = new ObjectMapper().treeToValue(accessToken.getJsonValue(),
-                                                        Credential.class);
+            credential = OBJECT_MAPPER.treeToValue(accessToken.getJsonValue(),
+                                                   Credential.class);
         } catch (JsonProcessingException e) {
             log.warn("Cannot deserialize access token {}", accessToken);
             return absent();
@@ -124,8 +124,8 @@ public class AgencyBearerTokenAuthenticator
         if (!model.getPhantasmModel()
                   .checkCapability(Arrays.asList(model.records()
                                                       .resolve(agency)),
-                                   (ExistentialRuleform) model.getCoreInstance()
-                                                              .getRuleform(),
+                                   model.getCoreInstance()
+                                        .getRuleform(),
                                    model.getKernel()
                                         .getLOGIN_TO())) {
             log.warn("requested access token {} for {}:{} has no login capability",

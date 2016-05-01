@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -95,7 +95,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord)
      */
     @Override
-    public void add(AgencyExistentialGroupingRecord ruleform) {
+    public void add(AgencyExistentialRecord ruleform) {
         put(null, ruleform);
     }
 
@@ -438,7 +438,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     @Override
-    public void put(String key, AgencyExistentialGroupingRecord ruleform) {
+    public void put(String key, AgencyExistentialRecord ruleform) {
         if (key != null) {
             cache.put(key, ruleform);
         }

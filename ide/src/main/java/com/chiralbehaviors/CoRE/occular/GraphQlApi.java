@@ -52,23 +52,12 @@ public class GraphQlApi {
     }
 
     public class QueryRequest {
-        private String              query;
-        private Map<String, Object> variables = Collections.emptyMap();
-
-        public QueryRequest() {
-        }
+        public String              query;
+        public Map<String, Object> variables = Collections.emptyMap();
 
         public QueryRequest(String query, Map<String, Object> variables) {
             this.query = query;
             this.variables = variables;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        public Map<String, Object> getVariables() {
-            return variables;
         }
     }
 

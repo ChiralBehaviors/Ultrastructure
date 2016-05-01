@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.phantasm.service.config;
@@ -36,7 +36,7 @@ import io.dropwizard.db.DataSourceFactory;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class PhantasmConfiguration extends Configuration
         implements AssetsBundleConfiguration {
@@ -113,10 +113,6 @@ public class PhantasmConfiguration extends Configuration
         setDatabase(new DataSourceFactoryFromEnv());
     }
 
-    public org.jooq.Configuration getJooqConfiguration() {
-        return jooqBundle.getConfiguration();
-    }
-
     public DSLContext create() {
         return DSL.using(jooqBundle.getConfiguration());
     }
@@ -154,6 +150,10 @@ public class PhantasmConfiguration extends Configuration
     public JooqFactory getJooq() {
         jooq.setExecuteWithOptimisticLocking(true);
         return jooq;
+    }
+
+    public org.jooq.Configuration getJooqConfiguration() {
+        return jooqBundle.getConfiguration();
     }
 
     public boolean isUseCORS() {

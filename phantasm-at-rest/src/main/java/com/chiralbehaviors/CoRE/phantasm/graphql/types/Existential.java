@@ -20,7 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static graphql.Scalars.GraphQLString;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AgencyType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.IntervalType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
@@ -31,7 +38,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
-import graphql.annotations.GraphQLAnnotations;
+import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -52,14 +59,14 @@ import graphql.schema.TypeResolver;
 public interface Existential {
 
     @GraphQLDescription("The Agency existential ruleform")
-    class Agency extends ExistentialCommon {
+    public class Agency extends ExistentialCommon {
 
         public Agency(ExistentialRecord record) {
             super(record);
         }
     }
 
-    class AgencyTypeFunction implements TypeFunction {
+    public class AgencyTypeFunction implements TypeFunction {
         @Override
         public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
             return AgencyType;
@@ -67,24 +74,51 @@ public interface Existential {
     }
 
     @GraphQLDescription("The Attribute existential ruleform")
-    class Attribute extends ExistentialCommon {
+    public class Attribute extends ExistentialCommon {
 
         public Attribute(ExistentialRecord record) {
             super(record);
         }
-    }
 
-    class AttributeTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return AttributeType;
+        @GraphQLField
+        public Boolean getIndexed() {
+            return record.getIndexed();
         }
+
+        @GraphQLField
+        public Boolean getKeyed() {
+            return record.getKeyed();
+        }
+
+        @GraphQLField
+        public String getValueType() {
+            return record.getValueType()
+                         .toString();
+        }
+
     }
 
-    abstract class ExistentialCommon implements Existential {
+    public class AttributeState extends ExistentialState {
+        @GraphQLField
+        Boolean indexed;
+
+        @GraphQLField
+        Boolean keyed;
+
+        @GraphQLField
+        String  valueType;
+    }
+
+    public class AttributeUpdateState extends AttributeState {
+        @GraphQLField
+        public String id;
+    }
+
+    public abstract class ExistentialCommon implements Existential {
         protected final ExistentialRecord record;
 
         public ExistentialCommon(ExistentialRecord record) {
+            assert record != null;
             this.record = record;
         }
 
@@ -122,7 +156,7 @@ public interface Existential {
         }
     }
 
-    class ExistentialResolver implements TypeResolver {
+    public class ExistentialResolver implements TypeResolver {
         @Override
         public GraphQLObjectType getType(Object object) {
             Existential record = (Existential) object; // If this doesn't succeed, it's a bug, so no catch
@@ -151,15 +185,30 @@ public interface Existential {
 
     }
 
-    class ExistentialTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ExistentialType;
+    public class ExistentialState {
+        @GraphQLField
+        String name;
+
+        @GraphQLField
+        String notes;
+
+        public void update(ExistentialRecord record) {
+            if (name != null) {
+                record.setName(name);
+            }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
         }
     }
 
+    public class ExistentialUpdateState extends ExistentialState {
+        @GraphQLField
+        public String id;
+    }
+
     @GraphQLDescription("The Interval existential ruleform")
-    class Interval extends ExistentialCommon {
+    public class Interval extends ExistentialCommon {
 
         public Interval(ExistentialRecord record) {
             super(record);
@@ -167,81 +216,85 @@ public interface Existential {
     }
 
     @GraphQLDescription("The Location existential ruleform")
-    class Location extends ExistentialCommon {
+    public class Location extends ExistentialCommon {
 
         public Location(ExistentialRecord record) {
             super(record);
         }
     }
 
-    class LocationTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return LocationType;
-        }
-    }
-
     @GraphQLDescription("The Product existential ruleform")
-    class Product extends ExistentialCommon {
+    public class Product extends ExistentialCommon {
 
         public Product(ExistentialRecord record) {
             super(record);
         }
     }
 
-    class ProductTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return ProductType;
-        }
-    }
-
     @GraphQLDescription("The Relationship existential ruleform")
-    class Relationship extends ExistentialCommon {
+    public class Relationship extends ExistentialCommon {
 
         public Relationship(ExistentialRecord record) {
             super(record);
         }
-    }
 
-    class RelationshipTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return RelationshipType;
+        @GraphQLField
+        public Relationship getInverse(DataFetchingEnvironment env) {
+            return new Relationship(Existential.resolve(env,
+                                                        record.getInverse()));
         }
     }
 
+    public class RelationshipState extends ExistentialState {
+        @GraphQLField
+        String inverse;
+    }
+
+    public class RelationshipUpdateState extends RelationshipState {
+        @GraphQLField
+        public String id;
+    }
+
     @GraphQLDescription("The StatusCode existential ruleform")
-    class StatusCode extends ExistentialCommon {
+    public class StatusCode extends ExistentialCommon {
 
         public StatusCode(ExistentialRecord record) {
             super(record);
         }
-    }
 
-    class StatusCodeTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return StatusCodeType;
+        @GraphQLField
+        public boolean getFailParent() {
+            return record.getFailParent();
+        }
+
+        @GraphQLField
+        public Boolean getPropagateChildren() {
+            return record.getPropagateChildren();
         }
     }
 
+    public class StatusCodeState extends ExistentialState {
+        @GraphQLField
+        Boolean failParent;
+
+        @GraphQLField
+        Boolean propagateChildren;
+    }
+
+    public class StatusCodeUpdateState extends StatusCodeState {
+        @GraphQLField
+        public String id;
+    }
+
     @GraphQLDescription("The Unit existential ruleform")
-    class Unit extends ExistentialCommon {
+    public class Unit extends ExistentialCommon {
 
         public Unit(ExistentialRecord record) {
             super(record);
         }
     }
 
-    class UnitTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return UnitType;
-        }
-    }
-
-    class UpdatedByFetcher implements DataFetcher {
+    public class UpdatedByFetcher implements DataFetcher {
         @Override
         public Object get(DataFetchingEnvironment environment) {
             return ctx(environment).records()
@@ -250,38 +303,13 @@ public interface Existential {
 
     }
 
-    class UuidTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return GraphQLString;
-        }
-    }
-
-    GraphQLObjectType    AgencyType       = objectTypeOf(Agency.class);
-
-    GraphQLObjectType    AttributeType    = objectTypeOf(Attribute.class);
-
-    GraphQLInterfaceType ExistentialType  = interfaceTypeOf(Existential.class);
-
-    GraphQLObjectType    IntervalType     = objectTypeOf(Interval.class);
-
-    GraphQLObjectType    LocationType     = objectTypeOf(Location.class);
-
-    GraphQLObjectType    ProductType      = objectTypeOf(Product.class);
-
-    GraphQLObjectType    RelationshipType = objectTypeOf(Relationship.class);
-
-    GraphQLObjectType    StatusCodeType   = objectTypeOf(StatusCode.class);
-
-    GraphQLObjectType    UnitType         = objectTypeOf(Unit.class);
-
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
 
     public static GraphQLInterfaceType interfaceTypeOf(Class<?> clazz) {
         try {
-            return GraphQLAnnotations.iface(clazz);
+            return GraphQLAnnotations2.iface(clazz);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new IllegalStateException(String.format("Unable to create interface  type for %s",
                                                           clazz.getSimpleName()));
@@ -290,7 +318,7 @@ public interface Existential {
 
     public static GraphQLObjectType objectTypeOf(Class<?> clazz) {
         try {
-            return GraphQLAnnotations.object(clazz);
+            return GraphQLAnnotations2.object(clazz);
         } catch (IllegalAccessException | InstantiationException
                 | NoSuchMethodException e) {
             throw new IllegalStateException(String.format("Unable to create object type for %s",

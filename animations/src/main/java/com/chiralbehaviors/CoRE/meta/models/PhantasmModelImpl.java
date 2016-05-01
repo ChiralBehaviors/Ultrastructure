@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL_GROUPING;
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
@@ -51,7 +51,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
+import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
@@ -229,7 +229,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (instance == null) {
             return true;
         }
-        AgencyExistentialGrouping required = AGENCY_EXISTENTIAL_GROUPING.as("required");
+        AgencyExistential required = AGENCY_EXISTENTIAL.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
                                  .where(required.ENTITY.equal(instance.getId()))

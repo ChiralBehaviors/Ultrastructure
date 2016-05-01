@@ -30,8 +30,6 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -46,42 +44,60 @@ import graphql.schema.GraphQLSchema;
 public class MetaSchemaTest extends AbstractModelTest {
 
     @Test
-    public void testFacets() {
+    public void testFacets() throws Exception {
 
         ThreadLocal<Product> currentWorkspace = new ThreadLocal<>();
         currentWorkspace.set(model.getKernel()
                                   .getKernelWorkspace());
-        GraphQLSchema schema = Facet.build(currentWorkspace);
+        GraphQLSchema schema = WorkspaceSchema.buildMeta();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ Facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
+                                  "{ facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
                                   variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfAgency { id name description } InstancesOfAttribute { id name description } }",
+                       "{ agencies { id name description } attributes { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfInterval { id name description } InstancesOfLocation { id name description } }",
+                       "{ intervals { id name description } locations { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfProduct { id name description } InstancesOfRelationship { id name description } }",
+                       "{ products { id name description } relationships { id name description } }",
                        variables);
         assertNotNull(data);
         data = execute(schema,
-                       "{ InstancesOfStatusCode { id name description } InstancesOfStatusCode{ id name description } }",
+                       "{ statusCodes { id name description } units{ id name description } }",
                        variables);
         assertNotNull(data);
-        data = execute(schema, "{ Existentials { id name description } }",
-                       variables);
+        data = execute(schema, "{ attributeAuthorizations { id } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ childSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ metaProtocols { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ networkAuthorizations { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ parentSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ protocols { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ selfSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ siblingSequencings { id  } }", variables);
+        assertNotNull(data);
+        data = execute(schema, "{ statusCodeSequencings { id  } }", variables);
         assertNotNull(data);
     }
 
     private ObjectNode execute(GraphQLSchema schema, String query,
-                               Map<String, Object> variables) {
+                               Map<String, Object> variables) throws IllegalArgumentException,
+                                                              Exception {
         ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model),
+                                                              new WorkspaceContext(model,
+                                                                                   model.getKernel()
+                                                                                        .getKernelWorkspace()),
                                                               variables);
         assertTrue(execute.getErrors()
                           .toString(),
@@ -90,5 +106,6 @@ public class MetaSchemaTest extends AbstractModelTest {
         ObjectNode result = new ObjectMapper().valueToTree(execute.getData());
         assertNotNull(result);
         return result;
+
     }
 }

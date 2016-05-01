@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
@@ -451,8 +451,8 @@ public class TestPhantasm extends AbstractModelTest {
                                          instance, model.getKernel()
                                                         .getHadMember()));
 
-        AgencyExistentialGroupingRecord accessAuth = model.records()
-                                                          .newExistentialGrouping();
+        AgencyExistentialRecord accessAuth = model.records()
+                                                  .newAgencyExistential();
         accessAuth.setUpdatedBy(model.getKernel()
                                      .getCore()
                                      .getId());
@@ -483,7 +483,7 @@ public class TestPhantasm extends AbstractModelTest {
                                                         .getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialGrouping();
+                          .newAgencyExistential();
         accessAuth.setUpdatedBy(model.getKernel()
                                      .getCore()
                                      .getId());

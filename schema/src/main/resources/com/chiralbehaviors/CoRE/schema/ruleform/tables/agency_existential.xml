@@ -6,10 +6,10 @@
 >
 
     <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" tableName="agency_existential_grouping">
+        <createTable schemaName="ruleform" tableName="agency_existential">
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="agency_existential_grouping_pkey" />
+                <constraints primaryKey="true" primaryKeyName="agency_existential_pkey" />
             </column>
             <column name="name" type="TEXT" />
             <column name="authority" type="uuid">
@@ -23,32 +23,30 @@
             <column name="notes" type="TEXT" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authority" baseTableName="agency_existential_grouping" constraintName="agency_existential_grouping_authority_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+            baseColumnNames="authority" baseTableName="agency_existential" constraintName="agency_existential_authority_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="entity" baseTableName="agency_existential_grouping" constraintName="agency_grouping_entity_fkey" deferrable="true"
+            baseColumnNames="entity" baseTableName="agency_existential" constraintName="agency_entity_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="entity, authority" constraintName="agency_existential_grouping_key_agency"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_existential_grouping" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="entity, authority" constraintName="agency_existential_key_agency"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_existential" />
 
-        <createIndex schemaName="ruleform" indexName="agency_existential_grouping_updated_by_fkey_idx" tableName="agency_existential_grouping"
+        <createIndex schemaName="ruleform" indexName="agency_existential_updated_by_fkey_idx" tableName="agency_existential"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="agency_existential_grouping_entity_fkey_idx" tableName="agency_existential_grouping"
-            unique="false"
-        >
+        <createIndex schemaName="ruleform" indexName="agency_existential_entity_fkey_idx" tableName="agency_existential" unique="false">
             <column name="entity" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="agency_existential_grouping_authority_fkey_idx" tableName="agency_existential_grouping"
+        <createIndex schemaName="ruleform" indexName="agency_existential_authority_fkey_idx" tableName="agency_existential"
             unique="false"
         >
             <column name="authority" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="agency_existential_grouping" constraintName="agency_existential_grouping_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="workspace" baseTableName="agency_existential" constraintName="agency_existential_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

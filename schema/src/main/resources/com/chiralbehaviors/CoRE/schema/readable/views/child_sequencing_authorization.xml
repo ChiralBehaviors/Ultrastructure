@@ -9,7 +9,7 @@
         <createView viewName="child_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
                 base_table.id, 
-                p.name AS parent, 
+                s.name AS service, 
                 sc.name AS status_code, 
 		        base_table.sequence_number, 
                 nc.name AS next_child, 
@@ -21,7 +21,7 @@
                 wa.description AS wsp_desc,
                 base_table.version
 			   FROM child_sequencing_authorization base_table
-			   JOIN existential p ON base_table.parent = p.id
+			   JOIN existential s ON base_table.service = s.id
 			   JOIN existential sc ON base_table.status_code = sc.id
 			   LEFT JOIN existential nc ON base_table.next_child = nc.id
 			   LEFT JOIN existential ncs ON base_table.next_child_status = ncs.id

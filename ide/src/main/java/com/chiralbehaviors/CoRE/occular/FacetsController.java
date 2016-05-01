@@ -41,7 +41,7 @@ import javafx.scene.layout.GridPane;
  *
  */
 public class FacetsController {
-    private static String          QUERY = "{ Facets { id name } }";
+    private static String          QUERY = "{ facets { id name } }";
 
     protected GraphQlApi           api;
 
@@ -106,7 +106,7 @@ public class FacetsController {
             throw new IllegalStateException(e);
         }
         ObservableList<ObjectNode> facetList = FXCollections.observableArrayList();
-        f.withArray("Facets")
+        f.withArray("facets")
          .forEach(o -> facetList.add((ObjectNode) o));
         facets.setItems(facetList);
     }

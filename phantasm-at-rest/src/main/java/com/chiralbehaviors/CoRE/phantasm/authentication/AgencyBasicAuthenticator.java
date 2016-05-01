@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -37,7 +37,7 @@ import io.dropwizard.auth.basic.BasicCredentials;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class AgencyBasicAuthenticator
         implements Authenticator<BasicCredentials, AuthorizedPrincipal> {
@@ -104,7 +104,7 @@ public class AgencyBasicAuthenticator
                                    username));
             return absent();
         }
-        CoreUser user = (CoreUser) model.wrap(CoreUser.class, agency);
+        CoreUser user = model.wrap(CoreUser.class, agency);
 
         if (!canLoginToInstance(user, model)) {
             return noCapability(username, user);
@@ -139,8 +139,8 @@ public class AgencyBasicAuthenticator
     private boolean canLoginToInstance(CoreUser user, Model model) {
         return model.getPhantasmModel()
                     .checkCapability(Arrays.asList((Agency) user.getRuleform()),
-                                     (ExistentialRuleform) model.getCoreInstance()
-                                                                .getRuleform(),
+                                     model.getCoreInstance()
+                                          .getRuleform(),
                                      model.getKernel()
                                           .getLOGIN_TO());
     }

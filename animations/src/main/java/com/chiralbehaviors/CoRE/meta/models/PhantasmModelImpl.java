@@ -478,6 +478,12 @@ public class PhantasmModelImpl implements PhantasmModel {
                                     .resolve(r))
                      .collect(Collectors.toList());
     }
+    
+    @Override
+	public List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
+			Relationship relationship, Aspect constraint, ExistentialDomain existentialDomain) {
+		return getConstrainedChildren(parent.getId(), relationship.getId(), constraint, existentialDomain);
+	}
 
     @Override
     public FacetRecord getFacetDeclaration(Relationship classifier,
@@ -986,6 +992,19 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                               attribute.getValueType()));
         }
     }
+    
+	private List<ExistentialRuleform> getConstrainedChildren(UUID parent, UUID relationship, Aspect constraint, ExistentialDomain domain) {
+		return create.select(EXISTENTIAL.fields())
+				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
+				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+				.and(EXISTENTIAL_NETWORK.INFERENCE.isNotNull())
+				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
+				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
+				.filter(r -> isAccessible(r, constraint.getClassifier(), constraint.getClassification()))
+				.collect(Collectors.toList());
+	}
 
     private List<ExistentialRuleform> getImmediateChildren(UUID parent,
                                                            UUID relationship,

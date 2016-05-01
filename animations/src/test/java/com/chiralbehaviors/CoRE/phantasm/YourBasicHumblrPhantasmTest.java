@@ -36,6 +36,7 @@ public class YourBasicHumblrPhantasmTest extends AbstractModelTest {
 	@Before
 	public void loadHumblrWorkspace() throws Exception {
 		WorkspaceImporter.manifest(this.getClass().getResourceAsStream("/humblr.wsp"), model);
+
 	}
 
 	@Test
@@ -62,7 +63,7 @@ public class YourBasicHumblrPhantasmTest extends AbstractModelTest {
 
 		User userB = model.construct(User.class, ExistentialDomain.Agency, "UserB", "user B");
 		userB.addFollows(firstChannel);
-
+		model.flush();
 		userB.getPosts();
 		assertEquals(1, userB.getPosts().size());
 	}

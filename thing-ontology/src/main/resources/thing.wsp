@@ -36,10 +36,15 @@ products {
     Thing1 = "Thing1" "Thing 1";
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
+    MasterThing = "MasterThing" "Master Thing";
     edges {
         this.HasMember.Thing1
     }
     facets {
+    	IsA.MasterThing 
+    		constraints{
+    			n derivedFrom: IsA.Thing1
+    		}
         IsA.Thing1 {aliases URI discount properties}
             constraints {
                 one thing1Of: IsA.Thing2 named thing2 { aliases }
@@ -51,6 +56,7 @@ products {
                 one inThing1: IsA.Thing1
                 n derivedFrom: IsA.MavenArtifact named by relationship
                 n thing2Of get: inferred: IsA.Thing3
+                n derivedFrom: IsA.MasterThing
             }
         IsA.Thing3 {aliases URI properties}
             constraints {
@@ -61,7 +67,7 @@ products {
     }
 }
 relationships {
-    derivedFrom = "Derived From" "A is derived from B" | derivativeOf = "Derivative Of" "A is a derivative of B";
+    derivedFrom = "Derived From" "A is derived from B" | antecedentOf = "Antecedent Of" "A is an antecedent of B";
     inThing1 = "In Thing 1" "A is part of a thing1" | thing1Of = "Thing 1 Of" "A is the thing 1 of B";
     inThing2 = "In Thing 2" "A is part of a thing1" | thing2Of = "Thing 2 Of" "A is the thing 2 of B";
     AThingOfItsOwn = "A Thing Of Its Own" "A is A";

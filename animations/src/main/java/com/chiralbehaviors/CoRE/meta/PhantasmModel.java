@@ -210,6 +210,16 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getChildrenUuid(UUID id, UUID inverse,
                                               ExistentialDomain domain);
 
+    /**
+	 * @param parent
+	 * @param relationship
+	 * @param constraint
+	 * @param existentialDomain
+	 * @return
+	 */
+	List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent, Relationship relationship,
+			Aspect constraint, ExistentialDomain existentialDomain);
+
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
 
@@ -247,7 +257,7 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getImmediateChildren(ExistentialRuleform parent,
                                                    Relationship relationship,
                                                    ExistentialDomain existentialDomain);
-
+    
     /**
      *
      * @param parent
@@ -257,7 +267,7 @@ public interface PhantasmModel {
     List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
                                                              Relationship relationship,
                                                              ExistentialDomain domain);
-    
+
     /**
      * 
      * @param parent
@@ -369,5 +379,5 @@ public interface PhantasmModel {
 
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
 
-    Class<?> valueClass(Attribute attribute);
+	Class<?> valueClass(Attribute attribute);
 }

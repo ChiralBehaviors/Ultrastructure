@@ -12,7 +12,7 @@ agencies {
             constraints {
                 n Owns: IsA.Channel 
                 n Follows: IsA.Channel named by relationship
-                n Follows: IsA.Post
+                n Follows get: inferred: IsA.Post
                 one Owns: IsA.Stream
             }
     }

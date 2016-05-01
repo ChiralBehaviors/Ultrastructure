@@ -66,13 +66,18 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SiblingSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.StatusCodeSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.AttributeAuthorizationState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing.ChildSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
@@ -84,6 +89,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing.StatusCodeSequencingState;
 
 import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.TypeFunction;
@@ -151,6 +157,7 @@ public class WorkspaceSchema {
         register(UUID.class, (u, t) -> GraphQLString);
         register(ValueType.class, (u, t) -> GraphQLString);
         register(Cardinality.class, (u, t) -> GraphQLString);
+
         register(Agency.class, (u, t) -> AgencyType);
         register(Attribute.class, (u, t) -> AttributeType);
         register(Interval.class, (u, t) -> IntervalType);
@@ -159,6 +166,20 @@ public class WorkspaceSchema {
         register(Relationship.class, (u, t) -> RelationshipType);
         register(StatusCode.class, (u, t) -> StatusCodeType);
         register(Unit.class, (u, t) -> UnitType);
+
+        register(AttributeAuthorizationState.class,
+                 (u, t) -> objectTypeOf(AttributeAuthorizationState.class));
+        register(ChildSequencingState.class,
+                 (u, t) -> objectTypeOf(ChildSequencingState.class));
+        register(ExistentialState.class,
+                 (u, t) -> objectTypeOf(ExistentialState.class));
+        register(RelationshipState.class,
+                 (u, t) -> objectTypeOf(RelationshipState.class));
+        register(StatusCodeSequencingState.class,
+                 (u, t) -> objectTypeOf(StatusCodeSequencingState.class));
+        register(AttributeState.class,
+                 (u, t) -> objectTypeOf(AttributeState.class));
+
         register(Facet.class, (u, t) -> FacetType);
         register(AttributeAuthorization.class,
                  (u, t) -> AttributeAuthorizationType);
@@ -167,8 +188,6 @@ public class WorkspaceSchema {
         register(Job.class, (u, t) -> JobType);
         register(Protocol.class, (u, t) -> ProtocolType);
         register(MetaProtocol.class, (u, t) -> MetaProtocolType);
-        register(AttributeAuthorization.class,
-                 (u, t) -> AttributeAuthorizationType);
         register(ChildSequencing.class, (u, t) -> ChildSequencingType);
         register(Existential.class, (u, t) -> ExistentialType);
         register(ParentSequencing.class, (u, t) -> ParentSequencingType);

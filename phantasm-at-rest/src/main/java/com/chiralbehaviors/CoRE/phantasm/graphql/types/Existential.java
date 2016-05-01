@@ -29,7 +29,6 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Relation
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
 
-import java.lang.reflect.AnnotatedType;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
@@ -42,9 +41,7 @@ import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.annotations.GraphQLTypeResolver;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLInterfaceType;
@@ -63,13 +60,6 @@ public interface Existential {
 
         public Agency(ExistentialRecord record) {
             super(record);
-        }
-    }
-
-    public class AgencyTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return AgencyType;
         }
     }
 
@@ -100,13 +90,13 @@ public interface Existential {
 
     public class AttributeState extends ExistentialState {
         @GraphQLField
-        Boolean indexed;
+        public Boolean indexed;
 
         @GraphQLField
-        Boolean keyed;
+        public Boolean keyed;
 
         @GraphQLField
-        String  valueType;
+        public String  valueType;
     }
 
     public class AttributeUpdateState extends AttributeState {
@@ -149,7 +139,7 @@ public interface Existential {
         }
 
         @Override
-        public @GraphQLType(AgencyTypeFunction.class) Agency getUpdatedBy(DataFetchingEnvironment env) {
+        public Agency getUpdatedBy(DataFetchingEnvironment env) {
             return new Agency((ExistentialRecord) Existential.ctx(env)
                                                              .records()
                                                              .resolve(record.getUpdatedBy()));
@@ -187,10 +177,10 @@ public interface Existential {
 
     public class ExistentialState {
         @GraphQLField
-        String name;
+        public String name;
 
         @GraphQLField
-        String notes;
+        public String notes;
 
         public void update(ExistentialRecord record) {
             if (name != null) {
@@ -247,7 +237,7 @@ public interface Existential {
 
     public class RelationshipState extends ExistentialState {
         @GraphQLField
-        String inverse;
+        public String inverse;
     }
 
     public class RelationshipUpdateState extends RelationshipState {
@@ -275,10 +265,10 @@ public interface Existential {
 
     public class StatusCodeState extends ExistentialState {
         @GraphQLField
-        Boolean failParent;
+        public Boolean failParent;
 
         @GraphQLField
-        Boolean propagateChildren;
+        public Boolean propagateChildren;
     }
 
     public class StatusCodeUpdateState extends StatusCodeState {
@@ -370,7 +360,6 @@ public interface Existential {
     String getName();
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     @GraphQLDataFetcher(UpdatedByFetcher.class)
     Agency getUpdatedBy(DataFetchingEnvironment env);
 

@@ -455,7 +455,7 @@ public class GraphQLAnnotations2 {
                                                public GraphQLArgument apply(Parameter parameter) {
                                                    Class<?> t = parameter.getType();
                                                    graphql.schema.GraphQLType graphQLType = typeFunction.apply(t,
-                                                                                                               annotatedReturnType);
+                                                                                                               parameter.getAnnotatedType());
                                                    if (graphQLType instanceof GraphQLObjectType) {
                                                        GraphQLObjectType objectType = (GraphQLObjectType) graphQLType;
                                                        GraphQLInputObjectType inputObject = inputObject(objectType);

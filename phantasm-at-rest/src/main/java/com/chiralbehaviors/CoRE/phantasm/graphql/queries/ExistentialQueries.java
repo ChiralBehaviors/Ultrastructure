@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
@@ -69,7 +68,6 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default List<Agency> agencies(@GraphQLName("ids") List<String> ids,
                                   DataFetchingEnvironment env) {
         if (ids == null) {
@@ -84,7 +82,6 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default Agency agency(@NotNull @GraphQLName("id") String id,
                           DataFetchingEnvironment env) {
         return new Agency(Existential.resolve(env, UUID.fromString(id)));

@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
@@ -146,7 +145,6 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getAssignTo(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAssignTo()));
     }
@@ -233,7 +231,6 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getRequester(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getRequester()));
     }
@@ -251,7 +248,6 @@ public class Job {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeUpdateState;
@@ -59,7 +58,6 @@ import graphql.schema.DataFetchingEnvironment;
 public interface ExistentialMutations {
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
                                 DataFetchingEnvironment env) {
         ExistentialRecord record = ctx(env).records()
@@ -205,7 +203,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                                 DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,

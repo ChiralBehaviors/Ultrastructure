@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
 import graphql.annotations.GraphQLField;
@@ -108,7 +107,6 @@ public class Facet {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getAuthority(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAuthority()));
     }
@@ -154,7 +152,6 @@ public class Facet {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

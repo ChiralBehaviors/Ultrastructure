@@ -23,7 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -31,6 +33,7 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
@@ -55,40 +58,159 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   "{ facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
                                   variables);
         assertNotNull(data);
-        data = execute(schema,
-                       "{ agencies { id name description } attributes { id name description } }",
+        data = execute(schema, "{ agencies { id name description } }",
                        variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("agencies")));
         data = execute(schema,
-                       "{ intervals { id name description } locations { id name description } }",
+                       "query q($ids: [String]!) { agencies(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
+
         data = execute(schema,
-                       "{ products { id name description } relationships { id name description } }",
+                       "{ attributes { id name description keyed indexed valueType } }",
                        variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("attributes")));
         data = execute(schema,
-                       "{ statusCodes { id name description } units{ id name description } }",
+                       "query q($ids: [String]!) { attributes(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
+
+        data = execute(schema, "{ intervals { id name description }  }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("intervals")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { intervals(ids: $ids) { id name description } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema, "{ locations { id name description } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("locations")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { locations(ids: $ids) { id name description } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema, "{ products { id name description } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("products")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { products(ids: $ids) { id name description } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ relationships { id name description inverse { id } } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("relationships")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { relationships(ids: $ids) { id name description } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ statusCodes { id name description failParent propagateChildren } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("statusCodes")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { statusCodes(ids: $ids) { id name description } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema, "{ units{ id name description } }", variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("units")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { units(ids: $ids) { id name description } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ attributeAuthorizations { id } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("attributeAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { attributeAuthorizations(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ childSequencings { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("childSequencings")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { childSequencings(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ metaProtocols { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("metaProtocols")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { metaProtocols(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ networkAuthorizations { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("networkAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { networkAuthorizations(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ parentSequencings { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("parentSequencings")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { parentSequencings(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ protocols { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("protocols")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { protocols(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ selfSequencings { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("selfSequencings")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { selfSequencings(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ siblingSequencings { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("siblingSequencings")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { siblingSequencings(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
         data = execute(schema, "{ statusCodeSequencings { id  } }", variables);
         assertNotNull(data);
+        variables.put("ids", ids(data.withArray("statusCodeSequencings")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { statusCodeSequencings(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+
+    }
+
+    private List<String> ids(ArrayNode in) {
+        List<String> ids = new ArrayList<>();
+        in.forEach(o -> ids.add(o.get("id")
+                                 .asText()));
+        return ids;
     }
 
     private ObjectNode execute(GraphQLSchema schema, String query,

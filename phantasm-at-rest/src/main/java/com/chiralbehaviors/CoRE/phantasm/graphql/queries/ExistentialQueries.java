@@ -63,6 +63,7 @@ public interface ExistentialQueries {
                        .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
                        .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(((WorkspaceContext) env.getContext()).getWorkspace()
                                                                                                                     .getId()))
+                       .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                        .fetch()
                        .into(ExistentialRecord.class);
     }

@@ -29,7 +29,6 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
 import graphql.annotations.GraphQLField;
@@ -181,7 +180,6 @@ public class MetaProtocol {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

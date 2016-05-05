@@ -151,6 +151,7 @@ public class WorkspaceSchema {
         register(UUID.class, (u, t) -> GraphQLString);
         register(ValueType.class, (u, t) -> GraphQLString);
         register(Cardinality.class, (u, t) -> GraphQLString);
+
         register(Agency.class, (u, t) -> AgencyType);
         register(Attribute.class, (u, t) -> AttributeType);
         register(Interval.class, (u, t) -> IntervalType);
@@ -159,6 +160,7 @@ public class WorkspaceSchema {
         register(Relationship.class, (u, t) -> RelationshipType);
         register(StatusCode.class, (u, t) -> StatusCodeType);
         register(Unit.class, (u, t) -> UnitType);
+
         register(Facet.class, (u, t) -> FacetType);
         register(AttributeAuthorization.class,
                  (u, t) -> AttributeAuthorizationType);
@@ -167,8 +169,6 @@ public class WorkspaceSchema {
         register(Job.class, (u, t) -> JobType);
         register(Protocol.class, (u, t) -> ProtocolType);
         register(MetaProtocol.class, (u, t) -> MetaProtocolType);
-        register(AttributeAuthorization.class,
-                 (u, t) -> AttributeAuthorizationType);
         register(ChildSequencing.class, (u, t) -> ChildSequencingType);
         register(Existential.class, (u, t) -> ExistentialType);
         register(ParentSequencing.class, (u, t) -> ParentSequencingType);

@@ -32,13 +32,11 @@ import org.jooq.exception.TooManyRowsException;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -94,7 +92,6 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getAuthority(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAuthority()));
     }
@@ -159,7 +156,6 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

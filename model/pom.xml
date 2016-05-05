@@ -111,6 +111,7 @@
                     <username>${db.login}</username>
                     <password>${db.password}</password>
                     <verbose>true</verbose>
+                    <changelogSchemaName>public</changelogSchemaName>
                     <expressionVars>
                         <property>
                             <name>create.db.database</name>

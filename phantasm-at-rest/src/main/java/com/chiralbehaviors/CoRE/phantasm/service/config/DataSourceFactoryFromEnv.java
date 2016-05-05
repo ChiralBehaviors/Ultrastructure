@@ -22,8 +22,9 @@ package com.chiralbehaviors.CoRE.phantasm.service.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Driver;
 import java.util.regex.Pattern;
+
+import org.postgresql.Driver;
 
 import io.dropwizard.db.DataSourceFactory;
 

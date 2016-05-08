@@ -28,10 +28,10 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
-import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
@@ -41,34 +41,34 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-public interface MetaProtocolQueries {
+public interface JobChronologyQueries {
 
     @GraphQLField
-    default MetaProtocol metaProtocol(@NotNull @GraphQLName("id") String id,
-                                      DataFetchingEnvironment env) {
-        return MetaProtocol.fetch(env, UUID.fromString(id));
+    default ChildSequencing childSequencing(@NotNull @GraphQLName("id") String id,
+                                            DataFetchingEnvironment env) {
+        return ChildSequencing.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
-    default List<MetaProtocol> metaProtocols(@GraphQLName("ids") List<String> ids,
-                                             DataFetchingEnvironment env) {
+    default List<ChildSequencing> childSequencings(@GraphQLName("ids") List<String> ids,
+                                                   DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env).create()
-                           .selectDistinct(Tables.META_PROTOCOL.fields())
-                           .from(Tables.META_PROTOCOL)
+                           .selectDistinct(Tables.CHILD_SEQUENCING_AUTHORIZATION.fields())
+                           .from(Tables.CHILD_SEQUENCING_AUTHORIZATION)
                            .join(Tables.WORKSPACE_AUTHORIZATION)
-                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.META_PROTOCOL.WORKSPACE))
+                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.CHILD_SEQUENCING_AUTHORIZATION.WORKSPACE))
                            .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
                            .fetch()
-                           .into(MetaProtocolRecord.class)
+                           .into(ChildSequencingAuthorizationRecord.class)
                            .stream()
-                           .map(r -> new MetaProtocol(r))
+                           .map(r -> new ChildSequencing(r))
                            .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> MetaProtocol.fetch(env, id))
+                  .map(id -> ChildSequencing.fetch(env, id))
                   .collect(Collectors.toList());
     }
 }

@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing.SelfSequencingUpdateState;
@@ -43,9 +42,9 @@ import graphql.schema.DataFetchingEnvironment;
 public interface SelfSequencingMutations {
 
     @GraphQLField
-    default SelfSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SelfSequencingState state,
-                                                        DataFetchingEnvironment env) {
-        SelfSequencingAuthorizationRecord record = ctx(env).records()
+    default SelfSequencing createSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingState state,
+                                                DataFetchingEnvironment env) {
+        SelfSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
                                                            .newSelfSequencingAuthorization();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface SelfSequencingMutations {
     @GraphQLField
     default SelfSequencing updateSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingUpdateState state,
                                                 DataFetchingEnvironment env) {
-        SelfSequencingAuthorizationRecord record = ctx(env).create()
+        SelfSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
                                                            .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
                                                            .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
                                                            .fetchOne();

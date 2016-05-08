@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -49,6 +50,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class StateSnapshotTest extends AbstractModelTest {
 
+    private static final String TARGET_TEST_CLASSES = "target/test-classes";
+
     @Test
     public void testSnap() throws Exception {
         // Need to commit for snap state testing
@@ -67,7 +70,8 @@ public class StateSnapshotTest extends AbstractModelTest {
             WorkspaceSnapshot snap = myModel.snapshot();
             assertEquals(6, snap.getRecords()
                                 .size());
-            try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
+            try (OutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
+                                                                 THINGS_JSON))) {
                 snap.serializeTo(os);
             }
         }
@@ -78,7 +82,8 @@ public class StateSnapshotTest extends AbstractModelTest {
             assertNull("Shouldn't be alive", frankenstein);
 
             StateSnapshot snapshot;
-            try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
+            try (InputStream os = new FileInputStream(new File(TARGET_TEST_CLASSES,
+                                                               THINGS_JSON))) {
                 snapshot = new ObjectMapper().registerModule(new CoREModule())
                                              .readValue(os,
                                                         StateSnapshot.class);

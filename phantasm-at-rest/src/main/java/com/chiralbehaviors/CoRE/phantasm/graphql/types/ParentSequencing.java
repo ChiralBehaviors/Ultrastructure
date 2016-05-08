@@ -20,19 +20,16 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -84,7 +81,7 @@ public class ParentSequencing {
     }
 
     public static ParentSequencing fetch(DataFetchingEnvironment env, UUID id) {
-        return new ParentSequencing(ctx(env).create()
+        return new ParentSequencing(WorkspaceSchema.ctx(env).create()
                                             .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
                                             .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.ID.equal(id))
                                             .fetchOne());
@@ -111,14 +108,14 @@ public class ParentSequencing {
     @GraphQLField
 
     public Product getParent(DataFetchingEnvironment env) {
-        return new Product(ctx(env).records()
+        return new Product(WorkspaceSchema.ctx(env).records()
                                    .resolve(record.getParent()));
     }
 
     @GraphQLField
 
     public StatusCode getParentStatusToSet(DataFetchingEnvironment env) {
-        return new StatusCode(ctx(env).records()
+        return new StatusCode(WorkspaceSchema.ctx(env).records()
                                       .resolve(record.getParentStatusToSet()));
     }
 
@@ -134,21 +131,20 @@ public class ParentSequencing {
     @GraphQLField
 
     public Product getService(DataFetchingEnvironment env) {
-        return new Product(ctx(env).records()
+        return new Product(WorkspaceSchema.ctx(env).records()
                                    .resolve(record.getService()));
     }
 
     @GraphQLField
 
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(ctx(env).records()
+        return new StatusCode(WorkspaceSchema.ctx(env).records()
                                       .resolve(record.getStatusCode()));
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return new Agency(ctx(env).records()
+        return new Agency(WorkspaceSchema.ctx(env).records()
                                   .resolve(record.getUpdatedBy()));
     }
 

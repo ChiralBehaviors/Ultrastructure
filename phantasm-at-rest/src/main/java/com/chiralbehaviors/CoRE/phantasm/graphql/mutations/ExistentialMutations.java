@@ -20,17 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeUpdateState;
@@ -49,7 +46,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -59,11 +55,11 @@ import graphql.schema.DataFetchingEnvironment;
 public interface ExistentialMutations {
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
                                 DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newAgency();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newAgency();
         state.update(record);
         record.insert();
         return new Agency(record);
@@ -72,8 +68,9 @@ public interface ExistentialMutations {
     @GraphQLField
     default Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
                                       DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newAttribute();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newAttribute();
         state.update(record);
         record.insert();
         return new Attribute(record);
@@ -82,8 +79,9 @@ public interface ExistentialMutations {
     @GraphQLField
     default Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
                                     DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newInterval();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newInterval();
         state.update(record);
         record.insert();
         return new Interval(record);
@@ -92,8 +90,9 @@ public interface ExistentialMutations {
     @GraphQLField
     default Location createLocation(@NotNull @GraphQLName("state") ExistentialState state,
                                     DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newLocation();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newLocation();
         state.update(record);
         record.insert();
         return new Location(record);
@@ -102,19 +101,20 @@ public interface ExistentialMutations {
     @GraphQLField
     default Product createProduct(@NotNull @GraphQLName("state") ExistentialState state,
                                   DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newProduct();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newProduct();
         state.update(record);
         record.insert();
         return new Product(record);
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     default Relationship createRelationship(@NotNull @GraphQLName("state") RelationshipState state,
                                             DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newRelationship();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newRelationship();
         state.update(record);
         record.insert();
         return new Relationship(record);
@@ -123,8 +123,9 @@ public interface ExistentialMutations {
     @GraphQLField
     default StatusCode createStatusCode(@NotNull @GraphQLName("state") StatusCodeState state,
                                         DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newStatusCode();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newStatusCode();
         state.update(record);
         record.insert();
         return new StatusCode(record);
@@ -133,8 +134,9 @@ public interface ExistentialMutations {
     @GraphQLField
     default Unit createUnit(@NotNull @GraphQLName("state") ExistentialState state,
                             DataFetchingEnvironment env) {
-        ExistentialRecord record = ctx(env).records()
-                                           .newUnit();
+        ExistentialRecord record = WorkspaceSchema.ctx(env)
+                                                  .records()
+                                                  .newUnit();
         state.update(record);
         record.insert();
         return new Unit(record);
@@ -205,7 +207,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                                 DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,
@@ -256,7 +257,6 @@ public interface ExistentialMutations {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     default Relationship updateRelationship(@NotNull @GraphQLName("state") RelationshipUpdateState state,
                                             DataFetchingEnvironment env) {
         ExistentialRecord record = Existential.resolve(env,

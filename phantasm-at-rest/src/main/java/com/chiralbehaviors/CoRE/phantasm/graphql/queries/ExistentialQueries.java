@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,10 +30,9 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
@@ -46,7 +43,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -57,19 +53,20 @@ public interface ExistentialQueries {
 
     static List<ExistentialRecord> resolve(DataFetchingEnvironment env,
                                            ExistentialDomain domain) {
-        return ctx(env).create()
-                       .selectDistinct(Tables.EXISTENTIAL.fields())
-                       .from(Tables.EXISTENTIAL)
-                       .join(Tables.WORKSPACE_AUTHORIZATION)
-                       .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
-                       .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(((WorkspaceContext) env.getContext()).getWorkspace()
-                                                                                                                    .getId()))
-                       .fetch()
-                       .into(ExistentialRecord.class);
+        return WorkspaceSchema.ctx(env)
+                              .create()
+                              .selectDistinct(Tables.EXISTENTIAL.fields())
+                              .from(Tables.EXISTENTIAL)
+                              .join(Tables.WORKSPACE_AUTHORIZATION)
+                              .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
+                              .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(((WorkspaceContext) env.getContext()).getWorkspace()
+                                                                                                                           .getId()))
+                              .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                              .fetch()
+                              .into(ExistentialRecord.class);
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default List<Agency> agencies(@GraphQLName("ids") List<String> ids,
                                   DataFetchingEnvironment env) {
         if (ids == null) {
@@ -84,7 +81,6 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     default Agency agency(@NotNull @GraphQLName("id") String id,
                           DataFetchingEnvironment env) {
         return new Agency(Existential.resolve(env, UUID.fromString(id)));
@@ -171,14 +167,12 @@ public interface ExistentialQueries {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     default Relationship relationship(@NotNull @GraphQLName("id") String id,
                                       DataFetchingEnvironment env) {
         return new Relationship(Existential.resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     default List<Relationship> relationships(@GraphQLName("ids") List<String> ids,
                                              DataFetchingEnvironment env) {
         if (ids == null) {

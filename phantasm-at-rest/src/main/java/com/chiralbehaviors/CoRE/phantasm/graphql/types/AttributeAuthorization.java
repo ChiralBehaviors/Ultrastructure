@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -31,14 +33,13 @@ import org.jooq.exception.TooManyRowsException;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AgencyTypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -48,6 +49,8 @@ import graphql.schema.DataFetchingEnvironment;
 public class AttributeAuthorization {
 
     public static class AttributeAuthorizationState {
+        @GraphQLField
+        public String  facet;
         @GraphQLField
         public String  authority;
         @GraphQLField
@@ -61,13 +64,48 @@ public class AttributeAuthorization {
         @GraphQLField
         public String  jsonValue;
         @GraphQLField
-        public Float   numericValue;
+        public Double  numericValue;
         @GraphQLField
         public String  textValue;
         @GraphQLField
-        public long    timestampValue;
+        public Long    timestampValue;
 
         public void update(ExistentialAttributeAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
+            if (authorizedAttribute != null) {
+                record.setAuthorizedAttribute(UUID.fromString(authorizedAttribute));
+            }
+            if (binaryValue != null) {
+                record.setBinaryValue(Base64.getDecoder()
+                                            .decode(binaryValue));
+            }
+            if (booleanValue != null) {
+                record.setBooleanValue(booleanValue);
+            }
+            record.setFacet(UUID.fromString(facet));
+            if (integerValue != null) {
+                record.setIntegerValue(integerValue);
+            }
+            if (jsonValue != null) {
+                try {
+                    record.setJsonValue(new ObjectMapper().readTree(jsonValue));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON value: %s",
+                                                                     jsonValue),
+                                                       e);
+                }
+            }
+            if (numericValue != null) {
+                record.setNumericValue(BigDecimal.valueOf(numericValue));
+            }
+            if (textValue != null) {
+                record.setTextValue(textValue);
+            }
+            if (timestampValue != null) {
+                record.setTimestampValue(new Timestamp(timestampValue));
+            }
         }
     }
 
@@ -80,7 +118,7 @@ public class AttributeAuthorization {
     public static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
                                                                 UUID id) throws DataAccessException,
                                                                          TooManyRowsException {
-        return ctx(env).create()
+        return WorkspaceSchema.ctx(env).create()
                        .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
                        .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
                        .fetchOne();
@@ -94,7 +132,6 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getAuthority(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAuthority()));
     }
@@ -106,6 +143,9 @@ public class AttributeAuthorization {
 
     @GraphQLField
     public String getBinaryValue() {
+        if (record.getBinaryValue() == null) {
+            return null;
+        }
         return Base64.getEncoder()
                      .encodeToString(record.getBinaryValue());
     }
@@ -142,9 +182,12 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public Long getNumericValue() {
+    public Double getNumericValue() {
+        if (record.getNumericValue() == null) {
+            return null;
+        }
         return record.getNumericValue()
-                     .longValue();
+                     .doubleValue();
     }
 
     @GraphQLField
@@ -154,12 +197,14 @@ public class AttributeAuthorization {
 
     @GraphQLField
     public Long getTimestampValue() {
+        if (record.getTimestampValue() == null) {
+            return null;
+        }
         return record.getTimestampValue()
                      .getTime();
     }
 
     @GraphQLField
-    @GraphQLType(AgencyTypeFunction.class)
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

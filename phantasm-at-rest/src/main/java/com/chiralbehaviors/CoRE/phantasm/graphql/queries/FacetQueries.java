@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 
 import graphql.annotations.GraphQLField;
@@ -51,11 +50,12 @@ public interface FacetQueries {
     default List<Facet> facets(@GraphQLName("ids") List<String> ids,
                                DataFetchingEnvironment env) {
         if (ids == null) {
-            return ctx(env).getPhantasmModel()
-                           .getFacets(((WorkspaceContext) env.getContext()).getWorkspace())
-                           .stream()
-                           .map(r -> new Facet(r))
-                           .collect(Collectors.toList());
+            return WorkspaceSchema.ctx(env)
+                                  .getPhantasmModel()
+                                  .getFacets(((WorkspaceContext) env.getContext()).getWorkspace())
+                                  .stream()
+                                  .map(r -> new Facet(r))
+                                  .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))

@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.math.BigDecimal;
@@ -28,7 +27,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
@@ -37,7 +36,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -154,10 +152,11 @@ public class Protocol {
     }
 
     public static ProtocolRecord fetch(DataFetchingEnvironment env, UUID id) {
-        return ctx(env).create()
-                       .selectFrom(Tables.PROTOCOL)
-                       .where(Tables.PROTOCOL.ID.equal(id))
-                       .fetchOne();
+        return WorkspaceSchema.ctx(env)
+                              .create()
+                              .selectFrom(Tables.PROTOCOL)
+                              .where(Tables.PROTOCOL.ID.equal(id))
+                              .fetchOne();
     }
 
     private final ProtocolRecord record;
@@ -199,6 +198,9 @@ public class Protocol {
 
     @GraphQLField
     public Long getChildQuantity() {
+        if (record.getChildQuantity() == null) {
+            return null;
+        }
         return record.getChildQuantity()
                      .longValue();
     }
@@ -210,7 +212,6 @@ public class Protocol {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getChildrenRelationship(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getChildrenRelationship()));
     }
@@ -263,6 +264,9 @@ public class Protocol {
 
     @GraphQLField
     public Long getQuantity() {
+        if (record.getQuantity() == null) {
+            return null;
+        }
         return record.getQuantity()
                      .longValue();
     }

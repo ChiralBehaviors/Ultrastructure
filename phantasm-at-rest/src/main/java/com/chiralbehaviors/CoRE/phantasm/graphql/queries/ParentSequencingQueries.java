@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,6 +30,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
 
 import graphql.annotations.GraphQLField;
@@ -55,7 +54,7 @@ public interface ParentSequencingQueries {
                                                      DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return ctx(env).create()
+            return WorkspaceSchema.ctx(env).create()
                            .selectDistinct(Tables.PARENT_SEQUENCING_AUTHORIZATION.fields())
                            .from(Tables.PARENT_SEQUENCING_AUTHORIZATION)
                            .join(Tables.WORKSPACE_AUTHORIZATION)

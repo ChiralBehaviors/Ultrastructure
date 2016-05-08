@@ -21,6 +21,9 @@
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -38,5 +41,21 @@ public class WorkspaceResourceTest extends AbstractModelTest {
         assertEquals(1, resource.getWorkspaces(model.getCurrentPrincipal(),
                                                model.create())
                                 .size());
+    }
+
+    public void testLoadWorkspace() throws Exception {
+        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        UUID definingProduct = resource.loadWorkspace(null, null,
+                                                      getClass().getResourceAsStream("/thing.wsp"),
+                                                      model.create());
+        assertNotNull(definingProduct);
+    }
+
+    public void testLoadSnapshot() throws Exception {
+        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        UUID definingProduct = resource.loadWorkspace(null, null,
+                                                      getClass().getResourceAsStream("/thing.wsp"),
+                                                      model.create());
+        assertNotNull(definingProduct);
     }
 }

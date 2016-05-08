@@ -57,30 +57,30 @@ public class MetaSchemaTest extends AbstractModelTest {
         GraphQLSchema schema = WorkspaceSchema.buildMeta();
         Map<String, Object> variables = new HashMap<>();
 
-        //        execute(schema,
-        //                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
-        //        execute(schema,
-        //                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-        //                variables);
+        execute(schema,
+                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
         variables.put("auth", k.getCore()
                                .getId()
                                .toString());

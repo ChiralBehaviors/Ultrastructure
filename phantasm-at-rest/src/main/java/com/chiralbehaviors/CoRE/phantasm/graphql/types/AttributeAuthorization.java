@@ -29,8 +29,6 @@ import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.exception.DataAccessException;
 import org.jooq.exception.TooManyRowsException;
 
@@ -52,7 +50,6 @@ public class AttributeAuthorization {
 
     public static class AttributeAuthorizationState {
         @GraphQLField
-        @Nonnull
         public String  facet;
         @GraphQLField
         public String  authority;

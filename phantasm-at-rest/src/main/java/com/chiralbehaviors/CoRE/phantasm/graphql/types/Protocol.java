@@ -199,6 +199,9 @@ public class Protocol {
 
     @GraphQLField
     public Long getChildQuantity() {
+        if (record.getChildQuantity() == null) {
+            return null;
+        }
         return record.getChildQuantity()
                      .longValue();
     }
@@ -263,6 +266,9 @@ public class Protocol {
 
     @GraphQLField
     public Long getQuantity() {
+        if (record.getQuantity() == null) {
+            return null;
+        }
         return record.getQuantity()
                      .longValue();
     }

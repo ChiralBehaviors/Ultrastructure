@@ -48,7 +48,7 @@ public class MetaSchemaTest extends AbstractModelTest {
     private WorkspaceImporter importer;
 
     @Test
-    public void testFacets() throws Exception {
+    public void testSchema() throws Exception {
         importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
                                               model);
 
@@ -167,7 +167,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("attributeAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [String]!) { attributeAuthorizations(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { attributeAuthorizations(ids:$ids) { id facet {id} jsonValue binaryValue booleanValue integerValue notes textValue timestampValue updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id",
@@ -177,7 +177,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ childSequencings { id  } }", variables);
+        data = execute(schema,
+                       "{ childSequencings { id nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("childSequencings")));
         data = execute(schema,
@@ -190,7 +192,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ metaProtocols { id  } }", variables);
+        data = execute(schema,
+                       "{ metaProtocols { id  product {id} assignTo {id} deliverFrom{id} deliverTo{id} quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("metaProtocols")));
         data = execute(schema,
@@ -203,7 +207,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ networkAuthorizations { id  } }", variables);
+        data = execute(schema,
+                       "{ networkAuthorizations { id authority{id} cardinality child{id} name notes parent{id} relationship{id} updatedBy{id} version } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("networkAuthorizations")));
         data = execute(schema,
@@ -217,7 +223,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ parentSequencings { id  } }", variables);
+        data = execute(schema,
+                       "{ parentSequencings { id notes parent{id} parentStatusToSet{id} sequenceNumber statusCode{id} updatedBy{id} version } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("parentSequencings")));
         data = execute(schema,
@@ -230,7 +238,10 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ protocols { id  } }", variables);
+        data = execute(schema,
+                       "{ protocols { id name notes assignTo {id} deliverFrom{id} deliverTo{id} product {id} quantity quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version"
+                               + " childAssignTo {id} childDeliverFrom{id} childDeliverTo{id} childProduct {id} childQuantity childQuantityUnit {id} childrenRelationship{id} childService{id} childStatus{id}  } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("protocols")));
         data = execute(schema,
@@ -243,7 +254,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ selfSequencings { id  } }", variables);
+        data = execute(schema,
+                       "{ selfSequencings { id notes sequenceNumber service{id} setIfActiveSiblings statusCode{id} statusToSet{id} updatedBy{id} version } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("selfSequencings")));
         data = execute(schema,
@@ -251,7 +264,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ siblingSequencings { id  } }", variables);
+        data = execute(schema,
+                       "{ siblingSequencings { id nextSibling{id} nextSiblingStatus{id} notes sequenceNumber service{id} statusCode{id} updatedBy{id} version } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("siblingSequencings")));
         data = execute(schema,
@@ -264,7 +279,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ statusCodeSequencings { id  } }", variables);
+        data = execute(schema,
+                       "{ statusCodeSequencings { id child{id} notes parent{id} service{id} updatedBy{id} version } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("statusCodeSequencings")));
         data = execute(schema,

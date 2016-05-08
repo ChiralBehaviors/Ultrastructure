@@ -103,6 +103,9 @@ public class AttributeAuthorization {
 
     @GraphQLField
     public String getBinaryValue() {
+        if (record.getBinaryValue() == null) {
+            return null;
+        }
         return Base64.getEncoder()
                      .encodeToString(record.getBinaryValue());
     }
@@ -151,6 +154,9 @@ public class AttributeAuthorization {
 
     @GraphQLField
     public Long getTimestampValue() {
+        if (record.getTimestampValue() == null) {
+            return null;
+        }
         return record.getTimestampValue()
                      .getTime();
     }

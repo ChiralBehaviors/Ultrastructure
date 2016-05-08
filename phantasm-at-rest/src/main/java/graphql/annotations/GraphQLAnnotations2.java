@@ -552,6 +552,9 @@ public class GraphQLAnnotations2 {
 
     @SuppressWarnings("unchecked")
     private static <T extends Number> T convert(Number from, Class<T> to) {
+        if (from == null) {
+            return null;
+        }
         if (to.equals(Byte.class)) {
             return (T) Byte.valueOf(from.byteValue());
         }

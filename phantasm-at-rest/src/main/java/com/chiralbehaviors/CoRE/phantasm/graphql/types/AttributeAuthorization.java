@@ -183,6 +183,9 @@ public class AttributeAuthorization {
 
     @GraphQLField
     public Double getNumericValue() {
+        if (record.getNumericValue() == null) {
+            return null;
+        }
         return record.getNumericValue()
                      .doubleValue();
     }

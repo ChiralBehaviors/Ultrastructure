@@ -23,8 +23,13 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.UUID;
+
+import javax.annotation.Nonnull;
 
 import org.jooq.exception.DataAccessException;
 import org.jooq.exception.TooManyRowsException;
@@ -47,6 +52,9 @@ public class AttributeAuthorization {
 
     public static class AttributeAuthorizationState {
         @GraphQLField
+        @Nonnull
+        public String  facet;
+        @GraphQLField
         public String  authority;
         @GraphQLField
         public String  authorizedAttribute;
@@ -59,13 +67,48 @@ public class AttributeAuthorization {
         @GraphQLField
         public String  jsonValue;
         @GraphQLField
-        public Float   numericValue;
+        public Double  numericValue;
         @GraphQLField
         public String  textValue;
         @GraphQLField
-        public long    timestampValue;
+        public Long    timestampValue;
 
         public void update(ExistentialAttributeAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
+            if (authorizedAttribute != null) {
+                record.setAuthorizedAttribute(UUID.fromString(authorizedAttribute));
+            }
+            if (binaryValue != null) {
+                record.setBinaryValue(Base64.getDecoder()
+                                            .decode(binaryValue));
+            }
+            if (booleanValue != null) {
+                record.setBooleanValue(booleanValue);
+            }
+            record.setFacet(UUID.fromString(facet));
+            if (integerValue != null) {
+                record.setIntegerValue(integerValue);
+            }
+            if (jsonValue != null) {
+                try {
+                    record.setJsonValue(new ObjectMapper().readTree(jsonValue));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON value: %s",
+                                                                     jsonValue),
+                                                       e);
+                }
+            }
+            if (numericValue != null) {
+                record.setNumericValue(BigDecimal.valueOf(numericValue));
+            }
+            if (textValue != null) {
+                record.setTextValue(textValue);
+            }
+            if (timestampValue != null) {
+                record.setTimestampValue(new Timestamp(timestampValue));
+            }
         }
     }
 
@@ -142,9 +185,9 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public Long getNumericValue() {
+    public Double getNumericValue() {
         return record.getNumericValue()
-                     .longValue();
+                     .doubleValue();
     }
 
     @GraphQLField

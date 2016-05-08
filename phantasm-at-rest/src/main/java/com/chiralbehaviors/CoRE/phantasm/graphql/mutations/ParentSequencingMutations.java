@@ -43,8 +43,8 @@ import graphql.schema.DataFetchingEnvironment;
 public interface ParentSequencingMutations {
 
     @GraphQLField
-    default ParentSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") ParentSequencingState state,
-                                                          DataFetchingEnvironment env) {
+    default ParentSequencing createParentSequencing(@NotNull @GraphQLName("state") ParentSequencingState state,
+                                                    DataFetchingEnvironment env) {
         ParentSequencingAuthorizationRecord record = ctx(env).records()
                                                              .newParentSequencingAuthorization();
         state.update(record);

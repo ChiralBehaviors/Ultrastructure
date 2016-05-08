@@ -43,8 +43,8 @@ import graphql.schema.DataFetchingEnvironment;
 public interface StatusCodeSequencingMutations {
 
     @GraphQLField
-    default StatusCodeSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") StatusCodeSequencingState state,
-                                                              DataFetchingEnvironment env) {
+    default StatusCodeSequencing createStatusCodeSequencing(@NotNull @GraphQLName("state") StatusCodeSequencingState state,
+                                                            DataFetchingEnvironment env) {
         StatusCodeSequencingRecord record = ctx(env).records()
                                                     .newStatusCodeSequencing();
         state.update(record);

@@ -43,8 +43,8 @@ import graphql.schema.DataFetchingEnvironment;
 public interface SelfSequencingMutations {
 
     @GraphQLField
-    default SelfSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SelfSequencingState state,
-                                                        DataFetchingEnvironment env) {
+    default SelfSequencing createSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingState state,
+                                                DataFetchingEnvironment env) {
         SelfSequencingAuthorizationRecord record = ctx(env).records()
                                                            .newSelfSequencingAuthorization();
         state.update(record);

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.interfaceTypeOf;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.objectTypeOf;
+import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
 import static graphql.annotations.DefaultTypeFunction.register;
 
@@ -126,31 +127,54 @@ public class WorkspaceSchema {
         }
     }
 
-    public static final GraphQLObjectType    AgencyType                 = objectTypeOf(Agency.class);
-    public static final GraphQLObjectType    AttributeAuthorizationType = Existential.objectTypeOf(AttributeAuthorization.class);
-    public static final GraphQLObjectType    AttributeType              = objectTypeOf(Attribute.class);
-    public static final GraphQLObjectType    ChildSequencingType        = Existential.objectTypeOf(ChildSequencing.class);
-    public static final GraphQLInterfaceType ExistentialType            = interfaceTypeOf(Existential.class);
-    public static final GraphQLObjectType    FacetType                  = Existential.objectTypeOf(Facet.class);
-    public static final GraphQLObjectType    IntervalType               = objectTypeOf(Interval.class);
-    public static final GraphQLObjectType    JobType                    = Existential.objectTypeOf(Job.class);
-    public static final GraphQLObjectType    LocationType               = objectTypeOf(Location.class);
-    public static final GraphQLObjectType    MetaProtocolType           = Existential.objectTypeOf(MetaProtocol.class);
-    public static final GraphQLObjectType    NetworkAuthorizationType   = Existential.objectTypeOf(NetworkAuthorization.class);
-    public static final GraphQLObjectType    ParentSequencingType       = Existential.objectTypeOf(ParentSequencing.class);
-    public static final GraphQLObjectType    ProductType                = objectTypeOf(Product.class);
-    public static final GraphQLObjectType    ProtocolType               = Existential.objectTypeOf(Protocol.class);
-    public static final GraphQLObjectType    RelationshipType           = objectTypeOf(Relationship.class);
-    public static final GraphQLObjectType    SelfSequencingType         = Existential.objectTypeOf(SelfSequencing.class);
-    public static final GraphQLObjectType    SiblingSequencingType      = Existential.objectTypeOf(SiblingSequencing.class);
-    public static final GraphQLObjectType    StatusCodeSequencingType   = Existential.objectTypeOf(StatusCodeSequencing.class);
-    public static final GraphQLObjectType    StatusCodeType             = objectTypeOf(StatusCode.class);
-    public static final GraphQLObjectType    UnitType                   = objectTypeOf(Unit.class);
+    public static final GraphQLObjectType    AgencyType;
+    public static final GraphQLObjectType    AttributeAuthorizationType;
+    public static final GraphQLObjectType    AttributeType;
+    public static final GraphQLObjectType    ChildSequencingType;
+    public static final GraphQLInterfaceType ExistentialType;
+    public static final GraphQLObjectType    FacetType;
+    public static final GraphQLObjectType    IntervalType;
+    public static final GraphQLObjectType    JobType;
+    public static final GraphQLObjectType    LocationType;
+    public static final GraphQLObjectType    MetaProtocolType;
+    public static final GraphQLObjectType    NetworkAuthorizationType;
+    public static final GraphQLObjectType    ParentSequencingType;
+    public static final GraphQLObjectType    ProductType;
+    public static final GraphQLObjectType    ProtocolType;
+    public static final GraphQLObjectType    RelationshipType;
+    public static final GraphQLObjectType    SelfSequencingType;
+    public static final GraphQLObjectType    SiblingSequencingType;
+    public static final GraphQLObjectType    StatusCodeSequencingType;
+    public static final GraphQLObjectType    StatusCodeType;
+    public static final GraphQLObjectType    UnitType;
 
     static {
+        register(Double.class, (u, t) -> GraphQLFloat);
         register(UUID.class, (u, t) -> GraphQLString);
         register(ValueType.class, (u, t) -> GraphQLString);
         register(Cardinality.class, (u, t) -> GraphQLString);
+
+        AgencyType = objectTypeOf(Agency.class);
+        ExistentialType = interfaceTypeOf(Existential.class);
+        AttributeType = objectTypeOf(Attribute.class);
+        IntervalType = objectTypeOf(Interval.class);
+        LocationType = objectTypeOf(Location.class);
+        ProductType = objectTypeOf(Product.class);
+        RelationshipType = objectTypeOf(Relationship.class);
+        StatusCodeType = objectTypeOf(StatusCode.class);
+        UnitType = objectTypeOf(Unit.class);
+
+        AttributeAuthorizationType = Existential.objectTypeOf(AttributeAuthorization.class);
+        ChildSequencingType = Existential.objectTypeOf(ChildSequencing.class);
+        FacetType = Existential.objectTypeOf(Facet.class);
+        JobType = Existential.objectTypeOf(Job.class);
+        MetaProtocolType = Existential.objectTypeOf(MetaProtocol.class);
+        NetworkAuthorizationType = Existential.objectTypeOf(NetworkAuthorization.class);
+        ParentSequencingType = Existential.objectTypeOf(ParentSequencing.class);
+        ProtocolType = Existential.objectTypeOf(Protocol.class);
+        SelfSequencingType = Existential.objectTypeOf(SelfSequencing.class);
+        SiblingSequencingType = Existential.objectTypeOf(SiblingSequencing.class);
+        StatusCodeSequencingType = Existential.objectTypeOf(StatusCodeSequencing.class);
 
         register(Agency.class, (u, t) -> AgencyType);
         register(Attribute.class, (u, t) -> AttributeType);

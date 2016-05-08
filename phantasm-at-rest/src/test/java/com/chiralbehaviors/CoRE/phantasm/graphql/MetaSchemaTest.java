@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.GraphQLError;
 import graphql.schema.GraphQLSchema;
 
 /**
@@ -46,6 +48,55 @@ import graphql.schema.GraphQLSchema;
  */
 public class MetaSchemaTest extends AbstractModelTest {
     private WorkspaceImporter importer;
+
+    @Test
+    public void testMutations() throws Exception {
+        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                              model);
+        Kernel k = model.getKernel();
+        GraphQLSchema schema = WorkspaceSchema.buildMeta();
+        Map<String, Object> variables = new HashMap<>();
+
+        //        execute(schema,
+        //                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        //        execute(schema,
+        //                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        //                variables);
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("facet", model.getPhantasmModel()
+                                    .getFacetDeclaration(k.getIsA(),
+                                                         k.getCoreUser())
+                                    .getId()
+                                    .toString());
+        execute(schema,
+                "mutation m($auth: String $attr: String $facet: String) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" }) {id} }",
+                variables);
+
+    }
 
     @Test
     public void testQueries() throws Exception {
@@ -297,48 +348,6 @@ public class MetaSchemaTest extends AbstractModelTest {
 
     }
 
-    @Test
-    public void testMutations() throws Exception {
-        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                              model);
-
-        GraphQLSchema schema = WorkspaceSchema.buildMeta();
-        Map<String, Object> variables = new HashMap<>();
-
-        execute(schema,
-                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-
-    }
-
-    private List<String> ids(ArrayNode in) {
-        List<String> ids = new ArrayList<>();
-        in.forEach(o -> ids.add(o.get("id")
-                                 .asText()));
-        return ids;
-    }
-
     private ObjectNode execute(GraphQLSchema schema, String query,
                                Map<String, Object> variables) throws IllegalArgumentException,
                                                               Exception {
@@ -347,13 +356,25 @@ public class MetaSchemaTest extends AbstractModelTest {
                                                                                    importer.getWorkspace()
                                                                                            .getDefiningProduct()),
                                                               variables);
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
+        assertTrue(format(execute.getErrors()), execute.getErrors()
+                                                       .isEmpty());
         ObjectNode result = new ObjectMapper().valueToTree(execute.getData());
         assertNotNull(result);
         return result;
 
+    }
+
+    private String format(List<GraphQLError> list) {
+        StringBuilder builder = new StringBuilder();
+        list.forEach(e -> builder.append(e)
+                                 .append('\n'));
+        return builder.toString();
+    }
+
+    private List<String> ids(ArrayNode in) {
+        List<String> ids = new ArrayList<>();
+        in.forEach(o -> ids.add(o.get("id")
+                                 .asText()));
+        return ids;
     }
 }

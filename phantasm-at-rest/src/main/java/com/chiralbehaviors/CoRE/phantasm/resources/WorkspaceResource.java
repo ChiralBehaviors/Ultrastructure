@@ -54,6 +54,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -194,10 +195,10 @@ public class WorkspaceResource extends TransactionalResource {
     @Timed
     @Path("loadWorkspace")
     @POST
-    public UUID loadWorkspace(@Auth AuthorizedPrincipal principal,
-                              @Context HttpServletRequest request,
-                              InputStream requestBody,
-                              @Context DSLContext create) {
+    public String loadWorkspace(@Auth AuthorizedPrincipal principal,
+                                @Context HttpServletRequest request,
+                                InputStream requestBody,
+                                @Context DSLContext create) {
         return mutate(principal, model -> {
             Agency p = model.getCurrentPrincipal()
                             .getPrincipal();
@@ -224,17 +225,20 @@ public class WorkspaceResource extends TransactionalResource {
                                                                 e.getMessage()),
                                                   Status.BAD_REQUEST);
             }
-            return snapshot.getDefiningProduct()
-                           .getId();
+            Product definingProduct = snapshot.getDefiningProduct();
+
+            Workspace workspace = model.wrap(Workspace.class, definingProduct);
+            return workspace.getIRI();
         }, create);
     }
 
     @Timed
     @Path("manifest")
     @POST
-    public UUID manifest(@Auth AuthorizedPrincipal principal,
-                         @Context HttpServletRequest request,
-                         InputStream requestBody, @Context DSLContext create) {
+    public String manifest(@Auth AuthorizedPrincipal principal,
+                           @Context HttpServletRequest request,
+                           InputStream requestBody,
+                           @Context DSLContext create) {
         return mutate(principal, model -> {
             Agency p = model.getCurrentPrincipal()
                             .getPrincipal();
@@ -251,9 +255,10 @@ public class WorkspaceResource extends TransactionalResource {
                                                   Status.BAD_REQUEST);
             }
 
-            return manifest.getWorkspace()
-                           .getDefiningProduct()
-                           .getId();
+            Product definingProduct = manifest.getWorkspace()
+                                              .getDefiningProduct();
+            Workspace workspace = model.wrap(Workspace.class, definingProduct);
+            return workspace.getIRI();
         }, create);
     }
 

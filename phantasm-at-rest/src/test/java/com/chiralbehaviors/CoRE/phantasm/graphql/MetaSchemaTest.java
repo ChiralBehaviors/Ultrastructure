@@ -48,7 +48,7 @@ public class MetaSchemaTest extends AbstractModelTest {
     private WorkspaceImporter importer;
 
     @Test
-    public void testSchema() throws Exception {
+    public void testQueries() throws Exception {
         importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
                                               model);
 
@@ -294,6 +294,41 @@ public class MetaSchemaTest extends AbstractModelTest {
                        "query q($id: String!) { statusCodeSequencing(id: $id) { id } }",
                        variables);
         assertNotNull(data);
+
+    }
+
+    @Test
+    public void testMutations() throws Exception {
+        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                              model);
+
+        GraphQLSchema schema = WorkspaceSchema.buildMeta();
+        Map<String, Object> variables = new HashMap<>();
+
+        execute(schema,
+                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
 
     }
 

@@ -25,10 +25,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
-import java.util.UUID;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -50,18 +50,28 @@ public class WorkspaceResourceTest extends AbstractModelTest {
     @Test
     public void testLoadWorkspace() throws Exception {
         WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
-        UUID definingProduct = resource.loadWorkspace(null, null,
-                                                      getClass().getResourceAsStream(THING_1_JSON),
-                                                      model.create());
-        assertNotNull(definingProduct);
+        String iri = resource.loadWorkspace(null, null,
+                                            getClass().getResourceAsStream(THING_1_JSON),
+                                            model.create());
+        assertEquals(THING_URI, iri);
+    }
+
+    @Test
+    public void testSerializeWorkspace() throws Exception {
+        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        String serialized = resource.serializeWorkspace(null,
+                                                        WellKnownObject.KERNEL_IRI,
+                                                        model.create());
+        assertNotNull(serialized);
     }
 
     @Test
     public void testManifest() throws Exception {
         WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
-        resource.manifest(null, null,
-                          getClass().getResourceAsStream("/thing.wsp"),
-                          model.create());
+        String iri = resource.manifest(null, null,
+                                       getClass().getResourceAsStream("/thing.wsp"),
+                                       model.create());
+        assertEquals(THING_URI, iri);
     }
 
     @Test

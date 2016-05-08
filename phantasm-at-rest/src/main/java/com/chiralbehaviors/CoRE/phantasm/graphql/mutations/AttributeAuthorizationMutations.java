@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.AttributeAuthorizationState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization.AttributeAuthorizationUpdateState;
@@ -45,8 +44,9 @@ public interface AttributeAuthorizationMutations {
     @GraphQLField
     default AttributeAuthorization createAttributeAuthorization(@NotNull @GraphQLName("state") AttributeAuthorizationState state,
                                                                 DataFetchingEnvironment env) {
-        ExistentialAttributeAuthorizationRecord record = ctx(env).records()
-                                                                 .newExistentialAttributeAuthorization();
+        ExistentialAttributeAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                        .records()
+                                                                        .newExistentialAttributeAuthorization();
         state.update(record);
         record.insert();
         return new AttributeAuthorization(record);
@@ -63,10 +63,11 @@ public interface AttributeAuthorizationMutations {
     @GraphQLField
     default AttributeAuthorization updateAttributeAuthorization(@NotNull @GraphQLName("state") AttributeAuthorizationUpdateState state,
                                                                 DataFetchingEnvironment env) {
-        ExistentialAttributeAuthorizationRecord record = ctx(env).create()
-                                                                 .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                                                                 .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                                 .fetchOne();
+        ExistentialAttributeAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                        .create()
+                                                                        .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
+                                                                        .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                                        .fetchOne();
         state.update(record);
         record.insert();
         return new AttributeAuthorization(record);

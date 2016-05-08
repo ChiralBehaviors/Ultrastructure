@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing.ChildSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing.ChildSequencingUpdateState;
@@ -45,7 +44,7 @@ public interface ChildSequencingMutations {
     @GraphQLField
     default ChildSequencing createChildSequencing(@NotNull @GraphQLName("state") ChildSequencingState state,
                                                   DataFetchingEnvironment env) {
-        ChildSequencingAuthorizationRecord record = ctx(env).records()
+        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
                                                             .newChildSequencingAuthorization();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface ChildSequencingMutations {
     @GraphQLField
     default ChildSequencing updateChildSequencing(@NotNull @GraphQLName("state") ChildSequencingUpdateState state,
                                                   DataFetchingEnvironment env) {
-        ChildSequencingAuthorizationRecord record = ctx(env).create()
+        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
                                                             .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)
                                                             .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
                                                             .fetchOne();

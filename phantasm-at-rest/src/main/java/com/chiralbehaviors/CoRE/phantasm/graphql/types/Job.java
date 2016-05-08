@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.math.BigDecimal;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
@@ -112,7 +112,7 @@ public class Job {
     }
 
     public static JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
-        return ctx(env).create()
+        return WorkspaceSchema.ctx(env).create()
                        .selectFrom(Tables.JOB)
                        .where(Tables.JOB.ID.equal(uuid))
                        .fetchOne();
@@ -127,7 +127,7 @@ public class Job {
 
     @GraphQLField
     public List<Job> getActiveChildren(DataFetchingEnvironment env) {
-        return ctx(env).getJobModel()
+        return WorkspaceSchema.ctx(env).getJobModel()
                        .getActiveSubJobsOf(record)
                        .stream()
                        .map(r -> new Job(r))
@@ -137,7 +137,7 @@ public class Job {
     @GraphQLField
 
     public List<Job> getAllChildren(DataFetchingEnvironment env) {
-        return ctx(env).getJobModel()
+        return WorkspaceSchema.ctx(env).getJobModel()
                        .getAllChildren(record)
                        .stream()
                        .map(r -> new Job(r))
@@ -152,7 +152,7 @@ public class Job {
     @GraphQLField
 
     public List<Job> getChildren(DataFetchingEnvironment env) {
-        return ctx(env).getJobModel()
+        return WorkspaceSchema.ctx(env).getJobModel()
                        .getChildren(record)
                        .stream()
                        .map(r -> new Job(r))
@@ -162,7 +162,7 @@ public class Job {
     @GraphQLField
     @GraphQLType(JobChronologyTypeFunction.class)
     public List<JobChronology> getChronology(DataFetchingEnvironment env) {
-        return ctx(env).getJobModel()
+        return WorkspaceSchema.ctx(env).getJobModel()
                        .getChronologyForJob(record)
                        .stream()
                        .map(r -> new JobChronology(r))
@@ -193,7 +193,7 @@ public class Job {
     @GraphQLField
 
     public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
-        return ctx(env).getJobModel()
+        return WorkspaceSchema.ctx(env).getJobModel()
                        .getProtocols(record)
                        .keySet()
                        .stream()

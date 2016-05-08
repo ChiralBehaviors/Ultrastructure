@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing.StatusCodeSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing.StatusCodeSequencingUpdateState;
@@ -45,7 +44,7 @@ public interface StatusCodeSequencingMutations {
     @GraphQLField
     default StatusCodeSequencing createStatusCodeSequencing(@NotNull @GraphQLName("state") StatusCodeSequencingState state,
                                                             DataFetchingEnvironment env) {
-        StatusCodeSequencingRecord record = ctx(env).records()
+        StatusCodeSequencingRecord record = WorkspaceSchema.ctx(env).records()
                                                     .newStatusCodeSequencing();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface StatusCodeSequencingMutations {
     @GraphQLField
     default StatusCodeSequencing updateStatusCodeSequencing(@NotNull @GraphQLName("state") StatusCodeSequencingUpdateState state,
                                                             DataFetchingEnvironment env) {
-        StatusCodeSequencingRecord record = ctx(env).create()
+        StatusCodeSequencingRecord record = WorkspaceSchema.ctx(env).create()
                                                     .selectFrom(Tables.STATUS_CODE_SEQUENCING)
                                                     .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(UUID.fromString(state.id)))
                                                     .fetchOne();

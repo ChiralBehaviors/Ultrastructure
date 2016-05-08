@@ -20,13 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.interfaceTypeOf;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.objectTypeOf;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
 import static graphql.annotations.DefaultTypeFunction.register;
 
-import java.lang.reflect.AnnotatedType;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -85,9 +82,10 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 import graphql.annotations.GraphQLAnnotations2;
-import graphql.annotations.TypeFunction;
+import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
@@ -120,13 +118,6 @@ public class WorkspaceSchema {
     public interface Queries extends ExistentialQueries, JobQueries {
     }
 
-    public static class RelationshipTypeFunction implements TypeFunction {
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return RelationshipType;
-        }
-    }
-
     public static final GraphQLObjectType    AgencyType;
     public static final GraphQLObjectType    AttributeAuthorizationType;
     public static final GraphQLObjectType    AttributeType;
@@ -148,56 +139,77 @@ public class WorkspaceSchema {
     public static final GraphQLObjectType    StatusCodeType;
     public static final GraphQLObjectType    UnitType;
 
+    // Type conversion initialization is kinda tricky because recursion.
+    // Be careful how you manage the static initialization of this class
     static {
+        // primitive types must be registered first - obviously
         register(Double.class, (u, t) -> GraphQLFloat);
         register(UUID.class, (u, t) -> GraphQLString);
         register(ValueType.class, (u, t) -> GraphQLString);
         register(Cardinality.class, (u, t) -> GraphQLString);
 
-        AgencyType = objectTypeOf(Agency.class);
-        ExistentialType = interfaceTypeOf(Existential.class);
-        AttributeType = objectTypeOf(Attribute.class);
-        IntervalType = objectTypeOf(Interval.class);
-        LocationType = objectTypeOf(Location.class);
-        ProductType = objectTypeOf(Product.class);
-        RelationshipType = objectTypeOf(Relationship.class);
-        StatusCodeType = objectTypeOf(StatusCode.class);
-        UnitType = objectTypeOf(Unit.class);
-
-        AttributeAuthorizationType = Existential.objectTypeOf(AttributeAuthorization.class);
-        ChildSequencingType = Existential.objectTypeOf(ChildSequencing.class);
-        FacetType = Existential.objectTypeOf(Facet.class);
-        JobType = Existential.objectTypeOf(Job.class);
-        MetaProtocolType = Existential.objectTypeOf(MetaProtocol.class);
-        NetworkAuthorizationType = Existential.objectTypeOf(NetworkAuthorization.class);
-        ParentSequencingType = Existential.objectTypeOf(ParentSequencing.class);
-        ProtocolType = Existential.objectTypeOf(Protocol.class);
-        SelfSequencingType = Existential.objectTypeOf(SelfSequencing.class);
-        SiblingSequencingType = Existential.objectTypeOf(SiblingSequencing.class);
-        StatusCodeSequencingType = Existential.objectTypeOf(StatusCodeSequencing.class);
-
+        // Agency is recursive and referred to by everything
+        AgencyType = WorkspaceSchema.objectTypeOf(Agency.class);
         register(Agency.class, (u, t) -> AgencyType);
+
+        AttributeType = WorkspaceSchema.objectTypeOf(Attribute.class);
         register(Attribute.class, (u, t) -> AttributeType);
+
+        IntervalType = WorkspaceSchema.objectTypeOf(Interval.class);
         register(Interval.class, (u, t) -> IntervalType);
+
+        LocationType = WorkspaceSchema.objectTypeOf(Location.class);
         register(Location.class, (u, t) -> LocationType);
+
+        ProductType = WorkspaceSchema.objectTypeOf(Product.class);
         register(Product.class, (u, t) -> ProductType);
+
+        // Recursive, but seems to be fin
+        RelationshipType = WorkspaceSchema.objectTypeOf(Relationship.class);
         register(Relationship.class, (u, t) -> RelationshipType);
+
+        StatusCodeType = WorkspaceSchema.objectTypeOf(StatusCode.class);
         register(StatusCode.class, (u, t) -> StatusCodeType);
+
+        UnitType = WorkspaceSchema.objectTypeOf(Unit.class);
         register(Unit.class, (u, t) -> UnitType);
 
+        ExistentialType = WorkspaceSchema.interfaceTypeOf(Existential.class);
+        register(Existential.class, (u, t) -> ExistentialType);
+
+        FacetType = WorkspaceSchema.objectTypeOf(Facet.class);
         register(Facet.class, (u, t) -> FacetType);
+
+        AttributeAuthorizationType = WorkspaceSchema.objectTypeOf(AttributeAuthorization.class);
         register(AttributeAuthorization.class,
                  (u, t) -> AttributeAuthorizationType);
+
+        ChildSequencingType = WorkspaceSchema.objectTypeOf(ChildSequencing.class);
+        register(ChildSequencing.class, (u, t) -> ChildSequencingType);
+
+        JobType = WorkspaceSchema.objectTypeOf(Job.class);
+        register(Job.class, (u, t) -> JobType);
+
+        MetaProtocolType = WorkspaceSchema.objectTypeOf(MetaProtocol.class);
+        register(MetaProtocol.class, (u, t) -> MetaProtocolType);
+
+        NetworkAuthorizationType = WorkspaceSchema.objectTypeOf(NetworkAuthorization.class);
         register(NetworkAuthorization.class,
                  (u, t) -> NetworkAuthorizationType);
-        register(Job.class, (u, t) -> JobType);
-        register(Protocol.class, (u, t) -> ProtocolType);
-        register(MetaProtocol.class, (u, t) -> MetaProtocolType);
-        register(ChildSequencing.class, (u, t) -> ChildSequencingType);
-        register(Existential.class, (u, t) -> ExistentialType);
+
+        ParentSequencingType = WorkspaceSchema.objectTypeOf(ParentSequencing.class);
         register(ParentSequencing.class, (u, t) -> ParentSequencingType);
+
+        ProtocolType = WorkspaceSchema.objectTypeOf(Protocol.class);
+        register(Protocol.class, (u, t) -> ProtocolType);
+
+        SelfSequencingType = WorkspaceSchema.objectTypeOf(SelfSequencing.class);
         register(SelfSequencing.class, (u, t) -> SelfSequencingType);
+
+        SiblingSequencingType = WorkspaceSchema.objectTypeOf(SiblingSequencing.class);
         register(SiblingSequencing.class, (u, t) -> SiblingSequencingType);
+
+        StatusCodeSequencingType = WorkspaceSchema.objectTypeOf(StatusCodeSequencing.class);
         register(StatusCodeSequencing.class,
                  (u, t) -> StatusCodeSequencingType);
     }
@@ -243,5 +255,28 @@ public class WorkspaceSchema {
                             .query(GraphQLAnnotations2.object(MetaQueries.class))
                             .mutation(GraphQLAnnotations2.object(MetaMutations.class))
                             .build();
+    }
+
+    public static Model ctx(DataFetchingEnvironment env) {
+        return ((PhantasmCRUD) env.getContext()).getModel();
+    }
+
+    public static GraphQLInterfaceType interfaceTypeOf(Class<?> clazz) {
+        try {
+            return GraphQLAnnotations2.iface(clazz);
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new IllegalStateException(String.format("Unable to create interface  type for %s",
+                                                          clazz.getSimpleName()));
+        }
+    }
+
+    public static GraphQLObjectType objectTypeOf(Class<?> clazz) {
+        try {
+            return GraphQLAnnotations2.object(clazz);
+        } catch (IllegalAccessException | InstantiationException
+                | NoSuchMethodException e) {
+            throw new IllegalStateException(String.format("Unable to create object type for %s",
+                                                          clazz.getSimpleName()));
+        }
     }
 }

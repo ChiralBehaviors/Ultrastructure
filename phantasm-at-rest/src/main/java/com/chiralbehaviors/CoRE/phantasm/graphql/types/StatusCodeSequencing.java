@@ -20,13 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
@@ -78,7 +78,7 @@ public class StatusCodeSequencing {
 
     public static StatusCodeSequencing fetch(DataFetchingEnvironment env,
                                              UUID id) {
-        return new StatusCodeSequencing(ctx(env).create()
+        return new StatusCodeSequencing(WorkspaceSchema.ctx(env).create()
                                                 .selectFrom(Tables.STATUS_CODE_SEQUENCING)
                                                 .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(id))
                                                 .fetchOne());

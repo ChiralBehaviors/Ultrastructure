@@ -20,12 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
@@ -76,7 +75,7 @@ public class SelfSequencing {
     }
 
     public static SelfSequencing fetch(DataFetchingEnvironment env, UUID id) {
-        return new SelfSequencing(ctx(env).create()
+        return new SelfSequencing(WorkspaceSchema.ctx(env).create()
                                           .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
                                           .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(id))
                                           .fetchOne());
@@ -111,7 +110,7 @@ public class SelfSequencing {
 
     @GraphQLField
     public Product getService(DataFetchingEnvironment env) {
-        return new Product(ctx(env).records()
+        return new Product(WorkspaceSchema.ctx(env).records()
                                    .resolve(record.getService()));
     }
 
@@ -122,19 +121,19 @@ public class SelfSequencing {
 
     @GraphQLField
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(ctx(env).records()
+        return new StatusCode(WorkspaceSchema.ctx(env).records()
                                       .resolve(record.getStatusCode()));
     }
 
     @GraphQLField
     public StatusCode getStatusToSet(DataFetchingEnvironment env) {
-        return new StatusCode(ctx(env).records()
+        return new StatusCode(WorkspaceSchema.ctx(env).records()
                                       .resolve(record.getStatusToSet()));
     }
 
     @GraphQLField
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return new Agency(ctx(env).records()
+        return new Agency(WorkspaceSchema.ctx(env).records()
                                   .resolve(record.getUpdatedBy()));
     }
 

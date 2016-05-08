@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.io.IOException;
@@ -34,6 +33,7 @@ import org.jooq.exception.TooManyRowsException;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -118,7 +118,7 @@ public class AttributeAuthorization {
     public static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
                                                                 UUID id) throws DataAccessException,
                                                                          TooManyRowsException {
-        return ctx(env).create()
+        return WorkspaceSchema.ctx(env).create()
                        .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
                        .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
                        .fetchOne();

@@ -22,11 +22,15 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.io.ByteArrayInputStream;
 import java.util.UUID;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
 /**
@@ -43,19 +47,45 @@ public class WorkspaceResourceTest extends AbstractModelTest {
                                 .size());
     }
 
+    @Test
     public void testLoadWorkspace() throws Exception {
         WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
         UUID definingProduct = resource.loadWorkspace(null, null,
-                                                      getClass().getResourceAsStream("/thing.wsp"),
+                                                      getClass().getResourceAsStream(THING_1_JSON),
                                                       model.create());
         assertNotNull(definingProduct);
     }
 
-    public void testLoadSnapshot() throws Exception {
+    @Test
+    public void testManifest() throws Exception {
         WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
-        UUID definingProduct = resource.loadWorkspace(null, null,
-                                                      getClass().getResourceAsStream("/thing.wsp"),
-                                                      model.create());
-        assertNotNull(definingProduct);
+        resource.manifest(null, null,
+                          getClass().getResourceAsStream("/thing.wsp"),
+                          model.create());
+    }
+
+    @Test
+    public void testSnapshot() throws Exception {
+        CoreUser frank = model.construct(CoreUser.class,
+                                         ExistentialDomain.Agency, "frank",
+                                         "TV's frank");
+
+        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        String snapshot = resource.snapshot(null, model.create());
+        assertNotNull(snapshot);
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .rollback();
+        assertNull(model.records()
+                        .resolve(frank.getRuleform()
+                                      .getId()));
+        resource.loadSnapshot(null, null,
+                              new ByteArrayInputStream(snapshot.getBytes()),
+                              model.create());
+        assertNotNull(model.records()
+                           .resolve(frank.getRuleform()
+                                         .getId()));
     }
 }

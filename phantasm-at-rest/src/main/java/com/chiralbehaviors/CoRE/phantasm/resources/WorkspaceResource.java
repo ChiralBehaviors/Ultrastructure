@@ -52,6 +52,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -114,6 +115,7 @@ public class WorkspaceResource extends TransactionalResource {
     private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
     private final GraphQLSchema                      metaSchema;
+    private final ObjectMapper                       objectMapper;
     {
         try {
             metaSchema = WorkspaceSchema.buildMeta();
@@ -124,6 +126,8 @@ public class WorkspaceResource extends TransactionalResource {
 
     public WorkspaceResource(ClassLoader executionScope) {
         this.executionScope = executionScope;
+        objectMapper = new ObjectMapper().registerModule(new CoREModule());
+
     }
 
     @Timed
@@ -162,8 +166,8 @@ public class WorkspaceResource extends TransactionalResource {
                             .getPrincipal();
             StateSnapshot snapshot;
             try {
-                snapshot = new ObjectMapper().readValue(requestBody,
-                                                        StateSnapshot.class);
+                snapshot = objectMapper.readValue(requestBody,
+                                                  StateSnapshot.class);
             } catch (IOException e) {
                 log.info(String.format("Failed deserializing snapshot by: %s:%s",
                                        p.getName(), p.getId()),
@@ -199,8 +203,8 @@ public class WorkspaceResource extends TransactionalResource {
                             .getPrincipal();
             WorkspaceSnapshot snapshot;
             try {
-                snapshot = new ObjectMapper().readValue(requestBody,
-                                                        WorkspaceSnapshot.class);
+                snapshot = objectMapper.readValue(requestBody,
+                                                  WorkspaceSnapshot.class);
             } catch (IOException e) {
                 log.info(String.format("Failed deserializing workspace snapshot by: %s:%s",
                                        p.getName(), p.getId()),
@@ -385,7 +389,7 @@ public class WorkspaceResource extends TransactionalResource {
     public String serializeWorkspace(@Auth AuthorizedPrincipal principal,
                                      @PathParam("workspace") String workspace,
                                      @Context DSLContext create) {
-        return mutate(principal, model -> {
+        return readOnly(principal, model -> {
             Agency p = model.getCurrentPrincipal()
                             .getPrincipal();
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
@@ -413,7 +417,7 @@ public class WorkspaceResource extends TransactionalResource {
     @GET
     public String snapshot(@Auth AuthorizedPrincipal principal,
                            @Context DSLContext create) {
-        return mutate(principal, model -> {
+        return readOnly(principal, model -> {
             Agency p = model.getCurrentPrincipal()
                             .getPrincipal();
             WorkspaceSnapshot snapshot = model.snapshot();

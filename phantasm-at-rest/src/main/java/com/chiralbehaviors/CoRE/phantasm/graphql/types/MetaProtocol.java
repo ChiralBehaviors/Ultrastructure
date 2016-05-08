@@ -20,19 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -108,10 +106,11 @@ public class MetaProtocol {
     }
 
     public static MetaProtocol fetch(DataFetchingEnvironment env, UUID id) {
-        return new MetaProtocol(ctx(env).create()
-                                        .selectFrom(Tables.META_PROTOCOL)
-                                        .where(Tables.META_PROTOCOL.ID.equal(id))
-                                        .fetchOne());
+        return new MetaProtocol(WorkspaceSchema.ctx(env)
+                                               .create()
+                                               .selectFrom(Tables.META_PROTOCOL)
+                                               .where(Tables.META_PROTOCOL.ID.equal(id))
+                                               .fetchOne());
     }
 
     private final MetaProtocolRecord record;
@@ -122,19 +121,16 @@ public class MetaProtocol {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getAssignTo(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getAssignTo()));
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getDeliverFrom(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getDeliverTo(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getDeliverTo()));
     }
@@ -146,13 +142,11 @@ public class MetaProtocol {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getProduct(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getProduct()));
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getQuantityUnit(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getQuantityUnit()));
     }
@@ -162,19 +156,16 @@ public class MetaProtocol {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getRequester(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getRequester()));
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getService(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getService()));
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getStatus(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getStatus()));
     }

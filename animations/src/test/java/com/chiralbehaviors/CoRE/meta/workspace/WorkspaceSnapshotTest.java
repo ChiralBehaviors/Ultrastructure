@@ -51,18 +51,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
 
+    private static final String TARGET_TEST_CLASSES = "target/test-classes";
+
     @Test
     public void testDeltaGeneration() throws Exception {
-        // This is the one test where we have to have the kernel state committed, 
-        // due to the use of multiple contexts to cleanly test delat generation
+        // This is a test where we have to have the kernel state committed, 
+        // due to the use of multiple contexts to cleanly test delta generation
         model.create()
              .configuration()
              .connectionProvider()
              .acquire()
              .commit();
-        File version1File = new File(TARGET_CLASSES_THING_1_JSON);
-        File version2File = new File(TARGET_CLASSES_THING_2_JSON);
-        File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
+        File version1File = new File(TARGET_TEST_CLASSES, THING_1_JSON);
+        File version2File = new File(TARGET_TEST_CLASSES, THING_2_JSON);
+        File version2_1File = new File(TARGET_TEST_CLASSES, THING_1_2_JSON);
         try (Model myModel = new ModelImpl(newConnection())) {
             myModel.create();
             WorkspaceImporter importer;

@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.NetworkAuthorizationUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization.NetwworkAuthorizationState;
@@ -45,7 +44,7 @@ public interface NetworkAuthorizationMutations {
     @GraphQLField
     default NetworkAuthorization createNetworkAuthorization(@NotNull @GraphQLName("state") NetwworkAuthorizationState state,
                                                             DataFetchingEnvironment env) {
-        ExistentialNetworkAuthorizationRecord record = ctx(env).records()
+        ExistentialNetworkAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
                                                                .newExistentialNetworkAuthorization();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface NetworkAuthorizationMutations {
     @GraphQLField
     default NetworkAuthorization updateNetworkAuthorization(@NotNull @GraphQLName("state") NetworkAuthorizationUpdateState state,
                                                             DataFetchingEnvironment env) {
-        ExistentialNetworkAuthorizationRecord record = ctx(env).create()
+        ExistentialNetworkAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
                                                                .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
                                                                .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
                                                                .fetchOne();

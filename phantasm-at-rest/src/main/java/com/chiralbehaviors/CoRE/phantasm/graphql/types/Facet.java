@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
 
@@ -30,12 +29,11 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -84,10 +82,11 @@ public class Facet {
     }
 
     public static Facet fetch(DataFetchingEnvironment env, UUID id) {
-        return new Facet(ctx(env).create()
-                                 .selectFrom(Tables.FACET)
-                                 .where(Tables.FACET.ID.equal(id))
-                                 .fetchOne());
+        return new Facet(WorkspaceSchema.ctx(env)
+                                        .create()
+                                        .selectFrom(Tables.FACET)
+                                        .where(Tables.FACET.ID.equal(id))
+                                        .fetchOne());
     }
 
     private final FacetRecord record;
@@ -99,11 +98,12 @@ public class Facet {
 
     @GraphQLField
     public List<AttributeAuthorization> getAttributes(DataFetchingEnvironment env) {
-        return ctx(env).getPhantasmModel()
-                       .getAttributeAuthorizations(record, false)
-                       .stream()
-                       .map(r -> new AttributeAuthorization(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getPhantasmModel()
+                              .getAttributeAuthorizations(record, false)
+                              .stream()
+                              .map(r -> new AttributeAuthorization(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField
@@ -113,11 +113,12 @@ public class Facet {
 
     @GraphQLField
     public List<NetworkAuthorization> getChildren(DataFetchingEnvironment env) {
-        return ctx(env).getPhantasmModel()
-                       .getNetworkAuthorizations(record, false)
-                       .stream()
-                       .map(r -> new NetworkAuthorization(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getPhantasmModel()
+                              .getNetworkAuthorizations(record, false)
+                              .stream()
+                              .map(r -> new NetworkAuthorization(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField
@@ -126,7 +127,6 @@ public class Facet {
     }
 
     @GraphQLField
-    @GraphQLType(RelationshipTypeFunction.class)
     public Relationship getClassifier(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getClassifier()));
     }

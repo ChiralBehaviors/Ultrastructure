@@ -33,18 +33,15 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
-import graphql.annotations.GraphQLAnnotations2;
 import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLTypeResolver;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.TypeResolver;
 
@@ -140,7 +137,7 @@ public interface Existential {
 
         @Override
         public Agency getUpdatedBy(DataFetchingEnvironment env) {
-            return new Agency((ExistentialRecord) Existential.ctx(env)
+            return new Agency((ExistentialRecord) WorkspaceSchema.ctx(env)
                                                              .records()
                                                              .resolve(record.getUpdatedBy()));
         }
@@ -287,38 +284,15 @@ public interface Existential {
     public class UpdatedByFetcher implements DataFetcher {
         @Override
         public Object get(DataFetchingEnvironment environment) {
-            return ctx(environment).records()
+            return WorkspaceSchema.ctx(environment).records()
                                    .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
         }
 
     }
 
-    public static Model ctx(DataFetchingEnvironment env) {
-        return ((PhantasmCRUD) env.getContext()).getModel();
-    }
-
-    public static GraphQLInterfaceType interfaceTypeOf(Class<?> clazz) {
-        try {
-            return GraphQLAnnotations2.iface(clazz);
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new IllegalStateException(String.format("Unable to create interface  type for %s",
-                                                          clazz.getSimpleName()));
-        }
-    }
-
-    public static GraphQLObjectType objectTypeOf(Class<?> clazz) {
-        try {
-            return GraphQLAnnotations2.object(clazz);
-        } catch (IllegalAccessException | InstantiationException
-                | NoSuchMethodException e) {
-            throw new IllegalStateException(String.format("Unable to create object type for %s",
-                                                          clazz.getSimpleName()));
-        }
-    }
-
     public static <T extends ExistentialRecord> T resolve(DataFetchingEnvironment env,
                                                           UUID id) {
-        return ctx(env).records()
+        return WorkspaceSchema.ctx(env).records()
                        .resolve(id);
     }
 

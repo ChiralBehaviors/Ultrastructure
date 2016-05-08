@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol.MetaProtocolUpdateState;
@@ -45,7 +44,7 @@ public interface MetaProtocolMutations {
     @GraphQLField
     default MetaProtocol createMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolState state,
                                             DataFetchingEnvironment env) {
-        MetaProtocolRecord record = ctx(env).records()
+        MetaProtocolRecord record = WorkspaceSchema.ctx(env).records()
                                             .newMetaProtocol();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface MetaProtocolMutations {
     @GraphQLField
     default MetaProtocol updateMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolUpdateState state,
                                             DataFetchingEnvironment env) {
-        MetaProtocolRecord record = ctx(env).create()
+        MetaProtocolRecord record = WorkspaceSchema.ctx(env).create()
                                             .selectFrom(Tables.META_PROTOCOL)
                                             .where(Tables.META_PROTOCOL.ID.equal(UUID.fromString(state.id)))
                                             .fetchOne();

@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol.ProtocolState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol.ProtocolUpdateState;
@@ -45,7 +44,7 @@ public interface ProtocolMutations {
     @GraphQLField
     default Protocol createProtocol(@NotNull @GraphQLName("state") ProtocolState state,
                                     DataFetchingEnvironment env) {
-        ProtocolRecord record = ctx(env).records()
+        ProtocolRecord record = WorkspaceSchema.ctx(env).records()
                                         .newProtocol();
         state.update(record);
         record.insert();
@@ -63,7 +62,7 @@ public interface ProtocolMutations {
     @GraphQLField
     default Protocol updateProtocol(@NotNull @GraphQLName("state") ProtocolUpdateState state,
                                     DataFetchingEnvironment env) {
-        ProtocolRecord record = ctx(env).create()
+        ProtocolRecord record = WorkspaceSchema.ctx(env).create()
                                         .selectFrom(Tables.PROTOCOL)
                                         .where(Tables.PROTOCOL.ID.equal(UUID.fromString(state.id)))
                                         .fetchOne();

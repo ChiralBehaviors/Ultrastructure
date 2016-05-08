@@ -20,6 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +32,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,13 +52,18 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -107,6 +116,7 @@ public class WorkspaceResource extends TransactionalResource {
     private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
     private final ClassLoader                        executionScope;
     private final GraphQLSchema                      metaSchema;
+    private final ObjectMapper                       objectMapper;
     {
         try {
             metaSchema = WorkspaceSchema.buildMeta();
@@ -117,6 +127,8 @@ public class WorkspaceResource extends TransactionalResource {
 
     public WorkspaceResource(ClassLoader executionScope) {
         this.executionScope = executionScope;
+        objectMapper = new ObjectMapper().registerModule(new CoREModule());
+
     }
 
     @Timed
@@ -140,6 +152,113 @@ public class WorkspaceResource extends TransactionalResource {
                 workspaces.add(wsp);
             }
             return workspaces;
+        }, create);
+    }
+
+    @Timed
+    @Path("loadSnapshot")
+    @POST
+    public void loadSnapshot(@Auth AuthorizedPrincipal principal,
+                             @Context HttpServletRequest request,
+                             InputStream requestBody,
+                             @Context DSLContext create) {
+        mutate(principal, model -> {
+            Agency p = model.getCurrentPrincipal()
+                            .getPrincipal();
+            StateSnapshot snapshot;
+            try {
+                snapshot = objectMapper.readValue(requestBody,
+                                                  StateSnapshot.class);
+            } catch (IOException e) {
+                log.info(String.format("Failed deserializing snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Faild deserializing snapshot: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+
+            try {
+                snapshot.load(create);
+            } catch (Exception e) {
+                log.info(String.format("Failed loading workspace snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Failed loading snapshot: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+            return null;
+        }, create);
+    }
+
+    @Timed
+    @Path("loadWorkspace")
+    @POST
+    public String loadWorkspace(@Auth AuthorizedPrincipal principal,
+                                @Context HttpServletRequest request,
+                                InputStream requestBody,
+                                @Context DSLContext create) {
+        return mutate(principal, model -> {
+            Agency p = model.getCurrentPrincipal()
+                            .getPrincipal();
+            WorkspaceSnapshot snapshot;
+            try {
+                snapshot = objectMapper.readValue(requestBody,
+                                                  WorkspaceSnapshot.class);
+            } catch (IOException e) {
+                log.info(String.format("Failed deserializing workspace snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Failed deserializing workspace: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+
+            try {
+                snapshot.load(create);
+            } catch (Exception e) {
+                log.info(String.format("Failed loading workspace snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Cannot load workspace: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+            Product definingProduct = snapshot.getDefiningProduct();
+
+            Workspace workspace = model.wrap(Workspace.class, definingProduct);
+            return workspace.getIRI();
+        }, create);
+    }
+
+    @Timed
+    @Path("manifest")
+    @POST
+    public String manifest(@Auth AuthorizedPrincipal principal,
+                           @Context HttpServletRequest request,
+                           InputStream requestBody,
+                           @Context DSLContext create) {
+        return mutate(principal, model -> {
+            Agency p = model.getCurrentPrincipal()
+                            .getPrincipal();
+
+            WorkspaceImporter manifest;
+            try {
+                manifest = WorkspaceImporter.manifest(requestBody, model);
+            } catch (IOException e) {
+                log.info(String.format("Failed deserializing workspace snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Failed deserializing workspace: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+
+            Product definingProduct = manifest.getWorkspace()
+                                              .getDefiningProduct();
+            Workspace workspace = model.wrap(Workspace.class, definingProduct);
+            return workspace.getIRI();
         }, create);
     }
 
@@ -266,6 +385,59 @@ public class WorkspaceResource extends TransactionalResource {
             log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
+        }, create);
+    }
+
+    @Timed
+    @Path("{workspace}/serialize")
+    @GET
+    public String serializeWorkspace(@Auth AuthorizedPrincipal principal,
+                                     @PathParam("workspace") String workspace,
+                                     @Context DSLContext create) {
+        return readOnly(principal, model -> {
+            Agency p = model.getCurrentPrincipal()
+                            .getPrincipal();
+            UUID uuid = WorkspaceAccessor.uuidOf(workspace);
+            Product definingProduct = model.records()
+                                           .resolve(uuid);
+            WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
+                                                               model.create());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                snapshot.serializeTo(baos);
+            } catch (Exception e) {
+                log.info(String.format("Failed serializing workspace snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Failed serializing workspace snapshot: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+            return baos.toString();
+        }, create);
+    }
+
+    @Timed
+    @Path("snapshot")
+    @GET
+    public String snapshot(@Auth AuthorizedPrincipal principal,
+                           @Context DSLContext create) {
+        return readOnly(principal, model -> {
+            Agency p = model.getCurrentPrincipal()
+                            .getPrincipal();
+            WorkspaceSnapshot snapshot = model.snapshot();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                snapshot.serializeTo(baos);
+            } catch (Exception e) {
+                log.info(String.format("Failed serializing snapshot by: %s:%s",
+                                       p.getName(), p.getId()),
+                         e);
+                throw new WebApplicationException(String.format("Failed serializing snapshot: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
+            }
+            return baos.toString();
         }, create);
     }
 }

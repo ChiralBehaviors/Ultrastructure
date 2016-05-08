@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -29,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
@@ -46,7 +45,7 @@ public interface JobMutations {
     @GraphQLField
     default Job createJob(@NotNull @GraphQLName("state") JobState state,
                           DataFetchingEnvironment env) {
-        Model model = ctx(env);
+        Model model = WorkspaceSchema.ctx(env);
         JobRecord record = model.getJobModel()
                                 .newInitializedJob(model.records()
                                                         .resolve(UUID.fromString(state.service)));
@@ -66,10 +65,11 @@ public interface JobMutations {
     @GraphQLField
     default Job updateJob(@NotNull @GraphQLName("state") JobUpdateState state,
                           DataFetchingEnvironment env) {
-        JobRecord record = ctx(env).create()
-                                   .selectFrom(Tables.JOB)
-                                   .where(Tables.JOB.ID.equal(UUID.fromString(state.id)))
-                                   .fetchOne();
+        JobRecord record = WorkspaceSchema.ctx(env)
+                                          .create()
+                                          .selectFrom(Tables.JOB)
+                                          .where(Tables.JOB.ID.equal(UUID.fromString(state.id)))
+                                          .fetchOne();
         state.update(record);
         record.update();
         return new Job(record);

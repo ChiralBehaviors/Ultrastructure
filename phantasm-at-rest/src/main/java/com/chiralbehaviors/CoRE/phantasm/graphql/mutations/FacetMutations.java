@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetUpdateState;
@@ -45,7 +44,7 @@ public interface FacetMutations {
     @GraphQLField
     default Facet createFacet(@NotNull @GraphQLName("state") FacetState state,
                               DataFetchingEnvironment env) {
-        FacetRecord record = ctx(env).records()
+        FacetRecord record = WorkspaceSchema.ctx(env).records()
                                      .newFacet();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface FacetMutations {
     @GraphQLField
     default Facet updateFacet(@NotNull @GraphQLName("state") FacetUpdateState state,
                               DataFetchingEnvironment env) {
-        FacetRecord record = ctx(env).create()
+        FacetRecord record = WorkspaceSchema.ctx(env).create()
                                      .selectFrom(Tables.FACET)
                                      .where(Tables.FACET.ID.equal(UUID.fromString(state.id)))
                                      .fetchOne();

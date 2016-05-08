@@ -20,14 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ctx;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing.SiblingSequencingUpdateState;
@@ -43,9 +42,9 @@ import graphql.schema.DataFetchingEnvironment;
 public interface SiblingSequencingMutations {
 
     @GraphQLField
-    default SiblingSequencing createAttributeAuthorization(@NotNull @GraphQLName("state") SiblingSequencingState state,
-                                                           DataFetchingEnvironment env) {
-        SiblingSequencingAuthorizationRecord record = ctx(env).records()
+    default SiblingSequencing createSiblingSequencing(@NotNull @GraphQLName("state") SiblingSequencingState state,
+                                                      DataFetchingEnvironment env) {
+        SiblingSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
                                                               .newSiblingSequencingAuthorization();
         state.update(record);
         record.insert();
@@ -64,7 +63,7 @@ public interface SiblingSequencingMutations {
     @GraphQLField
     default SiblingSequencing updateSiblingSequencing(@NotNull @GraphQLName("state") SiblingSequencingUpdateState state,
                                                       DataFetchingEnvironment env) {
-        SiblingSequencingAuthorizationRecord record = ctx(env).create()
+        SiblingSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
                                                               .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
                                                               .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
                                                               .fetchOne();

@@ -42,10 +42,6 @@ import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadSnapshotCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadWorkspaceCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.ManifestCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.SnapshotCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -83,10 +79,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     public void initialize(Bootstrap<?> bootstrap) {
         bootstrap.addCommand(new BootstrapCommand());
         bootstrap.addCommand(new ClearCommand());
-        bootstrap.addCommand(new LoadWorkspaceCommand());
-        bootstrap.addCommand(new ManifestCommand());
-        bootstrap.addCommand(new SnapshotCommand());
-        bootstrap.addCommand(new LoadSnapshotCommand());
     }
 
     /* (non-Javadoc)

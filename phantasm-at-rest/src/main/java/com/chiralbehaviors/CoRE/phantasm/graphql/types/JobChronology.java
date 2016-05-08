@@ -26,6 +26,7 @@ import java.lang.reflect.AnnotatedType;
 import java.math.BigDecimal;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
@@ -49,7 +50,7 @@ public class JobChronology {
         }
     }
 
-    public static final graphql.schema.GraphQLType JobChronologyType = Existential.objectTypeOf(JobChronology.class);
+    public static final graphql.schema.GraphQLType JobChronologyType = WorkspaceSchema.objectTypeOf(JobChronology.class);
 
     private final JobChronologyRecord              record;
 

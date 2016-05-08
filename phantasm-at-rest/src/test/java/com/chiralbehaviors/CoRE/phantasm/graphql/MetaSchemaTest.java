@@ -96,6 +96,21 @@ public class MetaSchemaTest extends AbstractModelTest {
                 "mutation m($auth: String $attr: String $facet: String) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
                 variables);
 
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("nextChild", k.getAnyProduct()
+                                    .getId()
+                                    .toString());
+        variables.put("nextChildStatus", k.getAnyStatusCode()
+                                          .getId()
+                                          .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $nextChild: String $nextChildStatus: String) { createChildSequencing(state: {service: $service statusCode: $statusCode nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
+                variables);
     }
 
     @Test

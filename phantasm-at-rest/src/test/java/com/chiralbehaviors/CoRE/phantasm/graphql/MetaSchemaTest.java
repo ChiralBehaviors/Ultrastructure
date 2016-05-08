@@ -81,6 +81,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         execute(schema,
                 "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                 variables);
+
         variables.put("auth", k.getCore()
                                .getId()
                                .toString());
@@ -108,8 +109,70 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("nextChildStatus", k.getAnyStatusCode()
                                           .getId()
                                           .toString());
+
         execute(schema,
                 "mutation m($service: String $statusCode: String $nextChild: String $nextChildStatus: String) { createChildSequencing(state: {service: $service statusCode: $statusCode nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
+                variables);
+
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("parent", k.getAnyProduct()
+                                 .getId()
+                                 .toString());
+        variables.put("parentStatus", k.getAnyStatusCode()
+                                       .getId()
+                                       .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $parent: String $parentStatus: String) { createParentSequencing(state: {service: $service statusCode: $statusCode parent: $parent parentStatus: $parentStatus }) {id} }",
+                variables);
+
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("statusToSet", k.getAnyStatusCode()
+                                      .getId()
+                                      .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $statusToSet: String) { createSelfSequencing(state: {service: $service statusCode: $statusCode statusToSet: $statusToSet }) {id} }",
+                variables);
+
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("parent", k.getAnyProduct()
+                                 .getId()
+                                 .toString());
+        variables.put("parentStatus", k.getAnyStatusCode()
+                                       .getId()
+                                       .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $nextSibling: String $nextSiblingStatus: String) { createSiblingSequencing(state: {service: $service statusCode: $statusCode nextSibling: $nextSibling nextSiblingStatus: $nextSiblingStatus }) {id} }",
+                variables);
+
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("child", k.getAnyStatusCode()
+                                .getId()
+                                .toString());
+        variables.put("parent", k.getAnyStatusCode()
+                                 .getId()
+                                 .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $child: String $parent: String) { createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent child: $child }) {id} }",
                 variables);
     }
 
@@ -244,7 +307,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ childSequencings { id nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",
+                       "{ childSequencings { id service {id} nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("childSequencings")));

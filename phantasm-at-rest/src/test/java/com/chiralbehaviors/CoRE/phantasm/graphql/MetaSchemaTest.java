@@ -93,7 +93,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                     .getId()
                                     .toString());
         execute(schema,
-                "mutation m($auth: String $attr: String $facet: String) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" }) {id} }",
+                "mutation m($auth: String $attr: String $facet: String) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
                 variables);
 
     }
@@ -218,7 +218,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("attributeAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [String]!) { attributeAuthorizations(ids:$ids) { id facet {id} jsonValue binaryValue booleanValue integerValue notes textValue timestampValue updatedBy {id} } }",
+                       "query q($ids: [String]!) { attributeAuthorizations(ids:$ids) { id facet {id} jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id",

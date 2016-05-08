@@ -295,6 +295,7 @@ public class GraphQLAnnotations2 {
         return outputType;
     }
 
+    @SuppressWarnings("unchecked")
     private static Function<Map<String, Object>, Object> inputTxfm(Class<?> t,
                                                                    GraphQLObjectType object) {
         List<BiConsumer<Map<String, Object>, Object>> txfms = new ArrayList<>();
@@ -306,13 +307,25 @@ public class GraphQLAnnotations2 {
                 throw new IllegalStateException(e);
             }
             field.setAccessible(true);
-            txfms.add((m, in) -> {
-                try {
-                    field.set(in, m.get(f.getName()));
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            });
+            if (Number.class.isAssignableFrom(field.getType())) {
+                txfms.add((m, in) -> {
+                    try {
+                        field.set(in,
+                                  convert((Number) m.get(f.getName()),
+                                          (Class<? extends Number>) field.getType()));
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    }
+                });
+            } else {
+                txfms.add((m, in) -> {
+                    try {
+                        field.set(in, m.get(f.getName()));
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    }
+                });
+            }
         }
         return m -> {
             Object in;
@@ -535,5 +548,28 @@ public class GraphQLAnnotations2 {
         builder.dataFetcher(actualDataFetcher);
 
         return builder.build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Number> T convert(Number from, Class<T> to) {
+        if (to.equals(Byte.class)) {
+            return (T) Byte.valueOf(from.byteValue());
+        }
+        if (to.equals(Double.class)) {
+            return (T) Double.valueOf(from.doubleValue());
+        }
+        if (to.equals(Float.class)) {
+            return (T) Float.valueOf(from.floatValue());
+        }
+        if (to.equals(Integer.class)) {
+            return (T) Integer.valueOf(from.intValue());
+        }
+        if (to.equals(Long.class)) {
+            return (T) Long.valueOf(from.longValue());
+        }
+        if (to.equals(Short.class)) {
+            return (T) Short.valueOf(from.shortValue());
+        }
+        return null;
     }
 }

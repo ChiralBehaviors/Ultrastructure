@@ -202,15 +202,6 @@ public class WorkspaceSchema {
                  (u, t) -> StatusCodeSequencingType);
     }
 
-    public static GraphQLSchema build() throws Exception {
-        Builder topLevelQueries = GraphQLAnnotations2.objectBuilder(Queries.class);
-        Builder topLevelMutations = GraphQLAnnotations2.objectBuilder(Mutations.class);
-        return GraphQLSchema.newSchema()
-                            .query(topLevelQueries.build())
-                            .mutation(topLevelMutations.build())
-                            .build();
-    }
-
     public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,
                                       ClassLoader executionScope) throws NoSuchMethodException,
                                                                   InstantiationException,

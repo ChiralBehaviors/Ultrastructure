@@ -391,29 +391,110 @@ public class MetaSchemaTest extends AbstractModelTest {
                                             Exception {
         Map<String, Object> variables = new HashMap<>();
 
+        ObjectNode result = execute(schema,
+                                    "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                                    variables);
+        variables.put("id", result.get("createAgency")
+                                  .get("id")
+                                  .asText());
         execute(schema,
-                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                "mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
-        execute(schema,
-                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+
+        execute(schema, "mutation m($id: String!) { removeAgency(id: $id) }",
                 variables);
+
+        result = execute(schema,
+                         "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createAttribute")
+                                  .get("id")
+                                  .asText());
         execute(schema,
-                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                "mutation m($id: String!) { updateAttribute(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
-        execute(schema,
-                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+
+        execute(schema, "mutation m($id: String!) { removeAttribute(id: $id) }",
                 variables);
+
+        result = execute(schema,
+                         "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createInterval")
+                                  .get("id")
+                                  .asText());
         execute(schema,
-                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                "mutation m($id: String!) { updateInterval(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
-        execute(schema,
-                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+
+        execute(schema, "mutation m($id: String!) { removeInterval(id: $id) }",
                 variables);
+
+        result = execute(schema,
+                         "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createLocation")
+                                  .get("id")
+                                  .asText());
         execute(schema,
-                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                "mutation m($id: String!) { updateLocation(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
+
+        execute(schema, "mutation m($id: String!) { removeLocation(id: $id) }",
+                variables);
+
+        result = execute(schema,
+                         "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createProduct")
+                                  .get("id")
+                                  .asText());
         execute(schema,
-                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                "mutation m($id: String!) { updateProduct(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema, "mutation m($id: String!) { removeProduct(id: $id) }",
+                variables);
+
+        result = execute(schema,
+                         "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createRelationship")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: String!) { updateRelationship(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeRelationship(id: $id) }",
+                variables);
+
+        result = execute(schema,
+                         "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createStatusCode")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: String!) { updateStatusCode(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeStatusCode(id: $id) }",
+                variables);
+
+        result = execute(schema,
+                         "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                         variables);
+        variables.put("id", result.get("createUnit")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: String!) { updateUnit(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema, "mutation m($id: String!) { removeUnit(id: $id) }",
                 variables);
     }
 

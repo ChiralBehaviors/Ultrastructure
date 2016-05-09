@@ -31,6 +31,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -48,34 +49,26 @@ import graphql.schema.GraphQLSchema;
  *
  */
 public class MetaSchemaTest extends AbstractModelTest {
-    private WorkspaceImporter importer;
-    private Kernel            k;
-    private GraphQLSchema     schema;
+    private Kernel        k;
+    private GraphQLSchema schema;
+    private Product       definingProduct;
 
     @Before
     public void load() throws Exception {
-        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                              model);
         k = model.getKernel();
         schema = WorkspaceSchema.buildMeta();
-    }
-
-    @Test
-    public void testMutations() throws Exception {
-        testExistentialMutations();
-        testAttributeAuthMutations();
-        testChildSequencingMutations();
-        testParentSequencingMutations();
-        testSelfSequencingMutations();
-        testSiblingSequencingMutations();
-        testStatusCodeSequencingMutations();
+        definingProduct = k.getKernelWorkspace();
     }
 
     @Test
     public void testQueries() throws Exception {
+        WorkspaceImporter importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                                                model);
+        definingProduct = importer.getWorkspace()
+                                  .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
+                                  "{ facets { id name attributes { id } classifier {id} classification {id} children { id } }}",
                                   variables);
         assertNotNull(data);
 
@@ -322,8 +315,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                                               Exception {
         ExecutionResult execute = new GraphQL(schema).execute(query,
                                                               new WorkspaceContext(model,
-                                                                                   importer.getWorkspace()
-                                                                                           .getDefiningProduct()),
+                                                                                   definingProduct),
                                                               variables);
         assertTrue(format(execute.getErrors()), execute.getErrors()
                                                        .isEmpty());
@@ -347,8 +339,9 @@ public class MetaSchemaTest extends AbstractModelTest {
         return ids;
     }
 
-    private void testAttributeAuthMutations() throws IllegalArgumentException,
-                                              Exception {
+    @Test
+    public void testAttributeAuthMutations() throws IllegalArgumentException,
+                                             Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("auth", k.getCore()
                                .getId()
@@ -376,8 +369,40 @@ public class MetaSchemaTest extends AbstractModelTest {
                 variables);
     }
 
-    private void testChildSequencingMutations() throws IllegalArgumentException,
-                                                Exception {
+    @Test
+    public void testNetworkAuthMutations() throws IllegalArgumentException,
+                                           Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("child", k.getIRI()
+                                .getId()
+                                .toString());
+        variables.put("parent", k.getCore()
+                                 .getId()
+                                 .toString());
+        variables.put("relationship", k.getAnyRelationship()
+                                       .getId()
+                                       .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: String $child: String $parent: String $relationship: String) { createNetworkAuthorization(state: {authority: $auth cardinality: \"_1\" child: $child name: \"foo\" parent: $parent relationship: $relationship }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createNetworkAuthorization")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: String!) { updateNetworkAuthorization(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeNetworkAuthorization(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testChildSequencingMutations() throws IllegalArgumentException,
+                                               Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("service", k.getAnyProduct()
                                   .getId()
@@ -407,8 +432,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                 variables);
     }
 
-    private void testExistentialMutations() throws IllegalArgumentException,
-                                            Exception {
+    @Test
+    public void testExistentialMutations() throws IllegalArgumentException,
+                                           Exception {
         Map<String, Object> variables = new HashMap<>();
 
         ObjectNode result = execute(schema,
@@ -518,8 +544,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                 variables);
     }
 
-    private void testParentSequencingMutations() throws IllegalArgumentException,
-                                                 Exception {
+    @Test
+    public void testParentSequencingMutations() throws IllegalArgumentException,
+                                                Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("service", k.getAnyProduct()
                                   .getId()
@@ -548,8 +575,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                 variables);
     }
 
-    private void testSelfSequencingMutations() throws IllegalArgumentException,
-                                               Exception {
+    @Test
+    public void testSelfSequencingMutations() throws IllegalArgumentException,
+                                              Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("service", k.getAnyProduct()
                                   .getId()
@@ -575,8 +603,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                 variables);
     }
 
-    private void testSiblingSequencingMutations() throws IllegalArgumentException,
-                                                  Exception {
+    @Test
+    public void testSiblingSequencingMutations() throws IllegalArgumentException,
+                                                 Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("service", k.getAnyProduct()
                                   .getId()
@@ -605,8 +634,40 @@ public class MetaSchemaTest extends AbstractModelTest {
                 variables);
     }
 
-    private void testStatusCodeSequencingMutations() throws IllegalArgumentException,
-                                                     Exception {
+    @Test
+    public void testStatusCodeSequencingMutations() throws IllegalArgumentException,
+                                                    Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("child", k.getAnyStatusCode()
+                                .getId()
+                                .toString());
+        variables.put("parent", k.getAnyStatusCode()
+                                 .getId()
+                                 .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($service: String $statusCode: String $child: String $parent: String) { createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent child: $child }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createStatusCodeSequencing")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: String!) { updateStatusCodeSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeStatusCodeSequencing(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testAttributeAuthorizationMutations() throws IllegalArgumentException,
+                                                      Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("service", k.getAnyProduct()
                                   .getId()

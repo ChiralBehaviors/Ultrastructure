@@ -50,8 +50,6 @@ public class AttributeAuthorization {
 
     public static class AttributeAuthorizationState {
         @GraphQLField
-        public String  facet;
-        @GraphQLField
         public String  authority;
         @GraphQLField
         public String  authorizedAttribute;
@@ -60,9 +58,13 @@ public class AttributeAuthorization {
         @GraphQLField
         public Boolean booleanValue;
         @GraphQLField
+        public String  facet;
+        @GraphQLField
         public Integer integerValue;
         @GraphQLField
         public String  jsonValue;
+        @GraphQLField
+        public String  notes;
         @GraphQLField
         public Double  numericValue;
         @GraphQLField
@@ -84,7 +86,9 @@ public class AttributeAuthorization {
             if (booleanValue != null) {
                 record.setBooleanValue(booleanValue);
             }
-            record.setFacet(UUID.fromString(facet));
+            if (facet != null) {
+                record.setFacet(UUID.fromString(facet));
+            }
             if (integerValue != null) {
                 record.setIntegerValue(integerValue);
             }
@@ -106,6 +110,9 @@ public class AttributeAuthorization {
             if (timestampValue != null) {
                 record.setTimestampValue(new Timestamp(timestampValue));
             }
+            if (notes != null) {
+                record.setNotes(notes);
+            }
         }
     }
 
@@ -118,10 +125,11 @@ public class AttributeAuthorization {
     public static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
                                                                 UUID id) throws DataAccessException,
                                                                          TooManyRowsException {
-        return WorkspaceSchema.ctx(env).create()
-                       .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                       .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
-                       .fetchOne();
+        return WorkspaceSchema.ctx(env)
+                              .create()
+                              .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
+                              .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
+                              .fetchOne();
     }
 
     private final ExistentialAttributeAuthorizationRecord record;

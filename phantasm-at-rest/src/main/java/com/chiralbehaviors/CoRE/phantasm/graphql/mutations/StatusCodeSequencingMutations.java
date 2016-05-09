@@ -53,7 +53,7 @@ public interface StatusCodeSequencingMutations {
     }
 
     @GraphQLField
-    default Boolean removeStatusCodeSequencing(@NotNull String id,
+    default Boolean removeStatusCodeSequencing(@NotNull @GraphQLName("id") String id,
                                                DataFetchingEnvironment env) {
         StatusCodeSequencing.fetch(env, UUID.fromString(id))
                             .getRecord()

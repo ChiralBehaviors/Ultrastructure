@@ -53,7 +53,7 @@ public interface ChildSequencingMutations {
     }
 
     @GraphQLField
-    default Boolean removeChildSequencing(@NotNull String id,
+    default Boolean removeChildSequencing(@NotNull @GraphQLName("id") String id,
                                           DataFetchingEnvironment env) {
         ChildSequencing.fetch(env, UUID.fromString(id))
                        .getRecord()

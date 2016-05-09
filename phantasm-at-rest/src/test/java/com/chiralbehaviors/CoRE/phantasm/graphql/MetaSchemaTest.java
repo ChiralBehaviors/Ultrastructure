@@ -593,7 +593,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         ObjectNode result = execute(schema,
                                     "mutation m($service: String $statusCode: String $nextSibling: String $nextSiblingStatus: String) { createSiblingSequencing(state: {service: $service statusCode: $statusCode nextSibling: $nextSibling nextSiblingStatus: $nextSiblingStatus }) {id} }",
                                     variables);
-        variables.put("id", result.get("createSelfSequencing")
+        variables.put("id", result.get("createSiblingSequencing")
                                   .get("id")
                                   .asText());
         execute(schema,

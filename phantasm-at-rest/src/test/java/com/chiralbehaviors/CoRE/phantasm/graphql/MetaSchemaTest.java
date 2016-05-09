@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -48,140 +49,30 @@ import graphql.schema.GraphQLSchema;
  */
 public class MetaSchemaTest extends AbstractModelTest {
     private WorkspaceImporter importer;
+    private Kernel            k;
+    private GraphQLSchema     schema;
+
+    @Before
+    public void load() throws Exception {
+        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                              model);
+        k = model.getKernel();
+        schema = WorkspaceSchema.buildMeta();
+    }
 
     @Test
     public void testMutations() throws Exception {
-        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                              model);
-        Kernel k = model.getKernel();
-        GraphQLSchema schema = WorkspaceSchema.buildMeta();
-        Map<String, Object> variables = new HashMap<>();
-
-        execute(schema,
-                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-        execute(schema,
-                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                variables);
-
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("attr", k.getIRI()
-                               .getId()
-                               .toString());
-        variables.put("facet", model.getPhantasmModel()
-                                    .getFacetDeclaration(k.getIsA(),
-                                                         k.getCoreUser())
-                                    .getId()
-                                    .toString());
-        execute(schema,
-                "mutation m($auth: String $attr: String $facet: String) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
-                variables);
-
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        variables.put("nextChild", k.getAnyProduct()
-                                    .getId()
-                                    .toString());
-        variables.put("nextChildStatus", k.getAnyStatusCode()
-                                          .getId()
-                                          .toString());
-
-        execute(schema,
-                "mutation m($service: String $statusCode: String $nextChild: String $nextChildStatus: String) { createChildSequencing(state: {service: $service statusCode: $statusCode nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
-                variables);
-
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        variables.put("parent", k.getAnyProduct()
-                                 .getId()
-                                 .toString());
-        variables.put("parentStatus", k.getAnyStatusCode()
-                                       .getId()
-                                       .toString());
-        execute(schema,
-                "mutation m($service: String $statusCode: String $parent: String $parentStatus: String) { createParentSequencing(state: {service: $service statusCode: $statusCode parent: $parent parentStatus: $parentStatus }) {id} }",
-                variables);
-
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        variables.put("statusToSet", k.getAnyStatusCode()
-                                      .getId()
-                                      .toString());
-        execute(schema,
-                "mutation m($service: String $statusCode: String $statusToSet: String) { createSelfSequencing(state: {service: $service statusCode: $statusCode statusToSet: $statusToSet }) {id} }",
-                variables);
-
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        variables.put("parent", k.getAnyProduct()
-                                 .getId()
-                                 .toString());
-        variables.put("parentStatus", k.getAnyStatusCode()
-                                       .getId()
-                                       .toString());
-        execute(schema,
-                "mutation m($service: String $statusCode: String $nextSibling: String $nextSiblingStatus: String) { createSiblingSequencing(state: {service: $service statusCode: $statusCode nextSibling: $nextSibling nextSiblingStatus: $nextSiblingStatus }) {id} }",
-                variables);
-
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("child", k.getAnyStatusCode()
-                                .getId()
-                                .toString());
-        variables.put("parent", k.getAnyStatusCode()
-                                 .getId()
-                                 .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        execute(schema,
-                "mutation m($service: String $statusCode: String $child: String $parent: String) { createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent child: $child }) {id} }",
-                variables);
+        testExistentialMutations();
+        testAttributeAuthMutations();
+        testChildSequencingMutations();
+        testParentSequencingMutations();
+        testSelfSequencingMutations();
+        testSiblingSequencingMutations();
+        testStatusCodeSequencingMutations();
     }
 
     @Test
     public void testQueries() throws Exception {
-        importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                              model);
-
-        GraphQLSchema schema = WorkspaceSchema.buildMeta();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
                                   "{ facets { id name attributes { id authorizedAttribute { id name } } children { id name parent { id name } relationship { id name } child { id name } } }}",
@@ -454,5 +345,152 @@ public class MetaSchemaTest extends AbstractModelTest {
         in.forEach(o -> ids.add(o.get("id")
                                  .asText()));
         return ids;
+    }
+
+    private void testAttributeAuthMutations() throws IllegalArgumentException,
+                                              Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("facet", model.getPhantasmModel()
+                                    .getFacetDeclaration(k.getIsA(),
+                                                         k.getCoreUser())
+                                    .getId()
+                                    .toString());
+        execute(schema,
+                "mutation m($auth: String $attr: String $facet: String) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                variables);
+    }
+
+    private void testChildSequencingMutations() throws IllegalArgumentException,
+                                                Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("nextChild", k.getAnyProduct()
+                                    .getId()
+                                    .toString());
+        variables.put("nextChildStatus", k.getAnyStatusCode()
+                                          .getId()
+                                          .toString());
+
+        execute(schema,
+                "mutation m($service: String $statusCode: String $nextChild: String $nextChildStatus: String) { createChildSequencing(state: {service: $service statusCode: $statusCode nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
+                variables);
+    }
+
+    private void testExistentialMutations() throws IllegalArgumentException,
+                                            Exception {
+        Map<String, Object> variables = new HashMap<>();
+
+        execute(schema,
+                "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+        execute(schema,
+                "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+                variables);
+    }
+
+    private void testParentSequencingMutations() throws IllegalArgumentException,
+                                                 Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("parent", k.getAnyProduct()
+                                 .getId()
+                                 .toString());
+        variables.put("parentStatus", k.getAnyStatusCode()
+                                       .getId()
+                                       .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $parent: String $parentStatus: String) { createParentSequencing(state: {service: $service statusCode: $statusCode parent: $parent parentStatus: $parentStatus }) {id} }",
+                variables);
+    }
+
+    private void testSelfSequencingMutations() throws IllegalArgumentException,
+                                               Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("statusToSet", k.getAnyStatusCode()
+                                      .getId()
+                                      .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $statusToSet: String) { createSelfSequencing(state: {service: $service statusCode: $statusCode statusToSet: $statusToSet }) {id} }",
+                variables);
+    }
+
+    private void testSiblingSequencingMutations() throws IllegalArgumentException,
+                                                  Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("parent", k.getAnyProduct()
+                                 .getId()
+                                 .toString());
+        variables.put("parentStatus", k.getAnyStatusCode()
+                                       .getId()
+                                       .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $nextSibling: String $nextSiblingStatus: String) { createSiblingSequencing(state: {service: $service statusCode: $statusCode nextSibling: $nextSibling nextSiblingStatus: $nextSiblingStatus }) {id} }",
+                variables);
+    }
+
+    private void testStatusCodeSequencingMutations() throws IllegalArgumentException,
+                                                     Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("child", k.getAnyStatusCode()
+                                .getId()
+                                .toString());
+        variables.put("parent", k.getAnyStatusCode()
+                                 .getId()
+                                 .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        execute(schema,
+                "mutation m($service: String $statusCode: String $child: String $parent: String) { createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent child: $child }) {id} }",
+                variables);
     }
 }

@@ -24,8 +24,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -61,13 +62,17 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                             create);
         assertEquals(3, retrieved.getRecords()
                                  .size());
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
-        mapper.writeValue(os, retrieved);
-        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-        WorkspaceSnapshot deserialized = mapper.readValue(is,
-                                                          WorkspaceSnapshot.class);
+        File temp = File.createTempFile("snaptest", "wsp");
+        temp.deleteOnExit();
+        try (FileOutputStream os = new FileOutputStream(temp)) {
+            mapper.writeValue(os, retrieved);
+        }
+        WorkspaceSnapshot deserialized;
+        try (FileInputStream is = new FileInputStream(temp)) {
+            deserialized = mapper.readValue(is, WorkspaceSnapshot.class);
+        }
         assertEquals(3, deserialized.getRecords()
                                     .size());
 
@@ -77,7 +82,12 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
         assertFalse(deserialized.getRecords()
                                 .stream()
                                 .anyMatch(r -> definingProduct.equals(r)));
-
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .rollback();
+        WorkspaceSnapshot.load(create, temp.toURI()
+                                           .toURL());
     }
 
     @Test
@@ -91,19 +101,22 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                     Collections.emptyList());
         assertEquals(2, retrieved.getRecords()
                                  .size());
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
-        mapper.writeValue(os, retrieved);
-        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-        StateSnapshot deserialized = mapper.readValue(is, StateSnapshot.class);
+        File temp = File.createTempFile("snaptest", "wsp");
+        temp.deleteOnExit();
+        try (FileOutputStream os = new FileOutputStream(temp)) {
+            mapper.writeValue(os, retrieved);
+        }
+        StateSnapshot deserialized;
+        try (FileInputStream is = new FileInputStream(temp)) {
+            deserialized = mapper.readValue(is, StateSnapshot.class);
+        }
         assertEquals(2, deserialized.getRecords()
                                     .size());
 
         assertTrue(deserialized.getRecords()
                                .stream()
                                .anyMatch(r -> pseudoScientist.equals(r)));
-
     }
-
 }

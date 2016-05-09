@@ -44,8 +44,9 @@ public interface ParentSequencingMutations {
     @GraphQLField
     default ParentSequencing createParentSequencing(@NotNull @GraphQLName("state") ParentSequencingState state,
                                                     DataFetchingEnvironment env) {
-        ParentSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
-                                                             .newParentSequencingAuthorization();
+        ParentSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                    .records()
+                                                                    .newParentSequencingAuthorization();
         state.update(record);
         record.insert();
         return new ParentSequencing(record);
@@ -63,12 +64,13 @@ public interface ParentSequencingMutations {
     @GraphQLField
     default ParentSequencing updateParentSequencing(@NotNull @GraphQLName("state") ParentSequencingUpdateState state,
                                                     DataFetchingEnvironment env) {
-        ParentSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
-                                                             .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
-                                                             .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                             .fetchOne();
+        ParentSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                    .create()
+                                                                    .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
+                                                                    .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                                    .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new ParentSequencing(record);
     }
 }

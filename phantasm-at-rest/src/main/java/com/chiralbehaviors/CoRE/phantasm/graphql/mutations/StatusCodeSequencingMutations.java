@@ -44,8 +44,9 @@ public interface StatusCodeSequencingMutations {
     @GraphQLField
     default StatusCodeSequencing createStatusCodeSequencing(@NotNull @GraphQLName("state") StatusCodeSequencingState state,
                                                             DataFetchingEnvironment env) {
-        StatusCodeSequencingRecord record = WorkspaceSchema.ctx(env).records()
-                                                    .newStatusCodeSequencing();
+        StatusCodeSequencingRecord record = WorkspaceSchema.ctx(env)
+                                                           .records()
+                                                           .newStatusCodeSequencing();
         state.update(record);
         record.insert();
         return new StatusCodeSequencing(record);
@@ -63,12 +64,13 @@ public interface StatusCodeSequencingMutations {
     @GraphQLField
     default StatusCodeSequencing updateStatusCodeSequencing(@NotNull @GraphQLName("state") StatusCodeSequencingUpdateState state,
                                                             DataFetchingEnvironment env) {
-        StatusCodeSequencingRecord record = WorkspaceSchema.ctx(env).create()
-                                                    .selectFrom(Tables.STATUS_CODE_SEQUENCING)
-                                                    .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(UUID.fromString(state.id)))
-                                                    .fetchOne();
+        StatusCodeSequencingRecord record = WorkspaceSchema.ctx(env)
+                                                           .create()
+                                                           .selectFrom(Tables.STATUS_CODE_SEQUENCING)
+                                                           .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(UUID.fromString(state.id)))
+                                                           .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new StatusCodeSequencing(record);
     }
 }

@@ -44,8 +44,9 @@ public interface ChildSequencingMutations {
     @GraphQLField
     default ChildSequencing createChildSequencing(@NotNull @GraphQLName("state") ChildSequencingState state,
                                                   DataFetchingEnvironment env) {
-        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
-                                                            .newChildSequencingAuthorization();
+        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                   .records()
+                                                                   .newChildSequencingAuthorization();
         state.update(record);
         record.insert();
         return new ChildSequencing(record);
@@ -63,12 +64,13 @@ public interface ChildSequencingMutations {
     @GraphQLField
     default ChildSequencing updateChildSequencing(@NotNull @GraphQLName("state") ChildSequencingUpdateState state,
                                                   DataFetchingEnvironment env) {
-        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
-                                                            .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)
-                                                            .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                            .fetchOne();
+        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                   .create()
+                                                                   .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)
+                                                                   .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                                   .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new ChildSequencing(record);
     }
 }

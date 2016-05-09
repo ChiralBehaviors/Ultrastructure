@@ -69,7 +69,7 @@ public interface AttributeAuthorizationMutations {
                                                                         .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
                                                                         .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new AttributeAuthorization(record);
     }
 }

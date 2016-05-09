@@ -44,8 +44,9 @@ public interface NetworkAuthorizationMutations {
     @GraphQLField
     default NetworkAuthorization createNetworkAuthorization(@NotNull @GraphQLName("state") NetwworkAuthorizationState state,
                                                             DataFetchingEnvironment env) {
-        ExistentialNetworkAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
-                                                               .newExistentialNetworkAuthorization();
+        ExistentialNetworkAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                      .records()
+                                                                      .newExistentialNetworkAuthorization();
         state.update(record);
         record.insert();
         return new NetworkAuthorization(record);
@@ -63,12 +64,13 @@ public interface NetworkAuthorizationMutations {
     @GraphQLField
     default NetworkAuthorization updateNetworkAuthorization(@NotNull @GraphQLName("state") NetworkAuthorizationUpdateState state,
                                                             DataFetchingEnvironment env) {
-        ExistentialNetworkAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
-                                                               .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                               .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                               .fetchOne();
+        ExistentialNetworkAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                      .create()
+                                                                      .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                                      .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                                      .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new NetworkAuthorization(record);
     }
 }

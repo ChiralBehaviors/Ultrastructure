@@ -60,6 +60,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         schema = WorkspaceSchema.buildMeta();
     }
 
+    @Test
     public void testMutations() throws Exception {
         testExistentialMutations();
         testAttributeAuthMutations();

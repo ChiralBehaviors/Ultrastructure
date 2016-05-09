@@ -998,7 +998,6 @@ public class PhantasmModelImpl implements PhantasmModel {
 				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
 				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
 				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-				.and(EXISTENTIAL_NETWORK.INFERENCE.isNotNull())
 				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
 				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
 				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))

@@ -44,8 +44,9 @@ public interface SiblingSequencingMutations {
     @GraphQLField
     default SiblingSequencing createSiblingSequencing(@NotNull @GraphQLName("state") SiblingSequencingState state,
                                                       DataFetchingEnvironment env) {
-        SiblingSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
-                                                              .newSiblingSequencingAuthorization();
+        SiblingSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                     .records()
+                                                                     .newSiblingSequencingAuthorization();
         state.update(record);
         record.insert();
         return new SiblingSequencing(record);
@@ -63,12 +64,13 @@ public interface SiblingSequencingMutations {
     @GraphQLField
     default SiblingSequencing updateSiblingSequencing(@NotNull @GraphQLName("state") SiblingSequencingUpdateState state,
                                                       DataFetchingEnvironment env) {
-        SiblingSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
-                                                              .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
-                                                              .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                              .fetchOne();
+        SiblingSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                     .create()
+                                                                     .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
+                                                                     .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                                     .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new SiblingSequencing(record);
     }
 }

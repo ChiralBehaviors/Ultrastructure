@@ -212,7 +212,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Agency(record);
     }
 
@@ -222,7 +222,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Attribute(record);
     }
 
@@ -232,7 +232,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Interval(record);
     }
 
@@ -242,7 +242,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Location(record);
     }
 
@@ -252,7 +252,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Product(record);
     }
 
@@ -262,7 +262,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Relationship(record);
     }
 
@@ -272,7 +272,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new StatusCode(record);
     }
 
@@ -282,7 +282,7 @@ public interface ExistentialMutations {
         ExistentialRecord record = Existential.resolve(env,
                                                        UUID.fromString(state.id));
         state.update(record);
-        record.insert();
+        record.update();
         return new Unit(record);
     }
 }

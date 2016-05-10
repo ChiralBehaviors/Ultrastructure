@@ -44,8 +44,9 @@ public interface SelfSequencingMutations {
     @GraphQLField
     default SelfSequencing createSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingState state,
                                                 DataFetchingEnvironment env) {
-        SelfSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).records()
-                                                           .newSelfSequencingAuthorization();
+        SelfSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                  .records()
+                                                                  .newSelfSequencingAuthorization();
         state.update(record);
         record.insert();
         return new SelfSequencing(record);
@@ -63,12 +64,13 @@ public interface SelfSequencingMutations {
     @GraphQLField
     default SelfSequencing updateSelfSequencing(@NotNull @GraphQLName("state") SelfSequencingUpdateState state,
                                                 DataFetchingEnvironment env) {
-        SelfSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env).create()
-                                                           .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
-                                                           .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                           .fetchOne();
+        SelfSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
+                                                                  .create()
+                                                                  .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
+                                                                  .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                                  .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new SelfSequencing(record);
     }
 }

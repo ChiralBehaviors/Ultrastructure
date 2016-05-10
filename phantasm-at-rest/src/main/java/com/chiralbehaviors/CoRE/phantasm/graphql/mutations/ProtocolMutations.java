@@ -44,8 +44,9 @@ public interface ProtocolMutations {
     @GraphQLField
     default Protocol createProtocol(@NotNull @GraphQLName("state") ProtocolState state,
                                     DataFetchingEnvironment env) {
-        ProtocolRecord record = WorkspaceSchema.ctx(env).records()
-                                        .newProtocol();
+        ProtocolRecord record = WorkspaceSchema.ctx(env)
+                                               .records()
+                                               .newProtocol();
         state.update(record);
         record.insert();
         return new Protocol(record);
@@ -62,12 +63,13 @@ public interface ProtocolMutations {
     @GraphQLField
     default Protocol updateProtocol(@NotNull @GraphQLName("state") ProtocolUpdateState state,
                                     DataFetchingEnvironment env) {
-        ProtocolRecord record = WorkspaceSchema.ctx(env).create()
-                                        .selectFrom(Tables.PROTOCOL)
-                                        .where(Tables.PROTOCOL.ID.equal(UUID.fromString(state.id)))
-                                        .fetchOne();
+        ProtocolRecord record = WorkspaceSchema.ctx(env)
+                                               .create()
+                                               .selectFrom(Tables.PROTOCOL)
+                                               .where(Tables.PROTOCOL.ID.equal(UUID.fromString(state.id)))
+                                               .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new Protocol(record);
     }
 }

@@ -44,8 +44,9 @@ public interface FacetMutations {
     @GraphQLField
     default Facet createFacet(@NotNull @GraphQLName("state") FacetState state,
                               DataFetchingEnvironment env) {
-        FacetRecord record = WorkspaceSchema.ctx(env).records()
-                                     .newFacet();
+        FacetRecord record = WorkspaceSchema.ctx(env)
+                                            .records()
+                                            .newFacet();
         state.update(record);
         record.insert();
         return new Facet(record);
@@ -63,12 +64,13 @@ public interface FacetMutations {
     @GraphQLField
     default Facet updateFacet(@NotNull @GraphQLName("state") FacetUpdateState state,
                               DataFetchingEnvironment env) {
-        FacetRecord record = WorkspaceSchema.ctx(env).create()
-                                     .selectFrom(Tables.FACET)
-                                     .where(Tables.FACET.ID.equal(UUID.fromString(state.id)))
-                                     .fetchOne();
+        FacetRecord record = WorkspaceSchema.ctx(env)
+                                            .create()
+                                            .selectFrom(Tables.FACET)
+                                            .where(Tables.FACET.ID.equal(UUID.fromString(state.id)))
+                                            .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new Facet(record);
     }
 }

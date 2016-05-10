@@ -58,6 +58,8 @@ public class Protocol {
         @GraphQLField
         public Float  childQuantity;
         @GraphQLField
+        public String childrenRelationship;
+        @GraphQLField
         public String childService;
         @GraphQLField
         public String childStatus;
@@ -142,6 +144,9 @@ public class Protocol {
             }
             if (childUnit != null) {
                 r.setChildQuantityUnit(UUID.fromString(childUnit));
+            }
+            if (childrenRelationship != null) {
+                r.setChildrenRelationship(UUID.fromString(childrenRelationship));
             }
         }
     }

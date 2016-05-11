@@ -26,11 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.Tables;
-import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 
 import graphql.annotations.GraphQLField;
@@ -50,23 +45,8 @@ public interface JobChronologyQueries {
     }
 
     @GraphQLField
-    default List<JobChronology> JobChronologies(@GraphQLName("ids") List<String> ids,
+    default List<JobChronology> JobChronologies(@NotNull @GraphQLName("ids") List<String> ids,
                                                 DataFetchingEnvironment env) {
-        if (ids == null) {
-            Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env)
-                                  .create()
-                                  .selectDistinct(Tables.JOB_CHRONOLOGY.fields())
-                                  .from(Tables.JOB_CHRONOLOGY)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.CHILD_SEQUENCING_AUTHORIZATION.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                                  .fetch()
-                                  .into(JobChronologyRecord.class)
-                                  .stream()
-                                  .map(r -> new JobChronology(r))
-                                  .collect(Collectors.toList());
-        }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
                   .map(id -> JobChronology.fetch(env, id))

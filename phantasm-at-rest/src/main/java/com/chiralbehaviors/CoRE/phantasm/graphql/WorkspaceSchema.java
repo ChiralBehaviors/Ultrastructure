@@ -128,28 +128,28 @@ public class WorkspaceSchema {
             extends ExistentialQueries, JobQueries, JobChronologyQueries {
     }
 
-    public static final GraphQLObjectType          AgencyType;
-    public static final GraphQLObjectType          AttributeAuthorizationType;
-    public static final GraphQLObjectType          AttributeType;
-    public static final GraphQLObjectType          ChildSequencingType;
-    public static final GraphQLInterfaceType       ExistentialType;
-    public static final GraphQLObjectType          FacetType;
-    public static final GraphQLObjectType          IntervalType;
-    public static final GraphQLObjectType          JobType;
-    public static final GraphQLObjectType          LocationType;
-    public static final GraphQLObjectType          MetaProtocolType;
-    public static final GraphQLObjectType          NetworkAuthorizationType;
-    public static final GraphQLObjectType          ParentSequencingType;
-    public static final GraphQLObjectType          ProductType;
-    public static final GraphQLObjectType          ProtocolType;
-    public static final GraphQLObjectType          RelationshipType;
-    public static final GraphQLObjectType          SelfSequencingType;
-    public static final GraphQLObjectType          SiblingSequencingType;
-    public static final GraphQLObjectType          StatusCodeSequencingType;
-    public static final GraphQLObjectType          StatusCodeType;
-    public static final GraphQLObjectType          UnitType;
-    public static final GraphQLObjectType          NetworkAttributeAuthorizationType;
-    public static final graphql.schema.GraphQLType JobChronologyType;
+    public static final GraphQLObjectType    AgencyType;
+    public static final GraphQLObjectType    AttributeAuthorizationType;
+    public static final GraphQLObjectType    AttributeType;
+    public static final GraphQLObjectType    ChildSequencingType;
+    public static final GraphQLInterfaceType ExistentialType;
+    public static final GraphQLObjectType    FacetType;
+    public static final GraphQLObjectType    IntervalType;
+    public static final GraphQLObjectType    JobType;
+    public static final GraphQLObjectType    LocationType;
+    public static final GraphQLObjectType    MetaProtocolType;
+    public static final GraphQLObjectType    NetworkAuthorizationType;
+    public static final GraphQLObjectType    ParentSequencingType;
+    public static final GraphQLObjectType    ProductType;
+    public static final GraphQLObjectType    ProtocolType;
+    public static final GraphQLObjectType    RelationshipType;
+    public static final GraphQLObjectType    SelfSequencingType;
+    public static final GraphQLObjectType    SiblingSequencingType;
+    public static final GraphQLObjectType    StatusCodeSequencingType;
+    public static final GraphQLObjectType    StatusCodeType;
+    public static final GraphQLObjectType    UnitType;
+    public static final GraphQLObjectType    NetworkAttributeAuthorizationType;
+    public static final GraphQLObjectType    JobChronologyType;
 
     // Type conversion initialization is kinda tricky because recursion.
     // Be careful how you manage the static initialization of this class

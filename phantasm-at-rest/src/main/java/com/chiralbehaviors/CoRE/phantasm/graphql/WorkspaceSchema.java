@@ -109,7 +109,7 @@ public class WorkspaceSchema {
             SelfSequencingMutations, SiblingSequencingMutations,
             ProtocolMutations, MetaProtocolMutations,
             StatusCodeSequencingMutations,
-            NetworkAttributeAuthorizationMutations {
+            NetworkAttributeAuthorizationMutations, JobMutations {
     }
 
     public interface MetaQueries extends ExistentialQueries, FacetQueries,
@@ -117,7 +117,8 @@ public class WorkspaceSchema {
             ChildSequencingQueries, ParentSequencingQueries,
             SelfSequencingQueries, SiblingSequencingQueries, ProtocolQueries,
             MetaProtocolQueries, StatusCodeSequencingQueries,
-            NetworkAttributeAuthorizationQueries {
+            NetworkAttributeAuthorizationQueries, JobQueries,
+            JobChronologyQueries {
     }
 
     public interface Mutations extends ExistentialMutations, JobMutations {

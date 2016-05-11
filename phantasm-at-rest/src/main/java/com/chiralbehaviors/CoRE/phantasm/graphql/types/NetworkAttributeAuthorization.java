@@ -58,7 +58,7 @@ public class NetworkAttributeAuthorization {
         @GraphQLField
         public Boolean booleanValue;
         @GraphQLField
-        public String  edge;
+        public String  networkAuthorization;
         @GraphQLField
         public Integer integerValue;
         @GraphQLField
@@ -86,8 +86,8 @@ public class NetworkAttributeAuthorization {
             if (booleanValue != null) {
                 record.setBooleanValue(booleanValue);
             }
-            if (edge != null) {
-                record.setNetworkAuthorization(UUID.fromString(edge));
+            if (networkAuthorization != null) {
+                record.setNetworkAuthorization(UUID.fromString(networkAuthorization));
             }
             if (integerValue != null) {
                 record.setIntegerValue(integerValue);

@@ -32,6 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -61,8 +63,8 @@ public class MetaSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testAttributeAuthMutations() throws IllegalArgumentException,
-                                             Exception {
+    public void testAttributeAuthorizationMutations() throws IllegalArgumentException,
+                                                      Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("auth", k.getCore()
                                .getId()
@@ -91,33 +93,36 @@ public class MetaSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testAttributeAuthorizationMutations() throws IllegalArgumentException,
-                                                      Exception {
+    public void testNetworkAttributeAuthorizationMutations() throws IllegalArgumentException,
+                                                             Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("child", k.getAnyStatusCode()
-                                .getId()
-                                .toString());
-        variables.put("parent", k.getAnyStatusCode()
-                                 .getId()
-                                 .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        FacetRecord isCoreUser = model.getPhantasmModel()
+                                      .getFacetDeclaration(k.getIsA(),
+                                                           k.getCoreUser());
+        ExistentialNetworkAuthorizationRecord netAuth = model.getPhantasmModel()
+                                                             .getNetworkAuthorizations(isCoreUser,
+                                                                                       false)
+                                                             .get(0);
+        variables.put("netAuth", netAuth.getId()
+                                        .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($service: String $statusCode: String $child: String $parent: String) { createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent child: $child }) {id} }",
+                                    "mutation m($auth: String $attr: String $netAuth: String) { createNetworkAttributeAuthorization(state: {networkAuthorization: $netAuth authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
                                     variables);
-        variables.put("id", result.get("createStatusCodeSequencing")
+        variables.put("id", result.get("createNetworkAttributeAuthorization")
                                   .get("id")
                                   .asText());
         execute(schema,
-                "mutation m($id: String!) { updateStatusCodeSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String!) { updateNetworkAttributeAuthorization(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
         execute(schema,
-                "mutation m($id: String!) { removeStatusCodeSequencing(id: $id) }",
+                "mutation m($id: String!) { removeNetworkAttributeAuthorization(id: $id) }",
                 variables);
     }
 
@@ -324,8 +329,8 @@ public class MetaSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testNetworkAuthMutations() throws IllegalArgumentException,
-                                           Exception {
+    public void testNetworkAuthorizationMutations() throws IllegalArgumentException,
+                                                    Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("auth", k.getCore()
                                .getId()
@@ -512,6 +517,22 @@ public class MetaSchemaTest extends AbstractModelTest {
                       ids(data.withArray("attributeAuthorizations")).get(0));
         data = execute(schema,
                        "query q($id: String!) { attributeAuthorization(id: $id) { id  } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema, "{ networkAttributeAuthorizations { id } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids",
+                      ids(data.withArray("networkAttributeAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { networkAttributeAuthorizations(ids:$ids) { id networkAuthorization {id} jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id",
+                      ids(data.withArray("networkAttributeAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: String!) { networkAttributeAuthorization(id: $id) { id  } }",
                        variables);
         assertNotNull(data);
 

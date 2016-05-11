@@ -57,6 +57,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQ
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.MetaProtocolQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAttributeAuthorizationQueries;
@@ -78,6 +79,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
@@ -121,30 +123,32 @@ public class WorkspaceSchema {
     public interface Mutations extends ExistentialMutations, JobMutations {
     }
 
-    public interface Queries extends ExistentialQueries, JobQueries {
+    public interface Queries
+            extends ExistentialQueries, JobQueries, JobChronologyQueries {
     }
 
-    public static final GraphQLObjectType    AgencyType;
-    public static final GraphQLObjectType    AttributeAuthorizationType;
-    public static final GraphQLObjectType    AttributeType;
-    public static final GraphQLObjectType    ChildSequencingType;
-    public static final GraphQLInterfaceType ExistentialType;
-    public static final GraphQLObjectType    FacetType;
-    public static final GraphQLObjectType    IntervalType;
-    public static final GraphQLObjectType    JobType;
-    public static final GraphQLObjectType    LocationType;
-    public static final GraphQLObjectType    MetaProtocolType;
-    public static final GraphQLObjectType    NetworkAuthorizationType;
-    public static final GraphQLObjectType    ParentSequencingType;
-    public static final GraphQLObjectType    ProductType;
-    public static final GraphQLObjectType    ProtocolType;
-    public static final GraphQLObjectType    RelationshipType;
-    public static final GraphQLObjectType    SelfSequencingType;
-    public static final GraphQLObjectType    SiblingSequencingType;
-    public static final GraphQLObjectType    StatusCodeSequencingType;
-    public static final GraphQLObjectType    StatusCodeType;
-    public static final GraphQLObjectType    UnitType;
-    public static final GraphQLObjectType    NetworkAttributeAuthorizationType;
+    public static final GraphQLObjectType          AgencyType;
+    public static final GraphQLObjectType          AttributeAuthorizationType;
+    public static final GraphQLObjectType          AttributeType;
+    public static final GraphQLObjectType          ChildSequencingType;
+    public static final GraphQLInterfaceType       ExistentialType;
+    public static final GraphQLObjectType          FacetType;
+    public static final GraphQLObjectType          IntervalType;
+    public static final GraphQLObjectType          JobType;
+    public static final GraphQLObjectType          LocationType;
+    public static final GraphQLObjectType          MetaProtocolType;
+    public static final GraphQLObjectType          NetworkAuthorizationType;
+    public static final GraphQLObjectType          ParentSequencingType;
+    public static final GraphQLObjectType          ProductType;
+    public static final GraphQLObjectType          ProtocolType;
+    public static final GraphQLObjectType          RelationshipType;
+    public static final GraphQLObjectType          SelfSequencingType;
+    public static final GraphQLObjectType          SiblingSequencingType;
+    public static final GraphQLObjectType          StatusCodeSequencingType;
+    public static final GraphQLObjectType          StatusCodeType;
+    public static final GraphQLObjectType          UnitType;
+    public static final GraphQLObjectType          NetworkAttributeAuthorizationType;
+    public static final graphql.schema.GraphQLType JobChronologyType;
 
     // Type conversion initialization is kinda tricky because recursion.
     // Be careful how you manage the static initialization of this class
@@ -224,6 +228,9 @@ public class WorkspaceSchema {
         NetworkAttributeAuthorizationType = objectTypeOf(NetworkAttributeAuthorization.class);
         register(NetworkAttributeAuthorization.class,
                  (u, t) -> NetworkAttributeAuthorizationType);
+
+        JobChronologyType = WorkspaceSchema.objectTypeOf(JobChronology.class);
+        register(JobChronology.class, (u, t) -> JobChronologyType);
     }
 
     public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,

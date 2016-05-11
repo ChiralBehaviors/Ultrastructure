@@ -574,14 +574,6 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<ParentSequencingAuthorizationRecord> getParentActions(Product service) {
-        return model.create()
-                    .selectFrom(PARENT_SEQUENCING_AUTHORIZATION)
-                    .where(PARENT_SEQUENCING_AUTHORIZATION.SERVICE.equal(service.getId()))
-                    .fetch();
-    }
-
-    @Override
     public Map<ProtocolRecord, InferenceMap> getProtocols(JobRecord job) {
         // First we try for protocols which match the current job
         List<ProtocolRecord> protocols = getProtocolsMatching(job);
@@ -1673,33 +1665,8 @@ public class JobModelImpl implements JobModel {
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
                 JobRecord parent = model.records()
                                         .resolveJob(job.getParent());
-                if (seq.getParent() == null && seq.getService()
-                                                  .equals(parent.getService())) {
-                    try {
-                        ensureNextStateIsValid(parent, model.records()
-                                                            .resolve(seq.getParentStatusToSet()));
-                        changeStatus(parent, model.records()
-                                                  .resolve(seq.getParentStatusToSet()),
-                                     "Automatically switching status via direct communication from child job");
-                        if (seq.getReplaceProduct()) {
-                            parent.setProduct(job.getProduct());
-                        }
-                        return;
-                    } catch (Throwable e) {
-                        //if (log.isTraceEnabled()) {
-                        log.trace(String.format("invalid parent status sequencing %s",
-                                                job.getParent()),
-                                  e);
-                        //}
-                        log(parent,
-                            String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
-                                          job.getId(),
-                                          seq.getParentStatusToSet(),
-                                          seq.getId(), e));
-                    }
-                    break;
-                } else if (seq.getParent()
-                              .equals(parent.getService())) {
+                if (seq.getParent()
+                       .equals(parent.getService())) {
                     try {
                         ensureNextStateIsValid(parent, model.records()
                                                             .resolve(seq.getParentStatusToSet()));
@@ -1710,11 +1677,11 @@ public class JobModelImpl implements JobModel {
                             parent.setProduct(job.getProduct());
                         }
                     } catch (Throwable e) {
-                        //if (log.isTraceEnabled()) {
-                        log.trace(String.format("invalid parent status sequencing %s",
-                                                job.getParent()),
-                                  e);
-                        //}
+                        if (log.isTraceEnabled()) {
+                            log.trace(String.format("invalid parent status sequencing %s",
+                                                    job.getParent()),
+                                      e);
+                        }
                         log(parent,
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",
                                           job.getId(),

@@ -53,7 +53,7 @@ import graphql.schema.TypeResolver;
  */
 @SuppressWarnings("unused")
 @GraphQLTypeResolver(ExistentialResolver.class)
-public interface Existential {
+public interface Existential extends Phantasm {
 
     @GraphQLDescription("The Agency existential ruleform")
     public class Agency extends ExistentialCommon {

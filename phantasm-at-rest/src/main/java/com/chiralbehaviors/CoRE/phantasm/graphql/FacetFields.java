@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -84,6 +85,7 @@ import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputType;
+import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
@@ -231,39 +233,32 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                             .description(facet.getNotes());
     }
 
-    /**
-     * Build the top level queries and mutations
-     *
-     * @param query
-     *            - top level query
-     * @param mutation
-     *            - top level mutation
-     * @param facet
-     * @return the references this facet has to other facets.
-     */
-    public Set<FacetRecord> build(Builder query, Builder mutation,
-                                  FacetRecord facet, List<Plugin> plugins,
-                                  Model model, ClassLoader executionScope) {
+    public Set<FacetRecord> resolve(FacetRecord facet, List<Plugin> plugins,
+                                    Model model, ClassLoader executionScope) {
         build(facet);
         Aspect aspect = new Aspect(model.create(), facet);
         new PhantasmTraversal(model).traverse(aspect, this);
 
         addPlugins(aspect, plugins, executionScope);
+        return references;
+    }
 
+    public void build(Aspect aspect, Map<FacetRecord, FacetFields> resolved,
+                      GraphQLInterfaceType phantasmType, Builder query,
+                      Builder mutation) {
+        typeBuilder.withInterface(phantasmType);
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(e));
         type = typeBuilder.build();
-
         query.field(instance(aspect, type));
         query.field(instances(aspect));
-
         mutation.field(createInstance(aspect));
         mutation.field(createInstances(aspect));
         mutation.field(apply(aspect));
         mutation.field(update(aspect));
         mutation.field(updateInstances(aspect));
         mutation.field(remove(aspect));
-        Set<FacetRecord> referenced = references;
         clear();
-        return referenced;
     }
 
     public String getName() {
@@ -1049,4 +1044,28 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .build();
     }
 
+    private void addPhantasmCast(Entry<FacetRecord, FacetFields> entry) {
+        GraphQLFieldDefinition field = GraphQLFieldDefinition.newFieldDefinition()
+                                                             .name(String.format("as%s",
+                                                                                 WorkspacePresentation.toTypeName(entry.getKey()
+                                                                                                                       .getName())))
+                                                             .description(String.format("Cast to the %s facet",
+                                                                                        entry.getKey()
+                                                                                             .getName()))
+                                                             .type(new GraphQLTypeReference(entry.getValue()
+                                                                                                 .getName()))
+                                                             .dataFetcher(env -> {
+                                                                 ExistentialRuleform existential = (ExistentialRuleform) env.getSource();
+                                                                 PhantasmCRUD crud = FacetFields.ctx(env);
+                                                                 crud.cast(existential,
+                                                                           new Aspect(crud.getModel()
+                                                                                          .create(),
+                                                                                      entry.getKey()));
+                                                                 return existential;
+                                                             })
+                                                             .build();
+
+        System.out.println("adding " + field.getName() + " to " + name);
+        typeBuilder.field(field);
+    }
 }

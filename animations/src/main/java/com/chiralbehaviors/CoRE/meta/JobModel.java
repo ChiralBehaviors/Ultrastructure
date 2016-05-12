@@ -287,12 +287,6 @@ public interface JobModel {
     List<ParentSequencingAuthorizationRecord> getParentActions(JobRecord job);
 
     /**
-     * @param node
-     * @return
-     */
-    List<ParentSequencingAuthorizationRecord> getParentActions(Product node);
-
-    /**
      * Answer the list of unique protocols applicable for a job
      *
      * @param job

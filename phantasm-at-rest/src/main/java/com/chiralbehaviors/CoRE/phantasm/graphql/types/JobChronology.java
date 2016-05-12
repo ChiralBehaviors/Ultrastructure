@@ -22,11 +22,10 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
-import java.lang.reflect.AnnotatedType;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
@@ -34,7 +33,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.TypeFunction;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -42,17 +40,8 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class JobChronology {
-    class JobChronologyTypeFunction implements TypeFunction {
 
-        @Override
-        public graphql.schema.GraphQLType apply(Class<?> t, AnnotatedType u) {
-            return JobChronologyType;
-        }
-    }
-
-    public static final graphql.schema.GraphQLType JobChronologyType = WorkspaceSchema.objectTypeOf(JobChronology.class);
-
-    private final JobChronologyRecord              record;
+    private final JobChronologyRecord record;
 
     public JobChronology(JobChronologyRecord record) {
         assert record != null;
@@ -150,5 +139,11 @@ public class JobChronology {
     @GraphQLField
     public Integer getVersion(DataFetchingEnvironment env) {
         return record.getVersion();
+    }
+
+    public static JobChronology fetch(DataFetchingEnvironment env,
+                                      UUID fromString) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

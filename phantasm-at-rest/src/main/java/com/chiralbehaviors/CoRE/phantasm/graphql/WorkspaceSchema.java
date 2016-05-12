@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
@@ -45,6 +46,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.MetaProtocolMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAttributeAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ParentSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ProtocolMutations;
@@ -55,8 +57,10 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQ
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.MetaProtocolQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAttributeAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ParentSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ProtocolQueries;
@@ -75,7 +79,9 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
@@ -102,20 +108,24 @@ public class WorkspaceSchema {
             ChildSequencingMutations, ParentSequencingMutations,
             SelfSequencingMutations, SiblingSequencingMutations,
             ProtocolMutations, MetaProtocolMutations,
-            StatusCodeSequencingMutations {
+            StatusCodeSequencingMutations,
+            NetworkAttributeAuthorizationMutations, JobMutations {
     }
 
     public interface MetaQueries extends ExistentialQueries, FacetQueries,
             AttributeAuthorizationQueries, NetworkAuthorizationQueries,
             ChildSequencingQueries, ParentSequencingQueries,
             SelfSequencingQueries, SiblingSequencingQueries, ProtocolQueries,
-            MetaProtocolQueries, StatusCodeSequencingQueries {
+            MetaProtocolQueries, StatusCodeSequencingQueries,
+            NetworkAttributeAuthorizationQueries, JobQueries,
+            JobChronologyQueries {
     }
 
     public interface Mutations extends ExistentialMutations, JobMutations {
     }
 
-    public interface Queries extends ExistentialQueries, JobQueries {
+    public interface Queries
+            extends ExistentialQueries, JobQueries, JobChronologyQueries {
     }
 
     public static final GraphQLObjectType    AgencyType;
@@ -138,6 +148,8 @@ public class WorkspaceSchema {
     public static final GraphQLObjectType    StatusCodeSequencingType;
     public static final GraphQLObjectType    StatusCodeType;
     public static final GraphQLObjectType    UnitType;
+    public static final GraphQLObjectType    NetworkAttributeAuthorizationType;
+    public static final GraphQLObjectType    JobChronologyType;
 
     // Type conversion initialization is kinda tricky because recursion.
     // Be careful how you manage the static initialization of this class
@@ -147,71 +159,79 @@ public class WorkspaceSchema {
         register(UUID.class, (u, t) -> GraphQLString);
         register(ValueType.class, (u, t) -> GraphQLString);
         register(Cardinality.class, (u, t) -> GraphQLString);
+        register(ReferenceType.class, (u, t) -> GraphQLString);
 
         // Agency is recursive and referred to by everything
-        AgencyType = WorkspaceSchema.objectTypeOf(Agency.class);
+        AgencyType = objectTypeOf(Agency.class);
         register(Agency.class, (u, t) -> AgencyType);
 
-        AttributeType = WorkspaceSchema.objectTypeOf(Attribute.class);
+        AttributeType = objectTypeOf(Attribute.class);
         register(Attribute.class, (u, t) -> AttributeType);
 
-        IntervalType = WorkspaceSchema.objectTypeOf(Interval.class);
+        IntervalType = objectTypeOf(Interval.class);
         register(Interval.class, (u, t) -> IntervalType);
 
-        LocationType = WorkspaceSchema.objectTypeOf(Location.class);
+        LocationType = objectTypeOf(Location.class);
         register(Location.class, (u, t) -> LocationType);
 
-        ProductType = WorkspaceSchema.objectTypeOf(Product.class);
+        ProductType = objectTypeOf(Product.class);
         register(Product.class, (u, t) -> ProductType);
 
         // Recursive, but seems to be fin
-        RelationshipType = WorkspaceSchema.objectTypeOf(Relationship.class);
+        RelationshipType = objectTypeOf(Relationship.class);
         register(Relationship.class, (u, t) -> RelationshipType);
 
-        StatusCodeType = WorkspaceSchema.objectTypeOf(StatusCode.class);
+        StatusCodeType = objectTypeOf(StatusCode.class);
         register(StatusCode.class, (u, t) -> StatusCodeType);
 
-        UnitType = WorkspaceSchema.objectTypeOf(Unit.class);
+        UnitType = objectTypeOf(Unit.class);
         register(Unit.class, (u, t) -> UnitType);
 
-        ExistentialType = WorkspaceSchema.interfaceTypeOf(Existential.class);
+        ExistentialType = interfaceTypeOf(Existential.class);
         register(Existential.class, (u, t) -> ExistentialType);
 
-        FacetType = WorkspaceSchema.objectTypeOf(Facet.class);
+        FacetType = objectTypeOf(Facet.class);
         register(Facet.class, (u, t) -> FacetType);
 
-        AttributeAuthorizationType = WorkspaceSchema.objectTypeOf(AttributeAuthorization.class);
+        AttributeAuthorizationType = objectTypeOf(AttributeAuthorization.class);
         register(AttributeAuthorization.class,
                  (u, t) -> AttributeAuthorizationType);
 
-        ChildSequencingType = WorkspaceSchema.objectTypeOf(ChildSequencing.class);
+        ChildSequencingType = objectTypeOf(ChildSequencing.class);
         register(ChildSequencing.class, (u, t) -> ChildSequencingType);
 
-        JobType = WorkspaceSchema.objectTypeOf(Job.class);
+        JobType = objectTypeOf(Job.class);
         register(Job.class, (u, t) -> JobType);
 
-        MetaProtocolType = WorkspaceSchema.objectTypeOf(MetaProtocol.class);
+        MetaProtocolType = objectTypeOf(MetaProtocol.class);
         register(MetaProtocol.class, (u, t) -> MetaProtocolType);
 
-        NetworkAuthorizationType = WorkspaceSchema.objectTypeOf(NetworkAuthorization.class);
+        NetworkAuthorizationType = objectTypeOf(NetworkAuthorization.class);
         register(NetworkAuthorization.class,
                  (u, t) -> NetworkAuthorizationType);
 
-        ParentSequencingType = WorkspaceSchema.objectTypeOf(ParentSequencing.class);
+        ParentSequencingType = objectTypeOf(ParentSequencing.class);
         register(ParentSequencing.class, (u, t) -> ParentSequencingType);
 
-        ProtocolType = WorkspaceSchema.objectTypeOf(Protocol.class);
+        ProtocolType = objectTypeOf(Protocol.class);
         register(Protocol.class, (u, t) -> ProtocolType);
 
-        SelfSequencingType = WorkspaceSchema.objectTypeOf(SelfSequencing.class);
+        SelfSequencingType = objectTypeOf(SelfSequencing.class);
         register(SelfSequencing.class, (u, t) -> SelfSequencingType);
 
-        SiblingSequencingType = WorkspaceSchema.objectTypeOf(SiblingSequencing.class);
+        SiblingSequencingType = objectTypeOf(SiblingSequencing.class);
         register(SiblingSequencing.class, (u, t) -> SiblingSequencingType);
 
-        StatusCodeSequencingType = WorkspaceSchema.objectTypeOf(StatusCodeSequencing.class);
+        StatusCodeSequencingType = objectTypeOf(StatusCodeSequencing.class);
         register(StatusCodeSequencing.class,
                  (u, t) -> StatusCodeSequencingType);
+
+        NetworkAttributeAuthorizationType = objectTypeOf(NetworkAttributeAuthorization.class);
+        register(NetworkAttributeAuthorization.class,
+                 (u, t) -> NetworkAttributeAuthorizationType);
+
+        JobChronologyType = WorkspaceSchema.objectTypeOf(JobChronology.class);
+        register(JobChronology.class, (u, t) -> JobChronologyType);
     }
 
     public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,
@@ -243,6 +263,7 @@ public class WorkspaceSchema {
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));
         }
+        buildPhantasm(topLevelQuery, resolved);
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
@@ -278,5 +299,9 @@ public class WorkspaceSchema {
             throw new IllegalStateException(String.format("Unable to create object type for %s",
                                                           clazz.getSimpleName()));
         }
+    }
+
+    private static void buildPhantasm(Builder topLevelQuery,
+                                      Map<FacetRecord, FacetFields> resolved) {
     }
 }

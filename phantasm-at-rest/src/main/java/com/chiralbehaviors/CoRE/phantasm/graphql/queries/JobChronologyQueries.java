@@ -26,12 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.Tables;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
@@ -44,31 +39,17 @@ import graphql.schema.DataFetchingEnvironment;
 public interface JobChronologyQueries {
 
     @GraphQLField
-    default ChildSequencing childSequencing(@NotNull @GraphQLName("id") String id,
-                                            DataFetchingEnvironment env) {
-        return ChildSequencing.fetch(env, UUID.fromString(id));
+    default JobChronology jobChronology(@NotNull @GraphQLName("id") String id,
+                                        DataFetchingEnvironment env) {
+        return JobChronology.fetch(env, UUID.fromString(id));
     }
 
     @GraphQLField
-    default List<ChildSequencing> childSequencings(@GraphQLName("ids") List<String> ids,
-                                                   DataFetchingEnvironment env) {
-        if (ids == null) {
-            Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env).create()
-                           .selectDistinct(Tables.CHILD_SEQUENCING_AUTHORIZATION.fields())
-                           .from(Tables.CHILD_SEQUENCING_AUTHORIZATION)
-                           .join(Tables.WORKSPACE_AUTHORIZATION)
-                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.CHILD_SEQUENCING_AUTHORIZATION.WORKSPACE))
-                           .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                           .fetch()
-                           .into(ChildSequencingAuthorizationRecord.class)
-                           .stream()
-                           .map(r -> new ChildSequencing(r))
-                           .collect(Collectors.toList());
-        }
+    default List<JobChronology> JobChronologies(@NotNull @GraphQLName("ids") List<String> ids,
+                                                DataFetchingEnvironment env) {
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> ChildSequencing.fetch(env, id))
+                  .map(id -> JobChronology.fetch(env, id))
                   .collect(Collectors.toList());
     }
 }

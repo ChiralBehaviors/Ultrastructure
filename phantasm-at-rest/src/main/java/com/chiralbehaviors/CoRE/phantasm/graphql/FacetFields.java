@@ -233,16 +233,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                             .description(facet.getNotes());
     }
 
-    public Set<FacetRecord> resolve(FacetRecord facet, List<Plugin> plugins,
-                                    Model model, ClassLoader executionScope) {
-        build(facet);
-        Aspect aspect = new Aspect(model.create(), facet);
-        new PhantasmTraversal(model).traverse(aspect, this);
-
-        addPlugins(aspect, plugins, executionScope);
-        return references;
-    }
-
     public void build(Aspect aspect, Map<FacetRecord, FacetFields> resolved,
                       GraphQLInterfaceType phantasmType, Builder query,
                       Builder mutation) {
@@ -271,6 +261,16 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     public GraphQLTypeReference referenceToType(String typeName) {
         return new GraphQLTypeReference(WorkspacePresentation.toTypeName(typeName));
+    }
+
+    public Set<FacetRecord> resolve(FacetRecord facet, List<Plugin> plugins,
+                                    Model model, ClassLoader executionScope) {
+        build(facet);
+        Aspect aspect = new Aspect(model.create(), facet);
+        new PhantasmTraversal(model).traverse(aspect, this);
+
+        addPlugins(aspect, plugins, executionScope);
+        return references;
     }
 
     @Override
@@ -462,6 +462,28 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                         (ExistentialRuleform) update.get(AT_RULEFORM),
                                                         auth,
                                                         crud.lookup((List<String>) update.get(addChildren))));
+    }
+
+    private void addPhantasmCast(Entry<FacetRecord, FacetFields> entry) {
+        typeBuilder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                                .name(String.format("as%s",
+                                                                    WorkspacePresentation.toTypeName(entry.getKey()
+                                                                                                          .getName())))
+                                                .description(String.format("Cast to the %s facet",
+                                                                           entry.getKey()
+                                                                                .getName()))
+                                                .type(new GraphQLTypeReference(entry.getValue()
+                                                                                    .getName()))
+                                                .dataFetcher(env -> {
+                                                    ExistentialRuleform existential = (ExistentialRuleform) env.getSource();
+                                                    PhantasmCRUD crud = FacetFields.ctx(env);
+                                                    crud.cast(existential,
+                                                              new Aspect(crud.getModel()
+                                                                             .create(),
+                                                                         entry.getKey()));
+                                                    return existential;
+                                                })
+                                                .build());
     }
 
     private void addPlugins(Aspect facet, List<Plugin> plugins,
@@ -1042,30 +1064,5 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
-    }
-
-    private void addPhantasmCast(Entry<FacetRecord, FacetFields> entry) {
-        GraphQLFieldDefinition field = GraphQLFieldDefinition.newFieldDefinition()
-                                                             .name(String.format("as%s",
-                                                                                 WorkspacePresentation.toTypeName(entry.getKey()
-                                                                                                                       .getName())))
-                                                             .description(String.format("Cast to the %s facet",
-                                                                                        entry.getKey()
-                                                                                             .getName()))
-                                                             .type(new GraphQLTypeReference(entry.getValue()
-                                                                                                 .getName()))
-                                                             .dataFetcher(env -> {
-                                                                 ExistentialRuleform existential = (ExistentialRuleform) env.getSource();
-                                                                 PhantasmCRUD crud = FacetFields.ctx(env);
-                                                                 crud.cast(existential,
-                                                                           new Aspect(crud.getModel()
-                                                                                          .create(),
-                                                                                      entry.getKey()));
-                                                                 return existential;
-                                                             })
-                                                             .build();
-
-        System.out.println("adding " + field.getName() + " to " + name);
-        typeBuilder.field(field);
     }
 }

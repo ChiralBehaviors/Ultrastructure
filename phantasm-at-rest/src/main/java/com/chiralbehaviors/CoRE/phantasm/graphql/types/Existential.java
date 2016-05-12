@@ -20,14 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AgencyType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.IntervalType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.UUID;
@@ -155,27 +147,7 @@ public interface Existential extends Phantasm {
         @Override
         public GraphQLObjectType getType(Object object) {
             Existential record = (Existential) object; // If this doesn't succeed, it's a bug, so no catch
-            switch (record.getDomain()) {
-                case Agency:
-                    return AgencyType;
-                case Attribute:
-                    return AttributeType;
-                case Interval:
-                    return IntervalType;
-                case Location:
-                    return LocationType;
-                case Product:
-                    return ProductType;
-                case Relationship:
-                    return RelationshipType;
-                case StatusCode:
-                    return StatusCodeType;
-                case Unit:
-                    return UnitType;
-                default:
-                    throw new IllegalStateException(String.format("invalid domain: %s",
-                                                                  record.getDomain()));
-            }
+            return WorkspaceSchema.existentialType(record.getDomain());
         }
 
     }

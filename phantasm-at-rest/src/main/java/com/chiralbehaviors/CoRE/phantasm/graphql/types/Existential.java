@@ -28,9 +28,11 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductT
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
@@ -49,6 +51,7 @@ import graphql.schema.TypeResolver;
  * @author hhildebrand
  *
  */
+@SuppressWarnings("unused")
 @GraphQLTypeResolver(ExistentialResolver.class)
 public interface Existential {
 
@@ -136,10 +139,15 @@ public interface Existential {
         }
 
         @Override
+        public ExistentialRuleform getRecord() {
+            return (ExistentialRuleform) record;
+        }
+
+        @Override
         public Agency getUpdatedBy(DataFetchingEnvironment env) {
             return new Agency((ExistentialRecord) WorkspaceSchema.ctx(env)
-                                                             .records()
-                                                             .resolve(record.getUpdatedBy()));
+                                                                 .records()
+                                                                 .resolve(record.getUpdatedBy()));
         }
     }
 
@@ -227,8 +235,7 @@ public interface Existential {
 
         @GraphQLField
         public Relationship getInverse(DataFetchingEnvironment env) {
-            return new Relationship(Existential.resolve(env,
-                                                        record.getInverse()));
+            return new Relationship(resolve(env, record.getInverse()));
         }
     }
 
@@ -284,16 +291,18 @@ public interface Existential {
     public class UpdatedByFetcher implements DataFetcher {
         @Override
         public Object get(DataFetchingEnvironment environment) {
-            return WorkspaceSchema.ctx(environment).records()
-                                   .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
+            return WorkspaceSchema.ctx(environment)
+                                  .records()
+                                  .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
         }
 
     }
 
     public static <T extends ExistentialRecord> T resolve(DataFetchingEnvironment env,
                                                           UUID id) {
-        return WorkspaceSchema.ctx(env).records()
-                       .resolve(id);
+        return WorkspaceSchema.ctx(env)
+                              .records()
+                              .resolve(id);
     }
 
     public static Existential wrap(ExistentialRecord record) throws IllegalStateException {
@@ -332,6 +341,8 @@ public interface Existential {
 
     @GraphQLField
     String getName();
+
+    ExistentialRuleform getRecord();
 
     @GraphQLField
     @GraphQLDataFetcher(UpdatedByFetcher.class)

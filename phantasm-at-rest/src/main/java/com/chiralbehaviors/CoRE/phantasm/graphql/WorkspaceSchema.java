@@ -28,9 +28,11 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
@@ -89,13 +91,16 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
 import graphql.annotations.GraphQLAnnotations2;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.TypeResolver;
 
 /**
  * @author hhildebrand
@@ -128,28 +133,27 @@ public class WorkspaceSchema {
             extends ExistentialQueries, JobQueries, JobChronologyQueries {
     }
 
-    public static final GraphQLObjectType    AgencyType;
-    public static final GraphQLObjectType    AttributeAuthorizationType;
-    public static final GraphQLObjectType    AttributeType;
-    public static final GraphQLObjectType    ChildSequencingType;
-    public static final GraphQLInterfaceType ExistentialType;
-    public static final GraphQLObjectType    FacetType;
-    public static final GraphQLObjectType    IntervalType;
-    public static final GraphQLObjectType    JobType;
-    public static final GraphQLObjectType    LocationType;
-    public static final GraphQLObjectType    MetaProtocolType;
-    public static final GraphQLObjectType    NetworkAuthorizationType;
-    public static final GraphQLObjectType    ParentSequencingType;
-    public static final GraphQLObjectType    ProductType;
-    public static final GraphQLObjectType    ProtocolType;
-    public static final GraphQLObjectType    RelationshipType;
-    public static final GraphQLObjectType    SelfSequencingType;
-    public static final GraphQLObjectType    SiblingSequencingType;
-    public static final GraphQLObjectType    StatusCodeSequencingType;
-    public static final GraphQLObjectType    StatusCodeType;
-    public static final GraphQLObjectType    UnitType;
-    public static final GraphQLObjectType    NetworkAttributeAuthorizationType;
-    public static final GraphQLObjectType    JobChronologyType;
+    public static final GraphQLObjectType AgencyType;
+    public static final GraphQLObjectType AttributeAuthorizationType;
+    public static final GraphQLObjectType AttributeType;
+    public static final GraphQLObjectType ChildSequencingType;
+    public static final GraphQLObjectType FacetType;
+    public static final GraphQLObjectType IntervalType;
+    public static final GraphQLObjectType JobType;
+    public static final GraphQLObjectType LocationType;
+    public static final GraphQLObjectType MetaProtocolType;
+    public static final GraphQLObjectType NetworkAuthorizationType;
+    public static final GraphQLObjectType ParentSequencingType;
+    public static final GraphQLObjectType ProductType;
+    public static final GraphQLObjectType ProtocolType;
+    public static final GraphQLObjectType RelationshipType;
+    public static final GraphQLObjectType SelfSequencingType;
+    public static final GraphQLObjectType SiblingSequencingType;
+    public static final GraphQLObjectType StatusCodeSequencingType;
+    public static final GraphQLObjectType StatusCodeType;
+    public static final GraphQLObjectType UnitType;
+    public static final GraphQLObjectType NetworkAttributeAuthorizationType;
+    public static final GraphQLObjectType JobChronologyType;
 
     // Type conversion initialization is kinda tricky because recursion.
     // Be careful how you manage the static initialization of this class
@@ -186,9 +190,6 @@ public class WorkspaceSchema {
 
         UnitType = objectTypeOf(Unit.class);
         register(Unit.class, (u, t) -> UnitType);
-
-        ExistentialType = interfaceTypeOf(Existential.class);
-        register(Existential.class, (u, t) -> ExistentialType);
 
         FacetType = objectTypeOf(Facet.class);
         register(Facet.class, (u, t) -> FacetType);
@@ -303,5 +304,40 @@ public class WorkspaceSchema {
 
     private static void buildPhantasm(Builder topLevelQuery,
                                       Map<FacetRecord, FacetFields> resolved) {
+        graphql.schema.GraphQLInterfaceType.Builder builder = GraphQLInterfaceType.newInterface()
+                                                                                  .name("Phantasm")
+                                                                                  .description("The union interface of facets within a workspace");
+        resolved.entrySet()
+                .stream()
+                .forEach(entry -> {
+                    addPhantasmCast(builder, entry);
+                });
+        builder.typeResolver(createTypeResolver(resolved));
+        topLevelQuery.withInterface(builder.build());
+    }
+
+    private static TypeResolver createTypeResolver(Map<FacetRecord, FacetFields> resolved) {
+        return new Existential.ExistentialResolver();
+    }
+
+    private static void addPhantasmCast(graphql.schema.GraphQLInterfaceType.Builder builder,
+                                        Entry<FacetRecord, FacetFields> entry) {
+        GraphQLFieldDefinition.newFieldDefinition()
+                              .name(String.format("as%s", entry.getKey()
+                                                               .getName()))
+                              .description(String.format("Cast to the %s facet",
+                                                         entry.getKey()
+                                                              .getName()))
+                              .type(entry.getValue()
+                                         .getType())
+                              .dataFetcher(env -> {
+                                  ExistentialRuleform existential = (ExistentialRuleform) env.getSource();
+                                  PhantasmCRUD crud = FacetFields.ctx(env);
+                                  crud.cast(existential,
+                                            new Aspect(crud.getModel()
+                                                           .create(),
+                                                       entry.getKey()));
+                                  return existential;
+                              });
     }
 }

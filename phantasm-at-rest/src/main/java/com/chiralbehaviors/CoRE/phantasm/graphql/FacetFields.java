@@ -161,6 +161,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
+    public static PhantasmCRUD ctx(DataFetchingEnvironment env) {
+        return (PhantasmCRUD) env.getContext();
+    }
+
     public static Deque<FacetRecord> initialState(WorkspaceAccessor workspace,
                                                   Model model) {
         Product definingProduct = workspace.getDefiningProduct();
@@ -203,12 +207,14 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
     private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
+
     private String                                                                          name;
 
     private Set<FacetRecord>                                                                references     = new HashSet<>();
 
-    private Builder                                                                         typeBuilder;
+    private GraphQLObjectType                                                               type;
 
+    private Builder                                                                         typeBuilder;
     private Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate = new HashMap<>();
 
     private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
@@ -244,7 +250,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
         addPlugins(aspect, plugins, executionScope);
 
-        GraphQLObjectType type = typeBuilder.build();
+        type = typeBuilder.build();
 
         query.field(instance(aspect, type));
         query.field(instances(aspect));
@@ -260,21 +266,16 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         return referenced;
     }
 
-    public PhantasmCRUD ctx(DataFetchingEnvironment env) {
-        return (PhantasmCRUD) env.getContext();
-    }
-
     public String getName() {
         return name;
     }
 
-    public GraphQLTypeReference referenceToType(String typeName) {
-        return new GraphQLTypeReference(WorkspacePresentation.toTypeName(typeName));
+    public GraphQLOutputType getType() {
+        return type;
     }
 
-    public GraphQLTypeReference referenceToUpdateType(String typeName) {
-        return new GraphQLTypeReference(String.format(UPDATE_TYPE,
-                                                      WorkspacePresentation.toTypeName(typeName)));
+    public GraphQLTypeReference referenceToType(String typeName) {
+        return new GraphQLTypeReference(WorkspacePresentation.toTypeName(typeName));
     }
 
     @Override
@@ -293,7 +294,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                               .description(attribute.getDescription())
                                               .dataFetcher(env -> {
                                                   Object value = ctx(env).getAttributeValue(facet,
-                                                                                            (ExistentialRuleform) env.getSource(),
+                                                                                            ((Typed) env.getSource()).ruleform,
                                                                                             auth);
                                                   if (value == null) {
                                                       return null;
@@ -367,21 +368,30 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     public void visitChildren(Aspect facet, NetworkAuthorization auth,
                               String fieldName, Aspect child,
                               String singularFieldName) {
-        GraphQLOutputType type = referenceToType(child.getName());
+        String childFacetName = child.getName();
+        GraphQLOutputType type = referenceToType(childFacetName);
         type = new GraphQLList(type);
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                       (ExistentialRuleform) env.getSource(),
-                                                                                       auth))
+                                                                                       ((Typed) env.getSource()).ruleform,
+                                                                                       auth)
+                                                                          .stream()
+                                                                          .map(r -> new Typed(r,
+                                                                                              child.getName()))
+                                                                          .collect(Collectors.toList()))
                                               .description(auth.getNotes())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(String.format(IMMEDIATE_TEMPLATE,
                                                                   capitalized(fieldName)))
                                               .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
-                                                                                                (ExistentialRuleform) env.getSource(),
-                                                                                                auth))
+                                                                                                ((Typed) env.getSource()).ruleform,
+                                                                                                auth)
+                                                                          .stream()
+                                                                          .map(r -> new Typed(r,
+                                                                                              childFacetName))
+                                                                          .collect(Collectors.toList()))
                                               .description(auth.getNotes())
                                               .build());
         setChildren(facet, auth, fieldName);
@@ -398,9 +408,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         GraphQLOutputType type = referenceToType(child.getName());
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
-                                              .dataFetcher(env -> ctx(env).getSingularChild(facet,
-                                                                                            (ExistentialRuleform) env.getSource(),
-                                                                                            auth))
+                                              .dataFetcher(env -> new Typed(ctx(env).getSingularChild(facet,
+                                                                                                      ((Typed) env.getSource()).ruleform,
+                                                                                                      auth),
+                                                                            child.getName()))
                                               .description(auth.getNotes())
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
@@ -523,11 +534,11 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                               .argument(arguments)
                                               .name(instanceMethod.getName())
                                               .dataFetcher(env -> {
-                                                  ExistentialRuleform instance = (ExistentialRuleform) env.getSource();
+                                                  Typed instance = (Typed) env.getSource();
                                                   PhantasmCRUD crud = ctx(env);
                                                   if (!checkInvoke(facet,
                                                                    instanceMethod,
-                                                                   instance,
+                                                                   instance.ruleform,
                                                                    crud)) {
                                                       log.info(String.format("Failed invoking %s by: %s",
                                                                              instanceMethod,
@@ -548,7 +559,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                                                        env,
                                                                                        model,
                                                                                        model.wrap(phantasm,
-                                                                                                  instance));
+                                                                                                  instance.ruleform));
                                                   } finally {
                                                       Thread.currentThread()
                                                             .setContextClassLoader(prev);
@@ -597,14 +608,17 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
                                               .description("The id of the facet instance")
+                                              .dataFetcher(env -> ((Typed) env.getSource()).ruleform.getId())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(NAME)
                                               .description("The name of the facet instance")
+                                              .dataFetcher(env -> ((Typed) env.getSource()).ruleform.getName())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(DESCRIPTION)
                                               .description("The description of the facet instance")
+                                              .dataFetcher(env -> ((Typed) env.getSource()).ruleform.getDescription())
                                               .build());
 
         updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
@@ -669,11 +683,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private GraphQLFieldDefinition createInstance(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
         List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
-        return newFieldDefinition().name(String.format(CREATE_MUTATION,
-                                                       WorkspacePresentation.toTypeName(facet.getName())))
+        return newFieldDefinition().name(String.format(CREATE_MUTATION, name))
                                    .description(String.format("Create an instance of %s",
-                                                              WorkspacePresentation.toTypeName(facet.getName())))
-                                   .type(referenceToType(facet.getName()))
+                                                              name))
+                                   .type(type)
                                    .argument(newArgument().name(STATE)
                                                           .description("the initial state to apply to the new instance")
                                                           .type(new GraphQLNonNull(createTypeBuilder.build()))
@@ -681,20 +694,21 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .dataFetcher(env -> {
                                        Map<String, Object> createState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
-                                       return crud.createInstance(facet,
-                                                                  (String) createState.get(SET_NAME),
-                                                                  (String) createState.get(SET_DESCRIPTION),
-                                                                  instance -> {
-                                                                      createState.remove(SET_NAME);
-                                                                      createState.remove(SET_DESCRIPTION);
-                                                                      update(instance,
-                                                                             createState,
-                                                                             crud,
-                                                                             detachedUpdate);
-                                                                      detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                                                    instance));
-                                                                      return instance;
-                                                                  });
+                                       return new Typed(crud.createInstance(facet,
+                                                                            (String) createState.get(SET_NAME),
+                                                                            (String) createState.get(SET_DESCRIPTION),
+                                                                            instance -> {
+                                                                                createState.remove(SET_NAME);
+                                                                                createState.remove(SET_DESCRIPTION);
+                                                                                update(instance,
+                                                                                       createState,
+                                                                                       crud,
+                                                                                       detachedUpdate);
+                                                                                detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                                                              instance));
+                                                                                return instance;
+                                                                            }),
+                                                        name);
 
                                    })
                                    .build();
@@ -708,7 +722,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Create instances of %s",
                                                               WorkspacePresentation.toTypeName(facet.getName())))
-                                   .type(new GraphQLList(referenceToType(facet.getName())))
+                                   .type(new GraphQLList(type))
                                    .argument(newArgument().name(STATE)
                                                           .description("the initial state to apply to the new instance")
                                                           .type(new GraphQLNonNull(new GraphQLList(createTypeBuilder.build())))
@@ -731,6 +745,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                                                                                                                                     instance));
                                                                                                       return instance;
                                                                                                   }))
+                                                          .map(instance -> new Typed(instance,
+                                                                                     name))
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
@@ -822,7 +838,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                           .description("id of the facet")
                                                           .type(new GraphQLNonNull(GraphQLString))
                                                           .build())
-                                   .dataFetcher(env -> ctx(env).lookup((String) env.getArgument(ID)))
+                                   .dataFetcher(env -> new Typed(ctx(env).lookup((String) env.getArgument(ID)),
+                                                                 name))
                                    .build();
     }
 
@@ -839,8 +856,11 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .dataFetcher(context -> {
                                        @SuppressWarnings("unchecked")
                                        List<String> ids = (List<String>) context.getArgument(ID);
-                                       return ids != null ? ctx(context).lookup(ids)
-                                                          : ctx(context).getInstances(facet);
+                                       return (ids != null ? ctx(context).lookup(ids)
+                                                           : ctx(context).getInstances(facet)).stream()
+                                                                                              .map(r -> new Typed(r,
+                                                                                                                  name))
+                                                                                              .collect(Collectors.toList());
                                    })
                                    .build();
 
@@ -978,10 +998,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
-                                       ExistentialRuleform ruleform = crud.lookup((String) updateState.get(ID));
+                                       ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((String) updateState.get(ID));
                                        update(ruleform, updateState, crud,
                                               detachedUpdateTemplate);
-                                       return ruleform;
+                                       return new Typed(ruleform, name);
                                    })
                                    .build();
     }
@@ -1017,7 +1037,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                        PhantasmCRUD crud = ctx(env);
                                        return updateStates.stream()
                                                           .map(updateState -> {
-                                                              ExistentialRuleform ruleform = crud.lookup((String) updateState.get(ID));
+                                                              ExistentialRuleform ruleform = ((Typed) crud.lookup((String) updateState.get(ID))).ruleform;
                                                               update(ruleform,
                                                                      updateState,
                                                                      crud,

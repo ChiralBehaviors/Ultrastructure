@@ -1490,10 +1490,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return existential.equals(WellKnownAgency.ANY.id());
-            case Attribute:
-                return existential.equals(WellKnownAttribute.ANY.id());
-            case Interval:
-                return existential.equals(WellKnownInterval.ANY.id());
             case Location:
                 return existential.equals(WellKnownLocation.ANY.id());
             case Product:

@@ -274,7 +274,7 @@ public final class WorkspaceSchema {
                                                    : workspace.get(ExistentialDomain.Location));
         });
 
-        ProductType = objectTypeOf(Product.class);
+        ProductType = objectTypeOf(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class);
         register(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class,
                  (u, t) -> {
                      Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();

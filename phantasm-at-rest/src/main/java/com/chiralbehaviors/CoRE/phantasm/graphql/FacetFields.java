@@ -617,17 +617,14 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
                                               .description("The id of the facet instance")
-                                              .dataFetcher(env -> ((ExistentialRuleform) env.getSource()).getId())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(NAME)
                                               .description("The name of the facet instance")
-                                              .dataFetcher(env -> ((ExistentialRuleform) env.getSource()).getName())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(DESCRIPTION)
                                               .description("The description of the facet instance")
-                                              .dataFetcher(env -> ((ExistentialRuleform) env.getSource()).getDescription())
                                               .build());
 
         updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))

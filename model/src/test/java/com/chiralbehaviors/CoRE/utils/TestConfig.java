@@ -38,22 +38,23 @@ public class TestConfig extends DatabaseTest {
     @Test
     public void testDbaConfiguration() throws Exception {
         Properties properties = new Properties();
-        properties.load(DatabaseTest.class.getResourceAsStream("/db.properties"));
-        DbaConfiguration config = new DbaConfiguration();
-        config.corePassword = (String) properties.get("password");
-        config.coreServer = (String) properties.get("core.server");
-        config.coreDb = (String) properties.get("core.db");
-        config.corePort = Integer.parseInt((String) properties.get("core.port"));
-        config.coreUsername = (String) properties.get("user");
+        properties.load(TestConfig.class.getResourceAsStream("/db.properties"));
+
+        String jdbcUrl = String.format("postgres://%s:%s@%s:%s/%s",
+                                       properties.get("user"),
+                                       properties.get("password"),
+                                       properties.get("core.server"),
+                                       properties.get("core.port"),
+                                       properties.get("core.db"));
+        DbaConfiguration config = new DbaConfiguration() {
+
+            @Override
+            public String getDbUrlFromEnv() {
+                return jdbcUrl;
+            }
+        };
+
         try (Connection connection = config.getCoreConnection()) {
-            assertNotNull(connection);
-        }
-        config.dbaPassword = (String) properties.get("dba.password");
-        config.dbaServer = (String) properties.get("dba.server");
-        config.dbaDb = (String) properties.get("dba.db");
-        config.dbaPort = Integer.parseInt((String) properties.get("dba.port"));
-        config.dbaUsername = (String) properties.get("dba.login");
-        try (Connection connection = config.getDbaConnection()) {
             assertNotNull(connection);
         }
     }

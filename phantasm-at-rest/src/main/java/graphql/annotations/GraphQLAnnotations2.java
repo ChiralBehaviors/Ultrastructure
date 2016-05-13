@@ -56,6 +56,7 @@ import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLTypeReference;
 
 /**
  * A utility class for extracting GraphQL data structures from annotated
@@ -387,6 +388,9 @@ public class GraphQLAnnotations2 {
                                               .newInstance();
         GraphQLOutputType type = (GraphQLOutputType) typeFunction.apply(field.getType(),
                                                                         field.getAnnotatedType());
+        if (type instanceof GraphQLObjectType) {
+            type = new GraphQLTypeReference(type.getName());
+        }
 
         GraphQLOutputType outputType = field.getAnnotation(NotNull.class) == null ? type
                                                                                   : new GraphQLNonNull(type);
@@ -446,6 +450,9 @@ public class GraphQLAnnotations2 {
 
         GraphQLOutputType type = (GraphQLOutputType) typeFunction.apply(method.getReturnType(),
                                                                         annotatedReturnType);
+        if (type instanceof GraphQLObjectType) {
+            type = new GraphQLTypeReference(type.getName());
+        }
 
         GraphQLOutputType outputType = method.getAnnotation(NotNull.class) == null ? type
                                                                                    : new GraphQLNonNull(type);

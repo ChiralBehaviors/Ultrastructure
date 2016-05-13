@@ -45,7 +45,7 @@ import graphql.schema.TypeResolver;
  */
 @SuppressWarnings("unused")
 @GraphQLTypeResolver(ExistentialResolver.class)
-public interface Existential extends Phantasm {
+public interface Existential {
 
     @GraphQLDescription("The Agency existential ruleform")
     public class Agency extends ExistentialCommon {
@@ -96,7 +96,7 @@ public interface Existential extends Phantasm {
         public String id;
     }
 
-    public abstract class ExistentialCommon implements Existential {
+    public abstract class ExistentialCommon implements Existential, Phantasm {
         protected final ExistentialRecord record;
 
         public ExistentialCommon(ExistentialRecord record) {

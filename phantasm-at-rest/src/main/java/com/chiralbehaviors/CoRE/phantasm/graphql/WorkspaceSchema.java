@@ -24,6 +24,7 @@ import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
 import static graphql.annotations.DefaultTypeFunction.register;
 
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +111,78 @@ import graphql.schema.TypeResolver;
  * @author hhildebrand
  *
  */
-public class WorkspaceSchema {
+public final class WorkspaceSchema {
+
+    public static class TypeProxy extends GraphQLObjectType {
+        private final GraphQLObjectType target;
+
+        public TypeProxy(GraphQLObjectType target) {
+            super("", "", Collections.emptyList(), Collections.emptyList());
+            this.target = target;
+        }
+
+        @Override
+        public String getDescription() {
+            return target.getDescription();
+        }
+
+        @Override
+        public GraphQLFieldDefinition getFieldDefinition(String name) {
+            return target.getFieldDefinition(name);
+        }
+
+        @Override
+        public List<GraphQLFieldDefinition> getFieldDefinitions() {
+            return target.getFieldDefinitions();
+        }
+
+        @Override
+        public List<GraphQLInterfaceType> getInterfaces() {
+            return target.getInterfaces();
+        }
+
+        @Override
+        public String getName() {
+            return target.getName();
+        }
+
+        @Override
+        public String toString() {
+            return "GraphQLObjectType{" + "name='" + getName() + '\''
+                   + ", description='" + getDescription() + '\''
+                   + ", fieldDefinitions=" + getFieldDefinitions()
+                   + ", interfaces=" + getInterfaces() + '}';
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result
+                     + ((target == null) ? 0 : target.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof GraphQLObjectType)) {
+                return false;
+            }
+            if (obj instanceof TypeProxy) {
+                return target.equals(((TypeProxy) obj).target);
+            }
+            if (!target.equals(obj)) {
+                return false;
+            }
+            return true;
+        }
+    }
 
     public interface MetaMutations extends ExistentialMutations, FacetMutations,
             AttributeAuthorizationMutations, NetworkAuthorizationMutations,
@@ -158,7 +230,6 @@ public class WorkspaceSchema {
     private static final GraphQLObjectType                                      RelationshipType;
     private static final GraphQLObjectType                                      SelfSequencingType;
     private static final GraphQLObjectType                                      SiblingSequencingType;
-
     private static final GraphQLObjectType                                      StatusCodeSequencingType;
     private static final GraphQLObjectType                                      StatusCodeType;
     private static final GraphQLObjectType                                      UnitType;
@@ -183,58 +254,57 @@ public class WorkspaceSchema {
         AgencyType = objectTypeOf(Agency.class);
         register(Agency.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? AgencyType
-                                     : workspace.get(ExistentialDomain.Agency);
+            return new TypeProxy(workspace == null ? AgencyType
+                                                   : workspace.get(ExistentialDomain.Agency));
         });
 
         AttributeType = objectTypeOf(Attribute.class);
         register(Attribute.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? AttributeType
-                                     : workspace.get(ExistentialDomain.Attribute);
+            return new TypeProxy(workspace == null ? AttributeType
+                                                   : workspace.get(ExistentialDomain.Attribute));
         });
 
         IntervalType = objectTypeOf(Interval.class);
         register(Interval.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? IntervalType
-                                     : workspace.get(ExistentialDomain.Interval);
+            return new TypeProxy(workspace == null ? IntervalType
+                                                   : workspace.get(ExistentialDomain.Interval));
         });
 
         LocationType = objectTypeOf(Location.class);
         register(Location.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? LocationType
-                                     : workspace.get(ExistentialDomain.Location);
+            return new TypeProxy(workspace == null ? LocationType
+                                                   : workspace.get(ExistentialDomain.Location));
         });
 
         ProductType = objectTypeOf(Product.class);
-        register(Product.class, (u, t) -> ProductType);
         register(Product.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? ProductType
-                                     : workspace.get(ExistentialDomain.Product);
+            return new TypeProxy(workspace == null ? ProductType
+                                                   : workspace.get(ExistentialDomain.Product));
         });
 
         RelationshipType = objectTypeOf(Relationship.class);
         register(Relationship.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? RelationshipType
-                                     : workspace.get(ExistentialDomain.Relationship);
+            return new TypeProxy(workspace == null ? RelationshipType
+                                                   : workspace.get(ExistentialDomain.Relationship));
         });
 
         StatusCodeType = objectTypeOf(StatusCode.class);
         register(StatusCode.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? StatusCodeType
-                                     : workspace.get(ExistentialDomain.StatusCode);
+            return new TypeProxy(workspace == null ? StatusCodeType
+                                                   : workspace.get(ExistentialDomain.StatusCode));
         });
 
         UnitType = objectTypeOf(Unit.class);
         register(Unit.class, (u, t) -> {
             Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return workspace == null ? UnitType
-                                     : workspace.get(ExistentialDomain.Unit);
+            return new TypeProxy(workspace == null ? UnitType
+                                                   : workspace.get(ExistentialDomain.Unit));
         });
 
         FacetType = objectTypeOf(Facet.class);
@@ -356,7 +426,6 @@ public class WorkspaceSchema {
     public static GraphQLObjectType existentialType(ExistentialDomain domain) {
         Map<ExistentialDomain, GraphQLObjectType> map = Existentials.get();
         if (map == null) {
-
             switch (domain) {
                 case Agency:
                     return AgencyType;
@@ -499,5 +568,8 @@ public class WorkspaceSchema {
         resolved.entrySet()
                 .forEach(e -> addPhantasmCast(ifaceBuilder, e));
         return ifaceBuilder.build();
+    }
+
+    private WorkspaceSchema() {
     }
 }

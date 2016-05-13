@@ -32,8 +32,8 @@ import java.sql.SQLException;
  */
 public class CoreDbConfiguration {
 
-    public static String              JDBC_URL = "jdbc:postgresql://%s:%s/%s";
-
+    public static final String        DATABASE_URL = "DATABASE_URL";
+    public static String              JDBC_URL     = "jdbc:postgresql://%s:%s/%s";
     public static CoreDbConfiguration TEST_ENV_CONFIGURATION;
 
     /**
@@ -42,14 +42,14 @@ public class CoreDbConfiguration {
      * 
      * @parameter
      */
-    public String                     contexts = "local";
+    public String                     contexts     = "local";
 
     /**
      * the name the core database
      * 
      * @parameter
      */
-    public String                     coreDb   = "core";
+    public String                     coreDb       = "core";
     /**
      * the password of the core user
      * 
@@ -100,13 +100,17 @@ public class CoreDbConfiguration {
                              coreDb.toLowerCase());
     }
 
+    public String getDbUrlFromEnv() {
+        return System.getenv(DATABASE_URL);
+    }
+
     public void initializeFromEnvironment() {
         if (TEST_ENV_CONFIGURATION != null) {
             initializeFromTest();
             return;
         }
         URI dbUri;
-        String envURI = System.getenv("DATABASE_URL");
+        String envURI = getDbUrlFromEnv();
         if (envURI == null) {
             throw new IllegalStateException("DATABASE_URL is not defined in the system environment");
         }

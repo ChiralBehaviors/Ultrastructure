@@ -89,7 +89,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
@@ -105,7 +104,6 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
-import graphql.schema.TypeResolver;
 
 /**
  * @author hhildebrand
@@ -213,8 +211,7 @@ public final class WorkspaceSchema {
     private static final GraphQLObjectType                                      AttributeAuthorizationType;
     private static final GraphQLObjectType                                      AttributeType;
     private static final GraphQLObjectType                                      ChildSequencingType;
-    private static final ThreadLocal<Map<ExistentialDomain, GraphQLObjectType>> Existentials    = new ThreadLocal<>();
-    private static final ThreadLocal<GraphQLInterfaceType>                      ExistentialType = new ThreadLocal<>();
+    private static final ThreadLocal<Map<ExistentialDomain, GraphQLObjectType>> Existentials = new ThreadLocal<>();
     private static final GraphQLObjectType                                      FacetType;
     private static final GraphQLObjectType                                      IntervalType;
     private static final GraphQLObjectType                                      JobChronologyType;
@@ -224,7 +221,6 @@ public final class WorkspaceSchema {
     private static final GraphQLObjectType                                      NetworkAttributeAuthorizationType;
     private static final GraphQLObjectType                                      NetworkAuthorizationType;
     private static final GraphQLObjectType                                      ParentSequencingType;
-    private static final ThreadLocal<GraphQLInterfaceType>                      PhantasmType    = new ThreadLocal<>();
     private static final GraphQLObjectType                                      ProductType;
     private static final GraphQLObjectType                                      ProtocolType;
     private static final GraphQLObjectType                                      RelationshipType;
@@ -244,16 +240,9 @@ public final class WorkspaceSchema {
         register(Cardinality.class, (u, t) -> GraphQLString);
         register(ReferenceType.class, (u, t) -> GraphQLString);
 
-        GraphQLInterfaceType vanillaPhantasmType = WorkspaceSchema.interfaceTypeOf(Phantasm.class);
-        register(Phantasm.class, (u, t) -> {
-            GraphQLInterfaceType workspace = PhantasmType.get();
-            return workspace == null ? vanillaPhantasmType : workspace;
-        });
-
         GraphQLInterfaceType vanillaExistential = interfaceTypeOf(Existential.class);
         register(Existential.class, (u, t) -> {
-            GraphQLInterfaceType workspace = ExistentialType.get();
-            return workspace == null ? vanillaExistential : workspace;
+            return vanillaExistential;
         });
 
         // Agency is recursive and referred to by everything
@@ -385,10 +374,6 @@ public final class WorkspaceSchema {
                 .forEach(auth -> unresolved.add(auth));
         }
 
-        GraphQLInterfaceType phantasmType = buildPhantasm(resolved);
-        PhantasmType.set(phantasmType);
-        ExistentialType.set(phantasm(resolved,
-                                     GraphQLAnnotations2.ifaceBuilder(Existential.class)));
         Existentials.set(existentials(resolved));
         Builder topLevelQuery = GraphQLAnnotations2.objectBuilder(Queries.class);
         Builder topLevelMutation = GraphQLAnnotations2.objectBuilder(Mutations.class);
@@ -399,15 +384,13 @@ public final class WorkspaceSchema {
                     .forEach(e -> e.getValue()
                                    .build(new Aspect(model.create(),
                                                      e.getKey()),
-                                          resolved, phantasmType, topLevelQuery,
+                                          resolved, topLevelQuery,
                                           topLevelMutation));
             schema = GraphQLSchema.newSchema()
                                   .query(topLevelQuery.build())
                                   .mutation(topLevelMutation.build())
                                   .build();
         } finally {
-            PhantasmType.set(null);
-            ExistentialType.set(null);
             Existentials.set(null);
         }
         return schema;
@@ -494,38 +477,6 @@ public final class WorkspaceSchema {
                                                 .build());
     }
 
-    private static void addPhantasmCast(graphql.schema.GraphQLInterfaceType.Builder builder,
-                                        Entry<FacetRecord, FacetFields> entry) {
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name(String.format("as%s",
-                                                                WorkspacePresentation.toTypeName(entry.getKey()
-                                                                                                      .getName())))
-                                            .description(String.format("Cast to the %s facet",
-                                                                       entry.getKey()
-                                                                            .getName()))
-                                            .type(new GraphQLTypeReference(entry.getValue()
-                                                                                .getName()))
-                                            .build());
-    }
-
-    private static GraphQLInterfaceType buildPhantasm(Map<FacetRecord, FacetFields> resolved) {
-        graphql.schema.GraphQLInterfaceType.Builder builder = GraphQLInterfaceType.newInterface()
-                                                                                  .name("Phantasm")
-                                                                                  .description("The union interface of facets within a workspace");
-        resolved.entrySet()
-                .stream()
-                .forEach(entry -> {
-                    addPhantasmCast(builder, entry);
-                });
-        builder.typeResolver(createTypeResolver(resolved));
-        GraphQLInterfaceType phantasmType = builder.build();
-        return phantasmType;
-    }
-
-    private static TypeResolver createTypeResolver(Map<FacetRecord, FacetFields> resolved) {
-        return new Existential.ExistentialResolver();
-    }
-
     private static Map<ExistentialDomain, GraphQLObjectType> existentials(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,
                                                                                                                   InstantiationException,
                                                                                                                   IllegalAccessException {
@@ -562,13 +513,6 @@ public final class WorkspaceSchema {
         resolved.entrySet()
                 .forEach(e -> addPhantasmCast(objectBuilder, e));
         return objectBuilder.build();
-    }
-
-    private static GraphQLInterfaceType phantasm(Map<FacetRecord, FacetFields> resolved,
-                                                 graphql.schema.GraphQLInterfaceType.Builder ifaceBuilder) {
-        resolved.entrySet()
-                .forEach(e -> addPhantasmCast(ifaceBuilder, e));
-        return ifaceBuilder.build();
     }
 
     private WorkspaceSchema() {

@@ -239,11 +239,15 @@ public class GraphQLAnnotations2 {
                 builder.field(field(field));
             }
         }
-        for (Class<?> iface : object.getInterfaces()) {
-            if (iface.getAnnotation(GraphQLTypeResolver.class) != null) {
-                builder.withInterface(iface(iface));
+        Class<?> current = object;
+        do {
+            for (Class<?> iface : current.getInterfaces()) {
+                if (iface.getAnnotation(GraphQLTypeResolver.class) != null) {
+                    builder.withInterface(iface(iface));
+                }
             }
-        }
+            current = current.getSuperclass();
+        } while (current != null);
         return builder;
     }
 

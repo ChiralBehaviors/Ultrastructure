@@ -96,7 +96,7 @@ public interface Existential {
         public String id;
     }
 
-    public abstract class ExistentialCommon implements Existential, Phantasm {
+    public abstract class ExistentialCommon implements Existential {
         protected final ExistentialRecord record;
 
         public ExistentialCommon(ExistentialRecord record) {

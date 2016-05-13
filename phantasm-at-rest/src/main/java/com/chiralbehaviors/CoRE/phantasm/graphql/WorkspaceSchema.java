@@ -244,6 +244,12 @@ public final class WorkspaceSchema {
         register(Cardinality.class, (u, t) -> GraphQLString);
         register(ReferenceType.class, (u, t) -> GraphQLString);
 
+        GraphQLInterfaceType vanillaPhantasmType = WorkspaceSchema.interfaceTypeOf(Phantasm.class);
+        register(Phantasm.class, (u, t) -> {
+            GraphQLInterfaceType workspace = PhantasmType.get();
+            return workspace == null ? vanillaPhantasmType : workspace;
+        });
+
         GraphQLInterfaceType vanillaExistential = interfaceTypeOf(Existential.class);
         register(Existential.class, (u, t) -> {
             GraphQLInterfaceType workspace = ExistentialType.get();
@@ -280,11 +286,12 @@ public final class WorkspaceSchema {
         });
 
         ProductType = objectTypeOf(Product.class);
-        register(Product.class, (u, t) -> {
-            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
-            return new TypeProxy(workspace == null ? ProductType
-                                                   : workspace.get(ExistentialDomain.Product));
-        });
+        register(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class,
+                 (u, t) -> {
+                     Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+                     return new TypeProxy(workspace == null ? ProductType
+                                                            : workspace.get(ExistentialDomain.Product));
+                 });
 
         RelationshipType = objectTypeOf(Relationship.class);
         register(Relationship.class, (u, t) -> {
@@ -349,12 +356,6 @@ public final class WorkspaceSchema {
 
         JobChronologyType = WorkspaceSchema.objectTypeOf(JobChronology.class);
         register(JobChronology.class, (u, t) -> JobChronologyType);
-
-        GraphQLInterfaceType vanillaPhantasmType = WorkspaceSchema.interfaceTypeOf(Phantasm.class);
-        register(Phantasm.class, (u, t) -> {
-            GraphQLInterfaceType workspace = PhantasmType.get();
-            return workspace == null ? vanillaPhantasmType : workspace;
-        });
     }
 
     public static GraphQLSchema build(WorkspaceAccessor accessor, Model model,

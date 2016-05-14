@@ -25,6 +25,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Test;
 
@@ -32,6 +35,7 @@ import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.phantasm.graphql.QueryRequest;
 
 /**
  * @author hhildebrand
@@ -40,11 +44,31 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 public class WorkspaceResourceTest extends AbstractModelTest {
 
     @Test
-    public void testResource() throws Exception {
+    public void testWorkspaces() throws Exception {
         WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
         assertEquals(1, resource.getWorkspaces(model.getCurrentPrincipal(),
                                                model.create())
                                 .size());
+    }
+
+    @Test
+    public void testMeta() throws Exception {
+        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        assertNotNull(resource.queryMeta(model.getCurrentPrincipal(),
+                                         WellKnownObject.KERNEL_IRI,
+                                         new QueryRequest(getIntrospectionQuery()).asMap(),
+                                         model.create()));
+    }
+
+    private String getIntrospectionQuery() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[16 * 4096];
+        try (InputStream in = getClass().getResourceAsStream("/introspection-query")) {
+            for (int read = in.read(buf); read != -1; read = in.read(buf)) {
+                baos.write(buf, 0, read);
+            }
+        }
+        return baos.toString();
     }
 
     @Test

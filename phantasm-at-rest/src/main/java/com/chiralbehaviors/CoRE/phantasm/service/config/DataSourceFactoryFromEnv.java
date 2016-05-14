@@ -40,10 +40,14 @@ public class DataSourceFactoryFromEnv extends DataSourceFactory {
 
     public DataSourceFactoryFromEnv() {
         setDriverClass(Driver.class.getCanonicalName());
-        String url = System.getenv(envVariable);
+        String url = getSystemEnvVariable();
         if (url != null) {
             configureFrom(url);
         }
+    }
+
+    public String getSystemEnvVariable() {
+        return System.getenv(envVariable);
     }
 
     private void configureFrom(String uri) {

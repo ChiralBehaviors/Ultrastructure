@@ -24,15 +24,19 @@ import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
 import static graphql.annotations.DefaultTypeFunction.register;
 
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -40,6 +44,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
@@ -89,19 +94,93 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
 import graphql.annotations.GraphQLAnnotations2;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLTypeReference;
 
 /**
  * @author hhildebrand
  *
  */
-public class WorkspaceSchema {
+public final class WorkspaceSchema {
+
+    public static class TypeProxy extends GraphQLObjectType {
+        private final GraphQLObjectType target;
+
+        public TypeProxy(GraphQLObjectType target) {
+            super("", "", Collections.emptyList(), Collections.emptyList());
+            this.target = target;
+        }
+
+        @Override
+        public String getDescription() {
+            return target.getDescription();
+        }
+
+        @Override
+        public GraphQLFieldDefinition getFieldDefinition(String name) {
+            return target.getFieldDefinition(name);
+        }
+
+        @Override
+        public List<GraphQLFieldDefinition> getFieldDefinitions() {
+            return target.getFieldDefinitions();
+        }
+
+        @Override
+        public List<GraphQLInterfaceType> getInterfaces() {
+            return target.getInterfaces();
+        }
+
+        @Override
+        public String getName() {
+            return target.getName();
+        }
+
+        @Override
+        public String toString() {
+            return "GraphQLObjectType{" + "name='" + getName() + '\''
+                   + ", description='" + getDescription() + '\''
+                   + ", fieldDefinitions=" + getFieldDefinitions()
+                   + ", interfaces=" + getInterfaces() + '}';
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result
+                     + ((target == null) ? 0 : target.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof GraphQLObjectType)) {
+                return false;
+            }
+            if (obj instanceof TypeProxy) {
+                return target.equals(((TypeProxy) obj).target);
+            }
+            if (!target.equals(obj)) {
+                return false;
+            }
+            return true;
+        }
+    }
 
     public interface MetaMutations extends ExistentialMutations, FacetMutations,
             AttributeAuthorizationMutations, NetworkAuthorizationMutations,
@@ -128,28 +207,28 @@ public class WorkspaceSchema {
             extends ExistentialQueries, JobQueries, JobChronologyQueries {
     }
 
-    public static final GraphQLObjectType    AgencyType;
-    public static final GraphQLObjectType    AttributeAuthorizationType;
-    public static final GraphQLObjectType    AttributeType;
-    public static final GraphQLObjectType    ChildSequencingType;
-    public static final GraphQLInterfaceType ExistentialType;
-    public static final GraphQLObjectType    FacetType;
-    public static final GraphQLObjectType    IntervalType;
-    public static final GraphQLObjectType    JobType;
-    public static final GraphQLObjectType    LocationType;
-    public static final GraphQLObjectType    MetaProtocolType;
-    public static final GraphQLObjectType    NetworkAuthorizationType;
-    public static final GraphQLObjectType    ParentSequencingType;
-    public static final GraphQLObjectType    ProductType;
-    public static final GraphQLObjectType    ProtocolType;
-    public static final GraphQLObjectType    RelationshipType;
-    public static final GraphQLObjectType    SelfSequencingType;
-    public static final GraphQLObjectType    SiblingSequencingType;
-    public static final GraphQLObjectType    StatusCodeSequencingType;
-    public static final GraphQLObjectType    StatusCodeType;
-    public static final GraphQLObjectType    UnitType;
-    public static final GraphQLObjectType    NetworkAttributeAuthorizationType;
-    public static final GraphQLObjectType    JobChronologyType;
+    private static final GraphQLObjectType                                      AgencyType;
+    private static final GraphQLObjectType                                      AttributeAuthorizationType;
+    private static final GraphQLObjectType                                      AttributeType;
+    private static final GraphQLObjectType                                      ChildSequencingType;
+    private static final ThreadLocal<Map<ExistentialDomain, GraphQLObjectType>> Existentials = new ThreadLocal<>();
+    private static final GraphQLObjectType                                      FacetType;
+    private static final GraphQLObjectType                                      IntervalType;
+    private static final GraphQLObjectType                                      JobChronologyType;
+    private static final GraphQLObjectType                                      JobType;
+    private static final GraphQLObjectType                                      LocationType;
+    private static final GraphQLObjectType                                      MetaProtocolType;
+    private static final GraphQLObjectType                                      NetworkAttributeAuthorizationType;
+    private static final GraphQLObjectType                                      NetworkAuthorizationType;
+    private static final GraphQLObjectType                                      ParentSequencingType;
+    private static final GraphQLObjectType                                      ProductType;
+    private static final GraphQLObjectType                                      ProtocolType;
+    private static final GraphQLObjectType                                      RelationshipType;
+    private static final GraphQLObjectType                                      SelfSequencingType;
+    private static final GraphQLObjectType                                      SiblingSequencingType;
+    private static final GraphQLObjectType                                      StatusCodeSequencingType;
+    private static final GraphQLObjectType                                      StatusCodeType;
+    private static final GraphQLObjectType                                      UnitType;
 
     // Type conversion initialization is kinda tricky because recursion.
     // Be careful how you manage the static initialization of this class
@@ -161,34 +240,68 @@ public class WorkspaceSchema {
         register(Cardinality.class, (u, t) -> GraphQLString);
         register(ReferenceType.class, (u, t) -> GraphQLString);
 
+        GraphQLInterfaceType vanillaExistential = interfaceTypeOf(Existential.class);
+        register(Existential.class, (u, t) -> {
+            return vanillaExistential;
+        });
+
         // Agency is recursive and referred to by everything
         AgencyType = objectTypeOf(Agency.class);
-        register(Agency.class, (u, t) -> AgencyType);
+        register(Agency.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? AgencyType
+                                                   : workspace.get(ExistentialDomain.Agency));
+        });
 
         AttributeType = objectTypeOf(Attribute.class);
-        register(Attribute.class, (u, t) -> AttributeType);
+        register(Attribute.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? AttributeType
+                                                   : workspace.get(ExistentialDomain.Attribute));
+        });
 
         IntervalType = objectTypeOf(Interval.class);
-        register(Interval.class, (u, t) -> IntervalType);
+        register(Interval.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? IntervalType
+                                                   : workspace.get(ExistentialDomain.Interval));
+        });
 
         LocationType = objectTypeOf(Location.class);
-        register(Location.class, (u, t) -> LocationType);
+        register(Location.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? LocationType
+                                                   : workspace.get(ExistentialDomain.Location));
+        });
 
-        ProductType = objectTypeOf(Product.class);
-        register(Product.class, (u, t) -> ProductType);
+        ProductType = objectTypeOf(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class);
+        register(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class,
+                 (u, t) -> {
+                     Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+                     return new TypeProxy(workspace == null ? ProductType
+                                                            : workspace.get(ExistentialDomain.Product));
+                 });
 
-        // Recursive, but seems to be fin
         RelationshipType = objectTypeOf(Relationship.class);
-        register(Relationship.class, (u, t) -> RelationshipType);
+        register(Relationship.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? RelationshipType
+                                                   : workspace.get(ExistentialDomain.Relationship));
+        });
 
         StatusCodeType = objectTypeOf(StatusCode.class);
-        register(StatusCode.class, (u, t) -> StatusCodeType);
+        register(StatusCode.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? StatusCodeType
+                                                   : workspace.get(ExistentialDomain.StatusCode));
+        });
 
         UnitType = objectTypeOf(Unit.class);
-        register(Unit.class, (u, t) -> UnitType);
-
-        ExistentialType = interfaceTypeOf(Existential.class);
-        register(Existential.class, (u, t) -> ExistentialType);
+        register(Unit.class, (u, t) -> {
+            Map<ExistentialDomain, GraphQLObjectType> workspace = Existentials.get();
+            return new TypeProxy(workspace == null ? UnitType
+                                                   : workspace.get(ExistentialDomain.Unit));
+        });
 
         FacetType = objectTypeOf(Facet.class);
         register(Facet.class, (u, t) -> FacetType);
@@ -243,8 +356,6 @@ public class WorkspaceSchema {
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace workspace = model.wrap(Workspace.class, definingProduct);
-        Builder topLevelQuery = GraphQLAnnotations2.objectBuilder(Queries.class);
-        Builder topLevelMutation = GraphQLAnnotations2.objectBuilder(Mutations.class);
         List<Plugin> plugins = workspace.getPlugins();
         while (!unresolved.isEmpty()) {
             FacetRecord facet = unresolved.pop();
@@ -257,17 +368,31 @@ public class WorkspaceSchema {
                                                .filter(plugin -> facet.getName()
                                                                       .equals(plugin.getFacetName()))
                                                .collect(Collectors.toList());
-            type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
-                       model, executionScope)
+            type.resolve(facet, facetPlugins, model, executionScope)
                 .stream()
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));
         }
-        buildPhantasm(topLevelQuery, resolved);
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
+
+        Existentials.set(existentials(resolved));
+        Builder topLevelQuery = GraphQLAnnotations2.objectBuilder(Queries.class);
+        Builder topLevelMutation = GraphQLAnnotations2.objectBuilder(Mutations.class);
+        GraphQLSchema schema;
+        try {
+            resolved.entrySet()
+                    .stream()
+                    .forEach(e -> e.getValue()
+                                   .build(new Aspect(model.create(),
+                                                     e.getKey()),
+                                          resolved, topLevelQuery,
+                                          topLevelMutation));
+            schema = GraphQLSchema.newSchema()
+                                  .query(topLevelQuery.build())
+                                  .mutation(topLevelMutation.build())
+                                  .build();
+        } finally {
+            Existentials.set(null);
+        }
         return schema;
     }
 
@@ -280,6 +405,34 @@ public class WorkspaceSchema {
 
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
+    }
+
+    public static GraphQLObjectType existentialType(ExistentialDomain domain) {
+        Map<ExistentialDomain, GraphQLObjectType> map = Existentials.get();
+        if (map == null) {
+            switch (domain) {
+                case Agency:
+                    return AgencyType;
+                case Attribute:
+                    return AttributeType;
+                case Interval:
+                    return IntervalType;
+                case Location:
+                    return LocationType;
+                case Product:
+                    return ProductType;
+                case Relationship:
+                    return RelationshipType;
+                case StatusCode:
+                    return StatusCodeType;
+                case Unit:
+                    return UnitType;
+                default:
+                    throw new IllegalStateException(String.format("invalid domain: %s",
+                                                                  domain));
+            }
+        }
+        return map.get(domain);
     }
 
     public static GraphQLInterfaceType interfaceTypeOf(Class<?> clazz) {
@@ -301,7 +454,67 @@ public class WorkspaceSchema {
         }
     }
 
-    private static void buildPhantasm(Builder topLevelQuery,
-                                      Map<FacetRecord, FacetFields> resolved) {
+    private static void addPhantasmCast(Builder typeBuilder,
+                                        Entry<FacetRecord, FacetFields> entry) {
+        typeBuilder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                                .name(String.format("as%s",
+                                                                    WorkspacePresentation.toTypeName(entry.getKey()
+                                                                                                          .getName())))
+                                                .description(String.format("Cast to the %s facet",
+                                                                           entry.getKey()
+                                                                                .getName()))
+                                                .type(new GraphQLTypeReference(entry.getValue()
+                                                                                    .getName()))
+                                                .dataFetcher(env -> {
+                                                    ExistentialRuleform existential = (ExistentialRuleform) env.getSource();
+                                                    PhantasmCRUD crud = FacetFields.ctx(env);
+                                                    crud.cast(existential,
+                                                              new Aspect(crud.getModel()
+                                                                             .create(),
+                                                                         entry.getKey()));
+                                                    return existential;
+                                                })
+                                                .build());
+    }
+
+    private static Map<ExistentialDomain, GraphQLObjectType> existentials(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,
+                                                                                                                  InstantiationException,
+                                                                                                                  IllegalAccessException {
+        Map<ExistentialDomain, GraphQLObjectType> existentials = new HashMap<>();
+        existentials.put(ExistentialDomain.Agency,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(Agency.class)));
+        existentials.put(ExistentialDomain.Attribute,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(Attribute.class)));
+        existentials.put(ExistentialDomain.Interval,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(Interval.class)));
+        existentials.put(ExistentialDomain.Location,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(Location.class)));
+        existentials.put(ExistentialDomain.Product,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class)));
+        existentials.put(ExistentialDomain.Relationship,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(Relationship.class)));
+        existentials.put(ExistentialDomain.StatusCode,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(StatusCode.class)));
+        existentials.put(ExistentialDomain.Unit,
+                         phantasm(resolved,
+                                  GraphQLAnnotations2.objectBuilder(Unit.class)));
+        return existentials;
+    }
+
+    private static GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,
+                                              Builder objectBuilder) {
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(objectBuilder, e));
+        return objectBuilder.build();
+    }
+
+    private WorkspaceSchema() {
     }
 }

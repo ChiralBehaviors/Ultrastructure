@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,7 +33,6 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
@@ -51,8 +52,8 @@ import graphql.schema.DataFetchingEnvironment;
  */
 public interface ExistentialQueries {
 
-    static List<ExistentialRecord> resolve(DataFetchingEnvironment env,
-                                           ExistentialDomain domain) {
+    static List<ExistentialRecord> resolved(DataFetchingEnvironment env,
+                                            ExistentialDomain domain) {
         return WorkspaceSchema.ctx(env)
                               .create()
                               .selectDistinct(Tables.EXISTENTIAL.fields())
@@ -70,159 +71,159 @@ public interface ExistentialQueries {
     default List<Agency> agencies(@GraphQLName("ids") List<String> ids,
                                   DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Agency).stream()
-                                                         .map(r -> new Agency(r))
-                                                         .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Agency).stream()
+                                                          .map(r -> new Agency(r))
+                                                          .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Agency(Existential.resolve(env, id)))
+                  .map(id -> new Agency(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Agency agency(@NotNull @GraphQLName("id") String id,
                           DataFetchingEnvironment env) {
-        return new Agency(Existential.resolve(env, UUID.fromString(id)));
+        return new Agency(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default Attribute attribute(@NotNull @GraphQLName("id") String id,
                                 DataFetchingEnvironment env) {
-        return new Attribute(Existential.resolve(env, UUID.fromString(id)));
+        return new Attribute(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<Attribute> attributes(@GraphQLName("ids") List<String> ids,
                                        DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Attribute).stream()
-                                                            .map(r -> new Attribute(r))
-                                                            .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Attribute).stream()
+                                                             .map(r -> new Attribute(r))
+                                                             .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Attribute(Existential.resolve(env, id)))
+                  .map(id -> new Attribute(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Interval interval(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
-        return new Interval(Existential.resolve(env, UUID.fromString(id)));
+        return new Interval(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<Interval> intervals(@GraphQLName("ids") List<String> ids,
                                      DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Interval).stream()
-                                                           .map(r -> new Interval(r))
-                                                           .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Interval).stream()
+                                                            .map(r -> new Interval(r))
+                                                            .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Interval(Existential.resolve(env, id)))
+                  .map(id -> new Interval(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Location location(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
-        return new Location(Existential.resolve(env, UUID.fromString(id)));
+        return new Location(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<Location> locations(@GraphQLName("ids") List<String> ids,
                                      DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Location).stream()
-                                                           .map(r -> new Location(r))
-                                                           .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Location).stream()
+                                                            .map(r -> new Location(r))
+                                                            .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Location(Existential.resolve(env, id)))
+                  .map(id -> new Location(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Product product(@NotNull @GraphQLName("id") String id,
                             DataFetchingEnvironment env) {
-        return new Product(Existential.resolve(env, UUID.fromString(id)));
+        return new Product(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<Product> products(@GraphQLName("ids") List<String> ids,
                                    DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Product).stream()
-                                                          .map(r -> new Product(r))
-                                                          .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Product).stream()
+                                                           .map(r -> new Product(r))
+                                                           .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Product(Existential.resolve(env, id)))
+                  .map(id -> new Product(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Relationship relationship(@NotNull @GraphQLName("id") String id,
                                       DataFetchingEnvironment env) {
-        return new Relationship(Existential.resolve(env, UUID.fromString(id)));
+        return new Relationship(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<Relationship> relationships(@GraphQLName("ids") List<String> ids,
                                              DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Relationship).stream()
-                                                               .map(r -> new Relationship(r))
-                                                               .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Relationship).stream()
+                                                                .map(r -> new Relationship(r))
+                                                                .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Relationship(Existential.resolve(env, id)))
+                  .map(id -> new Relationship(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default StatusCode statusCode(@NotNull @GraphQLName("id") String id,
                                   DataFetchingEnvironment env) {
-        return new StatusCode(Existential.resolve(env, UUID.fromString(id)));
+        return new StatusCode(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<StatusCode> statusCodes(@GraphQLName("ids") List<String> ids,
                                          DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.StatusCode).stream()
-                                                             .map(r -> new StatusCode(r))
-                                                             .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.StatusCode).stream()
+                                                              .map(r -> new StatusCode(r))
+                                                              .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new StatusCode(Existential.resolve(env, id)))
+                  .map(id -> new StatusCode(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Unit unit(@NotNull @GraphQLName("id") String id,
                       DataFetchingEnvironment env) {
-        return new Unit(Existential.resolve(env, UUID.fromString(id)));
+        return new Unit(resolve(env, UUID.fromString(id)));
     }
 
     @GraphQLField
     default List<Unit> units(@GraphQLName("ids") List<String> ids,
                              DataFetchingEnvironment env) {
         if (ids == null) {
-            return resolve(env, ExistentialDomain.Unit).stream()
-                                                       .map(r -> new Unit(r))
-                                                       .collect(Collectors.toList());
+            return resolved(env, ExistentialDomain.Unit).stream()
+                                                        .map(r -> new Unit(r))
+                                                        .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Unit(Existential.resolve(env, id)))
+                  .map(id -> new Unit(resolve(env, id)))
                   .collect(Collectors.toList());
     }
 }

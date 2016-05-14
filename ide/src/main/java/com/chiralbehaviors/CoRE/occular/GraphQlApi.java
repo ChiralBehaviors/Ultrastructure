@@ -69,6 +69,10 @@ public class GraphQlApi {
         this.authToken = authToken;
     }
 
+    public WebTarget getEndpoint() {
+        return endpoint;
+    }
+
     public ObjectNode query(String query,
                             Map<String, Object> parameters) throws QueryException {
         Builder invocationBuilder = endpoint.request(MediaType.APPLICATION_JSON_TYPE);

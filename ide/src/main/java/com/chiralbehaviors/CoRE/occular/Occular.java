@@ -2,6 +2,8 @@ package com.chiralbehaviors.CoRE.occular;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -38,7 +40,7 @@ public class Occular extends Application {
         return primaryStage;
     }
 
-    public void initRootLayout(GraphQlApi api) throws IOException {
+    public void initRootLayout(GraphQlApi api, URL url) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Occular.class.getResource("view/OccularView.fxml"));
         rootLayout = (TabPane) loader.load();
@@ -47,7 +49,7 @@ public class Occular extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         controller = loader.getController();
-        controller.setApi(api);
+        controller.setApi(api, url);
     }
 
     @Override
@@ -62,14 +64,22 @@ public class Occular extends Application {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
+        String baseUrl = params.getRaw()
+                               .get(0);
         GraphQlApi api = new GraphQlApi(ClientBuilder.newClient()
                                                      .target(String.format("%s/workspace/%s/meta",
-                                                                           params.getRaw()
-                                                                                 .get(0),
+                                                                           baseUrl,
                                                                            encoded)),
                                         null);
+        URL url;
         try {
-            initRootLayout(api);
+            url = new URL(new URL(baseUrl),
+                          String.format("ide?workspace=%s", encoded));
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+        try {
+            initRootLayout(api, url);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

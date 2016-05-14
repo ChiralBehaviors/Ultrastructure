@@ -100,7 +100,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("name", "hello");
         variables.put("description", "goodbye");
 
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
@@ -114,7 +114,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         Map<String, Object> result = (Map<String, Object>) execute.getData();
 
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("createThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
         Thing1 thing1 = model.wrap(Thing1.class, model.records()
@@ -132,7 +132,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
+        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
         execute = new GraphQL(schema).execute(request.getQuery(),
                                               new PhantasmCRUD(model),
@@ -143,7 +143,7 @@ public class FacetTypeTest extends AbstractModelTest {
                           .isEmpty());
         result = (Map<String, Object>) execute.getData();
 
-        thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        thing1Result = (Map<String, Object>) result.get("updateThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
         thing1 = model.wrap(Thing1.class, model.records()
@@ -161,7 +161,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
         variables.put("name", "hello");
-        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { CreateThing2(state: {setName: $name, addDerivedFrom: $artifact, setThing1: $thing1}) { id name } }",
+        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { createThing2(state: {setName: $name, addDerivedFrom: $artifact, setThing1: $thing1}) { id name } }",
                                    variables);
 
         execute = new GraphQL(schema).execute(request.getQuery(),
@@ -249,7 +249,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),
@@ -268,7 +268,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         assertEquals("hello", thing1.getName());
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("updateThing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(artifact2, thing1.getDerivedFrom());
@@ -317,7 +317,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("id", thing1.getRuleform()
                                   .getId()
                                   .toString());
-        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
+        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
 
                                                               new PhantasmCRUD(model),
                                                               variables);
@@ -329,7 +329,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         assertNotNull(result);
 
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(thing1.getRuleform()
@@ -357,10 +357,10 @@ public class FacetTypeTest extends AbstractModelTest {
         assertNotNull(thing3DerivedFroms);
         assertEquals(2, thing3DerivedFroms.size());
 
-        result = (Map<String, Object>) new GraphQL(schema).execute("{ InstancesOfThing1 {id name URI}}",
+        result = (Map<String, Object>) new GraphQL(schema).execute("{ thing1s {id name URI}}",
                                                                    new PhantasmCRUD(model))
                                                           .getData();
-        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
+        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("thing1s");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);
         assertEquals(thing1.getName(), instance.get("name"));
@@ -411,7 +411,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
@@ -426,7 +426,7 @@ public class FacetTypeTest extends AbstractModelTest {
         @SuppressWarnings("unchecked")
         Map<String, Object> result = (Map<String, Object>) execute.getData();
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("createThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
     }
@@ -456,7 +456,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                       .getId()
                                       .toString());
 
-        QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { UpdateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);
         model.create()
              .configuration()

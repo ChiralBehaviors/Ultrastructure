@@ -59,8 +59,7 @@ public class TestGraphQlApi {
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));
         GraphQlApi api = new GraphQlApi(webTarget, null);
-        ObjectNode data = api.query("query q { InstancesOfCoREUser { id name } }",
-                                    null);
+        ObjectNode data = api.query("query q { coREUsers { id name } }", null);
         assertNotNull(data);
     }
 
@@ -74,7 +73,7 @@ public class TestGraphQlApi {
                                                      "UTF-8"));
         GraphQlApi api = new GraphQlApi(webTarget, null);
         try {
-            api.query("query q { InstancesOfCoreUser { id name } }", null);
+            api.query("query q { coreUsers { id name } }", null);
         } catch (QueryException e) {
             assertNotNull(e.getErrors());
             assertEquals(1, e.getErrors()

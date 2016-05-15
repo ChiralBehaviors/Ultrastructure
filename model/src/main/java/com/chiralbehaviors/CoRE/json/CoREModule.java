@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Record;
+import org.jooq.StoreQuery;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +57,8 @@ public class CoREModule extends SimpleModule {
                              subTypes.add(table.getRecordType());
                          });
         registerSubtypes(subTypes.toArray(new Class<?>[subTypes.size()]));
-
+        context.setMixInAnnotations(StoreQuery.class,
+                                    IngoreStoredQueryOverload.class);
         super.setupModule(context);
     }
 }

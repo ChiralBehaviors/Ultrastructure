@@ -30,10 +30,8 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 
-import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -248,16 +246,6 @@ public interface Existential {
         }
     }
 
-    public class UpdatedByFetcher implements DataFetcher {
-        @Override
-        public Object get(DataFetchingEnvironment environment) {
-            return WorkspaceSchema.ctx(environment)
-                                  .records()
-                                  .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
-        }
-
-    }
-
     public static <T extends ExistentialRecord> T resolve(DataFetchingEnvironment env,
                                                           UUID id) {
         return WorkspaceSchema.ctx(env)
@@ -305,7 +293,6 @@ public interface Existential {
     ExistentialRuleform getRecord();
 
     @GraphQLField
-    @GraphQLDataFetcher(UpdatedByFetcher.class)
     Agency getUpdatedBy(DataFetchingEnvironment env);
 
 }

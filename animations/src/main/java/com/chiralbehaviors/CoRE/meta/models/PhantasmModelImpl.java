@@ -700,10 +700,8 @@ public class PhantasmModelImpl implements PhantasmModel {
     public final void initialize(ExistentialRuleform ruleform,
                                  FacetRecord aspect,
                                  EditableWorkspace workspace) {
-        ExistentialRecord classification = model.records()
-                                                .resolve(aspect.getClassification());
-        if (getImmediateChildren(ruleform.getId(), aspect.getClassifier(),
-                                 classification.getDomain()).isEmpty()) {
+        if (!isAccessible(ruleform.getId(), aspect.getClassifier(),
+        		aspect.getClassification())) {
             UUID inverseRelationship = ((Relationship) model.records()
                                                             .resolve(aspect.getClassifier())).getInverse();
             Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = link(ruleform.getId(),
@@ -737,15 +735,15 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public boolean isAccessible(ExistentialRuleform parent,
-                                Relationship relationship,
-                                ExistentialRuleform child) {
+    public boolean isAccessible(UUID parent,
+                                UUID relationship,
+                                UUID child) {
         return !ZERO.equals(create.selectCount()
                                   .from(EXISTENTIAL_NETWORK)
-                                  .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                  .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
-                                  .and(EXISTENTIAL_NETWORK.CHILD.notEqual(parent.getId()))
+                                  .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                                  .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(child))
+                                  .and(EXISTENTIAL_NETWORK.CHILD.notEqual(parent))
                                   .fetchOne()
                                   .value1());
     }
@@ -1001,7 +999,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
 				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
 				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r, constraint.getClassifier(), constraint.getClassification()))
+				.filter(r -> isAccessible(r.getId(), constraint.getClassifier().getId(), constraint.getClassification().getId()))
 				.collect(Collectors.toList());
 	}
 
@@ -1032,7 +1030,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
 				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
 				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r, constraint.getClassifier(), constraint.getClassification()))
+				.filter(r -> isAccessible(r.getId(), constraint.getClassifier().getId(), constraint.getClassification().getId()))
 				.collect(Collectors.toList());
 	}
 

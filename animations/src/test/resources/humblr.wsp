@@ -7,6 +7,7 @@ imports {
 }
 
 agencies {
+	Person = "Person" "Neither place nor thing";
     facets {
         IsA.User { Name }
             constraints {
@@ -15,6 +16,10 @@ agencies {
                 n Follows get: inferred: IsA.Post
                 one Owns: IsA.Stream
             }
+        IsA.Person { Name }
+        	constraints {
+        		n HasFavorite: IsA.Post
+        }
     }
 }
 
@@ -33,6 +38,7 @@ products {
             constraints {
                 one IsRepostOf: IsA.Post named by relationship
                 n RepostedAs: IsA.Post named by relationship
+                n IsFavoriteOf: IsA.User
             }
         IsA.Channel { Name }
             constraints {

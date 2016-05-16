@@ -291,9 +291,9 @@ public class ModelImpl implements Model {
                                                                         .where(FACET.ID.eq(uuid))
                                                                         .fetchOne())
                                                    .filter(auth -> auth != null)
-                                                   .filter(auth -> phantasmModel.isAccessible(principal,
-                                                                                              records().resolve(auth.getClassifier()),
-                                                                                              records().resolve(auth.getClassification())))
+                                                   .filter(auth -> phantasmModel.isAccessible(principal.getId(),
+                                                                                              auth.getClassifier(),
+                                                                                              auth.getClassification()))
                                                    .map(f -> records().resolve(f.getClassification()))
                                                    .map(e -> (Agency) e)
                                                    .collect(Collectors.toList()));

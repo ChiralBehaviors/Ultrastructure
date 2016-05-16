@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.kernel.phantasm.test.agency.Person;
 import com.chiralbehaviors.CoRE.kernel.phantasm.test.agency.User;
 import com.chiralbehaviors.CoRE.kernel.phantasm.test.product.Channel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.test.product.Post;
@@ -66,6 +67,32 @@ public class YourBasicHumblrPhantasmTest extends AbstractModelTest {
 		model.flush();
 		userB.getPosts();
 		assertEquals(1, userB.getPosts().size());
+	}
+	
+	@Test
+	public void testConflictingConstraints() throws Exception {
+		User user = model.construct(User.class, ExistentialDomain.Agency, "UserA", "user A");
+		Channel firstChannel = model.construct(Channel.class, ExistentialDomain.Product, "myFirstChannel",
+				"channel one");
+		user.addChannel(firstChannel);
+		Post post1 = model.construct(Post.class, ExistentialDomain.Product, "HelloCleveland", "Hello Cleveland!");
+		firstChannel.addPost(post1);
+
+		User userB = model.construct(User.class, ExistentialDomain.Agency, "UserB", "user B");
+		userB.addFollows(firstChannel);
+		model.flush();
+		userB.getPosts();
+		assertEquals(1, userB.getPosts().size());
+		
+		Person personB = model.apply(Person.class, userB);
+		personB.addPost(post1);
+		
+	}
+	
+	@Test
+	public void testApplyFacet() throws Exception {
+		User user = model.construct(User.class, ExistentialDomain.Agency, "UserA", "user A");
+		Person person = model.apply(Person.class, user);
 	}
 
 }

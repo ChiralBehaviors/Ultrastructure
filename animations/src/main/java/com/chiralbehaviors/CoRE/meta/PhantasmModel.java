@@ -338,8 +338,8 @@ public interface PhantasmModel {
      * @param child
      * @return
      */
-    boolean isAccessible(ExistentialRuleform parent, Relationship relationship,
-                         ExistentialRuleform child);
+    boolean isAccessible(UUID parent, UUID relationship,
+                         UUID child);
 
     /**
      *

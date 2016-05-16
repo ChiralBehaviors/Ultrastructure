@@ -165,8 +165,8 @@ public class PhantasmCRUD {
      */
     public void cast(ExistentialRuleform ruleform, Aspect facet) {
         if (!model.getPhantasmModel()
-                  .isAccessible(ruleform, facet.getClassifier(),
-                                facet.getClassification())) {
+                  .isAccessible(ruleform.getId(), facet.getClassifier().getId(),
+                                facet.getClassification().getId())) {
             throw new ClassCastException(String.format("%s not of facet type %s",
                                                        ruleform.getId(),
                                                        facet));

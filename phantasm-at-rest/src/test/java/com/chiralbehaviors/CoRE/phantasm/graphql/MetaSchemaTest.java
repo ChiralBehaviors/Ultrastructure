@@ -58,7 +58,7 @@ public class MetaSchemaTest extends AbstractModelTest {
     @Before
     public void load() throws Exception {
         k = model.getKernel();
-        schema = WorkspaceSchema.buildMeta();
+        schema = new WorkspaceSchema().buildMeta();
         definingProduct = k.getKernelWorkspace();
     }
 

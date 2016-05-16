@@ -27,24 +27,19 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
 
-import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLTypeResolver;
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.GraphQLObjectType;
-import graphql.schema.TypeResolver;
 
 /**
  * @author hhildebrand
  *
  */
 @SuppressWarnings("unused")
-@GraphQLTypeResolver(ExistentialResolver.class)
+@GraphQLInterface
 public interface Existential {
 
     @GraphQLDescription("The Agency existential ruleform")
@@ -141,15 +136,6 @@ public interface Existential {
                                                                  .records()
                                                                  .resolve(record.getUpdatedBy()));
         }
-    }
-
-    public class ExistentialResolver implements TypeResolver {
-        @Override
-        public GraphQLObjectType getType(Object object) {
-            Existential record = (Existential) object; // If this doesn't succeed, it's a bug, so no catch
-            return WorkspaceSchema.existentialType(record.getDomain());
-        }
-
     }
 
     public class ExistentialState {
@@ -260,16 +246,6 @@ public interface Existential {
         }
     }
 
-    public class UpdatedByFetcher implements DataFetcher {
-        @Override
-        public Object get(DataFetchingEnvironment environment) {
-            return WorkspaceSchema.ctx(environment)
-                                  .records()
-                                  .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
-        }
-
-    }
-
     public static <T extends ExistentialRecord> T resolve(DataFetchingEnvironment env,
                                                           UUID id) {
         return WorkspaceSchema.ctx(env)
@@ -317,7 +293,6 @@ public interface Existential {
     ExistentialRuleform getRecord();
 
     @GraphQLField
-    @GraphQLDataFetcher(UpdatedByFetcher.class)
     Agency getUpdatedBy(DataFetchingEnvironment env);
 
 }

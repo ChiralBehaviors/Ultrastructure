@@ -30,6 +30,7 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.beans.Introspector;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +48,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -62,6 +62,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
@@ -71,12 +72,14 @@ import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
+import com.chiralbehaviors.CoRE.utils.English;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.Scalars;
@@ -101,38 +104,31 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
-    private static final String ADD_TEMPLATE              = "add%s";
-    private static final String APPLY_MUTATION            = "Apply%s";
-    private static final String AT_RULEFORM               = "@ruleform";
-    private static final String CREATE_INSTANCES_MUTATION = "CreateInstancesOf%s";
-    private static final String CREATE_MUTATION           = "Create%s";
-    private static final String CREATE_TYPE               = "%sCreate";
-    private static final String DESCRIPTION               = "description";
-    private static final String ID                        = "id";
-    private static final String IDS                       = "ids";
-    private static final String IMMEDIATE_TEMPLATE        = "immediate%s";
-    private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
-    private static final Logger log                       = LoggerFactory.getLogger(FacetFields.class);
-    private static final String NAME                      = "name";
-    private static final String REMOVE_MUTATION           = "Remove%s";
-    private static final String REMOVE_TEMPLATE           = "remove%s";
-    private static final String S_S_PLUGIN_CONVENTION     = "%s.%s_Plugin";
-    private static final String SET_DESCRIPTION;
+    private static final String _EXT                  = "_ext";
+    private static final String ADD_TEMPLATE          = "add%s";
+    private static final String APPLY_MUTATION        = "apply%s";
+    private static final String AT_RULEFORM           = "@ruleform";
+    private static final String CREATE_MUTATION       = "create%s";
+    private static final String CREATE_TYPE           = "%sCreate";
+    private static final String DESCRIPTION           = "description";
+    private static final String ID                    = "id";
+    private static final String IDS                   = "ids";
+    private static final String IMMEDIATE_TEMPLATE    = "immediate%s";
+    private static final Logger log                   = LoggerFactory.getLogger(FacetFields.class);
+    private static final String NAME                  = "name";
+    private static final String REMOVE_MUTATION       = "remove%s";
+    private static final String REMOVE_TEMPLATE       = "remove%s";
+    private static final String S_S_PLUGIN_CONVENTION = "%s.%s_Plugin";
+    private static final String SET_DESCRIPTION       = "setDescription";
     @SuppressWarnings("unused")
-    private static final String SET_INDEX_TEMPLATE        = "set%sIndex";
+    private static final String SET_INDEX_TEMPLATE    = "set%sIndex";
     @SuppressWarnings("unused")
-    private static final String SET_KEY_TEMPLATE          = "set%sKey";
-    private static final String SET_NAME;
-    private static final String SET_TEMPLATE              = "set%s";
-    private static final String STATE                     = "state";
-    private static final String UPDATE_INSTANCES_MUTATION = "UpdateInstancesOf%s";
-    private static final String UPDATE_MUTATION           = "Update%s";
-    private static final String UPDATE_TYPE               = "%sUpdate";
-
-    static {
-        SET_NAME = String.format(SET_TEMPLATE, capitalized(NAME));
-        SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
-    }
+    private static final String SET_KEY_TEMPLATE      = "set%sKey";
+    private static final String SET_NAME              = "setName";
+    private static final String SET_TEMPLATE          = "set%s";
+    private static final String STATE                 = "state";
+    private static final String UPDATE_MUTATION       = "update%s";
+    private static final String UPDATE_TYPE           = "%sUpdate";
 
     public static ClassLoader configureExecutionScope(List<String> urlStrings) {
         ClassLoader parent = Thread.currentThread()
@@ -208,16 +204,11 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
     private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
-
     private String                                                                          name;
-
     private Set<FacetRecord>                                                                references     = new HashSet<>();
-
     private GraphQLObjectType                                                               type;
-
     private Builder                                                                         typeBuilder;
     private Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate = new HashMap<>();
-
     private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
 
     public FacetFields(FacetRecord facet) {
@@ -232,10 +223,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                             .description(facet.getNotes());
     }
 
-    public void build(Aspect aspect, Map<FacetRecord, FacetFields> resolved,
-                      Builder query, Builder mutation) {
-        resolved.entrySet()
-                .forEach(e -> addPhantasmCast(e));
+    public void build(Aspect aspect, Builder query, Builder mutation) {
         type = typeBuilder.build();
         query.field(instance(aspect, type));
         query.field(instances(aspect));
@@ -456,28 +444,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                         crud.lookup((List<String>) update.get(addChildren))));
     }
 
-    private void addPhantasmCast(Entry<FacetRecord, FacetFields> entry) {
-        typeBuilder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                                .name(String.format("as%s",
-                                                                    WorkspacePresentation.toTypeName(entry.getKey()
-                                                                                                          .getName())))
-                                                .description(String.format("Cast to the %s facet",
-                                                                           entry.getKey()
-                                                                                .getName()))
-                                                .type(new GraphQLTypeReference(entry.getValue()
-                                                                                    .getName()))
-                                                .dataFetcher(env -> {
-                                                    ExistentialRuleform existential = (ExistentialRuleform) env.getSource();
-                                                    PhantasmCRUD crud = FacetFields.ctx(env);
-                                                    crud.cast(existential,
-                                                              new Aspect(crud.getModel()
-                                                                             .create(),
-                                                                         entry.getKey()));
-                                                    return existential;
-                                                })
-                                                .build());
-    }
-
     private void addPlugins(Aspect facet, List<Plugin> plugins,
                             ClassLoader executionScope) {
         plugins.forEach(plugin -> {
@@ -626,6 +592,11 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                               .name(DESCRIPTION)
                                               .description("The description of the facet instance")
                                               .build());
+        typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference("Existential"))
+                                              .name(_EXT)
+                                              .description("Cast the instance as an Existential")
+                                              .dataFetcher(env -> Existential.wrap((ExistentialRecord) env.getSource()))
+                                              .build());
 
         updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
                                                      .name(ID)
@@ -723,8 +694,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private GraphQLFieldDefinition createInstances(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
         List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
-        return newFieldDefinition().name(String.format(CREATE_INSTANCES_MUTATION,
-                                                       WorkspacePresentation.toTypeName(facet.getName())))
+        return newFieldDefinition().name(String.format(CREATE_MUTATION,
+                                                       English.plural(WorkspacePresentation.toTypeName(facet.getName()))))
                                    .description(String.format("Create instances of %s",
                                                               WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(new GraphQLList(type))
@@ -835,7 +806,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     private GraphQLFieldDefinition instance(Aspect facet,
                                             GraphQLObjectType type) {
-        return newFieldDefinition().name(WorkspacePresentation.toTypeName(facet.getName()))
+        return newFieldDefinition().name(Introspector.decapitalize(WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(type)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the facet")
@@ -846,8 +817,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     }
 
     private GraphQLFieldDefinition instances(Aspect facet) {
-        return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
-                                                       WorkspacePresentation.toTypeName(facet.getName())))
+        return newFieldDefinition().name(Introspector.decapitalize(English.plural(WorkspacePresentation.toTypeName(facet.getName()))))
                                    .description(String.format("Return the instances of %s",
                                                               WorkspacePresentation.toTypeName(facet.getName())))
                                    .argument(newArgument().name(IDS)
@@ -1023,11 +993,12 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition updateInstances(Aspect facet) {
         Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
-        return newFieldDefinition().name(String.format(UPDATE_INSTANCES_MUTATION,
-                                                       WorkspacePresentation.toTypeName(facet.getName())))
+        String typeName = WorkspacePresentation.toTypeName(facet.getName());
+        return newFieldDefinition().name(String.format(UPDATE_MUTATION,
+                                                       English.plural(typeName)))
                                    .type(referenceToType(facet.getName()))
                                    .description(String.format("Update the instances of %s",
-                                                              WorkspacePresentation.toTypeName(facet.getName())))
+                                                              typeName))
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply")
                                                           .type(new GraphQLNonNull(new GraphQLList(updateTypeBuilder.build())))

@@ -118,7 +118,7 @@ public class WorkspaceResource extends TransactionalResource {
     private final ObjectMapper                       objectMapper;
     {
         try {
-            metaSchema = WorkspaceSchema.buildMeta();
+            metaSchema = new WorkspaceSchema().buildMeta();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -292,8 +292,8 @@ public class WorkspaceResource extends TransactionalResource {
                 }
 
                 try {
-                    return WorkspaceSchema.build(scoped.getWorkspace(), model,
-                                                 executionScope);
+                    return new WorkspaceSchema().build(scoped.getWorkspace(),
+                                                       model, executionScope);
                 } catch (Exception e) {
                     throw new IllegalStateException(String.format("Unable to buidl schema for %s",
                                                                   scoped.getWorkspace()

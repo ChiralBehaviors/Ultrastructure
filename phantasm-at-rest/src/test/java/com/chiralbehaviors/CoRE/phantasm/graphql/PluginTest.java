@@ -94,8 +94,9 @@ public class PluginTest extends AbstractModelTest {
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
 
-        GraphQLSchema schema = WorkspaceSchema.build(scope.getWorkspace(),
-                                                     model, executionScope);
+        GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
+                                                           model,
+                                                           executionScope);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),

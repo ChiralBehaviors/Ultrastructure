@@ -101,9 +101,7 @@ import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
-import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
-import graphql.schema.TypeResolver;
 
 /**
  * @author hhildebrand
@@ -298,79 +296,80 @@ public class WorkspaceSchema {
                                                             typeFunction));
         typeFunction.register(Unit.class, (u, t) -> unitType);
 
-        GraphQLObjectType facteType = objectTypeOf(Facet.class);
+        GraphQLObjectType facteType = object(Facet.class, typeFunction,
+                                             typeFunction);
         typeFunction.register(Facet.class, (u, t) -> {
             return facteType;
         });
 
-        GraphQLObjectType attrAuthType = objectTypeOf(AttributeAuthorization.class);
+        GraphQLObjectType attrAuthType = object(AttributeAuthorization.class,
+                                                typeFunction, typeFunction);
         typeFunction.register(AttributeAuthorization.class, (u, t) -> {
             return attrAuthType;
         });
 
-        GraphQLObjectType csType = objectTypeOf(ChildSequencing.class);
+        GraphQLObjectType csType = object(ChildSequencing.class, typeFunction,
+                                          typeFunction);
         typeFunction.register(ChildSequencing.class, (u, t) -> {
             return csType;
         });
 
-        GraphQLObjectType job = objectTypeOf(Job.class);
+        GraphQLObjectType job = object(Job.class, typeFunction, typeFunction);
         typeFunction.register(Job.class, (u, t) -> job);
 
-        GraphQLObjectType metaType = objectTypeOf(MetaProtocol.class);
+        GraphQLObjectType metaType = object(MetaProtocol.class, typeFunction,
+                                            typeFunction);
         typeFunction.register(MetaProtocol.class, (u, t) -> {
             return metaType;
         });
 
-        GraphQLObjectType netAuthType = objectTypeOf(NetworkAuthorization.class);
+        GraphQLObjectType netAuthType = object(NetworkAuthorization.class,
+                                               typeFunction, typeFunction);
         typeFunction.register(NetworkAuthorization.class, (u, t) -> {
             return netAuthType;
         });
 
-        GraphQLObjectType psType = objectTypeOf(ParentSequencing.class);
+        GraphQLObjectType psType = object(ParentSequencing.class, typeFunction,
+                                          typeFunction);
         typeFunction.register(ParentSequencing.class, (u, t) -> {
             return psType;
         });
 
-        GraphQLObjectType protocolType = objectTypeOf(Protocol.class);
+        GraphQLObjectType protocolType = object(Protocol.class, typeFunction,
+                                                typeFunction);
         typeFunction.register(Protocol.class, (u, t) -> {
             return protocolType;
         });
 
-        GraphQLObjectType ssType = objectTypeOf(SelfSequencing.class);
+        GraphQLObjectType ssType = object(SelfSequencing.class, typeFunction,
+                                          typeFunction);
         typeFunction.register(SelfSequencing.class, (u, t) -> {
             return ssType;
         });
 
-        GraphQLObjectType sibSeqType = objectTypeOf(SiblingSequencing.class);
+        GraphQLObjectType sibSeqType = object(SiblingSequencing.class,
+                                              typeFunction, typeFunction);
         typeFunction.register(SiblingSequencing.class, (u, t) -> {
             return sibSeqType;
         });
 
-        GraphQLObjectType scsType = objectTypeOf(StatusCodeSequencing.class);
+        GraphQLObjectType scsType = object(StatusCodeSequencing.class,
+                                           typeFunction, typeFunction);
         typeFunction.register(StatusCodeSequencing.class, (u, t) -> {
             return scsType;
         });
 
-        GraphQLObjectType netAttAuthType = objectTypeOf(NetworkAttributeAuthorization.class);
+        GraphQLObjectType netAttAuthType = object(NetworkAttributeAuthorization.class,
+                                                  typeFunction, typeFunction);
         typeFunction.register(NetworkAttributeAuthorization.class, (u, t) -> {
             return netAttAuthType;
         });
 
-        GraphQLObjectType chronType = objectTypeOf(JobChronology.class);
+        GraphQLObjectType chronType = object(JobChronology.class, typeFunction,
+                                             typeFunction);
         typeFunction.register(JobChronology.class, (u, t) -> {
             return chronType;
         });
-    }
-
-    private GraphQLObjectType objectTypeOf(Class<?> clazz) {
-        GraphQLType type = typeFunction.getType(clazz);
-        if (type != null) {
-            return (GraphQLObjectType) type;
-        }
-        TypeProxy proxy = new TypeProxy();
-        GraphQLObjectType object = object(clazz, typeFunction, typeFunction);
-        proxy.setTarget(object);
-        return object;
     }
 
     private GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,

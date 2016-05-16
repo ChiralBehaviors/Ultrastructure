@@ -36,6 +36,7 @@ products {
     Thing1 = "Thing1" "Thing 1";
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
+    OtherThing = "OtherThing" "Other Thing";
     MasterThing = "MasterThing" "Master Thing";
     edges {
         this.HasMember.Thing1
@@ -64,6 +65,10 @@ products {
                 n derivedFrom: IsA.MavenArtifact named by relationship
                 n thing2Of get: inferred: IsA.Thing2
             }
+        IsA.OtherThing 
+        	constraints {
+        		n AThingOfItsOwn: IsA.OtherThing
+        }
     }
 }
 relationships {

@@ -56,6 +56,7 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.test.product.OtherThing;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
@@ -653,4 +654,10 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals("Thing1", child.getName());
     }
 
+    @Test
+    public void testApplyFacet() throws Exception {
+    	 Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                 "testy", "test");
+    	 model.apply(OtherThing.class, thing1);
+    }
 }

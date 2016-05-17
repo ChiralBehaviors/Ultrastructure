@@ -35,10 +35,8 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology.JobChronologyTypeFunction;
 
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -112,10 +110,11 @@ public class Job {
     }
 
     public static JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
-        return WorkspaceSchema.ctx(env).create()
-                       .selectFrom(Tables.JOB)
-                       .where(Tables.JOB.ID.equal(uuid))
-                       .fetchOne();
+        return WorkspaceSchema.ctx(env)
+                              .create()
+                              .selectFrom(Tables.JOB)
+                              .where(Tables.JOB.ID.equal(uuid))
+                              .fetchOne();
     }
 
     private final JobRecord record;
@@ -127,21 +126,23 @@ public class Job {
 
     @GraphQLField
     public List<Job> getActiveChildren(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env).getJobModel()
-                       .getActiveSubJobsOf(record)
-                       .stream()
-                       .map(r -> new Job(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getJobModel()
+                              .getActiveSubJobsOf(record)
+                              .stream()
+                              .map(r -> new Job(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField
 
     public List<Job> getAllChildren(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env).getJobModel()
-                       .getAllChildren(record)
-                       .stream()
-                       .map(r -> new Job(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getJobModel()
+                              .getAllChildren(record)
+                              .stream()
+                              .map(r -> new Job(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField
@@ -152,21 +153,22 @@ public class Job {
     @GraphQLField
 
     public List<Job> getChildren(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env).getJobModel()
-                       .getChildren(record)
-                       .stream()
-                       .map(r -> new Job(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getJobModel()
+                              .getChildren(record)
+                              .stream()
+                              .map(r -> new Job(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField
-    @GraphQLType(JobChronologyTypeFunction.class)
     public List<JobChronology> getChronology(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env).getJobModel()
-                       .getChronologyForJob(record)
-                       .stream()
-                       .map(r -> new JobChronology(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getJobModel()
+                              .getChronologyForJob(record)
+                              .stream()
+                              .map(r -> new JobChronology(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField
@@ -193,12 +195,13 @@ public class Job {
     @GraphQLField
 
     public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env).getJobModel()
-                       .getProtocols(record)
-                       .keySet()
-                       .stream()
-                       .map(r -> new Protocol(r))
-                       .collect(Collectors.toList());
+        return WorkspaceSchema.ctx(env)
+                              .getJobModel()
+                              .getProtocols(record)
+                              .keySet()
+                              .stream()
+                              .map(r -> new Protocol(r))
+                              .collect(Collectors.toList());
     }
 
     @GraphQLField

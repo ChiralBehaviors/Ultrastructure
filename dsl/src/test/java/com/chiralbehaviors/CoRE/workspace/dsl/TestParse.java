@@ -91,4 +91,44 @@ public class TestParse {
 
     }
 
+    @Test
+    public void testPresentation2() throws Exception {
+        WorkspacePresentation presentation = new WorkspacePresentation(getClass().getResourceAsStream("/thing.wsp"));
+        presentation.getAgencies();
+        presentation.getAgencyFacets();
+        presentation.getAgencyNetworks();
+        presentation.getAttributes();
+        presentation.getAttributeFacets();
+        presentation.getAttributeNetworks();
+        presentation.getChildSequencings();
+        presentation.getImports();
+        presentation.getInferences();
+        presentation.getIntervalFacets();
+        presentation.getIntervalNetworks();
+        presentation.getIntervals();
+        presentation.getLocationFacets();
+        presentation.getLocationNetworks();
+        presentation.getLocations();
+        presentation.getMetaProtocols();
+        presentation.getParentSequencings();
+        presentation.getProductFacets();
+        presentation.getProductNetworks();
+        presentation.getProducts();
+        presentation.getProtocols();
+        presentation.getRelationshipFacets();
+        presentation.getRelationshipNetworks();
+        presentation.getRelationships();
+        presentation.getSelfSequencings();
+        presentation.getSiblingSequencings();
+        presentation.getStatusCodeFacets();
+        presentation.getStatusCodeNetworks();
+        presentation.getStatusCodes();
+        presentation.getStatusCodeSequencings();
+        presentation.getUnitFacets();
+        presentation.getUnitNetworks();
+        presentation.getUnits();
+        presentation.getWorkspaceDefinition();
+
+    }
+
 }

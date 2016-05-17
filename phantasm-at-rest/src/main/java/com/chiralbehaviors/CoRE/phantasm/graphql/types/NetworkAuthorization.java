@@ -40,7 +40,7 @@ import graphql.schema.DataFetchingEnvironment;
  */
 public class NetworkAuthorization {
 
-    public class NetworkAuthorizationUpdateState
+    public static class NetworkAuthorizationUpdateState
             extends NetwworkAuthorizationState {
         @GraphQLField
         public String id;
@@ -89,10 +89,11 @@ public class NetworkAuthorization {
 
     public static NetworkAuthorization fetch(DataFetchingEnvironment env,
                                              UUID id) {
-        return new NetworkAuthorization(WorkspaceSchema.ctx(env).create()
-                                                .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(id))
-                                                .fetchOne());
+        return new NetworkAuthorization(WorkspaceSchema.ctx(env)
+                                                       .create()
+                                                       .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                       .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(id))
+                                                       .fetchOne());
     }
 
     private final ExistentialNetworkAuthorizationRecord record;

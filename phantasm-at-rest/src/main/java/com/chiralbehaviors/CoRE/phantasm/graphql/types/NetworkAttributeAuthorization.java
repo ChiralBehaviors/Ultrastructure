@@ -32,7 +32,7 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.exception.TooManyRowsException;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -46,9 +46,9 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-public class AttributeAuthorization {
+public class NetworkAttributeAuthorization {
 
-    public static class AttributeAuthorizationState {
+    public static class NetworkAttributeAuthorizationState {
         @GraphQLField
         public String  authority;
         @GraphQLField
@@ -58,7 +58,7 @@ public class AttributeAuthorization {
         @GraphQLField
         public Boolean booleanValue;
         @GraphQLField
-        public String  facet;
+        public String  networkAuthorization;
         @GraphQLField
         public Integer integerValue;
         @GraphQLField
@@ -72,7 +72,7 @@ public class AttributeAuthorization {
         @GraphQLField
         public Long    timestampValue;
 
-        public void update(ExistentialAttributeAuthorizationRecord record) {
+        public void update(ExistentialNetworkAttributeAuthorizationRecord record) {
             if (authority != null) {
                 record.setAuthority(UUID.fromString(authority));
             }
@@ -86,8 +86,8 @@ public class AttributeAuthorization {
             if (booleanValue != null) {
                 record.setBooleanValue(booleanValue);
             }
-            if (facet != null) {
-                record.setFacet(UUID.fromString(facet));
+            if (networkAuthorization != null) {
+                record.setNetworkAuthorization(UUID.fromString(networkAuthorization));
             }
             if (integerValue != null) {
                 record.setIntegerValue(integerValue);
@@ -116,25 +116,25 @@ public class AttributeAuthorization {
         }
     }
 
-    public static class AttributeAuthorizationUpdateState
-            extends AttributeAuthorizationState {
+    public static class NetworkAttributeAuthorizationUpdateState
+            extends NetworkAttributeAuthorizationState {
         @GraphQLField
         public String id;
     }
 
-    public static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
-                                                                UUID id) throws DataAccessException,
-                                                                         TooManyRowsException {
+    public static ExistentialNetworkAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
+                                                                       UUID id) throws DataAccessException,
+                                                                                TooManyRowsException {
         return WorkspaceSchema.ctx(env)
                               .create()
-                              .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                              .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
+                              .selectFrom(Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
+                              .where(Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
                               .fetchOne();
     }
 
-    private final ExistentialAttributeAuthorizationRecord record;
+    private final ExistentialNetworkAttributeAuthorizationRecord record;
 
-    public AttributeAuthorization(ExistentialAttributeAuthorizationRecord record) {
+    public NetworkAttributeAuthorization(ExistentialNetworkAttributeAuthorizationRecord record) {
         assert record != null;
         this.record = record;
     }
@@ -164,8 +164,9 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public Facet getFacet(DataFetchingEnvironment env) {
-        return Facet.fetch(env, record.getFacet());
+    public NetworkAuthorization getNetworkAuthorization(DataFetchingEnvironment env) {
+        return NetworkAuthorization.fetch(env,
+                                          record.getNetworkAuthorization());
     }
 
     @GraphQLField

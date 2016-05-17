@@ -43,6 +43,7 @@
         <jackson.version>2.6.3 </jackson.version>
         <hibernate.version>5.0.2.Final</hibernate.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
+        <fxdiagram.version>0.27.3-SNAPSHOT</fxdiagram.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -96,7 +97,7 @@
             <dependency>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq</artifactId>
-                <version>3.7.3</version>
+                <version>3.8.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -486,6 +487,21 @@
                 <groupId>org.testfx</groupId>
                 <artifactId>testfx-junit</artifactId>
                 <version>4.0.4-alpha</version>
+            </dependency>
+            <dependency>
+                <groupId>de.fxdiagram</groupId>
+                <artifactId>de.fxdiagram.core</artifactId>
+                <version>${fxdiagram.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.fxdiagram</groupId>
+                <artifactId>de.fxdiagram.swtfx</artifactId>
+                <version>${fxdiagram.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.fxdiagram</groupId>
+                <artifactId>de.fxdiagram.annotations</artifactId>
+                <version>${fxdiagram.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

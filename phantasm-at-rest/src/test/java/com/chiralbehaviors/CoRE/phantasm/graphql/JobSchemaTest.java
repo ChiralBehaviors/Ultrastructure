@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,9 +62,9 @@ public class JobSchemaTest extends AbstractModelTest {
     @Test
     public void testEuOrder() throws Exception {
 
-        GraphQLSchema schema = WorkspaceSchema.build(scope.getWorkspace(),
-                                                     model,
-                                                     getClass().getClassLoader());
+        GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
+                                                           model,
+                                                           getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
 
         variables.put("service", scenario.getDeliver()
@@ -174,6 +175,22 @@ public class JobSchemaTest extends AbstractModelTest {
 
         assertEquals(6, result.withArray("allChildren")
                               .size());
+
+        variables.put("id", result.get("chronology")
+                                  .get(0)
+                                  .get("id")
+                                  .asText());
+        result = execute(schema,
+                         "query m ($id: String!) { jobChronology(id: $id) { id, status {id} job {id} product {name} service {name} requester {name} assignTo {name} "
+                                 + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} } }",
+                         variables);
+        assertNotNull(result);
+
+        variables.put("ids", Collections.singletonList(variables.get("id")));
+        result = execute(schema,
+                         "query m ($ids: [String]!) { jobChronologies(ids: $ids) { id } }",
+                         variables);
+        assertNotNull(result);
     }
 
     private ObjectNode execute(GraphQLSchema schema, String query,

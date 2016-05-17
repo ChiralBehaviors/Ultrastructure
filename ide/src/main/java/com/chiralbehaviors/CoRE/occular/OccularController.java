@@ -21,11 +21,14 @@
 package com.chiralbehaviors.CoRE.occular;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 /**
  * @author hhildebrand
@@ -44,6 +47,8 @@ public class OccularController {
 
     private FacetsController facetsController;
 
+    private WebEngine        webEngine;
+
     @FXML
     private void initialize() throws Exception {
         initializeFacetsView();
@@ -55,10 +60,14 @@ public class OccularController {
         AnchorPane workspaceView = (AnchorPane) loader.load();
         facetsController = (FacetsController) loader.getController();
         facets.setContent(workspaceView);
+        WebView ide = new WebView();
+        webEngine = ide.getEngine();
+        sandbox.setContent(ide);
     }
 
-    public void setApi(GraphQlApi api) {
+    public void setApi(GraphQlApi api, URL url) {
         facetsController.setApi(api);
         facetsController.update();
+        webEngine.load(url.toExternalForm());
     }
 }

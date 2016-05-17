@@ -44,8 +44,9 @@ public interface MetaProtocolMutations {
     @GraphQLField
     default MetaProtocol createMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolState state,
                                             DataFetchingEnvironment env) {
-        MetaProtocolRecord record = WorkspaceSchema.ctx(env).records()
-                                            .newMetaProtocol();
+        MetaProtocolRecord record = WorkspaceSchema.ctx(env)
+                                                   .records()
+                                                   .newMetaProtocol();
         state.update(record);
         record.insert();
         return new MetaProtocol(record);
@@ -63,12 +64,13 @@ public interface MetaProtocolMutations {
     @GraphQLField
     default MetaProtocol updateMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolUpdateState state,
                                             DataFetchingEnvironment env) {
-        MetaProtocolRecord record = WorkspaceSchema.ctx(env).create()
-                                            .selectFrom(Tables.META_PROTOCOL)
-                                            .where(Tables.META_PROTOCOL.ID.equal(UUID.fromString(state.id)))
-                                            .fetchOne();
+        MetaProtocolRecord record = WorkspaceSchema.ctx(env)
+                                                   .create()
+                                                   .selectFrom(Tables.META_PROTOCOL)
+                                                   .where(Tables.META_PROTOCOL.ID.equal(UUID.fromString(state.id)))
+                                                   .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new MetaProtocol(record);
     }
 }

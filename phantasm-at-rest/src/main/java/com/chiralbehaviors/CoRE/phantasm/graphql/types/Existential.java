@@ -20,36 +20,26 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AgencyType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.AttributeType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.IntervalType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.LocationType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ProductType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.RelationshipType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.StatusCodeType;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.UnitType;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialResolver;
 
-import graphql.annotations.GraphQLDataFetcher;
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLTypeResolver;
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.GraphQLObjectType;
-import graphql.schema.TypeResolver;
 
 /**
  * @author hhildebrand
  *
  */
-@GraphQLTypeResolver(ExistentialResolver.class)
+@SuppressWarnings("unused")
+@GraphQLInterface
 public interface Existential {
 
     @GraphQLDescription("The Agency existential ruleform")
@@ -136,40 +126,16 @@ public interface Existential {
         }
 
         @Override
+        public ExistentialRuleform getRecord() {
+            return (ExistentialRuleform) record;
+        }
+
+        @Override
         public Agency getUpdatedBy(DataFetchingEnvironment env) {
             return new Agency((ExistentialRecord) WorkspaceSchema.ctx(env)
-                                                             .records()
-                                                             .resolve(record.getUpdatedBy()));
+                                                                 .records()
+                                                                 .resolve(record.getUpdatedBy()));
         }
-    }
-
-    public class ExistentialResolver implements TypeResolver {
-        @Override
-        public GraphQLObjectType getType(Object object) {
-            Existential record = (Existential) object; // If this doesn't succeed, it's a bug, so no catch
-            switch (record.getDomain()) {
-                case Agency:
-                    return AgencyType;
-                case Attribute:
-                    return AttributeType;
-                case Interval:
-                    return IntervalType;
-                case Location:
-                    return LocationType;
-                case Product:
-                    return ProductType;
-                case Relationship:
-                    return RelationshipType;
-                case StatusCode:
-                    return StatusCodeType;
-                case Unit:
-                    return UnitType;
-                default:
-                    throw new IllegalStateException(String.format("invalid domain: %s",
-                                                                  record.getDomain()));
-            }
-        }
-
     }
 
     public class ExistentialState {
@@ -227,8 +193,7 @@ public interface Existential {
 
         @GraphQLField
         public Relationship getInverse(DataFetchingEnvironment env) {
-            return new Relationship(Existential.resolve(env,
-                                                        record.getInverse()));
+            return new Relationship(resolve(env, record.getInverse()));
         }
     }
 
@@ -281,19 +246,11 @@ public interface Existential {
         }
     }
 
-    public class UpdatedByFetcher implements DataFetcher {
-        @Override
-        public Object get(DataFetchingEnvironment environment) {
-            return WorkspaceSchema.ctx(environment).records()
-                                   .resolve(((ExistentialRecord) environment.getSource()).getUpdatedBy());
-        }
-
-    }
-
     public static <T extends ExistentialRecord> T resolve(DataFetchingEnvironment env,
                                                           UUID id) {
-        return WorkspaceSchema.ctx(env).records()
-                       .resolve(id);
+        return WorkspaceSchema.ctx(env)
+                              .records()
+                              .resolve(id);
     }
 
     public static Existential wrap(ExistentialRecord record) throws IllegalStateException {
@@ -333,8 +290,9 @@ public interface Existential {
     @GraphQLField
     String getName();
 
+    ExistentialRuleform getRecord();
+
     @GraphQLField
-    @GraphQLDataFetcher(UpdatedByFetcher.class)
     Agency getUpdatedBy(DataFetchingEnvironment env);
 
 }

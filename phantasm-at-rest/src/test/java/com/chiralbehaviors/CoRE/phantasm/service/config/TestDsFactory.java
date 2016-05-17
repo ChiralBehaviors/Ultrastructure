@@ -18,27 +18,23 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.utils;
+package com.chiralbehaviors.CoRE.phantasm.service.config;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.sql.Connection;
 import java.util.Properties;
 
 import org.junit.Test;
-
-import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  *
  */
-public class TestConfig extends DatabaseTest {
+public class TestDsFactory {
 
     @Test
-    public void testDbaConfiguration() throws Exception {
+    public void testCreate() throws Exception {
+
         Properties properties = new Properties();
-        properties.load(TestConfig.class.getResourceAsStream("/db.properties"));
+        properties.load(TestDsFactory.class.getResourceAsStream("/db.properties"));
 
         String jdbcUrl = String.format("postgres://%s:%s@%s:%s/%s",
                                        properties.get("user"),
@@ -46,16 +42,12 @@ public class TestConfig extends DatabaseTest {
                                        properties.get("core.server"),
                                        properties.get("core.port"),
                                        properties.get("core.db"));
-        DbaConfiguration config = new DbaConfiguration() {
+        new DataSourceFactoryFromEnv() {
 
             @Override
-            public String getDbUrlFromEnv() {
+            public String getSystemEnvVariable() {
                 return jdbcUrl;
             }
         };
-
-        try (Connection connection = config.getCoreConnection()) {
-            assertNotNull(connection);
-        }
     }
 }

@@ -60,7 +60,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -119,7 +118,7 @@ public class WorkspaceResource extends TransactionalResource {
     private final ObjectMapper                       objectMapper;
     {
         try {
-            metaSchema = WorkspaceSchema.buildMeta();
+            metaSchema = new WorkspaceSchema().buildMeta();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -293,8 +292,8 @@ public class WorkspaceResource extends TransactionalResource {
                 }
 
                 try {
-                    return WorkspaceSchema.build(scoped.getWorkspace(), model,
-                                                 executionScope);
+                    return new WorkspaceSchema().build(scoped.getWorkspace(),
+                                                       model, executionScope);
                 } catch (Exception e) {
                     throw new IllegalStateException(String.format("Unable to buidl schema for %s",
                                                                   scoped.getWorkspace()
@@ -311,9 +310,10 @@ public class WorkspaceResource extends TransactionalResource {
                                                   Status.NOT_FOUND);
             }
 
-            PhantasmCRUD crud = new PhantasmCRUD(model);
             Product definingProduct = model.records()
                                            .resolve(uuid);
+            WorkspaceContext crud = new WorkspaceContext(model,
+                                                         definingProduct);
             if (!model.getPhantasmModel()
                       .checkCapability(definingProduct, crud.getREAD())
                 || !model.getPhantasmModel()

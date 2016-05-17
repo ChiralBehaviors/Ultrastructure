@@ -85,7 +85,7 @@ public class PluginTest extends AbstractModelTest {
         String hello = "goodbye";
         variables.put("description", hello);
         QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String) { "
-                                                + "CreateThing1("
+                                                + "createThing1("
                                                 + "  state: { "
                                                 + "     setName: $name, "
                                                 + "     setDescription: $description"
@@ -94,8 +94,9 @@ public class PluginTest extends AbstractModelTest {
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
 
-        GraphQLSchema schema = WorkspaceSchema.build(scope.getWorkspace(),
-                                                     model, executionScope);
+        GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
+                                                           model,
+                                                           executionScope);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),
@@ -106,7 +107,7 @@ public class PluginTest extends AbstractModelTest {
                    execute.getErrors()
                           .isEmpty());
 
-        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) execute.getData()).get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) execute.getData()).get("createThing1");
         assertNotNull(thing1Result);
         assertEquals(bob, thing1Result.get("description"));
         String thing1ID = (String) thing1Result.get("id");
@@ -122,7 +123,7 @@ public class PluginTest extends AbstractModelTest {
         variables = new HashMap<>();
         variables.put("id", thing1ID);
         variables.put("test", "me");
-        request = new QueryRequest("query it($id: String!, $test: String) { Thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
+        request = new QueryRequest("query it($id: String!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
 
         execute = new GraphQL(schema).execute(request.getQuery(),
@@ -134,7 +135,7 @@ public class PluginTest extends AbstractModelTest {
                    execute.getErrors()
                           .isEmpty());
 
-        thing1Result = (Map<String, Object>) ((Map<String, Object>) execute.getData()).get("Thing1");
+        thing1Result = (Map<String, Object>) ((Map<String, Object>) execute.getData()).get("thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
         assertEquals("me", passThrough.get());

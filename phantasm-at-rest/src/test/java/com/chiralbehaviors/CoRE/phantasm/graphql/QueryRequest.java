@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,6 +32,13 @@ import java.util.Map;
 public class QueryRequest {
     private String              query;
     private Map<String, Object> variables;
+
+    public Map<String, Object> asMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("query", query);
+        result.put("variables", variables);
+        return result;
+    }
 
     public QueryRequest(String query) {
         this(query, Collections.emptyMap());

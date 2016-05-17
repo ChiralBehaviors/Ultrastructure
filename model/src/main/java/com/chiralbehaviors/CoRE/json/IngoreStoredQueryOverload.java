@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- *
-
+ * 
+ 
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -18,11 +18,29 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql.types;
+package com.chiralbehaviors.CoRE.json;
+
+import java.util.Collection;
+
+import org.jooq.Field;
+import org.jooq.Identity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
  *
  */
-public class Workspace {
+public abstract class IngoreStoredQueryOverload {
+    @JsonIgnore
+    public abstract void setReturning();
+
+    @JsonIgnore
+    public abstract void setReturning(Identity<?, ?> identity);
+
+    @JsonIgnore
+    public abstract void setReturning(Field<?>... fields);
+
+    @JsonIgnore
+    public abstract void setReturning(Collection<? extends Field<?>> fields);
 }

@@ -53,7 +53,7 @@ public interface AttributeAuthorizationMutations {
     }
 
     @GraphQLField
-    default Boolean removeAttributeAuthorization(@NotNull String id,
+    default Boolean removeAttributeAuthorization(@NotNull @GraphQLName("id") String id,
                                                  DataFetchingEnvironment env) {
         AttributeAuthorization.fetch(env, UUID.fromString(id))
                               .delete();
@@ -69,7 +69,7 @@ public interface AttributeAuthorizationMutations {
                                                                         .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
                                                                         .fetchOne();
         state.update(record);
-        record.insert();
+        record.update();
         return new AttributeAuthorization(record);
     }
 }

@@ -11,6 +11,10 @@
     <name>UaaS IDE</name>
     <description>Ultrastructure IDE based on Java/FX, using the GraphQL workspace metadata api</description>
 
+    <properties>
+        <main.class> com.chiralbehaviors.CoRE.occular.Occular</main.class>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -48,4 +52,83 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>webstart</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <configuration>
+                            <shadedClassifierName>phat</shadedClassifierName>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>package-jar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${env.JAVA_HOME}/bin/javapackager</executable>
+                                    <!-- http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javapackager.html -->
+                                    <arguments>
+                                        <argument>-deploy</argument>
+                                        <argument>-appclass</argument>
+                                        <argument>${main.class}</argument>
+                                        <argument>-srcfiles</argument>
+                                        <argument>${project.build.directory}/${project.artifactId}-${project.version}-phat.jar</argument>
+                                        <argument>-outdir</argument>
+                                        <argument>./target</argument>
+                                        <argument>-outfile</argument>
+                                        <argument>${project.artifactId}-phat</argument>
+                                        <argument>-v</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.batkinson.plugins</groupId>
+                        <artifactId>maven-pack200-plugin</artifactId>
+                        <version>1.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>normalize-jars</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>pack</goal>
+                                </goals>
+                                <configuration>
+                                    <normalizeOnly>true</normalizeOnly>
+                                    <processMainArtifact>false</processMainArtifact>
+                                    <includeClassifiers>
+                                        <includeClassifier>phat</includeClassifier>
+                                    </includeClassifiers>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>pack-jars</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>pack</goal>
+                                </goals>
+                                <configuration>
+                                    <normalizeOnly>false</normalizeOnly>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

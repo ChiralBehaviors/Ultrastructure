@@ -525,36 +525,6 @@
             <id>jcenter</id>
             <url>https://jcenter.bintray.com/</url>
         </repository>
-        <repository>
-            <id>xtext</id>
-            <layout>p2</layout>
-            <url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/${xtext-version}</url>
-        </repository>
-        <repository>
-            <id>mars</id>
-            <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/mars</url>
-        </repository>
-        <repository>
-            <id>efxclipse-runtime-repo</id>
-            <layout>p2</layout>
-            <url>http://download.eclipse.org/efxclipse/runtime-released/2.3.0/site</url>
-        </repository>
-        <repository>
-            <id>efxclipse-ide-repo</id>
-            <layout>p2</layout>
-            <url>http://download.eclipse.org/efxclipse/updates-released/2.3.0/site</url>
-        </repository>
-        <repository>
-            <id>kieler</id>
-            <layout>p2</layout>
-            <url>http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2015-02</url>
-        </repository>
-        <repository>
-            <id>xtext-examples</id>
-            <layout>p2</layout>
-            <url>http://meysholdt.github.io/xtext_examples/repositories/generated-with-xtext_2_8_4/</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>

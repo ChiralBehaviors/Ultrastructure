@@ -3,64 +3,92 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.chiralbehaviors.CoRE.occular.WorkspaceController">
    <left>
-      <ListView fx:id="workspaces" prefHeight="200.0" prefWidth="133.0" BorderPane.alignment="CENTER">
+      <ListView fx:id="workspaces" prefWidth="350.0">
          <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" />
+            <Insets bottom="10.0" left="10.0" top="10.0" />
          </BorderPane.margin>
       </ListView>
    </left>
    <center>
-      <GridPane hgap="5.0" BorderPane.alignment="CENTER_RIGHT">
+      <GridPane hgap="5.0" prefHeight="412.0" prefWidth="205.0" vgap="1.0" BorderPane.alignment="CENTER_RIGHT">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="96.0" minWidth="10.0" prefWidth="82.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="118.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <TextField fx:id="name" prefHeight="27.0" prefWidth="315.0" GridPane.columnIndex="1" />
-            <TextField fx:id="iri" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
             <Label text="Version:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-            <Label fx:id="version" text="1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Label fx:id="version" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
             <Label text="Name:" GridPane.halignment="RIGHT" />
             <Label text="IRI:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+            <Label text="Description:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+            <TextField fx:id="iri" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextArea fx:id="description" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
          <BorderPane.margin>
-            <Insets right="10.0" />
+            <Insets bottom="5.0" right="10.0" />
          </BorderPane.margin>
       </GridPane>
    </center>
-   <top>
-      <GridPane BorderPane.alignment="CENTER">
+   <bottom>
+      <GridPane hgap="5.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="NEVER" maxWidth="170.0" minWidth="10.0" prefWidth="73.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="275.0" minWidth="10.0" prefWidth="275.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <BorderPane.margin>
             <Insets right="10.0" />
          </BorderPane.margin>
          <children>
-            <RadioButton mnemonicParsing="false" text="Connect" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
             <Label text="Instance:" GridPane.halignment="RIGHT" />
-            <TextField fx:id="instance" GridPane.columnIndex="1" />
+            <Label fx:id="instance" text="http://localhost" GridPane.columnIndex="1" />
          </children>
       </GridPane>
+   </bottom>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Workspace">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+                  <MenuItem mnemonicParsing="false" text="New" />
+                  <MenuItem mnemonicParsing="false" text="Export" />
+                  <MenuItem mnemonicParsing="false" text="Load" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Snapshot">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Export" />
+                  <MenuItem mnemonicParsing="false" text="Load" />
+               </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </top>
 </BorderPane>

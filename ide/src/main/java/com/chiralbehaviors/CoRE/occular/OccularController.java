@@ -25,6 +25,7 @@ import java.net.URL;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
@@ -57,12 +58,16 @@ public class OccularController {
     public void initializeFacetsView() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Occular.class.getResource("view/FacetsView.fxml"));
-        AnchorPane workspaceView = (AnchorPane) loader.load();
+        AnchorPane facetsView = (AnchorPane) loader.load();
         facetsController = (FacetsController) loader.getController();
-        facets.setContent(workspaceView);
+        facets.setContent(facetsView);
         WebView ide = new WebView();
         webEngine = ide.getEngine();
         sandbox.setContent(ide);
+        loader = new FXMLLoader();
+        loader.setLocation(Occular.class.getResource("view/WorkspaceView.fxml"));
+        Object workspaceView = loader.load();
+        workspace.setContent((Node) workspaceView);
     }
 
     public void setApi(GraphQlApi api, URL url) {

@@ -1,12 +1,7 @@
 package com.chiralbehaviors.CoRE.occular;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-
-import javax.ws.rs.client.ClientBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,7 +35,7 @@ public class Occular extends Application {
         return primaryStage;
     }
 
-    public void initRootLayout(GraphQlApi api, URL url) throws IOException {
+    public void initRootLayout(URL url) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Occular.class.getResource("view/OccularView.fxml"));
         rootLayout = (TabPane) loader.load();
@@ -49,7 +44,7 @@ public class Occular extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         controller = loader.getController();
-        controller.setApi(api, url);
+        controller.setUrl(url);
     }
 
     @Override
@@ -57,29 +52,10 @@ public class Occular extends Application {
         Parameters params = getParameters();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Workspace View");
-        String encoded;
-        try {
-            encoded = URLEncoder.encode("urn:uuid:00000000-0000-0004-0000-000000000003",
-                                        "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
-        }
         String baseUrl = params.getRaw()
                                .get(0);
-        GraphQlApi api = new GraphQlApi(ClientBuilder.newClient()
-                                                     .target(String.format("%s/workspace/%s/meta",
-                                                                           baseUrl,
-                                                                           encoded)),
-                                        null);
-        URL url;
         try {
-            url = new URL(new URL(baseUrl),
-                          String.format("ide?workspace=%s", encoded));
-        } catch (MalformedURLException e) {
-            throw new IllegalStateException(e);
-        }
-        try {
-            initRootLayout(api, url);
+            initRootLayout(new URL(baseUrl));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

@@ -20,12 +20,33 @@
 
 package com.chiralbehaviors.CoRE.occular;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriBuilderException;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.web.WebEngine;
 
 /**
  * @author hhildebrand
@@ -42,5 +63,92 @@ public class WorkspaceController {
     private Label                instance;
     @FXML
     private ListView<ObjectNode> workspaces;
+    private FacetsController     facetsController;
+    private WebEngine            webEngine;
+    private UriBuilder           base;
+    private ObjectNode           workspace;
 
+    public void set(FacetsController facetsController, WebEngine webEngine) {
+        this.facetsController = facetsController;
+        this.webEngine = webEngine;
+    }
+
+    public void setUrl(URL url) {
+        try {
+            base = UriBuilder.fromUri(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    @FXML
+    public void initialize() throws IOException {
+        workspaces.setCellFactory(cellData -> new ListCell<ObjectNode>() {
+            @Override
+            protected void updateItem(ObjectNode item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && (item != null)) {
+                    setText(item.get("name")
+                                .asText());
+                } else {
+                    setText(null);
+                }
+            }
+        });
+        workspaces.getSelectionModel()
+                  .selectedItemProperty()
+                  .addListener(new ChangeListener<ObjectNode>() {
+                      @Override
+                      public void changed(ObservableValue<? extends ObjectNode> ov,
+                                          ObjectNode old_val,
+                                          ObjectNode new_val) {
+                          setWorkspace(new_val);
+                      }
+                  });
+    }
+
+    public void setWorkspace(ObjectNode wsp) {
+        this.workspace = wsp;
+        UriBuilder endpoint = base.clone();
+        String encoded;
+        try {
+            encoded = URLEncoder.encode(String.format("urn:uuid:%s",
+                                                      workspace.get("id")
+                                                               .asText()),
+                                        "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+        endpoint.path("workspace")
+                .path(encoded)
+                .path("meta");
+        GraphQlApi api = new GraphQlApi(ClientBuilder.newClient()
+                                                     .target(endpoint),
+                                        null);
+        UriBuilder ideEndpoint = base.clone();
+        ideEndpoint.path("ide");
+        ideEndpoint.queryParam("workspace", encoded);
+        try {
+            webEngine.load(ideEndpoint.build()
+                                      .toURL()
+                                      .toExternalForm());
+        } catch (MalformedURLException | IllegalArgumentException
+                | UriBuilderException e) {
+            throw new IllegalStateException(e);
+        }
+        facetsController.setApi(api);
+        facetsController.update();
+    }
+
+    public void update() {
+        UriBuilder wspEndpoint = base.clone();
+        wspEndpoint.path("workspace");
+        WebTarget endpoint = ClientBuilder.newClient()
+                                          .target(wspEndpoint);
+        Builder invocationBuilder = endpoint.request(MediaType.APPLICATION_JSON_TYPE);
+        ArrayNode result = invocationBuilder.get(ArrayNode.class);
+        ObservableList<ObjectNode> workspaceList = FXCollections.observableArrayList();
+        result.forEach(o -> workspaceList.add((ObjectNode) o));
+        workspaces.setItems(workspaceList);
+    }
 }

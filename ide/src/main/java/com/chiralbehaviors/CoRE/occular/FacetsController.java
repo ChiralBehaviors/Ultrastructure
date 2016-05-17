@@ -87,8 +87,12 @@ public class FacetsController {
                   @Override
                   public void changed(ObservableValue<? extends ObjectNode> ov,
                                       ObjectNode old_val, ObjectNode new_val) {
-                      facetController.setFacet(new_val.get("id")
-                                                      .asText());
+                      if (new_val == null) {
+                          facetController.setFacet(null);
+                      } else {
+                          facetController.setFacet(new_val.get("id")
+                                                          .asText());
+                      }
                   }
               });
     }

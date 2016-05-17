@@ -38,17 +38,19 @@ import javafx.scene.web.WebView;
 public class OccularController {
 
     @FXML
-    private Tab              workspace;
+    private Tab                 workspace;
 
     @FXML
-    private Tab              facets;
+    private Tab                 facets;
 
     @FXML
-    private Tab              sandbox;
+    private Tab                 sandbox;
 
-    private FacetsController facetsController;
+    private FacetsController    facetsController;
 
-    private WebEngine        webEngine;
+    private WebEngine           webEngine;
+
+    private WorkspaceController workspaceController;
 
     @FXML
     private void initialize() throws Exception {
@@ -68,11 +70,12 @@ public class OccularController {
         loader.setLocation(Occular.class.getResource("view/WorkspaceView.fxml"));
         Object workspaceView = loader.load();
         workspace.setContent((Node) workspaceView);
+        workspaceController = (WorkspaceController) loader.getController();
+        workspaceController.set(facetsController, webEngine);
     }
 
-    public void setApi(GraphQlApi api, URL url) {
-        facetsController.setApi(api);
-        facetsController.update();
-        webEngine.load(url.toExternalForm());
+    public void setUrl(URL url) {
+        workspaceController.setUrl(url);
+        workspaceController.update();
     }
 }

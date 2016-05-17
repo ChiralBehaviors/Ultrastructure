@@ -144,6 +144,9 @@ public class FacetController {
     }
 
     public void setFacet(String id) {
+        if (id == null) {
+            return;
+        }
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", id);
         ObjectNode result;

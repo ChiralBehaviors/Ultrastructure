@@ -148,6 +148,10 @@ public class WorkspaceResource extends TransactionalResource {
                                              .toString());
                 wsp.put("name", definingProduct.getName());
                 wsp.put("description", definingProduct.getDescription());
+                wsp.put("IRI",
+                        readOnlyModel.wrap(Workspace.class, definingProduct)
+                                     .getIRI());
+                wsp.put("version", definingProduct.getVersion());
                 workspaces.add(wsp);
             }
             return workspaces;

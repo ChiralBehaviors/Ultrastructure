@@ -84,6 +84,8 @@ public interface ExistentialRuleform extends Phantasm {
 
     UUID getUpdatedBy();
 
+    Integer getVersion();
+
     void setDescription(String description);
 
     void setName(String name);

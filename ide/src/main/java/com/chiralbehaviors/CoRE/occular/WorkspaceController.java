@@ -45,6 +45,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 
@@ -53,33 +54,22 @@ import javafx.scene.web.WebEngine;
  *
  */
 public class WorkspaceController {
+    private UriBuilder           base;
     @FXML
-    private TextField            name;
-    @FXML
-    private TextField            iri;
-    @FXML
-    private Label                version;
+    private TextArea             description;
+    private FacetsController     facetsController;
     @FXML
     private Label                instance;
     @FXML
-    private ListView<ObjectNode> workspaces;
-    private FacetsController     facetsController;
+    private TextField            iri;
+    @FXML
+    private TextField            name;
+    @FXML
+    private Label                version;
     private WebEngine            webEngine;
-    private UriBuilder           base;
     private ObjectNode           workspace;
-
-    public void set(FacetsController facetsController, WebEngine webEngine) {
-        this.facetsController = facetsController;
-        this.webEngine = webEngine;
-    }
-
-    public void setUrl(URL url) {
-        try {
-            base = UriBuilder.fromUri(url.toURI());
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException();
-        }
-    }
+    @FXML
+    private ListView<ObjectNode> workspaces;
 
     @FXML
     public void initialize() throws IOException {
@@ -105,6 +95,19 @@ public class WorkspaceController {
                           setWorkspace(new_val);
                       }
                   });
+    }
+
+    public void set(FacetsController facetsController, WebEngine webEngine) {
+        this.facetsController = facetsController;
+        this.webEngine = webEngine;
+    }
+
+    public void setUrl(URL url) {
+        try {
+            base = UriBuilder.fromUri(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException();
+        }
     }
 
     public void setWorkspace(ObjectNode wsp) {
@@ -138,6 +141,14 @@ public class WorkspaceController {
         }
         facetsController.setApi(api);
         facetsController.update();
+        version.setText(Integer.toString(workspace.get("version")
+                                                  .asInt()));
+        name.setText(workspace.get("name")
+                              .asText());
+        description.setText(workspace.get("description")
+                                     .asText());
+        iri.setText(workspace.get("IRI")
+                             .asText());
     }
 
     public void update() {
@@ -150,5 +161,6 @@ public class WorkspaceController {
         ObservableList<ObjectNode> workspaceList = FXCollections.observableArrayList();
         result.forEach(o -> workspaceList.add((ObjectNode) o));
         workspaces.setItems(workspaceList);
+        instance.setText(base.toString());
     }
 }

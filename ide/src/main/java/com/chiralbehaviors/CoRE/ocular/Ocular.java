@@ -1,4 +1,4 @@
-package com.chiralbehaviors.CoRE.occular;
+package com.chiralbehaviors.CoRE.ocular;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,7 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
-public class Occular extends Application {
+public class Ocular extends Application {
     public static void main(String[] args) {
         launch(args);
     }
@@ -27,9 +27,9 @@ public class Occular extends Application {
         return new SimpleStringProperty(node.asText());
     }
 
-    private OccularController controller;
-    private Stage             primaryStage;
-    private TabPane           rootLayout;
+    private OcularController controller;
+    private Stage            primaryStage;
+    private TabPane          rootLayout;
 
     public Stage getPrimaryStage() {
         return primaryStage;
@@ -37,7 +37,7 @@ public class Occular extends Application {
 
     public void initRootLayout(URL url) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Occular.class.getResource("view/OccularView.fxml"));
+        loader.setLocation(Ocular.class.getResource("view/OcularView.fxml"));
         rootLayout = (TabPane) loader.load();
 
         Scene scene = new Scene(rootLayout);

@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.occular;
+package com.chiralbehaviors.CoRE.ocular;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +35,7 @@ import javafx.scene.web.WebView;
  * @author hhildebrand
  *
  */
-public class OccularController {
+public class OcularController {
 
     @FXML
     private Tab                 workspace;
@@ -59,7 +59,7 @@ public class OccularController {
 
     public void initializeFacetsView() throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Occular.class.getResource("view/FacetsView.fxml"));
+        loader.setLocation(Ocular.class.getResource("view/FacetsView.fxml"));
         AnchorPane facetsView = (AnchorPane) loader.load();
         facetsController = (FacetsController) loader.getController();
         facets.setContent(facetsView);
@@ -67,7 +67,7 @@ public class OccularController {
         webEngine = ide.getEngine();
         sandbox.setContent(ide);
         loader = new FXMLLoader();
-        loader.setLocation(Occular.class.getResource("view/WorkspaceView.fxml"));
+        loader.setLocation(Ocular.class.getResource("view/WorkspaceView.fxml"));
         Object workspaceView = loader.load();
         workspace.setContent((Node) workspaceView);
         workspaceController = (WorkspaceController) loader.getController();

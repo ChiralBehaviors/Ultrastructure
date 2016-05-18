@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.occular;
+package com.chiralbehaviors.CoRE.ocular;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +30,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
+import com.chiralbehaviors.CoRE.ocular.Ocular;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
@@ -42,7 +43,7 @@ import javafx.stage.Stage;
  *
  */
 @Ignore
-public class OccularTest extends ApplicationTest {
+public class OcularTest extends ApplicationTest {
 
     protected PhantasmApplication application = new PhantasmApplication();
 
@@ -71,7 +72,7 @@ public class OccularTest extends ApplicationTest {
     @Test
     public void testIt() throws Exception {
         application.run("server", "target/test-classes/null.yml");
-        ApplicationTest.launch(Occular.class, "http://localhost:5000");
+        ApplicationTest.launch(Ocular.class, "http://localhost:5000");
         assertTrue(Utils.waitForCondition(5000,
                                           () -> lookup("#facets").query() != null));
         ListView<ObjectNode> facets = lookup("#facets").query();

@@ -18,9 +18,9 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.occular;
+package com.chiralbehaviors.CoRE.ocular;
 
-import static com.chiralbehaviors.CoRE.occular.Occular.path;
+import static com.chiralbehaviors.CoRE.ocular.Ocular.path;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

@@ -83,7 +83,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>add-source</id>
+                        <id>add-test-source</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-source</goal>
@@ -91,6 +91,18 @@
                         <configuration>
                             <sources>
                                 <source>${project.build.directory}/generated-sources/phantasm</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-test-sources/phantasm</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -111,6 +123,35 @@
                                 <resource>${basedir}/src/main/resources/kernel.3.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
                                 <packageName>com.chiralbehaviors.CoRE.kernel.phantasm</packageName>
+                                <appendTypeToPackage>true</appendTypeToPackage>
+                            </generator>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <artifactId>phantasm-plugin</artifactId>
+                <version>${project.version}</version>
+                <dependencies> 
+                    <dependency>
+                        <groupId>com.chiralbehaviors.CoRE</groupId>
+                        <artifactId>thing-ontology</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>test-phantasms</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generator>
+                                <resource>/thing.wsp</resource>
+                                <outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
+                                <packageName>com.chiralbehaviors.CoRE.phantasm.test</packageName>
                                 <appendTypeToPackage>true</appendTypeToPackage>
                             </generator>
                         </configuration>

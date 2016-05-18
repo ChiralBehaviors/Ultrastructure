@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.occular;
+package com.chiralbehaviors.CoRE.ocular;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +33,8 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
-import com.chiralbehaviors.CoRE.occular.GraphQlApi.QueryException;
+import com.chiralbehaviors.CoRE.ocular.GraphQlApi;
+import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

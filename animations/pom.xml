@@ -83,7 +83,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>add-test-source</id>
+                        <id>add-source</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-source</goal>
@@ -95,7 +95,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>add-source</id>
+                        <id>add-test-source</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-test-source</goal>
@@ -142,7 +142,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>test-phantasms</id>
+                        <id>generate-test-phantasms</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>

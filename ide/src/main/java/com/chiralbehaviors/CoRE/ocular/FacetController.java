@@ -36,7 +36,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -54,7 +54,7 @@ public class FacetController {
         @Override
         public void updateItem(ObjectNode item, boolean empty) {
             super.updateItem(item, empty);
-            if (!empty && (item != null)) {
+            if (item != null) {
                 setText(item.get("name")
                             .asText());
             } else {
@@ -96,10 +96,10 @@ public class FacetController {
     protected TableView<ObjectNode>           children;
 
     @FXML
-    protected ComboBox<ObjectNode>            classification;
+    protected MenuButton                      classification;
 
     @FXML
-    protected ComboBox<ObjectNode>            classifier;
+    protected MenuButton                      classifier;
 
     @FXML
     protected TableColumn<ObjectNode, String> defaultValueColumn;
@@ -136,11 +136,6 @@ public class FacetController {
                                                          "child/name"));
         relationshipColumn.setCellValueFactory(cellData -> path(cellData.getValue(),
                                                                 "relationship/name"));
-        classifier.setCellFactory(l -> new ExistentialCell());
-        classifier.setButtonCell(new ExistentialCell());
-
-        classification.setCellFactory(l -> new ExistentialCell());
-        classification.setButtonCell(new ExistentialCell());
     }
 
     public void setFacet(String id) {
@@ -192,12 +187,13 @@ public class FacetController {
         children.setItems(childrenList);
 
         ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
-        result.withArray("relationship")
+        result.withArray("relationships")
               .forEach(r -> relationships.add((ObjectNode) r));
-        classifier.setItems(relationships);
-        classifier.setValue((ObjectNode) facet.get("classifier"));
-        classification.setItems(existentials);
-        classification.setValue((ObjectNode) facet.get("classification"));
+        classifier.setText(facet.get("classifier")
+                                .get("name")
+                                .asText());
+        classification.setText(facet.get("classification")
+                                    .get("name")
+                                    .asText());
     }
-
 }

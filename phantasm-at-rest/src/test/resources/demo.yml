@@ -21,11 +21,11 @@ assetsConfiguration:
 
 assets:
   - name: ide
-    uri: /ide
+    uri: /api/ide
     path: /workspace-explorer
     index: index.html
   - name: meta
-    uri: /meta/
+    uri: /api/meta/
     path: /workspace-explorer/meta
     index: index.html
         

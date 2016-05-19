@@ -265,8 +265,8 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getConstrainedChildren(instance, auth.getRelationship(), auth.getChild(),
-                                 auth.getDomain())
+                    .getConstrainedChildren(instance, auth.getRelationship(), facet.getClassifier(),
+                                 facet.getClassification(), auth.getDomain())
                     .stream()
                     .filter(child -> model.getPhantasmModel()
                                           .checkCapability(child, getREAD()))
@@ -301,8 +301,8 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getImmediateConstrainedChildren(instance, auth.getRelationship(), auth.getChild(),
-                                          auth.getDomain())
+                    .getImmediateConstrainedChildren(instance, auth.getRelationship(), null,
+                                          null, auth.getDomain())
                     .stream()
                     .map(r -> r)
                     .filter(child -> model.getPhantasmModel()

@@ -67,7 +67,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.hellblazer.utils.Tuple;
 
@@ -481,8 +480,8 @@ public class PhantasmModelImpl implements PhantasmModel {
     
     @Override
 	public List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
-			Relationship relationship, Aspect constraint, ExistentialDomain existentialDomain) {
-		return getConstrainedChildren(parent.getId(), relationship.getId(), constraint, existentialDomain);
+			Relationship relationship, Relationship classifier, ExistentialRuleform classification, ExistentialDomain existentialDomain) {
+		return getConstrainedChildren(parent.getId(), relationship.getId(), classifier.getId(), classification.getId(), existentialDomain);
 	}
 
     @Override
@@ -573,8 +572,10 @@ public class PhantasmModelImpl implements PhantasmModel {
 
 	@Override
 	public List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
-			Relationship relationship, Aspect constraint, ExistentialDomain existentialDomain) {
-		return getImmediateConstrainedChildren(parent.getId(), relationship.getId(), constraint, existentialDomain);
+			Relationship relationship, Relationship classifier, ExistentialRuleform classification,
+			ExistentialDomain existentialDomain) {
+		return getImmediateConstrainedChildren(parent.getId(), relationship.getId(), classifier.getId(),
+				classification.getId(), existentialDomain);
 	}
     
     @Override
@@ -991,7 +992,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
     }
     
-	private List<ExistentialRuleform> getConstrainedChildren(UUID parent, UUID relationship, Aspect constraint, ExistentialDomain domain) {
+	private List<ExistentialRuleform> getConstrainedChildren(UUID parent, UUID relationship, UUID classifier, UUID classification, ExistentialDomain domain) {
 		return create.select(EXISTENTIAL.fields())
 				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
 				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
@@ -999,7 +1000,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
 				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
 				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r.getId(), constraint.getClassifier().getId(), constraint.getClassification().getId()))
+				.filter(r -> isAccessible(r.getId(), classifier, classification))
 				.collect(Collectors.toList());
 	}
 
@@ -1021,7 +1022,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .collect(Collectors.toList());
     }
     
-	private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent, UUID relationship, Aspect constraint, ExistentialDomain domain) {
+	private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent, UUID relationship, UUID classifier, UUID classification, ExistentialDomain domain) {
 		return create.select(EXISTENTIAL.fields())
 				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
 				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
@@ -1030,7 +1031,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
 				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
 				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r.getId(), constraint.getClassifier().getId(), constraint.getClassification().getId()))
+				.filter(r -> isAccessible(r.getId(), classifier, classification))
 				.collect(Collectors.toList());
 	}
 

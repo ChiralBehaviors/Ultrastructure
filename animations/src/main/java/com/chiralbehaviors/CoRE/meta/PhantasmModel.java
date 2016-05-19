@@ -38,7 +38,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizat
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -212,13 +211,14 @@ public interface PhantasmModel {
 
     /**
 	 * @param parent
-	 * @param relationship
-	 * @param constraint
-	 * @param existentialDomain
+     * @param relationship
+     * @param classifier
+     * @param classification TODO
+     * @param existentialDomain
 	 * @return
 	 */
 	List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent, Relationship relationship,
-			Aspect constraint, ExistentialDomain existentialDomain);
+			Relationship classifier, ExistentialRuleform classification, ExistentialDomain existentialDomain);
 
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
@@ -272,13 +272,14 @@ public interface PhantasmModel {
      * 
      * @param parent
      * @param relationship
-     * @param constraint
+     * @param classifier TODO
+     * @param classification TODO
      * @param existentialDomain
      * @return
      */
     List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
-            Relationship relationship, Aspect constraint,
-            ExistentialDomain existentialDomain);
+            Relationship relationship, Relationship classifier,
+            ExistentialRuleform classification, ExistentialDomain existentialDomain);
 
     ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                               Relationship relationship,

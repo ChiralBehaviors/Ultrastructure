@@ -25,6 +25,7 @@ import static com.chiralbehaviors.CoRE.ocular.Ocular.path;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,6 +38,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -195,5 +197,20 @@ public class FacetController {
         classification.setText(facet.get("classification")
                                     .get("name")
                                     .asText());
+        classifier.getItems()
+                  .clear();
+        classifier.getItems()
+                  .addAll(relationships.stream()
+                                       .map(o -> new MenuItem(o.get("name")
+                                                               .asText()))
+                                       .collect(Collectors.toList()));
+
+        classification.getItems()
+                      .clear();
+        classification.getItems()
+                      .addAll(existentials.stream()
+                                          .map(o -> new MenuItem(o.get("name")
+                                                                  .asText()))
+                                          .collect(Collectors.toList()));
     }
 }

@@ -284,7 +284,7 @@ public class WorkspaceTypeFunction implements TypeFunction, TypeResolver {
 
     @Override
     public GraphQLObjectType getType(Object object) {
-        return (GraphQLObjectType) types.get(object.getClass());
+        return (GraphQLObjectType) apply(object.getClass(), null);
     }
 
     public Class<WorkspaceTypeFunction> register(Class<?> klass,

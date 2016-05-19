@@ -103,7 +103,7 @@ body {
         }
 		// Defines a GraphQL fetcher using the fetch API.
 		function graphQLFetcher(graphQLParams) {
-			return fetch(window.location.origin + '/workspace/' + workspace + "/meta", {
+			return fetch(window.location.origin + '/api/workspace/' + workspace + "/meta", {
 				method : 'post',
 				headers : {
 					'Accept' : 'application/json',

@@ -122,14 +122,16 @@ public class WorkspaceController {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
-        endpoint.path("workspace")
+        endpoint.path("api")
+                .path("workspace")
                 .path(encoded)
                 .path("meta");
         GraphQlApi api = new GraphQlApi(ClientBuilder.newClient()
                                                      .target(endpoint),
                                         null);
         UriBuilder ideEndpoint = base.clone();
-        ideEndpoint.path("ide");
+        ideEndpoint.path("api")
+                   .path("ide");
         ideEndpoint.queryParam("workspace", encoded);
         try {
             webEngine.load(ideEndpoint.build()
@@ -153,7 +155,8 @@ public class WorkspaceController {
 
     public void update() {
         UriBuilder wspEndpoint = base.clone();
-        wspEndpoint.path("workspace");
+        wspEndpoint.path("api")
+                   .path("workspace");
         WebTarget endpoint = ClientBuilder.newClient()
                                           .target(wspEndpoint);
         Builder invocationBuilder = endpoint.request(MediaType.APPLICATION_JSON_TYPE);

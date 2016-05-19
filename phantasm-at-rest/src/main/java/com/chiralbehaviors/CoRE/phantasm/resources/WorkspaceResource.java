@@ -338,8 +338,6 @@ public class WorkspaceResource extends TransactionalResource {
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QUERY),
-                     result.getErrors());
             return result;
         }, create);
     }
@@ -386,8 +384,6 @@ public class WorkspaceResource extends TransactionalResource {
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get(QUERY),
-                     result.getErrors());
             return result;
         }, create);
     }

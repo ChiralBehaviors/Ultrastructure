@@ -123,7 +123,7 @@ public class RoundTripFunctionalTest {
                                                  .getBytes());
 
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                           application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));
@@ -151,7 +151,7 @@ public class RoundTripFunctionalTest {
         application.run("server", "target/test-classes/oauth.yml");
 
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/oauth2/token/login",
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/login",
                                                           application.getPort()));
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         Form creds = new Form();
@@ -160,7 +160,7 @@ public class RoundTripFunctionalTest {
         UUID token = invocationBuilder.post(Entity.entity(creds,
                                                           MediaType.APPLICATION_FORM_URLENCODED),
                                             UUID.class);
-        webTarget = client.target(String.format("http://localhost:%s/workspace",
+        webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                 application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));
@@ -182,7 +182,7 @@ public class RoundTripFunctionalTest {
                                           ObjectNode.class);
         assertNotNull(response);
 
-        webTarget = client.target(String.format("http://localhost:%s/oauth2/token/deauthorize",
+        webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/deauthorize",
                                                 application.getPort()));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         Response resp = invocationBuilder.post(null);
@@ -207,12 +207,12 @@ public class RoundTripFunctionalTest {
         capReq.password = PASSWORD;
         capReq.capabilities = Arrays.asList(asserted.getId());
 
-        webTarget = client.target(String.format("http://localhost:%s/oauth2/token/capability",
+        webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/capability",
                                                 application.getPort()));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         token = invocationBuilder.post(Entity.json(capReq), UUID.class);
 
-        webTarget = client.target(String.format("http://localhost:%s/oauth2/token/deauthorize",
+        webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/deauthorize",
                                                 application.getPort()));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         invocationBuilder.header(HttpHeaders.AUTHORIZATION,
@@ -226,7 +226,7 @@ public class RoundTripFunctionalTest {
         application.run("server", "target/test-classes/null.yml");
 
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                           application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));

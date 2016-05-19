@@ -92,6 +92,8 @@ public class YourBasicHumblrPhantasmTest extends AbstractModelTest {
 	public void testApplyFacet() throws Exception {
 		User user = model.construct(User.class, ExistentialDomain.Agency, "UserA", "user A");
 		Person person = model.apply(Person.class, user);
+		User userA = person.cast(User.class);
+		assertEquals(user.getRuleform(), userA.getRuleform());
 	}
 
 }

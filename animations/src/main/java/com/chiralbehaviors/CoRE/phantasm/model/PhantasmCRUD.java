@@ -232,8 +232,8 @@ public class PhantasmCRUD {
 			return Collections.emptyList();
 		}
 		return model.getPhantasmModel()
-				.getConstrainedChildren(instance, auth.getRelationship(), facet.getClassifier(),
-						facet.getClassification(), auth.getDomain())
+				.getConstrainedChildren(instance, auth.getRelationship(), auth.getChild().getClassifier(),
+						auth.getChild().getClassification(), auth.getDomain())
 				.stream().filter(child -> model.getPhantasmModel().checkCapability(child, getREAD()))
 				.collect(Collectors.toList());
 

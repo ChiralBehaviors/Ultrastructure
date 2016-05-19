@@ -123,7 +123,7 @@ public class Facet {
 
     @GraphQLField
     public Existential getClassification(DataFetchingEnvironment env) {
-        return wrap(resolve(env, record.getClassifier()));
+        return wrap(resolve(env, record.getClassification()));
     }
 
     @GraphQLField

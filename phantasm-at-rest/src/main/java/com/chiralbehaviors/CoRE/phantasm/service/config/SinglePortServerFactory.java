@@ -30,12 +30,14 @@ import io.dropwizard.server.SimpleServerFactory;
  *
  */
 public class SinglePortServerFactory extends SimpleServerFactory {
-    public static final String ADMIN_CONTEXT_PATH = "/!/" + "admin";
-    public static final String APP_CONTEXT_PATH   = "/";
+    private static final String CONTEXT_PATH       = "/";
+    public static final String  ADMIN_CONTEXT_PATH = "/!/" + "admin";
+    public static final String  ROOT_PATH          = "/api/*";
 
     {
+        setApplicationContextPath(CONTEXT_PATH);
         setConnector(new ConnectorFactoryFromEnvironment());
-        setApplicationContextPath(APP_CONTEXT_PATH);
+        setJerseyRootPath(ROOT_PATH);
         setAdminContextPath(ADMIN_CONTEXT_PATH);
         setRequestLogFactory(new RequestLogFactory() {
             {

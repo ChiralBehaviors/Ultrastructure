@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
-import com.chiralbehaviors.CoRE.ocular.GraphQlApi;
 import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -55,7 +54,7 @@ public class TestGraphQlApi {
     public void testSimple() throws Exception {
         application.run("server", "target/test-classes/null.yml");
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                           application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));
@@ -68,7 +67,7 @@ public class TestGraphQlApi {
     public void testErrors() throws Exception {
         application.run("server", "target/test-classes/null.yml");
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(String.format("http://localhost:%s/workspace",
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                           application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));

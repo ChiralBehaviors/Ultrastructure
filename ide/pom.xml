@@ -102,20 +102,6 @@
                         <version>1.0.1</version>
                         <executions>
                             <execution>
-                                <id>normalize-jars</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>pack</goal>
-                                </goals>
-                                <configuration>
-                                    <normalizeOnly>true</normalizeOnly>
-                                    <processMainArtifact>false</processMainArtifact>
-                                    <includeClassifiers>
-                                        <includeClassifier>phat</includeClassifier>
-                                    </includeClassifiers>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>pack-jars</id>
                                 <phase>verify</phase>
                                 <goals>
@@ -123,6 +109,10 @@
                                 </goals>
                                 <configuration>
                                     <normalizeOnly>false</normalizeOnly>
+                                    <processMainArtifact>false</processMainArtifact>
+                                    <includeClassifiers>
+                                        <includeClassifier>phat</includeClassifier>
+                                    </includeClassifiers>
                                 </configuration>
                             </execution>
                         </executions>

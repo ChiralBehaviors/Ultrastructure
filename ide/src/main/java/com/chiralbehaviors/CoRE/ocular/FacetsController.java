@@ -18,11 +18,11 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.occular;
+package com.chiralbehaviors.CoRE.ocular;
 
 import java.io.IOException;
 
-import com.chiralbehaviors.CoRE.occular.GraphQlApi.QueryException;
+import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javafx.beans.value.ChangeListener;
@@ -60,7 +60,7 @@ public class FacetsController {
     @FXML
     public void initialize() throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Occular.class.getResource("view/FacetView.fxml"));
+        loader.setLocation(Ocular.class.getResource("view/FacetView.fxml"));
         GridPane facetsView = (GridPane) loader.load();
         AnchorPane.setTopAnchor(facetsView, 10.0);
         AnchorPane.setBottomAnchor(facetsView, 10.0);
@@ -87,8 +87,12 @@ public class FacetsController {
                   @Override
                   public void changed(ObservableValue<? extends ObjectNode> ov,
                                       ObjectNode old_val, ObjectNode new_val) {
-                      facetController.setFacet(new_val.get("id")
-                                                      .asText());
+                      if (new_val == null) {
+                          facetController.setFacet(null);
+                      } else {
+                          facetController.setFacet(new_val.get("id")
+                                                          .asText());
+                      }
                   }
               });
     }

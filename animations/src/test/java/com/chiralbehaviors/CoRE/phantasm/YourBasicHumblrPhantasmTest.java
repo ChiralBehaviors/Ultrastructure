@@ -65,7 +65,6 @@ public class YourBasicHumblrPhantasmTest extends AbstractModelTest {
 		User userB = model.construct(User.class, ExistentialDomain.Agency, "UserB", "user B");
 		userB.addFollows(firstChannel);
 		model.flush();
-		userB.getPosts();
 		assertEquals(1, userB.getPosts().size());
 	}
 	

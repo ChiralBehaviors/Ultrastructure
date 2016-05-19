@@ -757,7 +757,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>graphql/annotations/**/*</exclude>
-                                <exclude>com/chiralbehaviors/CoRE/occular/**/*</exclude>
+                                <exclude>com/chiralbehaviors/CoRE/ocular/**/*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/workspace/dsl/**/*</exclude>
                                 <exclude>**/HelpMojo.*</exclude>

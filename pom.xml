@@ -761,8 +761,8 @@
                                 <exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/workspace/dsl/**/*</exclude>
                                 <exclude>**/HelpMojo.*</exclude>
-                                <exclude>**/English.*</exclude>
-                                <exclude>**/TwoFormInflector.*</exclude>
+                                <exclude>com/chiralbehaviors/CoRE/utils/English.*</exclude> 
+                                <exclude>com/chiralbehaviors/CoRE/utils/TwoFormInflector.*</exclude>
                             </excludes>
                         </configuration>
                         <executions>

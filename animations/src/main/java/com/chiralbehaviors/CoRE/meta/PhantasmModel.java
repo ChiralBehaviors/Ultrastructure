@@ -209,6 +209,17 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getChildrenUuid(UUID id, UUID inverse,
                                               ExistentialDomain domain);
 
+    /**
+	 * @param parent
+     * @param relationship
+     * @param classifier
+     * @param classification TODO
+     * @param existentialDomain
+	 * @return
+	 */
+	List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent, Relationship relationship,
+			Relationship classifier, ExistentialRuleform classification, ExistentialDomain existentialDomain);
+
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
 
@@ -246,7 +257,7 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getImmediateChildren(ExistentialRuleform parent,
                                                    Relationship relationship,
                                                    ExistentialDomain existentialDomain);
-
+    
     /**
      *
      * @param parent
@@ -256,6 +267,19 @@ public interface PhantasmModel {
     List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
                                                              Relationship relationship,
                                                              ExistentialDomain domain);
+
+    /**
+     * 
+     * @param parent
+     * @param relationship
+     * @param classifier TODO
+     * @param classification TODO
+     * @param existentialDomain
+     * @return
+     */
+    List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
+            Relationship relationship, Relationship classifier,
+            ExistentialRuleform classification, ExistentialDomain existentialDomain);
 
     ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                               Relationship relationship,
@@ -315,8 +339,8 @@ public interface PhantasmModel {
      * @param child
      * @return
      */
-    boolean isAccessible(ExistentialRuleform parent, Relationship relationship,
-                         ExistentialRuleform child);
+    boolean isAccessible(UUID parent, UUID relationship,
+                         UUID child);
 
     /**
      *
@@ -356,5 +380,5 @@ public interface PhantasmModel {
 
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
 
-    Class<?> valueClass(Attribute attribute);
+	Class<?> valueClass(Attribute attribute);
 }

@@ -135,8 +135,8 @@ public class PhantasmDefinition extends Phantasmagoria {
                                                           phantasm));
         }
         if (!model.getPhantasmModel()
-                  .isAccessible(ruleform, facet.getClassifier(),
-                                facet.getClassification())) {
+                  .isAccessible(ruleform.getId(), facet.getClassifier().getId(),
+                                facet.getClassification().getId())) {
             throw new ClassCastException(String.format("%s does not have required facet %s of state %s",
                                                        ruleform.getName(),
                                                        factString(model,

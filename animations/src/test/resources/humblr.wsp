@@ -1,0 +1,65 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/humblr" 
+           version: 1
+           "Humblr" 
+           "Ultrastructure sketch of Tumblr"
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+}
+
+agencies {
+	Person = "Person" "Neither place nor thing";
+    facets {
+        IsA.User { Name }
+            constraints {
+                n Owns: IsA.Channel 
+                n Follows: IsA.Channel named by relationship
+                n Follows get: inferred: IsA.Post
+                one Owns: IsA.Stream
+            }
+        IsA.Person { Name }
+        	constraints {
+        		n HasFavorite: IsA.Post
+        }
+    }
+}
+
+attributes {
+    Title = "Title" "The title" text;
+    URI = "URI" "URI" text;
+    Name = "Name" "name" text;
+}
+
+products {
+    Channel = "Channel" "A feed owned by a user";
+    Post = "Post" "A single post on a feed";
+    Stream = "Stream" "A collection of posts constructed from channels followed by a user";
+    facets {
+        IsA.Post { Title URI }
+            constraints {
+                one IsRepostOf: IsA.Post named by relationship
+                n RepostedAs: IsA.Post named by relationship
+                n IsFavoriteOf: IsA.User
+            }
+        IsA.Channel { Name }
+            constraints {
+                n Owns: IsA.Post 
+            } 
+        IsA.Stream { Name }
+            constraints {
+                one OwnedBy: IsA.User named by relationship
+            }
+        
+    }
+}
+
+relationships {
+    Owns = "Owns" "A owns B" | OwnedBy = "Owned By" "A is owned by B";
+    HasFavorite = "HasFavorite" "A has favorite B" | IsFavoriteOf = "IsFavoriteOf" "B is a favorite of A";
+    Follows = "Follows" "A follows B" | HasFollower = "HasFollower" "B has a follower A";
+    IsRepostOf = "IsRepostOf" "A is a repost of B" | RepostedAs = "RepostedAs" "B is reposted as A";
+    
+}
+
+inferences {
+    Follows.Owns.Follows
+}

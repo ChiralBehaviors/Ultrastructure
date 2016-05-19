@@ -250,10 +250,10 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void addImport(String name, Product workspace) {
         if (!model.getPhantasmModel()
-                  .isAccessible(getDefiningProduct(), model.getKernel()
-                                                           .getIsA(),
+                  .isAccessible(getDefiningProduct().getId(), model.getKernel()
+                                                           .getIsA().getId(),
                                 model.getKernel()
-                                     .getWorkspace())) {
+                                     .getWorkspace().getId())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
@@ -687,10 +687,10 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void removeImport(Product workspace, Agency updatedBy) {
         if (!model.getPhantasmModel()
-                  .isAccessible(getDefiningProduct(), model.getKernel()
-                                                           .getIsA(),
+                  .isAccessible(getDefiningProduct().getId(), model.getKernel()
+                                                           .getIsA().getId(),
                                 model.getKernel()
-                                     .getWorkspace())) {
+                                     .getWorkspace().getId())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }

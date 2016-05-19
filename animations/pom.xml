@@ -127,6 +127,21 @@
                             </generator>
                         </configuration>
                     </execution>
+                    <execution>
+                    	<id>generate-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generator>
+                                <resource>${basedir}/src/test/resources/humblr.wsp</resource>
+                                <outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
+                                <packageName>com.chiralbehaviors.CoRE.kernel.phantasm.test</packageName>
+                                <appendTypeToPackage>true</appendTypeToPackage>
+                            </generator>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

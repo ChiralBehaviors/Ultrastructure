@@ -1593,7 +1593,7 @@ public class JobModelImpl implements JobModel {
             return true;
         }
         if (!model.getPhantasmModel()
-                  .isAccessible(rf, mpRelationship, child)) {
+                  .isAccessible(rf.getId(), mpRelationship.getId(), child.getId())) {
             return false;
         }
         return true;

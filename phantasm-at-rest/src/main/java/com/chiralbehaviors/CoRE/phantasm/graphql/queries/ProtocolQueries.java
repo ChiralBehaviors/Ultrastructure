@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
@@ -41,6 +42,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
+@GraphQLInterface
 public interface ProtocolQueries {
 
     @GraphQLField
@@ -54,17 +56,18 @@ public interface ProtocolQueries {
                                      DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env).create()
-                           .selectDistinct(Tables.PROTOCOL.fields())
-                           .from(Tables.PROTOCOL)
-                           .join(Tables.WORKSPACE_AUTHORIZATION)
-                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.PROTOCOL.WORKSPACE))
-                           .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                           .fetch()
-                           .into(ProtocolRecord.class)
-                           .stream()
-                           .map(r -> new Protocol(r))
-                           .collect(Collectors.toList());
+            return WorkspaceSchema.ctx(env)
+                                  .create()
+                                  .selectDistinct(Tables.PROTOCOL.fields())
+                                  .from(Tables.PROTOCOL)
+                                  .join(Tables.WORKSPACE_AUTHORIZATION)
+                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.PROTOCOL.WORKSPACE))
+                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .fetch()
+                                  .into(ProtocolRecord.class)
+                                  .stream()
+                                  .map(r -> new Protocol(r))
+                                  .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))

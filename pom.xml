@@ -465,14 +465,29 @@
             </dependency>
             <dependency>
                 <groupId>de.fxdiagram</groupId>
-                <artifactId>de.fxdiagram.swtfx</artifactId>
+                <artifactId>de.fxdiagram.annotations</artifactId>
                 <version>${fxdiagram.version}</version>
             </dependency>
             <dependency>
                 <groupId>de.fxdiagram</groupId>
-                <artifactId>de.fxdiagram.annotations</artifactId>
+                <artifactId>de.fxdiagram.external</artifactId>
                 <version>${fxdiagram.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.fxdiagram</groupId>
+                <artifactId>de.fxdiagram.lib</artifactId>
+                <version>${fxdiagram.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.fxdiagram</groupId>
+                <artifactId>de.fxdiagram.mapping</artifactId>
+                <version>${fxdiagram.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.fxdiagram</groupId>
+                <artifactId>de.fxdiagram.noeclipse</artifactId>
+                <version>${fxdiagram.version}</version>
+            </dependency> 
         </dependencies>
     </dependencyManagement>
 

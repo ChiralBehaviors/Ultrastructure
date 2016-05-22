@@ -51,6 +51,7 @@ public class PhantasmDomainObjectProvider implements DomainObjectProvider {
         }
     }
 
+    @SuppressWarnings("unused")
     private final GraphQlApi api;
     private final GraphQlApi meta;
 

@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.ocular;
 
 import java.util.Arrays;
 
+import com.chiralbehaviors.CoRE.ocular.diagram.PhantasmDomainObjectProvider;
+
 import de.fxdiagram.core.XDiagram;
 import de.fxdiagram.core.XNode;
 import de.fxdiagram.core.XRoot;
@@ -57,7 +59,7 @@ import javafx.stage.Stage;
  * @author hhildebrand
  *
  */
-public class TestApp extends Application {
+public class PhantasmApp extends Application {
     public static void main(final String... args) {
         Application.launch(args);
     }
@@ -72,6 +74,10 @@ public class TestApp extends Application {
         root.activate();
         XDiagram diagram = new XDiagram();
         root.setRootDiagram(diagram);
+
+        root.domainObjectProvidersProperty()
+            .add(new PhantasmDomainObjectProvider(null, null));
+
         root.getDiagramActionRegistry()
             .operator_add(Arrays.asList(new CenterAction(), new ExitAction(),
                                         new DeleteAction(),

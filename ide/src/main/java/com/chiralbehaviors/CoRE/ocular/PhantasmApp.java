@@ -20,9 +20,12 @@
 
 package com.chiralbehaviors.CoRE.ocular;
 
+import java.net.URL;
 import java.util.Arrays;
 
-import com.chiralbehaviors.CoRE.ocular.diagram.PhantasmDomainObjectProvider;
+import javax.ws.rs.core.UriBuilder;
+
+import com.chiralbehaviors.CoRE.ocular.diagram.WorkspaceDomainObjectProvider;
 
 import de.fxdiagram.core.XDiagram;
 import de.fxdiagram.core.XNode;
@@ -64,10 +67,14 @@ public class PhantasmApp extends Application {
         Application.launch(args);
     }
 
-    private XRoot root;
+    private XRoot      root;
+    private UriBuilder base;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        String baseUrl = getParameters().getRaw()
+                                        .get(0);
+        base = UriBuilder.fromUri(new URL(baseUrl).toURI());
         root = new XRoot();
         Scene scene = new Scene(root, 1024, 768);
         scene.setCamera(new PerspectiveCamera());
@@ -76,7 +83,7 @@ public class PhantasmApp extends Application {
         root.setRootDiagram(diagram);
 
         root.domainObjectProvidersProperty()
-            .add(new PhantasmDomainObjectProvider(null, null));
+            .add(new WorkspaceDomainObjectProvider(null, null));
 
         root.getDiagramActionRegistry()
             .operator_add(Arrays.asList(new CenterAction(), new ExitAction(),

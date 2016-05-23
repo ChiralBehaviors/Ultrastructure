@@ -20,16 +20,15 @@
 
 package com.chiralbehaviors.CoRE.ocular.diagram;
 
-import static com.chiralbehaviors.CoRE.ocular.diagram.GraphQLResultDescriptor.TYPE;
-
 import java.io.IOException;
 import java.util.Collections;
 
 import com.chiralbehaviors.CoRE.ocular.GraphQlApi;
+import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
-import de.fxdiagram.core.model.DomainObjectDescriptor;
 import de.fxdiagram.core.model.DomainObjectProvider;
 import de.fxdiagram.core.model.ModelElementImpl;
 
@@ -39,13 +38,18 @@ import de.fxdiagram.core.model.ModelElementImpl;
  * @author hhildebrand
  *
  */
-public class PhantasmDomainObjectProvider implements DomainObjectProvider {
+public class WorkspaceDomainObjectProvider implements DomainObjectProvider {
 
-    private static final String FACET = "facet";
+    private static final String FACET     = "facet";
     private static final String FACET_QUERY;
+    private static final String FACETS_QUERY;
+    private static final String TYPE      = "@type";
+    private static final String WORKSPACE = "@workspace";
+
     static {
         try {
-            FACET_QUERY = Utils.getDocument(PhantasmDomainObjectProvider.class.getResourceAsStream("facet.query"));
+            FACET_QUERY = Utils.getDocument(WorkspaceDomainObjectProvider.class.getResourceAsStream("facet.query"));
+            FACETS_QUERY = Utils.getDocument(WorkspaceDomainObjectProvider.class.getResourceAsStream("facets.query"));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -55,31 +59,44 @@ public class PhantasmDomainObjectProvider implements DomainObjectProvider {
     private final GraphQlApi api;
     private final GraphQlApi meta;
 
-    public PhantasmDomainObjectProvider(GraphQlApi api, GraphQlApi meta) {
+    public WorkspaceDomainObjectProvider(GraphQlApi api, GraphQlApi meta) {
         this.api = api;
         this.meta = meta;
     }
 
     @Override
-    public <T> DomainObjectDescriptor createDescriptor(T domainObject) {
+    public QueryDescriptor createDescriptor(Object domainObject) {
         ObjectNode object = (ObjectNode) domainObject;
         switch (object.get(TYPE)
                       .asText()) {
             case FACET: {
-                return new GraphQLResultDescriptor(object, this, FACET,
-                                                   FACET_QUERY,
-                                                   Collections.emptyMap(), meta,
-                                                   FACET);
+                return new QueryDescriptor(object, this, FACET, FACET_QUERY,
+                                           Collections.emptyMap(), meta, FACET);
             }
             default:
                 return null;
         }
     }
 
+    public ArrayNode getFacets(String product) {
+        ArrayNode result;
+        try {
+            result = meta.query(FACETS_QUERY, Collections.emptyMap())
+                         .withArray("facets");
+        } catch (QueryException e) {
+            throw new IllegalStateException(e);
+        }
+        result.forEach(a -> {
+            ObjectNode facet = (ObjectNode) a;
+            facet.put(TYPE, FACET);
+            facet.put(WORKSPACE, product);
+
+        });
+        return result;
+    }
+
     @Override
     public void populate(ModelElementImpl element) {
         // TODO Auto-generated method stub
-
     }
-
 }

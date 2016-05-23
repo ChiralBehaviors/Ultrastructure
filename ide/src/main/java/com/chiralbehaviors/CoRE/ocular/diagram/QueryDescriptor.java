@@ -34,21 +34,25 @@ import de.fxdiagram.core.model.DomainObjectProvider;
  * @author hhildebrand
  *
  */
-public class GraphQLResultDescriptor
+public class QueryDescriptor
         extends CachedDomainObjectDescriptor<ObjectNode> {
+
     public static final String        TYPE = "@type";
+    private static final String       ID   = "id";
+    private static final String       NAME = "name";
+
     private final GraphQlApi          api;
     private final String              objectKey;
     private final String              query;
-    private final Map<String, Object> variables;
     private final String              type;
+    private final Map<String, Object> variables;
 
-    public GraphQLResultDescriptor(ObjectNode domainObject,
+    public QueryDescriptor(ObjectNode domainObject,
                                    DomainObjectProvider provider,
                                    String objectKey, String query,
                                    Map<String, Object> variables,
                                    GraphQlApi api, String type) {
-        super(domainObject, domainObject.get("id")
+        super(domainObject, domainObject.get(ID)
                                         .asText(),
               provider);
         this.objectKey = objectKey;
@@ -59,9 +63,15 @@ public class GraphQLResultDescriptor
     }
 
     @Override
+    public String getName() {
+        return getDomainObject().get(NAME)
+                                .asText();
+    }
+
+    @Override
     public ObjectNode resolveDomainObject() {
         Map<String, Object> parameters = new HashMap<>(variables);
-        parameters.put("id", getId());
+        parameters.put(ID, getId());
         ObjectNode result;
         try {
             result = api.query(query, parameters);

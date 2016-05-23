@@ -20,21 +20,38 @@
 
 package com.chiralbehaviors.CoRE.ocular.diagram;
 
+import static de.fxdiagram.core.extensions.CoreExtensions.getRoot;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import de.fxdiagram.core.XNode;
+import de.fxdiagram.mapping.IMappedElementDescriptor;
+import de.fxdiagram.mapping.shapes.BaseDiagram;
 
 /**
  * @author hhildebrand
  *
  */
-public class FacetNode extends XNode {
+public class WorkspaceDiagram extends BaseDiagram<ObjectNode> {
 
-    public FacetNode(QueryDescriptor descriptor) {
-        super(descriptor);
+    public WorkspaceDiagram() {
+        super();
     }
 
-    public ObjectNode getFacet() {
-        return ((QueryDescriptor) getDomainObjectDescriptor()).getDomainObject();
+    public WorkspaceDiagram(IMappedElementDescriptor<ObjectNode> domainObjectDescriptor) {
+        super(domainObjectDescriptor);
+    }
+
+    @Override
+    public void doActivate() {
+        if (getNodes().isEmpty()) {
+            setContentsInitializer(diagram -> {
+                WorkspaceDomainObjectProvider provider = getRoot(diagram).getDomainObjectProvider(WorkspaceDomainObjectProvider.class);
+                provider.getFacets()
+                        .forEach(n -> {
+                            getNodes().add(new FacetNode(provider.createDescriptor(n)));
+                        });
+            });
+        }
+        super.doActivate();
     }
 }

@@ -20,17 +20,16 @@
 
 package com.chiralbehaviors.CoRE.ocular;
 
-import java.net.URL;
 import java.util.Arrays;
 
-import javax.ws.rs.core.UriBuilder;
-
+import com.chiralbehaviors.CoRE.ocular.diagram.CoreInstanceDiagram;
 import com.chiralbehaviors.CoRE.ocular.diagram.WorkspaceDomainObjectProvider;
 
 import de.fxdiagram.core.XDiagram;
 import de.fxdiagram.core.XNode;
 import de.fxdiagram.core.XRoot;
 import de.fxdiagram.core.layout.LayoutType;
+import de.fxdiagram.core.layout.Layouter;
 import de.fxdiagram.core.tools.actions.CenterAction;
 import de.fxdiagram.core.tools.actions.CloseAction;
 import de.fxdiagram.core.tools.actions.DeleteAction;
@@ -48,7 +47,6 @@ import de.fxdiagram.core.tools.actions.SaveAction;
 import de.fxdiagram.core.tools.actions.SelectAllAction;
 import de.fxdiagram.core.tools.actions.UndoAction;
 import de.fxdiagram.core.tools.actions.ZoomToFitAction;
-import de.fxdiagram.examples.LazyExampleDiagram;
 import de.fxdiagram.lib.actions.UndoRedoPlayerAction;
 import de.fxdiagram.lib.simple.OpenableDiagramNode;
 import javafx.application.Application;
@@ -67,14 +65,12 @@ public class PhantasmApp extends Application {
         Application.launch(args);
     }
 
-    private XRoot      root;
-    private UriBuilder base;
+    private XRoot root;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         String baseUrl = getParameters().getRaw()
                                         .get(0);
-        base = UriBuilder.fromUri(new URL(baseUrl).toURI());
         root = new XRoot();
         Scene scene = new Scene(root, 1024, 768);
         scene.setCamera(new PerspectiveCamera());
@@ -83,7 +79,7 @@ public class PhantasmApp extends Application {
         root.setRootDiagram(diagram);
 
         root.domainObjectProvidersProperty()
-            .add(new WorkspaceDomainObjectProvider(null, null));
+            .add(new WorkspaceDomainObjectProvider(baseUrl));
 
         root.getDiagramActionRegistry()
             .operator_add(Arrays.asList(new CenterAction(), new ExitAction(),
@@ -99,10 +95,11 @@ public class PhantasmApp extends Application {
                                         new OpenAction(), new CloseAction(),
                                         new FullScreenAction(),
                                         new UndoRedoPlayerAction()));
-        OpenableDiagramNode node = new OpenableDiagramNode("Basic");
-        node.setInnerDiagram(new LazyExampleDiagram(""));
-        diagram.getNodes()
-               .add(node);
+        OpenableDiagramNode node = new OpenableDiagramNode(baseUrl);
+        node.setInnerDiagram(new CoreInstanceDiagram(baseUrl));
+        root.getDiagram()
+            .getNodes()
+            .add(node);
 
         ObservableList<XNode> allNodes = diagram.getNodes();
         double deltaX = scene.getWidth() / (allNodes.size() + 2);
@@ -113,9 +110,10 @@ public class PhantasmApp extends Application {
         node.setLayoutY(5 * deltaY - node.getLayoutBounds()
                                          .getHeight()
                                      / 2);
-        // new Layouter();
+        new Layouter();
         Platform.runLater(() -> diagram.centerDiagram(true));
-        primaryStage.setTitle("FXDiagram Demo");
+        primaryStage.setTitle(String.format("Instance explorer for: %s",
+                                            baseUrl));
         primaryStage.setScene(scene);
         primaryStage.show();
     }

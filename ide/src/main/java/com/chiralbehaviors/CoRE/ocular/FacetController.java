@@ -65,14 +65,14 @@ public class FacetController {
         }
     }
 
+    private static String FACET_QUERY;
     static {
         try {
-            QUERY = Utils.getDocument(FacetController.class.getResourceAsStream("facet.query"));
+            FACET_QUERY = Utils.getDocument(FacetController.class.getResourceAsStream("facet.query"));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
-    private static String                     QUERY;
 
     protected GraphQlApi                      api;
 
@@ -116,10 +116,6 @@ public class FacetController {
         return api;
     }
 
-    public void setApi(GraphQlApi api) {
-        this.api = api;
-    }
-
     @FXML
     public void initialize() {
         Callback<CellDataFeatures<ObjectNode, String>, ObservableValue<String>> cellValue = cellData -> new SimpleStringProperty(cellData.getValue()
@@ -140,6 +136,46 @@ public class FacetController {
                                                                 "relationship/name"));
     }
 
+    public void setApi(GraphQlApi api, ObjectNode existentials) {
+        this.api = api;
+        ObservableList<ObjectNode> all = FXCollections.observableArrayList();
+        existentials.withArray("agencies")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("attributes")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("intervals")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("locations")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("products")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("relationships")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("statusCodes")
+                    .forEach(r -> all.add((ObjectNode) r));
+        existentials.withArray("units")
+                    .forEach(r -> all.add((ObjectNode) r));
+        classifier.getItems()
+                  .clear();
+
+        ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
+        existentials.withArray("relationships")
+                    .forEach(r -> relationships.add((ObjectNode) r));
+        classifier.getItems()
+                  .addAll(relationships.stream()
+                                       .map(o -> new MenuItem(o.get("name")
+                                                               .asText()))
+                                       .collect(Collectors.toList()));
+
+        classification.getItems()
+                      .clear();
+        classification.getItems()
+                      .addAll(all.stream()
+                                 .map(o -> new MenuItem(o.get("name")
+                                                         .asText()))
+                                 .collect(Collectors.toList()));
+    }
+
     public void setFacet(String id) {
         if (id == null) {
             return;
@@ -148,7 +184,7 @@ public class FacetController {
         variables.put("id", id);
         ObjectNode result;
         try {
-            result = api.query(QUERY, variables);
+            result = api.query(FACET_QUERY, variables);
         } catch (QueryException e) {
             throw new IllegalStateException(e);
         }
@@ -160,24 +196,6 @@ public class FacetController {
         name.setText(facet.get("name")
                           .asText());
 
-        ObservableList<ObjectNode> existentials = FXCollections.observableArrayList();
-        result.withArray("agencies")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("attributes")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("intervals")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("locations")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("products")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("relationships")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("statusCodes")
-              .forEach(r -> existentials.add((ObjectNode) r));
-        result.withArray("units")
-              .forEach(r -> existentials.add((ObjectNode) r));
-
         ObservableList<ObjectNode> attributeList = FXCollections.observableArrayList();
         facet.withArray("attributes")
              .forEach(a -> attributeList.add((ObjectNode) a));
@@ -188,29 +206,11 @@ public class FacetController {
              .forEach(c -> childrenList.add((ObjectNode) c));
         children.setItems(childrenList);
 
-        ObservableList<ObjectNode> relationships = FXCollections.observableArrayList();
-        result.withArray("relationships")
-              .forEach(r -> relationships.add((ObjectNode) r));
         classifier.setText(facet.get("classifier")
                                 .get("name")
                                 .asText());
         classification.setText(facet.get("classification")
                                     .get("name")
                                     .asText());
-        classifier.getItems()
-                  .clear();
-        classifier.getItems()
-                  .addAll(relationships.stream()
-                                       .map(o -> new MenuItem(o.get("name")
-                                                               .asText()))
-                                       .collect(Collectors.toList()));
-
-        classification.getItems()
-                      .clear();
-        classification.getItems()
-                      .addAll(existentials.stream()
-                                          .map(o -> new MenuItem(o.get("name")
-                                                                  .asText()))
-                                          .collect(Collectors.toList()));
     }
 }

@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.ocular.diagram;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import de.fxdiagram.core.XNode;
+import de.fxdiagram.core.model.DomainObjectDescriptor;
 
 /**
  * @author hhildebrand
@@ -30,8 +31,8 @@ import de.fxdiagram.core.XNode;
  */
 public class FacetNode extends XNode {
 
-    public FacetNode(QueryDescriptor descriptor) {
-        super(descriptor);
+    public FacetNode(DomainObjectDescriptor domainObjectDescriptor) {
+        super(domainObjectDescriptor);
     }
 
     public ObjectNode getFacet() {

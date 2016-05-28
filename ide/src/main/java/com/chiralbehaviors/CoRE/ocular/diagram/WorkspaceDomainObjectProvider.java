@@ -22,6 +22,10 @@ package com.chiralbehaviors.CoRE.ocular.diagram;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.ws.rs.client.ClientBuilder;
 
 import com.chiralbehaviors.CoRE.ocular.GraphQlApi;
 import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
@@ -29,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
+import de.fxdiagram.core.model.DomainObjectDescriptor;
 import de.fxdiagram.core.model.DomainObjectProvider;
 import de.fxdiagram.core.model.ModelElementImpl;
 
@@ -43,8 +48,8 @@ public class WorkspaceDomainObjectProvider implements DomainObjectProvider {
     private static final String FACET     = "facet";
     private static final String FACET_QUERY;
     private static final String FACETS_QUERY;
-    private static final String TYPE      = "@type";
-    private static final String WORKSPACE = "@workspace";
+    public static final String  TYPE      = "@type";
+    public static final String  WORKSPACE = "@workspace";
 
     static {
         try {
@@ -56,41 +61,59 @@ public class WorkspaceDomainObjectProvider implements DomainObjectProvider {
     }
 
     @SuppressWarnings("unused")
-    private final GraphQlApi api;
-    private final GraphQlApi meta;
+    private final ConcurrentMap<String, GraphQlApi> api  = new ConcurrentHashMap<>();
+    private final String                            instance;
+    private final ConcurrentMap<String, GraphQlApi> meta = new ConcurrentHashMap<>();
 
-    public WorkspaceDomainObjectProvider(GraphQlApi api, GraphQlApi meta) {
-        this.api = api;
-        this.meta = meta;
+    public WorkspaceDomainObjectProvider(String instanceURI) {
+        this.instance = instanceURI;
     }
 
     @Override
-    public QueryDescriptor createDescriptor(Object domainObject) {
+    public DomainObjectDescriptor createDescriptor(Object domainObject) {
         ObjectNode object = (ObjectNode) domainObject;
+        String workspace = object.get(WORKSPACE)
+                                 .asText();
+
         switch (object.get(TYPE)
                       .asText()) {
             case FACET: {
+                GraphQlApi metaApi = meta.get(workspace);
                 return new QueryDescriptor(object, this, FACET, FACET_QUERY,
-                                           Collections.emptyMap(), meta, FACET);
+                                           Collections.emptyMap(), metaApi,
+                                           FACET);
             }
             default:
                 return null;
         }
     }
 
-    public ArrayNode getFacets(String product) {
-        ArrayNode result;
+    public ObjectNode getFacet(String facet, String workspace) {
+        GraphQlApi metaApi = getMeta(workspace);
+        ObjectNode result;
         try {
-            result = meta.query(FACETS_QUERY, Collections.emptyMap())
-                         .withArray("facets");
+            result = (ObjectNode) metaApi.query(FACET_QUERY,
+                                                Collections.emptyMap())
+                                         .get("facet");
         } catch (QueryException e) {
             throw new IllegalStateException(e);
         }
-        result.forEach(a -> {
-            ObjectNode facet = (ObjectNode) a;
-            facet.put(TYPE, FACET);
-            facet.put(WORKSPACE, product);
+        return result;
+    }
 
+    public ArrayNode getFacets(String workspace) {
+        GraphQlApi metaApi = getMeta(workspace);
+        ArrayNode result;
+        try {
+            result = (ArrayNode) metaApi.query(FACETS_QUERY,
+                                               Collections.emptyMap())
+                                        .get("facets");
+        } catch (QueryException e) {
+            throw new IllegalStateException(e);
+        }
+        result.forEach(n -> {
+            ((ObjectNode) n).put(TYPE, FACET);
+            ((ObjectNode) n).put(WORKSPACE, workspace);
         });
         return result;
     }
@@ -98,5 +121,18 @@ public class WorkspaceDomainObjectProvider implements DomainObjectProvider {
     @Override
     public void populate(ModelElementImpl element) {
         // TODO Auto-generated method stub
+    }
+
+    private GraphQlApi getMeta(String workspace) {
+        return meta.computeIfAbsent(workspace, id -> {
+            return new GraphQlApi(ClientBuilder.newClient()
+                                               .target(instance)
+                                               .path("api")
+                                               .path("workspace")
+                                               .path(String.format("urn:uuid:%s",
+                                                                   workspace))
+                                               .path("meta"),
+                                  null);
+        });
     }
 }

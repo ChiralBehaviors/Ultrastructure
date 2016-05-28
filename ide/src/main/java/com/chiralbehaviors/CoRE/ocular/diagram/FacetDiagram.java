@@ -20,32 +20,32 @@
 
 package com.chiralbehaviors.CoRE.ocular.diagram;
 
+import static com.chiralbehaviors.CoRE.ocular.diagram.WorkspaceDomainObjectProvider.WORKSPACE;
 import static de.fxdiagram.core.extensions.CoreExtensions.getRoot;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import de.fxdiagram.lib.simple.OpenableDiagramNode;
 import de.fxdiagram.mapping.shapes.BaseDiagram;
 
 /**
  * @author hhildebrand
  *
  */
-public class WorkspaceDiagram extends BaseDiagram<ObjectNode> {
-
-    public WorkspaceDiagram() {
-        super();
-    }
-
-    public WorkspaceDiagram(JsonNode wsp) {
+public class FacetDiagram extends BaseDiagram<ObjectNode> {
+    public FacetDiagram(JsonNode facet) {
         setContentsInitializer(diagram -> {
             WorkspaceDomainObjectProvider provider = getRoot(diagram).getDomainObjectProvider(WorkspaceDomainObjectProvider.class);
             assert provider != null;
-            provider.getFacets(wsp.get("id")
-                                  .asText())
-                    .forEach(n -> {
-                        getNodes().add(new FacetNode(provider.createDescriptor(n)));
-                    });
+
+            ObjectNode f = provider.getFacet(facet.get("id")
+                                                  .asText(),
+                                             facet.get(WORKSPACE)
+                                                  .asText());
+            OpenableDiagramNode node = new OpenableDiagramNode(f.get("name")
+                                                                .asText());
+            node.setInnerDiagram(new FacetDiagram(f));
         });
     }
 }

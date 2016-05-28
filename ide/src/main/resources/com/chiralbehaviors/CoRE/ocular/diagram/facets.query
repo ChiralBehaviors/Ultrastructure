@@ -1,7 +1,6 @@
-{
+query f {
   facets {
     id
     name
-    description
   }
 }

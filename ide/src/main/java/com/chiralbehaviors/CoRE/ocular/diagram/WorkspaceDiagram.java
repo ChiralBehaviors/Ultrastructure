@@ -25,6 +25,8 @@ import static de.fxdiagram.core.extensions.CoreExtensions.getRoot;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import de.fxdiagram.core.layout.LayoutParameters;
+import de.fxdiagram.lib.simple.OpenableDiagramNode;
 import de.fxdiagram.mapping.shapes.BaseDiagram;
 
 /**
@@ -38,13 +40,18 @@ public class WorkspaceDiagram extends BaseDiagram<ObjectNode> {
     }
 
     public WorkspaceDiagram(JsonNode wsp) {
+        setLayoutOnActivate(true);
+        setLayoutParameters(new LayoutParameters());
         setContentsInitializer(diagram -> {
             WorkspaceDomainObjectProvider provider = getRoot(diagram).getDomainObjectProvider(WorkspaceDomainObjectProvider.class);
             assert provider != null;
             provider.getFacets(wsp.get("id")
                                   .asText())
-                    .forEach(n -> {
-                        getNodes().add(new FacetNode(provider.createDescriptor(n)));
+                    .forEach(facet -> {
+                        OpenableDiagramNode node = new OpenableDiagramNode(facet.get("name")
+                                                                                .asText());
+                        node.setInnerDiagram(new FacetDiagram(facet));
+                        getNodes().add(node);
                     });
         });
     }

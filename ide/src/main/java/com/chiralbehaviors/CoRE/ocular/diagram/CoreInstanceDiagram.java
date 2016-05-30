@@ -32,6 +32,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import de.fxdiagram.core.layout.LayoutParameters;
 import de.fxdiagram.lib.simple.OpenableDiagramNode;
 import de.fxdiagram.mapping.shapes.BaseDiagram;
 
@@ -45,6 +46,8 @@ public class CoreInstanceDiagram extends BaseDiagram<String> {
 
     public CoreInstanceDiagram(String baseUrl) throws MalformedURLException,
                                                URISyntaxException {
+        setLayoutOnActivate(true);
+        setLayoutParameters(new LayoutParameters());
         UriBuilder wspEndpoint = UriBuilder.fromUri(new URL(baseUrl).toURI());
         WebTarget endpoint = ClientBuilder.newClient()
                                           .target(wspEndpoint)

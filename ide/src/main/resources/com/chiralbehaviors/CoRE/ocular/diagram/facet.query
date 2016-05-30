@@ -21,4 +21,5 @@ query facet($id: String!) {
       id
       name
     }
+  }
 }

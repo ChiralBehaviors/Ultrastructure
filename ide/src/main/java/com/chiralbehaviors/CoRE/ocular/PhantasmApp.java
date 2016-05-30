@@ -29,7 +29,6 @@ import de.fxdiagram.core.XDiagram;
 import de.fxdiagram.core.XNode;
 import de.fxdiagram.core.XRoot;
 import de.fxdiagram.core.layout.LayoutType;
-import de.fxdiagram.core.layout.Layouter;
 import de.fxdiagram.core.tools.actions.CenterAction;
 import de.fxdiagram.core.tools.actions.CloseAction;
 import de.fxdiagram.core.tools.actions.DeleteAction;
@@ -110,7 +109,6 @@ public class PhantasmApp extends Application {
         node.setLayoutY(5 * deltaY - node.getLayoutBounds()
                                          .getHeight()
                                      / 2);
-        new Layouter();
         Platform.runLater(() -> diagram.centerDiagram(true));
         primaryStage.setTitle(String.format("Instance explorer for: %s",
                                             baseUrl));

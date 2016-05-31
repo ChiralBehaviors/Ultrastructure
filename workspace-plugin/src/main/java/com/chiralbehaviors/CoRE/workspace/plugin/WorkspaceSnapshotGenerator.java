@@ -127,7 +127,7 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
                 }
             }
         } catch (IOException | SQLException e) {
-            throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
+            throw new MojoExecutionException("An error has occurred while initilizing the required DB infrastructure",
                                              e);
         }
     }

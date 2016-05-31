@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAttributeAuthorization;
@@ -41,6 +42,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
+@GraphQLInterface
 public interface NetworkAttributeAuthorizationQueries {
 
     @GraphQLField

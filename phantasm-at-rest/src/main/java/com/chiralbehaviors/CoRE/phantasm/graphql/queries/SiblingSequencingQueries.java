@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
@@ -41,6 +42,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
+@GraphQLInterface
 public interface SiblingSequencingQueries {
 
     @GraphQLField
@@ -54,17 +56,18 @@ public interface SiblingSequencingQueries {
                                                        DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env).create()
-                           .selectDistinct(Tables.SIBLING_SEQUENCING_AUTHORIZATION.fields())
-                           .from(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
-                           .join(Tables.WORKSPACE_AUTHORIZATION)
-                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.SIBLING_SEQUENCING_AUTHORIZATION.WORKSPACE))
-                           .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                           .fetch()
-                           .into(SiblingSequencingAuthorizationRecord.class)
-                           .stream()
-                           .map(r -> new SiblingSequencing(r))
-                           .collect(Collectors.toList());
+            return WorkspaceSchema.ctx(env)
+                                  .create()
+                                  .selectDistinct(Tables.SIBLING_SEQUENCING_AUTHORIZATION.fields())
+                                  .from(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
+                                  .join(Tables.WORKSPACE_AUTHORIZATION)
+                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.SIBLING_SEQUENCING_AUTHORIZATION.WORKSPACE))
+                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .fetch()
+                                  .into(SiblingSequencingAuthorizationRecord.class)
+                                  .stream()
+                                  .map(r -> new SiblingSequencing(r))
+                                  .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))

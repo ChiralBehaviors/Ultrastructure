@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import com.chiralbehaviors.CoRE.ocular.GraphQlApi.QueryException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.hellblazer.utils.Utils;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,7 +42,16 @@ import javafx.scene.layout.GridPane;
  *
  */
 public class FacetsController {
-    private static String          QUERY = "{ facets { id name } }";
+    private static String QUERY = "{ facets { id name } }";
+    private static String EXISTENTIALS_QUERY;
+
+    static {
+        try {
+            EXISTENTIALS_QUERY = Utils.getDocument(FacetController.class.getResourceAsStream("existentials.query"));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     protected GraphQlApi           api;
 
@@ -99,7 +109,13 @@ public class FacetsController {
 
     public void setApi(GraphQlApi api) {
         this.api = api;
-        facetController.setApi(api);
+        ObjectNode existentials;
+        try {
+            existentials = api.query(EXISTENTIALS_QUERY, null);
+        } catch (QueryException e) {
+            throw new IllegalStateException(e);
+        }
+        facetController.setApi(api, existentials);
     }
 
     public void update() {

@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
@@ -41,6 +42,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
+@GraphQLInterface
 public interface MetaProtocolQueries {
 
     @GraphQLField
@@ -54,17 +56,18 @@ public interface MetaProtocolQueries {
                                              DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env).create()
-                           .selectDistinct(Tables.META_PROTOCOL.fields())
-                           .from(Tables.META_PROTOCOL)
-                           .join(Tables.WORKSPACE_AUTHORIZATION)
-                           .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.META_PROTOCOL.WORKSPACE))
-                           .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                           .fetch()
-                           .into(MetaProtocolRecord.class)
-                           .stream()
-                           .map(r -> new MetaProtocol(r))
-                           .collect(Collectors.toList());
+            return WorkspaceSchema.ctx(env)
+                                  .create()
+                                  .selectDistinct(Tables.META_PROTOCOL.fields())
+                                  .from(Tables.META_PROTOCOL)
+                                  .join(Tables.WORKSPACE_AUTHORIZATION)
+                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.META_PROTOCOL.WORKSPACE))
+                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .fetch()
+                                  .into(MetaProtocolRecord.class)
+                                  .stream()
+                                  .map(r -> new MetaProtocol(r))
+                                  .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))

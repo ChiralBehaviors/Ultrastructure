@@ -13,7 +13,7 @@
         <level value="WARN" />
     </logger> 
     <root>
-        <level value="DEBUG" />
+        <level value="WARN" />
         <appender-ref ref="C" />
     </root>
 </configuration>

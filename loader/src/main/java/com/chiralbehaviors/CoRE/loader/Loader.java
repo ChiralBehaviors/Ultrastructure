@@ -33,6 +33,8 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
+import liquibase.Contexts;
+import liquibase.LabelExpression;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -104,6 +106,7 @@ public class Loader {
         try (Connection connection = configuration.getDbaConnection()) {
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            database.setLiquibaseSchemaName("public");
             liquibase = new Liquibase(CREATE_DATABASE_XML,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);
@@ -127,10 +130,10 @@ public class Loader {
         System.out.println(String.format("executing loader.dbaUsername: %s",
                                          configuration.dbaUsername));
         if (configuration.dbaUsername != null) {
-            log.info("Creating multi tentant DB");
+            log.info("Creating multi tenant DB");
             createDatabase();
         } else {
-            log.info("Creating single tentant DB");
+            log.info("Creating single tenant DB");
         }
         bootstrap();
     }
@@ -174,11 +177,14 @@ public class Loader {
         Liquibase liquibase = null;
         Database database = DatabaseFactory.getInstance()
                                            .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+        database.setLiquibaseSchemaName("public");
         liquibase = new Liquibase(changeLog,
                                   new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                   database);
         initializeParameters(liquibase);
-        liquibase.update(Integer.MAX_VALUE, configuration.contexts);
+
+        liquibase.update(null, new Contexts(configuration.contexts),
+                         new LabelExpression(new String[0]));
     }
 
     private void loadModel() throws Exception, SQLException {

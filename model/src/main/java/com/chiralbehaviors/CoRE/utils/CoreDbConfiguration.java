@@ -26,11 +26,23 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.postgresql.Driver;
+
 /**
  * @author hhildebrand
  *
  */
 public class CoreDbConfiguration {
+
+    static {
+        try {
+            Driver.register();
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        } catch (Throwable e) {
+
+        }
+    }
 
     public static final String        DATABASE_URL = "DATABASE_URL";
     public static String              JDBC_URL     = "jdbc:postgresql://%s:%s/%s";

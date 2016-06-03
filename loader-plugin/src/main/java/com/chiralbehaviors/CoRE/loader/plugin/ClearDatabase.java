@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.loader.plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.postgresql.Driver;
 
 import com.chiralbehaviors.CoRE.loader.Loader;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
@@ -35,6 +36,10 @@ import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
  * @phase compile
  */
 public class ClearDatabase extends AbstractMojo {
+
+    static {
+        Driver.class.getCanonicalName();
+    }
 
     /**
      * the loading configuration

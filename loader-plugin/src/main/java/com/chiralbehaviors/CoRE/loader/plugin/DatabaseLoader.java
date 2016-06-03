@@ -1,7 +1,7 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -23,21 +23,26 @@ package com.chiralbehaviors.CoRE.loader.plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.postgresql.Driver;
 
 import com.chiralbehaviors.CoRE.loader.Loader;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
 /**
  * @author hhildebrand
- * 
+ *
  * @goal load
- * 
+ *
  * @phase package
  */
 public class DatabaseLoader extends AbstractMojo {
+
+    static {
+        Driver.class.getCanonicalName();
+    }
     /**
      * the loading configuration
-     * 
+     *
      * @parameter
      */
     private DbaConfiguration loader;

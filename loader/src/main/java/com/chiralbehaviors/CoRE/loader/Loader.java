@@ -67,12 +67,17 @@ public class Loader {
         bootstrapCoRE();
     }
 
-    public void clear() throws SQLException, LiquibaseException {
+    public void clear() throws IOException, SQLException {
+        bootstrapCoRE();
+    }
+
+    public void rollback() throws SQLException, LiquibaseException {
         Liquibase liquibase = null;
         try (Connection connection = configuration.getCoreConnection()) {
             connection.setSchema("public");
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            database.setLiquibaseSchemaName("public");
             liquibase = new Liquibase(Loader.MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);

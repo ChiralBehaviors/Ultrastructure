@@ -94,6 +94,12 @@
                 <groupId>com.bendb.dropwizard</groupId>
                 <artifactId>dropwizard-jooq</artifactId>
                 <version>0.9.1-1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jooq</groupId>
@@ -165,6 +171,20 @@
                 <groupId>com.bazaarvoice.dropwizard</groupId>
                 <artifactId>dropwizard-configurable-assets-bundle</artifactId>
                 <version>0.2.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-servlets</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>
@@ -488,7 +508,7 @@
                 <groupId>de.fxdiagram</groupId>
                 <artifactId>de.fxdiagram.noeclipse</artifactId>
                 <version>${fxdiagram.version}</version>
-            </dependency> 
+            </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>

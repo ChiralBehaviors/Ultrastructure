@@ -57,38 +57,38 @@ public interface PhantasmModel {
      * Check the capability of the current principal on an attribute of a
      * ruleform.
      */
-    boolean checkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
+    boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
                             Relationship capability);
 
     /**
      * Check the capability of the current principal on an attribute of the
      * authorized relationship of the facet child relationship.
      */
-    boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+    boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
                             Relationship capability);
 
     /**
      * Check the capability of the current principal on the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
+    boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
                             Relationship capability);
 
     /**
      * Check the capability of the current principal on an instance.
      */
-    boolean checkCapability(ExistentialRuleform instance,
+    boolean checkPermission(ExistentialRuleform instance,
                             Relationship capability);
 
     /**
      * Check the capability of the current principal on the facet.
      */
-    boolean checkCapability(FacetRecord facet, Relationship capability);
+    boolean checkPermission(FacetRecord facet, Relationship capability);
 
     /**
      * Check the capability of the agencies on an attribute of a ruleform.
      */
-    boolean checkCapability(List<Agency> agencies,
+    boolean checkPermission(List<Agency> agencies,
                             ExistentialAttributeAuthorizationRecord stateAuth,
                             Relationship capability);
 
@@ -96,7 +96,7 @@ public interface PhantasmModel {
      * Check the capability of the agencies on an attribute of the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkCapability(List<Agency> agencies,
+    boolean checkPermission(List<Agency> agencies,
                             ExistentialNetworkAttributeAuthorizationRecord stateAuth,
                             Relationship capability);
 
@@ -104,20 +104,20 @@ public interface PhantasmModel {
      * Check the capability of the agencies on the authorized relationship of
      * the facet child relationship.
      */
-    boolean checkCapability(List<Agency> agencies,
+    boolean checkPermission(List<Agency> agencies,
                             ExistentialNetworkAuthorizationRecord auth,
                             Relationship capability);
 
     /**
      * Check the capability of the agencies on an instance.
      */
-    boolean checkCapability(List<Agency> agencies, ExistentialRuleform instance,
+    boolean checkPermission(List<Agency> agencies, ExistentialRuleform instance,
                             Relationship capability);
 
     /**
      * Check the capability of the agencies on the facet.
      */
-    boolean checkCapability(List<Agency> agencies, FacetRecord facet,
+    boolean checkPermission(List<Agency> agencies, FacetRecord facet,
                             Relationship capability);
 
     <T extends ExistentialRuleform> T create(ExistentialDomain domain,

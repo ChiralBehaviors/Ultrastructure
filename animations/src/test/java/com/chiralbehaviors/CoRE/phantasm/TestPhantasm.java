@@ -95,7 +95,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -110,7 +110,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -124,7 +124,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -139,7 +139,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -153,7 +153,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -182,7 +182,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -198,7 +198,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -212,7 +212,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -228,7 +228,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -242,7 +242,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -376,7 +376,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(facet);
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          facet, model.getKernel()
                                                      .getHadMember()));
@@ -391,7 +391,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           facet, model.getKernel()
                                                       .getHadMember()));
@@ -405,7 +405,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          facet, model.getKernel()
                                                      .getHadMember()));
@@ -420,7 +420,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           facet, model.getKernel()
                                                       .getHadMember()));
@@ -434,7 +434,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          facet, model.getKernel()
                                                      .getHadMember()));
@@ -447,7 +447,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         Product instance = (Product) thing1.getRuleform();
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
@@ -464,7 +464,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           instance, model.getKernel()
                                                          .getHadMember()));
@@ -478,7 +478,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
@@ -495,7 +495,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           instance, model.getKernel()
                                                          .getHadMember()));
@@ -509,7 +509,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
@@ -555,7 +555,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -570,7 +570,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -584,7 +584,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -600,7 +600,7 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkCapability(asList(model.getKernel()
+                         .checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -614,7 +614,7 @@ public class TestPhantasm extends AbstractModelTest {
                         .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkCapability(asList(model.getKernel()
+                        .checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -623,7 +623,7 @@ public class TestPhantasm extends AbstractModelTest {
                                             Collections.emptyList()),
                         () -> {
                             assertTrue(model.getPhantasmModel()
-                                            .checkCapability(stateAuth,
+                                            .checkPermission(stateAuth,
                                                              model.getKernel()
                                                                   .getHadMember()));
                             return null;

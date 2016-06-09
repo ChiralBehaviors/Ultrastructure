@@ -129,7 +129,7 @@ public class PhantasmCRUD {
 		if (instance == null) {
 			return null;
 		}
-		if (!model.getPhantasmModel().checkCapability(facet.getFacet(), getAPPLY())) {
+		if (!model.getPhantasmModel().checkPermission(facet.getFacet(), getAPPLY())) {
 			return instance;
 		}
 		model.getPhantasmModel().initialize(instance, facet.getFacet());
@@ -154,8 +154,8 @@ public class PhantasmCRUD {
 
 	public boolean checkInvoke(Aspect facet, ExistentialRuleform instance) {
 		Relationship invoke = getINVOKE();
-		return model.getPhantasmModel().checkCapability(instance, invoke)
-				&& model.getPhantasmModel().checkCapability(facet.getFacet(), invoke);
+		return model.getPhantasmModel().checkPermission(instance, invoke)
+				&& model.getPhantasmModel().checkPermission(facet.getFacet(), invoke);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class PhantasmCRUD {
 	 */
 	public ExistentialRuleform createInstance(Aspect facet, String name, String description,
 			Function<ExistentialRuleform, ExistentialRuleform> constructor) {
-		if (!model.getPhantasmModel().checkCapability(facet.getFacet(), getCREATE())) {
+		if (!model.getPhantasmModel().checkPermission(facet.getFacet(), getCREATE())) {
 			return null;
 		}
 		ExistentialRuleform instance;
@@ -234,7 +234,7 @@ public class PhantasmCRUD {
 		return model.getPhantasmModel()
 				.getConstrainedChildren(instance, auth.getRelationship(), auth.getChild().getClassifier(),
 						auth.getChild().getClassification(), auth.getDomain())
-				.stream().filter(child -> model.getPhantasmModel().checkCapability(child, getREAD()))
+				.stream().filter(child -> model.getPhantasmModel().checkPermission(child, getREAD()))
 				.collect(Collectors.toList());
 
 	}
@@ -267,7 +267,7 @@ public class PhantasmCRUD {
 		return model.getPhantasmModel()
 				.getImmediateConstrainedChildren(instance, auth.getRelationship(), auth.getChild().getClassifier(),
 						auth.getChild().getClassification(), auth.getDomain())
-				.stream().map(r -> r).filter(child -> model.getPhantasmModel().checkCapability(child, getREAD()))
+				.stream().map(r -> r).filter(child -> model.getPhantasmModel().checkPermission(child, getREAD()))
 				.collect(Collectors.toList());
 	}
 
@@ -278,7 +278,7 @@ public class PhantasmCRUD {
 	 * @return
 	 */
 	public List<ExistentialRuleform> getInstances(Aspect facet) {
-		if (!model.getPhantasmModel().checkCapability(facet.getFacet(), getREAD())) {
+		if (!model.getPhantasmModel().checkPermission(facet.getFacet(), getREAD())) {
 			return Collections.emptyList();
 		}
 		return model.getPhantasmModel()
@@ -330,13 +330,13 @@ public class PhantasmCRUD {
 
 	public List<ExistentialRuleform> lookup(List<String> ids) {
 		return ids.stream().map(id -> existential(id)).map(r -> model.records().resolve(r))
-				.filter(child -> model.getPhantasmModel().checkCapability(child, getREAD()))
+				.filter(child -> model.getPhantasmModel().checkPermission(child, getREAD()))
 				.collect(Collectors.toList());
 	}
 
 	public ExistentialRuleform lookup(String id) {
 		return Optional.ofNullable(existential(id)).map(r -> model.records().resolve(r)).filter(rf -> rf != null)
-				.filter(child -> model.getPhantasmModel().checkCapability(child, getREAD())).orElse(null);
+				.filter(child -> model.getPhantasmModel().checkPermission(child, getREAD())).orElse(null);
 	}
 
 	/**
@@ -352,7 +352,7 @@ public class PhantasmCRUD {
 		if (instance == null) {
 			return null;
 		}
-		if (!model.getPhantasmModel().checkCapability(facet.getFacet(), getREMOVE())) {
+		if (!model.getPhantasmModel().checkPermission(facet.getFacet(), getREMOVE())) {
 			return instance;
 		}
 		model.getPhantasmModel().unlink(instance, facet.getClassifier(), facet.getClassification());
@@ -517,35 +517,35 @@ public class PhantasmCRUD {
 	}
 
 	private boolean checkREAD(Aspect auth) {
-		return model.getPhantasmModel().checkCapability(auth.getFacet(), getREAD());
+		return model.getPhantasmModel().checkPermission(auth.getFacet(), getREAD());
 	}
 
 	private boolean checkREAD(AttributeAuthorization stateAuth) {
-		return model.getPhantasmModel().checkCapability(stateAuth.getAuth(), getREAD());
+		return model.getPhantasmModel().checkPermission(stateAuth.getAuth(), getREAD());
 	}
 
 	private boolean checkREAD(ExistentialRuleform child) {
-		return model.getPhantasmModel().checkCapability(child, getREAD());
+		return model.getPhantasmModel().checkPermission(child, getREAD());
 	}
 
 	private boolean checkREAD(NetworkAuthorization stateAuth) {
-		return model.getPhantasmModel().checkCapability(stateAuth.getAuth(), getREAD());
+		return model.getPhantasmModel().checkPermission(stateAuth.getAuth(), getREAD());
 	}
 
 	private boolean checkUPDATE(Aspect stateAuth) {
-		return model.getPhantasmModel().checkCapability(stateAuth.getFacet(), getUPDATE());
+		return model.getPhantasmModel().checkPermission(stateAuth.getFacet(), getUPDATE());
 	}
 
 	private boolean checkUPDATE(AttributeAuthorization stateAuth) {
-		return model.getPhantasmModel().checkCapability(stateAuth.getAuth(), getUPDATE());
+		return model.getPhantasmModel().checkPermission(stateAuth.getAuth(), getUPDATE());
 	}
 
 	private boolean checkUPDATE(ExistentialRuleform child) {
-		return model.getPhantasmModel().checkCapability(child, getUPDATE());
+		return model.getPhantasmModel().checkPermission(child, getUPDATE());
 	}
 
 	private boolean checkUPDATE(NetworkAuthorization auth) {
-		return model.getPhantasmModel().checkCapability(auth.getAuth(), getUPDATE());
+		return model.getPhantasmModel().checkPermission(auth.getAuth(), getUPDATE());
 	}
 
 	private ExistentialRecord existential(String id) {

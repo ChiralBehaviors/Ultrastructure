@@ -319,9 +319,9 @@ public class WorkspaceResource extends TransactionalResource {
             WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
             if (!model.getPhantasmModel()
-                      .checkCapability(definingProduct, crud.getREAD())
+                      .checkPermission(definingProduct, crud.getREAD())
                 || !model.getPhantasmModel()
-                         .checkCapability(definingProduct, model.getKernel()
+                         .checkPermission(definingProduct, model.getKernel()
                                                                 .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
                                 .getPrincipal();
@@ -365,9 +365,9 @@ public class WorkspaceResource extends TransactionalResource {
             WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
             if (!model.getPhantasmModel()
-                      .checkCapability(definingProduct, crud.getREAD())
+                      .checkPermission(definingProduct, crud.getREAD())
                 || !model.getPhantasmModel()
-                         .checkCapability(definingProduct, model.getKernel()
+                         .checkPermission(definingProduct, model.getKernel()
                                                                 .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
                                 .getPrincipal();

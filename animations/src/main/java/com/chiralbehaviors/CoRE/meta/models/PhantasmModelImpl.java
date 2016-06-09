@@ -94,51 +94,51 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public boolean checkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
+    public boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
                                     .getCapabilities(),
-                               stateAuth, capability);
+                               stateAuth, permission);
     }
 
     @Override
-    public boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
+    public boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
                                     .getCapabilities(),
-                               stateAuth, capability);
+                               stateAuth, permission);
     }
 
     @Override
-    public boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
+    public boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
                                     .getCapabilities(),
-                               auth, capability);
+                               auth, permission);
     }
 
     @Override
-    public boolean checkCapability(ExistentialRuleform instance,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
+    public boolean checkPermission(ExistentialRuleform instance,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
                                     .getCapabilities(),
-                               instance, capability);
+                               instance, permission);
     }
 
     @Override
-    public boolean checkCapability(FacetRecord facet, Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
+    public boolean checkPermission(FacetRecord facet, Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
                                     .getCapabilities(),
-                               facet, capability);
+                               facet, permission);
     }
 
     /**
-     * Check the capability of an agency on an attribute of a ruleform.
+     * Check the permission of an agency on an attribute of a ruleform.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
+    public boolean checkPermission(List<Agency> agencies,
                                    ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
+                                   Relationship permission) {
         ExistentialAttributeAuthorization required = EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
@@ -153,7 +153,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
                                                                                                   .map(a -> a.getId())
                                                                                                   .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
@@ -161,13 +161,13 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     /**
-     * Check the capability of an agency on an attribute of the authorized
+     * Check the permission of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
+    public boolean checkPermission(List<Agency> agencies,
                                    ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
+                                   Relationship permission) {
         ExistentialNetworkAttributeAuthorization required = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
@@ -182,20 +182,20 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
                                                                                                   .map(a -> a.getId())
                                                                                                   .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
     }
 
     /**
-     * Check the capability of an agency on the authorized relationship of the
+     * Check the permission of an agency on the authorized relationship of the
      * facet child relationship.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
+    public boolean checkPermission(List<Agency> agencies,
                                    ExistentialNetworkAuthorizationRecord stateAuth,
-                                   Relationship capability) {
+                                   Relationship permission) {
         ExistentialNetworkAuthorization required = EXISTENTIAL_NETWORK_AUTHORIZATION.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
@@ -212,19 +212,19 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
                                                                                                   .map(a -> a.getId())
                                                                                                   .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
     }
 
     /**
-     * Check the capability of an agency on an instance.
+     * Check the permission of an agency on an instance.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
+    public boolean checkPermission(List<Agency> agencies,
                                    ExistentialRuleform instance,
-                                   Relationship capability) {
+                                   Relationship permission) {
         if (instance == null) {
             return true;
         }
@@ -237,18 +237,18 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
                                                                                                   .map(a -> a.getId())
                                                                                                   .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
     }
 
     /**
-     * Check the capability of an agency on the facet.
+     * Check the permission of an agency on the facet.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies, FacetRecord facet,
-                                   Relationship capability) {
+    public boolean checkPermission(List<Agency> agencies, FacetRecord facet,
+                                   Relationship permission) {
         Facet required = FACET.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
@@ -263,7 +263,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
                                                                                                   .map(a -> a.getId())
                                                                                                   .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(FACET.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
@@ -477,12 +477,18 @@ public class PhantasmModelImpl implements PhantasmModel {
                                     .resolve(r))
                      .collect(Collectors.toList());
     }
-    
+
     @Override
-	public List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
-			Relationship relationship, Relationship classifier, ExistentialRuleform classification, ExistentialDomain existentialDomain) {
-		return getConstrainedChildren(parent.getId(), relationship.getId(), classifier.getId(), classification.getId(), existentialDomain);
-	}
+    public List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
+                                                            Relationship relationship,
+                                                            Relationship classifier,
+                                                            ExistentialRuleform classification,
+                                                            ExistentialDomain existentialDomain) {
+        return getConstrainedChildren(parent.getId(), relationship.getId(),
+                                      classifier.getId(),
+                                      classification.getId(),
+                                      existentialDomain);
+    }
 
     @Override
     public FacetRecord getFacetDeclaration(Relationship classifier,
@@ -570,14 +576,19 @@ public class PhantasmModelImpl implements PhantasmModel {
         return result.into(ExistentialNetworkRecord.class);
     }
 
-	@Override
-	public List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
-			Relationship relationship, Relationship classifier, ExistentialRuleform classification,
-			ExistentialDomain existentialDomain) {
-		return getImmediateConstrainedChildren(parent.getId(), relationship.getId(), classifier.getId(),
-				classification.getId(), existentialDomain);
-	}
-    
+    @Override
+    public List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
+                                                                     Relationship relationship,
+                                                                     Relationship classifier,
+                                                                     ExistentialRuleform classification,
+                                                                     ExistentialDomain existentialDomain) {
+        return getImmediateConstrainedChildren(parent.getId(),
+                                               relationship.getId(),
+                                               classifier.getId(),
+                                               classification.getId(),
+                                               existentialDomain);
+    }
+
     @Override
     public ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                                      Relationship relationship,
@@ -702,7 +713,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                  FacetRecord aspect,
                                  EditableWorkspace workspace) {
         if (!isAccessible(ruleform.getId(), aspect.getClassifier(),
-        		aspect.getClassification())) {
+                          aspect.getClassification())) {
             UUID inverseRelationship = ((Relationship) model.records()
                                                             .resolve(aspect.getClassifier())).getInverse();
             Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = link(ruleform.getId(),
@@ -736,9 +747,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public boolean isAccessible(UUID parent,
-                                UUID relationship,
-                                UUID child) {
+    public boolean isAccessible(UUID parent, UUID relationship, UUID child) {
         return !ZERO.equals(create.selectCount()
                                   .from(EXISTENTIAL_NETWORK)
                                   .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
@@ -991,18 +1000,27 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                               attribute.getValueType()));
         }
     }
-    
-	private List<ExistentialRuleform> getConstrainedChildren(UUID parent, UUID relationship, UUID classifier, UUID classification, ExistentialDomain domain) {
-		return create.select(EXISTENTIAL.fields())
-				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
-				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r.getId(), classifier, classification))
-				.collect(Collectors.toList());
-	}
+
+    private List<ExistentialRuleform> getConstrainedChildren(UUID parent,
+                                                             UUID relationship,
+                                                             UUID classifier,
+                                                             UUID classification,
+                                                             ExistentialDomain domain) {
+        return create.select(EXISTENTIAL.fields())
+                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
+                     .fetch()
+                     .into(ExistentialRecord.class)
+                     .stream()
+                     .map(r -> model.records()
+                                    .resolve(r))
+                     .filter(r -> isAccessible(r.getId(), classifier,
+                                               classification))
+                     .collect(Collectors.toList());
+    }
 
     private List<ExistentialRuleform> getImmediateChildren(UUID parent,
                                                            UUID relationship,
@@ -1021,19 +1039,28 @@ public class PhantasmModelImpl implements PhantasmModel {
                                     .resolve(r))
                      .collect(Collectors.toList());
     }
-    
-	private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent, UUID relationship, UUID classifier, UUID classification, ExistentialDomain domain) {
-		return create.select(EXISTENTIAL.fields())
-				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-				.and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
-				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r.getId(), classifier, classification))
-				.collect(Collectors.toList());
-	}
+
+    private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent,
+                                                                      UUID relationship,
+                                                                      UUID classifier,
+                                                                      UUID classification,
+                                                                      ExistentialDomain domain) {
+        return create.select(EXISTENTIAL.fields())
+                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                     .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
+                     .fetch()
+                     .into(ExistentialRecord.class)
+                     .stream()
+                     .map(r -> model.records()
+                                    .resolve(r))
+                     .filter(r -> isAccessible(r.getId(), classifier,
+                                               classification))
+                     .collect(Collectors.toList());
+    }
 
     private void setValue(Attribute attribute, ExistentialAttributeRecord value,
                           ExistentialAttributeAuthorizationRecord authorization) {

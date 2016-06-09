@@ -122,7 +122,7 @@ public class AgencyBearerTokenAuthenticator
 
         // Validate agency has login cap to this core instance
         if (!model.getPhantasmModel()
-                  .checkCapability(Arrays.asList(model.records()
+                  .checkPermission(Arrays.asList(model.records()
                                                       .resolve(agency)),
                                    model.getCoreInstance()
                                         .getRuleform(),

@@ -214,7 +214,6 @@ public interface PhantasmModel {
      * @param relationship
      * @param classifier
      * @param classification
-     *            TODO
      * @param existentialDomain
      * @return
      */
@@ -277,9 +276,7 @@ public interface PhantasmModel {
      * @param parent
      * @param relationship
      * @param classifier
-     *            TODO
      * @param classification
-     *            TODO
      * @param existentialDomain
      * @return
      */

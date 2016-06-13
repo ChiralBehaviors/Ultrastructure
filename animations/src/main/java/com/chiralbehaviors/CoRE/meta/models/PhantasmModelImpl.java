@@ -86,7 +86,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     private static final String  AUTHORITY  = "authority";
     private static final String  BASE       = "base";
     private static final String  GRANTED    = "granted";
-    private static final String  GROUPS2    = "groups";
+    private static final String  GROUPS    = "groups";
     private static final String  MEMBERSHIP = "membership";
     private static final String  REQUIRED   = "required";
     private static final Integer ZERO       = Integer.valueOf(0);
@@ -375,7 +375,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                                                .from(authority)
                                                                                                .where(authority.field(authority.ENTITY)
                                                                                                                .equal(target))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS2).fields(AGENCY)
+        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
                                                                    .as(create.select(membership.field(membership.CHILD))
                                                                              .from(membership)
                                                                              .where(membership.field(membership.PARENT)

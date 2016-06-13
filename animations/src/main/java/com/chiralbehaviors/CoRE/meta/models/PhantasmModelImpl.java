@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
 import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -86,7 +85,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     private static final String  AUTHORITY  = "authority";
     private static final String  BASE       = "base";
     private static final String  GRANTED    = "granted";
-    private static final String  GROUPS    = "groups";
+    private static final String  GROUPS     = "groups";
     private static final String  MEMBERSHIP = "membership";
     private static final String  REQUIRED   = "required";
     private static final Integer ZERO       = Integer.valueOf(0);
@@ -358,7 +357,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                     .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public boolean foo(List<UUID> roles, UUID permission, UUID target) {
         Existential base = EXISTENTIAL.as(BASE);
         AgencyExistential authority = AGENCY_EXISTENTIAL.as(AUTHORITY);
@@ -376,25 +375,25 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                                                .where(authority.field(authority.ENTITY)
                                                                                                                .equal(target))));
         CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                   .as(create.select(membership.field(membership.CHILD))
-                                                                             .from(membership)
-                                                                             .where(membership.field(membership.PARENT)
-                                                                                              .in(roles))
-                                                                             .and(membership.field(membership.RELATIONSHIP)
-                                                                                            .equal(WellKnownRelationship.MEMBER_OF.id()))
-                                                                             .and(membership.field(membership.CHILD)
-                                                                                            .equal(granted.field(granted.PARENT))));
+                                                                  .as(create.select(membership.field(membership.CHILD))
+                                                                            .from(membership)
+                                                                            .where(membership.field(membership.PARENT)
+                                                                                             .in(roles))
+                                                                            .and(membership.field(membership.RELATIONSHIP)
+                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
 
-        return create.selectOne()
-                     .from(granted)
-                     .where((granted.field(granted.PARENT)
-                                    .in(roles)).or(granted.field(granted.PARENT)
-                                                          .equal((Field<UUID>) groups.field(AGENCY))))
-                     .and(granted.field(granted.RELATIONSHIP)
-                                 .equal(permission))
-                     .and(granted.field(granted.CHILD)
-                                 .equal((Field<UUID>) authorized.field(AUTHORITY)))
-                     .fetchOne() != null;
+        Record1<Integer> result = create.with(groups, authorized)
+                                        .selectCount()
+                                        .from(granted)
+                                        .where((granted.field(granted.PARENT)
+                                                       .in(roles)).or(granted.field(granted.PARENT)
+                                                                             .in(create.selectFrom(groups))))
+                                        .and(granted.field(granted.RELATIONSHIP)
+                                                    .equal(permission))
+                                        .and(granted.field(granted.CHILD)
+                                                    .in(create.selectFrom(authorized)))
+                                        .fetchOne();
+        return result != null;
     }
 
     @Override

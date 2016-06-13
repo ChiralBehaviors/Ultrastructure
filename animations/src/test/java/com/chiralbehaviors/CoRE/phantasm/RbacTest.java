@@ -660,4 +660,87 @@ public class RbacTest extends AbstractModelTest {
                                         "testy", "test");
         model.apply(OtherThing.class, thing1);
     }
+
+    @Test
+    public void testExistentialPermissions() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+
+        Product instance = (Product) thing1.getRuleform();
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
+
+        AgencyExistentialRecord accessAuth = model.records()
+                                                  .newAgencyExistential();
+        accessAuth.setUpdatedBy(model.getKernel()
+                                     .getCore()
+                                     .getId());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getAnyAgency()
+                                     .getId());
+        accessAuth.setEntity(instance.getId());
+        accessAuth.insert();
+
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getCore()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
+
+        assertTrue(model.getPhantasmModel()
+                        .foo(asList(model.getKernel()
+                                         .getCore()
+                                         .getId()),
+                             model.getKernel()
+                                  .getHadMember()
+                                  .getId(),
+                             instance.getId()));
+
+        accessAuth = model.records()
+                          .newAgencyExistential();
+        accessAuth.setUpdatedBy(model.getKernel()
+                                     .getCore()
+                                     .getId());
+        accessAuth.setAuthority(model.getKernel()
+                                     .getSameAgency()
+                                     .getId());
+        accessAuth.setEntity(instance.getId());
+        accessAuth.insert();
+
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getCore()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getSameAgency());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
+    }
 }

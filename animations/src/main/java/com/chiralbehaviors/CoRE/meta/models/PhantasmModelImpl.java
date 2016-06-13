@@ -53,6 +53,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistential;
+import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
@@ -1097,21 +1098,24 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     public void foo(List<UUID> agencies, UUID permission, UUID target) {
+        Existential base = EXISTENTIAL.as("base");
+        AgencyExistential authority = AGENCY_EXISTENTIAL.as("authority");
         ExistentialNetwork granted = EXISTENTIAL_NETWORK.as("granted");
         ExistentialNetwork membership = EXISTENTIAL_NETWORK.as("membership");
 
-        create.selectCount()
+        create.selectOne()
               .from(create.select(membership.CHILD)
                           .from(membership)
                           .where(membership.PARENT.in(agencies))
                           .and(membership.RELATIONSHIP.equal(WellKnownRelationship.MEMBER_OF.id()))
                           .and(membership.CHILD.equal(granted.PARENT)))
               .where(granted.RELATIONSHIP.equal(permission))
-              .and(granted.CHILD.equal(create.select(EXISTENTIAL.AUTHORITY)
-                                             .from(EXISTENTIAL)
-                                             .where(EXISTENTIAL.ID.equal(target)))
-                                .or(granted.CHILD.in(create.select(AGENCY_EXISTENTIAL.AUTHORITY)
-                                                           .from(AGENCY_EXISTENTIAL)
-                                                           .where(AGENCY_EXISTENTIAL.ENTITY.equal(target)))));
+              .and(granted.CHILD.equal(create.select(base.AUTHORITY)
+                                             .from(base)
+                                             .where(base.ID.equal(target)))
+                                .or(granted.CHILD.in(create.select(authority.AUTHORITY)
+                                                           .from(authority)
+                                                           .where(authority.ENTITY.equal(target)))))
+              .fetchOne();
     }
 }

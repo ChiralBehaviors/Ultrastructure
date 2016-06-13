@@ -164,6 +164,22 @@ public interface WellKnownObject {
             }
 
         },
+        ROLE() {
+
+            @Override
+            public String description() {
+                return "The concept of a Role, in role based authorization control";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.ROLE;
+            }
+
+        },
         SAME() {
 
             @Override
@@ -1726,7 +1742,6 @@ public interface WellKnownObject {
     String                     LOCATION_PROTOTYPE_COPIER = "Location Protototype Copier";
     String                     LOGIN                     = "login";
     String                     MAPS_TO_LOCATION          = "maps-to-location";
-    String                     MEMBER                    = "member";
     String                     MEMBER_OF                 = "member-of";
     String                     MICROSECONDS              = "Microseconds";
     String                     MILLISECONDS              = "Milliseonds";
@@ -1742,6 +1757,7 @@ public interface WellKnownObject {
     String                     PROPAGATION_SOFTWARE      = "Propagation Software";
     String                     PROTOTYPE                 = "prototype";
     String                     PROTOTYPE_OF              = "prototype-of";
+    String                     ROLE                      = "Role";
     String                     SAME                      = "(SAME)";
     String                     SECONDS                   = "Seconds";
     String                     SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
@@ -1767,7 +1783,7 @@ public interface WellKnownObject {
      *
      * @return the id of the wko
      */
-    UUID id(); 
+    UUID id();
 
     /**
      *

@@ -45,6 +45,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -53,6 +54,7 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.Facet;
@@ -1092,5 +1094,24 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         value.setUpdated(new Timestamp(System.currentTimeMillis()));
         value.update();
+    }
+
+    public void foo(List<UUID> agencies, UUID permission, UUID target) {
+        ExistentialNetwork granted = EXISTENTIAL_NETWORK.as("granted");
+        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as("membership");
+
+        create.selectCount()
+              .from(create.select(membership.CHILD)
+                          .from(membership)
+                          .where(membership.PARENT.in(agencies))
+                          .and(membership.RELATIONSHIP.equal(WellKnownRelationship.MEMBER_OF.id()))
+                          .and(membership.CHILD.equal(granted.PARENT)))
+              .where(granted.RELATIONSHIP.equal(permission))
+              .and(granted.CHILD.equal(create.select(EXISTENTIAL.AUTHORITY)
+                                             .from(EXISTENTIAL)
+                                             .where(EXISTENTIAL.ID.equal(target)))
+                                .or(granted.CHILD.in(create.select(AGENCY_EXISTENTIAL.AUTHORITY)
+                                                           .from(AGENCY_EXISTENTIAL)
+                                                           .where(AGENCY_EXISTENTIAL.ENTITY.equal(target)))));
     }
 }

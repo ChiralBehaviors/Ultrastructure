@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.TestPhantasm;
+import com.chiralbehaviors.CoRE.phantasm.RbacTest;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
 /**
@@ -45,7 +45,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
 
     @Before
     public void loadThingOntology() throws Exception {
-        WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
                                    model);
     }
 

@@ -65,16 +65,16 @@ import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
  * @author hhildebrand
  *
  */
-public class TestPhantasm extends AbstractModelTest {
+public class RbacTest extends AbstractModelTest {
 
     @Before
     public void loadThingOntology() throws Exception {
-        WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
                                    model);
     }
 
     @Test
-    public void testAttributeCapabilities() throws Exception {
+    public void testAttributePermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
 
@@ -160,7 +160,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testChildCapabilities() throws Exception {
+    public void testChildPermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
 
@@ -364,7 +364,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testFacetCapabilities() throws Exception {
+    public void testFacetPermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
 
@@ -441,7 +441,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testInstanceCapabilities() throws Exception {
+    public void testInstancePermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
 
@@ -516,7 +516,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testNetworkAttributeCapabilities() throws Exception {
+    public void testNetworkAttributePermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
         model.create()
@@ -656,8 +656,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testApplyFacet() throws Exception {
-    	 Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                 "testy", "test");
-    	 model.apply(OtherThing.class, thing1);
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        model.apply(OtherThing.class, thing1);
     }
 }

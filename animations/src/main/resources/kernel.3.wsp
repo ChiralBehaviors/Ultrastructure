@@ -8,17 +8,26 @@ agencies {
     CoreUser = "CoRE User" "Ultrastructure CoRE API user";
     SuperUser = "Ultrastructure Super User" "Ye Root";
     UnauthenticatedAgency = "Unauthenticated" "The unauthenticaed agency";
+    LoginRole = "Login Role" "The Login role";
     edges {
         SuperUser.IsA.CoreUser
+        LoginRole.IsA.Role
     }
     facets {
         IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
             constraints {
-                n LOGIN_TO: InstanceOf.Core named loginCapability
+                one DefaultRole: IsA.Role named by relationship
+                n HasRole: IsA.Role named role
+            }
+        IsA.Role { RoleName }
+            constraints {
+                n RoleOf: IsA.CoreUser named grant
+                n MemberOf: IsA.Role named parents
+                n HasMember: IsA.Role named member
             }
         InstanceOf.Core named: "Core Instance"
             constraints {
-                n MayLoginBy: InstanceOf.Core named login
+                n MayLoginBy: IsA.CoreUser named login
             }
         SingletonOf.Core named: "This Core Instance"
     }
@@ -34,6 +43,7 @@ attributes {
     PasswordHash = "Password Hash" "The hash the password" text;
     AccessToken = "Access Token" "The access bearer token" indexed: true json;
     
+    RoleName = "Role Name" "The role name" text;
     PackageName = "Package Name" "The base package name" text;
     FacetName = "Facet Name" "The name of a phantasm facet in a workspace" text;
     InputType = "Input Type" "The input type of an argument" text;
@@ -85,6 +95,7 @@ products {
 }
 
 relationships {
+    RoleOf = "Role Of" "A is a role of B" | HasRole = "Has Role" "A has role B";
     InstanceOf = "Instance Of" "A is an instance of B" | HasInstance = "Has Instance" "A has instance B";
     SingletonOf = "Singleton Of" "A is the singleton instance of B" | HasSingleton = "Has Singleton" "A has singleton instance B";
     
@@ -104,7 +115,9 @@ relationships {
     REMOVE = "Remove" "The remove capability" | MayBeRemovedBy = "May Be Removed By" "The inverse remove capability";
     INVOKE = "Invoke" "The invoke capability" | MayBeInvokedBy = "May Be Invoked By" "The inverse invoke capability";
     EXECUTE_QUERY = "Execute Query" "The execute query capability" | QueryExecutedBy = "Query may be executed By" "The inverse execute query capability"; 
-    LOGIN_TO = "Login" "The login capability" | MayLoginBy = "Login may be done By" "The inverse login capability";  
+    LOGIN_TO = "Login" "The login capability" | MayLoginBy = "Login may be done By" "The inverse login capability";
+    
+    DefaultRole = "Default Role" "A has default role B" | DefaultRoleOf = "Default Role Of" "A is the default role of B";
     
     edges {
         APPLY.IsA.Capability
@@ -119,5 +132,10 @@ relationships {
     }
     facets {
         IsA.Capability
-    }
-} 
+    } 
+}
+
+
+inferences {
+    HasMember.HasMember.HasMember
+}

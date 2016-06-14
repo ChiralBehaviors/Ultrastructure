@@ -360,6 +360,7 @@ public class ModelImpl implements Model {
         List<UUID> excluded = new ArrayList<>();
         Agency instance = (Agency) getCoreInstance().getRuleform();
         excluded.add(instance.getId());
+
         Relationship relationship = kernel.getSingletonOf();
         excluded.add(phantasmModel.getImmediateLink(instance, relationship,
                                                     kernel.getCore())
@@ -376,6 +377,15 @@ public class ModelImpl implements Model {
         excluded.add(phantasmModel.getImmediateLink(kernel.getCore(),
                                                     factory.resolve(relationship.getInverse()),
                                                     instance)
+                                  .getId());
+
+        relationship = kernel.getLOGIN_TO();
+        excluded.add(phantasmModel.getImmediateLink(kernel.getLoginRole(),
+                                                    relationship, instance)
+                                  .getId());
+        excluded.add(phantasmModel.getImmediateLink(instance,
+                                                    factory.resolve(relationship.getInverse()),
+                                                    kernel.getLoginRole())
                                   .getId());
         return excluded;
     }

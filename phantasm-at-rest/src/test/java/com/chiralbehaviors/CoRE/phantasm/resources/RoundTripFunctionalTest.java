@@ -54,6 +54,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.Role;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -99,6 +100,8 @@ public class RoundTripFunctionalTest {
                                                   "Bob", "Test Dummy");
         bob.setLogin(username);
         bob.setPasswordRounds(10);
+        bob.addRole(model.wrap(Role.class, model.getKernel()
+                                                .getLoginRole()));
         AgencyBasicAuthenticator.resetPassword(bob, password);
         model.create()
              .configuration()

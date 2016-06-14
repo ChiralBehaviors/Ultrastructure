@@ -47,7 +47,11 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyAttrAuthRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyFacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyNetAttrAuthRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyNetAuthRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
@@ -100,10 +104,9 @@ public class RbacTest extends AbstractModelTest {
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
 
-        ExistentialAttributeAuthorizationRecord accessAuth = model.records()
-                                                                  .newExistentialAttributeAuthorization();
-        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setFacet(stateAuth.getFacet());
+        AgencyAttrAuthRecord accessAuth = model.records()
+                                               .newAgencyAttrAuth();
+        accessAuth.setAuthorization(stateAuth.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getAnyAgency()
                                      .getId());
@@ -130,9 +133,8 @@ public class RbacTest extends AbstractModelTest {
                                                          .getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialAttributeAuthorization();
-        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setFacet(stateAuth.getFacet());
+                          .newAgencyAttrAuth();
+        accessAuth.setAuthorization(stateAuth.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getSameAgency()
                                      .getId());
@@ -187,11 +189,9 @@ public class RbacTest extends AbstractModelTest {
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
 
-        ExistentialNetworkAuthorizationRecord accessAuth = model.records()
-                                                                .newExistentialNetworkAuthorization();
-        accessAuth.setParent(stateAuth.getParent());
-        accessAuth.setRelationship(stateAuth.getRelationship());
-        accessAuth.setChild(stateAuth.getChild());
+        AgencyNetAuthRecord accessAuth = model.records()
+                                              .newAgencyNetAuth();
+        accessAuth.setAuthorization(stateAuth.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getAnyAgency()
                                      .getId());
@@ -218,10 +218,8 @@ public class RbacTest extends AbstractModelTest {
                                                          .getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialNetworkAuthorization();
-        accessAuth.setParent(stateAuth.getParent());
-        accessAuth.setRelationship(stateAuth.getRelationship());
-        accessAuth.setChild(stateAuth.getChild());
+                          .newAgencyNetAuth();
+        accessAuth.setAuthorization(stateAuth.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getSameAgency()
                                      .getId());
@@ -381,10 +379,9 @@ public class RbacTest extends AbstractModelTest {
                                          facet, model.getKernel()
                                                      .getHadMember()));
 
-        FacetRecord accessAuth = model.records()
-                                      .newFacet();
-        accessAuth.setClassifier(facet.getClassifier());
-        accessAuth.setClassification(facet.getClassification());
+        AgencyFacetRecord accessAuth = model.records()
+                                            .newAgencyFacet();
+        accessAuth.setFacet(facet.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getAnyAgency()
                                      .getId());
@@ -411,9 +408,8 @@ public class RbacTest extends AbstractModelTest {
                                                      .getHadMember()));
 
         accessAuth = model.records()
-                          .newFacet();
-        accessAuth.setClassifier(facet.getClassifier());
-        accessAuth.setClassification(facet.getClassification());
+                          .newAgencyFacet();
+        accessAuth.setFacet(facet.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getSameAgency()
                                      .getId());
@@ -519,12 +515,6 @@ public class RbacTest extends AbstractModelTest {
     public void testNetworkAttributePermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
-
         WorkspaceScope scope = thing1.getScope();
 
         FacetRecord facet = model.getPhantasmModel()
@@ -560,10 +550,9 @@ public class RbacTest extends AbstractModelTest {
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
 
-        ExistentialNetworkAttributeAuthorizationRecord accessAuth = model.records()
-                                                                         .newExistentialNetworkAttributeAuthorization();
-        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
+        AgencyNetAttrAuthRecord accessAuth = model.records()
+                                                  .newAgencyNetAttrAuth();
+        accessAuth.setAuthorization(stateAuth.getId());
         accessAuth.setAuthority(model.getKernel()
                                      .getAnyAgency()
                                      .getId());
@@ -590,9 +579,8 @@ public class RbacTest extends AbstractModelTest {
                                                          .getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialNetworkAttributeAuthorization();
-        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
-        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
+                          .newAgencyNetAttrAuth();
+        accessAuth.setAuthorization(stateAuth.getId());
 
         accessAuth.setAuthority(model.getKernel()
                                      .getSameAgency()
@@ -659,100 +647,5 @@ public class RbacTest extends AbstractModelTest {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
         model.apply(OtherThing.class, thing1);
-    }
-
-    @Test
-    public void testExistentialPermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-
-        Product instance = (Product) thing1.getRuleform();
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
-
-        AgencyExistentialRecord accessAuth;
-
-        accessAuth = model.records()
-                          .newAgencyExistential();
-        accessAuth.setUpdatedBy(model.getKernel()
-                                     .getCore()
-                                     .getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getAnyAgency()
-                                     .getId());
-        accessAuth.setEntity(instance.getId());
-        accessAuth.insert();
-
-        assertFalse(model.getPhantasmModel()
-                         .foo(asList(model.getKernel()
-                                          .getCore()
-                                          .getId()),
-                              model.getKernel()
-                                   .getHadMember()
-                                   .getId(),
-                              instance.getId()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .foo(asList(model.getKernel()
-                                         .getCore()
-                                         .getId()),
-                             model.getKernel()
-                                  .getHadMember()
-                                  .getId(),
-                             instance.getId()));
-
-        accessAuth = model.records()
-                          .newAgencyExistential();
-        accessAuth.setUpdatedBy(model.getKernel()
-                                     .getCore()
-                                     .getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getSameAgency()
-                                     .getId());
-        accessAuth.setEntity(instance.getId());
-        accessAuth.insert();
-
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
-
-        assertFalse(model.getPhantasmModel()
-                         .foo(asList(model.getKernel()
-                                          .getCore()
-                                          .getId()),
-                              model.getKernel()
-                                   .getHadMember()
-                                   .getId(),
-                              instance.getId()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getSameAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .foo(asList(model.getKernel()
-                                         .getCore()
-                                         .getId()),
-                             model.getKernel()
-                                  .getHadMember()
-                                  .getId(),
-                             instance.getId()));
     }
 }

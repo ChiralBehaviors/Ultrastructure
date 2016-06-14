@@ -104,7 +104,12 @@ public class RecordsFactoryTest extends DatabaseTest {
         RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
                                                             attribute);
         RECORDS.newAgencyExistential();
+        RECORDS.newAgencyAttrAuth();
+        RECORDS.newAgencyFacet();
+        RECORDS.newAgencyNetAttrAuth();
+        RECORDS.newAgencyNetAuth();
         RECORDS.newExistentialNetwork();
+
         RECORDS.newExistentialNetworkAuthorization();
         RECORDS.newExistentialNetworkAttributeAuthorization();
 

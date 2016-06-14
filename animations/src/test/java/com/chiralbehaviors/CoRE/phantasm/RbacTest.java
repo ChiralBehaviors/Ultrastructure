@@ -159,6 +159,26 @@ public class RbacTest extends AbstractModelTest {
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
+
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
     }
 
     @Test
@@ -242,6 +262,26 @@ public class RbacTest extends AbstractModelTest {
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()
                                                      .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
+
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
     }
@@ -434,6 +474,26 @@ public class RbacTest extends AbstractModelTest {
                                                      .getCore()),
                                          facet, model.getKernel()
                                                      .getHadMember()));
+
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          facet, model.getKernel()
+                                                      .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
     }
 
     @Test
@@ -507,6 +567,25 @@ public class RbacTest extends AbstractModelTest {
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()
                                                      .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
     }
@@ -625,6 +704,26 @@ public class RbacTest extends AbstractModelTest {
                                 model.getKernel()
                                      .getSameAgency(),
                                 aliases);
+
+        assertFalse(model.getPhantasmModel()
+                         .checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.getPhantasmModel()
+                        .checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
     }
 
     @Test

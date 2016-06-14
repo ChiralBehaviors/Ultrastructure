@@ -108,6 +108,9 @@ public class Facet {
 
     @GraphQLField
     public Agency getAuthority(DataFetchingEnvironment env) {
+        if (record.getAuthority() == null) {
+            return null;
+        }
         return new Agency(resolve(env, record.getAuthority()));
     }
 

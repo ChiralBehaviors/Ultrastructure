@@ -16,8 +16,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,7 +138,11 @@ public class AgencyBasicAuthenticator
 
     private boolean canLoginToInstance(CoreUser user, Model model) {
         return model.getPhantasmModel()
-                    .checkPermission(Arrays.asList((Agency) user.getRuleform()),
+                    .checkPermission(user.getRoles()
+                                         .stream()
+                                         .map(r -> r.getRuleform())
+                                         .map(e -> (Agency) e)
+                                         .collect(Collectors.toList()),
                                      model.getCoreInstance()
                                           .getRuleform(),
                                      model.getKernel()

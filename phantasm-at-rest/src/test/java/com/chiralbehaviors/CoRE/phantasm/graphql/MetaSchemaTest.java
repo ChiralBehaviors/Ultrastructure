@@ -425,7 +425,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ facets { id name attributes { id } classifier {id} classification {id} children authority { id } }}",
+                                  "{ facets { id name attributes { id } classifier {id} classification {id} children { id } authority { id } }}",
                                   variables);
         assertNotNull(data);
 

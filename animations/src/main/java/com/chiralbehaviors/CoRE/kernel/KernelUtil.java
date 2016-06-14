@@ -66,6 +66,9 @@ public class KernelUtil {
         ThisCoreInstance core = model.construct(ThisCoreInstance.class,
                                                 ExistentialDomain.Agency, name,
                                                 description);
+        core.getRuleform()
+            .setAuthority(core.getRuleform()
+                              .getId());
         model.apply(CoreInstance.class, core);
     }
 

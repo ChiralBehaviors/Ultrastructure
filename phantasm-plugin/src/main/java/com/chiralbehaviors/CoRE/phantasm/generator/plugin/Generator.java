@@ -42,15 +42,20 @@ public class Generator extends AbstractMojo {
      */
     private Configuration generator;
 
+    public Generator() {
+        super();
+    }
+
+    public Generator(Configuration generator) {
+        this.generator = generator;
+    }
+
     /* (non-Javadoc)
      * @see org.apache.maven.plugin.Mojo#execute()
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Generating Phantasms");
-        if (generator == null) {
-            throw new MojoFailureException("No phantasm generator configuration supplied");
-        }
         try {
             new PhantasmGenerator(generator).generate();
         } catch (Exception e) {

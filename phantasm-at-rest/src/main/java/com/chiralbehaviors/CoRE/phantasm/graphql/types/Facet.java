@@ -76,7 +76,7 @@ public class Facet {
         }
     }
 
-    public class FacetUpdateState extends FacetState {
+    public static class FacetUpdateState extends FacetState {
         @GraphQLField
         public String id;
     }

@@ -24,8 +24,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.phantasm.generator.plugin.Generator;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -38,7 +41,8 @@ public class TestGenerator {
     private static final String THING_WSP                                         = "/thing.wsp";
 
     @Test
-    public void testFile() throws IOException {
+    public void testFile() throws IOException, MojoExecutionException,
+                           MojoFailureException {
         Configuration configuration = new Configuration();
         configuration.resource = "target/thing.wsp.tst";
         FileOutputStream fos = new FileOutputStream(configuration.resource);
@@ -47,8 +51,7 @@ public class TestGenerator {
         configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
-        PhantasmGenerator generator = new PhantasmGenerator(configuration);
-        generator.generate();
+        new Generator(configuration).execute();
     }
 
     @Test

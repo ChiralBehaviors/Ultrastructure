@@ -84,7 +84,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     private static final String  AGENCY     = "agency";
     private static final String  AUTHORITY  = "authority";
     private static final String  BASE       = "base";
-    private static final String  GRANTED    = "granted";
     private static final String  GROUPS     = "groups";
     private static final String  MEMBERSHIP = "membership";
     private static final String  REQUIRED   = "required";
@@ -362,18 +361,17 @@ public class PhantasmModelImpl implements PhantasmModel {
         Existential base = EXISTENTIAL.as(BASE);
         AgencyExistential authority = AGENCY_EXISTENTIAL.as(AUTHORITY);
 
-        ExistentialNetwork granted = EXISTENTIAL_NETWORK.as(GRANTED);
         ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
 
-        CommonTableExpression<Record1<UUID>> authorized = name(REQUIRED).fields(AUTHORITY)
-                                                                        .as(create.select(base.AUTHORITY)
-                                                                                  .from(base)
-                                                                                  .where(base.field(base.ID)
-                                                                                             .equal(target))
-                                                                                  .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                               .from(authority)
-                                                                                               .where(authority.field(authority.ENTITY)
-                                                                                                               .equal(target))));
+        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
+                                                                      .as(create.select(base.AUTHORITY)
+                                                                                .from(base)
+                                                                                .where(base.field(base.ID)
+                                                                                           .equal(target))
+                                                                                .union(create.select(authority.field(authority.AUTHORITY))
+                                                                                             .from(authority)
+                                                                                             .where(authority.field(authority.ENTITY)
+                                                                                                             .equal(target))));
         CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
                                                                   .as(create.select(membership.field(membership.CHILD))
                                                                             .from(membership)
@@ -382,18 +380,18 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                             .and(membership.field(membership.RELATIONSHIP)
                                                                                            .equal(WellKnownRelationship.MEMBER_OF.id())));
 
-        Record1<Integer> result = create.with(groups, authorized)
-                                        .selectCount()
-                                        .from(granted)
-                                        .where((granted.field(granted.PARENT)
-                                                       .in(roles)).or(granted.field(granted.PARENT)
-                                                                             .in(create.selectFrom(groups))))
-                                        .and(granted.field(granted.RELATIONSHIP)
-                                                    .equal(permission))
-                                        .and(granted.field(granted.CHILD)
-                                                    .in(create.selectFrom(authorized)))
-                                        .fetchOne();
-        return result != null;
+        return ZERO.equals(create.with(required, groups)
+                                 .selectCount()
+                                 .from(EXISTENTIAL)
+                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
+                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
+                                                     .from(EXISTENTIAL_NETWORK)
+                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
+                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission))
+                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
+                                 .fetchOne()
+                                 .value1());
     }
 
     @Override

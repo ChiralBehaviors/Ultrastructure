@@ -673,8 +673,10 @@ public class RbacTest extends AbstractModelTest {
                                          instance, model.getKernel()
                                                         .getHadMember()));
 
-        AgencyExistentialRecord accessAuth = model.records()
-                                                  .newAgencyExistential();
+        AgencyExistentialRecord accessAuth;
+
+        accessAuth = model.records()
+                          .newAgencyExistential();
         accessAuth.setUpdatedBy(model.getKernel()
                                      .getCore()
                                      .getId());
@@ -685,10 +687,13 @@ public class RbacTest extends AbstractModelTest {
         accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
+                         .foo(asList(model.getKernel()
+                                          .getCore()
+                                          .getId()),
+                              model.getKernel()
+                                   .getHadMember()
+                                   .getId(),
+                              instance.getId()));
 
         model.getPhantasmModel()
              .link(model.getKernel()
@@ -697,11 +702,6 @@ public class RbacTest extends AbstractModelTest {
                         .getHadMember(),
                    model.getKernel()
                         .getAnyAgency());
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
 
         assertTrue(model.getPhantasmModel()
                         .foo(asList(model.getKernel()
@@ -723,11 +723,20 @@ public class RbacTest extends AbstractModelTest {
         accessAuth.setEntity(instance.getId());
         accessAuth.insert();
 
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
+
         assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
+                         .foo(asList(model.getKernel()
+                                          .getCore()
+                                          .getId()),
+                              model.getKernel()
+                                   .getHadMember()
+                                   .getId(),
+                              instance.getId()));
 
         model.getPhantasmModel()
              .link(model.getKernel()
@@ -738,9 +747,12 @@ public class RbacTest extends AbstractModelTest {
                         .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
+                        .foo(asList(model.getKernel()
+                                         .getCore()
+                                         .getId()),
+                             model.getKernel()
+                                  .getHadMember()
+                                  .getId(),
+                             instance.getId()));
     }
 }

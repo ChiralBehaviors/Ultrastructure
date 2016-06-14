@@ -38,6 +38,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.Role;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
@@ -54,6 +55,8 @@ import io.dropwizard.auth.basic.BasicCredentials;
 public class AuthenticatorsTest extends AbstractModelTest {
     @Test
     public void testBasic() throws Exception {
+        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
+        authenticator.setModel(model);
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
@@ -63,11 +66,15 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
-        model.flush();
-        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
-        authenticator.setModel(model);
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
+        assertFalse(authenticated.isPresent());
+
+        model.flush();
+        bob.addRole(model.wrap(Role.class, model.getKernel()
+                                                .getLoginRole()));
+        authenticated = authenticator.authenticate(new BasicCredentials(username,
+                                                                        password));
         assertTrue(authenticated.isPresent());
         assertEquals(bob.getRuleform()
                         .getId(),

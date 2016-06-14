@@ -159,6 +159,9 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialAttributeAuthorizationRecord target,
                                    Relationship permission) {
+        if (agencies.isEmpty()) {
+            return false;
+        }
         if (target == null) {
             return true;
         }
@@ -211,6 +214,9 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialNetworkAttributeAuthorizationRecord target,
                                    Relationship permission) {
+        if (agencies.isEmpty()) {
+            return false;
+        }
         if (target == null) {
             return true;
         }
@@ -262,6 +268,9 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialNetworkAuthorizationRecord target,
                                    Relationship permission) {
+        if (agencies.isEmpty()) {
+            return false;
+        }
         if (target == null) {
             return true;
         }
@@ -312,6 +321,9 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialRuleform target,
                                    Relationship permission) {
+        if (agencies.isEmpty()) {
+            return false;
+        }
         if (target == null) {
             return true;
         }
@@ -361,6 +373,9 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public boolean checkPermission(List<Agency> agencies, FacetRecord target,
                                    Relationship permission) {
+        if (agencies.isEmpty()) {
+            return false;
+        }
         if (target == null) {
             return true;
         }

@@ -59,6 +59,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMuta
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.StatusCodeSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
@@ -130,8 +131,8 @@ public class WorkspaceSchema {
     public interface Mutations extends ExistentialMutations, JobMutations {
     }
 
-    public interface Queries
-            extends ExistentialQueries, JobQueries, JobChronologyQueries {
+    public interface Queries extends CurrentUser, ExistentialQueries,
+            JobQueries, JobChronologyQueries {
     }
 
     public static Model ctx(DataFetchingEnvironment env) {

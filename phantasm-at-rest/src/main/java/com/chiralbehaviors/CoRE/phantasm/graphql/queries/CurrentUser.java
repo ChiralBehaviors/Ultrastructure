@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.Role;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -49,38 +51,57 @@ import graphql.schema.DataFetchingEnvironment;
                     + "The authenticated principal is the authenticated CoRE User and any asserted Roles that have been granted to that user")
 public interface CurrentUser {
     @GraphQLField
-    @GraphQLDescription("Return true if the current user has all the roles provided as actively asserted roles")
-    default Boolean inRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
-                            DataFetchingEnvironment env) {
+    @GraphQLDescription("Return true if the current user is authorized to exercise the permission on the entity, granted through the actively asserted roles of the current user")
+    default Boolean authorized(@NotNull @GraphQLName("permission") String permission,
+                               @NotNull @GraphQLName("entity") String existential,
+                               DataFetchingEnvironment env) {
         Model model = ctx(env);
-        List<Agency> roles = roleIds.stream()
-                                    .map(s -> UUID.fromString(s))
-                                    .map(id -> model.records()
-                                                    .resolve(id))
-                                    .map(e -> (Agency) e)
-                                    .collect(Collectors.toList());
-        return model.getCurrentPrincipal()
-                    .getAsserted()
-                    .containsAll(roles);
+        return model.getPhantasmModel()
+                    .checkPermission(model.getCurrentPrincipal()
+                                          .getAsserted(),
+                                     (ExistentialRuleform) model.records()
+                                                                .resolve(UUID.fromString(existential)),
+                                     (Relationship) model.records()
+                                                         .resolve(UUID.fromString(permission)));
     }
 
     @GraphQLField
-    @GraphQLDescription("Return true if the current user has all the roles")
-    default Boolean hasRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
-                             DataFetchingEnvironment env) {
+    @GraphQLDescription("Return true if the current user is authorized to exercise the permission on the entity, through the roles granted to the current user")
+    default Boolean authorizedIfActive(@NotNull @GraphQLName("permission") String permission,
+                                       @NotNull @GraphQLName("entity") String existential,
+                                       @NotNull @GraphQLName("roles") List<String> roleIds,
+                                       DataFetchingEnvironment env) {
         Model model = ctx(env);
-        List<Role> roles = roleIds.stream()
-                                  .map(s -> UUID.fromString(s))
-                                  .map(id -> model.records()
-                                                  .resolve(id))
-                                  .map(e -> (Agency) e)
-                                  .map(a -> model.wrap(Role.class, a))
-                                  .collect(Collectors.toList());
-        CoreUser authenticated = model.wrap(CoreUser.class,
-                                            model.getCurrentPrincipal()
-                                                 .getPrincipal());
-        return authenticated.getRoles()
-                            .containsAll(roles);
+        List<Agency> roleAgencies = roleIds.stream()
+                                           .map(s -> UUID.fromString(s))
+                                           .map(id -> model.records()
+                                                           .resolve(id))
+                                           .map(e -> (Agency) e)
+                                           .collect(Collectors.toList());
+        List<Role> roles = roleAgencies.stream()
+                                       .map(a -> model.wrap(Role.class, a))
+                                       .collect(Collectors.toList());
+        if (!model.wrap(CoreUser.class, model.getCurrentPrincipal()
+                                             .getPrincipal())
+                  .getRoles()
+                  .containsAll(roles)) {
+            return false;
+        }
+        return model.getPhantasmModel()
+                    .checkPermission(roleAgencies,
+                                     (ExistentialRuleform) model.records()
+                                                                .resolve(UUID.fromString(existential)),
+                                     (Relationship) model.records()
+                                                         .resolve(UUID.fromString(permission)));
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Return the current user")
+    default String getCurrentUser(DataFetchingEnvironment env) {
+        return ctx(env).getCurrentPrincipal()
+                       .getPrincipal()
+                       .getId()
+                       .toString();
     }
 
     @GraphQLField
@@ -103,28 +124,37 @@ public interface CurrentUser {
     }
 
     @GraphQLField
-    @GraphQLDescription("Return true if the current user is authorized to exercise the permission on the entity, granted through the actively asserted roles of the current user")
-    default Boolean authorized(@NotNull @GraphQLName("permision") String permission,
-                               @NotNull @GraphQLName("entity") String existential,
-                               DataFetchingEnvironment env) {
-        return false;
+    @GraphQLDescription("Return true if the current user has all the roles")
+    default Boolean hasRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
+                             DataFetchingEnvironment env) {
+        Model model = ctx(env);
+        List<Role> roles = roleIds.stream()
+                                  .map(s -> UUID.fromString(s))
+                                  .map(id -> model.records()
+                                                  .resolve(id))
+                                  .map(e -> (Agency) e)
+                                  .map(a -> model.wrap(Role.class, a))
+                                  .collect(Collectors.toList());
+        CoreUser authenticated = model.wrap(CoreUser.class,
+                                            model.getCurrentPrincipal()
+                                                 .getPrincipal());
+        return authenticated.getRoles()
+                            .containsAll(roles);
     }
 
     @GraphQLField
-    @GraphQLDescription("Return true if the current user is authorized to exercise the permission on the entity, granted through the roles granted to the current user")
-    default Boolean authorizedIfActive(@NotNull @GraphQLName("permission") String permission,
-                                       @NotNull @GraphQLName("entity") String existential,
-                                       @NotNull @GraphQLName("roles") List<String> roles,
-                                       DataFetchingEnvironment env) {
-        return false;
-    }
-
-    @GraphQLField
-    @GraphQLDescription("Return the current user")
-    default String get(DataFetchingEnvironment env) {
-        return ctx(env).getCurrentPrincipal()
-                       .getPrincipal()
-                       .getId()
-                       .toString();
+    @GraphQLDescription("Return true if the current user has all the roles provided as actively asserted roles")
+    default Boolean inRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
+                            DataFetchingEnvironment env) {
+        Model model = ctx(env);
+        List<Agency> roles = roleIds.stream()
+                                    .map(s -> UUID.fromString(s))
+                                    .map(id -> model.records()
+                                                    .resolve(id))
+                                    .map(e -> (Agency) e)
+                                    .collect(Collectors.toList());
+        return model.getCurrentPrincipal()
+                    .getAsserted()
+                    .containsAll(roles);
     }
 }

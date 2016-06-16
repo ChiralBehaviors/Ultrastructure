@@ -175,5 +175,12 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertTrue(result.get("authorized")
                          .asBoolean());
 
+        result = model.executeAs(principal,
+                                 () -> execute(schema,
+                                               "query m($roles: [String]!) { inRoles(roles: $roles) }",
+                                               variables));
+        assertTrue(result.get("inRoles")
+                         .asBoolean());
+
     }
 }

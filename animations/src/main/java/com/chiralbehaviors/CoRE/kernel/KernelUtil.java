@@ -69,6 +69,8 @@ public class KernelUtil {
         core.getRuleform()
             .setAuthority(core.getRuleform()
                               .getId());
+        core.getRuleform()
+            .update();
         model.apply(CoreInstance.class, core);
         model.getPhantasmModel()
              .link(model.getKernel()

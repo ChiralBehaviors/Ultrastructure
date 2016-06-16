@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -279,24 +278,20 @@ public class ModelImpl implements Model {
         animations.inferNetworks();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.domain.Agency, java.util.List)
-     */
     @Override
     public AuthorizedPrincipal principalFrom(Agency principal,
-                                             List<UUID> capabilities) {
-        return new AuthorizedPrincipal(principal, capabilities,
-                                       capabilities.stream()
-                                                   .map(uuid -> create().selectFrom(FACET)
-                                                                        .where(FACET.ID.eq(uuid))
-                                                                        .fetchOne())
-                                                   .filter(auth -> auth != null)
-                                                   .filter(auth -> phantasmModel.isAccessible(principal.getId(),
-                                                                                              auth.getClassifier(),
-                                                                                              auth.getClassification()))
-                                                   .map(f -> records().resolve(f.getClassification()))
-                                                   .map(e -> (Agency) e)
-                                                   .collect(Collectors.toList()));
+                                             List<Agency> roles) {
+        return new AuthorizedPrincipal(principal, roles);
+    }
+
+    @Override
+    public AuthorizedPrincipal principalFromIds(Agency principal,
+                                                List<UUID> roles) {
+        return new AuthorizedPrincipal(principal, roles.stream()
+                                                       .map(uuid -> records().resolve(uuid))
+                                                       .filter(auth -> auth != null)
+                                                       .map(e -> (Agency) e)
+                                                       .collect(Collectors.toList()));
     }
 
     @Override

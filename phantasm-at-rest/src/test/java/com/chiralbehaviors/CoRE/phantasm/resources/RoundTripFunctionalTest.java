@@ -103,6 +103,7 @@ public class RoundTripFunctionalTest {
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
         AgencyBasicAuthenticator.resetPassword(bob, password);
+        // Commit is required
         model.create()
              .configuration()
              .connectionProvider()

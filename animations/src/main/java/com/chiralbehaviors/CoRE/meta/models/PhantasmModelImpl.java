@@ -30,7 +30,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
@@ -39,6 +38,7 @@ import static org.jooq.impl.DSL.name;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,10 +47,14 @@ import java.util.stream.Collectors;
 import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.exception.DataAccessException;
+import org.jooq.exception.TooManyRowsException;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.domain.Agency;
@@ -65,11 +69,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.AgencyFacet;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyNetAttrAuth;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyNetAuth;
 import com.chiralbehaviors.CoRE.jooq.tables.Existential;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.Facet;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
@@ -117,7 +117,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
                                    Relationship permission) {
         return checkPermission(model.getCurrentPrincipal()
-                                    .getCapabilities(),
+                                    .getAsserted(),
                                stateAuth, permission);
     }
 
@@ -125,7 +125,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
                                    Relationship permission) {
         return checkPermission(model.getCurrentPrincipal()
-                                    .getCapabilities(),
+                                    .getAsserted(),
                                stateAuth, permission);
     }
 
@@ -133,7 +133,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
                                    Relationship permission) {
         return checkPermission(model.getCurrentPrincipal()
-                                    .getCapabilities(),
+                                    .getAsserted(),
                                auth, permission);
     }
 
@@ -141,14 +141,14 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(ExistentialRuleform instance,
                                    Relationship permission) {
         return checkPermission(model.getCurrentPrincipal()
-                                    .getCapabilities(),
+                                    .getAsserted(),
                                instance, permission);
     }
 
     @Override
     public boolean checkPermission(FacetRecord facet, Relationship permission) {
         return checkPermission(model.getCurrentPrincipal()
-                                    .getCapabilities(),
+                                    .getAsserted(),
                                facet, permission);
     }
 
@@ -159,9 +159,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialAttributeAuthorizationRecord target,
                                    Relationship permission) {
-        if (agencies.isEmpty()) {
-            return false;
-        }
         if (target == null) {
             return true;
         }
@@ -169,40 +166,17 @@ public class PhantasmModelImpl implements PhantasmModel {
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
 
-        ExistentialAttributeAuthorization base = EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as(BASE);
         AgencyAttrAuth authority = AGENCY_ATTR_AUTH.as(AUTHORITY);
 
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-
         CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
-                                                                      .as(create.select(base.AUTHORITY)
-                                                                                .from(base)
-                                                                                .where(base.field(base.ID)
-                                                                                           .equal(target.getId()))
-                                                                                .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                             .from(authority)
-                                                                                             .where(authority.field(authority.AUTHORIZATION)
-                                                                                                             .equal(target.getId()))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.AUTHORIZATION)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
 
-        return ZERO.equals(create.with(required, groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
+        return checkPermission(roles, permission, required, intrinsic);
 
     }
 
@@ -214,9 +188,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialNetworkAttributeAuthorizationRecord target,
                                    Relationship permission) {
-        if (agencies.isEmpty()) {
-            return false;
-        }
         if (target == null) {
             return true;
         }
@@ -224,40 +195,17 @@ public class PhantasmModelImpl implements PhantasmModel {
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
 
-        ExistentialNetworkAttributeAuthorization base = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as(BASE);
         AgencyNetAttrAuth authority = AGENCY_NET_ATTR_AUTH.as(AUTHORITY);
 
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-
         CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
-                                                                      .as(create.select(base.AUTHORITY)
-                                                                                .from(base)
-                                                                                .where(base.field(base.ID)
-                                                                                           .equal(target.getId()))
-                                                                                .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                             .from(authority)
-                                                                                             .where(authority.field(authority.AUTHORIZATION)
-                                                                                                             .equal(target.getId()))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.AUTHORIZATION)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
 
-        return ZERO.equals(create.with(required, groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     /**
@@ -268,9 +216,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialNetworkAuthorizationRecord target,
                                    Relationship permission) {
-        if (agencies.isEmpty()) {
-            return false;
-        }
         if (target == null) {
             return true;
         }
@@ -278,40 +223,17 @@ public class PhantasmModelImpl implements PhantasmModel {
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
 
-        ExistentialNetworkAuthorization base = EXISTENTIAL_NETWORK_AUTHORIZATION.as(BASE);
         AgencyNetAuth authority = AGENCY_NET_AUTH.as(AUTHORITY);
 
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-
         CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
-                                                                      .as(create.select(base.AUTHORITY)
-                                                                                .from(base)
-                                                                                .where(base.field(base.ID)
-                                                                                           .equal(target.getId()))
-                                                                                .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                             .from(authority)
-                                                                                             .where(authority.field(authority.AUTHORIZATION)
-                                                                                                             .equal(target.getId()))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.AUTHORIZATION)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
 
-        return ZERO.equals(create.with(required, groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     /**
@@ -321,9 +243,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean checkPermission(List<Agency> agencies,
                                    ExistentialRuleform target,
                                    Relationship permission) {
-        if (agencies.isEmpty()) {
-            return false;
-        }
         if (target == null) {
             return true;
         }
@@ -331,40 +250,17 @@ public class PhantasmModelImpl implements PhantasmModel {
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
 
-        Existential base = EXISTENTIAL.as(BASE);
         AgencyExistential authority = AGENCY_EXISTENTIAL.as(AUTHORITY);
 
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-
         CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
-                                                                      .as(create.select(base.AUTHORITY)
-                                                                                .from(base)
-                                                                                .where(base.field(base.ID)
-                                                                                           .equal(target.getId()))
-                                                                                .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                             .from(authority)
-                                                                                             .where(authority.field(authority.ENTITY)
-                                                                                                             .equal(target.getId()))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.ENTITY)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
 
-        return ZERO.equals(create.with(required, groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     /**
@@ -373,9 +269,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public boolean checkPermission(List<Agency> agencies, FacetRecord target,
                                    Relationship permission) {
-        if (agencies.isEmpty()) {
-            return false;
-        }
         if (target == null) {
             return true;
         }
@@ -383,40 +276,17 @@ public class PhantasmModelImpl implements PhantasmModel {
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
 
-        Facet base = FACET.as(BASE);
         AgencyFacet authority = AGENCY_FACET.as(AUTHORITY);
 
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-
         CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
-                                                                      .as(create.select(base.AUTHORITY)
-                                                                                .from(base)
-                                                                                .where(base.field(base.ID)
-                                                                                           .equal(target.getId()))
-                                                                                .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                             .from(authority)
-                                                                                             .where(authority.field(authority.FACET)
-                                                                                                             .equal(target.getId()))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.FACET)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
 
-        return ZERO.equals(create.with(required, groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     @SafeVarargs
@@ -1187,6 +1057,43 @@ public class PhantasmModelImpl implements PhantasmModel {
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               attribute.getValueType()));
         }
+    }
+
+    private boolean checkPermission(List<UUID> roles, Relationship permission,
+                                    CommonTableExpression<Record1<UUID>> required,
+                                    List<UUID> intrinsic) throws DataAccessException,
+                                                          TooManyRowsException {
+        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
+        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
+                                                                  .as(create.select(membership.field(membership.CHILD))
+                                                                            .from(membership)
+                                                                            .where(membership.field(membership.PARENT)
+                                                                                             .in(roles))
+                                                                            .and(membership.field(membership.RELATIONSHIP)
+                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+
+        Field<Integer> requiredCount = create.selectCount()
+                                             .from(required)
+                                             .asField();
+
+        return ZERO.equals(create.with(required, groups)
+                                 .select(DSL.when(requiredCount.eq(0)
+                                                               .and(DSL.val(intrinsic.isEmpty())),
+                                                  0)
+                                            .otherwise(create.with(required,
+                                                                   groups)
+                                                             .selectCount()
+                                                             .from(EXISTENTIAL)
+                                                             .where(EXISTENTIAL.ID.in(create.selectFrom(required))
+                                                                                  .or(EXISTENTIAL.ID.in(intrinsic)))
+                                                             .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
+                                                                                 .from(EXISTENTIAL_NETWORK)
+                                                                                 .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
+                                                                                                                  .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
+                                                                                 .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
+                                                                                 .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))))
+                                 .fetchOne()
+                                 .value1());
     }
 
     private List<ExistentialRuleform> getConstrainedChildren(UUID parent,

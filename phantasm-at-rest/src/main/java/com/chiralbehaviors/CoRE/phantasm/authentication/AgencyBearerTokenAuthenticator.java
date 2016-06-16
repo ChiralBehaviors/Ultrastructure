@@ -23,8 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.eclipse.jetty.server.HttpChannel;
 import org.slf4j.Logger;
@@ -60,22 +61,6 @@ public class AgencyBearerTokenAuthenticator
             return Optional.absent();
         }
         return Optional.absent();
-    }
-
-    public static AuthorizedPrincipal principalFrom(Agency agency,
-                                                    ExistentialAttributeRecord accessToken,
-                                                    Model model) {
-        Credential credential;
-        try {
-            credential = OBJECT_MAPPER.treeToValue(accessToken.getJsonValue(),
-                                                   Credential.class);
-        } catch (JsonProcessingException e) {
-            log.warn("unable to deserialize access token {}", accessToken);
-            return null;
-        }
-        return credential == null ? new AuthorizedPrincipal(agency)
-                                  : model.principalFrom(agency,
-                                                        credential.capabilities);
     }
 
     public static boolean validate(Credential credential,
@@ -115,22 +100,26 @@ public class AgencyBearerTokenAuthenticator
         if (!credential.isValid(accessToken.getUpdated(), currentTime)) {
             log.warn("requested access token {} for {}:{} has timed out",
                      requestCredentials, agency, model.records()
-                                                      .resolve(agency));
+                                                      .existentialName(agency));
             accessToken.delete();
             return absent();
         }
 
         // Validate agency has login cap to this core instance
         if (!model.getPhantasmModel()
-                  .checkPermission(Arrays.asList(model.records()
-                                                      .resolve(agency)),
+                  .checkPermission(credential.roles.stream()
+                                                   .map(id -> model.records()
+                                                                   .resolve(id))
+                                                   .filter(a -> a != null)
+                                                   .map(e -> (Agency) e)
+                                                   .collect(Collectors.toList()),
                                    model.getCoreInstance()
                                         .getRuleform(),
                                    model.getKernel()
                                         .getLOGIN_TO())) {
             log.warn("requested access token {} for {}:{} has no login capability",
                      requestCredentials, agency, model.records()
-                                                      .resolve(agency));
+                                                      .existentialName(agency));
             accessToken.delete();
             return absent();
         }
@@ -142,6 +131,24 @@ public class AgencyBearerTokenAuthenticator
         return Optional.of(principalFrom(model.records()
                                               .resolve(agency),
                                          accessToken, model));
+    }
+
+    private static AuthorizedPrincipal principalFrom(Agency agency,
+                                                     ExistentialAttributeRecord accessToken,
+                                                     Model model) {
+        Credential credential;
+        try {
+            credential = OBJECT_MAPPER.treeToValue(accessToken.getJsonValue(),
+                                                   Credential.class);
+        } catch (JsonProcessingException e) {
+            log.warn("unable to deserialize access token {}", accessToken);
+            return null;
+        }
+        return credential == null ? new AuthorizedPrincipal(agency,
+                                                            Collections.singletonList(model.getKernel()
+                                                                                           .getLoginRole()))
+                                  : model.principalFromIds(agency,
+                                                           credential.roles);
     }
 
     private Model model;

@@ -61,7 +61,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
         Aspect aspect = new Aspect(model.create(), facet);
         Agency test = model.records()
                            .newAgency("foo", "bar");
-        crud.apply(aspect, test, e -> e);
+        assertNotNull(crud.apply(aspect, test, e -> e));
         crud.cast(test, aspect);
         ExistentialRuleform instance = crud.createInstance(aspect, "bar", "foo",
                                                            e -> e);

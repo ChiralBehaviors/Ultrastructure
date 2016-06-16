@@ -148,7 +148,10 @@ public interface Model extends AutoCloseable {
 
     void inferNetworks();
 
-    AuthorizedPrincipal principalFrom(Agency agency, List<UUID> capabilities);
+    AuthorizedPrincipal principalFrom(Agency agency, List<Agency> list);
+
+    AuthorizedPrincipal principalFromIds(Agency agency,
+                                         List<UUID> roles);
 
     RecordsFactory records();
 

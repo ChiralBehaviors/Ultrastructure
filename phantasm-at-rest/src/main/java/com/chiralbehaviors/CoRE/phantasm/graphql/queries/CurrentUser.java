@@ -20,10 +20,19 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ctx;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.Role;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 
 import graphql.annotations.GraphQLDescription;
@@ -41,23 +50,56 @@ import graphql.schema.DataFetchingEnvironment;
 public interface CurrentUser {
     @GraphQLField
     @GraphQLDescription("Return true if the current user has all the roles provided as actively asserted roles")
-    default Boolean inRoles(@NotNull @GraphQLName("roles") List<String> roles,
+    default Boolean inRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
                             DataFetchingEnvironment env) {
-        return false;
+        Model model = ctx(env);
+        List<Agency> roles = roleIds.stream()
+                                    .map(s -> UUID.fromString(s))
+                                    .map(id -> model.records()
+                                                    .resolve(id))
+                                    .map(e -> (Agency) e)
+                                    .collect(Collectors.toList());
+        return model.getCurrentPrincipal()
+                    .getAsserted()
+                    .containsAll(roles);
     }
 
     @GraphQLField
     @GraphQLDescription("Return true if the current user has all the roles")
-    default Boolean hasRoles(@NotNull @GraphQLName("roles") List<String> roles,
+    default Boolean hasRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
                              DataFetchingEnvironment env) {
-        return false;
+        Model model = ctx(env);
+        List<Role> roles = roleIds.stream()
+                                  .map(s -> UUID.fromString(s))
+                                  .map(id -> model.records()
+                                                  .resolve(id))
+                                  .map(e -> (Agency) e)
+                                  .map(a -> model.wrap(Role.class, a))
+                                  .collect(Collectors.toList());
+        CoreUser authenticated = model.wrap(CoreUser.class,
+                                            model.getCurrentPrincipal()
+                                                 .getPrincipal());
+        return authenticated.getRoles()
+                            .containsAll(roles);
     }
 
     @GraphQLField
     @GraphQLDescription("Return true if the current user has been granted the role")
-    default Boolean hasRole(@NotNull @GraphQLName("role") String role,
+    default Boolean hasRole(@NotNull @GraphQLName("role") String roleId,
                             DataFetchingEnvironment env) {
-        return false;
+        Model model = ctx(env);
+        Role role = Optional.of(roleId)
+                            .map(s -> UUID.fromString(s))
+                            .map(id -> model.records()
+                                            .resolve(id))
+                            .map(e -> (Agency) e)
+                            .map(a -> model.wrap(Role.class, a))
+                            .get();
+        CoreUser authenticated = model.wrap(CoreUser.class,
+                                            model.getCurrentPrincipal()
+                                                 .getPrincipal());
+        return authenticated.getRoles()
+                            .contains(role);
     }
 
     @GraphQLField
@@ -80,6 +122,9 @@ public interface CurrentUser {
     @GraphQLField
     @GraphQLDescription("Return the current user")
     default String get(DataFetchingEnvironment env) {
-        return null;
+        return ctx(env).getCurrentPrincipal()
+                       .getPrincipal()
+                       .getId()
+                       .toString();
     }
 }

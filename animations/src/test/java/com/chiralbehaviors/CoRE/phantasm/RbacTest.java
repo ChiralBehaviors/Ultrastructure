@@ -687,7 +687,8 @@ public class RbacTest extends AbstractModelTest {
                                                          .getHadMember()));
         model.executeAs(model.principalFrom(model.getKernel()
                                                  .getCore(),
-                                            Collections.emptyList()),
+                                            Collections.singletonList(model.getKernel()
+                                                                           .getCore())),
                         () -> {
                             assertTrue(model.getPhantasmModel()
                                             .checkPermission(stateAuth,

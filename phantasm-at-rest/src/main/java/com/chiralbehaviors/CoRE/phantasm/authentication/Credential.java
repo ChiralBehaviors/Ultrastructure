@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.sql.Timestamp;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +35,7 @@ public class Credential {
      * Pointers to agency network auths that represent the asserted roles of the
      * principal
      */
-    public List<UUID> capabilities = Collections.emptyList();
+    public List<UUID> roles = new ArrayList<>();
 
     /**
      * The remote ip address that is authorized for this credential
@@ -45,7 +45,7 @@ public class Credential {
     /**
      * The time to live for this credential, in milliseconds
      */
-    public long       ttl          = TimeUnit.MINUTES.toMillis(30);
+    public long       ttl   = TimeUnit.MINUTES.toMillis(30);
 
     /**
      *

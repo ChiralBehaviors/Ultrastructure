@@ -458,11 +458,6 @@ public class FacetTypeTest extends AbstractModelTest {
 
         QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),

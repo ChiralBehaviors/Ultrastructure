@@ -68,7 +68,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistential;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyFacet;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyNetAttrAuth;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyNetAuth;
-import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -91,7 +90,6 @@ import com.hellblazer.utils.Tuple;
 public class PhantasmModelImpl implements PhantasmModel {
     private static final String  AGENCY     = "agency";
     private static final String  AUTHORITY  = "authority";
-    private static final String  BASE       = "base";
     private static final String  GROUPS     = "groups";
     private static final String  MEMBERSHIP = "membership";
     private static final String  REQUIRED   = "required";
@@ -362,44 +360,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                     .map(r -> model.records()
                                    .resolve(r))
                     .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean foo(List<UUID> roles, UUID permission, UUID target) {
-        Existential base = EXISTENTIAL.as(BASE);
-        AgencyExistential authority = AGENCY_EXISTENTIAL.as(AUTHORITY);
-
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-
-        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
-                                                                      .as(create.select(base.AUTHORITY)
-                                                                                .from(base)
-                                                                                .where(base.field(base.ID)
-                                                                                           .equal(target))
-                                                                                .union(create.select(authority.field(authority.AUTHORITY))
-                                                                                             .from(authority)
-                                                                                             .where(authority.field(authority.ENTITY)
-                                                                                                             .equal(target))));
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
-
-        return ZERO.equals(create.with(required, groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.in(create.selectFrom(required)))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
     }
 
     @Override

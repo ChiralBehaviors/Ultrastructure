@@ -131,8 +131,6 @@ public interface PhantasmModel {
     List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
                                                              Object query);
 
-    boolean foo(List<UUID> roles, UUID permission, UUID target);
-
     /**
      * Answer the list of attribute authorizations that are classified by an
      * aspect

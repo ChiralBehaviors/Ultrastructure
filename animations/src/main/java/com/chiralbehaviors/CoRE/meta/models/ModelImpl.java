@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,7 +44,6 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -149,7 +146,6 @@ public class ModelImpl implements Model {
                                .getAccessor(Kernel.class);
         phantasmModel = new PhantasmModelImpl(this);
         jobModel = new JobModelImpl(this);
-        initializeCurrentPrincipal();
     }
 
     @SuppressWarnings("unchecked")
@@ -234,7 +230,6 @@ public class ModelImpl implements Model {
     @Override
     public void flushWorkspaces() {
         workspaceModel.flush();
-        initializeCurrentPrincipal();
     }
 
     @Override
@@ -383,12 +378,5 @@ public class ModelImpl implements Model {
                                                     kernel.getLoginRole())
                                   .getId());
         return excluded;
-    }
-
-    private void initializeCurrentPrincipal() {
-        currentPrincipal = new AuthorizedPrincipal(create.selectFrom(EXISTENTIAL)
-                                                         .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
-                                                         .fetchOne()
-                                                         .into(Agency.class));
     }
 }

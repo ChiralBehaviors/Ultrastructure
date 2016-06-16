@@ -242,10 +242,13 @@ public class PhantasmCRUD {
         } else if (authorizedAttribute.getKeyed()) {
             return getMappedAttributeValue(instance, authorizedAttribute);
         }
-        return model.getPhantasmModel()
-                    .getValue(model.getPhantasmModel()
-                                   .getAttributeValue(instance,
-                                                      authorizedAttribute));
+        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
+                                                         .getAttributeValue(instance,
+                                                                            authorizedAttribute);
+        return attributeValue != null ? model.getPhantasmModel()
+                                             .getValue(attributeValue)
+                                      : model.getPhantasmModel()
+                                             .getValue(stateAuth.getAuth());
     }
 
     /**

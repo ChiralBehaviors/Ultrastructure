@@ -736,6 +736,31 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public Object getValue(ExistentialAttributeAuthorizationRecord attributeValue) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                return attributeValue.getBinaryValue();
+            case Boolean:
+                return attributeValue.getBooleanValue();
+            case Integer:
+                return attributeValue.getIntegerValue();
+            case Numeric:
+                return attributeValue.getNumericValue();
+            case Text:
+                return attributeValue.getTextValue();
+            case Timestamp:
+                return attributeValue.getTimestampValue();
+            case JSON:
+                return attributeValue.getJsonValue();
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
+    @Override
     public Object getValue(ExistentialAttributeRecord attributeValue) {
         Attribute attribute = model.records()
                                    .resolve(attributeValue.getAttribute());

@@ -131,6 +131,8 @@ public interface PhantasmModel {
     List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
                                                              Object query);
 
+    boolean foo(List<UUID> roles, UUID permission, UUID target);
+
     /**
      * Answer the list of attribute authorizations that are classified by an
      * aspect
@@ -317,6 +319,8 @@ public interface PhantasmModel {
                                                      Relationship r,
                                                      ExistentialDomain domain);
 
+    Object getValue(ExistentialAttributeAuthorizationRecord attributeValue);
+
     Object getValue(ExistentialAttributeRecord attributeValue);
 
     /**
@@ -385,6 +389,4 @@ public interface PhantasmModel {
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
 
     Class<?> valueClass(Attribute attribute);
-
-    boolean foo(List<UUID> roles, UUID permission, UUID target);
 }

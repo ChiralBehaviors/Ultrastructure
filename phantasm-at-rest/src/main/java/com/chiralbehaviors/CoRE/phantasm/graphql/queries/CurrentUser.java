@@ -95,11 +95,6 @@ public interface CurrentUser {
                                                          .resolve(UUID.fromString(permission)));
     }
 
-    default Agency getCurrentUser(DataFetchingEnvironment env) {
-        return ctx(env).getCurrentPrincipal()
-                       .getPrincipal();
-    }
-
     @GraphQLField
     @GraphQLDescription("Return true if the current user has been granted the role")
     default Boolean hasRole(@NotNull @GraphQLName("role") String roleId,

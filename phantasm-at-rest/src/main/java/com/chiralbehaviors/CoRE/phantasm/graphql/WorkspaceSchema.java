@@ -28,9 +28,11 @@ import static graphql.Scalars.GraphQLString;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -148,28 +150,34 @@ public class WorkspaceSchema {
                                ClassLoader executionScope) throws NoSuchMethodException,
                                                            InstantiationException,
                                                            IllegalAccessException {
-        Deque<FacetRecord> unresolved = FacetFields.initialState(accessor,
-                                                                 model);
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace workspace = model.wrap(Workspace.class, definingProduct);
         List<Plugin> plugins = workspace.getPlugins();
-        while (!unresolved.isEmpty()) {
-            FacetRecord facet = unresolved.pop();
-            if (resolved.containsKey(facet)) {
-                continue;
+        Set<Workspace> aggregate = new HashSet<>();
+        gatherImports(workspace, aggregate);
+        aggregate.forEach(ws -> {
+            Deque<FacetRecord> unresolved = FacetFields.initialState(model.getWorkspaceModel()
+                                                                          .getScoped((Product) workspace.getRuleform())
+                                                                          .getWorkspace(),
+                                                                     model);
+            while (!unresolved.isEmpty()) {
+                FacetRecord facet = unresolved.pop();
+                if (resolved.containsKey(facet)) {
+                    continue;
+                }
+                FacetFields type = new FacetFields(facet);
+                resolved.put(facet, type);
+                List<Plugin> facetPlugins = plugins.stream()
+                                                   .filter(plugin -> facet.getName()
+                                                                          .equals(plugin.getFacetName()))
+                                                   .collect(Collectors.toList());
+                type.resolve(facet, facetPlugins, model, executionScope)
+                    .stream()
+                    .filter(auth -> !resolved.containsKey(auth))
+                    .forEach(auth -> unresolved.add(auth));
             }
-            FacetFields type = new FacetFields(facet);
-            resolved.put(facet, type);
-            List<Plugin> facetPlugins = plugins.stream()
-                                               .filter(plugin -> facet.getName()
-                                                                      .equals(plugin.getFacetName()))
-                                               .collect(Collectors.toList());
-            type.resolve(facet, facetPlugins, model, executionScope)
-                .stream()
-                .filter(auth -> !resolved.containsKey(auth))
-                .forEach(auth -> unresolved.add(auth));
-        }
+        });
         registerTypes(resolved);
         Builder topLevelQuery = objectBuilder(Queries.class, typeFunction,
                                               typeFunction);
@@ -264,6 +272,15 @@ public class WorkspaceSchema {
         resolved.entrySet()
                 .forEach(e -> addPhantasmCast(builder, e));
         return builder.build();
+    }
+
+    private void gatherImports(Workspace workspace, Set<Workspace> traversed) {
+        if (traversed.contains(workspace)) {
+            return;
+        }
+        traversed.add(workspace);
+        workspace.getImports()
+                 .forEach(w -> gatherImports(w, traversed));
     }
 
     private GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,

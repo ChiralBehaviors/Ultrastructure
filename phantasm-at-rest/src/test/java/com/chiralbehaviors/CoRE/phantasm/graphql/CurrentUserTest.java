@@ -77,9 +77,10 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         Map<String, Object> variables = new HashMap<>();
         ObjectNode result = model.executeAs(principal,
                                             () -> execute(schema,
-                                                          "{ currentUser }",
+                                                          "{ currentUser { id name } }",
                                                           variables));
         String id = result.get("currentUser")
+                          .get("id")
                           .asText();
         assertNotNull(id);
         assertEquals(bob.getRuleform()

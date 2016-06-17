@@ -11,6 +11,7 @@ agencies {
     LoginRole = "Login Role" "The Login role";
     edges {
         SuperUser.IsA.CoreUser
+        UnauthenticatedAgency.IsA.CoreUser
         LoginRole.IsA.Role
     }
     facets {

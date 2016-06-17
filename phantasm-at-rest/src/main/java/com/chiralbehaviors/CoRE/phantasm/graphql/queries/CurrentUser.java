@@ -95,13 +95,9 @@ public interface CurrentUser {
                                                          .resolve(UUID.fromString(permission)));
     }
 
-    @GraphQLField
-    @GraphQLDescription("Return the current user")
-    default String getCurrentUser(DataFetchingEnvironment env) {
+    default Agency getCurrentUser(DataFetchingEnvironment env) {
         return ctx(env).getCurrentPrincipal()
-                       .getPrincipal()
-                       .getId()
-                       .toString();
+                       .getPrincipal();
     }
 
     @GraphQLField

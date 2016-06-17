@@ -81,7 +81,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
         }
         crud.setName(instance, "testy");
         crud.setDescription(instance, "a test");
-        assertEquals(1, crud.getInstances(aspect)
+        assertEquals(2, crud.getInstances(aspect)
                             .size());
     }
 }

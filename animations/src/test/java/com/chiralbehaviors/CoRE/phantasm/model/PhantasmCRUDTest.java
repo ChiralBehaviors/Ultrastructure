@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.TestPhantasm;
+import com.chiralbehaviors.CoRE.phantasm.RbacTest;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
 /**
@@ -45,7 +45,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
 
     @Before
     public void loadThingOntology() throws Exception {
-        WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
                                    model);
     }
 
@@ -61,7 +61,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
         Aspect aspect = new Aspect(model.create(), facet);
         Agency test = model.records()
                            .newAgency("foo", "bar");
-        crud.apply(aspect, test, e -> e);
+        assertNotNull(crud.apply(aspect, test, e -> e));
         crud.cast(test, aspect);
         ExistentialRuleform instance = crud.createInstance(aspect, "bar", "foo",
                                                            e -> e);
@@ -81,7 +81,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
         }
         crud.setName(instance, "testy");
         crud.setDescription(instance, "a test");
-        assertEquals(1, crud.getInstances(aspect)
+        assertEquals(2, crud.getInstances(aspect)
                             .size());
     }
 }

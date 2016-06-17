@@ -24,13 +24,16 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.objec
 import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.objectBuilder;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,6 +62,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMuta
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.StatusCodeSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
@@ -130,8 +134,8 @@ public class WorkspaceSchema {
     public interface Mutations extends ExistentialMutations, JobMutations {
     }
 
-    public interface Queries
-            extends ExistentialQueries, JobQueries, JobChronologyQueries {
+    public interface Queries extends CurrentUser, ExistentialQueries,
+            JobQueries, JobChronologyQueries {
     }
 
     public static Model ctx(DataFetchingEnvironment env) {
@@ -147,28 +151,34 @@ public class WorkspaceSchema {
                                ClassLoader executionScope) throws NoSuchMethodException,
                                                            InstantiationException,
                                                            IllegalAccessException {
-        Deque<FacetRecord> unresolved = FacetFields.initialState(accessor,
-                                                                 model);
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
-        Workspace workspace = model.wrap(Workspace.class, definingProduct);
-        List<Plugin> plugins = workspace.getPlugins();
-        while (!unresolved.isEmpty()) {
-            FacetRecord facet = unresolved.pop();
-            if (resolved.containsKey(facet)) {
-                continue;
+        Workspace root = model.wrap(Workspace.class, definingProduct);
+        List<Plugin> plugins = root.getPlugins();
+        Set<Workspace> aggregate = new HashSet<>();
+        gatherImports(root, aggregate);
+        aggregate.forEach(ws -> {
+            Deque<FacetRecord> unresolved = FacetFields.initialState(model.getWorkspaceModel()
+                                                                          .getScoped((Product) ws.getRuleform())
+                                                                          .getWorkspace(),
+                                                                     model);
+            while (!unresolved.isEmpty()) {
+                FacetRecord facet = unresolved.pop();
+                if (resolved.containsKey(facet)) {
+                    continue;
+                }
+                FacetFields type = new FacetFields(facet);
+                resolved.put(facet, type);
+                List<Plugin> facetPlugins = plugins.stream()
+                                                   .filter(plugin -> facet.getName()
+                                                                          .equals(plugin.getFacetName()))
+                                                   .collect(Collectors.toList());
+                type.resolve(facet, facetPlugins, model, executionScope)
+                    .stream()
+                    .filter(auth -> !resolved.containsKey(auth))
+                    .forEach(auth -> unresolved.add(auth));
             }
-            FacetFields type = new FacetFields(facet);
-            resolved.put(facet, type);
-            List<Plugin> facetPlugins = plugins.stream()
-                                               .filter(plugin -> facet.getName()
-                                                                      .equals(plugin.getFacetName()))
-                                               .collect(Collectors.toList());
-            type.resolve(facet, facetPlugins, model, executionScope)
-                .stream()
-                .filter(auth -> !resolved.containsKey(auth))
-                .forEach(auth -> unresolved.add(auth));
-        }
+        });
         registerTypes(resolved);
         Builder topLevelQuery = objectBuilder(Queries.class, typeFunction,
                                               typeFunction);
@@ -180,6 +190,11 @@ public class WorkspaceSchema {
                 .forEach(e -> e.getValue()
                                .build(new Aspect(model.create(), e.getKey()),
                                       topLevelQuery, topLevelMutation));
+        topLevelQuery.field(newFieldDefinition().name("currentUser")
+                                                .type(new GraphQLTypeReference("CoREUser"))
+                                                .dataFetcher(env -> ctx(env).getCurrentPrincipal()
+                                                                            .getPrincipal())
+                                                .build());
         schema = GraphQLSchema.newSchema()
                               .query(topLevelQuery.build())
                               .mutation(topLevelMutation.build())
@@ -232,6 +247,53 @@ public class WorkspaceSchema {
                                             .type(new GraphQLTypeReference(entry.getValue()
                                                                                 .getName()))
                                             .build());
+    }
+
+    private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
+        graphql.schema.GraphQLInterfaceType.Builder builder = graphql.schema.GraphQLInterfaceType.newInterface();
+        builder.name("Existential");
+        builder.description("The Existential interface type");
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("id")
+                                            .description("Existential id")
+                                            .type(GraphQLString)
+                                            .build());
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("name")
+                                            .description("Existential name")
+                                            .type(GraphQLString)
+                                            .build());
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("description")
+                                            .description("Existential description")
+                                            .type(GraphQLString)
+                                            .build());
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("updatedBy")
+                                            .description("Agency that updated the Existential")
+                                            .type(new GraphQLTypeReference("Agency"))
+                                            .build());
+        builder.typeResolver(typeFunction);
+
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(builder, e));
+        return builder.build();
+    }
+
+    private void gatherImports(Workspace workspace, Set<Workspace> traversed) {
+        if (traversed.contains(workspace)) {
+            return;
+        }
+        traversed.add(workspace);
+        workspace.getImports()
+                 .forEach(w -> gatherImports(w, traversed));
+    }
+
+    private GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,
+                                       Builder objectBuilder) {
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(objectBuilder, e));
+        return objectBuilder.build();
     }
 
     private void registerTypes(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,
@@ -370,43 +432,5 @@ public class WorkspaceSchema {
         typeFunction.register(JobChronology.class, (u, t) -> {
             return chronType;
         });
-    }
-
-    private GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,
-                                       Builder objectBuilder) {
-        resolved.entrySet()
-                .forEach(e -> addPhantasmCast(objectBuilder, e));
-        return objectBuilder.build();
-    }
-
-    private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
-        graphql.schema.GraphQLInterfaceType.Builder builder = graphql.schema.GraphQLInterfaceType.newInterface();
-        builder.name("Existential");
-        builder.description("The Existential interface type");
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("id")
-                                            .description("Existential id")
-                                            .type(GraphQLString)
-                                            .build());
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("name")
-                                            .description("Existential name")
-                                            .type(GraphQLString)
-                                            .build());
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("description")
-                                            .description("Existential description")
-                                            .type(GraphQLString)
-                                            .build());
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("updatedBy")
-                                            .description("Agency that updated the Existential")
-                                            .type(new GraphQLTypeReference("Agency"))
-                                            .build());
-        builder.typeResolver(typeFunction);
-
-        resolved.entrySet()
-                .forEach(e -> addPhantasmCast(builder, e));
-        return builder.build();
     }
 }

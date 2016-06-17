@@ -76,7 +76,7 @@ public class Facet {
         }
     }
 
-    public class FacetUpdateState extends FacetState {
+    public static class FacetUpdateState extends FacetState {
         @GraphQLField
         public String id;
     }
@@ -108,6 +108,9 @@ public class Facet {
 
     @GraphQLField
     public Agency getAuthority(DataFetchingEnvironment env) {
+        if (record.getAuthority() == null) {
+            return null;
+        }
         return new Agency(resolve(env, record.getAuthority()));
     }
 

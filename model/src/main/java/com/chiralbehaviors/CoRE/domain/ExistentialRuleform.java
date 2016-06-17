@@ -33,15 +33,7 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  *
  */
 public interface ExistentialRuleform extends Phantasm {
-    public int delete();
-
-    public ExistentialDomain getDomain();
-
-    public int insert();
-
-    public void refresh();
-
-    public int update();
+    int delete();
 
     /**
      * Yes, this is really intentional
@@ -66,8 +58,12 @@ public interface ExistentialRuleform extends Phantasm {
         return false;
     }
 
+    UUID getAuthority();
+
     @Override
     String getDescription();
+
+    ExistentialDomain getDomain();
 
     UUID getId();
 
@@ -86,6 +82,12 @@ public interface ExistentialRuleform extends Phantasm {
 
     Integer getVersion();
 
+    int insert();
+
+    void refresh();
+
+    void setAuthority(UUID authority);
+
     void setDescription(String description);
 
     void setName(String name);
@@ -93,4 +95,6 @@ public interface ExistentialRuleform extends Phantasm {
     void setNotes(String notes);
 
     void setUpdatedBy(UUID updatedBy);
+
+    int update();
 }

@@ -146,6 +146,9 @@ public class AuthxResource extends TransactionalResource {
                                          HttpServletRequest httpRequest,
                                          Model model) {
         Credential cred = new Credential();
+        cred.roles.add(model.getKernel()
+                            .getLoginRole()
+                            .getId());
         cred.ip = httpRequest.getRemoteAddr();
         return generateToken(cred, authenticate(username, password, model),
                              model).getId();
@@ -169,7 +172,10 @@ public class AuthxResource extends TransactionalResource {
                                          HttpServletRequest httpRequest,
                                          Model model) {
         Credential cred = new Credential();
-        cred.capabilities = request.capabilities;
+        cred.roles.add(model.getKernel()
+                            .getLoginRole()
+                            .getId());
+        cred.roles.addAll(request.capabilities);
         cred.ip = httpRequest.getRemoteAddr();
         return generateToken(cred, authenticate(request.username,
                                                 request.password, model),

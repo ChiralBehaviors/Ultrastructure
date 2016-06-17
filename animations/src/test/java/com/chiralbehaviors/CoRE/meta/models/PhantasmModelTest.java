@@ -343,7 +343,7 @@ public class PhantasmModelTest extends AbstractModelTest {
     public void testGetFacets() {
         Product kernelWorkspace = model.getKernel()
                                        .getKernelWorkspace();
-        assertEquals(18, model.getPhantasmModel()
+        assertEquals(19, model.getPhantasmModel()
                               .getFacets(kernelWorkspace)
                               .size());
     }

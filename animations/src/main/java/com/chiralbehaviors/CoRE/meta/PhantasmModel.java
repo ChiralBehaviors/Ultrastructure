@@ -54,71 +54,71 @@ public interface PhantasmModel {
     void authorize(FacetRecord facet, Attribute attribute);
 
     /**
-     * Check the capability of the current principal on an attribute of a
+     * Check the permission of the current principal on an attribute of a
      * ruleform.
      */
-    boolean checkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
-                            Relationship capability);
+    boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
+                            Relationship permission);
 
     /**
-     * Check the capability of the current principal on an attribute of the
+     * Check the permission of the current principal on an attribute of the
      * authorized relationship of the facet child relationship.
      */
-    boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                            Relationship capability);
+    boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                            Relationship permission);
 
     /**
-     * Check the capability of the current principal on the authorized
+     * Check the permission of the current principal on the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
-                            Relationship capability);
+    boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
+                            Relationship permission);
 
     /**
-     * Check the capability of the current principal on an instance.
+     * Check the permission of the current principal on an instance.
      */
-    boolean checkCapability(ExistentialRuleform instance,
-                            Relationship capability);
+    boolean checkPermission(ExistentialRuleform instance,
+                            Relationship permission);
 
     /**
-     * Check the capability of the current principal on the facet.
+     * Check the permission of the current principal on the facet.
      */
-    boolean checkCapability(FacetRecord facet, Relationship capability);
+    boolean checkPermission(FacetRecord facet, Relationship permission);
 
     /**
-     * Check the capability of the agencies on an attribute of a ruleform.
+     * Check the permission of the agencies on an attribute of a ruleform.
      */
-    boolean checkCapability(List<Agency> agencies,
+    boolean checkPermission(List<Agency> agencies,
                             ExistentialAttributeAuthorizationRecord stateAuth,
-                            Relationship capability);
+                            Relationship permission);
 
     /**
-     * Check the capability of the agencies on an attribute of the authorized
+     * Check the permission of the agencies on an attribute of the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkCapability(List<Agency> agencies,
+    boolean checkPermission(List<Agency> agencies,
                             ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                            Relationship capability);
+                            Relationship permission);
 
     /**
-     * Check the capability of the agencies on the authorized relationship of
+     * Check the permission of the agencies on the authorized relationship of
      * the facet child relationship.
      */
-    boolean checkCapability(List<Agency> agencies,
+    boolean checkPermission(List<Agency> agencies,
                             ExistentialNetworkAuthorizationRecord auth,
-                            Relationship capability);
+                            Relationship permission);
 
     /**
-     * Check the capability of the agencies on an instance.
+     * Check the permission of the agencies on an instance.
      */
-    boolean checkCapability(List<Agency> agencies, ExistentialRuleform instance,
-                            Relationship capability);
+    boolean checkPermission(List<Agency> agencies, ExistentialRuleform instance,
+                            Relationship permission);
 
     /**
-     * Check the capability of the agencies on the facet.
+     * Check the permission of the agencies on the facet.
      */
-    boolean checkCapability(List<Agency> agencies, FacetRecord facet,
-                            Relationship capability);
+    boolean checkPermission(List<Agency> agencies, FacetRecord facet,
+                            Relationship permission);
 
     <T extends ExistentialRuleform> T create(ExistentialDomain domain,
                                              String name, String description,
@@ -210,15 +210,18 @@ public interface PhantasmModel {
                                               ExistentialDomain domain);
 
     /**
-	 * @param parent
+     * @param parent
      * @param relationship
      * @param classifier
-     * @param classification TODO
+     * @param classification
      * @param existentialDomain
-	 * @return
-	 */
-	List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent, Relationship relationship,
-			Relationship classifier, ExistentialRuleform classification, ExistentialDomain existentialDomain);
+     * @return
+     */
+    List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
+                                                     Relationship relationship,
+                                                     Relationship classifier,
+                                                     ExistentialRuleform classification,
+                                                     ExistentialDomain existentialDomain);
 
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
@@ -257,7 +260,7 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getImmediateChildren(ExistentialRuleform parent,
                                                    Relationship relationship,
                                                    ExistentialDomain existentialDomain);
-    
+
     /**
      *
      * @param parent
@@ -272,14 +275,16 @@ public interface PhantasmModel {
      * 
      * @param parent
      * @param relationship
-     * @param classifier TODO
-     * @param classification TODO
+     * @param classifier
+     * @param classification
      * @param existentialDomain
      * @return
      */
     List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
-            Relationship relationship, Relationship classifier,
-            ExistentialRuleform classification, ExistentialDomain existentialDomain);
+                                                              Relationship relationship,
+                                                              Relationship classifier,
+                                                              ExistentialRuleform classification,
+                                                              ExistentialDomain existentialDomain);
 
     ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                               Relationship relationship,
@@ -312,6 +317,8 @@ public interface PhantasmModel {
                                                      Relationship r,
                                                      ExistentialDomain domain);
 
+    Object getValue(ExistentialAttributeAuthorizationRecord attributeValue);
+
     Object getValue(ExistentialAttributeRecord attributeValue);
 
     /**
@@ -339,8 +346,7 @@ public interface PhantasmModel {
      * @param child
      * @return
      */
-    boolean isAccessible(UUID parent, UUID relationship,
-                         UUID child);
+    boolean isAccessible(UUID parent, UUID relationship, UUID child);
 
     /**
      *
@@ -380,5 +386,5 @@ public interface PhantasmModel {
 
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
 
-	Class<?> valueClass(Attribute attribute);
+    Class<?> valueClass(Attribute attribute);
 }

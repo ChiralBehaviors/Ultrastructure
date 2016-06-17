@@ -360,6 +360,33 @@ public class MetaSchemaTest extends AbstractModelTest {
     }
 
     @Test
+    public void testFacetMutations() throws IllegalArgumentException,
+                                     Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("classifier", k.getIsA()
+                                     .getId()
+                                     .toString());
+        variables.put("classification", k.getCore()
+                                         .getId()
+                                         .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: String $classifier: String $classification: String) { createFacet(state: {authority: $auth classifier: $classifier name: \"foo\" classification: $classification }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createFacet")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: String!) { updateFacet(state: {id: $id notes:\"foo\"}) {id} }",
+                variables);
+
+        execute(schema, "mutation m($id: String!) { removeFacet(id: $id) }",
+                variables);
+    }
+
+    @Test
     public void testParentSequencingMutations() throws IllegalArgumentException,
                                                 Exception {
         Map<String, Object> variables = new HashMap<>();
@@ -398,7 +425,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ facets { id name attributes { id } classifier {id} classification {id} children { id } }}",
+                                  "{ facets { id name attributes { id } classifier {id} classification {id} children { id } authority { id } }}",
                                   variables);
         assertNotNull(data);
 

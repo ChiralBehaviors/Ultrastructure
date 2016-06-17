@@ -20,42 +20,55 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_ATTR_AUTH;
 import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_FACET;
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_NET_ATTR_AUTH;
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_NET_AUTH;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
+import static org.jooq.impl.DSL.name;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.exception.DataAccessException;
+import org.jooq.exception.TooManyRowsException;
+import org.jooq.impl.DSL;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.AgencyAttrAuth;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistential;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.Facet;
+import com.chiralbehaviors.CoRE.jooq.tables.AgencyFacet;
+import com.chiralbehaviors.CoRE.jooq.tables.AgencyNetAttrAuth;
+import com.chiralbehaviors.CoRE.jooq.tables.AgencyNetAuth;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
@@ -75,7 +88,12 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class PhantasmModelImpl implements PhantasmModel {
-    private static final Integer ZERO = Integer.valueOf(0);
+    private static final String  AGENCY     = "agency";
+    private static final String  AUTHORITY  = "authority";
+    private static final String  GROUPS     = "groups";
+    private static final String  MEMBERSHIP = "membership";
+    private static final String  REQUIRED   = "required";
+    private static final Integer ZERO       = Integer.valueOf(0);
 
     private final DSLContext     create;
     private final Model          model;
@@ -94,179 +112,179 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public boolean checkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               stateAuth, capability);
+    public boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
+                                    .getAsserted(),
+                               stateAuth, permission);
     }
 
     @Override
-    public boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               stateAuth, capability);
+    public boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
+                                    .getAsserted(),
+                               stateAuth, permission);
     }
 
     @Override
-    public boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               auth, capability);
+    public boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
+                                    .getAsserted(),
+                               auth, permission);
     }
 
     @Override
-    public boolean checkCapability(ExistentialRuleform instance,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               instance, capability);
+    public boolean checkPermission(ExistentialRuleform instance,
+                                   Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
+                                    .getAsserted(),
+                               instance, permission);
     }
 
     @Override
-    public boolean checkCapability(FacetRecord facet, Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               facet, capability);
+    public boolean checkPermission(FacetRecord facet, Relationship permission) {
+        return checkPermission(model.getCurrentPrincipal()
+                                    .getAsserted(),
+                               facet, permission);
     }
 
     /**
-     * Check the capability of an agency on an attribute of a ruleform.
+     * Check the permission of an agency on an attribute of a ruleform.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        ExistentialAttributeAuthorization required = EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("required");
-        return ZERO.equals(create.selectCount()
-                                 .from(required)
-                                 .where(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY)
-                                                .isNotNull())
-                                 .and(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET)
-                                              .equal(stateAuth.getFacet()))
-                                 .and(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE)
-                                              .equal(stateAuth.getAuthorizedAttribute()))
-                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
-                                                                                                  .map(a -> a.getId())
-                                                                                                  .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
-                                 .fetchOne()
-                                 .value1());
+    public boolean checkPermission(List<Agency> agencies,
+                                   ExistentialAttributeAuthorizationRecord target,
+                                   Relationship permission) {
+        if (target == null) {
+            return true;
+        }
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
+
+        AgencyAttrAuth authority = AGENCY_ATTR_AUTH.as(AUTHORITY);
+
+        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.AUTHORIZATION)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
+
+        return checkPermission(roles, permission, required, intrinsic);
 
     }
 
     /**
-     * Check the capability of an agency on an attribute of the authorized
+     * Check the permission of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        ExistentialNetworkAttributeAuthorization required = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as("required");
-        return ZERO.equals(create.selectCount()
-                                 .from(required)
-                                 .where(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY)
-                                                .isNotNull())
-                                 .and(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)
-                                              .equal(stateAuth.getNetworkAuthorization()))
-                                 .and(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE)
-                                              .equal(stateAuth.getAuthorizedAttribute()))
-                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
-                                                                                                  .map(a -> a.getId())
-                                                                                                  .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
-                                 .fetchOne()
-                                 .value1());
+    public boolean checkPermission(List<Agency> agencies,
+                                   ExistentialNetworkAttributeAuthorizationRecord target,
+                                   Relationship permission) {
+        if (target == null) {
+            return true;
+        }
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
+
+        AgencyNetAttrAuth authority = AGENCY_NET_ATTR_AUTH.as(AUTHORITY);
+
+        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.AUTHORIZATION)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
+
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     /**
-     * Check the capability of an agency on the authorized relationship of the
+     * Check the permission of an agency on the authorized relationship of the
      * facet child relationship.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   ExistentialNetworkAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        ExistentialNetworkAuthorization required = EXISTENTIAL_NETWORK_AUTHORIZATION.as("required");
-        return ZERO.equals(create.selectCount()
-                                 .from(required)
-                                 .where(required.field(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY)
-                                                .isNotNull())
-                                 .and(required.field(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT)
-                                              .equal(stateAuth.getParent()))
-                                 .and(required.field(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP)
-                                              .equal(stateAuth.getRelationship()))
-                                 .and(required.field(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD)
-                                              .equal(stateAuth.getChild()))
-                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
-                                                                                                  .map(a -> a.getId())
-                                                                                                  .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
-                                 .fetchOne()
-                                 .value1());
-    }
-
-    /**
-     * Check the capability of an agency on an instance.
-     */
-    @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   ExistentialRuleform instance,
-                                   Relationship capability) {
-        if (instance == null) {
+    public boolean checkPermission(List<Agency> agencies,
+                                   ExistentialNetworkAuthorizationRecord target,
+                                   Relationship permission) {
+        if (target == null) {
             return true;
         }
-        AgencyExistential required = AGENCY_EXISTENTIAL.as("required");
-        return ZERO.equals(create.selectCount()
-                                 .from(required)
-                                 .where(required.ENTITY.equal(instance.getId()))
-                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK.AUTHORITY))
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
-                                                                                                  .map(a -> a.getId())
-                                                                                                  .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
-                                 .fetchOne()
-                                 .value1());
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
+
+        AgencyNetAuth authority = AGENCY_NET_AUTH.as(AUTHORITY);
+
+        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.AUTHORIZATION)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
+
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     /**
-     * Check the capability of an agency on the facet.
+     * Check the permission of an agency on an instance.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies, FacetRecord facet,
-                                   Relationship capability) {
-        Facet required = FACET.as("required");
-        return ZERO.equals(create.selectCount()
-                                 .from(required)
-                                 .where(required.field(FACET.AUTHORITY)
-                                                .isNotNull())
-                                 .and(required.field(FACET.CLASSIFIER)
-                                              .equal(facet.getClassifier()))
-                                 .and(required.field(FACET.CLASSIFICATION)
-                                              .equal(facet.getClassification()))
-                                 .andNotExists(create.select(required.field(FACET.AUTHORITY))
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
-                                                                                                  .map(a -> a.getId())
-                                                                                                  .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(FACET.AUTHORITY))))
-                                 .fetchOne()
-                                 .value1());
+    public boolean checkPermission(List<Agency> agencies,
+                                   ExistentialRuleform target,
+                                   Relationship permission) {
+        if (target == null) {
+            return true;
+        }
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
+
+        AgencyExistential authority = AGENCY_EXISTENTIAL.as(AUTHORITY);
+
+        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.ENTITY)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
+
+        return checkPermission(roles, permission, required, intrinsic);
+    }
+
+    /**
+     * Check the permission of an agency on the facet.
+     */
+    @Override
+    public boolean checkPermission(List<Agency> agencies, FacetRecord target,
+                                   Relationship permission) {
+        if (target == null) {
+            return true;
+        }
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
+
+        AgencyFacet authority = AGENCY_FACET.as(AUTHORITY);
+
+        CommonTableExpression<Record1<UUID>> required = name(REQUIRED).fields(AUTHORITY)
+                                                                      .as(create.select(authority.field(authority.AUTHORITY))
+                                                                                .from(authority)
+                                                                                .where(authority.field(authority.FACET)
+                                                                                                .equal(target.getId())));
+        List<UUID> intrinsic = target.getAuthority() == null ? Collections.emptyList()
+                                                             : Collections.singletonList(target.getAuthority());
+
+        return checkPermission(roles, permission, required, intrinsic);
     }
 
     @SafeVarargs
@@ -477,12 +495,18 @@ public class PhantasmModelImpl implements PhantasmModel {
                                     .resolve(r))
                      .collect(Collectors.toList());
     }
-    
+
     @Override
-	public List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
-			Relationship relationship, Relationship classifier, ExistentialRuleform classification, ExistentialDomain existentialDomain) {
-		return getConstrainedChildren(parent.getId(), relationship.getId(), classifier.getId(), classification.getId(), existentialDomain);
-	}
+    public List<ExistentialRuleform> getConstrainedChildren(ExistentialRuleform parent,
+                                                            Relationship relationship,
+                                                            Relationship classifier,
+                                                            ExistentialRuleform classification,
+                                                            ExistentialDomain existentialDomain) {
+        return getConstrainedChildren(parent.getId(), relationship.getId(),
+                                      classifier.getId(),
+                                      classification.getId(),
+                                      existentialDomain);
+    }
 
     @Override
     public FacetRecord getFacetDeclaration(Relationship classifier,
@@ -570,14 +594,19 @@ public class PhantasmModelImpl implements PhantasmModel {
         return result.into(ExistentialNetworkRecord.class);
     }
 
-	@Override
-	public List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
-			Relationship relationship, Relationship classifier, ExistentialRuleform classification,
-			ExistentialDomain existentialDomain) {
-		return getImmediateConstrainedChildren(parent.getId(), relationship.getId(), classifier.getId(),
-				classification.getId(), existentialDomain);
-	}
-    
+    @Override
+    public List<ExistentialRuleform> getImmediateConstrainedChildren(ExistentialRuleform parent,
+                                                                     Relationship relationship,
+                                                                     Relationship classifier,
+                                                                     ExistentialRuleform classification,
+                                                                     ExistentialDomain existentialDomain) {
+        return getImmediateConstrainedChildren(parent.getId(),
+                                               relationship.getId(),
+                                               classifier.getId(),
+                                               classification.getId(),
+                                               existentialDomain);
+    }
+
     @Override
     public ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                                      Relationship relationship,
@@ -667,6 +696,31 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public Object getValue(ExistentialAttributeAuthorizationRecord attributeValue) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                return attributeValue.getBinaryValue();
+            case Boolean:
+                return attributeValue.getBooleanValue();
+            case Integer:
+                return attributeValue.getIntegerValue();
+            case Numeric:
+                return attributeValue.getNumericValue();
+            case Text:
+                return attributeValue.getTextValue();
+            case Timestamp:
+                return attributeValue.getTimestampValue();
+            case JSON:
+                return attributeValue.getJsonValue();
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
+    @Override
     public Object getValue(ExistentialAttributeRecord attributeValue) {
         Attribute attribute = model.records()
                                    .resolve(attributeValue.getAttribute());
@@ -702,7 +756,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                  FacetRecord aspect,
                                  EditableWorkspace workspace) {
         if (!isAccessible(ruleform.getId(), aspect.getClassifier(),
-        		aspect.getClassification())) {
+                          aspect.getClassification())) {
             UUID inverseRelationship = ((Relationship) model.records()
                                                             .resolve(aspect.getClassifier())).getInverse();
             Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = link(ruleform.getId(),
@@ -736,9 +790,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public boolean isAccessible(UUID parent,
-                                UUID relationship,
-                                UUID child) {
+    public boolean isAccessible(UUID parent, UUID relationship, UUID child) {
         return !ZERO.equals(create.selectCount()
                                   .from(EXISTENTIAL_NETWORK)
                                   .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
@@ -991,18 +1043,64 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                               attribute.getValueType()));
         }
     }
-    
-	private List<ExistentialRuleform> getConstrainedChildren(UUID parent, UUID relationship, UUID classifier, UUID classification, ExistentialDomain domain) {
-		return create.select(EXISTENTIAL.fields())
-				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
-				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r.getId(), classifier, classification))
-				.collect(Collectors.toList());
-	}
+
+    private boolean checkPermission(List<UUID> roles, Relationship permission,
+                                    CommonTableExpression<Record1<UUID>> required,
+                                    List<UUID> intrinsic) throws DataAccessException,
+                                                          TooManyRowsException {
+        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
+        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
+                                                                  .as(create.select(membership.field(membership.CHILD))
+                                                                            .from(membership)
+                                                                            .where(membership.field(membership.PARENT)
+                                                                                             .in(roles))
+                                                                            .and(membership.field(membership.RELATIONSHIP)
+                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+
+        Field<Integer> requiredCount = create.selectCount()
+                                             .from(required)
+                                             .asField();
+
+        return ZERO.equals(create.with(required, groups)
+                                 .select(DSL.when(requiredCount.eq(0)
+                                                               .and(DSL.val(intrinsic.isEmpty())),
+                                                  0)
+                                            .otherwise(create.with(required,
+                                                                   groups)
+                                                             .selectCount()
+                                                             .from(EXISTENTIAL)
+                                                             .where(EXISTENTIAL.ID.in(create.selectFrom(required))
+                                                                                  .or(EXISTENTIAL.ID.in(intrinsic)))
+                                                             .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
+                                                                                 .from(EXISTENTIAL_NETWORK)
+                                                                                 .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
+                                                                                                                  .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
+                                                                                 .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
+                                                                                 .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))))
+                                 .fetchOne()
+                                 .value1());
+    }
+
+    private List<ExistentialRuleform> getConstrainedChildren(UUID parent,
+                                                             UUID relationship,
+                                                             UUID classifier,
+                                                             UUID classification,
+                                                             ExistentialDomain domain) {
+        return create.select(EXISTENTIAL.fields())
+                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
+                     .fetch()
+                     .into(ExistentialRecord.class)
+                     .stream()
+                     .map(r -> model.records()
+                                    .resolve(r))
+                     .filter(r -> isAccessible(r.getId(), classifier,
+                                               classification))
+                     .collect(Collectors.toList());
+    }
 
     private List<ExistentialRuleform> getImmediateChildren(UUID parent,
                                                            UUID relationship,
@@ -1021,19 +1119,28 @@ public class PhantasmModelImpl implements PhantasmModel {
                                     .resolve(r))
                      .collect(Collectors.toList());
     }
-    
-	private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent, UUID relationship, UUID classifier, UUID classification, ExistentialDomain domain) {
-		return create.select(EXISTENTIAL.fields())
-				.from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-				.where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-				.and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-				.and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-				.and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-				.and(EXISTENTIAL.DOMAIN.equal(domain)).fetch()
-				.into(ExistentialRecord.class).stream().map(r -> model.records().resolve(r))
-				.filter(r -> isAccessible(r.getId(), classifier, classification))
-				.collect(Collectors.toList());
-	}
+
+    private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent,
+                                                                      UUID relationship,
+                                                                      UUID classifier,
+                                                                      UUID classification,
+                                                                      ExistentialDomain domain) {
+        return create.select(EXISTENTIAL.fields())
+                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                     .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
+                     .fetch()
+                     .into(ExistentialRecord.class)
+                     .stream()
+                     .map(r -> model.records()
+                                    .resolve(r))
+                     .filter(r -> isAccessible(r.getId(), classifier,
+                                               classification))
+                     .collect(Collectors.toList());
+    }
 
     private void setValue(Attribute attribute, ExistentialAttributeRecord value,
                           ExistentialAttributeAuthorizationRecord authorization) {

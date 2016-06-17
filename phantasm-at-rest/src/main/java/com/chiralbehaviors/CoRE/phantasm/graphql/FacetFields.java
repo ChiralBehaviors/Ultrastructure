@@ -636,14 +636,14 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         Model model = crud.getModel();
         PhantasmModel networkedModel = model.getPhantasmModel();
         Relationship invoke = crud.getINVOKE();
-        return networkedModel.checkCapability(method.getRuleform(), invoke)
+        return networkedModel.checkPermission(method.getRuleform(), invoke)
                && crud.checkInvoke(facet, instance);
     }
 
     private boolean checkInvoke(Constructor constructor, PhantasmCRUD crud) {
         return crud.getModel()
                    .getPhantasmModel()
-                   .checkCapability(constructor.getRuleform(),
+                   .checkPermission(constructor.getRuleform(),
                                     crud.getINVOKE());
     }
 

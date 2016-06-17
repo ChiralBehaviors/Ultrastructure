@@ -20,9 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -47,7 +44,6 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -150,7 +146,6 @@ public class ModelImpl implements Model {
                                .getAccessor(Kernel.class);
         phantasmModel = new PhantasmModelImpl(this);
         jobModel = new JobModelImpl(this);
-        initializeCurrentPrincipal();
     }
 
     @SuppressWarnings("unchecked")
@@ -235,7 +230,6 @@ public class ModelImpl implements Model {
     @Override
     public void flushWorkspaces() {
         workspaceModel.flush();
-        initializeCurrentPrincipal();
     }
 
     @Override
@@ -279,24 +273,20 @@ public class ModelImpl implements Model {
         animations.inferNetworks();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.domain.Agency, java.util.List)
-     */
     @Override
     public AuthorizedPrincipal principalFrom(Agency principal,
-                                             List<UUID> capabilities) {
-        return new AuthorizedPrincipal(principal, capabilities,
-                                       capabilities.stream()
-                                                   .map(uuid -> create().selectFrom(FACET)
-                                                                        .where(FACET.ID.eq(uuid))
-                                                                        .fetchOne())
-                                                   .filter(auth -> auth != null)
-                                                   .filter(auth -> phantasmModel.isAccessible(principal.getId(),
-                                                                                              auth.getClassifier(),
-                                                                                              auth.getClassification()))
-                                                   .map(f -> records().resolve(f.getClassification()))
-                                                   .map(e -> (Agency) e)
-                                                   .collect(Collectors.toList()));
+                                             List<Agency> roles) {
+        return new AuthorizedPrincipal(principal, roles);
+    }
+
+    @Override
+    public AuthorizedPrincipal principalFromIds(Agency principal,
+                                                List<UUID> roles) {
+        return new AuthorizedPrincipal(principal, roles.stream()
+                                                       .map(uuid -> records().resolve(uuid))
+                                                       .filter(auth -> auth != null)
+                                                       .map(e -> (Agency) e)
+                                                       .collect(Collectors.toList()));
     }
 
     @Override
@@ -360,6 +350,7 @@ public class ModelImpl implements Model {
         List<UUID> excluded = new ArrayList<>();
         Agency instance = (Agency) getCoreInstance().getRuleform();
         excluded.add(instance.getId());
+
         Relationship relationship = kernel.getSingletonOf();
         excluded.add(phantasmModel.getImmediateLink(instance, relationship,
                                                     kernel.getCore())
@@ -377,13 +368,15 @@ public class ModelImpl implements Model {
                                                     factory.resolve(relationship.getInverse()),
                                                     instance)
                                   .getId());
-        return excluded;
-    }
 
-    private void initializeCurrentPrincipal() {
-        currentPrincipal = new AuthorizedPrincipal(create.selectFrom(EXISTENTIAL)
-                                                         .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
-                                                         .fetchOne()
-                                                         .into(Agency.class));
+        relationship = kernel.getLOGIN_TO();
+        excluded.add(phantasmModel.getImmediateLink(kernel.getLoginRole(),
+                                                    relationship, instance)
+                                  .getId());
+        excluded.add(phantasmModel.getImmediateLink(instance,
+                                                    factory.resolve(relationship.getInverse()),
+                                                    kernel.getLoginRole())
+                                  .getId());
+        return excluded;
     }
 }

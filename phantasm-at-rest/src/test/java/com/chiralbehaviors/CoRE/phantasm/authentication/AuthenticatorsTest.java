@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +37,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.Role;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
@@ -54,6 +54,8 @@ import io.dropwizard.auth.basic.BasicCredentials;
 public class AuthenticatorsTest extends AbstractModelTest {
     @Test
     public void testBasic() throws Exception {
+        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
+        authenticator.setModel(model);
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
@@ -63,11 +65,15 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
 
-        model.flush();
-        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
-        authenticator.setModel(model);
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
+        assertFalse(authenticated.isPresent());
+
+        model.flush();
+        bob.addRole(model.wrap(Role.class, model.getKernel()
+                                                .getLoginRole()));
+        authenticated = authenticator.authenticate(new BasicCredentials(username,
+                                                                        password));
         assertTrue(authenticated.isPresent());
         assertEquals(bob.getRuleform()
                         .getId(),
@@ -99,13 +105,12 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setLogin(username);
         Credential credential = new Credential();
         credential.ip = "No place like 127.00.1";
-        List<UUID> capabilities = Arrays.asList(model.getPhantasmModel()
-                                                     .getFacetDeclaration(model.getKernel()
-                                                                               .getIsA(),
-                                                                          model.getKernel()
-                                                                               .getCoreUser())
-                                                     .getId());
-        credential.capabilities = capabilities;
+        List<UUID> roles = Arrays.asList(model.getKernel()
+                                              .getLoginRole())
+                                 .stream()
+                                 .map(a -> a.getId())
+                                 .collect(Collectors.toList());
+        credential.roles = roles;
         credential.isValid(new Timestamp(0), new Timestamp(0));
 
         ExistentialAttributeRecord accessToken = model.records()
@@ -130,21 +135,10 @@ public class AuthenticatorsTest extends AbstractModelTest {
         assertEquals(bob, authBob.getPrincipal());
         assertEquals(1, authBob.getAsserted()
                                .size());
-
-        FacetRecord asserted = model.create()
-                                    .selectFrom(FACET)
-                                    .where(FACET.ID.equal(authBob.getAsserted()
-                                                                 .get(0)))
-                                    .fetchOne();
-        assertNotNull(asserted);
         assertEquals(model.getKernel()
-                          .getIsA()
-                          .getId(),
-                     asserted.getClassifier());
-        assertEquals(model.getKernel()
-                          .getCoreUser()
-                          .getId(),
-                     asserted.getClassification());
+                          .getLoginRole(),
+                     authBob.getAsserted()
+                            .get(0));
 
         requestCredentials = new RequestCredentials("No place like HOME",
                                                     accessToken.getId()
@@ -174,6 +168,8 @@ public class AuthenticatorsTest extends AbstractModelTest {
         bob.setLogin(username);
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);
+        bob.addRole(model.wrap(Role.class, model.getKernel()
+                                                .getLoginRole()));
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         String ip = "There's no place like 127.0.0.1";
@@ -209,28 +205,19 @@ public class AuthenticatorsTest extends AbstractModelTest {
         authBob = authenticated.get();
 
         assertEquals(bob, authBob.getPrincipal());
-        assertEquals(1, authBob.getAsserted()
-                               .size());
-        assertEquals(asserted.getId(), authBob.getAsserted()
-                                              .get(0));
 
-        assertEquals(authBob.getCapabilities()
+        assertEquals(authBob.getAsserted()
                             .stream()
                             .map(c -> c.getName())
                             .collect(Collectors.toList())
                             .toString(),
-                     2, authBob.getCapabilities()
+                     1, authBob.getAsserted()
                                .size());
-        assertEquals(bob.getRuleform()
-                        .getId(),
-                     authBob.getCapabilities()
-                            .get(0)
-                            .getId());
         assertEquals(model.getKernel()
-                          .getCoreUser()
+                          .getLoginRole()
                           .getId(),
-                     authBob.getCapabilities()
-                            .get(1)
+                     authBob.getAsserted()
+                            .get(0)
                             .getId());
     }
 }

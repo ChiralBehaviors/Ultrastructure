@@ -178,6 +178,8 @@ public interface Kernel {
 
     Relationship getLOGIN_TO();
 
+    Agency getLoginRole();
+
     Attribute getLookupOrder();
 
     Relationship getMapsToLocation();
@@ -231,6 +233,8 @@ public interface Kernel {
     Relationship getREMOVE();
 
     Attribute getReturnType();
+
+    Agency getRole();
 
     Agency getSameAgency();
 

@@ -66,7 +66,18 @@ public class KernelUtil {
         ThisCoreInstance core = model.construct(ThisCoreInstance.class,
                                                 ExistentialDomain.Agency, name,
                                                 description);
+        core.getRuleform()
+            .setAuthority(core.getRuleform()
+                              .getId());
+        core.getRuleform()
+            .update();
         model.apply(CoreInstance.class, core);
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getLoginRole(),
+                   model.getKernel()
+                        .getLOGIN_TO(),
+                   core.getRuleform());
     }
 
     public static void loadKernel(DSLContext create) throws IOException,

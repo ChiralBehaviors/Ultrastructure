@@ -235,6 +235,44 @@ public class WorkspaceSchema {
                                             .build());
     }
 
+    private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
+        graphql.schema.GraphQLInterfaceType.Builder builder = graphql.schema.GraphQLInterfaceType.newInterface();
+        builder.name("Existential");
+        builder.description("The Existential interface type");
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("id")
+                                            .description("Existential id")
+                                            .type(GraphQLString)
+                                            .build());
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("name")
+                                            .description("Existential name")
+                                            .type(GraphQLString)
+                                            .build());
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("description")
+                                            .description("Existential description")
+                                            .type(GraphQLString)
+                                            .build());
+        builder.field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("updatedBy")
+                                            .description("Agency that updated the Existential")
+                                            .type(new GraphQLTypeReference("Agency"))
+                                            .build());
+        builder.typeResolver(typeFunction);
+
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(builder, e));
+        return builder.build();
+    }
+
+    private GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,
+                                       Builder objectBuilder) {
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(objectBuilder, e));
+        return objectBuilder.build();
+    }
+
     private void registerTypes(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,
                                                                        InstantiationException,
                                                                        IllegalAccessException {
@@ -371,43 +409,5 @@ public class WorkspaceSchema {
         typeFunction.register(JobChronology.class, (u, t) -> {
             return chronType;
         });
-    }
-
-    private GraphQLObjectType phantasm(Map<FacetRecord, FacetFields> resolved,
-                                       Builder objectBuilder) {
-        resolved.entrySet()
-                .forEach(e -> addPhantasmCast(objectBuilder, e));
-        return objectBuilder.build();
-    }
-
-    private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
-        graphql.schema.GraphQLInterfaceType.Builder builder = graphql.schema.GraphQLInterfaceType.newInterface();
-        builder.name("Existential");
-        builder.description("The Existential interface type");
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("id")
-                                            .description("Existential id")
-                                            .type(GraphQLString)
-                                            .build());
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("name")
-                                            .description("Existential name")
-                                            .type(GraphQLString)
-                                            .build());
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("description")
-                                            .description("Existential description")
-                                            .type(GraphQLString)
-                                            .build());
-        builder.field(GraphQLFieldDefinition.newFieldDefinition()
-                                            .name("updatedBy")
-                                            .description("Agency that updated the Existential")
-                                            .type(new GraphQLTypeReference("Agency"))
-                                            .build());
-        builder.typeResolver(typeFunction);
-
-        resolved.entrySet()
-                .forEach(e -> addPhantasmCast(builder, e));
-        return builder.build();
     }
 }

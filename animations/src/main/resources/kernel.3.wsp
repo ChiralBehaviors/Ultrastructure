@@ -23,7 +23,7 @@ agencies {
         IsA.Role { RoleName }
             constraints {
                 n RoleOf: IsA.CoreUser named grant
-                n MemberOf: IsA.Role named parents
+                n MemberOf: IsA.Role named inherit
                 n HasMember: IsA.Role named member
             }
         InstanceOf.Core named: "Core Instance"
@@ -38,7 +38,6 @@ attributes {
     Namespace = "Namespace" "The namespace of an import" text;
     LookupOrder = "Lookup Order" "The lookup order for an import" int;
     IRI = "IRI" "The Attribute that contains an International Resource Indicator" text;
-    JsonldType = "JSONLD Type" "The Attribute that contains the JSON-LD type" text;
     Login = "Login" "The Attribute that contains the login name of the agency" text;
     PasswordRounds = "Password Rounds" "The number of rounds to hash the password" int;
     PasswordHash = "Password Hash" "The hash the password" text;

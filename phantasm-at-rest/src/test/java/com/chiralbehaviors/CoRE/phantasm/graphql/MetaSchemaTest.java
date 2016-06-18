@@ -429,7 +429,8 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ agencies { id name description } }",
+        data = execute(schema,
+                       "{ agencies { id name description updatedBy {id} authority {id}} }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("agencies")));

@@ -148,12 +148,18 @@ public interface Existential {
 
     public class ExistentialState {
         @GraphQLField
+        public String authority;
+
+        @GraphQLField
         public String name;
 
         @GraphQLField
         public String notes;
 
         public void update(ExistentialRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (name != null) {
                 record.setName(name);
             }

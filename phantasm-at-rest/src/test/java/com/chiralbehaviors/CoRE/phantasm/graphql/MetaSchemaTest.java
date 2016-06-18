@@ -170,7 +170,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   .get("id")
                                   .asText());
         execute(schema,
-                "mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\" authority: $id}) {id} }",
                 variables);
 
         execute(schema, "mutation m($id: String!) { removeAgency(id: $id) }",

@@ -6,7 +6,6 @@
 >
     
     <include relativeToChangelogFile="true" file="tables/existential.xml" />
-    <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/network_inference.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network.xml" />
@@ -24,5 +23,6 @@
     <include relativeToChangelogFile="true" file="tables/sibling_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/self_sequencing_authorization.xml" />
-
+    <include relativeToChangelogFile="true" file="tables/workspace_label.xml" />
+    
 </databaseChangeLog>

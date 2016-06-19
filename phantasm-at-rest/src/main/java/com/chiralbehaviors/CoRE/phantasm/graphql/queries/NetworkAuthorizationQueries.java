@@ -58,11 +58,8 @@ public interface NetworkAuthorizationQueries {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectDistinct(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.fields())
-                                  .from(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                  .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
                                   .fetch()
                                   .into(ExistentialNetworkAuthorizationRecord.class)
                                   .stream()

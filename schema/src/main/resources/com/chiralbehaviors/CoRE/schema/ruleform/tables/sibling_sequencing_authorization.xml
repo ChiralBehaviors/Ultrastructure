@@ -63,7 +63,7 @@
             tableName="sibling_sequencing_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
 
         <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_updated_by_fkey_idx" tableName="sibling_sequencing_authorization"
             unique="false"

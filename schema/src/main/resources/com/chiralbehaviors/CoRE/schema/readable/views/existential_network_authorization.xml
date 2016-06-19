@@ -31,8 +31,8 @@
                 left join existential authorized_parent on child.classification = authorized_parent.id
                 left join existential authorized_rel on child.classifier = authorized_rel.id
                 left join existential res on auth.authority = res.id
-             LEFT JOIN workspace_authorization wa ON auth.workspace = wa.id
-             LEFT JOIN existential w ON wa.defining_product = w.id
+             LEFT JOIN existential w ON auth.workspace = w.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = auth.id
             ]]>
         </createView>
     </changeSet>

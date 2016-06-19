@@ -38,7 +38,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.PROTOCOL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.SELF_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
-import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,6 +47,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
@@ -78,7 +79,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.NoArgGenerator;
 import com.hellblazer.utils.Tuple;
@@ -133,11 +134,14 @@ public interface RecordsFactory {
     UUID currentPrincipalId();
 
     default String existentialName(UUID id) {
-        return create().select(EXISTENTIAL.NAME)
-                       .from(EXISTENTIAL)
-                       .where(EXISTENTIAL.ID.eq(id))
-                       .fetchOne()
-                       .value1();
+        Record1<String> existential = create().select(EXISTENTIAL.NAME)
+                                              .from(EXISTENTIAL)
+                                              .where(EXISTENTIAL.ID.eq(id))
+                                              .fetchOne();
+        if (existential == null) {
+            return null;
+        }
+        return existential.value1();
     }
 
     default FacetRecord findFacetRecord(UUID id) {
@@ -674,250 +678,158 @@ public interface RecordsFactory {
         return unit;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization() {
-        WorkspaceAuthorizationRecord record = create().newRecord(WORKSPACE_AUTHORIZATION);
+    default WorkspaceLabelRecord newWorkspaceLabel() {
+        WorkspaceLabelRecord record = create().newRecord(WORKSPACE_LABEL);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ChildSequencingAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Child_Sequencing_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ChildSequencingAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Child_Sequencing_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialAttributeAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Attribute_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialAttributeAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Attribute_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialAttributeRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Attribute);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialAttributeRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Attribute);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialNetworkAttributeAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Network_Attribute_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialNetworkAttributeAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Network_Attribute_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialNetworkAttributeRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Network_Attribute);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialNetworkAttributeRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Network_Attribute);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialNetworkAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Network_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialNetworkAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Network_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialNetworkRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Network);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialNetworkRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Network);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ExistentialRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Existential);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ExistentialRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Existential);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   FacetRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Facet);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   FacetRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Facet);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   JobChronologyRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Job_Chronology);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   JobChronologyRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Job_Chronology);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   JobRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Job);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   JobRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Job);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   MetaProtocolRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Meta_Protocol);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   MetaProtocolRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Meta_Protocol);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   NetworkInferenceRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Network_Inference);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   NetworkInferenceRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Network_Inference);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ParentSequencingAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Parent_Sequencing_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ParentSequencingAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Parent_Sequencing_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   ProtocolRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Protocol);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   ProtocolRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Protocol);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   SelfSequencingAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Self_Sequencing_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   SelfSequencingAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Self_Sequencing_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   SiblingSequencingAuthorizationRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Sibling_Sequencing_Authorization);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   SiblingSequencingAuthorizationRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Sibling_Sequencing_Authorization);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   StatusCodeSequencingRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Status_Code_Sequencing);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   StatusCodeSequencingRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Status_Code_Sequencing);
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   UUID reference,
-                                                                   ReferenceType referenceType) {
-        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   UUID reference,
+                                                   ReferenceType referenceType) {
+        WorkspaceLabelRecord record = newWorkspaceLabel();
         record.setKey(key);
         record.setId(GENERATOR.generate());
-        record.setDefiningProduct(definingProduct.getId());
+        record.setWorkspace(definingProduct.getId());
         record.setReference(reference);
         record.setType(referenceType);
         return record;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   UUID referece,
-                                                                   ReferenceType referenceType,
-                                                                   Product definingProduct) {
-        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(key,
-                                                                        definingProduct,
-                                                                        referece,
-                                                                        referenceType);
+    default WorkspaceLabelRecord newWorkspaceLabel(String key, UUID referece,
+                                                   ReferenceType referenceType,
+                                                   Product definingProduct) {
+        WorkspaceLabelRecord record = newWorkspaceLabel(key, definingProduct,
+                                                        referece,
+                                                        referenceType);
         return record;
     }
 

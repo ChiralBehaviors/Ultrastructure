@@ -21,8 +21,8 @@
                 base_table.version
 			   FROM existential base_table
 			   JOIN existential up ON base_table.updated_by = up.id
-             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN existential w ON wa.defining_product = w.id
+             LEFT JOIN existential w ON base_table.workspace = w.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = base_table.id
                WHERE base_table.domain = 'StatusCode'
             ]]>
         </createView>

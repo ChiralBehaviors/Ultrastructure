@@ -58,11 +58,8 @@ public interface StatusCodeSequencingQueries {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectDistinct(Tables.STATUS_CODE_SEQUENCING.fields())
-                                  .from(Tables.STATUS_CODE_SEQUENCING)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.STATUS_CODE_SEQUENCING.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .selectFrom(Tables.STATUS_CODE_SEQUENCING)
+                                  .where(Tables.STATUS_CODE_SEQUENCING.WORKSPACE.equal(workspace.getId()))
                                   .fetch()
                                   .into(StatusCodeSequencingRecord.class)
                                   .stream()

@@ -20,7 +20,7 @@
 			   FROM existential r
 			   JOIN existential up ON r.updated_by = up.id
              LEFT JOIN existential w ON r.workspace = w.id
-             LEFT JOIN workspace_authorization wa ON wa.defining_product = wa.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = r.id
                WHERE r.domain = 'Interval'
             ]]>
         </createView>

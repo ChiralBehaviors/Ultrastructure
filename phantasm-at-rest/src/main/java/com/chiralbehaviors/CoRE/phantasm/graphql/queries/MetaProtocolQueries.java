@@ -58,11 +58,8 @@ public interface MetaProtocolQueries {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectDistinct(Tables.META_PROTOCOL.fields())
-                                  .from(Tables.META_PROTOCOL)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.META_PROTOCOL.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .selectFrom(Tables.META_PROTOCOL)
+                                  .where(Tables.META_PROTOCOL.WORKSPACE.equal(workspace.getId()))
                                   .fetch()
                                   .into(MetaProtocolRecord.class)
                                   .stream()

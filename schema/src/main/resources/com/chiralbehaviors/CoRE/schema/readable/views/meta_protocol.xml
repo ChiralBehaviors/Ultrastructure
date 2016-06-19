@@ -36,8 +36,8 @@
                    LEFT JOIN existential at ON base_table.assign_to = at.id 
                    LEFT JOIN existential u ON base_table.quantity_unit = u.id
                    JOIN existential up ON base_table.updated_by = up.id
-             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN existential w ON wa.defining_product = w.id
+             LEFT JOIN existential w ON base_table.workspace = w.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = base_table.id
         ]]>
         </createView>
     </changeSet>

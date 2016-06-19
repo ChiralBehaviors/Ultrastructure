@@ -27,7 +27,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
-import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 import static org.jooq.impl.DSL.name;
 
 import java.math.BigDecimal;
@@ -441,12 +440,10 @@ public class PhantasmModelImpl implements PhantasmModel {
     public List<FacetRecord> getFacets(Product workspace) {
         return create.selectDistinct(FACET.fields())
                      .from(FACET)
-                     .join(WORKSPACE_AUTHORIZATION)
-                     .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
-                     .and(WORKSPACE_AUTHORIZATION.REFERENCE.equal(FACET.ID))
                      .join(EXISTENTIAL)
                      .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
                      .and(FACET.AUTHORITY.isNull())
+                     .where(FACET.WORKSPACE.equal(workspace.getId()))
                      .fetch()
                      .into(FacetRecord.class);
     }
@@ -711,6 +708,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public boolean isAccessible(UUID parent, UUID relationship, UUID child) {
+        assert parent != null && relationship != null && child != null;
         return !ZERO.equals(create.selectCount()
                                   .from(EXISTENTIAL_NETWORK)
                                   .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))

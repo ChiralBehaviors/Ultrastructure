@@ -12,22 +12,10 @@ $(document).ready(
                                     password: password
                                 },
                                 function (data) {
-                                    console.log("data: " + data);
-                                    if (data == 'Successfully Logged in...') {
-                                        $("form")[0]
-                                            .reset();
-                                        $(
-                                            'input[type="text"],input[type="password"]')
-                                            .css(
-                                                {
-                                                    "border": "2px solid #00F5FF",
-                                                    "box-shadow": "0 0 5px #00F5FF"
-                                                });
-                                        alert(data);
-                                    }
+                                    $("#login_token").text("Token: " + data);
                                 }
                             ).fail(function(e) {
-                            console.log(e);
+                            $("#login_token").text("Invalid credentials");
                         });
 
                     }

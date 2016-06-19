@@ -83,8 +83,11 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createAttributeAuthorization")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateAttributeAuthorization(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String!) { updateAttributeAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -117,8 +120,11 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createNetworkAttributeAuthorization")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateNetworkAttributeAuthorization(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateNetworkAttributeAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -144,13 +150,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                                           .toString());
 
         ObjectNode result = execute(schema,
-                                    "mutation m($service: String $statusCode: String $nextChild: String $nextChildStatus: String) { createChildSequencing(state: {service: $service statusCode: $statusCode nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
+                                    "mutation m($service: String $statusCode: String $nextChild: String $nextChildStatus: String) "
+                                            + "{ createChildSequencing(state: {service: $service statusCode: $statusCode "
+                                            + "nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
                                     variables);
         variables.put("id", result.get("createChildSequencing")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateChildSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateChildSequencing(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -170,7 +181,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   .get("id")
                                   .asText());
         execute(schema,
-                "mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\" authority: $id}) {id} }",
                 variables);
 
         execute(schema, "mutation m($id: String!) { removeAgency(id: $id) }",
@@ -293,13 +304,20 @@ public class MetaSchemaTest extends AbstractModelTest {
                             .getId()
                             .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($r: String $a: String $l: String $p: String $s: String $u: String) { createProtocol(state: {assignTo: $a deliverFrom: $l deliverTo: $l product: $p requester: $a service: $p status: $s unit: $u childAssignTo: $a childDeliverFrom: $l childDeliverTo: $l childProduct: $p childService: $p childStatus: $s childUnit: $u childrenRelationship: $r}) {id} }",
+                                    "mutation m($r: String $a: String $l: String $p: String $s: String $u: String) "
+                                            + "{ createProtocol(state: {assignTo: $a deliverFrom: $l deliverTo: $l product: $p "
+                                            + "requester: $a service: $p status: $s unit: $u childAssignTo: $a childDeliverFrom: $l "
+                                            + "childDeliverTo: $l childProduct: $p childService: $p childStatus: $s childUnit: $u "
+                                            + "childrenRelationship: $r}) {id} }",
                                     variables);
         variables.put("id", result.get("createProtocol")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateProtocol(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateProtocol(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema, "mutation m($id: String!) { removeProtocol(id: $id) }",
@@ -314,13 +332,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                             .getId()
                             .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($r: String) { createMetaProtocol(state: {assignTo: $r deliverFrom: $r deliverTo: $r quantity:1.0 requester: $r service: $r product: $r serviceType: $r status: $r unit: $r}) {id} }",
+                                    "mutation m($r: String) { createMetaProtocol(state: {assignTo: $r deliverFrom: $r "
+                                            + "deliverTo: $r quantity:1.0 requester: $r service: $r product: $r serviceType: $r "
+                                            + "status: $r unit: $r}) {id} }",
                                     variables);
         variables.put("id", result.get("createMetaProtocol")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateMetaProtocol(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateMetaProtocol(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -345,13 +368,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                                        .getId()
                                        .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: String $child: String $parent: String $relationship: String) { createNetworkAuthorization(state: {authority: $auth cardinality: \"_1\" child: $child name: \"foo\" parent: $parent relationship: $relationship }) {id} }",
+                                    "mutation m($auth: String $child: String $parent: String $relationship: String $auth: String) { "
+                                            + "createNetworkAuthorization(state: {authority: $auth cardinality: \"_1\" child: $child "
+                                            + "name: \"foo\" parent: $parent relationship: $relationship }) {id} }",
                                     variables);
         variables.put("id", result.get("createNetworkAuthorization")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateNetworkAuthorization(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateNetworkAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -373,13 +401,15 @@ public class MetaSchemaTest extends AbstractModelTest {
                                          .getId()
                                          .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: String $classifier: String $classification: String) { createFacet(state: {authority: $auth classifier: $classifier name: \"foo\" classification: $classification }) {id} }",
+                                    "mutation m($auth: String $classifier: String $classification: String) { "
+                                            + "createFacet(state: {authority: $auth classifier: $classifier name: \"foo\" "
+                                            + "classification: $classification }) {id} }",
                                     variables);
         variables.put("id", result.get("createFacet")
                                   .get("id")
                                   .asText());
         execute(schema,
-                "mutation m($id: String!) { updateFacet(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateFacet(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema, "mutation m($id: String!) { removeFacet(id: $id) }",
@@ -403,13 +433,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                                        .getId()
                                        .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($service: String $statusCode: String $parent: String $parentStatus: String) { createParentSequencing(state: {service: $service statusCode: $statusCode parent: $parent parentStatus: $parentStatus }) {id} }",
+                                    "mutation m($service: String $statusCode: String $parent: String $parentStatus: String) { "
+                                            + "createParentSequencing(state: {service: $service statusCode: $statusCode parent: $parent "
+                                            + "parentStatus: $parentStatus }) {id} }",
                                     variables);
         variables.put("id", result.get("createParentSequencing")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateParentSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateParentSequencing(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -429,7 +464,8 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ agencies { id name description } }",
+        data = execute(schema,
+                       "{ agencies { id name description updatedBy {id} authority {id}} }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("agencies")));
@@ -533,7 +569,9 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ attributeAuthorizations { id } }", variables);
+        data = execute(schema,
+                       "{ attributeAuthorizations { id authority {id} updatedBy {id} } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("attributeAuthorizations")));
         data = execute(schema,
@@ -547,7 +585,8 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ networkAttributeAuthorizations { id } }",
+        data = execute(schema,
+                       "{ networkAttributeAuthorizations { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("ids",
@@ -569,7 +608,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("childSequencings")));
         data = execute(schema,
-                       "query q($ids: [String]!) { childSequencings(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { childSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("childSequencings")).get(0));
@@ -584,7 +623,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("metaProtocols")));
         data = execute(schema,
-                       "query q($ids: [String]!) { metaProtocols(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { metaProtocols(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("metaProtocols")).get(0));
@@ -599,7 +638,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("networkAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [String]!) { networkAuthorizations(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { networkAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id",
@@ -620,18 +659,20 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("id", ids(data.withArray("parentSequencings")).get(0));
         data = execute(schema,
-                       "query q($id: String!) { parentSequencing(id: $id) { id } }",
+                       "query q($id: String!) { parentSequencing(id: $id) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ protocols { id name notes assignTo {id} deliverFrom{id} deliverTo{id} product {id} quantity quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version"
-                               + " childAssignTo {id} childDeliverFrom{id} childDeliverTo{id} childProduct {id} childQuantity childQuantityUnit {id} childrenRelationship{id} childService{id} childStatus{id}  } }",
+                       "{ protocols { id name notes assignTo {id} deliverFrom{id} deliverTo{id} "
+                               + "product {id} quantity quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version "
+                               + "childAssignTo {id} childDeliverFrom{id} childDeliverTo{id} childProduct {id} "
+                               + "childQuantity childQuantityUnit {id} childrenRelationship{id} childService{id} childStatus{id}  } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("protocols")));
         data = execute(schema,
-                       "query q($ids: [String]!) { protocols(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { protocols(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("protocols")).get(0));
@@ -646,7 +687,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("selfSequencings")));
         data = execute(schema,
-                       "query q($ids: [String]!) { selfSequencings(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { selfSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
 
@@ -656,7 +697,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("siblingSequencings")));
         data = execute(schema,
-                       "query q($ids: [String]!) { siblingSequencings(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { siblingSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("siblingSequencings")).get(0));
@@ -671,7 +712,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("statusCodeSequencings")));
         data = execute(schema,
-                       "query q($ids: [String]!) { statusCodeSequencings(ids:$ids) { id } }",
+                       "query q($ids: [String]!) { statusCodeSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id",
@@ -702,8 +743,11 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createSelfSequencing")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateSelfSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateSelfSequencing(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -728,13 +772,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                                        .getId()
                                        .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($service: String $statusCode: String $nextSibling: String $nextSiblingStatus: String) { createSiblingSequencing(state: {service: $service statusCode: $statusCode nextSibling: $nextSibling nextSiblingStatus: $nextSiblingStatus }) {id} }",
+                                    "mutation m($service: String $statusCode: String $nextSibling: String $nextSiblingStatus: String) "
+                                            + "{ createSiblingSequencing(state: {service: $service statusCode: $statusCode nextSibling: $nextSibling "
+                                            + "nextSiblingStatus: $nextSiblingStatus }) {id} }",
                                     variables);
         variables.put("id", result.get("createSiblingSequencing")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateSiblingSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateSiblingSequencing(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
@@ -759,13 +808,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                                      .getId()
                                      .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($service: String $statusCode: String $child: String $parent: String) { createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent child: $child }) {id} }",
+                                    "mutation m($service: String $statusCode: String $child: String $parent: String) { "
+                                            + "createStatusCodeSequencing(state: {service: $service statusCode: $statusCode parent: $parent "
+                                            + "child: $child }) {id} }",
                                     variables);
         variables.put("id", result.get("createStatusCodeSequencing")
                                   .get("id")
                                   .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
         execute(schema,
-                "mutation m($id: String!) { updateStatusCodeSequencing(state: {id: $id notes:\"foo\"}) {id} }",
+                "mutation m($id: String! $auth: String) { updateStatusCodeSequencing(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,

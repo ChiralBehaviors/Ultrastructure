@@ -9,6 +9,7 @@
         <createTable schemaName="ruleform" remarks="Defines the possible states that an Event can be in, as well as the path through those states"
             tableName="status_code_sequencing"
         >
+            <column name="authority" type="uuid" />
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_sequencing_pkey" />
@@ -35,6 +36,9 @@
             <column name="version" type="INT4" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_authority_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_child_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -54,8 +58,13 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="status_code_sequencing_authority_idx" tableName="status_code_sequencing"
+            unique="false"
+        >
+            <column name="authority" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
     </changeSet>
 </databaseChangeLog>

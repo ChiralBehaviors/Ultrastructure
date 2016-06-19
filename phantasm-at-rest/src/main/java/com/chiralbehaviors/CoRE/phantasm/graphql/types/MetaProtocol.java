@@ -25,6 +25,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolv
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -42,6 +43,8 @@ public class MetaProtocol {
     public static class MetaProtocolState {
         @GraphQLField
         public String assignTo;
+        @GraphQLField
+        public String authority;
         @GraphQLField
         public String deliverFrom;
         @GraphQLField
@@ -64,6 +67,9 @@ public class MetaProtocol {
         public String unit;
 
         public void update(MetaProtocolRecord r) {
+            if (authority != null) {
+                r.setAuthority(UUID.fromString(authority));
+            }
             if (assignTo != null) {
                 r.setAssignTo(UUID.fromString(assignTo));
             }
@@ -123,6 +129,15 @@ public class MetaProtocol {
     @GraphQLField
     public Relationship getAssignTo(DataFetchingEnvironment env) {
         return new Relationship(resolve(env, record.getAssignTo()));
+    }
+
+    @GraphQLField
+    public Agency getAuthority(DataFetchingEnvironment env) {
+        ExistentialRecord a = resolve(env, record.getAuthority());
+        if (a == null) {
+            return null;
+        }
+        return new Agency(a);
     }
 
     @GraphQLField

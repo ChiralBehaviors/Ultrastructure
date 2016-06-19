@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
 
 import java.util.UUID;
 
@@ -105,6 +106,13 @@ public interface Existential {
         }
 
         @Override
+        public Existential getAuthority(DataFetchingEnvironment env) {
+            return wrap((ExistentialRecord) WorkspaceSchema.ctx(env)
+                                                           .records()
+                                                           .resolve(record.getUpdatedBy()));
+        }
+
+        @Override
         public String getDescription() {
             return record.getDescription();
         }
@@ -140,12 +148,18 @@ public interface Existential {
 
     public class ExistentialState {
         @GraphQLField
+        public String authority;
+
+        @GraphQLField
         public String name;
 
         @GraphQLField
         public String notes;
 
         public void update(ExistentialRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (name != null) {
                 record.setName(name);
             }
@@ -254,6 +268,9 @@ public interface Existential {
     }
 
     public static Existential wrap(ExistentialRecord record) throws IllegalStateException {
+        if (record == null) {
+            return null;
+        }
         switch (record.getDomain()) {
             case Agency:
                 return new Agency(record);
@@ -278,6 +295,9 @@ public interface Existential {
     }
 
     void delete();
+
+    @GraphQLField
+    Existential getAuthority(DataFetchingEnvironment env);
 
     @GraphQLField
     String getDescription();

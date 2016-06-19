@@ -58,11 +58,8 @@ public interface ParentSequencingQueries {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectDistinct(Tables.PARENT_SEQUENCING_AUTHORIZATION.fields())
-                                  .from(Tables.PARENT_SEQUENCING_AUTHORIZATION)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.PARENT_SEQUENCING_AUTHORIZATION.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
+                                  .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
                                   .fetch()
                                   .into(ParentSequencingAuthorizationRecord.class)
                                   .stream()

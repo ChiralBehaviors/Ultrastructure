@@ -19,8 +19,8 @@
                 l.version
 			   FROM existential l
 			   JOIN existential r ON l.updated_by = r.id
-             LEFT JOIN workspace_authorization wa ON r.workspace = wa.id
-             LEFT JOIN existential w ON wa.defining_product = w.id
+             LEFT JOIN existential w ON r.workspace = w.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = l.id
                WHERE l.domain = 'Location'
             ]]>
         </createView>

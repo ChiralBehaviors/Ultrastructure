@@ -20,9 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -40,6 +43,8 @@ public class SiblingSequencing {
 
     public static class SiblingSequencingState {
         @GraphQLField
+        public String  authority;
+        @GraphQLField
         public String  nextSibling;
         @GraphQLField
         public String  nextSiblingStatus;
@@ -53,6 +58,9 @@ public class SiblingSequencing {
         public String  statusCode;
 
         public void update(SiblingSequencingAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (nextSibling != null) {
                 record.setNextSibling(UUID.fromString(nextSibling));
             }
@@ -82,10 +90,11 @@ public class SiblingSequencing {
 
     public static SiblingSequencing fetch(DataFetchingEnvironment env,
                                           UUID id) {
-        return new SiblingSequencing(WorkspaceSchema.ctx(env).create()
-                                             .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
-                                             .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.ID.equal(id))
-                                             .fetchOne());
+        return new SiblingSequencing(WorkspaceSchema.ctx(env)
+                                                    .create()
+                                                    .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
+                                                    .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                                    .fetchOne());
     }
 
     private final SiblingSequencingAuthorizationRecord record;
@@ -96,6 +105,15 @@ public class SiblingSequencing {
     }
 
     @GraphQLField
+    public Agency getAuthority(DataFetchingEnvironment env) {
+        ExistentialRecord a = resolve(env, record.getAuthority());
+        if (a == null) {
+            return null;
+        }
+        return new Agency(a);
+    }
+
+    @GraphQLField
     public String getId() {
         return record.getId()
                      .toString();
@@ -103,14 +121,16 @@ public class SiblingSequencing {
 
     @GraphQLField
     public Product getNextSibling(DataFetchingEnvironment env) {
-        return new Product(WorkspaceSchema.ctx(env).records()
-                                   .resolve(record.getNextSibling()));
+        return new Product(WorkspaceSchema.ctx(env)
+                                          .records()
+                                          .resolve(record.getNextSibling()));
     }
 
     @GraphQLField
     public StatusCode getNextSiblingStatus(DataFetchingEnvironment env) {
-        return new StatusCode(WorkspaceSchema.ctx(env).records()
-                                      .resolve(record.getNextSiblingStatus()));
+        return new StatusCode(WorkspaceSchema.ctx(env)
+                                             .records()
+                                             .resolve(record.getNextSiblingStatus()));
     }
 
     @GraphQLField
@@ -129,20 +149,23 @@ public class SiblingSequencing {
 
     @GraphQLField
     public Product getService(DataFetchingEnvironment env) {
-        return new Product(WorkspaceSchema.ctx(env).records()
-                                   .resolve(record.getService()));
+        return new Product(WorkspaceSchema.ctx(env)
+                                          .records()
+                                          .resolve(record.getService()));
     }
 
     @GraphQLField
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(WorkspaceSchema.ctx(env).records()
-                                      .resolve(record.getStatusCode()));
+        return new StatusCode(WorkspaceSchema.ctx(env)
+                                             .records()
+                                             .resolve(record.getStatusCode()));
     }
 
     @GraphQLField
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return new Agency(WorkspaceSchema.ctx(env).records()
-                                  .resolve(record.getUpdatedBy()));
+        return new Agency(WorkspaceSchema.ctx(env)
+                                         .records()
+                                         .resolve(record.getUpdatedBy()));
     }
 
     @GraphQLField

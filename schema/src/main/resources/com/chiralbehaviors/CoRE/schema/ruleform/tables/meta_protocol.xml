@@ -7,6 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="meta_protocol">
+            <column name="authority" type="uuid" />
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="meta_protocol_pkey" />
@@ -51,6 +52,9 @@
             <column name="version" type="INT4" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="meta_protocol" constraintName="meta_protocol_authority_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from" baseTableName="meta_protocol" constraintName="meta_protocol_deliver_from_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -88,8 +92,11 @@
         <createIndex schemaName="ruleform" indexName="meta_protocol_service_fkey_idx" tableName="meta_protocol" unique="false">
             <column name="service" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="meta_protocol_authority_idx" tableName="meta_protocol" unique="false">
+            <column name="authority" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="meta_protocol" constraintName="meta_protocol_workspace_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
     </changeSet>
 </databaseChangeLog>

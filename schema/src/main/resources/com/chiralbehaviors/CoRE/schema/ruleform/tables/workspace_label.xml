@@ -5,9 +5,9 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
     <changeSet id="2.0.0" author="hhildebrand">
-        <createTable schemaName="ruleform" remarks="A workspace authorization defines the entities in a workspace" tableName="workspace_authorization">
+        <createTable schemaName="ruleform" remarks="A workspace label labels entities in a workspace" tableName="workspace_label">
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" />
+                <constraints primaryKey="true" primaryKeyName="workspace_label_pkey" />
             </column>
             <column name="reference" type="uuid">
                 <constraints nullable="false" />
@@ -22,47 +22,39 @@
             <column name="version" type="INT4" />
             <column name="key" type="text" />
             <column name="description" type="TEXT" />
-            <column name="defining_product" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="exported" type="boolean" defaultValue="true">
+            <column name="workspace" type="uuid">
                 <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, key," constraintName="workspace_key_constraint"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="workspace, key," constraintName="workspace_key_constraint"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_label" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_defining_product_fkey"
+            baseColumnNames="workspace" baseTableName="workspace_label" constraintName="workspace_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
+            baseColumnNames="updated_by" baseTableName="workspace_label" constraintName="workspace_label_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
 
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_label_updated_by_idx" tableName="workspace_label"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_defining_product_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_label_workspace_idx" tableName="workspace_label"
             unique="false"
         >
-            <column name="defining_product" />
+            <column name="workspace" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_key_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_label_key_idx" tableName="workspace_label"
             unique="false"
         >
             <column name="key" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_reference_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_label_reference_idx" tableName="workspace_label"
             unique="true"
         >
             <column name="reference" />
         </createIndex>
-
-        <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="existential" constraintName="agency_workspace_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

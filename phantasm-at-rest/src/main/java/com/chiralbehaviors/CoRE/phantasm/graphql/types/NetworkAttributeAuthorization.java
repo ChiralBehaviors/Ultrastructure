@@ -33,6 +33,7 @@ import org.jooq.exception.TooManyRowsException;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -73,6 +74,9 @@ public class NetworkAttributeAuthorization {
         public Long    timestampValue;
 
         public void update(ExistentialNetworkAttributeAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (authority != null) {
                 record.setAuthority(UUID.fromString(authority));
             }
@@ -141,7 +145,11 @@ public class NetworkAttributeAuthorization {
 
     @GraphQLField
     public Agency getAuthority(DataFetchingEnvironment env) {
-        return new Agency(resolve(env, record.getAuthority()));
+        ExistentialRecord a = resolve(env, record.getAuthority());
+        if (a == null) {
+            return null;
+        }
+        return new Agency(a);
     }
 
     @GraphQLField

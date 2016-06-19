@@ -45,7 +45,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -175,22 +175,20 @@ public class Bootstrap {
     }
 
     private void populate(FacetRecord auth, Product kernelWorkspace) {
-        auth.insert();
-        records.newWorkspaceAuthorization(null, kernelWorkspace, auth)
-               .insert();
+        auth.setWorkspace(kernelWorkspace.getId());
+        auth.update();
     }
 
     private void populate(String key, WellKnownObject wko,
                           Product kernelWorkspace) {
-        WorkspaceAuthorizationRecord auth = records.newWorkspaceAuthorization(key,
-                                                                              wko.id(),
-                                                                              ReferenceType.Existential,
-                                                                              kernelWorkspace);
+        WorkspaceLabelRecord auth = records.newWorkspaceLabel(key, wko.id(),
+                                                              ReferenceType.Existential,
+                                                              kernelWorkspace);
         auth.insert();
         ExistentialRecord existential = create.selectFrom(EXISTENTIAL)
                                               .where(EXISTENTIAL.ID.equal(wko.id()))
                                               .fetchOne();
-        existential.setWorkspace(auth.getId());
+        existential.setWorkspace(kernelWorkspace.getId());
         existential.update();
     }
 
@@ -222,8 +220,8 @@ public class Bootstrap {
         anyAgency.setClassification(WellKnownAgency.ANY.id());
         anyAgency.setName("AnyAgency");
         anyAgency.setNotes("The facet that represents any agency");
-        populate(anyAgency, kernelWorkspace);
         anyAgency.insert();
+        populate(anyAgency, kernelWorkspace);
 
         FacetRecord anyAttribute = records.newFacet();
         anyAttribute.setClassifier(WellKnownRelationship.ANY.id());

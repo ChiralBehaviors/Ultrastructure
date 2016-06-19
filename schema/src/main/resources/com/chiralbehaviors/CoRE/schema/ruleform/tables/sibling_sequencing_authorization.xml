@@ -10,6 +10,7 @@
             remarks="Determines what the next available product should be, based on the status code returned for the previous product"
             tableName="sibling_sequencing_authorization"
         >
+            <column name="authority" type="uuid" />
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="sibling_sequencing_authorization_pkey" />
@@ -40,6 +41,9 @@
             <column name="version" type="INT4" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_authority_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="next_sibling" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_next_sibling_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -57,6 +61,10 @@
         <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, next_sibling, sequence_number"
             constraintName="sibling_sequencing_authorization_parent_status_code_seq" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="sibling_sequencing_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+
         <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_updated_by_fkey_idx" tableName="sibling_sequencing_authorization"
             unique="false"
         >
@@ -68,8 +76,10 @@
             <column name="service" />
             <column name="status_code" />
         </createIndex>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+        <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_authority_idx" tableName="sibling_sequencing_authorization"
+            unique="false"
+        >
+            <column name="authority" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

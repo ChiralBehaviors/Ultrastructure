@@ -109,9 +109,15 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>phantasm-plugin</artifactId>
-                <version>${project.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.chiralbehaviors.CoRE</groupId>
+                        <artifactId>thing-ontology</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -128,7 +134,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                    	<id>generate-test-sources</id>
+                        <id>generate-test-sources</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
@@ -142,20 +148,6 @@
                             </generator>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>phantasm-plugin</artifactId>
-                <version>${project.version}</version>
-                <dependencies> 
-                    <dependency>
-                        <groupId>com.chiralbehaviors.CoRE</groupId>
-                        <artifactId>thing-ontology</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
                     <execution>
                         <id>generate-test-phantasms</id>
                         <phase>generate-test-sources</phase>

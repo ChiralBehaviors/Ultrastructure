@@ -103,11 +103,6 @@ public class RecordsFactoryTest extends DatabaseTest {
                                                      RECORDS.newAttribute());
         RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
                                                             attribute);
-        RECORDS.newAgencyExistential();
-        RECORDS.newAgencyAttrAuth();
-        RECORDS.newAgencyFacet();
-        RECORDS.newAgencyNetAttrAuth();
-        RECORDS.newAgencyNetAuth();
         RECORDS.newExistentialNetwork();
 
         RECORDS.newExistentialNetworkAuthorization();
@@ -173,40 +168,38 @@ public class RecordsFactoryTest extends DatabaseTest {
                                         RECORDS.newStatusCode());
         RECORDS.newUnit();
         RECORDS.newUnit("", "");
-        RECORDS.newWorkspaceAuthorization();
+        RECORDS.newWorkspaceLabel();
         Product p = RECORDS.newProduct();
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newChildSequencingAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialAttribute());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialAttributeAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p,
-                                          RECORDS.newAgencyExistential());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialNetwork());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialNetworkAttribute());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialNetworkAttributeAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialNetworkAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p, facet);
-        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newJob());
-        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newJobChronology());
-        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newMetaProtocol());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p, facet);
+        RECORDS.newWorkspaceLabel("", p, RECORDS.newJob());
+        RECORDS.newWorkspaceLabel("", p, RECORDS.newJobChronology());
+        RECORDS.newWorkspaceLabel("", p, RECORDS.newMetaProtocol());
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newNetworkInferrence());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newParentSequencingAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p, RECORDS.newProtocol());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p, RECORDS.newProtocol());
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newSelfSequencingAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newSiblingSequencingAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p,
+        RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newStatusCodeSequencing());
-        RECORDS.newWorkspaceAuthorization("", p, agency);
+        RECORDS.newWorkspaceLabel("", p, agency);
         assertNotNull(RECORDS.createExistential(agency.getId(), "foo", "bar"));
         assertNotNull(RECORDS.copy(agency));
         assertEquals("foo", RECORDS.existentialName(agency.getId()));

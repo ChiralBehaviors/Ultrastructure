@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +38,6 @@ import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.UpdatableRecord;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
@@ -48,7 +46,6 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -61,13 +58,6 @@ import com.hellblazer.utils.collections.OaHashSet;
  */
 public class WorkspaceSnapshot {
     private static final Logger log = LoggerFactory.getLogger(WorkspaceSnapshot.class);
-
-    public static Result<WorkspaceAuthorizationRecord> getAuthorizations(UUID definingProduct,
-                                                                         DSLContext create) {
-        return create.selectFrom(WORKSPACE_AUTHORIZATION)
-                     .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct))
-                     .fetch();
-    }
 
     public static void load(DSLContext create,
                             List<URL> resources) throws IOException,
@@ -119,22 +109,15 @@ public class WorkspaceSnapshot {
         List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
-                             if (!t.equals(WORKSPACE_AUTHORIZATION)) {
-                                 records.addAll(create.selectDistinct(t.fields())
-                                                      .from(t)
-                                                      .join(WORKSPACE_AUTHORIZATION)
-                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
-                                                      .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
-                                                      .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
-                                                      .fetchInto(t.getRecordType())
-                                                      .stream()
-                                                      .map(r -> (UpdatableRecord<?>) r)
-                                                      .collect(Collectors.toList()));
-                             }
+                             records.addAll(create.selectDistinct(t.fields())
+                                                  .from(t)
+                                                  .where(((Field<UUID>) t.field("workspace")).equal(definingProduct.getId()))
+                                                  .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                                  .fetchInto(t.getRecordType())
+                                                  .stream()
+                                                  .map(r -> (UpdatableRecord<?>) r)
+                                                  .collect(Collectors.toList()));
                          });
-        records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
-                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
-                             .fetch());
         return records;
     }
 
@@ -147,7 +130,10 @@ public class WorkspaceSnapshot {
     }
 
     public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
-        assert definingProduct.getWorkspace() != null : "Defining product's workspace is null!";
+        assert definingProduct.getId()
+                              .equals(definingProduct.getWorkspace()) : String.format("Defining product's workspace [%s} is not equal to the defining product [%s]!",
+                                                                                      definingProduct.getWorkspace(),
+                                                                                      definingProduct.getId());
         this.definingProduct = definingProduct;
         records = selectWorkspaceClosure(create, definingProduct);
     }

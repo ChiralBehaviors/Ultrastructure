@@ -6,10 +6,10 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView schemaName="readable" viewName="workspace_authorization" replaceIfExists="true"><![CDATA[ 
+        <createView schemaName="readable" viewName="existential" replaceIfExists="true"><![CDATA[ 
 			 SELECT  
                  b.id, 
-			     dp.name AS defining_product, 
+			     dp.name AS workspace, 
                  b.key, 
                  b.description, 
 			     b.reference,
@@ -17,9 +17,9 @@
 			     b.notes, 
 			     up.name AS updated_by,
 			     b.version
-			   FROM workspace_authorization b
+			   FROM existential b
 			   JOIN existential up ON b.updated_by = up.id
-               JOIN existential dp ON b.defining_product = dp.id 
+               JOIN existential dp ON b.workspace = dp.id 
             ]]>
         </createView>
     </changeSet>

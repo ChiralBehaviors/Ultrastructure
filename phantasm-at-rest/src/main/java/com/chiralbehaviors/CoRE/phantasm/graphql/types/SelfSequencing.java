@@ -20,9 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -40,6 +43,8 @@ public class SelfSequencing {
 
     public static class SelfSequencingState {
         @GraphQLField
+        public String  authority;
+        @GraphQLField
         public String  notes;
         @GraphQLField
         public Integer sequenceNumber;
@@ -51,6 +56,9 @@ public class SelfSequencing {
         public String  statusToSet;
 
         public void update(SelfSequencingAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (statusToSet != null) {
                 record.setStatusToSet(UUID.fromString(statusToSet));
             }
@@ -75,10 +83,11 @@ public class SelfSequencing {
     }
 
     public static SelfSequencing fetch(DataFetchingEnvironment env, UUID id) {
-        return new SelfSequencing(WorkspaceSchema.ctx(env).create()
-                                          .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
-                                          .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(id))
-                                          .fetchOne());
+        return new SelfSequencing(WorkspaceSchema.ctx(env)
+                                                 .create()
+                                                 .selectFrom(Tables.SELF_SEQUENCING_AUTHORIZATION)
+                                                 .where(Tables.SELF_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                                 .fetchOne());
     }
 
     private final SelfSequencingAuthorizationRecord record;
@@ -86,6 +95,15 @@ public class SelfSequencing {
     public SelfSequencing(SelfSequencingAuthorizationRecord record) {
         assert record != null;
         this.record = record;
+    }
+
+    @GraphQLField
+    public Agency getAuthority(DataFetchingEnvironment env) {
+        ExistentialRecord a = resolve(env, record.getAuthority());
+        if (a == null) {
+            return null;
+        }
+        return new Agency(a);
     }
 
     @GraphQLField
@@ -110,8 +128,9 @@ public class SelfSequencing {
 
     @GraphQLField
     public Product getService(DataFetchingEnvironment env) {
-        return new Product(WorkspaceSchema.ctx(env).records()
-                                   .resolve(record.getService()));
+        return new Product(WorkspaceSchema.ctx(env)
+                                          .records()
+                                          .resolve(record.getService()));
     }
 
     @GraphQLField
@@ -121,20 +140,23 @@ public class SelfSequencing {
 
     @GraphQLField
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(WorkspaceSchema.ctx(env).records()
-                                      .resolve(record.getStatusCode()));
+        return new StatusCode(WorkspaceSchema.ctx(env)
+                                             .records()
+                                             .resolve(record.getStatusCode()));
     }
 
     @GraphQLField
     public StatusCode getStatusToSet(DataFetchingEnvironment env) {
-        return new StatusCode(WorkspaceSchema.ctx(env).records()
-                                      .resolve(record.getStatusToSet()));
+        return new StatusCode(WorkspaceSchema.ctx(env)
+                                             .records()
+                                             .resolve(record.getStatusToSet()));
     }
 
     @GraphQLField
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return new Agency(WorkspaceSchema.ctx(env).records()
-                                  .resolve(record.getUpdatedBy()));
+        return new Agency(WorkspaceSchema.ctx(env)
+                                         .records()
+                                         .resolve(record.getUpdatedBy()));
     }
 
     @GraphQLField

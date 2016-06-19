@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
-import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +56,7 @@ public class StateSnapshot extends WorkspaceSnapshot {
                                                       .fetchInto(ExistentialNetworkRecord.class)
                                                       .stream()
                                                       .collect(Collectors.toList()));
-                             } else if (!t.equals(WORKSPACE_AUTHORIZATION)) {
+                             } else {
                                  records.addAll(create.selectDistinct(t.fields())
                                                       .from(t)
                                                       .where(t.field("workspace")

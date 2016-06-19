@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
@@ -73,13 +73,13 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceAuthorizationRecord get(Product definingProduct,
+    public WorkspaceLabelRecord get(Product definingProduct,
                                             String key) {
         return null;
     }
 
     @Override
-    public List<WorkspaceAuthorizationRecord> getByType(Product definingProduct,
+    public List<WorkspaceLabelRecord> getByType(Product definingProduct,
                                                         String type) {
         return null;
     }
@@ -107,7 +107,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public List<WorkspaceAuthorizationRecord> getWorkspace(Product definingProduct) {
+    public List<WorkspaceLabelRecord> getWorkspace(Product definingProduct) {
         return null;
     }
 

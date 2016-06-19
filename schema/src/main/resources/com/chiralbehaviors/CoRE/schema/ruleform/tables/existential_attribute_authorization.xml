@@ -64,8 +64,13 @@
         >
             <column name="authorized_attribute" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_attribute_authorization_authority_idx" tableName="existential_attribute_authorization"
+            unique="false"
+        >
+            <column name="authority" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="existential_attribute_authorization" constraintName="e_a_a_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
     </changeSet>
 </databaseChangeLog>

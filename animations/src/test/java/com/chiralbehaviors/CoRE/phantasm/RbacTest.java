@@ -47,11 +47,6 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyAttrAuthRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyFacetRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyNetAttrAuthRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyNetAuthRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
@@ -103,14 +98,9 @@ public class RbacTest extends AbstractModelTest {
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
-
-        AgencyAttrAuthRecord accessAuth = model.records()
-                                               .newAgencyAttrAuth();
-        accessAuth.setAuthorization(stateAuth.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getAnyAgency()
-                                     .getId());
-        accessAuth.insert();
+        stateAuth.setAuthority(model.getKernel()
+                                    .getAnyAgency()
+                                    .getId());
 
         assertFalse(model.getPhantasmModel()
                          .checkPermission(asList(model.getKernel()
@@ -125,34 +115,6 @@ public class RbacTest extends AbstractModelTest {
                         .getHadMember(),
                    model.getKernel()
                         .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        accessAuth = model.records()
-                          .newAgencyAttrAuth();
-        accessAuth.setAuthorization(stateAuth.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getSameAgency()
-                                     .getId());
-        accessAuth.insert();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()
@@ -208,14 +170,10 @@ public class RbacTest extends AbstractModelTest {
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
-
-        AgencyNetAuthRecord accessAuth = model.records()
-                                              .newAgencyNetAuth();
-        accessAuth.setAuthorization(stateAuth.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getAnyAgency()
-                                     .getId());
-        accessAuth.insert();
+        stateAuth.setAuthority(model.getKernel()
+                                    .getAnyAgency()
+                                    .getId());
+        stateAuth.update();
 
         assertFalse(model.getPhantasmModel()
                          .checkPermission(asList(model.getKernel()
@@ -230,34 +188,6 @@ public class RbacTest extends AbstractModelTest {
                         .getHadMember(),
                    model.getKernel()
                         .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        accessAuth = model.records()
-                          .newAgencyNetAuth();
-        accessAuth.setAuthorization(stateAuth.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getSameAgency()
-                                     .getId());
-        accessAuth.insert();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()
@@ -419,13 +349,10 @@ public class RbacTest extends AbstractModelTest {
                                          facet, model.getKernel()
                                                      .getHadMember()));
 
-        AgencyFacetRecord accessAuth = model.records()
-                                            .newAgencyFacet();
-        accessAuth.setFacet(facet.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getAnyAgency()
-                                     .getId());
-        accessAuth.insert();
+        facet.setAuthority(model.getKernel()
+                                .getAnyAgency()
+                                .getId());
+        facet.update();
 
         assertFalse(model.getPhantasmModel()
                          .checkPermission(asList(model.getKernel()
@@ -440,34 +367,6 @@ public class RbacTest extends AbstractModelTest {
                         .getHadMember(),
                    model.getKernel()
                         .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         facet, model.getKernel()
-                                                     .getHadMember()));
-
-        accessAuth = model.records()
-                          .newAgencyFacet();
-        accessAuth.setFacet(facet.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getSameAgency()
-                                     .getId());
-        accessAuth.insert();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          facet, model.getKernel()
-                                                      .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()
@@ -507,17 +406,10 @@ public class RbacTest extends AbstractModelTest {
                                                      .getCore()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
-
-        AgencyExistentialRecord accessAuth = model.records()
-                                                  .newAgencyExistential();
-        accessAuth.setUpdatedBy(model.getKernel()
-                                     .getCore()
-                                     .getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getAnyAgency()
-                                     .getId());
-        accessAuth.setEntity(instance.getId());
-        accessAuth.insert();
+        instance.setAuthority(model.getKernel()
+                                   .getAnyAgency()
+                                   .getId());
+        instance.update();
 
         assertFalse(model.getPhantasmModel()
                          .checkPermission(asList(model.getKernel()
@@ -532,37 +424,6 @@ public class RbacTest extends AbstractModelTest {
                         .getHadMember(),
                    model.getKernel()
                         .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
-
-        accessAuth = model.records()
-                          .newAgencyExistential();
-        accessAuth.setUpdatedBy(model.getKernel()
-                                     .getCore()
-                                     .getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getSameAgency()
-                                     .getId());
-        accessAuth.setEntity(instance.getId());
-        accessAuth.insert();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()
@@ -629,13 +490,10 @@ public class RbacTest extends AbstractModelTest {
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
 
-        AgencyNetAttrAuthRecord accessAuth = model.records()
-                                                  .newAgencyNetAttrAuth();
-        accessAuth.setAuthorization(stateAuth.getId());
-        accessAuth.setAuthority(model.getKernel()
-                                     .getAnyAgency()
-                                     .getId());
-        accessAuth.insert();
+        stateAuth.setAuthority(model.getKernel()
+                                    .getAnyAgency()
+                                    .getId());
+        stateAuth.update();
 
         assertFalse(model.getPhantasmModel()
                          .checkPermission(asList(model.getKernel()
@@ -650,35 +508,6 @@ public class RbacTest extends AbstractModelTest {
                         .getHadMember(),
                    model.getKernel()
                         .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        accessAuth = model.records()
-                          .newAgencyNetAttrAuth();
-        accessAuth.setAuthorization(stateAuth.getId());
-
-        accessAuth.setAuthority(model.getKernel()
-                                     .getSameAgency()
-                                     .getId());
-        accessAuth.insert();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkPermission(asList(model.getKernel()

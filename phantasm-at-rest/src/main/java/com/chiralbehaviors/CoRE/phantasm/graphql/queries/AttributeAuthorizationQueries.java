@@ -59,11 +59,8 @@ public interface AttributeAuthorizationQueries {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectDistinct(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
-                                  .from(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
+                                  .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
                                   .fetch()
                                   .into(ExistentialAttributeAuthorizationRecord.class)
                                   .stream()

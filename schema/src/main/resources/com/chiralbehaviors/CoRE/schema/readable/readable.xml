@@ -13,7 +13,6 @@
     <include relativeToChangelogFile="true" file="views/relationship.xml" />
     <include relativeToChangelogFile="true" file="views/status_code.xml" />
     <include relativeToChangelogFile="true" file="views/unit.xml" />
-    <include relativeToChangelogFile="true" file="views/workspace_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/network_inference.xml" />
     <include relativeToChangelogFile="true" file="views/existential_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/existential_network.xml" />
@@ -22,7 +21,6 @@
     <include relativeToChangelogFile="true" file="views/existential_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/existential_network_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/existential_attribute_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/agency_existential.xml" />
     <include relativeToChangelogFile="true" file="views/protocol.xml" />
     <include relativeToChangelogFile="true" file="views/job.xml" />
     <include relativeToChangelogFile="true" file="views/job_chronology.xml" />

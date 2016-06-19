@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -49,6 +50,8 @@ public class Job {
         @GraphQLField
         public String assignTo;
         @GraphQLField
+        public String authority;
+        @GraphQLField
         public String deliverFrom;
         @GraphQLField
         public String deliverTo;
@@ -68,6 +71,9 @@ public class Job {
         public String unit;
 
         public void update(JobRecord r) {
+            if (authority != null) {
+                r.setAuthority(UUID.fromString(authority));
+            }
             if (assignTo != null) {
                 r.setAssignTo(UUID.fromString(assignTo));
             }
@@ -148,6 +154,15 @@ public class Job {
     @GraphQLField
     public Agency getAssignTo(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAssignTo()));
+    }
+
+    @GraphQLField
+    public Agency getAuthority(DataFetchingEnvironment env) {
+        ExistentialRecord a = resolve(env, record.getAuthority());
+        if (a == null) {
+            return null;
+        }
+        return new Agency(a);
     }
 
     @GraphQLField

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 
 /**
@@ -43,16 +43,16 @@ public interface WorkspaceModel {
 
     void flush();
 
-    WorkspaceAuthorizationRecord get(Product definingProduct, String key);
+    WorkspaceLabelRecord get(Product definingProduct, String key);
 
-    List<WorkspaceAuthorizationRecord> getByType(Product definingProduct,
+    List<WorkspaceLabelRecord> getByType(Product definingProduct,
                                                  String type);
 
     WorkspaceScope getScoped(Product definingProduct);
 
     WorkspaceScope getScoped(UUID definingProduct);
 
-    List<WorkspaceAuthorizationRecord> getWorkspace(Product definingProduct);
+    List<WorkspaceLabelRecord> getWorkspace(Product definingProduct);
 
     void unload(Product definingProduct);
 }

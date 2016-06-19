@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -47,6 +48,8 @@ public class Protocol {
     public static class ProtocolState {
         @GraphQLField
         public String assignTo;
+        @GraphQLField
+        public String authority;
         @GraphQLField
         public String childAssignTo;
         @GraphQLField
@@ -85,6 +88,9 @@ public class Protocol {
         public String unit;
 
         public void update(ProtocolRecord r) {
+            if (authority != null) {
+                r.setAuthority(UUID.fromString(authority));
+            }
             if (assignTo != null) {
                 r.setAssignTo(UUID.fromString(assignTo));
             }
@@ -175,6 +181,15 @@ public class Protocol {
 
     public Agency getAssignTo(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAssignTo()));
+    }
+
+    @GraphQLField
+    public Agency getAuthority(DataFetchingEnvironment env) {
+        ExistentialRecord a = resolve(env, record.getAuthority());
+        if (a == null) {
+            return null;
+        }
+        return new Agency(a);
     }
 
     @GraphQLField

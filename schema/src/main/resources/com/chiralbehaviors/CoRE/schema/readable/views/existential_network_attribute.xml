@@ -30,8 +30,8 @@
 			   JOIN existential a ON ba.attribute = a.id
 			   LEFT JOIN existential u ON ba.unit = u.id
 			   JOIN existential up ON ba.updated_by = up.id
-             LEFT JOIN workspace_authorization wa ON ba.workspace = wa.id
-             LEFT JOIN existential w ON wa.defining_product = w.id
+             LEFT JOIN existential w ON ba.workspace = w.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = ba.id
             ]]>
         </createView>
     </changeSet>

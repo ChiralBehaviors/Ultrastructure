@@ -58,11 +58,8 @@ public interface SiblingSequencingQueries {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
             return WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectDistinct(Tables.SIBLING_SEQUENCING_AUTHORIZATION.fields())
-                                  .from(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
-                                  .join(Tables.WORKSPACE_AUTHORIZATION)
-                                  .on(Tables.WORKSPACE_AUTHORIZATION.ID.eq(Tables.SIBLING_SEQUENCING_AUTHORIZATION.WORKSPACE))
-                                  .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
+                                  .selectFrom(Tables.SIBLING_SEQUENCING_AUTHORIZATION)
+                                  .where(Tables.SIBLING_SEQUENCING_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
                                   .fetch()
                                   .into(SiblingSequencingAuthorizationRecord.class)
                                   .stream()

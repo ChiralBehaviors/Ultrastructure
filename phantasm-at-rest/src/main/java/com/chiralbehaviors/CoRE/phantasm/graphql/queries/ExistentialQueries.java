@@ -58,13 +58,10 @@ public interface ExistentialQueries {
                                             ExistentialDomain domain) {
         return WorkspaceSchema.ctx(env)
                               .create()
-                              .selectDistinct(Tables.EXISTENTIAL.fields())
-                              .from(Tables.EXISTENTIAL)
-                              .join(Tables.WORKSPACE_AUTHORIZATION)
-                              .on(Tables.WORKSPACE_AUTHORIZATION.ID.equal(Tables.EXISTENTIAL.WORKSPACE))
-                              .and(Tables.WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(((WorkspaceContext) env.getContext()).getWorkspace()
-                                                                                                                           .getId()))
-                              .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                              .selectFrom(Tables.EXISTENTIAL)
+                              .where(Tables.EXISTENTIAL.WORKSPACE.eq(((WorkspaceContext) env.getContext()).getWorkspace()
+                                                                                                          .getId()))
+                              .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                               .fetch()
                               .into(ExistentialRecord.class);
     }

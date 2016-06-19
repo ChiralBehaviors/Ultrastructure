@@ -21,8 +21,8 @@
 			   FROM existential rel
 			   JOIN existential inv ON rel.inverse = inv.id
 			   JOIN existential up ON rel.updated_by = up.id
-             LEFT JOIN workspace_authorization wa ON rel.workspace = wa.id
-             LEFT JOIN existential w ON wa.defining_product = w.id
+             LEFT JOIN existential w ON rel.workspace = w.id
+             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = rel.id
                WHERE rel.domain = 'Relationship'
             ]]>
         </createView>

@@ -86,6 +86,6 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="existential_network" constraintName="existential_network_workspace_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
     </changeSet>
 </databaseChangeLog>

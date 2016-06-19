@@ -37,12 +37,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.reflections.Reflections;
+
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -96,6 +97,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
@@ -147,14 +149,21 @@ public class WorkspaceSchema {
     public WorkspaceSchema() {
     }
 
+    public GraphQLSchema build(WorkspaceAccessor accessor,
+                               Model model) throws NoSuchMethodException,
+                                            InstantiationException,
+                                            IllegalAccessException {
+        return build(accessor, model, new Reflections());
+    }
+
     public GraphQLSchema build(WorkspaceAccessor accessor, Model model,
-                               ClassLoader executionScope) throws NoSuchMethodException,
-                                                           InstantiationException,
-                                                           IllegalAccessException {
+                               Reflections reflections) throws NoSuchMethodException,
+                                                        InstantiationException,
+                                                        IllegalAccessException {
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace root = model.wrap(Workspace.class, definingProduct);
-        List<Plugin> plugins = root.getPlugins();
+        Set<Class<?>> plugins = reflections.getTypesAnnotatedWith(Plugin.class);
         Set<Workspace> aggregate = new HashSet<>();
         gatherImports(root, aggregate);
         aggregate.forEach(ws -> {
@@ -169,11 +178,12 @@ public class WorkspaceSchema {
                 }
                 FacetFields type = new FacetFields(facet);
                 resolved.put(facet, type);
-                List<Plugin> facetPlugins = plugins.stream()
-                                                   .filter(plugin -> facet.getName()
-                                                                          .equals(plugin.getFacetName()))
-                                                   .collect(Collectors.toList());
-                type.resolve(facet, facetPlugins, model, executionScope)
+                List<Class<?>> facetPlugins = plugins.stream()
+                                                     .filter(plugin -> pluginFor(plugin,
+                                                                                 ws,
+                                                                                 facet))
+                                                     .collect(Collectors.toList());
+                type.resolve(facet, facetPlugins, model, typeFunction)
                     .stream()
                     .filter(auth -> !resolved.containsKey(auth))
                     .forEach(auth -> unresolved.add(auth));
@@ -294,6 +304,11 @@ public class WorkspaceSchema {
         resolved.entrySet()
                 .forEach(e -> addPhantasmCast(objectBuilder, e));
         return objectBuilder.build();
+    }
+
+    private boolean pluginFor(Class<?> plugin, Workspace ws,
+                              FacetRecord facet) {
+        return false;
     }
 
     private void registerTypes(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,

@@ -56,8 +56,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         schema = new WorkspaceSchema().build(model.getWorkspaceModel()
                                                   .getScoped(WorkspaceAccessor.uuidOf(WellKnownObject.KERNEL_IRI))
                                                   .getWorkspace(),
-                                             model,
-                                             getClass().getClassLoader());
+                                             model);
     }
 
     @Test

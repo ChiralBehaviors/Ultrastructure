@@ -42,6 +42,10 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+
 import graphql.annotations.Connection;
 import graphql.annotations.GraphQLConnection;
 import graphql.annotations.GraphQLDataFetcher;
@@ -156,7 +160,7 @@ public class PhantasmProcessing {
             boolean valid = !Modifier.isStatic(method.getModifiers())
                             && method.getAnnotation(GraphQLField.class) != null;
             if (valid) {
-                builder.field(field(method, typeFunction));
+                builder.field(field(method, typeFunction, null));
             }
         }
         builder.typeResolver(typeResolver);
@@ -232,7 +236,7 @@ public class PhantasmProcessing {
             }
 
             if (valid) {
-                builder.field(field(method, typeFunction));
+                builder.field(field(method, typeFunction, null));
             }
         }
         for (Field field : object.getFields()) {
@@ -253,6 +257,78 @@ public class PhantasmProcessing {
             current = current.getSuperclass();
         } while (current != null);
         return builder;
+    }
+
+    public static GraphQLObjectType.Builder processPlugin(Class<?> plugin,
+                                                          TypeResolver typeResolver,
+                                                          TypeFunction typeFunction,
+                                                          GraphQLObjectType.Builder builder) {
+        if (!plugin.isInterface()) {
+            throw new IllegalArgumentException(String.format("Plugin must be an interface: %s",
+                                                             plugin.getCanonicalName()));
+        }
+        Plugin annotation = plugin.getAnnotation(Plugin.class);
+        if (annotation == null) {
+            throw new IllegalArgumentException(String.format("Class not annotated with @Plugin: %s",
+                                                             plugin.getCanonicalName()));
+        }
+        Class<?> phantasm = annotation.phantasm();
+        for (Method method : plugin.getMethods()) {
+
+            Class<?> declaringClass = getDeclaringClass(method);
+
+            boolean valid;
+            try {
+                valid = !Modifier.isStatic(method.getModifiers())
+                        && (method.getAnnotation(GraphQLField.class) != null
+                            || declaringClass.getMethod(method.getName(),
+                                                        method.getParameterTypes())
+                                             .getAnnotation(GraphQLField.class) != null);
+            } catch (NoSuchMethodException | SecurityException e) {
+                throw new IllegalStateException(e);
+            }
+
+            if (valid) {
+                builder.field(field(method, typeFunction, phantasm));
+            }
+        }
+        Class<?> current = plugin;
+        do {
+            for (Class<?> iface : current.getInterfaces()) {
+                if (iface.getAnnotation(GraphQLInterface.class) != null) {
+                    builder.withInterface((GraphQLInterfaceType) typeFunction.apply(iface,
+                                                                                    null));
+                }
+            }
+            current = current.getSuperclass();
+        } while (current != null);
+        return builder;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Number> T convert(Number from, Class<T> to) {
+        if (from == null) {
+            return null;
+        }
+        if (to.equals(Byte.class)) {
+            return (T) Byte.valueOf(from.byteValue());
+        }
+        if (to.equals(Double.class)) {
+            return (T) Double.valueOf(from.doubleValue());
+        }
+        if (to.equals(Float.class)) {
+            return (T) Float.valueOf(from.floatValue());
+        }
+        if (to.equals(Integer.class)) {
+            return (T) Integer.valueOf(from.intValue());
+        }
+        if (to.equals(Long.class)) {
+            return (T) Long.valueOf(from.longValue());
+        }
+        if (to.equals(Short.class)) {
+            return (T) Short.valueOf(from.shortValue());
+        }
+        return null;
     }
 
     private static Class<?> getDeclaringClass(Method method) {
@@ -434,7 +510,8 @@ public class PhantasmProcessing {
     }
 
     protected static GraphQLFieldDefinition field(Method method,
-                                                  TypeFunction typeFunction) {
+                                                  TypeFunction typeFunction,
+                                                  Class<?> phantasm) {
         GraphQLFieldDefinition.Builder builder = newFieldDefinition();
 
         String name = method.getName()
@@ -463,6 +540,9 @@ public class PhantasmProcessing {
                                            .stream()
                                            .peek(e -> i.incrementAndGet())
                                            .filter(p -> !DataFetchingEnvironment.class.isAssignableFrom(p.getType()))
+                                           .filter(p -> !PhantasmCRUD.class.isAssignableFrom(p.getType()))
+                                           .filter(p -> !p.getType()
+                                                          .isAnnotationPresent(Facet.class))
                                            .map(new Function<Parameter, GraphQLArgument>() {
                                                @Override
                                                public GraphQLArgument apply(Parameter parameter) {
@@ -528,8 +608,9 @@ public class PhantasmProcessing {
         GraphQLDataFetcher dataFetcher = method.getAnnotation(GraphQLDataFetcher.class);
         DataFetcher actualDataFetcher;
         try {
-            actualDataFetcher = dataFetcher == null ? new MethodDataFetcher2(method,
-                                                                             inputTxfms)
+            actualDataFetcher = dataFetcher == null ? new ReflectiveDatafeter(method,
+                                                                              inputTxfms,
+                                                                              phantasm)
                                                     : dataFetcher.value()
                                                                  .newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
@@ -553,31 +634,5 @@ public class PhantasmProcessing {
         builder.dataFetcher(actualDataFetcher);
 
         return builder.build();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Number> T convert(Number from, Class<T> to) {
-        if (from == null) {
-            return null;
-        }
-        if (to.equals(Byte.class)) {
-            return (T) Byte.valueOf(from.byteValue());
-        }
-        if (to.equals(Double.class)) {
-            return (T) Double.valueOf(from.doubleValue());
-        }
-        if (to.equals(Float.class)) {
-            return (T) Float.valueOf(from.floatValue());
-        }
-        if (to.equals(Integer.class)) {
-            return (T) Integer.valueOf(from.intValue());
-        }
-        if (to.equals(Long.class)) {
-            return (T) Long.valueOf(from.longValue());
-        }
-        if (to.equals(Short.class)) {
-            return (T) Short.valueOf(from.shortValue());
-        }
-        return null;
     }
 }

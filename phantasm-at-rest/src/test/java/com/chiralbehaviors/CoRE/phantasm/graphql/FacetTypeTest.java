@@ -90,8 +90,7 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model,
-                                                           getClass().getClassLoader());
+                                                           model);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("artifact", artifact1.getRuleform()
@@ -181,8 +180,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                         "test", "testy");
         GraphQLSchema schema = new WorkspaceSchema().build(thing1.getScope()
                                                                  .getWorkspace(),
-                                                           model,
-                                                           getClass().getClassLoader());
+                                                           model);
         String query = getIntrospectionQuery();
         ExecutionResult execute = new GraphQL(schema).execute(query,
                                                               new PhantasmCRUD(model));
@@ -236,8 +234,7 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model,
-                                                           getClass().getClassLoader());
+                                                           model);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
@@ -311,8 +308,7 @@ public class FacetTypeTest extends AbstractModelTest {
 
         GraphQLSchema schema = new WorkspaceSchema().build(thing1.getScope()
                                                                  .getWorkspace(),
-                                                           model,
-                                                           getClass().getClassLoader());
+                                                           model);
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -402,8 +398,7 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model,
-                                                           getClass().getClassLoader());
+                                                           model);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("artifact", artifact2.getRuleform()
@@ -445,8 +440,7 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model,
-                                                           getClass().getClassLoader());
+                                                           model);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()

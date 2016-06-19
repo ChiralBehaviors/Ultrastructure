@@ -292,16 +292,6 @@ public class PhantasmProcessing {
                 builder.field(field(method, typeFunction, phantasm));
             }
         }
-        Class<?> current = plugin;
-        do {
-            for (Class<?> iface : current.getInterfaces()) {
-                if (iface.getAnnotation(GraphQLInterface.class) != null) {
-                    builder.withInterface((GraphQLInterfaceType) typeFunction.apply(iface,
-                                                                                    null));
-                }
-            }
-            current = current.getSuperclass();
-        } while (current != null);
         return builder;
     }
 

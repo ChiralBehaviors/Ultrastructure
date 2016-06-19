@@ -145,11 +145,8 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (target == null) {
             return true;
         }
-        List<UUID> roles = agencies.stream()
-                                   .map(r -> r.getId())
-                                   .collect(Collectors.toList());
 
-        return checkPermission(roles, permission, target.getAuthority());
+        return checkPermission(agencies, permission, target.getAuthority());
 
     }
 
@@ -164,11 +161,8 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (target == null) {
             return true;
         }
-        List<UUID> roles = agencies.stream()
-                                   .map(r -> r.getId())
-                                   .collect(Collectors.toList());
 
-        return checkPermission(roles, permission, target.getAuthority());
+        return checkPermission(agencies, permission, target.getAuthority());
     }
 
     /**
@@ -182,11 +176,8 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (target == null) {
             return true;
         }
-        List<UUID> roles = agencies.stream()
-                                   .map(r -> r.getId())
-                                   .collect(Collectors.toList());
 
-        return checkPermission(roles, permission, target.getAuthority());
+        return checkPermission(agencies, permission, target.getAuthority());
     }
 
     /**
@@ -199,11 +190,8 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (target == null) {
             return true;
         }
-        List<UUID> roles = agencies.stream()
-                                   .map(r -> r.getId())
-                                   .collect(Collectors.toList());
 
-        return checkPermission(roles, permission, target.getAuthority());
+        return checkPermission(agencies, permission, target.getAuthority());
     }
 
     /**
@@ -215,11 +203,8 @@ public class PhantasmModelImpl implements PhantasmModel {
         if (target == null) {
             return true;
         }
-        List<UUID> roles = agencies.stream()
-                                   .map(r -> r.getId())
-                                   .collect(Collectors.toList());
 
-        return checkPermission(roles, permission, target.getAuthority());
+        return checkPermission(agencies, permission, target.getAuthority());
     }
 
     @SafeVarargs
@@ -979,12 +964,16 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
     }
 
-    private boolean checkPermission(List<UUID> roles, Relationship permission,
+    private boolean checkPermission(List<Agency> agencies,
+                                    Relationship permission,
                                     UUID intrinsic) throws DataAccessException,
                                                     TooManyRowsException {
         if (intrinsic == null) {
             return true;
         }
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
         ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
         CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
                                                                   .as(create.select(membership.field(membership.CHILD))

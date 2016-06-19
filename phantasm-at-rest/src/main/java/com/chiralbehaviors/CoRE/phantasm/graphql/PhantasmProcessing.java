@@ -272,7 +272,7 @@ public class PhantasmProcessing {
             throw new IllegalArgumentException(String.format("Class not annotated with @Plugin: %s",
                                                              plugin.getCanonicalName()));
         }
-        Class<?> phantasm = annotation.phantasm();
+        Class<?> phantasm = annotation.value();
         for (Method method : plugin.getMethods()) {
 
             Class<?> declaringClass = getDeclaringClass(method);

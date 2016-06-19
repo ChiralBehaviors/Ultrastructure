@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.plugin.test.product.Thing1;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -32,6 +33,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
+@Plugin(Thing1.class)
 public class Thing1_Plugin {
     public static final AtomicReference<String> passThrough = new AtomicReference<>();
 

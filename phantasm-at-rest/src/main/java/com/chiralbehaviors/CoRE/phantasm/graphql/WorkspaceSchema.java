@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
@@ -167,9 +168,9 @@ public class WorkspaceSchema {
         Set<Workspace> aggregate = new HashSet<>();
         gatherImports(root, aggregate);
         aggregate.forEach(ws -> {
-            Deque<FacetRecord> unresolved = FacetFields.initialState(model.getWorkspaceModel()
-                                                                          .getScoped((Product) ws.getRuleform())
-                                                                          .getWorkspace(),
+            WorkspaceScope scope = model.getWorkspaceModel()
+                                        .getScoped((Product) ws.getRuleform());
+            Deque<FacetRecord> unresolved = FacetFields.initialState(scope.getWorkspace(),
                                                                      model);
             while (!unresolved.isEmpty()) {
                 FacetRecord facet = unresolved.pop();
@@ -181,7 +182,9 @@ public class WorkspaceSchema {
                 List<Class<?>> facetPlugins = plugins.stream()
                                                      .filter(plugin -> pluginFor(plugin,
                                                                                  ws,
-                                                                                 facet))
+                                                                                 facet,
+                                                                                 scope,
+                                                                                 model))
                                                      .collect(Collectors.toList());
                 type.resolve(facet, facetPlugins, model, typeFunction)
                     .stream()
@@ -306,8 +309,21 @@ public class WorkspaceSchema {
         return objectBuilder.build();
     }
 
-    private boolean pluginFor(Class<?> plugin, Workspace ws,
-                              FacetRecord facet) {
+    private boolean pluginFor(Class<?> plugin, Workspace ws, FacetRecord facet,
+                              WorkspaceScope scope, Model model) {
+        Plugin annotation = plugin.getAnnotation(Plugin.class);
+        assert annotation != null;
+        com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet facetAnnotation = annotation.value()
+                                                                                             .getAnnotation(com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet.class);
+        if (ws.getRuleform()
+              .getId()
+              .equals(WorkspaceAccessor.uuidOf(facetAnnotation.workspace()))) {
+            FacetRecord declaration = model.getPhantasmModel()
+                                           .getFacetDeclaration(scope.lookup(facetAnnotation.classifier()),
+                                                                scope.lookup(facetAnnotation.classification()));
+            return facet.equals(declaration);
+
+        }
         return false;
     }
 

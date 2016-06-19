@@ -87,7 +87,8 @@ public class PluginTest extends AbstractModelTest {
                                                               SecurityException,
                                                               NoSuchMethodException,
                                                               InstantiationException {
-        Reflections reflections = new Reflections(new ConfigurationBuilder().addClassLoader(executionScope));
+        Reflections reflections = new Reflections(new ConfigurationBuilder().addClassLoader(executionScope)
+                                                                            .addUrls(executionScope.getURLs()));
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",

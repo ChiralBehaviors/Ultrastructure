@@ -44,5 +44,5 @@ import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 @Target({ TYPE })
 @Retention(RUNTIME)
 public @interface Plugin {
-    Class<? super ScopedPhantasm> phantasm();
+    Class<? extends ScopedPhantasm> value();
 }

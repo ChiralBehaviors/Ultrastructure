@@ -814,6 +814,8 @@
                                 <exclude>**/HelpMojo.*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/utils/English.*</exclude>
                                 <exclude>com/chiralbehaviors/CoRE/utils/TwoFormInflector.*</exclude>
+                                <exclude>de/cau/cs/kieler/kiml/graphviz/layouter/EclipseRuntimeDetector.*</exclude>
+                                <exclude>org/eclipse/jface/util/PropertyChangeEvent.*</exclude>
                             </excludes>
                         </configuration>
                         <executions>

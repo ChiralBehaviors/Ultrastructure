@@ -28,4 +28,7 @@ assets:
     uri: /api/meta/
     path: /workspace-explorer/meta
     index: index.html
+  - name: js
+    uri: /api/js/
+    path: /workspace-explorer/js
         

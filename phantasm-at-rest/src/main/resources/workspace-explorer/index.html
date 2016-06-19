@@ -28,23 +28,24 @@ body {
 <script src="//cdn.jsdelivr.net/react/0.14.7/react-dom.min.js"></script>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.7.1/graphiql.js"></script>
+    <script   src="https://code.jquery.com/jquery-3.0.0.js"   integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo="   crossorigin="anonymous"></script>  
+
+<script src="js/login.js"></script>
 </head>
 <body>
-	<div class="login">
-		<h1>Login to Web App</h1>
-		<form method="post" action="/api/oauth2/token/login">
-			<p>
-				<input type="text" name="username" value="" placeholder="Username">
-			</p>
-			<p>
-				<input type="password" name="password" value=""
-					placeholder="Password">
-			</p>
-			<p class="submit">
-				<input type="submit" name="commit" value="Login">
-			</p>
-		</form>
-	</div>
+    <div class="login">
+        <h1>Login to Web App</h1>
+        <div id="login_form" class="login-form">
+            <form class="form" method="post" action="#">
+                <h2>Create Login Form Using jQuery</h2>
+                <label>User Name :</label> <input type="text" name="username" id="username">
+                <label>Password :</label> <input type="password" name="password"
+                    id="password"> 
+                    <input type="button" name="login" id="login"
+                    value="Login">
+            </form>
+        </div>
+    </div>
 	<div id="graphiql">Loading...</div>
 	<script>
 		function getQueryStringValue(key) {

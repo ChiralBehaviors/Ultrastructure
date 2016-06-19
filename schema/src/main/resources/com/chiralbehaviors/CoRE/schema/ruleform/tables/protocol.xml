@@ -10,6 +10,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
             </column>
+            <column name="authority" type="uuid" />
             <column name="workspace" type="uuid" />
             <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
                 type="INT4" defaultValue="0"
@@ -71,7 +72,9 @@
             <column name="version" type="INT4" />
         </createTable>
 
-
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="protocol" constraintName="protocol_authority_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="protocol" constraintName="protocol_service_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
@@ -107,8 +110,8 @@
             baseColumnNames="child_service" baseTableName="protocol" constraintName="child_service_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="child_status" baseTableName="protocol" constraintName="child_status_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+            baseColumnNames="child_status" baseTableName="protocol" constraintName="child_status_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_product" baseTableName="protocol" constraintName="child_product_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
@@ -146,6 +149,9 @@
         </createIndex>
         <createIndex schemaName="ruleform" indexName="protocol_service_fkey_idx" tableName="protocol" unique="false">
             <column name="service" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_authority_idx" tableName="protocol" unique="false">
+            <column name="authority" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="protocol" constraintName="protocol_workspace_fkey" deferrable="true"

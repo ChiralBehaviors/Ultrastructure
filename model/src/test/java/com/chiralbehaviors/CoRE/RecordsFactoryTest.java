@@ -103,11 +103,6 @@ public class RecordsFactoryTest extends DatabaseTest {
                                                      RECORDS.newAttribute());
         RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
                                                             attribute);
-        RECORDS.newAgencyExistential();
-        RECORDS.newAgencyAttrAuth();
-        RECORDS.newAgencyFacet();
-        RECORDS.newAgencyNetAttrAuth();
-        RECORDS.newAgencyNetAuth();
         RECORDS.newExistentialNetwork();
 
         RECORDS.newExistentialNetworkAuthorization();
@@ -181,8 +176,6 @@ public class RecordsFactoryTest extends DatabaseTest {
                                           RECORDS.newExistentialAttribute());
         RECORDS.newWorkspaceAuthorization("", p,
                                           RECORDS.newExistentialAttributeAuthorization());
-        RECORDS.newWorkspaceAuthorization("", p,
-                                          RECORDS.newAgencyExistential());
         RECORDS.newWorkspaceAuthorization("", p,
                                           RECORDS.newExistentialNetwork());
         RECORDS.newWorkspaceAuthorization("", p,

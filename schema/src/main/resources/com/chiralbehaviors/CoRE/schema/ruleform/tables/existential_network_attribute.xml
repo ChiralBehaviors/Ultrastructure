@@ -77,7 +77,8 @@
             unique="false"
         >
             <column name="updated_by" />
-        </createIndex><createIndex schemaName="ruleform" indexName="existential_network_attribute_authority_fkey_idx" tableName="existential_network_attribute"
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_authority_fkey_idx" tableName="existential_network_attribute"
             unique="false"
         >
             <column name="authority" />

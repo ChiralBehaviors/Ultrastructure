@@ -39,7 +39,6 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -89,14 +88,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                .getWorkspace());
             }
         }
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord)
-     */
-    @Override
-    public void add(AgencyExistentialRecord ruleform) {
-        put(null, ruleform);
     }
 
     /* (non-Javadoc)
@@ -251,9 +242,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void addImport(String name, Product workspace) {
         if (!model.getPhantasmModel()
                   .isAccessible(getDefiningProduct().getId(), model.getKernel()
-                                                           .getIsA().getId(),
+                                                                   .getIsA()
+                                                                   .getId(),
                                 model.getKernel()
-                                     .getWorkspace().getId())) {
+                                     .getWorkspace()
+                                     .getId())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
@@ -435,16 +428,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
             return aOrdering.compareTo(bOrdering);
         });
         return imports;
-    }
-
-    @Override
-    public void put(String key, AgencyExistentialRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-        }
-        model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
-             .insert();
     }
 
     /* (non-Javadoc)
@@ -688,9 +671,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void removeImport(Product workspace, Agency updatedBy) {
         if (!model.getPhantasmModel()
                   .isAccessible(getDefiningProduct().getId(), model.getKernel()
-                                                           .getIsA().getId(),
+                                                                   .getIsA()
+                                                                   .getId(),
                                 model.getKernel()
-                                     .getWorkspace().getId())) {
+                                     .getWorkspace()
+                                     .getId())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }

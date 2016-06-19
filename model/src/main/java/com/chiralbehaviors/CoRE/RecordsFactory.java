@@ -20,11 +20,6 @@
 
 package com.chiralbehaviors.CoRE;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_ATTR_AUTH;
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_FACET;
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_NET_ATTR_AUTH;
-import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_NET_AUTH;
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
@@ -65,11 +60,6 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyAttrAuthRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyFacetRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyNetAttrAuthRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyNetAuthRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -177,41 +167,6 @@ public interface RecordsFactory {
         Agency record = newAgency();
         record.setName(name);
         record.setDescription(description);
-        return record;
-    }
-
-    default AgencyAttrAuthRecord newAgencyAttrAuth() {
-        AgencyAttrAuthRecord record = create().newRecord(AGENCY_ATTR_AUTH);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default AgencyExistentialRecord newAgencyExistential() {
-        AgencyExistentialRecord record = create().newRecord(AGENCY_EXISTENTIAL);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default AgencyFacetRecord newAgencyFacet() {
-        AgencyFacetRecord record = create().newRecord(AGENCY_FACET);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default AgencyNetAttrAuthRecord newAgencyNetAttrAuth() {
-        AgencyNetAttrAuthRecord record = create().newRecord(AGENCY_NET_ATTR_AUTH);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default AgencyNetAuthRecord newAgencyNetAuth() {
-        AgencyNetAuthRecord record = create().newRecord(AGENCY_NET_AUTH);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -724,18 +679,6 @@ public interface RecordsFactory {
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
-    }
-
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
-                                                                   Product definingProduct,
-                                                                   AgencyExistentialRecord record) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
-                                                                      definingProduct,
-                                                                      record.getId(),
-                                                                      ReferenceType.Agency_Existential_Grouping);
-        record.setWorkspace(auth.getId());
-        record.update();
-        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,

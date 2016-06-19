@@ -64,6 +64,11 @@
         >
             <column name="authorized_attribute" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_authorization_authority_idx" tableName="existential_network_attribute_authorization"
+            unique="false"
+        >
+            <column name="authority" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="existential_network_attribute_authorization" constraintName="ena_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />

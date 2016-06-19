@@ -85,6 +85,11 @@
         <createIndex schemaName="ruleform" indexName="existential_attribute_unit_idx" tableName="existential_attribute" unique="false">
             <column name="unit" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_attribute_authority_idx" tableName="existential_attribute"
+            unique="false"
+        >
+            <column name="authority" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="existential_attribute" constraintName="existential_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />

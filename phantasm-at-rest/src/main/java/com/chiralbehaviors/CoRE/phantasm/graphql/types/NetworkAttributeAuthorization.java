@@ -76,6 +76,9 @@ public class NetworkAttributeAuthorization {
             if (authority != null) {
                 record.setAuthority(UUID.fromString(authority));
             }
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (authorizedAttribute != null) {
                 record.setAuthorizedAttribute(UUID.fromString(authorizedAttribute));
             }

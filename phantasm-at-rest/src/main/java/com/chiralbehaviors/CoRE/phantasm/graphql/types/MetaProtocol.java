@@ -43,6 +43,8 @@ public class MetaProtocol {
         @GraphQLField
         public String assignTo;
         @GraphQLField
+        public String authority;
+        @GraphQLField
         public String deliverFrom;
         @GraphQLField
         public String deliverTo;
@@ -64,6 +66,9 @@ public class MetaProtocol {
         public String unit;
 
         public void update(MetaProtocolRecord r) {
+            if (authority != null) {
+                r.setAuthority(UUID.fromString(authority));
+            }
             if (assignTo != null) {
                 r.setAssignTo(UUID.fromString(assignTo));
             }

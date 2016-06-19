@@ -48,6 +48,8 @@ public class Protocol {
         @GraphQLField
         public String assignTo;
         @GraphQLField
+        public String authority;
+        @GraphQLField
         public String childAssignTo;
         @GraphQLField
         public String childDeliverFrom;
@@ -85,6 +87,9 @@ public class Protocol {
         public String unit;
 
         public void update(ProtocolRecord r) {
+            if (authority != null) {
+                r.setAuthority(UUID.fromString(authority));
+            }
             if (assignTo != null) {
                 r.setAssignTo(UUID.fromString(assignTo));
             }

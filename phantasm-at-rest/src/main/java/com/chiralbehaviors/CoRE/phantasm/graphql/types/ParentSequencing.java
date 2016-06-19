@@ -40,6 +40,8 @@ public class ParentSequencing {
 
     public static class ParentSequencingState {
         @GraphQLField
+        public String  authority;
+        @GraphQLField
         public String  notes;
         @GraphQLField
         public String  parent;
@@ -53,6 +55,9 @@ public class ParentSequencing {
         public String  statusCode;
 
         public void update(ParentSequencingAuthorizationRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (parent != null) {
                 record.setParent(UUID.fromString(parent));
             }
@@ -81,10 +86,11 @@ public class ParentSequencing {
     }
 
     public static ParentSequencing fetch(DataFetchingEnvironment env, UUID id) {
-        return new ParentSequencing(WorkspaceSchema.ctx(env).create()
-                                            .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
-                                            .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.ID.equal(id))
-                                            .fetchOne());
+        return new ParentSequencing(WorkspaceSchema.ctx(env)
+                                                   .create()
+                                                   .selectFrom(Tables.PARENT_SEQUENCING_AUTHORIZATION)
+                                                   .where(Tables.PARENT_SEQUENCING_AUTHORIZATION.ID.equal(id))
+                                                   .fetchOne());
     }
 
     private final ParentSequencingAuthorizationRecord record;
@@ -108,15 +114,17 @@ public class ParentSequencing {
     @GraphQLField
 
     public Product getParent(DataFetchingEnvironment env) {
-        return new Product(WorkspaceSchema.ctx(env).records()
-                                   .resolve(record.getParent()));
+        return new Product(WorkspaceSchema.ctx(env)
+                                          .records()
+                                          .resolve(record.getParent()));
     }
 
     @GraphQLField
 
     public StatusCode getParentStatusToSet(DataFetchingEnvironment env) {
-        return new StatusCode(WorkspaceSchema.ctx(env).records()
-                                      .resolve(record.getParentStatusToSet()));
+        return new StatusCode(WorkspaceSchema.ctx(env)
+                                             .records()
+                                             .resolve(record.getParentStatusToSet()));
     }
 
     public ParentSequencingAuthorizationRecord getRecord() {
@@ -131,21 +139,24 @@ public class ParentSequencing {
     @GraphQLField
 
     public Product getService(DataFetchingEnvironment env) {
-        return new Product(WorkspaceSchema.ctx(env).records()
-                                   .resolve(record.getService()));
+        return new Product(WorkspaceSchema.ctx(env)
+                                          .records()
+                                          .resolve(record.getService()));
     }
 
     @GraphQLField
 
     public StatusCode getStatusCode(DataFetchingEnvironment env) {
-        return new StatusCode(WorkspaceSchema.ctx(env).records()
-                                      .resolve(record.getStatusCode()));
+        return new StatusCode(WorkspaceSchema.ctx(env)
+                                             .records()
+                                             .resolve(record.getStatusCode()));
     }
 
     @GraphQLField
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
-        return new Agency(WorkspaceSchema.ctx(env).records()
-                                  .resolve(record.getUpdatedBy()));
+        return new Agency(WorkspaceSchema.ctx(env)
+                                         .records()
+                                         .resolve(record.getUpdatedBy()));
     }
 
     @GraphQLField

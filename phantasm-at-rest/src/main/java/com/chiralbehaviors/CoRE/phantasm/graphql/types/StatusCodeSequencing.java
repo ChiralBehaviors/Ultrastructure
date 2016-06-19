@@ -42,6 +42,8 @@ public class StatusCodeSequencing {
 
     public static class StatusCodeSequencingState {
         @GraphQLField
+        public String  authority;
+        @GraphQLField
         public String  child;
         @GraphQLField
         public String  notes;
@@ -55,6 +57,9 @@ public class StatusCodeSequencing {
         public String  statusCode;
 
         public void update(StatusCodeSequencingRecord record) {
+            if (authority != null) {
+                record.setAuthority(UUID.fromString(authority));
+            }
             if (parent != null) {
                 record.setParent(UUID.fromString(parent));
             }
@@ -78,10 +83,11 @@ public class StatusCodeSequencing {
 
     public static StatusCodeSequencing fetch(DataFetchingEnvironment env,
                                              UUID id) {
-        return new StatusCodeSequencing(WorkspaceSchema.ctx(env).create()
-                                                .selectFrom(Tables.STATUS_CODE_SEQUENCING)
-                                                .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(id))
-                                                .fetchOne());
+        return new StatusCodeSequencing(WorkspaceSchema.ctx(env)
+                                                       .create()
+                                                       .selectFrom(Tables.STATUS_CODE_SEQUENCING)
+                                                       .where(Tables.STATUS_CODE_SEQUENCING.ID.equal(id))
+                                                       .fetchOne());
     }
 
     private final StatusCodeSequencingRecord record;

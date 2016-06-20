@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.phantasm.plugin.test;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
@@ -38,28 +37,31 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 @Plugin(Thing1.class)
-public interface Thing1_Plugin {
-    static final AtomicReference<String> passThrough = new AtomicReference<>();
+public class Thing1_Plugin {
+    public static final AtomicReference<String> passThrough = new AtomicReference<>();
 
     @Initializer
-    default void constructor(DataFetchingEnvironment env, Thing1 instance) {
+    public void constructor(DataFetchingEnvironment env, PhantasmCRUD crud,
+                            Thing1 instance) {
+        crud.getModel(); // ensure it isn't null;
+        env.getArguments(); // not null;
         ExistentialRuleform ruleform = instance.getRuleform();
         ruleform.setDescription(passThrough.get());
         ruleform.update();
     }
 
     @GraphQLField
-    default String instanceMethod(DataFetchingEnvironment env, Model model,
-                                  Thing1 instance) {
+    public String instanceMethod(DataFetchingEnvironment env, PhantasmCRUD crud,
+                                 Thing1 instance) {
         return instance.getThing2()
                        .getName();
     }
 
     @GraphQLField
-    default String instanceMethodWithArgument(DataFetchingEnvironment env,
-                                              PhantasmCRUD crud,
-                                              Thing1 instance,
-                                              @GraphQLName("arg1") String arg1) {
+    public String instanceMethodWithArgument(@GraphQLName("arg1") String arg1,
+                                             DataFetchingEnvironment env,
+                                             PhantasmCRUD crud,
+                                             Thing1 instance) {
         crud.getModel(); // ensure it isn't null;
         env.getArguments(); // not null;
         passThrough.set(arg1);

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -196,7 +197,7 @@ public class PhantasmCRUD {
      */
     public ExistentialRuleform createInstance(Aspect facet, String name,
                                               String description,
-                                              Function<ExistentialRuleform, ExistentialRuleform> constructor) {
+                                              Consumer<ExistentialRuleform> initializer) {
         if (!model.getPhantasmModel()
                   .checkPermission(facet.getFacet(), getCREATE())) {
             return null;
@@ -209,10 +210,8 @@ public class PhantasmCRUD {
         ((ExistentialRecord) instance).insert();
         model.getPhantasmModel()
              .initialize(instance, facet.getFacet());
-        if (!checkInvoke(facet, instance)) {
-            return null;
-        }
-        return constructor.apply(instance);
+        initializer.accept(instance);
+        return instance;
     }
 
     public Relationship getAPPLY() {

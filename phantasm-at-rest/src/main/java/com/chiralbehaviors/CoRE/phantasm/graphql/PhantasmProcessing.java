@@ -42,7 +42,10 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
@@ -160,7 +163,7 @@ public class PhantasmProcessing {
             boolean valid = !Modifier.isStatic(method.getModifiers())
                             && method.getAnnotation(GraphQLField.class) != null;
             if (valid) {
-                builder.field(field(method, typeFunction, null));
+                builder.field(field(method, typeFunction, null, null));
             }
         }
         builder.typeResolver(typeResolver);
@@ -236,7 +239,7 @@ public class PhantasmProcessing {
             }
 
             if (valid) {
-                builder.field(field(method, typeFunction, null));
+                builder.field(field(method, typeFunction, null, null));
             }
         }
         for (Field field : object.getFields()) {
@@ -259,20 +262,25 @@ public class PhantasmProcessing {
         return builder;
     }
 
-    public static GraphQLObjectType.Builder processPlugin(Class<?> plugin,
-                                                          TypeResolver typeResolver,
-                                                          TypeFunction typeFunction,
-                                                          GraphQLObjectType.Builder builder) {
-        if (!plugin.isInterface()) {
-            throw new IllegalArgumentException(String.format("Plugin must be an interface: %s",
-                                                             plugin.getCanonicalName()));
-        }
+    public static List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> processPlugin(Class<?> plugin,
+                                                                                               TypeResolver typeResolver,
+                                                                                               TypeFunction typeFunction,
+                                                                                               GraphQLObjectType.Builder builder) {
         Plugin annotation = plugin.getAnnotation(Plugin.class);
         if (annotation == null) {
             throw new IllegalArgumentException(String.format("Class not annotated with @Plugin: %s",
                                                              plugin.getCanonicalName()));
         }
-        Class<?> phantasm = annotation.value();
+        List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> initializers = new ArrayList<>();
+        Class<? extends Phantasm> phantasm = annotation.value();
+        Object instance;
+        try {
+            instance = plugin.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException(String.format("Unable to instantiate: %s",
+                                                             plugin),
+                                               e);
+        }
         for (Method method : plugin.getMethods()) {
 
             Class<?> declaringClass = getDeclaringClass(method);
@@ -289,10 +297,21 @@ public class PhantasmProcessing {
             }
 
             if (valid) {
-                builder.field(field(method, typeFunction, phantasm));
+                builder.field(field(method, typeFunction, phantasm, instance));
+            } else if (method.getAnnotation(Initializer.class) != null) {
+                InlinedFunction initializer = new InlinedFunction(method,
+                                                                  Collections.emptyMap(),
+                                                                  phantasm,
+                                                                  instance);
+                initializers.add((env,
+                                  rf) -> initializer.get(env,
+                                                         WorkspaceSchema.ctx(env)
+                                                                        .wrap(phantasm,
+                                                                              rf),
+                                                         true));
             }
         }
-        return builder;
+        return initializers;
     }
 
     @SuppressWarnings("unchecked")
@@ -501,7 +520,8 @@ public class PhantasmProcessing {
 
     protected static GraphQLFieldDefinition field(Method method,
                                                   TypeFunction typeFunction,
-                                                  Class<?> phantasm) {
+                                                  Class<?> phantasm,
+                                                  Object instance) {
         GraphQLFieldDefinition.Builder builder = newFieldDefinition();
 
         String name = method.getName()
@@ -531,6 +551,8 @@ public class PhantasmProcessing {
                                            .peek(e -> i.incrementAndGet())
                                            .filter(p -> !DataFetchingEnvironment.class.isAssignableFrom(p.getType()))
                                            .filter(p -> !PhantasmCRUD.class.isAssignableFrom(p.getType()))
+                                           .filter(p -> !p.getType()
+                                                          .isAnnotationPresent(Facet.class))
                                            .filter(p -> !p.getType()
                                                           .isAnnotationPresent(Facet.class))
                                            .map(new Function<Parameter, GraphQLArgument>() {
@@ -598,9 +620,12 @@ public class PhantasmProcessing {
         GraphQLDataFetcher dataFetcher = method.getAnnotation(GraphQLDataFetcher.class);
         DataFetcher actualDataFetcher;
         try {
-            actualDataFetcher = dataFetcher == null ? new ReflectiveDatafeter(method,
-                                                                              inputTxfms,
-                                                                              phantasm)
+            actualDataFetcher = dataFetcher == null ? phantasm == null ? new RelfectiveDataFetcher(method,
+                                                                                                   inputTxfms)
+                                                                       : new InlinedFunction(method,
+                                                                                             inputTxfms,
+                                                                                             phantasm,
+                                                                                             instance)
                                                     : dataFetcher.value()
                                                                  .newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

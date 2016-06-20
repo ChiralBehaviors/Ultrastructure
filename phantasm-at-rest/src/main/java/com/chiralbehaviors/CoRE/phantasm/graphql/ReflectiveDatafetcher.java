@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -37,6 +38,7 @@ class ReflectiveDatafeter implements DataFetcher {
     @SuppressWarnings("rawtypes")
     private final Class                                               phantasm;
     private final int                                                 phantasmIndex;
+    private final int                                                 crudIndex;
 
     public ReflectiveDatafeter(Method method,
                                Map<Integer, Function<Map<String, Object>, Object>> inputTxfms,
@@ -51,6 +53,7 @@ class ReflectiveDatafeter implements DataFetcher {
         this.phantasm = phantasm;
         phantasmIndex = phantasm == null ? -1
                                          : parameterTypes.indexOf(phantasm);
+        crudIndex = parameterTypes.indexOf(PhantasmCRUD.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -68,6 +71,9 @@ class ReflectiveDatafeter implements DataFetcher {
             args.add(phantasmIndex, WorkspaceSchema.ctx(environment)
                                                    .wrap(phantasm,
                                                          (ExistentialRuleform) environment.getSource()));
+        }
+        if (crudIndex >= 0) {
+            args.add(crudIndex, environment.getContext());
         }
         Object[] argv = args.toArray();
         for (int i = 0; i < args.size(); i++) {

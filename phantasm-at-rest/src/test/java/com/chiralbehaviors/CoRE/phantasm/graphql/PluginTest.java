@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +30,7 @@ import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,6 +44,7 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
@@ -93,6 +96,10 @@ public class PluginTest extends AbstractModelTest {
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
                                                                        COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
+        assertNotNull(thing1Plugin);
+        assertNotNull(thing1Plugin.getAnnotation(Plugin.class));
+        Set<Class<?>> plugins = reflections.getTypesAnnotatedWith(Plugin.class);
+        assertFalse(plugins.isEmpty());
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
                                                                                     .get(null);
         Map<String, Object> variables = new HashMap<>();

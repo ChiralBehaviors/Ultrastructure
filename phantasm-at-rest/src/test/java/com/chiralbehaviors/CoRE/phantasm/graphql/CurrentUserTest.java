@@ -89,11 +89,11 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         variables.put("id", id);
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: String!) { coREUser(id: $id) {name } }",
+                                               "query m($id: String!) { coreUser(id: $id) {name } }",
                                                variables));
         assertEquals(principal.getPrincipal()
                               .getName(),
-                     result.get("coREUser")
+                     result.get("coreUser")
                            .get("name")
                            .asText());
 

@@ -24,7 +24,6 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.objec
 import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.objectBuilder;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
-import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 
 import java.util.Collections;
 import java.util.Deque;
@@ -203,11 +202,6 @@ public class WorkspaceSchema {
                 .forEach(e -> e.getValue()
                                .build(new Aspect(model.create(), e.getKey()),
                                       topLevelQuery, topLevelMutation));
-        topLevelQuery.field(newFieldDefinition().name("currentUser")
-                                                .type(new GraphQLTypeReference("CoREUser"))
-                                                .dataFetcher(env -> ctx(env).getCurrentPrincipal()
-                                                                            .getPrincipal())
-                                                .build());
         schema = GraphQLSchema.newSchema()
                               .query(topLevelQuery.build())
                               .mutation(topLevelMutation.build())

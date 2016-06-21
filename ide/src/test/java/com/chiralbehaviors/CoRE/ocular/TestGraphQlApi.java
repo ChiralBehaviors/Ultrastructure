@@ -59,7 +59,7 @@ public class TestGraphQlApi {
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
                                                      "UTF-8"));
         GraphQlApi api = new GraphQlApi(webTarget, null);
-        ObjectNode data = api.query("query q { coREUsers { id name } }", null);
+        ObjectNode data = api.query("query q { coreUsers { id name } }", null);
         assertNotNull(data);
     }
 

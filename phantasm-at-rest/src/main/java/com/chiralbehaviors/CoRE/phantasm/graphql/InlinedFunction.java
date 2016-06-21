@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 import graphql.schema.DataFetcher;
@@ -105,27 +104,14 @@ class InlinedFunction implements DataFetcher {
             }
         }
         try {
-            return method.invoke(standIn, argv);
+            Object result = method.invoke(standIn, argv);
+            return result != null && method.getReturnType()
+                                           .isAnnotationPresent(Facet.class) ? ((Phantasm) result).getRuleform()
+                                                                             : result;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e.getTargetException());
         }
-    }
-
-    protected Object invokeDefault(Object proxy, Method method, Object[] args,
-                                   final Class<?> declaringClass) throws NoSuchMethodException,
-                                                                  Throwable,
-                                                                  IllegalAccessException,
-                                                                  InstantiationException,
-                                                                  InvocationTargetException {
-        Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
-                                                                                                          int.class);
-        constructor.setAccessible(true);
-        return constructor.newInstance(declaringClass,
-                                       MethodHandles.Lookup.PRIVATE)
-                          .unreflectSpecial(method, declaringClass)
-                          .bindTo(proxy)
-                          .invokeWithArguments(args);
     }
 }

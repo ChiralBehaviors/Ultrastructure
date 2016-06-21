@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
@@ -74,6 +75,7 @@ import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLTypeReference;
 import graphql.schema.TypeResolver;
 
 /**
@@ -531,8 +533,15 @@ public class PhantasmProcessing {
         builder.name(nameAnn == null ? name : nameAnn.value());
         AnnotatedType annotatedReturnType = method.getAnnotatedReturnType();
 
-        GraphQLOutputType type = (GraphQLOutputType) typeFunction.apply(method.getReturnType(),
-                                                                        annotatedReturnType);
+        GraphQLOutputType type;
+        if (method.getReturnType()
+                  .isAnnotationPresent(Facet.class)) {
+            type = new GraphQLTypeReference(WorkspacePresentation.toTypeName(method.getReturnType()
+                                                                                   .getSimpleName()));
+        } else {
+            type = (GraphQLOutputType) typeFunction.apply(method.getReturnType(),
+                                                          annotatedReturnType);
+        }
 
         GraphQLOutputType outputType = method.getAnnotation(NotNull.class) == null ? type
                                                                                    : new GraphQLNonNull(type);

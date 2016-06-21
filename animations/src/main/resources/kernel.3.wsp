@@ -5,7 +5,7 @@ workspace: "urn:uuid:00000000-0000-0004-0000-000000000003"
 
 
 agencies {
-    CoreUser = "CoRE User" "Ultrastructure CoRE API user";
+    CoreUser = "Core User" "Ultrastructure CoRE API user";
     SuperUser = "Ultrastructure Super User" "Ye Root";
     UnauthenticatedAgency = "Unauthenticated" "The unauthenticaed agency";
     LoginRole = "Login Role" "The Login role";
@@ -63,13 +63,6 @@ relationships {
     InstanceOf = "Instance Of" "A is an instance of B" | HasInstance = "Has Instance" "A has instance B";
     SingletonOf = "Singleton Of" "A is the singleton instance of B" | HasSingleton = "Has Singleton" "A has singleton instance B";
     
-    IsPluginOf = "Is Plugin Of" "A is a plugin of the workspace B" | HasPlugin = "Has Plugin" "A has a plugin B";
-    IsArgumentOf = "Is Argument Of" "A is an argument for the method B" | HasArgument = "Has Argument" "A has an argument B";
-    IsInstanceMethodOf = "Is Instance Method Of" "A is an instance method of B" | HasInstanceMethod = "Has Instance Method" "A has an instance method B";
-    IsStaticMethodOf = "Is Static Method Of" "A is a static method of B" | HasStaticMethod = "Has Static Method" "A has a static method B";
-    IsCodeSourceOf = "Is Code Source Of" "A is a JVM code source of B" | HasCodeSource = "Has Code Source" "A has code source B";
-    IsConstructorOf = "Is Constructor Of" "A is a constructor of B" | HasConstructor = "HasConstructor" "A has constructor B";
-    
     Permission = "Permission" "The defining permission classification";
     CREATE = "Create" "The create permission" | MayBeCreatedBy = "May Be Created By" "May Be Created By";
     READ = "Read" "The read permission" | MayBeReadBy = "May Be Read By" "The inverse read permission";
@@ -102,4 +95,5 @@ relationships {
 
 inferences {
     HasMember.HasMember.HasMember
+    MemberOf.HasRole.HasRole
 }

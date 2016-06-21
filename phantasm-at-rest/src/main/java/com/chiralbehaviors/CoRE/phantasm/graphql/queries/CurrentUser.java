@@ -96,6 +96,13 @@ public interface CurrentUser {
     }
 
     @GraphQLField
+    @GraphQLDescription("Return the current user")
+    default CoreUser getCurrentUser(DataFetchingEnvironment env) {
+        return ctx(env).wrap(CoreUser.class, ctx(env).getCurrentPrincipal()
+                                                     .getPrincipal());
+    }
+
+    @GraphQLField
     @GraphQLDescription("Return true if the current user has been granted the role")
     default Boolean hasRole(@NotNull @GraphQLName("role") String roleId,
                             DataFetchingEnvironment env) {

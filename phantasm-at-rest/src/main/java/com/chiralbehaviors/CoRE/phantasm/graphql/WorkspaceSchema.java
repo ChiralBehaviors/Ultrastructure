@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
@@ -133,7 +134,8 @@ public class WorkspaceSchema {
             JobChronologyQueries {
     }
 
-    public interface Mutations extends ExistentialMutations, JobMutations {
+    public interface Mutations
+            extends ExistentialMutations, JobMutations, CoreUserAdmin {
     }
 
     public interface Queries extends CurrentUser, ExistentialQueries,

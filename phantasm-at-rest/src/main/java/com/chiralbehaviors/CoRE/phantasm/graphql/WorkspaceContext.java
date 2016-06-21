@@ -26,14 +26,15 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Mutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Queries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 /**
  * @author hhildebrand
  *
  */
-public class WorkspaceContext extends PhantasmCRUD
-        implements Queries, Mutations, MetaQueries, MetaMutations {
+public class WorkspaceContext extends PhantasmCRUD implements Queries,
+        Mutations, MetaQueries, MetaMutations, CoreUserAdmin {
 
     private final Product workspace;
 

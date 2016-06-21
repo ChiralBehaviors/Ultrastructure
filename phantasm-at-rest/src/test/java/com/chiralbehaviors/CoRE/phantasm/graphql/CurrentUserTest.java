@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -62,7 +63,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
     @Test
     public void testCurrentUser() throws Exception {
         String username = "bob@slack.com";
-        String password = "give me food or give me slack or kill me";
+        String password = "give me food or give me slack";
         CoreUser bob = model.construct(CoreUser.class, ExistentialDomain.Agency,
                                        "Bob", "Test Dummy");
         Role myRole = model.construct(Role.class, ExistentialDomain.Agency,
@@ -181,6 +182,24 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                                variables));
         assertTrue(result.get("inRoles")
                          .asBoolean());
+
+        result = model.executeAs(principal,
+                                 () -> execute(schema,
+                                               "{ currentUser { passwordHash } }",
+                                               variables));
+        String oldHash = result.get("currentUser")
+                               .get("passwordHash")
+                               .asText();
+
+        variables.put("old", password);
+        variables.put("new", password + " or kill me");
+        result = model.executeAs(principal,
+                                 () -> execute(schema,
+                                               "mutation m($old: String! $new: String!) { updatePassword(oldPassword: $old newPassword: $new) {passwordHash}}",
+                                               variables));
+        assertNotEquals(oldHash, result.get("updatePassword")
+                                       .get("passwordHash")
+                                       .asText());
 
     }
 }

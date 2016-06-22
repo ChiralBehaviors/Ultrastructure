@@ -210,6 +210,9 @@ public class PhantasmCRUD {
         ((ExistentialRecord) instance).insert();
         model.getPhantasmModel()
              .initialize(instance, facet.getFacet());
+        if (!checkInvoke(facet, instance)) {
+            return null;
+        }
         initializer.accept(instance);
         return instance;
     }

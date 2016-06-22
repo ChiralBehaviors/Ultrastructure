@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +47,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.jooq.DSLContext;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,9 +117,10 @@ public class WorkspaceResource extends TransactionalResource {
     }
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
-    private final ClassLoader                        executionScope;
+    private final URLClassLoader                     executionScope;
     private final GraphQLSchema                      metaSchema;
     private final ObjectMapper                       objectMapper;
+    private final Reflections                        reflections;
     {
         try {
             metaSchema = new WorkspaceSchema().buildMeta();
@@ -124,10 +129,24 @@ public class WorkspaceResource extends TransactionalResource {
         }
     }
 
-    public WorkspaceResource(ClassLoader executionScope) {
+    public WorkspaceResource() {
+        this(new URLClassLoader(new URL[0],
+                                WorkspaceResource.class.getClassLoader()));
+    }
+
+    public WorkspaceResource(URLClassLoader executionScope) {
         this.executionScope = executionScope;
         objectMapper = new ObjectMapper().registerModule(new CoREModule());
-
+        ClassLoader prev = Thread.currentThread()
+                                 .getContextClassLoader();
+        Thread.currentThread()
+              .setContextClassLoader(executionScope);
+        try {
+            reflections = new Reflections(new ConfigurationBuilder().addClassLoader(executionScope));
+        } finally {
+            Thread.currentThread()
+                  .setContextClassLoader(prev);
+        }
     }
 
     @Timed
@@ -294,16 +313,22 @@ public class WorkspaceResource extends TransactionalResource {
                                                                     workspace),
                                                       Status.NOT_FOUND);
                 }
-
+                ClassLoader prev = Thread.currentThread()
+                                         .getContextClassLoader();
+                Thread.currentThread()
+                      .setContextClassLoader(executionScope);
                 try {
                     return new WorkspaceSchema().build(scoped.getWorkspace(),
-                                                       model, executionScope);
+                                                       model, reflections);
                 } catch (Exception e) {
                     throw new IllegalStateException(String.format("Unable to buidl schema for %s",
                                                                   scoped.getWorkspace()
                                                                         .getDefiningProduct()
                                                                         .getName()),
                                                     e);
+                } finally {
+                    Thread.currentThread()
+                          .setContextClassLoader(prev);
                 }
             });
 
@@ -331,14 +356,18 @@ public class WorkspaceResource extends TransactionalResource {
                 return null;
             }
             Map<String, Object> variables = getVariables(request);
-            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
-                                                                 crud,
-                                                                 variables);
-            if (result.getErrors()
-                      .isEmpty()) {
-                return result;
+
+            ClassLoader prev = Thread.currentThread()
+                                     .getContextClassLoader();
+            Thread.currentThread()
+                  .setContextClassLoader(executionScope);
+            try {
+                return execute(schema, crud, (String) request.get(QUERY),
+                               variables);
+            } finally {
+                Thread.currentThread()
+                      .setContextClassLoader(prev);
             }
-            return result;
         }, create);
     }
 
@@ -439,5 +468,17 @@ public class WorkspaceResource extends TransactionalResource {
             }
             return baos.toString();
         }, create);
+    }
+
+    private ExecutionResult execute(GraphQLSchema schema, WorkspaceContext crud,
+                                    String query,
+                                    Map<String, Object> variables) {
+        ExecutionResult result = new GraphQL(schema).execute(query, crud,
+                                                             variables);
+        if (result.getErrors()
+                  .isEmpty()) {
+            return result;
+        }
+        return result;
     }
 }

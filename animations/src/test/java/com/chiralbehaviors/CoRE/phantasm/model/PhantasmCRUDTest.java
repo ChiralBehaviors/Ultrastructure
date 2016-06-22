@@ -64,7 +64,8 @@ public class PhantasmCRUDTest extends AbstractModelTest {
         assertNotNull(crud.apply(aspect, test, e -> e));
         crud.cast(test, aspect);
         ExistentialRuleform instance = crud.createInstance(aspect, "bar", "foo",
-                                                           e -> e);
+                                                           e -> {
+                                                           });
         assertNotNull(instance);
         assertEquals(instance.getId(), crud.lookup(instance.getId()
                                                            .toString())

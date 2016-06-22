@@ -25,16 +25,19 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
+
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
-class MethodDataFetcher2 implements DataFetcher {
+class ReflectiveDataFetcher implements DataFetcher {
     private final int                                                 envIndex;
     private final Map<Integer, Function<Map<String, Object>, Object>> inputTxfms;
     private final Method                                              method;
 
-    public MethodDataFetcher2(Method method,
-                              Map<Integer, Function<Map<String, Object>, Object>> inputTxfms) {
+    public ReflectiveDataFetcher(Method method,
+                                 Map<Integer, Function<Map<String, Object>, Object>> inputTxfms) {
         this.method = method;
         List<Class<?>> parameterTypes = Arrays.asList(method.getParameters())
                                               .stream()
@@ -63,7 +66,10 @@ class MethodDataFetcher2 implements DataFetcher {
             }
         }
         try {
-            return method.invoke(environment.getSource(), argv);
+            Object result = method.invoke(environment.getSource(), argv);
+            return result != null && method.getReturnType()
+                                           .isAnnotationPresent(Facet.class) ? ((Phantasm) result).getRuleform()
+                                                                             : result;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {

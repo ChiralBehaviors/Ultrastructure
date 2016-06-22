@@ -45,7 +45,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
 
     @Test
     public void testWorkspaces() throws Exception {
-        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        WorkspaceResource resource = new WorkspaceResource();
         assertEquals(1, resource.getWorkspaces(model.getCurrentPrincipal(),
                                                model.create())
                                 .size());
@@ -53,7 +53,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
 
     @Test
     public void testMeta() throws Exception {
-        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        WorkspaceResource resource = new WorkspaceResource();
         assertNotNull(resource.queryMeta(model.getCurrentPrincipal(),
                                          WellKnownObject.KERNEL_IRI,
                                          new QueryRequest(getIntrospectionQuery()).asMap(),
@@ -73,7 +73,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
 
     @Test
     public void testLoadWorkspace() throws Exception {
-        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        WorkspaceResource resource = new WorkspaceResource();
         String iri = resource.loadWorkspace(null, null,
                                             getClass().getResourceAsStream(THING_1_JSON),
                                             model.create());
@@ -82,7 +82,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
 
     @Test
     public void testSerializeWorkspace() throws Exception {
-        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        WorkspaceResource resource = new WorkspaceResource();
         String serialized = resource.serializeWorkspace(null,
                                                         WellKnownObject.KERNEL_IRI,
                                                         model.create());
@@ -91,7 +91,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
 
     @Test
     public void testManifest() throws Exception {
-        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        WorkspaceResource resource = new WorkspaceResource();
         String iri = resource.manifest(null, null,
                                        getClass().getResourceAsStream("/thing.wsp"),
                                        model.create());
@@ -104,7 +104,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
                                          ExistentialDomain.Agency, "frank",
                                          "TV's frank");
 
-        WorkspaceResource resource = new WorkspaceResource(getClass().getClassLoader());
+        WorkspaceResource resource = new WorkspaceResource();
         String snapshot = resource.snapshot(null, model.create());
         assertNotNull(snapshot);
         model.create()

@@ -23,35 +23,48 @@ package com.chiralbehaviors.CoRE.phantasm.plugin.test;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.plugin.test.product.Thing1;
 
+import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
  * @author hhildebrand
  *
  */
+@Plugin(Thing1.class)
 public class Thing1_Plugin {
     public static final AtomicReference<String> passThrough = new AtomicReference<>();
 
-    public static void constructor(DataFetchingEnvironment env, Model model,
-                                   Thing1 instance) {
+    @Initializer
+    public void constructor(DataFetchingEnvironment env, PhantasmCRUD crud,
+                            Thing1 instance) {
+        crud.getModel(); // ensure it isn't null;
+        env.getArguments(); // not null;
         ExistentialRuleform ruleform = instance.getRuleform();
         ruleform.setDescription(passThrough.get());
         ruleform.update();
     }
 
-    public static String instanceMethod(DataFetchingEnvironment env,
-                                        Model model, Thing1 instance) {
+    @GraphQLField
+    public String instanceMethod(DataFetchingEnvironment env, PhantasmCRUD crud,
+                                 Thing1 instance) {
         return instance.getThing2()
                        .getName();
     }
 
-    public static String instanceMethodWithArgument(DataFetchingEnvironment env,
-                                                    Model model,
-                                                    Thing1 instance) {
-        passThrough.set(env.getArgument("arg1"));
+    @GraphQLField
+    public String instanceMethodWithArgument(@GraphQLName("arg1") String arg1,
+                                             DataFetchingEnvironment env,
+                                             PhantasmCRUD crud,
+                                             Thing1 instance) {
+        crud.getModel(); // ensure it isn't null;
+        env.getArguments(); // not null;
+        passThrough.set(arg1);
         return instance.getThing2()
                        .getName();
     }

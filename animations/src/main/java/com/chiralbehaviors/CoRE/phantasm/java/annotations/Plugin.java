@@ -18,19 +18,31 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
+
 /**
+ * The annotation that marks a class as a GraphQL plugin for a phantasm of a
+ * workspace facet.
+ * 
+ * The annotation processor will scan the class for GraphQQLField annotations,
+ * which will be inlined as fields on the phantasm.
+ * 
  * @author hhildebrand
  *
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface FacetTransform {
 
+@Documented
+@Target({ TYPE })
+@Retention(RUNTIME)
+public @interface Plugin {
+    Class<? extends ScopedPhantasm> value();
 }

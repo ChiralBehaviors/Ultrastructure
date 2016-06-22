@@ -24,7 +24,6 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.objec
 import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.objectBuilder;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLString;
-import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 
 import java.util.Collections;
 import java.util.Deque;
@@ -37,18 +36,21 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.reflections.Reflections;
+
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
@@ -96,6 +98,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
@@ -131,7 +134,8 @@ public class WorkspaceSchema {
             JobChronologyQueries {
     }
 
-    public interface Mutations extends ExistentialMutations, JobMutations {
+    public interface Mutations
+            extends ExistentialMutations, JobMutations, CoreUserAdmin {
     }
 
     public interface Queries extends CurrentUser, ExistentialQueries,
@@ -147,20 +151,27 @@ public class WorkspaceSchema {
     public WorkspaceSchema() {
     }
 
+    public GraphQLSchema build(WorkspaceAccessor accessor,
+                               Model model) throws NoSuchMethodException,
+                                            InstantiationException,
+                                            IllegalAccessException {
+        return build(accessor, model, new Reflections());
+    }
+
     public GraphQLSchema build(WorkspaceAccessor accessor, Model model,
-                               ClassLoader executionScope) throws NoSuchMethodException,
-                                                           InstantiationException,
-                                                           IllegalAccessException {
+                               Reflections reflections) throws NoSuchMethodException,
+                                                        InstantiationException,
+                                                        IllegalAccessException {
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace root = model.wrap(Workspace.class, definingProduct);
-        List<Plugin> plugins = root.getPlugins();
+        Set<Class<?>> plugins = reflections.getTypesAnnotatedWith(Plugin.class);
         Set<Workspace> aggregate = new HashSet<>();
         gatherImports(root, aggregate);
         aggregate.forEach(ws -> {
-            Deque<FacetRecord> unresolved = FacetFields.initialState(model.getWorkspaceModel()
-                                                                          .getScoped((Product) ws.getRuleform())
-                                                                          .getWorkspace(),
+            WorkspaceScope scope = model.getWorkspaceModel()
+                                        .getScoped((Product) ws.getRuleform());
+            Deque<FacetRecord> unresolved = FacetFields.initialState(scope.getWorkspace(),
                                                                      model);
             while (!unresolved.isEmpty()) {
                 FacetRecord facet = unresolved.pop();
@@ -169,11 +180,14 @@ public class WorkspaceSchema {
                 }
                 FacetFields type = new FacetFields(facet);
                 resolved.put(facet, type);
-                List<Plugin> facetPlugins = plugins.stream()
-                                                   .filter(plugin -> facet.getName()
-                                                                          .equals(plugin.getFacetName()))
-                                                   .collect(Collectors.toList());
-                type.resolve(facet, facetPlugins, model, executionScope)
+                List<Class<?>> facetPlugins = plugins.stream()
+                                                     .filter(plugin -> pluginFor(plugin,
+                                                                                 ws,
+                                                                                 facet,
+                                                                                 scope,
+                                                                                 model))
+                                                     .collect(Collectors.toList());
+                type.resolve(facet, facetPlugins, model, typeFunction)
                     .stream()
                     .filter(auth -> !resolved.containsKey(auth))
                     .forEach(auth -> unresolved.add(auth));
@@ -190,11 +204,6 @@ public class WorkspaceSchema {
                 .forEach(e -> e.getValue()
                                .build(new Aspect(model.create(), e.getKey()),
                                       topLevelQuery, topLevelMutation));
-        topLevelQuery.field(newFieldDefinition().name("currentUser")
-                                                .type(new GraphQLTypeReference("CoREUser"))
-                                                .dataFetcher(env -> ctx(env).getCurrentPrincipal()
-                                                                            .getPrincipal())
-                                                .build());
         schema = GraphQLSchema.newSchema()
                               .query(topLevelQuery.build())
                               .mutation(topLevelMutation.build())
@@ -294,6 +303,24 @@ public class WorkspaceSchema {
         resolved.entrySet()
                 .forEach(e -> addPhantasmCast(objectBuilder, e));
         return objectBuilder.build();
+    }
+
+    private boolean pluginFor(Class<?> plugin, Workspace ws, FacetRecord facet,
+                              WorkspaceScope scope, Model model) {
+        Plugin annotation = plugin.getAnnotation(Plugin.class);
+        assert annotation != null;
+        com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet facetAnnotation = annotation.value()
+                                                                                             .getAnnotation(com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet.class);
+        if (ws.getRuleform()
+              .getId()
+              .equals(WorkspaceAccessor.uuidOf(facetAnnotation.workspace()))) {
+            FacetRecord declaration = model.getPhantasmModel()
+                                           .getFacetDeclaration(scope.lookup(facetAnnotation.classifier()),
+                                                                scope.lookup(facetAnnotation.classification()));
+            return facet.equals(declaration);
+
+        }
+        return false;
     }
 
     private void registerTypes(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,

@@ -35,22 +35,19 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,15 +57,10 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
@@ -82,12 +74,9 @@ import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
-import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
@@ -104,33 +93,32 @@ import graphql.schema.GraphQLTypeReference;
  */
 public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
-    private static final String _EXT                  = "_ext";
-    private static final String ADD_TEMPLATE          = "add%s";
-    private static final String APPLY_MUTATION        = "apply%s";
-    private static final String AT_RULEFORM           = "@ruleform";
-    private static final String CREATE_MUTATION       = "create%s";
-    private static final String CREATE_TYPE           = "%sCreate";
-    private static final String DESCRIPTION           = "description";
-    private static final String ID                    = "id";
-    private static final String IDS                   = "ids";
-    private static final String IMMEDIATE_TEMPLATE    = "immediate%s";
-    private static final Logger log                   = LoggerFactory.getLogger(FacetFields.class);
-    private static final String NAME                  = "name";
-    private static final String REMOVE_MUTATION       = "remove%s";
-    private static final String REMOVE_TEMPLATE       = "remove%s";
-    private static final String S_S_PLUGIN_CONVENTION = "%s.%s_Plugin";
-    private static final String SET_DESCRIPTION       = "setDescription";
+    private static final String _EXT               = "_ext";
+    private static final String ADD_TEMPLATE       = "add%s";
+    private static final String APPLY_MUTATION     = "apply%s";
+    private static final String AT_RULEFORM        = "@ruleform";
+    private static final String CREATE_MUTATION    = "create%s";
+    private static final String CREATE_TYPE        = "%sCreate";
+    private static final String DESCRIPTION        = "description";
+    private static final String ID                 = "id";
+    private static final String IDS                = "ids";
+    private static final String IMMEDIATE_TEMPLATE = "immediate%s";
+    private static final Logger log                = LoggerFactory.getLogger(FacetFields.class);
+    private static final String NAME               = "name";
+    private static final String REMOVE_MUTATION    = "remove%s";
+    private static final String REMOVE_TEMPLATE    = "remove%s";
+    private static final String SET_DESCRIPTION    = "setDescription";
     @SuppressWarnings("unused")
-    private static final String SET_INDEX_TEMPLATE    = "set%sIndex";
+    private static final String SET_INDEX_TEMPLATE = "set%sIndex";
     @SuppressWarnings("unused")
-    private static final String SET_KEY_TEMPLATE      = "set%sKey";
-    private static final String SET_NAME              = "setName";
-    private static final String SET_TEMPLATE          = "set%s";
-    private static final String STATE                 = "state";
-    private static final String UPDATE_MUTATION       = "update%s";
-    private static final String UPDATE_TYPE           = "%sUpdate";
+    private static final String SET_KEY_TEMPLATE   = "set%sKey";
+    private static final String SET_NAME           = "setName";
+    private static final String SET_TEMPLATE       = "set%s";
+    private static final String STATE              = "state";
+    private static final String UPDATE_MUTATION    = "update%s";
+    private static final String UPDATE_TYPE        = "%sUpdate";
 
-    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
+    public static URLClassLoader configureExecutionScope(List<String> urlStrings) {
         ClassLoader parent = Thread.currentThread()
                                    .getContextClassLoader();
         if (parent == null) {
@@ -202,14 +190,14 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         return new String(chars);
     }
 
-    private List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>>          constructors   = new ArrayList<>();
-    private graphql.schema.GraphQLInputObjectType.Builder                                   createTypeBuilder;
-    private String                                                                          name;
-    private Set<FacetRecord>                                                                references     = new HashSet<>();
-    private GraphQLObjectType                                                               type;
-    private Builder                                                                         typeBuilder;
-    private Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate = new HashMap<>();
-    private graphql.schema.GraphQLInputObjectType.Builder                                   updateTypeBuilder;
+    private graphql.schema.GraphQLInputObjectType.Builder                  createTypeBuilder;
+    private List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> initializers   = new ArrayList<>();
+    private String                                                         name;
+    private Set<FacetRecord>                                               references     = new HashSet<>();
+    private GraphQLObjectType                                              type;
+    private Builder                                                        typeBuilder;
+    private Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>>     updateTemplate = new HashMap<>();
+    private graphql.schema.GraphQLInputObjectType.Builder                  updateTypeBuilder;
 
     public FacetFields(FacetRecord facet) {
         name = WorkspacePresentation.toTypeName(facet.getName());
@@ -248,13 +236,14 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         return new GraphQLTypeReference(WorkspacePresentation.toTypeName(typeName));
     }
 
-    public Set<FacetRecord> resolve(FacetRecord facet, List<Plugin> plugins,
-                                    Model model, ClassLoader executionScope) {
+    public Set<FacetRecord> resolve(FacetRecord facet, List<Class<?>> plugins,
+                                    Model model,
+                                    WorkspaceTypeFunction typeFunction) {
         build(facet);
         Aspect aspect = new Aspect(model.create(), facet);
         new PhantasmTraversal(model).traverse(aspect, this);
 
-        addPlugins(aspect, plugins, executionScope);
+        addPlugins(aspect, plugins, typeFunction);
         return references;
     }
 
@@ -398,11 +387,11 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         createTypeBuilder.field(field);
         updateTemplate.put(setter, (crud, update) -> {
             String id = (String) update.get(setter);
-            return crud.setSingularChild(facet,
-                                         (ExistentialRuleform) update.get(AT_RULEFORM),
-                                         auth,
-                                         id == null ? null
-                                                    : (ExistentialRuleform) crud.lookup(id));
+            crud.setSingularChild(facet,
+                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                  auth,
+                                  id == null ? null
+                                             : (ExistentialRuleform) crud.lookup(id));
         });
         references.add(child.getFacet());
     }
@@ -444,27 +433,18 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                         crud.lookup((List<String>) update.get(addChildren))));
     }
 
-    private void addPlugins(Aspect facet, List<Plugin> plugins,
-                            ClassLoader executionScope) {
+    private void addPlugins(Aspect facet, List<Class<?>> plugins,
+                            WorkspaceTypeFunction typeFunction) {
         plugins.forEach(plugin -> {
-            String defaultImplementation = Optional.of(plugin.getPackageName())
-                                                   .map(pkg -> String.format(S_S_PLUGIN_CONVENTION,
-                                                                             pkg,
-                                                                             plugin.getFacetName()))
-                                                   .orElse(null);
-            if (defaultImplementation == null) {
-                return;
-            }
-            build(plugin.getConstructor(), defaultImplementation,
-                  executionScope);
-            plugin.getInstanceMethods()
-                  .forEach(method -> build(facet, method, defaultImplementation,
-                                           executionScope));
+            initializers.addAll(PhantasmProcessing.processPlugin(plugin,
+                                                                 typeFunction,
+                                                                 typeFunction,
+                                                                 typeBuilder));
         });
     }
 
     private GraphQLFieldDefinition apply(Aspect facet) {
-        List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
+        List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> detached = initializers;
         return newFieldDefinition().name(String.format(APPLY_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .description(String.format("Apply %s facet to the instance",
@@ -479,104 +459,12 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                        PhantasmCRUD crud = ctx(env);
                                        return crud.apply(facet, ruleform,
                                                          instance -> {
-                                                             detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                                           instance));
+                                                             detached.forEach(initializer -> initializer.accept(env,
+                                                                                                                instance));
                                                              return ruleform;
                                                          });
                                    })
                                    .build();
-    }
-
-    private void build(Aspect facet, InstanceMethod instanceMethod,
-                       String defaultImplementation,
-                       ClassLoader executionScope) {
-        Method method = getInstanceMethod(Optional.ofNullable(instanceMethod.getImplementationClass())
-                                                  .orElse(defaultImplementation),
-                                          Optional.ofNullable(instanceMethod.getImplementationMethod())
-                                                  .orElse(instanceMethod.getName()),
-                                          instanceMethod.toString(),
-                                          executionScope);
-        List<GraphQLArgument> arguments = instanceMethod.getArguments()
-                                                        .stream()
-                                                        .map(arg -> newArgument().name(arg.getName())
-                                                                                 .description(arg.getDescription())
-                                                                                 .type(inputTypeOf(arg.getInputType()))
-                                                                                 .build())
-                                                        .collect(Collectors.toList());
-        @SuppressWarnings("unchecked")
-        Class<? extends Phantasm> phantasm = (Class<? extends Phantasm>) method.getParameterTypes()[2];
-        typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
-                                              .argument(arguments)
-                                              .name(instanceMethod.getName())
-                                              .dataFetcher(env -> {
-                                                  ExistentialRuleform instance = (ExistentialRuleform) env.getSource();
-                                                  PhantasmCRUD crud = ctx(env);
-                                                  if (!checkInvoke(facet,
-                                                                   instanceMethod,
-                                                                   instance,
-                                                                   crud)) {
-                                                      log.info(String.format("Failed invoking %s by: %s",
-                                                                             instanceMethod,
-                                                                             crud.getModel()
-                                                                                 .getCurrentPrincipal()));
-                                                      return null;
-
-                                                  }
-                                                  Model model = ctx(env).getModel();
-
-                                                  ClassLoader prev = Thread.currentThread()
-                                                                           .getContextClassLoader();
-                                                  Thread.currentThread()
-                                                        .setContextClassLoader(executionScope);
-                                                  try {
-                                                      return instance == null ? null
-                                                                              : invoke(method,
-                                                                                       env,
-                                                                                       model,
-                                                                                       model.wrap(phantasm,
-                                                                                                  instance));
-                                                  } finally {
-                                                      Thread.currentThread()
-                                                            .setContextClassLoader(prev);
-                                                  }
-                                              })
-                                              .description(instanceMethod.getDescription())
-                                              .build());
-    }
-
-    private void build(Constructor constructor, String defaultImplementation,
-                       ClassLoader executionScope) {
-        Method method = getInstanceMethod(Optional.ofNullable(constructor.getImplementationClass())
-                                                  .orElse(defaultImplementation),
-                                          Optional.ofNullable(constructor.getImplementationMethod())
-                                                  .orElse(constructor.getName()),
-                                          constructor.toString(),
-                                          executionScope);
-
-        constructors.add((env, instance) -> {
-            ClassLoader prev = Thread.currentThread()
-                                     .getContextClassLoader();
-            Thread.currentThread()
-                  .setContextClassLoader(executionScope);
-            try {
-                PhantasmCRUD crud = ctx(env);
-                if (!checkInvoke(constructor, crud)) {
-                    log.info(String.format("Failed invoking %s by: %s",
-                                           constructor, crud.getModel()
-                                                            .getCurrentPrincipal()));
-                    return null;
-
-                }
-                @SuppressWarnings("unchecked")
-                Class<? extends Phantasm> phantasm = (Class<? extends Phantasm>) method.getParameterTypes()[2];
-                Model model = ctx(env).getModel();
-                return invoke(method, env, model,
-                              model.wrap(phantasm, instance));
-            } finally {
-                Thread.currentThread()
-                      .setContextClassLoader(prev);
-            }
-        });
     }
 
     private void build(FacetRecord facet) {
@@ -630,36 +518,19 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                            (String) update.get(SET_DESCRIPTION)));
     }
 
-    private boolean checkInvoke(Aspect facet, InstanceMethod method,
-                                ExistentialRuleform instance,
-                                PhantasmCRUD crud) {
-        Model model = crud.getModel();
-        PhantasmModel networkedModel = model.getPhantasmModel();
-        Relationship invoke = crud.getINVOKE();
-        return networkedModel.checkPermission(method.getRuleform(), invoke)
-               && crud.checkInvoke(facet, instance);
-    }
-
-    private boolean checkInvoke(Constructor constructor, PhantasmCRUD crud) {
-        return crud.getModel()
-                   .getPhantasmModel()
-                   .checkPermission(constructor.getRuleform(),
-                                    crud.getINVOKE());
-    }
-
     private void clear() {
         references = null;
         typeBuilder = null;
         updateTypeBuilder = null;
         createTypeBuilder = null;
         updateTemplate = null;
-        constructors = null;
+        initializers = null;
     }
 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition createInstance(Aspect facet) {
-        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
-        List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
+        Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> detachedUpdate = updateTemplate;
+        List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> detachedConstructors = initializers;
         return newFieldDefinition().name(String.format(CREATE_MUTATION, name))
                                    .description(String.format("Create an instance of %s",
                                                               name))
@@ -671,20 +542,25 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    .dataFetcher(env -> {
                                        Map<String, Object> createState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
-                                       return crud.createInstance(facet,
-                                                                  (String) createState.get(SET_NAME),
-                                                                  (String) createState.get(SET_DESCRIPTION),
-                                                                  instance -> {
-                                                                      createState.remove(SET_NAME);
-                                                                      createState.remove(SET_DESCRIPTION);
-                                                                      update(instance,
-                                                                             createState,
-                                                                             crud,
-                                                                             detachedUpdate);
-                                                                      detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                                                    instance));
-                                                                      return instance;
-                                                                  });
+                                       ExistentialRuleform constructed = crud.createInstance(facet,
+                                                                                             (String) createState.get(SET_NAME),
+                                                                                             (String) createState.get(SET_DESCRIPTION),
+                                                                                             instance -> {
+                                                                                                 createState.remove(SET_NAME);
+                                                                                                 createState.remove(SET_DESCRIPTION);
+                                                                                                 update(instance,
+                                                                                                        createState,
+                                                                                                        crud,
+                                                                                                        detachedUpdate);
+                                                                                             });
+                                       if (!detachedConstructors.isEmpty()) {
+                                           if (((PhantasmCRUD) env.getContext()).checkInvoke(facet,
+                                                                                             constructed)) {
+                                               detachedConstructors.forEach(initializer -> initializer.accept(env,
+                                                                                                              constructed));
+                                           }
+                                       }
+                                       return constructed;
 
                                    })
                                    .build();
@@ -692,8 +568,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition createInstances(Aspect facet) {
-        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdate = updateTemplate;
-        List<BiFunction<DataFetchingEnvironment, ExistentialRuleform, Object>> detachedConstructors = constructors;
+        Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> detachedUpdate = updateTemplate;
+        List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> detachedConstructors = initializers;
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        English.plural(WorkspacePresentation.toTypeName(facet.getName()))))
                                    .description(String.format("Create instances of %s",
@@ -707,101 +583,30 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                        List<Map<String, Object>> createStates = (List<Map<String, Object>>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
                                        return createStates.stream()
-                                                          .map(createState -> crud.createInstance(facet,
-                                                                                                  (String) createState.get(SET_NAME),
-                                                                                                  (String) createState.get(SET_DESCRIPTION),
-                                                                                                  instance -> {
-                                                                                                      createState.remove(SET_NAME);
-                                                                                                      createState.remove(SET_DESCRIPTION);
-                                                                                                      update(instance,
-                                                                                                             createState,
-                                                                                                             crud,
-                                                                                                             detachedUpdate);
-                                                                                                      detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                                                                                    instance));
-                                                                                                      return instance;
-                                                                                                  }))
+                                                          .map(createState -> {
+                                                              ExistentialRuleform constructed = crud.createInstance(facet,
+                                                                                                                    (String) createState.get(SET_NAME),
+                                                                                                                    (String) createState.get(SET_DESCRIPTION),
+                                                                                                                    instance -> {
+                                                                                                                        createState.remove(SET_NAME);
+                                                                                                                        createState.remove(SET_DESCRIPTION);
+                                                                                                                        update(instance,
+                                                                                                                               createState,
+                                                                                                                               crud,
+                                                                                                                               detachedUpdate);
+                                                                                                                    });
+                                                              if (!detachedConstructors.isEmpty()) {
+                                                                  if (((PhantasmCRUD) env.getContext()).checkInvoke(facet,
+                                                                                                                    constructed)) {
+                                                                      detachedConstructors.forEach(initializer -> initializer.accept(env,
+                                                                                                                                     constructed));
+                                                                  }
+                                                              }
+                                                              return constructed;
+                                                          })
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
-    }
-
-    private Class<?> getImplementation(String implementationClass, String type,
-                                       ClassLoader executionScope) {
-        if (implementationClass == null) {
-
-            throw new IllegalStateException(String.format("No implementation class could be determined for %s in %s",
-                                                          type, getName()));
-        }
-        Class<?> clazz;
-        try {
-            clazz = executionScope.loadClass(implementationClass);
-        } catch (ClassNotFoundException e) {
-            log.warn("Error plugging in constructor {} into {}", type,
-                     getName(), e);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
-                                                          type, getName(),
-                                                          e.toString()),
-                                            e);
-        }
-        return clazz;
-    }
-
-    private Method getInstanceMethod(String implementationClass,
-                                     String implementationMethod, String type,
-                                     ClassLoader executionScope) {
-
-        Class<?> clazz = getImplementation(implementationClass, type,
-                                           executionScope);
-        List<Method> candidates = Arrays.asList(clazz.getDeclaredMethods())
-                                        .stream()
-                                        .filter(method -> Modifier.isStatic(method.getModifiers()))
-                                        .filter(method -> method.getName()
-                                                                .equals(implementationMethod))
-                                        .filter(method -> method.getParameterTypes().length == 3)
-                                        .filter(method -> method.getParameterTypes()[0].equals(DataFetchingEnvironment.class))
-                                        .filter(method -> method.getParameterTypes()[1].equals(Model.class))
-                                        .collect(Collectors.toList());
-        if (candidates.isEmpty()) {
-            log.warn("Error plugging in {} into {}, no static method matches for {} in {}",
-                     type, getName(), implementationMethod,
-                     implementationClass);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s, no static method matches for method '%s' in %s",
-                                                          type, getName(),
-                                                          implementationMethod,
-                                                          implementationClass));
-        }
-        if (candidates.size() > 1) {
-            log.warn("Error plugging in {} into {}, multiple matches for {} in {}",
-                     type, getName(), implementationMethod,
-                     implementationClass);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s, multiple matches for static method '%s' in %s",
-                                                          type, getName(),
-                                                          implementationMethod,
-                                                          implementationClass));
-        }
-        return candidates.get(0);
-    }
-
-    private GraphQLInputType inputTypeOf(String type) {
-        type = type.trim();
-        if (type.startsWith("[")) {
-            return new GraphQLList(inputTypeOf(type.substring(1, type.length()
-                                                                 - 1)));
-        }
-        switch (type) {
-            case "Int":
-                return Scalars.GraphQLInt;
-            case "String":
-                return Scalars.GraphQLString;
-            case "Boolean":
-                return Scalars.GraphQLBoolean;
-            case "Float":
-                return Scalars.GraphQLFloat;
-            default:
-                throw new IllegalStateException(String.format("Invalid GraphQLType: %s",
-                                                              type));
-        }
     }
 
     private GraphQLFieldDefinition instance(Aspect facet,
@@ -834,29 +639,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                    })
                                    .build();
 
-    }
-
-    private GraphQLOutputType outputTypeOf(String type) {
-        if (type == null) {
-            return Scalars.GraphQLString;
-        }
-        type = type.trim();
-        if (type.startsWith("[")) {
-            return new GraphQLList(inputTypeOf(type.substring(1, type.length()
-                                                                 - 1)));
-        }
-        switch (type) {
-            case "Int":
-                return Scalars.GraphQLInt;
-            case "String":
-                return Scalars.GraphQLString;
-            case "Boolean":
-                return Scalars.GraphQLBoolean;
-            case "Float":
-                return Scalars.GraphQLFloat;
-            default:
-                return referenceToType(type);
-        }
     }
 
     private GraphQLFieldDefinition remove(Aspect facet) {
@@ -955,7 +737,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition update(Aspect facet) {
-        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
+        Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_MUTATION,
                                                        WorkspacePresentation.toTypeName(facet.getName())))
                                    .type(referenceToType(facet.getName()))
@@ -978,7 +760,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     private void update(ExistentialRuleform ruleform,
                         Map<String, Object> updateState, PhantasmCRUD crud,
-                        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> updateTemplate) {
+                        Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> updateTemplate) {
         updateState.put(AT_RULEFORM, ruleform);
         updateState.keySet()
                    .stream()
@@ -986,13 +768,13 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                     && !field.equals(AT_RULEFORM)
                                     && updateState.containsKey(field))
                    .forEach(field -> updateTemplate.get(field)
-                                                   .apply(crud, updateState));
+                                                   .accept(crud, updateState));
 
     }
 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition updateInstances(Aspect facet) {
-        Map<String, BiFunction<PhantasmCRUD, Map<String, Object>, ExistentialRuleform>> detachedUpdateTemplate = updateTemplate;
+        Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> detachedUpdateTemplate = updateTemplate;
         String typeName = WorkspacePresentation.toTypeName(facet.getName());
         return newFieldDefinition().name(String.format(UPDATE_MUTATION,
                                                        English.plural(typeName)))

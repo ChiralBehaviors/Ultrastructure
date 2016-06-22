@@ -21,29 +21,30 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Argument;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
@@ -66,18 +67,39 @@ public class PluginTest extends AbstractModelTest {
                                    model);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testPlugin() throws Exception {
+        URLClassLoader executionScope = FacetFields.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
+        ClassLoader prev = Thread.currentThread()
+                                 .getContextClassLoader();
+        Thread.currentThread()
+              .setContextClassLoader(executionScope);
+        try {
+            executePlugin(executionScope);
+        } finally {
+            Thread.currentThread()
+                  .setContextClassLoader(prev);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void executePlugin(URLClassLoader executionScope) throws ClassNotFoundException,
+                                                              IllegalArgumentException,
+                                                              IllegalAccessException,
+                                                              NoSuchFieldException,
+                                                              SecurityException,
+                                                              NoSuchMethodException,
+                                                              InstantiationException {
+        Reflections reflections = new Reflections(new ConfigurationBuilder().addClassLoader(executionScope)
+                                                                            .addUrls(executionScope.getURLs()));
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-
-        Workspace workspace = model.wrap(Workspace.class, scope.getWorkspace()
-                                                               .getDefiningProduct());
-        workspace.addPlugin(constructPlugin());
-        ClassLoader executionScope = FacetFields.configureExecutionScope(Collections.singletonList("lib/test-plugin.jar"));
         Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
                                                                        COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
+        assertNotNull(thing1Plugin);
+        assertNotNull(thing1Plugin.getAnnotation(Plugin.class));
+        Set<Class<?>> plugins = reflections.getTypesAnnotatedWith(Plugin.class);
+        assertFalse(plugins.isEmpty());
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
                                                                                     .get(null);
         Map<String, Object> variables = new HashMap<>();
@@ -93,10 +115,8 @@ public class PluginTest extends AbstractModelTest {
                                                 variables);
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
-
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model,
-                                                           executionScope);
+                                                           model, reflections);
 
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               new PhantasmCRUD(model),
@@ -140,33 +160,5 @@ public class PluginTest extends AbstractModelTest {
         assertEquals(apple, thing1Result.get("instanceMethod"));
         assertEquals("me", passThrough.get());
         assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
-    }
-
-    private Plugin constructPlugin() throws InstantiationException {
-        Plugin testPlugin = model.construct(Plugin.class,
-                                            ExistentialDomain.Product,
-                                            "Test Plugin",
-                                            "My super green test plugin");
-        testPlugin.setFacetName("Thing1");
-        testPlugin.setPackageName(COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST);
-        testPlugin.setConstructor(model.construct(Constructor.class,
-                                                  ExistentialDomain.Product,
-                                                  "constructor",
-                                                  "For all your construction needs"));
-        testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
-                                                     ExistentialDomain.Product,
-                                                     "instanceMethod",
-                                                     "For instance"));
-        InstanceMethod methodWithArg = model.construct(InstanceMethod.class,
-                                                       ExistentialDomain.Product,
-                                                       "instanceMethodWithArgument",
-                                                       "For all your argument needs");
-        Argument argument = model.construct(Argument.class,
-                                            ExistentialDomain.Product, "arg1",
-                                            "Who needs an argument?");
-        methodWithArg.addArgument(argument);
-        argument.setInputType("String");
-        testPlugin.addInstanceMethod(methodWithArg);
-        return testPlugin;
     }
 }

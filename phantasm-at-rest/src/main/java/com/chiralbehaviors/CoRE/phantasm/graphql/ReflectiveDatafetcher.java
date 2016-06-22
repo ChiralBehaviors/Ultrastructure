@@ -31,12 +31,12 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
-class RelfectiveDataFetcher implements DataFetcher {
+class ReflectiveDataFetcher implements DataFetcher {
     private final int                                                 envIndex;
     private final Map<Integer, Function<Map<String, Object>, Object>> inputTxfms;
     private final Method                                              method;
 
-    public RelfectiveDataFetcher(Method method,
+    public ReflectiveDataFetcher(Method method,
                                  Map<Integer, Function<Map<String, Object>, Object>> inputTxfms) {
         this.method = method;
         List<Class<?>> parameterTypes = Arrays.asList(method.getParameters())

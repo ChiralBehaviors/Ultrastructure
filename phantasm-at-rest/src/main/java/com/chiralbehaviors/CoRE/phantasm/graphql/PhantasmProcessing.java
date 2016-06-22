@@ -629,7 +629,7 @@ public class PhantasmProcessing {
         GraphQLDataFetcher dataFetcher = method.getAnnotation(GraphQLDataFetcher.class);
         DataFetcher actualDataFetcher;
         try {
-            actualDataFetcher = dataFetcher == null ? phantasm == null ? new RelfectiveDataFetcher(method,
+            actualDataFetcher = dataFetcher == null ? phantasm == null ? new ReflectiveDataFetcher(method,
                                                                                                    inputTxfms)
                                                                        : new InlinedFunction(method,
                                                                                              inputTxfms,

@@ -38,9 +38,9 @@
     <properties>
         <db.context>local</db.context>
 
-        <dropwizard.version>0.9.2</dropwizard.version>
+        <dropwizard.version>0.9.3</dropwizard.version>
         <postgresql.driver.version>9.4.1208</postgresql.driver.version>
-        <jackson.version>2.6.3 </jackson.version>
+        <jackson.version>2.6.7 </jackson.version>
         <hibernate.version>5.0.2.Final</hibernate.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <fxdiagram.version>0.27.3-SNAPSHOT</fxdiagram.version>
@@ -299,7 +299,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
-                <version>1.7.6</version>
+                <version>1.7.21</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -340,12 +340,12 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.10</version>
+                <version>1.7.21</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.6</version>
+                <version>1.7.21</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.uuid</groupId>
@@ -366,7 +366,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.10</version>
+                <version>1.7.21</version>
             </dependency>
             <dependency>
                 <groupId>com.hellblazer</groupId>

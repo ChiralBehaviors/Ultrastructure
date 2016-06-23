@@ -343,11 +343,11 @@ public class WorkspaceResource extends TransactionalResource {
                                            .resolve(uuid);
             WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
-            if (!model.getPhantasmModel()
-                      .checkPermission(definingProduct, crud.getREAD())
-                || !model.getPhantasmModel()
-                         .checkPermission(definingProduct, model.getKernel()
-                                                                .getEXECUTE_QUERY())) {
+            if (!model.checkPermission((ExistentialRuleform) definingProduct,
+                                       crud.getREAD())
+                || !model.checkPermission((ExistentialRuleform) definingProduct,
+                                          model.getKernel()
+                                               .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
                                 .getPrincipal();
                 log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",
@@ -393,11 +393,11 @@ public class WorkspaceResource extends TransactionalResource {
                                            .resolve(uuid);
             WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
-            if (!model.getPhantasmModel()
-                      .checkPermission(definingProduct, crud.getREAD())
-                || !model.getPhantasmModel()
-                         .checkPermission(definingProduct, model.getKernel()
-                                                                .getEXECUTE_QUERY())) {
+            if (!model.checkPermission((ExistentialRuleform) definingProduct,
+                                       crud.getREAD())
+                || !model.checkPermission((ExistentialRuleform) definingProduct,
+                                          model.getKernel()
+                                               .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
                                 .getPrincipal();
                 log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",

@@ -25,10 +25,12 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import org.jooq.DSLContext;
+import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
@@ -72,6 +74,23 @@ public interface Model extends AutoCloseable {
      */
     <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
                                                                Class<R> phantasm);
+
+    boolean checkPermission(ExistentialRuleform target,
+                            Relationship permission);
+
+    /**
+     * @param roles
+     * @param target
+     * @param permission
+     * @return
+     */
+    boolean checkPermission(List<Agency> roles, ExistentialRuleform target,
+                            Relationship permission);
+
+    boolean checkPermission(List<Agency> roles, UpdatableRecord<?> target,
+                            Relationship permission);
+
+    boolean checkPermission(UpdatableRecord<?> target, Relationship permission);
 
     @Override
     void close();
@@ -150,8 +169,7 @@ public interface Model extends AutoCloseable {
 
     AuthorizedPrincipal principalFrom(Agency agency, List<Agency> list);
 
-    AuthorizedPrincipal principalFromIds(Agency agency,
-                                         List<UUID> roles);
+    AuthorizedPrincipal principalFromIds(Agency agency, List<UUID> roles);
 
     RecordsFactory records();
 

@@ -27,7 +27,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
-import static org.jooq.impl.DSL.name;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -37,24 +36,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
-import org.jooq.exception.DataAccessException;
-import org.jooq.exception.TooManyRowsException;
 
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
@@ -74,10 +66,7 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class PhantasmModelImpl implements PhantasmModel {
-    private static final String  AGENCY     = "agency";
-    private static final String  GROUPS     = "groups";
-    private static final String  MEMBERSHIP = "membership";
-    private static final Integer ZERO       = Integer.valueOf(0);
+    private static final Integer ZERO = Integer.valueOf(0);
 
     private final DSLContext     create;
     private final Model          model;
@@ -93,117 +82,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                               .newExistentialAttributeAuthorization(facet,
                                                                                                     attribute);
         record.insert();
-    }
-
-    @Override
-    public boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship permission) {
-        return checkPermission(model.getCurrentPrincipal()
-                                    .getAsserted(),
-                               stateAuth, permission);
-    }
-
-    @Override
-    public boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship permission) {
-        return checkPermission(model.getCurrentPrincipal()
-                                    .getAsserted(),
-                               stateAuth, permission);
-    }
-
-    @Override
-    public boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
-                                   Relationship permission) {
-        return checkPermission(model.getCurrentPrincipal()
-                                    .getAsserted(),
-                               auth, permission);
-    }
-
-    @Override
-    public boolean checkPermission(ExistentialRuleform instance,
-                                   Relationship permission) {
-        return checkPermission(model.getCurrentPrincipal()
-                                    .getAsserted(),
-                               instance, permission);
-    }
-
-    @Override
-    public boolean checkPermission(FacetRecord facet, Relationship permission) {
-        return checkPermission(model.getCurrentPrincipal()
-                                    .getAsserted(),
-                               facet, permission);
-    }
-
-    /**
-     * Check the permission of an agency on an attribute of a ruleform.
-     */
-    @Override
-    public boolean checkPermission(List<Agency> agencies,
-                                   ExistentialAttributeAuthorizationRecord target,
-                                   Relationship permission) {
-        if (target == null) {
-            return true;
-        }
-
-        return checkPermission(agencies, permission, target.getAuthority());
-
-    }
-
-    /**
-     * Check the permission of an agency on an attribute of the authorized
-     * relationship of the facet child relationship.
-     */
-    @Override
-    public boolean checkPermission(List<Agency> agencies,
-                                   ExistentialNetworkAttributeAuthorizationRecord target,
-                                   Relationship permission) {
-        if (target == null) {
-            return true;
-        }
-
-        return checkPermission(agencies, permission, target.getAuthority());
-    }
-
-    /**
-     * Check the permission of an agency on the authorized relationship of the
-     * facet child relationship.
-     */
-    @Override
-    public boolean checkPermission(List<Agency> agencies,
-                                   ExistentialNetworkAuthorizationRecord target,
-                                   Relationship permission) {
-        if (target == null) {
-            return true;
-        }
-
-        return checkPermission(agencies, permission, target.getAuthority());
-    }
-
-    /**
-     * Check the permission of an agency on an instance.
-     */
-    @Override
-    public boolean checkPermission(List<Agency> agencies,
-                                   ExistentialRuleform target,
-                                   Relationship permission) {
-        if (target == null) {
-            return true;
-        }
-
-        return checkPermission(agencies, permission, target.getAuthority());
-    }
-
-    /**
-     * Check the permission of an agency on the facet.
-     */
-    @Override
-    public boolean checkPermission(List<Agency> agencies, FacetRecord target,
-                                   Relationship permission) {
-        if (target == null) {
-            return true;
-        }
-
-        return checkPermission(agencies, permission, target.getAuthority());
     }
 
     @SafeVarargs
@@ -960,39 +838,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               attribute.getValueType()));
         }
-    }
-
-    private boolean checkPermission(List<Agency> agencies,
-                                    Relationship permission,
-                                    UUID intrinsic) throws DataAccessException,
-                                                    TooManyRowsException {
-        if (intrinsic == null) {
-            return true;
-        }
-        List<UUID> roles = agencies.stream()
-                                   .map(r -> r.getId())
-                                   .collect(Collectors.toList());
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
-        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
-                                                                  .as(create.select(membership.field(membership.CHILD))
-                                                                            .from(membership)
-                                                                            .where(membership.field(membership.PARENT)
-                                                                                             .in(roles))
-                                                                            .and(membership.field(membership.RELATIONSHIP)
-                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
-
-        return ZERO.equals(create.with(groups)
-                                 .selectCount()
-                                 .from(EXISTENTIAL)
-                                 .where(EXISTENTIAL.ID.equal(intrinsic))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
-                                 .fetchOne()
-                                 .value1());
     }
 
     private List<ExistentialRuleform> getConstrainedChildren(UUID parent,

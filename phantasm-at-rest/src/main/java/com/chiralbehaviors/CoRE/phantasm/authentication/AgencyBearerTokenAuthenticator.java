@@ -106,8 +106,7 @@ public class AgencyBearerTokenAuthenticator
         }
 
         // Validate agency has login cap to this core instance
-        if (!model.getPhantasmModel()
-                  .checkPermission(credential.roles.stream()
+        if (!model.checkPermission(credential.roles.stream()
                                                    .map(id -> model.records()
                                                                    .resolve(id))
                                                    .filter(a -> a != null)

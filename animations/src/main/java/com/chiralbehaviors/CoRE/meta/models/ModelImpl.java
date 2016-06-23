@@ -20,24 +20,39 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
+import static org.jooq.impl.DSL.name;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+import org.jooq.CommonTableExpression;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.SQLDialect;
 import org.jooq.TransactionContext;
 import org.jooq.TransactionProvider;
+import org.jooq.UpdatableRecord;
 import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
+import org.jooq.exception.TooManyRowsException;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultRecordListenerProvider;
 import org.jooq.util.postgres.PostgresDSL;
@@ -45,10 +60,19 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
@@ -68,7 +92,47 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  *
  */
 public class ModelImpl implements Model {
-    private final static ConcurrentMap<Class<? extends Phantasm>, PhantasmDefinition> cache = new ConcurrentHashMap<>();
+    private static final String                                                       AGENCY     = "agency";
+    private static final Map<Class<?>, MethodHandle>                                  AUTHORITY_HANDLE;
+    private static final ConcurrentMap<Class<? extends Phantasm>, PhantasmDefinition> cache      = new ConcurrentHashMap<>();
+    private static final String                                                       GROUPS     = "groups";
+    private static final String                                                       MEMBERSHIP = "membership";
+    private static final Integer                                                      ZERO       = Integer.valueOf(0);
+
+    static {
+        AUTHORITY_HANDLE = new HashMap<>();
+        Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .filter(t -> !t.equals(JOB_CHRONOLOGY))
+                         .filter(t -> !t.equals(WORKSPACE_LABEL))
+                         .forEach(t -> {
+                             MethodHandle handle;
+                             try {
+                                 handle = MethodHandles.lookup()
+                                                       .unreflect(t.getRecordType()
+                                                                   .getMethod("getAuthority"));
+                             } catch (Exception e) {
+                                 throw new IllegalStateException(e);
+                             }
+                             @SuppressWarnings("unchecked")
+                             Class<UpdatableRecord<?>> recordType = (Class<UpdatableRecord<?>>) t.getRecordType();
+                             AUTHORITY_HANDLE.put(recordType, handle);
+                         });
+        Arrays.asList(Agency.class, Attribute.class, Interval.class,
+                      Location.class, Product.class, Relationship.class,
+                      StatusCode.class, Unit.class)
+              .stream()
+              .forEach(c -> {
+                  MethodHandle handle;
+                  try {
+                      handle = MethodHandles.lookup()
+                                            .unreflect(c.getMethod("getAuthority"));
+                  } catch (Exception e) {
+                      throw new IllegalStateException(e);
+                  }
+                  AUTHORITY_HANDLE.put(c, handle);
+              });
+    }
 
     public static PhantasmDefinition cached(Class<? extends Phantasm> phantasm,
                                             Model model) {
@@ -104,9 +168,13 @@ public class ModelImpl implements Model {
     private final DSLContext     create;
     private AuthorizedPrincipal  currentPrincipal;
     private final RecordsFactory factory;
+
     private final JobModel       jobModel;
+
     private final Kernel         kernel;
+
     private final PhantasmModel  phantasmModel;
+
     private final WorkspaceModel workspaceModel;
 
     public ModelImpl(Connection connection) throws SQLException {
@@ -167,6 +235,46 @@ public class ModelImpl implements Model {
     public <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
                                                                       Class<R> phantasm) {
         return wrap(phantasm, source);
+    }
+
+    @Override
+    public boolean checkPermission(ExistentialRuleform target,
+                                   Relationship permission) {
+        return checkPermission((UpdatableRecord<?>) target, permission);
+    }
+
+    @Override
+    public boolean checkPermission(List<Agency> roles,
+                                   ExistentialRuleform target,
+                                   Relationship permission) {
+        return checkPermission(roles, (UpdatableRecord<?>) target, permission);
+
+    }
+
+    @Override
+    public boolean checkPermission(List<Agency> roles,
+                                   UpdatableRecord<?> target,
+                                   Relationship permission) {
+        if (target == null) {
+            return true;
+        }
+        try {
+            return checkPermission(roles, permission,
+                                   (UUID) AUTHORITY_HANDLE.get(target.getClass())
+                                                          .bindTo(target)
+                                                          .invokeExact());
+        } catch (Throwable e) {
+            throw new IllegalStateException(String.format("Cannot retrieve authority for %s",
+                                                          target.getClass()),
+                                            e);
+        }
+    }
+
+    @Override
+    public boolean checkPermission(UpdatableRecord<?> target,
+                                   Relationship permission) {
+        return checkPermission(getCurrentPrincipal().getAsserted(), target,
+                               permission);
     }
 
     @Override
@@ -311,6 +419,39 @@ public class ModelImpl implements Model {
         }
         PhantasmDefinition definition = cached(phantasm, this);
         return (R) definition.wrap(ruleform.getRuleform(), this);
+    }
+
+    private boolean checkPermission(List<Agency> agencies,
+                                    Relationship permission,
+                                    UUID intrinsic) throws DataAccessException,
+                                                    TooManyRowsException {
+        if (intrinsic == null) {
+            return true;
+        }
+        List<UUID> roles = agencies.stream()
+                                   .map(r -> r.getId())
+                                   .collect(Collectors.toList());
+        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
+        CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
+                                                                  .as(create.select(membership.field(membership.CHILD))
+                                                                            .from(membership)
+                                                                            .where(membership.field(membership.PARENT)
+                                                                                             .in(roles))
+                                                                            .and(membership.field(membership.RELATIONSHIP)
+                                                                                           .equal(WellKnownRelationship.MEMBER_OF.id())));
+
+        return ZERO.equals(create.with(groups)
+                                 .selectCount()
+                                 .from(EXISTENTIAL)
+                                 .where(EXISTENTIAL.ID.equal(intrinsic))
+                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
+                                                     .from(EXISTENTIAL_NETWORK)
+                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
+                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
+                                 .fetchOne()
+                                 .value1());
     }
 
     private void establish(DSLContext create) {

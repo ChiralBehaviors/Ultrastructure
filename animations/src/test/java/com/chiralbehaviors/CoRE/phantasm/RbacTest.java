@@ -44,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
@@ -73,6 +74,13 @@ public class RbacTest extends AbstractModelTest {
     }
 
     @Test
+    public void testApplyFacet() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        model.apply(OtherThing.class, thing1);
+    }
+
+    @Test
     public void testAttributePermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
@@ -93,8 +101,7 @@ public class RbacTest extends AbstractModelTest {
                                                                  .fetchOne();
         assertNotNull(stateAuth);
 
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
+        assertTrue(model.checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -102,8 +109,7 @@ public class RbacTest extends AbstractModelTest {
                                     .getAnyAgency()
                                     .getId());
 
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
+        assertFalse(model.checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -116,14 +122,12 @@ public class RbacTest extends AbstractModelTest {
                    model.getKernel()
                         .getAnyAgency());
 
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
+        assertTrue(model.checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
 
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
+        assertFalse(model.checkPermission(asList(model.getKernel()
                                                       .getNotApplicableAgency()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -136,8 +140,7 @@ public class RbacTest extends AbstractModelTest {
                    model.getKernel()
                         .getCore());
 
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
+        assertTrue(model.checkPermission(asList(model.getKernel()
                                                      .getNotApplicableAgency()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -165,8 +168,7 @@ public class RbacTest extends AbstractModelTest {
 
         assertNotNull(stateAuth);
 
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
+        assertTrue(model.checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -175,8 +177,7 @@ public class RbacTest extends AbstractModelTest {
                                     .getId());
         stateAuth.update();
 
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
+        assertFalse(model.checkPermission(asList(model.getKernel()
                                                       .getCore()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -189,14 +190,12 @@ public class RbacTest extends AbstractModelTest {
                    model.getKernel()
                         .getAnyAgency());
 
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
+        assertTrue(model.checkPermission(asList(model.getKernel()
                                                      .getCore()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
 
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
+        assertFalse(model.checkPermission(asList(model.getKernel()
                                                       .getNotApplicableAgency()),
                                           stateAuth, model.getKernel()
                                                           .getHadMember()));
@@ -209,8 +208,230 @@ public class RbacTest extends AbstractModelTest {
                    model.getKernel()
                         .getCore());
 
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
+    }
+
+    @Test
+    public void testEnums() throws Exception {
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 ExistentialDomain.Location,
+                                                 "myartifact", "artifact");
+        artifact.setType("jar");
+        artifact.setType("invalid");
+        try {
+            model.flush();
+            fail();
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void testFacetPermissions() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+
+        WorkspaceScope scope = thing1.getScope();
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(model.getKernel()
+                                                           .getIsA(),
+                                                      scope.lookup("Thing1"));
+        assertNotNull(facet);
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
+
+        facet.setAuthority(model.getKernel()
+                                .getAnyAgency()
+                                .getId());
+        facet.update();
+
+        assertFalse(model.checkPermission(asList(model.getKernel()
+                                                      .getCore()),
+                                          facet, model.getKernel()
+                                                      .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
+
+        assertFalse(model.checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          facet, model.getKernel()
+                                                      .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
+                                         facet, model.getKernel()
+                                                     .getHadMember()));
+    }
+
+    @Test
+    public void testInstancePermissions() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+
+        ExistentialRuleform instance = thing1.getRuleform();
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
+        instance.setAuthority(model.getKernel()
+                                   .getAnyAgency()
+                                   .getId());
+        instance.update();
+
+        assertFalse(model.checkPermission(asList(model.getKernel()
+                                                      .getCore()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
+        assertFalse(model.checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          instance, model.getKernel()
+                                                         .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getNotApplicableAgency()),
+                                         instance, model.getKernel()
+                                                        .getHadMember()));
+    }
+
+    @Test
+    public void testNetworkAttributePermissions() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
+                                        "testy", "test");
+        WorkspaceScope scope = thing1.getScope();
+
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(model.getKernel()
+                                                           .getIsA(),
+                                                      scope.lookup("Thing1"));
+
+        Attribute aliases = (Attribute) scope.lookup("aliases");
+        assertNotNull(aliases);
+
+        Relationship relationship = scope.lookup("thing1Of");
+        assertNotNull(relationship);
+
+        ExistentialNetworkAuthorizationRecord auth = model.create()
+                                                          .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                          .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
+                                                          .fetchOne();
+
+        assertNotNull(auth);
+
+        ExistentialNetworkAttributeAuthorizationRecord stateAuth = model.create()
+                                                                        .selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
+                                                                        .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(auth.getId()))
+                                                                        .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(aliases.getId()))
+                                                                        .fetchOne();
+
+        assertNotNull(stateAuth);
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
+
+        stateAuth.setAuthority(model.getKernel()
+                                    .getAnyAgency()
+                                    .getId());
+        stateAuth.update();
+
+        assertFalse(model.checkPermission(asList(model.getKernel()
+                                                      .getCore()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getCore(),
+                   model.getKernel()
+                        .getHadMember(),
+                   model.getKernel()
+                        .getAnyAgency());
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
+                                                     .getCore()),
+                                         stateAuth, model.getKernel()
+                                                         .getHadMember()));
+        model.executeAs(model.principalFrom(model.getKernel()
+                                                 .getCore(),
+                                            Collections.singletonList(model.getKernel()
+                                                                           .getCore())),
+                        () -> {
+                            assertTrue(model.checkPermission(stateAuth,
+                                                             model.getKernel()
+                                                                  .getHadMember()));
+                            return null;
+                        });
+
+        model.getPhantasmModel()
+             .getAttributeValue(model.getKernel()
+                                     .getCore(),
+                                model.getKernel()
+                                     .getHadMember(),
+                                model.getKernel()
+                                     .getSameAgency(),
+                                aliases);
+
+        assertFalse(model.checkPermission(asList(model.getKernel()
+                                                      .getNotApplicableAgency()),
+                                          stateAuth, model.getKernel()
+                                                          .getHadMember()));
+
+        model.getPhantasmModel()
+             .link(model.getKernel()
+                        .getNotApplicableAgency(),
+                   model.getKernel()
+                        .getMemberOf(),
+                   model.getKernel()
+                        .getCore());
+
+        assertTrue(model.checkPermission(asList(model.getKernel()
                                                      .getNotApplicableAgency()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
@@ -318,245 +539,6 @@ public class RbacTest extends AbstractModelTest {
     }
 
     @Test
-    public void testEnums() throws Exception {
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 ExistentialDomain.Location,
-                                                 "myartifact", "artifact");
-        artifact.setType("jar");
-        artifact.setType("invalid");
-        try {
-            model.flush();
-            fail();
-        } catch (Exception e) {
-        }
-    }
-
-    @Test
-    public void testFacetPermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-
-        WorkspaceScope scope = thing1.getScope();
-        FacetRecord facet = model.getPhantasmModel()
-                                 .getFacetDeclaration(model.getKernel()
-                                                           .getIsA(),
-                                                      scope.lookup("Thing1"));
-        assertNotNull(facet);
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         facet, model.getKernel()
-                                                     .getHadMember()));
-
-        facet.setAuthority(model.getKernel()
-                                .getAnyAgency()
-                                .getId());
-        facet.update();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          facet, model.getKernel()
-                                                      .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         facet, model.getKernel()
-                                                     .getHadMember()));
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          facet, model.getKernel()
-                                                      .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getNotApplicableAgency(),
-                   model.getKernel()
-                        .getMemberOf(),
-                   model.getKernel()
-                        .getCore());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         facet, model.getKernel()
-                                                     .getHadMember()));
-    }
-
-    @Test
-    public void testInstancePermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-
-        Product instance = (Product) thing1.getRuleform();
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
-        instance.setAuthority(model.getKernel()
-                                   .getAnyAgency()
-                                   .getId());
-        instance.update();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getNotApplicableAgency(),
-                   model.getKernel()
-                        .getMemberOf(),
-                   model.getKernel()
-                        .getCore());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
-    }
-
-    @Test
-    public void testNetworkAttributePermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-        WorkspaceScope scope = thing1.getScope();
-
-        FacetRecord facet = model.getPhantasmModel()
-                                 .getFacetDeclaration(model.getKernel()
-                                                           .getIsA(),
-                                                      scope.lookup("Thing1"));
-
-        Attribute aliases = (Attribute) scope.lookup("aliases");
-        assertNotNull(aliases);
-
-        Relationship relationship = scope.lookup("thing1Of");
-        assertNotNull(relationship);
-
-        ExistentialNetworkAuthorizationRecord auth = model.create()
-                                                          .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                          .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
-                                                          .fetchOne();
-
-        assertNotNull(auth);
-
-        ExistentialNetworkAttributeAuthorizationRecord stateAuth = model.create()
-                                                                        .selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
-                                                                        .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(auth.getId()))
-                                                                        .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(aliases.getId()))
-                                                                        .fetchOne();
-
-        assertNotNull(stateAuth);
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        stateAuth.setAuthority(model.getKernel()
-                                    .getAnyAgency()
-                                    .getId());
-        stateAuth.update();
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-        model.executeAs(model.principalFrom(model.getKernel()
-                                                 .getCore(),
-                                            Collections.singletonList(model.getKernel()
-                                                                           .getCore())),
-                        () -> {
-                            assertTrue(model.getPhantasmModel()
-                                            .checkPermission(stateAuth,
-                                                             model.getKernel()
-                                                                  .getHadMember()));
-                            return null;
-                        });
-
-        model.getPhantasmModel()
-             .getAttributeValue(model.getKernel()
-                                     .getCore(),
-                                model.getKernel()
-                                     .getHadMember(),
-                                model.getKernel()
-                                     .getSameAgency(),
-                                aliases);
-
-        assertFalse(model.getPhantasmModel()
-                         .checkPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getNotApplicableAgency(),
-                   model.getKernel()
-                        .getMemberOf(),
-                   model.getKernel()
-                        .getCore());
-
-        assertTrue(model.getPhantasmModel()
-                        .checkPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-    }
-
-    @Test
     public void testThis() throws InstantiationException {
 
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
@@ -569,12 +551,5 @@ public class RbacTest extends AbstractModelTest {
                                                       .getHasMember(),
                                                  ExistentialDomain.Product);
         assertEquals("Thing1", child.getName());
-    }
-
-    @Test
-    public void testApplyFacet() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-        model.apply(OtherThing.class, thing1);
     }
 }

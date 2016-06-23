@@ -46,5 +46,4 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
     public Product getWorkspace() {
         return workspace;
     }
-
 }

@@ -75,6 +75,18 @@ public interface Model extends AutoCloseable {
     <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
                                                                Class<R> phantasm);
 
+    boolean checkApply(UpdatableRecord<?> target);
+
+    boolean checkCreate(UpdatableRecord<?> target);
+
+    boolean checkDelete(UpdatableRecord<?> target);
+
+    boolean checkExecuteQuery(UpdatableRecord<?> target);
+
+    boolean checkInvoke(UpdatableRecord<?> target);
+
+    boolean checkLoginTo(UpdatableRecord<?> target);
+
     boolean checkPermission(ExistentialRuleform target,
                             Relationship permission);
 
@@ -91,6 +103,12 @@ public interface Model extends AutoCloseable {
                             Relationship permission);
 
     boolean checkPermission(UpdatableRecord<?> target, Relationship permission);
+
+    boolean checkRead(UpdatableRecord<?> target);
+
+    boolean checkRemove(UpdatableRecord<?> target);
+
+    boolean checkUpdate(UpdatableRecord<?> target);
 
     @Override
     void close();
@@ -135,16 +153,26 @@ public interface Model extends AutoCloseable {
      */
     void flushWorkspaces();
 
+    Relationship getApplyPerm();
+
     /**
      * @return the agency that represents this instance of the CoRE
      */
     CoreInstance getCoreInstance();
+
+    Relationship getCreatePerm();
 
     /**
      *
      * @return the current thread's authorized principal
      */
     AuthorizedPrincipal getCurrentPrincipal();
+
+    Relationship getDeletePerm();
+
+    Relationship getExecuteQueryPerm();
+
+    Relationship getInvokePerm();
 
     /**
      * @return the Job Model
@@ -158,7 +186,15 @@ public interface Model extends AutoCloseable {
      */
     Kernel getKernel();
 
+    Relationship getLoginToPerm();
+
     PhantasmModel getPhantasmModel();
+
+    Relationship getReadPerm();
+
+    Relationship getRemovePerm();
+
+    Relationship getUpdatePerm();
 
     /**
      * @return the UnitCode model

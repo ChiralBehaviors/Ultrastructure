@@ -54,13 +54,9 @@ public interface Kernel {
 
     Relationship getAPPLY();
 
-    Product getArgument();
-
     Relationship getCapability();
 
     Product getCodeSource();
-
-    Product getConstructor();
 
     Relationship getContains();
 
@@ -126,8 +122,6 @@ public interface Kernel {
 
     Relationship getHasMethod();
 
-    Relationship getHasPlugin();
-
     Relationship getHasVersion();
 
     Relationship getHeadOf();
@@ -141,8 +135,6 @@ public interface Kernel {
     Relationship getIncludes();
 
     Attribute getInputType();
-
-    Product getInstanceMethod();
 
     Relationship getInstanceOf();
 
@@ -220,8 +212,6 @@ public interface Kernel {
 
     Attribute getPasswordRounds();
 
-    Product getPlugin();
-
     Agency getPropagationSoftware();
 
     Relationship getPrototype();
@@ -231,8 +221,6 @@ public interface Kernel {
     Relationship getREAD();
 
     Relationship getREMOVE();
-
-    Attribute getReturnType();
 
     Agency getRole();
 
@@ -257,8 +245,6 @@ public interface Kernel {
     Relationship getSingletonOf();
 
     Agency getSpecialSystemAgency();
-
-    Product getStaticMethod();
 
     Agency getSuperUser();
 

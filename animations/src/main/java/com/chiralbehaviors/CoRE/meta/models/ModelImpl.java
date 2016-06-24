@@ -53,9 +53,9 @@ import org.jooq.UpdatableRecord;
 import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.exception.TooManyRowsException;
+import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultRecordListenerProvider;
-import org.jooq.util.postgres.PostgresDSL;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
@@ -98,7 +98,6 @@ public class ModelImpl implements Model {
     private static final String                                                       GROUPS     = "groups";
     private static final String                                                       MEMBERSHIP = "membership";
     private static final Integer                                                      ZERO       = Integer.valueOf(0);
-
     static {
         AUTHORITY_HANDLE = new HashMap<>();
         Ruleform.RULEFORM.getTables()
@@ -161,20 +160,25 @@ public class ModelImpl implements Model {
     }
 
     public static DSLContext newCreate(Connection connection) throws SQLException {
-        return PostgresDSL.using(configuration(connection));
+        return DSL.using(configuration(connection));
     }
 
     private final Animations     animations;
+    private final Relationship   applyPerm;
     private final DSLContext     create;
+    private final Relationship   createPerm;
     private AuthorizedPrincipal  currentPrincipal;
+    private final Relationship   deletePerm;
+    private final Relationship   executeQueryPerm;
     private final RecordsFactory factory;
-
+    private final Relationship   invokePerm;
     private final JobModel       jobModel;
-
     private final Kernel         kernel;
-
+    private final Relationship   loginToPerm;
     private final PhantasmModel  phantasmModel;
-
+    private final Relationship   readPerm;
+    private final Relationship   removePerm;
+    private final Relationship   updatePerm;
     private final WorkspaceModel workspaceModel;
 
     public ModelImpl(Connection connection) throws SQLException {
@@ -214,14 +218,23 @@ public class ModelImpl implements Model {
                                .getAccessor(Kernel.class);
         phantasmModel = new PhantasmModelImpl(this);
         jobModel = new JobModelImpl(this);
+
+        createPerm = getKernel().getCREATE();
+        readPerm = getKernel().getREAD();
+        updatePerm = getKernel().getUPDATE();
+        deletePerm = getKernel().getDELETE();
+        applyPerm = getKernel().getAPPLY();
+        removePerm = getKernel().getREMOVE();
+        invokePerm = getKernel().getINVOKE();
+        executeQueryPerm = getKernel().getEXECUTE_QUERY();
+        loginToPerm = getKernel().getLOGIN_TO();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm> R apply(Class<R> phantasm,
                                                                        Phantasm target) {
-        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
-                                                                    this);
+        PhantasmDefinition definition = cached(phantasm, this);
         return (R) definition.construct(target.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
     }
@@ -235,6 +248,36 @@ public class ModelImpl implements Model {
     public <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
                                                                       Class<R> phantasm) {
         return wrap(phantasm, source);
+    }
+
+    @Override
+    public boolean checkApply(UpdatableRecord<?> target) {
+        return checkPermission(target, applyPerm);
+    }
+
+    @Override
+    public boolean checkCreate(UpdatableRecord<?> target) {
+        return checkPermission(target, createPerm);
+    }
+
+    @Override
+    public boolean checkDelete(UpdatableRecord<?> target) {
+        return checkPermission(target, deletePerm);
+    }
+
+    @Override
+    public boolean checkExecuteQuery(UpdatableRecord<?> target) {
+        return checkPermission(target, executeQueryPerm);
+    }
+
+    @Override
+    public boolean checkInvoke(UpdatableRecord<?> target) {
+        return checkPermission(target, invokePerm);
+    }
+
+    @Override
+    public boolean checkLoginTo(UpdatableRecord<?> target) {
+        return checkPermission(target, loginToPerm);
     }
 
     @Override
@@ -278,6 +321,21 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public boolean checkRead(UpdatableRecord<?> target) {
+        return checkPermission(target, readPerm);
+    }
+
+    @Override
+    public boolean checkRemove(UpdatableRecord<?> target) {
+        return checkPermission(target, removePerm);
+    }
+
+    @Override
+    public boolean checkUpdate(UpdatableRecord<?> target) {
+        return checkPermission(target, updatePerm);
+    }
+
+    @Override
     public void close() {
         try {
             create.configuration()
@@ -298,8 +356,7 @@ public class ModelImpl implements Model {
                                                                            ExistentialDomain domain,
                                                                            String name,
                                                                            String description) throws InstantiationException {
-        PhantasmDefinition definition = (PhantasmDefinition) cached(phantasm,
-                                                                    this);
+        PhantasmDefinition definition = cached(phantasm, this);
         ExistentialRecord record = (ExistentialRecord) records().newExistential(domain);
         record.setName(name);
         record.setDescription(description);
@@ -341,6 +398,11 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public Relationship getApplyPerm() {
+        return applyPerm;
+    }
+
+    @Override
     public CoreInstance getCoreInstance() {
         return wrap(CoreInstance.class,
                     phantasmModel.getChild(getKernel().getCore(),
@@ -350,10 +412,30 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public Relationship getCreatePerm() {
+        return createPerm;
+    }
+
+    @Override
     public AuthorizedPrincipal getCurrentPrincipal() {
         AuthorizedPrincipal authorizedPrincipal = currentPrincipal;
         return authorizedPrincipal == null ? new AuthorizedPrincipal(kernel.getCoreAnimationSoftware())
                                            : authorizedPrincipal;
+    }
+
+    @Override
+    public Relationship getDeletePerm() {
+        return deletePerm;
+    }
+
+    @Override
+    public Relationship getExecuteQueryPerm() {
+        return executeQueryPerm;
+    }
+
+    @Override
+    public Relationship getInvokePerm() {
+        return invokePerm;
     }
 
     @Override
@@ -367,8 +449,28 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public Relationship getLoginToPerm() {
+        return loginToPerm;
+    }
+
+    @Override
     public PhantasmModel getPhantasmModel() {
         return phantasmModel;
+    }
+
+    @Override
+    public Relationship getReadPerm() {
+        return readPerm;
+    }
+
+    @Override
+    public Relationship getRemovePerm() {
+        return removePerm;
+    }
+
+    @Override
+    public Relationship getUpdatePerm() {
+        return updatePerm;
     }
 
     @Override

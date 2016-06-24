@@ -33,9 +33,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.jooq.UpdatableRecord;
+
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -53,32 +54,10 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthoriz
  *
  */
 public class PhantasmCRUD {
-
-    protected final Relationship apply;
-    protected final Relationship create;
-    protected final Relationship delete;
-    protected final Relationship invoke;
-    protected final Model        model;
-    protected final Relationship read;
-    protected final Relationship remove;
-    protected final Relationship update;
+    protected final Model model;
 
     public PhantasmCRUD(Model model) {
         this.model = model;
-        create = model.getKernel()
-                      .getCREATE();
-        delete = model.getKernel()
-                      .getDELETE();
-        invoke = model.getKernel()
-                      .getINVOKE();
-        read = model.getKernel()
-                    .getREAD();
-        remove = model.getKernel()
-                      .getREMOVE();
-        update = model.getKernel()
-                      .getUPDATE();
-        apply = model.getKernel()
-                     .getAPPLY();
     }
 
     /**
@@ -97,7 +76,8 @@ public class PhantasmCRUD {
             return null;
         }
         cast(child, auth.getChild());
-        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(auth.getAuth())) {
             return instance;
         }
 
@@ -121,11 +101,12 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(auth.getAuth())) {
             return instance;
         }
         children.stream()
-                .filter(child -> checkREAD(child))
+                .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                 .peek(child -> cast(child, auth.getChild()))
                 .forEach(child -> model.getPhantasmModel()
                                        .link(instance, auth.getRelationship(),
@@ -146,7 +127,7 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!model.checkPermission(facet.getFacet(), getAPPLY())) {
+        if (!model.checkApply(facet.getFacet())) {
             return null;
         }
         model.getPhantasmModel()
@@ -176,17 +157,8 @@ public class PhantasmCRUD {
     }
 
     public boolean checkInvoke(Aspect facet, ExistentialRuleform instance) {
-        Relationship invoke = getINVOKE();
-        return model.checkPermission(instance, invoke)
-               && model.checkPermission(facet.getFacet(), invoke);
-    }
-
-    public boolean checkREAD(ExistentialRuleform child) {
-        return model.checkPermission(child, getREAD());
-    }
-
-    public boolean checkUPDATE(ExistentialRuleform child) {
-        return model.checkPermission(child, getUPDATE());
+        return model.checkInvoke((UpdatableRecord<?>) instance)
+               && model.checkInvoke(facet.getFacet());
     }
 
     /**
@@ -203,7 +175,7 @@ public class PhantasmCRUD {
     public ExistentialRuleform createInstance(Aspect facet, String name,
                                               String description,
                                               Consumer<ExistentialRuleform> initializer) {
-        if (!model.checkPermission(facet.getFacet(), getCREATE())) {
+        if (!model.checkCreate(facet.getFacet())) {
             return null;
         }
         ExistentialRuleform instance;
@@ -221,10 +193,6 @@ public class PhantasmCRUD {
         return instance;
     }
 
-    public Relationship getAPPLY() {
-        return apply;
-    }
-
     /**
      * Answer the attribute value of the instance
      *
@@ -239,7 +207,8 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkREAD(facet) || !checkREAD(stateAuth)) {
+        if (!model.checkRead(facet.getFacet())
+            || !model.checkRead(stateAuth.getAuth())) {
             return null;
         }
         Attribute authorizedAttribute = stateAuth.getAttribute();
@@ -272,7 +241,8 @@ public class PhantasmCRUD {
         if (instance == null) {
             return Collections.emptyList();
         }
-        if (!checkREAD(facet) || !checkREAD(auth)) {
+        if (!model.checkRead(facet.getFacet())
+            || !model.checkRead(auth.getAuth())) {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
@@ -283,17 +253,9 @@ public class PhantasmCRUD {
                                                 .getClassification(),
                                             auth.getDomain())
                     .stream()
-                    .filter(child -> model.checkPermission(child, getREAD()))
+                    .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                     .collect(Collectors.toList());
 
-    }
-
-    public Relationship getCREATE() {
-        return create;
-    }
-
-    public Relationship getDELETE() {
-        return delete;
     }
 
     /**
@@ -311,7 +273,8 @@ public class PhantasmCRUD {
         if (instance == null) {
             return Collections.emptyList();
         }
-        if (!checkREAD(facet) || !checkREAD(auth)) {
+        if (!model.checkRead(facet.getFacet())
+            || !model.checkRead(auth.getAuth())) {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
@@ -324,7 +287,7 @@ public class PhantasmCRUD {
                                                      auth.getDomain())
                     .stream()
                     .map(r -> r)
-                    .filter(child -> model.checkPermission(child, getREAD()))
+                    .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                     .collect(Collectors.toList());
     }
 
@@ -335,7 +298,7 @@ public class PhantasmCRUD {
      * @return
      */
     public List<ExistentialRuleform> getInstances(Aspect facet) {
-        if (!model.checkPermission(facet.getFacet(), getREAD())) {
+        if (!model.checkRead(facet.getFacet())) {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
@@ -346,24 +309,12 @@ public class PhantasmCRUD {
                                      facet.getDomain())
                     .stream()
                     .map(e -> e)
-                    .filter(instance -> checkREAD(instance))
+                    .filter(instance -> model.checkRead((UpdatableRecord<?>) instance))
                     .collect(Collectors.toList());
-    }
-
-    public Relationship getINVOKE() {
-        return invoke;
     }
 
     public Model getModel() {
         return model;
-    }
-
-    public Relationship getREAD() {
-        return read;
-    }
-
-    public Relationship getREMOVE() {
-        return remove;
     }
 
     /**
@@ -381,18 +332,15 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkREAD(facet) || !checkREAD(auth)) {
+        if (!model.checkRead(facet.getFacet())
+            || !model.checkRead(auth.getAuth())) {
             return null;
         }
         ExistentialRuleform child = model.getPhantasmModel()
                                          .getImmediateChild(instance,
                                                             auth.getRelationship(),
                                                             auth.getDomain());
-        return checkREAD(child) ? child : null;
-    }
-
-    public Relationship getUPDATE() {
-        return update;
+        return model.checkRead((UpdatableRecord<?>) child) ? child : null;
     }
 
     public List<ExistentialRuleform> lookup(List<String> ids) {
@@ -400,7 +348,7 @@ public class PhantasmCRUD {
                   .map(id -> existential(id))
                   .map(r -> model.records()
                                  .resolve(r))
-                  .filter(child -> model.checkPermission(child, getREAD()))
+                  .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                   .collect(Collectors.toList());
     }
 
@@ -409,7 +357,7 @@ public class PhantasmCRUD {
                        .map(r -> model.records()
                                       .resolve(r))
                        .filter(rf -> rf != null)
-                       .filter(child -> model.checkPermission(child, getREAD()))
+                       .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                        .orElse(null);
     }
 
@@ -427,7 +375,7 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!model.checkPermission(facet.getFacet(), getREMOVE())) {
+        if (!model.checkRemove(facet.getFacet())) {
             return instance;
         }
         model.getPhantasmModel()
@@ -451,7 +399,8 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(auth.getAuth())) {
             return instance;
         }
         model.getPhantasmModel()
@@ -474,7 +423,8 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(auth.getAuth())) {
             return instance;
         }
         for (ExistentialRuleform child : children) {
@@ -495,7 +445,8 @@ public class PhantasmCRUD {
                                                  ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  Map<String, Object> value) {
-        if (!checkUPDATE(facet) || !checkUPDATE(stateAuth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(stateAuth.getAuth())) {
             return instance;
         }
         setAttributeMap(instance, stateAuth.getAttribute(), value);
@@ -509,7 +460,8 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(facet) || !checkUPDATE(stateAuth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(stateAuth.getAuth())) {
             return instance;
         }
         model.getPhantasmModel()
@@ -524,7 +476,8 @@ public class PhantasmCRUD {
                                                  ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  Object[] value) {
-        if (!checkUPDATE(facet) || !checkUPDATE(stateAuth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(stateAuth.getAuth())) {
             return instance;
         }
         setAttributeArray(instance, stateAuth.getAttribute(), value);
@@ -547,14 +500,15 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(auth.getAuth())) {
             return instance;
         }
 
         model.getPhantasmModel()
              .unlinkImmediate(instance, auth.getRelationship());
         children.stream()
-                .filter(child -> checkREAD(child))
+                .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                 .peek(child -> cast(child, auth.getChild()))
                 .forEach(child -> model.getPhantasmModel()
                                        .link(instance, auth.getRelationship(),
@@ -572,7 +526,7 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(instance)) {
+        if (!model.checkUpdate((UpdatableRecord<?>) instance)) {
             return instance;
         }
         instance.setDescription(description);
@@ -584,7 +538,7 @@ public class PhantasmCRUD {
         if (instance == null) {
             return null;
         }
-        if (!checkUPDATE(instance)) {
+        if (!model.checkUpdate((UpdatableRecord<?>) instance)) {
             return instance;
         }
         instance.setName(name);
@@ -608,7 +562,8 @@ public class PhantasmCRUD {
             return null;
         }
 
-        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(auth.getAuth())) {
             return instance;
         }
 
@@ -621,30 +576,6 @@ public class PhantasmCRUD {
                  .setImmediateChild(instance, auth.getRelationship(), child);
         }
         return instance;
-    }
-
-    private boolean checkREAD(Aspect auth) {
-        return model.checkPermission(auth.getFacet(), getREAD());
-    }
-
-    private boolean checkREAD(AttributeAuthorization stateAuth) {
-        return model.checkPermission(stateAuth.getAuth(), getREAD());
-    }
-
-    private boolean checkREAD(NetworkAuthorization stateAuth) {
-        return model.checkPermission(stateAuth.getAuth(), getREAD());
-    }
-
-    private boolean checkUPDATE(Aspect stateAuth) {
-        return model.checkPermission(stateAuth.getFacet(), getUPDATE());
-    }
-
-    private boolean checkUPDATE(AttributeAuthorization stateAuth) {
-        return model.checkPermission(stateAuth.getAuth(), getUPDATE());
-    }
-
-    private boolean checkUPDATE(NetworkAuthorization auth) {
-        return model.checkPermission(auth.getAuth(), getUPDATE());
     }
 
     private ExistentialRecord existential(String id) {

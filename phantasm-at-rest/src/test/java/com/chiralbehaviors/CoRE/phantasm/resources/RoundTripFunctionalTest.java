@@ -79,7 +79,7 @@ public class RoundTripFunctionalTest {
     @AfterClass
     public static void clearDb() throws Exception {
         try {
-            RecordsFactory.clear(model.create());
+   //         RecordsFactory.clear(model.create());
         } finally {
             model.close();
         }

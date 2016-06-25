@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  *
 
  * This file is part of Ultrastructure.
@@ -32,10 +32,10 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class ClearCommand extends Command {
+public class RollbackCommand extends Command {
 
-    public ClearCommand() {
-        super("clear", "Reset the CoRE instance to the initial state");
+    public RollbackCommand() {
+        super("rollback", "Rollback the CoRE schema");
     }
 
     @Override
@@ -48,7 +48,6 @@ public class ClearCommand extends Command {
                     Namespace namespace) throws Exception {
         DbaConfiguration config = new DbaConfiguration();
         config.initializeFromEnvironment();
-        new Loader(config).clear();
+        new Loader(config).rollback();
     }
-
 }

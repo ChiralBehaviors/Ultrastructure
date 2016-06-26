@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
@@ -46,9 +47,13 @@ public interface ChildSequencingMutations {
     @GraphQLField
     default ChildSequencing createChildSequencing(@NotNull @GraphQLName("state") ChildSequencingState state,
                                                   DataFetchingEnvironment env) {
-        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
-                                                                   .records()
-                                                                   .newChildSequencingAuthorization();
+        Model model = WorkspaceSchema.ctx(env);
+        ChildSequencingAuthorizationRecord record = model.records()
+                                                         .newChildSequencingAuthorization();
+        if (!model.checkCreate(record)) {
+            return null;
+        }
+
         state.update(record);
         record.insert();
         return new ChildSequencing(record);
@@ -66,11 +71,11 @@ public interface ChildSequencingMutations {
     @GraphQLField
     default ChildSequencing updateChildSequencing(@NotNull @GraphQLName("state") ChildSequencingUpdateState state,
                                                   DataFetchingEnvironment env) {
-        ChildSequencingAuthorizationRecord record = WorkspaceSchema.ctx(env)
-                                                                   .create()
-                                                                   .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)
-                                                                   .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
-                                                                   .fetchOne();
+        Model model = WorkspaceSchema.ctx(env);
+        ChildSequencingAuthorizationRecord record = model.create()
+                                                         .selectFrom(Tables.CHILD_SEQUENCING_AUTHORIZATION)
+                                                         .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.ID.equal(UUID.fromString(state.id)))
+                                                         .fetchOne();
         state.update(record);
         record.update();
         return new ChildSequencing(record);

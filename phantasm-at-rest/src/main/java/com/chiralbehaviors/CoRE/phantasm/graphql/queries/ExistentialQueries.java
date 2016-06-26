@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ctx;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.List;
@@ -28,9 +29,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.jooq.UpdatableRecord;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
@@ -56,14 +60,17 @@ public interface ExistentialQueries {
 
     static List<ExistentialRecord> resolved(DataFetchingEnvironment env,
                                             ExistentialDomain domain) {
-        return WorkspaceSchema.ctx(env)
-                              .create()
-                              .selectFrom(Tables.EXISTENTIAL)
-                              .where(Tables.EXISTENTIAL.WORKSPACE.eq(((WorkspaceContext) env.getContext()).getWorkspace()
-                                                                                                          .getId()))
-                              .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
-                              .fetch()
-                              .into(ExistentialRecord.class);
+        Model model = WorkspaceSchema.ctx(env);
+        return model.create()
+                    .selectFrom(Tables.EXISTENTIAL)
+                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(((WorkspaceContext) env.getContext()).getWorkspace()
+                                                                                                .getId()))
+                    .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                    .fetch()
+                    .into(ExistentialRecord.class)
+                    .stream()
+                    .filter(r -> model.checkRead(r))
+                    .collect(Collectors.toList());
     }
 
     @GraphQLField
@@ -74,22 +81,29 @@ public interface ExistentialQueries {
                                                           .map(r -> new Agency(r))
                                                           .collect(Collectors.toList());
         }
+        Model model = WorkspaceSchema.ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Agency(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Agency((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Agency agency(@NotNull @GraphQLName("id") String id,
                           DataFetchingEnvironment env) {
-        return new Agency(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead((UpdatableRecord<?>) resolved) ? new Agency(resolved)
+                                                                 : null;
     }
 
     @GraphQLField
     default Attribute attribute(@NotNull @GraphQLName("id") String id,
                                 DataFetchingEnvironment env) {
-        return new Attribute(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead((UpdatableRecord<?>) resolved) ? new Attribute(resolved)
+                                                                 : null;
     }
 
     @GraphQLField
@@ -100,16 +114,20 @@ public interface ExistentialQueries {
                                                              .map(r -> new Attribute(r))
                                                              .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Attribute(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Attribute((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Interval interval(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
-        return new Interval(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead(resolved) ? new Interval(resolved) : null;
     }
 
     @GraphQLField
@@ -120,16 +138,20 @@ public interface ExistentialQueries {
                                                             .map(r -> new Interval(r))
                                                             .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Interval(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Interval((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Location location(@NotNull @GraphQLName("id") String id,
                               DataFetchingEnvironment env) {
-        return new Location(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead(resolved) ? new Location(resolved) : null;
     }
 
     @GraphQLField
@@ -140,16 +162,20 @@ public interface ExistentialQueries {
                                                             .map(r -> new Location(r))
                                                             .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Location(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Location((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Product product(@NotNull @GraphQLName("id") String id,
                             DataFetchingEnvironment env) {
-        return new Product(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead(resolved) ? new Product(resolved) : null;
     }
 
     @GraphQLField
@@ -160,16 +186,20 @@ public interface ExistentialQueries {
                                                            .map(r -> new Product(r))
                                                            .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Product(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Product((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Relationship relationship(@NotNull @GraphQLName("id") String id,
                                       DataFetchingEnvironment env) {
-        return new Relationship(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead(resolved) ? new Relationship(resolved) : null;
     }
 
     @GraphQLField
@@ -180,16 +210,20 @@ public interface ExistentialQueries {
                                                                 .map(r -> new Relationship(r))
                                                                 .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Relationship(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Relationship((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default StatusCode statusCode(@NotNull @GraphQLName("id") String id,
                                   DataFetchingEnvironment env) {
-        return new StatusCode(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead(resolved) ? new StatusCode(resolved) : null;
     }
 
     @GraphQLField
@@ -200,16 +234,20 @@ public interface ExistentialQueries {
                                                               .map(r -> new StatusCode(r))
                                                               .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new StatusCode(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new StatusCode((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 
     @GraphQLField
     default Unit unit(@NotNull @GraphQLName("id") String id,
                       DataFetchingEnvironment env) {
-        return new Unit(resolve(env, UUID.fromString(id)));
+        ExistentialRecord resolved = resolve(env, UUID.fromString(id));
+        return ctx(env).checkRead(resolved) ? new Unit(resolved) : null;
     }
 
     @GraphQLField
@@ -220,9 +258,12 @@ public interface ExistentialQueries {
                                                         .map(r -> new Unit(r))
                                                         .collect(Collectors.toList());
         }
+        Model model = ctx(env);
         return ids.stream()
                   .map(s -> UUID.fromString(s))
-                  .map(id -> new Unit(resolve(env, id)))
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Unit((ExistentialRecord) r))
                   .collect(Collectors.toList());
     }
 }

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
@@ -82,11 +83,12 @@ public class Facet {
     }
 
     public static Facet fetch(DataFetchingEnvironment env, UUID id) {
-        return new Facet(WorkspaceSchema.ctx(env)
-                                        .create()
-                                        .selectFrom(Tables.FACET)
-                                        .where(Tables.FACET.ID.equal(id))
-                                        .fetchOne());
+        Model model = WorkspaceSchema.ctx(env);
+        FacetRecord fetchOne = model.create()
+                                    .selectFrom(Tables.FACET)
+                                    .where(Tables.FACET.ID.equal(id))
+                                    .fetchOne();
+        return model.checkRead(fetchOne) ? new Facet(fetchOne) : null;
     }
 
     private final FacetRecord record;

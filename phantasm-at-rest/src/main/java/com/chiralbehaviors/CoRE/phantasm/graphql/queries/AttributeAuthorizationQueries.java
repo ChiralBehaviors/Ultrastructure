@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
@@ -48,8 +49,11 @@ public interface AttributeAuthorizationQueries {
     @GraphQLField
     default AttributeAuthorization attributeAuthorization(@NotNull @GraphQLName("id") String id,
                                                           DataFetchingEnvironment env) {
-        return new AttributeAuthorization(AttributeAuthorization.fetch(env,
-                                                                       UUID.fromString(id)));
+        ExistentialAttributeAuthorizationRecord auth = AttributeAuthorization.fetch(env,
+                                                                                    UUID.fromString(id));
+        return WorkspaceSchema.ctx(env)
+                              .checkRead(auth) ? new AttributeAuthorization(auth)
+                                               : null;
     }
 
     @GraphQLField
@@ -57,15 +61,16 @@ public interface AttributeAuthorizationQueries {
                                                                  DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env)
-                                  .create()
-                                  .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                                  .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
-                                  .fetch()
-                                  .into(ExistentialAttributeAuthorizationRecord.class)
-                                  .stream()
-                                  .map(r -> new AttributeAuthorization(r))
-                                  .collect(Collectors.toList());
+            Model model = WorkspaceSchema.ctx(env);
+            return model.create()
+                        .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
+                        .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
+                        .fetch()
+                        .into(ExistentialAttributeAuthorizationRecord.class)
+                        .stream()
+                        .filter(r -> model.checkRead(r))
+                        .map(r -> new AttributeAuthorization(r))
+                        .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))

@@ -25,10 +25,12 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import org.jooq.DSLContext;
+import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
@@ -73,6 +75,41 @@ public interface Model extends AutoCloseable {
     <T extends ExistentialRuleform, R extends Phantasm> R cast(T source,
                                                                Class<R> phantasm);
 
+    boolean checkApply(UpdatableRecord<?> target);
+
+    boolean checkCreate(UpdatableRecord<?> target);
+
+    boolean checkDelete(UpdatableRecord<?> target);
+
+    boolean checkExecuteQuery(UpdatableRecord<?> target);
+
+    boolean checkInvoke(UpdatableRecord<?> target);
+
+    boolean checkLoginTo(UpdatableRecord<?> target);
+
+    boolean checkPermission(ExistentialRuleform target,
+                            Relationship permission);
+
+    /**
+     * @param roles
+     * @param target
+     * @param permission
+     * @return
+     */
+    boolean checkPermission(List<Agency> roles, ExistentialRuleform target,
+                            Relationship permission);
+
+    boolean checkPermission(List<Agency> roles, UpdatableRecord<?> target,
+                            Relationship permission);
+
+    boolean checkPermission(UpdatableRecord<?> target, Relationship permission);
+
+    boolean checkRead(UpdatableRecord<?> target);
+
+    boolean checkRemove(UpdatableRecord<?> target);
+
+    boolean checkUpdate(UpdatableRecord<?> target);
+
     @Override
     void close();
 
@@ -116,16 +153,26 @@ public interface Model extends AutoCloseable {
      */
     void flushWorkspaces();
 
+    Relationship getApplyPerm();
+
     /**
      * @return the agency that represents this instance of the CoRE
      */
     CoreInstance getCoreInstance();
+
+    Relationship getCreatePerm();
 
     /**
      *
      * @return the current thread's authorized principal
      */
     AuthorizedPrincipal getCurrentPrincipal();
+
+    Relationship getDeletePerm();
+
+    Relationship getExecuteQueryPerm();
+
+    Relationship getInvokePerm();
 
     /**
      * @return the Job Model
@@ -139,7 +186,15 @@ public interface Model extends AutoCloseable {
      */
     Kernel getKernel();
 
+    Relationship getLoginToPerm();
+
     PhantasmModel getPhantasmModel();
+
+    Relationship getReadPerm();
+
+    Relationship getRemovePerm();
+
+    Relationship getUpdatePerm();
 
     /**
      * @return the UnitCode model
@@ -150,8 +205,7 @@ public interface Model extends AutoCloseable {
 
     AuthorizedPrincipal principalFrom(Agency agency, List<Agency> list);
 
-    AuthorizedPrincipal principalFromIds(Agency agency,
-                                         List<UUID> roles);
+    AuthorizedPrincipal principalFromIds(Agency agency, List<UUID> roles);
 
     RecordsFactory records();
 

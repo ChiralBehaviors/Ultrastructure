@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.RollbackCommand;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
@@ -76,8 +77,9 @@ public class CommandsTest {
                          .execute();
         }
 
-        new BootstrapCommand().run(null, null); 
+        new BootstrapCommand().run(null, null);
         new ClearCommand().run(null, null);
         new BootstrapCommand().run(null, null);
+        new RollbackCommand().run(null, null);
     }
 }

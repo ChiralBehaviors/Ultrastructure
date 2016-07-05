@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
@@ -56,16 +57,17 @@ public interface ChildSequencingQueries {
                                                    DataFetchingEnvironment env) {
         if (ids == null) {
             Product workspace = ((WorkspaceContext) env.getContext()).getWorkspace();
-            return WorkspaceSchema.ctx(env)
-                                  .create()
-                                  .selectDistinct(Tables.CHILD_SEQUENCING_AUTHORIZATION.fields())
-                                  .from(Tables.CHILD_SEQUENCING_AUTHORIZATION)
-                                  .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
-                                  .fetch()
-                                  .into(ChildSequencingAuthorizationRecord.class)
-                                  .stream()
-                                  .map(r -> new ChildSequencing(r))
-                                  .collect(Collectors.toList());
+            Model model = WorkspaceSchema.ctx(env);
+            return model.create()
+                        .selectDistinct(Tables.CHILD_SEQUENCING_AUTHORIZATION.fields())
+                        .from(Tables.CHILD_SEQUENCING_AUTHORIZATION)
+                        .where(Tables.CHILD_SEQUENCING_AUTHORIZATION.WORKSPACE.equal(workspace.getId()))
+                        .fetch()
+                        .into(ChildSequencingAuthorizationRecord.class)
+                        .stream()
+                        .filter(r -> model.checkRead(r))
+                        .map(r -> new ChildSequencing(r))
+                        .collect(Collectors.toList());
         }
         return ids.stream()
                   .map(s -> UUID.fromString(s))

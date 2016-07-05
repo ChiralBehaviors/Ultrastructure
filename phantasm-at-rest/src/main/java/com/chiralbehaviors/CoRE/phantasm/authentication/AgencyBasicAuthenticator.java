@@ -137,8 +137,7 @@ public class AgencyBasicAuthenticator
     }
 
     private boolean canLoginToInstance(CoreUser user, Model model) {
-        return model.getPhantasmModel()
-                    .checkPermission(user.getRoles()
+        return model.checkPermission(user.getRoles()
                                          .stream()
                                          .map(r -> r.getRuleform())
                                          .map(e -> (Agency) e)

@@ -47,6 +47,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.jooq.DSLContext;
+import org.jooq.UpdatableRecord;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
@@ -343,11 +344,10 @@ public class WorkspaceResource extends TransactionalResource {
                                            .resolve(uuid);
             WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
-            if (!model.getPhantasmModel()
-                      .checkPermission(definingProduct, crud.getREAD())
-                || !model.getPhantasmModel()
-                         .checkPermission(definingProduct, model.getKernel()
-                                                                .getEXECUTE_QUERY())) {
+            if (!model.checkRead((UpdatableRecord<?>) definingProduct)
+                || !model.checkPermission((ExistentialRuleform) definingProduct,
+                                          model.getKernel()
+                                               .getEXECUTE_QUERY())) {
                 Agency p = model.getCurrentPrincipal()
                                 .getPrincipal();
                 log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",
@@ -393,11 +393,8 @@ public class WorkspaceResource extends TransactionalResource {
                                            .resolve(uuid);
             WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
-            if (!model.getPhantasmModel()
-                      .checkPermission(definingProduct, crud.getREAD())
-                || !model.getPhantasmModel()
-                         .checkPermission(definingProduct, model.getKernel()
-                                                                .getEXECUTE_QUERY())) {
+            if (!model.checkRead((UpdatableRecord<?>) definingProduct)
+                || !model.checkRead((UpdatableRecord<?>) definingProduct)) {
                 Agency p = model.getCurrentPrincipal()
                                 .getPrincipal();
                 log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",

@@ -56,8 +56,7 @@ public interface CurrentUser {
                                @NotNull @GraphQLName("entity") String existential,
                                DataFetchingEnvironment env) {
         Model model = ctx(env);
-        return model.getPhantasmModel()
-                    .checkPermission(model.getCurrentPrincipal()
+        return model.checkPermission(model.getCurrentPrincipal()
                                           .getAsserted(),
                                      (ExistentialRuleform) model.records()
                                                                 .resolve(UUID.fromString(existential)),
@@ -87,8 +86,7 @@ public interface CurrentUser {
                   .containsAll(roles)) {
             return false;
         }
-        return model.getPhantasmModel()
-                    .checkPermission(roleAgencies,
+        return model.checkPermission(roleAgencies,
                                      (ExistentialRuleform) model.records()
                                                                 .resolve(UUID.fromString(existential)),
                                      (Relationship) model.records()

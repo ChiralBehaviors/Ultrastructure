@@ -35,6 +35,7 @@ import org.jooq.impl.DSL;
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 
@@ -78,7 +79,7 @@ public class BootstrapModel extends Bootstrap {
         Product kernelWorkspace = super.constructKernelWorkspace();
 
         // Ain Soph
-        ModelImpl model = new ModelImpl(create.configuration()
+        Model model = new ModelImpl(create.configuration()
                                               .connectionProvider()
                                               .acquire());
 

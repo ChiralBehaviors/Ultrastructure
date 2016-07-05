@@ -24,8 +24,11 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import org.jooq.UpdatableRecord;
+
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
@@ -57,8 +60,12 @@ public interface FacetMutations {
     @GraphQLField
     default Boolean removeFacet(@NotNull @GraphQLName("id") String id,
                                 DataFetchingEnvironment env) {
-        Facet.fetch(env, UUID.fromString(id))
-             .getRecord()
+        Facet fetch = Facet.fetch(env, UUID.fromString(id));
+        if (fetch == null || !WorkspaceSchema.ctx(env)
+                                             .checkRemove((UpdatableRecord<?>) fetch)) {
+            return false;
+        }
+        fetch.getRecord()
              .delete();
         return true;
     }
@@ -66,11 +73,14 @@ public interface FacetMutations {
     @GraphQLField
     default Facet updateFacet(@NotNull @GraphQLName("state") FacetUpdateState state,
                               DataFetchingEnvironment env) {
-        FacetRecord record = WorkspaceSchema.ctx(env)
-                                            .create()
-                                            .selectFrom(Tables.FACET)
-                                            .where(Tables.FACET.ID.equal(UUID.fromString(state.id)))
-                                            .fetchOne();
+        Model model = WorkspaceSchema.ctx(env);
+        FacetRecord record = model.create()
+                                  .selectFrom(Tables.FACET)
+                                  .where(Tables.FACET.ID.equal(UUID.fromString(state.id)))
+                                  .fetchOne();
+        if (!model.checkUpdate(record)) {
+            return null;
+        }
         state.update(record);
         record.update();
         return new Facet(record);

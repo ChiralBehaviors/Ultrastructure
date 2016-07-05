@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -52,73 +51,6 @@ public interface PhantasmModel {
     public List<FacetRecord> getFacets(Product workspace);
 
     void authorize(FacetRecord facet, Attribute attribute);
-
-    /**
-     * Check the permission of the current principal on an attribute of a
-     * ruleform.
-     */
-    boolean checkPermission(ExistentialAttributeAuthorizationRecord stateAuth,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the current principal on an attribute of the
-     * authorized relationship of the facet child relationship.
-     */
-    boolean checkPermission(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the current principal on the authorized
-     * relationship of the facet child relationship.
-     */
-    boolean checkPermission(ExistentialNetworkAuthorizationRecord auth,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the current principal on an instance.
-     */
-    boolean checkPermission(ExistentialRuleform instance,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the current principal on the facet.
-     */
-    boolean checkPermission(FacetRecord facet, Relationship permission);
-
-    /**
-     * Check the permission of the agencies on an attribute of a ruleform.
-     */
-    boolean checkPermission(List<Agency> agencies,
-                            ExistentialAttributeAuthorizationRecord stateAuth,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the agencies on an attribute of the authorized
-     * relationship of the facet child relationship.
-     */
-    boolean checkPermission(List<Agency> agencies,
-                            ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the agencies on the authorized relationship of
-     * the facet child relationship.
-     */
-    boolean checkPermission(List<Agency> agencies,
-                            ExistentialNetworkAuthorizationRecord auth,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the agencies on an instance.
-     */
-    boolean checkPermission(List<Agency> agencies, ExistentialRuleform instance,
-                            Relationship permission);
-
-    /**
-     * Check the permission of the agencies on the facet.
-     */
-    boolean checkPermission(List<Agency> agencies, FacetRecord facet,
-                            Relationship permission);
 
     <T extends ExistentialRuleform> T create(ExistentialDomain domain,
                                              String name, String description,

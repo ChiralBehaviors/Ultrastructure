@@ -67,10 +67,6 @@ public class WorkspaceAccessHandler implements InvocationHandler {
         }
         name = name.substring("get".length());
         Object ruleform = workspace.lookup(name);
-        if (ruleform == null) {
-            throw new InvalidKeyException(String.format("Cannot find %s in this workspace",
-                                                        name));
-        }
         return ruleform;
     }
 }

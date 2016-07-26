@@ -64,6 +64,7 @@ relationships {
     SingletonOf = "Singleton Of" "A is the singleton instance of B" | HasSingleton = "Has Singleton" "A has singleton instance B";
     
     Permission = "Permission" "The defining permission classification";
+    CREATE_META = "Create Meta" "A may create meta data in B" | MayBeCreatedMetaBy = "May Be Created By" "A allows meta creation by B";
     CREATE = "Create" "The create permission" | MayBeCreatedBy = "May Be Created By" "May Be Created By";
     READ = "Read" "The read permission" | MayBeReadBy = "May Be Read By" "The inverse read permission";
     UPDATE = "Update" "The update permission" | MayBeUpdatedBy = "May Be Updated By" "The inverse update permission";

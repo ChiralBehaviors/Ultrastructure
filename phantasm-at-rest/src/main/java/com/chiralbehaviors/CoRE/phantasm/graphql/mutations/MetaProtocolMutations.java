@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
+
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -46,6 +48,10 @@ public interface MetaProtocolMutations {
     @GraphQLField
     default MetaProtocol createMetaProtocol(@NotNull @GraphQLName("state") MetaProtocolState state,
                                             DataFetchingEnvironment env) {
+        if (!WorkspaceSchema.ctx(env)
+                            .checkCreateMeta(getWorkspace(env))) {
+            return null;
+        }
         MetaProtocolRecord record = WorkspaceSchema.ctx(env)
                                                    .records()
                                                    .newMetaProtocol();

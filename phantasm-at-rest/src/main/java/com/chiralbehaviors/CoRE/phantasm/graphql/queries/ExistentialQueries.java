@@ -63,8 +63,8 @@ public interface ExistentialQueries {
         Model model = WorkspaceSchema.ctx(env);
         return model.create()
                     .selectFrom(Tables.EXISTENTIAL)
-                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(((WorkspaceContext) env.getContext()).getWorkspace()
-                                                                                                .getId()))
+                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(WorkspaceContext.getWorkspace(env)
+                                                                           .getId()))
                     .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                     .fetch()
                     .into(ExistentialRecord.class)

@@ -77,6 +77,8 @@ public interface Model extends AutoCloseable {
 
     boolean checkApply(UpdatableRecord<?> target);
 
+    boolean checkCreateMeta(UpdatableRecord<?> target);
+
     boolean checkCreate(UpdatableRecord<?> target);
 
     boolean checkDelete(UpdatableRecord<?> target);

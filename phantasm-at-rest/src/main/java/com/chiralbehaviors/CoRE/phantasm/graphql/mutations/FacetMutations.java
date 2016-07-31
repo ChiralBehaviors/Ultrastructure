@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
+
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -49,6 +51,10 @@ public interface FacetMutations {
     @GraphQLField
     default Facet createFacet(@NotNull @GraphQLName("state") FacetState state,
                               DataFetchingEnvironment env) {
+        if (!WorkspaceSchema.ctx(env)
+                            .checkCreateMeta(getWorkspace(env))) {
+            return null;
+        }
         FacetRecord record = WorkspaceSchema.ctx(env)
                                             .records()
                                             .newFacet();

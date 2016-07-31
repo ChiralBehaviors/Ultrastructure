@@ -166,6 +166,7 @@ public class ModelImpl implements Model {
     private final Animations     animations;
     private final Relationship   applyPerm;
     private final DSLContext     create;
+    private final Relationship   createMetaPerm;
     private final Relationship   createPerm;
     private AuthorizedPrincipal  currentPrincipal;
     private final Relationship   deletePerm;
@@ -219,6 +220,7 @@ public class ModelImpl implements Model {
         phantasmModel = new PhantasmModelImpl(this);
         jobModel = new JobModelImpl(this);
 
+        createMetaPerm = getKernel().getCreateMeta();
         createPerm = getKernel().getCREATE();
         readPerm = getKernel().getREAD();
         updatePerm = getKernel().getUPDATE();
@@ -278,6 +280,14 @@ public class ModelImpl implements Model {
     @Override
     public boolean checkLoginTo(UpdatableRecord<?> target) {
         return checkPermission(target, loginToPerm);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#checkMetaCreate(org.jooq.UpdatableRecord)
+     */
+    @Override
+    public boolean checkCreateMeta(UpdatableRecord<?> target) {
+        return checkPermission(target, createMetaPerm);
     }
 
     @Override

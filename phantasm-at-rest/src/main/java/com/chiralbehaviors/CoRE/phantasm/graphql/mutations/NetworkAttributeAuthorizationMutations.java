@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
+
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -46,6 +48,10 @@ public interface NetworkAttributeAuthorizationMutations {
     @GraphQLField
     default NetworkAttributeAuthorization createNetworkAttributeAuthorization(@NotNull @GraphQLName("state") NetworkAttributeAuthorizationState state,
                                                                               DataFetchingEnvironment env) {
+        if (!WorkspaceSchema.ctx(env)
+                            .checkCreateMeta(getWorkspace(env))) {
+            return null;
+        }
         ExistentialNetworkAttributeAuthorizationRecord record = WorkspaceSchema.ctx(env)
                                                                                .records()
                                                                                .newExistentialNetworkAttributeAuthorization();
@@ -57,8 +63,13 @@ public interface NetworkAttributeAuthorizationMutations {
     @GraphQLField
     default Boolean removeNetworkAttributeAuthorization(@NotNull @GraphQLName("id") String id,
                                                         DataFetchingEnvironment env) {
-        NetworkAttributeAuthorization.fetch(env, UUID.fromString(id))
-                                     .delete();
+        ExistentialNetworkAttributeAuthorizationRecord removed = NetworkAttributeAuthorization.fetch(env,
+                                                                                                     UUID.fromString(id));
+        if (!WorkspaceSchema.ctx(env)
+                            .checkDelete(removed)) {
+            return null;
+        }
+        removed.delete();
         return true;
     }
 

@@ -19,13 +19,13 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
-            <version>3.2</version><!--$NO-MVN-MAN-VER$-->
+            <version>3.2</version><!--$NO-MVN-MAN-VER$ -->
             <exclusions>
                 <exclusion>
                     <groupId>org.antlr</groupId>
                     <artifactId>stringtemplate</artifactId>
                 </exclusion>
-            </exclusions><!--$NO-MVN-MAN-VER$-->
+            </exclusions><!--$NO-MVN-MAN-VER$ -->
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -56,128 +56,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>core</artifactId>
-            <version>0.14.0.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.core-0.14.0.201502261452.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>core.kgraph</artifactId>
-            <version>0.7.1.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.core.kgraph-0.7.1.201502261452.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>kiml</artifactId>
-            <version>0.17.0.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.kiml-0.17.0.201502261452.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>kiml.formats</artifactId>
-            <version>0.2.3.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.kiml.formats-0.2.3.201502261452.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>kiml.graphviz.dot</artifactId>
-            <version>0.7.1.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.kiml.graphviz.dot-0.7.1.201502261452.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>kiml.graphviz.layouter</artifactId>
-            <version>0.6.8.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.kiml.graphviz.layouter-0.6.8.201502261452.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>de.cau.cs.kieler</groupId>
-            <artifactId>kiml.service</artifactId>
-            <version>0.7.2.201502261452</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/de.cau.cs.kieler.kiml.service-0.7.2.201502261452.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.external</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.lib</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.mapping</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.noeclipse</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib.macro</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.xbase</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.fxdiagram</groupId>
-            <artifactId>de.fxdiagram.examples</artifactId>
-            <version>${fxdiagram.version}</version>
         </dependency>
     </dependencies>
 

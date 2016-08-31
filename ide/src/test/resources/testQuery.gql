@@ -1,0 +1,12 @@
+{
+  hero {
+    name
+    friends {
+      name
+      appearsIn
+      friends {
+        name
+      }
+    }
+  } 
+}

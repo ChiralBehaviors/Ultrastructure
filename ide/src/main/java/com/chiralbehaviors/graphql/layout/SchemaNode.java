@@ -26,14 +26,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author hhildebrand
  *
  */
-abstract public class LayoutNode {
+abstract public class SchemaNode {
     protected final String label;
-    protected boolean      startNewOutlineColumn;
-    protected boolean      startNewOutlineColumnSet;
-    protected int          tableColumnWidth;
-    protected boolean      useVerticalTableHeader;
+    protected boolean      startNewOutlineColumn    = false;
+    protected boolean      startNewOutlineColumnSet = false;
+    protected int          tableColumnWidth         = 0;
+    protected boolean      useVerticalTableHeader   = false;
 
-    public LayoutNode(String label) {
+    public SchemaNode(String label) {
         this.label = label;
     }
 

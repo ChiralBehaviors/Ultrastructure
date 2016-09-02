@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author hhildebrand
  *
  */
-public class Primitive extends LayoutNode {
+public class Primitive extends SchemaNode {
 
     private boolean isVariableLength = false;
     private int     valueDefaultWidth;
@@ -55,5 +55,6 @@ public class Primitive extends LayoutNode {
         if (max > valueDefaultWidth) {
             isVariableLength = true;
         }
+        tableColumnWidth = Math.max(label.length(), valueDefaultWidth);
     }
 }

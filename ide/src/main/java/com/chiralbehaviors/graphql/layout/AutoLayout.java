@@ -34,7 +34,7 @@ import graphql.parser.Parser;
  *
  */
 public interface AutoLayout {
-    static LayoutNode buildLayout(String query, String source) {
+    static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
             if (definition instanceof OperationDefinition) {
@@ -46,7 +46,7 @@ public interface AutoLayout {
                         if (selection instanceof Field) {
                             Field field = (Field) selection;
                             if (source.equals(field.getName())) {
-                                return buildLayout(field);
+                                return buildSchema(field);
                             }
                         }
                     }
@@ -58,7 +58,7 @@ public interface AutoLayout {
                                                       source));
     }
 
-    static LayoutNode buildLayout(Field parentField) {
+    static SchemaNode buildSchema(Field parentField) {
         Relation parent = new Relation(parentField.getName());
         for (Selection selection : parentField.getSelectionSet()
                                               .getSelections()) {
@@ -67,7 +67,7 @@ public interface AutoLayout {
                 if (field.getSelectionSet() == null) {
                     parent.addChild(new Primitive(field.getName()));
                 } else {
-                    parent.addChild(buildLayout(field));
+                    parent.addChild(buildSchema(field));
                 }
             } else if (selection instanceof InlineFragment) {
 

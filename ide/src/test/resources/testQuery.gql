@@ -1,12 +1,25 @@
-{
-  hero {
-    name
-    friends {
-      name
-      appearsIn
-      friends {
-        name
+query q {
+  allFilms {
+    films {
+      title
+      episodeID
+      director
+      producers
+      vehicleConnection {
+        vehicles {
+          name
+          model
+          manufacturers
+          pilotConnection {
+            pilots {
+              name
+              birthYear
+              eyeColor
+              gender
+            }
+          }
+        }
       }
     }
-  } 
+  }
 }

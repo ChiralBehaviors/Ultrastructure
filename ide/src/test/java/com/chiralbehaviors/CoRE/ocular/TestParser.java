@@ -25,6 +25,9 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.chiralbehaviors.graphql.layout.AutoLayout;
+import com.chiralbehaviors.graphql.layout.Relation;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
 import graphql.language.Document;
@@ -45,15 +48,16 @@ public class TestParser {
 
     @Test
     public void testSimple() throws Exception {
-        String input = Utils.getDocument(Utils.resolveResource(TestParser.class,
-                                                               "/testQuery.gql"));
-        AutoLayout.buildLayout(input, "hero");
+        String input = Utils.getDocument(TestParser.class.getResourceAsStream("/testQuery.gql"));
+        Relation schema = (Relation) AutoLayout.buildSchema(input, "allFilms");
+        JsonNode data = new ObjectMapper().readTree(TestParser.class.getResourceAsStream("/testQuery.data"));
+        schema.measure(data);
+        schema.toString();
     }
 
     @Test
     public void testIt() throws Exception {
-        String input = Utils.getDocument(Utils.resolveResource(TestParser.class,
-                                                               "/testQuery.gql"));
+        String input = Utils.getDocument(TestParser.class.getResourceAsStream("/testQuery.gql"));
         Document document = new Parser().parseDocument(input);
 
         System.out.println(document);

@@ -31,21 +31,22 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
  * @author hhildebrand
  *
  */
-public class Relation extends LayoutNode implements Cloneable {
-    int                    averageCardinality;
-    final List<LayoutNode> children = new ArrayList<>();
-    private int            outlineLabelWidth;
-    private boolean        useTable = false;
+public class Relation extends SchemaNode implements Cloneable {
+    private int                    averageCardinality;
+    private final List<SchemaNode> children          = new ArrayList<>();
+    private int                    outlineLabelWidth = 0;
+    private boolean                useTable          = false;
 
     public Relation(String label) {
         super(label);
     }
 
-    public void addChild(LayoutNode child) {
+    public void addChild(SchemaNode child) {
         children.add(child);
+        outlineLabelWidth = Math.max(child.label.length(), outlineLabelWidth);
     }
 
-    public final void measure(JsonNode jsonNode) {
+    public void measure(JsonNode jsonNode) {
         if (jsonNode.isArray()) {
             ArrayNode array = (ArrayNode) jsonNode;
             measure(array);
@@ -67,7 +68,7 @@ public class Relation extends LayoutNode implements Cloneable {
             return;
         }
         int sum = 0;
-        for (LayoutNode child : children) {
+        for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
             int cardSum = 0;
             for (JsonNode node : data) {
@@ -82,8 +83,7 @@ public class Relation extends LayoutNode implements Cloneable {
             }
             sum += data.size() == 0 ? 0 : cardSum / data.size();
             child.measure(aggregate);
-            outlineLabelWidth = Math.max(child.label.length(),
-                                         outlineLabelWidth);
+            tableColumnWidth += child.tableColumnWidth;
         }
         averageCardinality = sum / children.size();
     }

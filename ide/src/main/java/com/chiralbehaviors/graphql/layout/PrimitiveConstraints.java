@@ -20,25 +20,37 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import javafx.scene.text.Font;
-
 /**
  * @author hhildebrand
  *
  */
-public class PrimitiveConstraints extends LayoutConstraints {
+public class PrimitiveConstraints {
 
-    private Font valueTextStyle;
-    private int  outlineMinValueWidth;
-    private int  outlineSnapValueWidth;
-    private int  tableMaxPrimitiveWidth;
+    private int outlineMinValueWidth;
+    private int outlineSnapValueWidth;
+    private int tableMaxPrimitiveWidth;
 
-    public PrimitiveConstraints(Font labelTextStyle, Font valueTextStyle) {
-        super(labelTextStyle);
-        this.valueTextStyle = valueTextStyle;
+    public int getOutlineMinValueWidth() {
+        return outlineMinValueWidth;
     }
 
-    public float valuelWidth(String text) {
-        return FONT_LOADER.computeStringWidth(text, valueTextStyle);
+    public int getOutlineSnapValueWidth() {
+        return outlineSnapValueWidth;
+    }
+
+    public int getTableMaxPrimitiveWidth() {
+        return tableMaxPrimitiveWidth;
+    }
+
+    public void setOutlineMinValueWidth(int outlineMinValueWidth) {
+        this.outlineMinValueWidth = outlineMinValueWidth;
+    }
+
+    public void setOutlineSnapValueWidth(int outlineSnapValueWidth) {
+        this.outlineSnapValueWidth = outlineSnapValueWidth;
+    }
+
+    public void setTableMaxPrimitiveWidth(int tableMaxPrimitiveWidth) {
+        this.tableMaxPrimitiveWidth = tableMaxPrimitiveWidth;
     }
 }

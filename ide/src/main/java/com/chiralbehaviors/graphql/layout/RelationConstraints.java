@@ -20,33 +20,62 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import javafx.scene.text.Font;
-
 /**
  * @author hhildebrand
  *
  */
-public class RelationConstraints extends LayoutConstraints {
+public class RelationConstraints {
+    private int outlineColumnMinWidth;
+    private int outlineIndentWidth;
+    private int outlineMaxLabelWidth;
+    private int outlineTupleSpaceHeight;
+    private int tableNestSpaceSideWidth;
 
-    private Font outlineBulletStyle;
-    private int  outlineIndentWidth;
-    private int  outlineTupleSpaceHeight;
-    private int  tableNestSpaceSideWidth;
-    private int  outlineMaxLabelWidth;
-    private int  outlineColumnMinWidth;
-
-    public RelationConstraints(Font labelTextStyle, Font outlineBulletStyle,
-                               int outlineIndentWidth,
+    public RelationConstraints(int outlineIndentWidth,
                                int outlineTupleSpaceHeight,
                                int tableNestSpaceSideWidth) {
-        super(labelTextStyle);
-        this.outlineBulletStyle = outlineBulletStyle;
         this.outlineIndentWidth = outlineIndentWidth;
         this.outlineTupleSpaceHeight = outlineTupleSpaceHeight;
         this.tableNestSpaceSideWidth = tableNestSpaceSideWidth;
     }
 
-    public float bulleWidth() {
-        return FONT_LOADER.computeStringWidth("*", outlineBulletStyle);
+    public int getOutlineColumnMinWidth() {
+        return outlineColumnMinWidth;
+    }
+
+    public int getOutlineIndentWidth() {
+        return outlineIndentWidth;
+    }
+
+    public int getOutlineMaxLabelWidth() {
+        return outlineMaxLabelWidth;
+    }
+
+    public int getOutlineTupleSpaceHeight() {
+        return outlineTupleSpaceHeight;
+    }
+
+    public int getTableNestSpaceSideWidth() {
+        return tableNestSpaceSideWidth;
+    }
+
+    public void setOutlineColumnMinWidth(int outlineColumnMinWidth) {
+        this.outlineColumnMinWidth = outlineColumnMinWidth;
+    }
+
+    public void setOutlineIndentWidth(int outlineIndentWidth) {
+        this.outlineIndentWidth = outlineIndentWidth;
+    }
+
+    public void setOutlineMaxLabelWidth(int outlineMaxLabelWidth) {
+        this.outlineMaxLabelWidth = outlineMaxLabelWidth;
+    }
+
+    public void setOutlineTupleSpaceHeight(int outlineTupleSpaceHeight) {
+        this.outlineTupleSpaceHeight = outlineTupleSpaceHeight;
+    }
+
+    public void setTableNestSpaceSideWidth(int tableNestSpaceSideWidth) {
+        this.tableNestSpaceSideWidth = tableNestSpaceSideWidth;
     }
 }

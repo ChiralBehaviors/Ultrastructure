@@ -21,17 +21,24 @@
 package com.chiralbehaviors.graphql.layout;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.sun.javafx.tk.FontLoader;
+import com.sun.javafx.tk.Toolkit;
+
+import javafx.scene.text.Font;
 
 /**
  * @author hhildebrand
  *
  */
 abstract public class SchemaNode {
-    protected final String label;
-    protected boolean      startNewOutlineColumn    = false;
-    protected boolean      startNewOutlineColumnSet = false;
-    protected int          tableColumnWidth         = 0;
-    protected boolean      useVerticalTableHeader   = false;
+    protected static FontLoader FONT_LOADER              = Toolkit.getToolkit()
+                                                                  .getFontLoader();
+    protected final String      label;
+    protected Font              labelFont                = Font.getDefault();
+    protected boolean           startNewOutlineColumn    = false;
+    protected boolean           startNewOutlineColumnSet = false;
+    protected float             tableColumnWidth         = 0;
+    protected boolean           useVerticalTableHeader   = false;
 
     public SchemaNode(String label) {
         this.label = label;
@@ -39,6 +46,10 @@ abstract public class SchemaNode {
 
     public String getLabel() {
         return label;
+    }
+
+    protected float labelWidth() {
+        return FONT_LOADER.computeStringWidth(label, labelFont);
     }
 
     abstract protected void measure(ArrayNode data);

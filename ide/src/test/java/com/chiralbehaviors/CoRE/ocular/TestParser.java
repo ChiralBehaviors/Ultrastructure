@@ -35,9 +35,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
-import graphql.language.Document;
-import graphql.parser.Parser;
-
 /**
  * @author hhildebrand
  *
@@ -110,13 +107,5 @@ public class TestParser {
                                          .getLabel());
         assertEquals("gender", children.get(3)
                                        .getLabel());
-    }
-
-    @Test
-    public void testIt() throws Exception {
-        String input = Utils.getDocument(TestParser.class.getResourceAsStream("/testQuery.gql"));
-        Document document = new Parser().parseDocument(input);
-
-        System.out.println(document);
     }
 }

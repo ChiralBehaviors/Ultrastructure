@@ -34,7 +34,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 public class Relation extends SchemaNode implements Cloneable {
     private int                    averageCardinality;
     private final List<SchemaNode> children          = new ArrayList<>();
-    private int                    outlineLabelWidth = 0;
+    private RelationConstraints    constraints;
+    private float                  outlineLabelWidth = 0;
     private boolean                useTable          = false;
 
     public Relation(String label) {
@@ -43,7 +44,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     public void addChild(SchemaNode child) {
         children.add(child);
-        outlineLabelWidth = Math.max(child.label.length(), outlineLabelWidth);
+        outlineLabelWidth = Math.max(child.labelWidth(), outlineLabelWidth);
     }
 
     public int getAverageCardinality() {
@@ -54,7 +55,11 @@ public class Relation extends SchemaNode implements Cloneable {
         return children;
     }
 
-    public int getOutlineLabelWidth() {
+    public RelationConstraints getConstraints() {
+        return constraints;
+    }
+
+    public float getOutlineLabelWidth() {
         return outlineLabelWidth;
     }
 
@@ -73,9 +78,14 @@ public class Relation extends SchemaNode implements Cloneable {
         }
     }
 
+    public void setConstraints(RelationConstraints constraints) {
+        this.constraints = constraints;
+    }
+
     @Override
     public String toString() {
-        return String.format("Relation [%s]", getLabel());
+        return String.format("Relation [%s:%s x %s]", getLabel(),
+                             tableColumnWidth, averageCardinality);
     }
 
     @Override

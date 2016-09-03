@@ -23,20 +23,28 @@ package com.chiralbehaviors.graphql.layout;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import javafx.scene.text.Font;
+
 /**
  * @author hhildebrand
  *
  */
 public class Primitive extends SchemaNode {
 
-    private boolean isVariableLength = false;
-    private int     valueDefaultWidth;
+    private PrimitiveConstraints constraints;
+    private boolean              isVariableLength = false;
+    private float                valueDefaultWidth;
+    private Font                 valueFont        = Font.getDefault();
 
     public Primitive(String label) {
         super(label);
     }
 
-    public int getValueDefaultWidth() {
+    public PrimitiveConstraints getConstraints() {
+        return constraints;
+    }
+
+    public float getValueDefaultWidth() {
         return valueDefaultWidth;
     }
 
@@ -44,18 +52,22 @@ public class Primitive extends SchemaNode {
         return isVariableLength;
     }
 
+    public void setConstraints(PrimitiveConstraints constraints) {
+        this.constraints = constraints;
+    }
+
     @Override
     public String toString() {
-        return String.format("Primitive [%s]", getLabel());
+        return String.format("Primitive [%s:%s]", getLabel(),
+                             valueDefaultWidth);
     }
 
     @Override
     protected void measure(ArrayNode data) {
-        int sum = 0;
-        int max = 0;
+        float sum = 0;
+        float max = 0;
         for (JsonNode prim : data) {
-            int width = prim.asText()
-                            .length();
+            float width = valueWidth(prim.asText());
             sum += width;
             max = Math.max(max, width);
         }
@@ -64,5 +76,9 @@ public class Primitive extends SchemaNode {
             isVariableLength = true;
         }
         tableColumnWidth = Math.max(label.length(), valueDefaultWidth);
+    }
+
+    private float valueWidth(String text) {
+        return FONT_LOADER.computeStringWidth(text, valueFont);
     }
 }

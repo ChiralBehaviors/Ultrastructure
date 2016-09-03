@@ -50,7 +50,6 @@ public interface AutoLayout {
                             }
                         }
                     }
-                    ;
                 }
             }
         }

@@ -46,6 +46,22 @@ public class Relation extends SchemaNode implements Cloneable {
         outlineLabelWidth = Math.max(child.label.length(), outlineLabelWidth);
     }
 
+    public int getAverageCardinality() {
+        return averageCardinality;
+    }
+
+    public List<SchemaNode> getChildren() {
+        return children;
+    }
+
+    public int getOutlineLabelWidth() {
+        return outlineLabelWidth;
+    }
+
+    public boolean isUseTable() {
+        return useTable;
+    }
+
     public void measure(JsonNode jsonNode) {
         if (jsonNode.isArray()) {
             ArrayNode array = (ArrayNode) jsonNode;

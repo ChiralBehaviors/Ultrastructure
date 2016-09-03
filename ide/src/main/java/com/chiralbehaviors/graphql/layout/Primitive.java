@@ -36,6 +36,14 @@ public class Primitive extends SchemaNode {
         super(label);
     }
 
+    public int getValueDefaultWidth() {
+        return valueDefaultWidth;
+    }
+
+    public boolean isVariableLength() {
+        return isVariableLength;
+    }
+
     @Override
     public String toString() {
         return String.format("Primitive [%s]", getLabel());

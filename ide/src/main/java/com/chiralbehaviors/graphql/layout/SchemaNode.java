@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,10 +20,12 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
 
 /**
@@ -33,6 +35,7 @@ import javafx.scene.text.Font;
 abstract public class SchemaNode {
     protected static FontLoader FONT_LOADER              = Toolkit.getToolkit()
                                                                   .getFontLoader();
+    protected final String      field;
     protected final String      label;
     protected Font              labelFont                = Font.getDefault();
     protected boolean           startNewOutlineColumn    = false;
@@ -40,13 +43,26 @@ abstract public class SchemaNode {
     protected float             tableColumnWidth         = 0;
     protected boolean           useVerticalTableHeader   = false;
 
-    public SchemaNode(String label) {
+    public SchemaNode(String field) {
+        this(field, field);
+    }
+
+    public SchemaNode(String field, String label) {
         this.label = label;
+        this.field = field;
+    }
+
+    public String getField() {
+        return field;
     }
 
     public String getLabel() {
         return label;
     }
+
+    abstract public String toString(int indent);
+
+    abstract protected TableColumn<? extends JsonNode, ?> buildTableColumn();
 
     protected float labelWidth() {
         return FONT_LOADER.computeStringWidth(label, labelFont);

@@ -21,11 +21,21 @@
 package com.chiralbehaviors.graphql.layout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.javafx.collections.ObservableListWrapper;
+
+import javafx.beans.binding.ObjectBinding;
+import javafx.scene.control.Control;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 /**
  * @author hhildebrand
@@ -45,6 +55,10 @@ public class Relation extends SchemaNode implements Cloneable {
     public void addChild(SchemaNode child) {
         children.add(child);
         outlineLabelWidth = Math.max(child.labelWidth(), outlineLabelWidth);
+    }
+
+    public Control buildControl() {
+        return useTable ? buildNestedTable() : buildOutline();
     }
 
     public int getAverageCardinality() {
@@ -84,8 +98,53 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     public String toString() {
-        return String.format("Relation [%s:%s x %s]", getLabel(),
-                             tableColumnWidth, averageCardinality);
+        return toString(0);
+    }
+
+    @Override
+    public String toString(int indent) {
+        StringBuffer buf = new StringBuffer();
+        buf.append(String.format("Relation [%s:%s x %s]", getLabel(),
+                                 tableColumnWidth, averageCardinality));
+        buf.append('\n');
+        children.forEach(c -> {
+            for (int i = 0; i < indent; i++) {
+                buf.append("    ");
+            }
+            buf.append("  - ");
+            buf.append(c.toString(indent + 1));
+            buf.append('\n');
+        });
+        return buf.toString();
+    }
+
+    @Override
+    protected TableColumn<ObjectNode, ?> buildTableColumn() {
+        TableColumn<ObjectNode, List<ObjectNode>> column = new TableColumn<>(label);
+        column.setPrefWidth(tableColumnWidth);
+        column.setCellValueFactory(cellData -> new ObjectBinding<List<ObjectNode>>() {
+            @Override
+            protected List<ObjectNode> computeValue() {
+                return asList(cellData.getValue()
+                                      .get(field));
+            }
+
+        });
+        column.setCellFactory(c -> new TableCell<ObjectNode, List<ObjectNode>>() {
+            @Override
+            protected void updateItem(List<ObjectNode> item, boolean empty) {
+                if (item == getItem())
+                    return;
+
+                TableView<ObjectNode> table = buildNestedTable();
+                table.setItems(new ObservableListWrapper<>(item));
+
+                super.updateItem(item, empty);
+                super.setText(null);
+                super.setGraphic(table);
+            }
+        });
+        return column;
     }
 
     @Override
@@ -98,7 +157,7 @@ public class Relation extends SchemaNode implements Cloneable {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
             int cardSum = 0;
             for (JsonNode node : data) {
-                JsonNode sub = node.get(child.getLabel());
+                JsonNode sub = node.get(child.field);
                 if (sub instanceof ArrayNode) {
                     aggregate.addAll((ArrayNode) sub);
                     cardSum += sub.size();
@@ -111,6 +170,29 @@ public class Relation extends SchemaNode implements Cloneable {
             child.measure(aggregate);
             tableColumnWidth += child.tableColumnWidth;
         }
-        averageCardinality = sum / children.size();
+        averageCardinality = Math.max(1, sum / children.size());
+    }
+
+    private List<ObjectNode> asList(JsonNode jsonNode) {
+        List<ObjectNode> nodes = new ArrayList<>();
+        if (jsonNode.isArray()) {
+            jsonNode.forEach(node -> nodes.add((ObjectNode) node));
+        } else {
+            return Collections.singletonList((ObjectNode) jsonNode);
+        }
+        return nodes;
+    }
+
+    private TableView<ObjectNode> buildNestedTable() {
+        TableView<ObjectNode> table = new TableView<>();
+        children.forEach(node -> {
+            node.buildTableColumn();
+        });
+        return table;
+    }
+
+    private ListView<ObjectNode> buildOutline() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

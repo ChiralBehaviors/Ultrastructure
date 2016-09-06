@@ -22,7 +22,11 @@ package com.chiralbehaviors.graphql.layout;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
 
 /**
@@ -60,6 +64,30 @@ public class Primitive extends SchemaNode {
     public String toString() {
         return String.format("Primitive [%s:%s]", getLabel(),
                              valueDefaultWidth);
+    }
+
+    @Override
+    public String toString(int indent) {
+        return toString();
+    }
+
+    @Override
+    protected TableColumn<ObjectNode, ?> buildTableColumn() {
+        TableColumn<ObjectNode, String> column = new TableColumn<>(label);
+        column.setPrefWidth(tableColumnWidth);
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
+                                                                                .get(field)
+                                                                                .asText()));
+        column.setCellFactory(c -> new TableCell<ObjectNode, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                if (item == getItem())
+                    return;
+                super.updateItem(item, empty);
+                super.setText(item);
+            }
+        });
+        return column;
     }
 
     @Override

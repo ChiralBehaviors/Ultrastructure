@@ -24,11 +24,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  * @author hhildebrand
@@ -43,6 +45,16 @@ public class Primitive extends SchemaNode {
 
     public Primitive(String label) {
         super(label);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
+     */
+    @Override
+    public TextField buildControl() {
+        TextField textField = new TextField();
+        textField.setPrefWidth(tableColumnWidth);
+        return textField;
     }
 
     public PrimitiveConstraints getConstraints() {
@@ -107,15 +119,26 @@ public class Primitive extends SchemaNode {
         tableColumnWidth = Math.max(label.length(), valueDefaultWidth);
     }
 
-    private float valueWidth(String text) {
-        return FONT_LOADER.computeStringWidth(text, valueFont);
+    @Override
+    protected AnchorPane outlineElement(JsonNode item) {
+        AnchorPane anchor = new AnchorPane();
+        HBox box = new HBox(5);
+        box.getChildren()
+           .add(new Text(label));
+        TextField control = buildControl();
+        box.getChildren()
+           .add(control);
+        box.setVisible(true);
+        anchor.getChildren()
+              .add(box);
+        AnchorPane.setTopAnchor(box, 0.0);
+        AnchorPane.setBottomAnchor(box, 0.0);
+        AnchorPane.setLeftAnchor(box, 0.0);
+        AnchorPane.setRightAnchor(box, 0.0);
+        return anchor;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
-     */
-    @Override
-    public Control buildControl() {
-        return new TextField();
+    private float valueWidth(String text) {
+        return FONT_LOADER.computeStringWidth(text, valueFont);
     }
 }

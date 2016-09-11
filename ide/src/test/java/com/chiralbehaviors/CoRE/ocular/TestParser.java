@@ -24,10 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.chiralbehaviors.graphql.layout.AutoLayout;
 import com.chiralbehaviors.graphql.layout.Relation;
 import com.chiralbehaviors.graphql.layout.SchemaNode;
@@ -40,13 +38,6 @@ import com.hellblazer.utils.Utils;
  *
  */
 public class TestParser {
-
-    protected PhantasmApplication application = new PhantasmApplication();
-
-    @After
-    public void after() {
-        application.stop();
-    }
 
     @Test
     public void testSimple() throws Exception {

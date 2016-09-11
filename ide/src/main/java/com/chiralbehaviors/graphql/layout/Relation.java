@@ -37,8 +37,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -110,8 +109,6 @@ public class Relation extends SchemaNode implements Cloneable {
             ((ListView<?>) control).setItems(new ObservableListWrapper(asList(item)));
         } else if (control instanceof TableView) {
             ((TableView<?>) control).setItems(new ObservableListWrapper(asList(item)));
-        } else if (control instanceof TextField) {
-            ((TextField) control).setText(item.asText());
         } else {
             throw new IllegalArgumentException(String.format("Unknown control %s",
                                                              control));
@@ -157,12 +154,12 @@ public class Relation extends SchemaNode implements Cloneable {
             protected void updateItem(List<JsonNode> item, boolean empty) {
                 if (item == getItem())
                     return;
-
-                TableView<JsonNode> table = buildNestedTable();
-                table.setItems(new ObservableListWrapper<>(item));
-
                 super.updateItem(item, empty);
                 super.setText(null);
+
+                TableView<JsonNode> table = buildNestedTable();
+                item = item == null ? Collections.emptyList() : item;
+                table.setItems(new ObservableListWrapper<>(item));
                 super.setGraphic(table);
             }
         });
@@ -215,6 +212,10 @@ public class Relation extends SchemaNode implements Cloneable {
             columns.add(node.buildTableColumn());
         });
         table.setVisible(true);
+        AnchorPane.setTopAnchor(table, 0.0);
+        AnchorPane.setBottomAnchor(table, 0.0);
+        AnchorPane.setLeftAnchor(table, 0.0);
+        AnchorPane.setRightAnchor(table, 0.0);
         return table;
     }
 
@@ -227,36 +228,62 @@ public class Relation extends SchemaNode implements Cloneable {
                     return;
                 super.updateItem(item, empty);
                 super.setText(null);
-                super.setGraphic(outlineElement(item));
+                super.setGraphic(outline(item));
             }
         });
+        list.setPrefWidth(tableColumnWidth);
         list.setVisible(true);
+        AnchorPane.setTopAnchor(list, 0.0);
+        AnchorPane.setBottomAnchor(list, 0.0);
+        AnchorPane.setLeftAnchor(list, 0.0);
+        AnchorPane.setRightAnchor(list, 0.0);
         return list;
     }
 
-    private VBox outlineElement(JsonNode item) {
-        VBox vBox = new VBox();
-        vBox.getChildren()
-            .add(new Text(label));
+    private AnchorPane outline(JsonNode item) {
+        AnchorPane anchor = new AnchorPane();
+        VBox box = new VBox(5);
         children.forEach(child -> {
-            vBox.getChildren()
-                .add(outlineElement(child,
-                                    item == null ? JsonNodeFactory.instance.arrayNode()
-                                                 : item.get(child.field)));
+            box.getChildren()
+               .add(child.outlineElement(item == null ? JsonNodeFactory.instance.arrayNode()
+                                                      : item.get(child.field)));
         });
-        vBox.setVisible(true);
-        return vBox;
+        box.setVisible(true);
+        anchor.getChildren()
+              .add(box);
+        AnchorPane.setTopAnchor(box, 0.0);
+        AnchorPane.setBottomAnchor(box, 0.0);
+        AnchorPane.setLeftAnchor(box, 0.0);
+        AnchorPane.setRightAnchor(box, 0.0);
+        return anchor;
     }
 
-    private HBox outlineElement(SchemaNode node, JsonNode item) {
-        HBox box = new HBox();
+    @Override
+    protected AnchorPane outlineElement(JsonNode item) {
+        AnchorPane anchor = new AnchorPane();
+        VBox box = new VBox(5);
         box.getChildren()
-           .add(new Text(node.label));
-        Control control = node.buildControl();
+           .add(new Text(label));
+        Control control = buildControl();
         setItems(control, item);
         box.getChildren()
            .add(control);
         box.setVisible(true);
-        return box;
+        anchor.getChildren()
+              .add(box);
+        AnchorPane.setTopAnchor(box, 0.0);
+        AnchorPane.setBottomAnchor(box, 0.0);
+        AnchorPane.setLeftAnchor(box, 0.0);
+        AnchorPane.setRightAnchor(box, 0.0);
+        return anchor;
+    }
+
+    public void nestTables() {
+        this.useTable = true;
+        children.forEach(child -> {
+            if (child instanceof Relation) {
+                ((Relation) child).nestTables();
+            }
+        });
     }
 }

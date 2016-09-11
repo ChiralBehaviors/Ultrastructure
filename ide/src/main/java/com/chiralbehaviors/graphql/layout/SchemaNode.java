@@ -27,6 +27,7 @@ import com.sun.javafx.tk.Toolkit;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.TableColumn;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
 /**
@@ -63,6 +64,10 @@ abstract public class SchemaNode {
         return label;
     }
 
+    public float getTableColumnWidth() {
+        return tableColumnWidth;
+    }
+
     abstract public String toString(int indent);
 
     abstract protected TableColumn<JsonNode, ?> buildTableColumn();
@@ -72,4 +77,6 @@ abstract public class SchemaNode {
     }
 
     abstract protected void measure(ArrayNode data);
+
+    abstract protected AnchorPane outlineElement(JsonNode item);
 }

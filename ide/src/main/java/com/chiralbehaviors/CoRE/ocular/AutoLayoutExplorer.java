@@ -32,6 +32,7 @@ import com.hellblazer.utils.Utils;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -54,19 +55,37 @@ public class AutoLayoutExplorer extends Application {
 
     public void initRootLayout(Stage primaryStage) throws IOException {
         AnchorPane rootLayout = new AnchorPane();
-        Scene scene = new Scene(rootLayout);
-        primaryStage.setScene(scene);
 
         String input = Utils.getDocument(new FileInputStream("src/test/resources/testQuery.gql"));
         String source = "allFilms";
         Relation schema = (Relation) AutoLayout.buildSchema(input, source);
         JsonNode data = new ObjectMapper().readTree(new FileInputStream("src/test/resources/testQuery.data"));
+        data = data.get("data")
+                   .get(source);
+        schema.measure(data);
+        //        ((Relation) schema.getChildren()
+        //                          .get(0)).nestTables();
 
         Control control = schema.buildControl();
+        // control.setPrefHeight(1024);
+        rootLayout.setPrefWidth(schema.getTableColumnWidth());
+        rootLayout.setPrefHeight(1024);
         rootLayout.getChildren()
                   .add(control);
-        schema.setItems(control, data.get("data")
-                                     .get(source));
+        rootLayout.setMaxHeight(Double.MAX_VALUE);
+        AnchorPane.setTopAnchor(control, 0.0);
+        AnchorPane.setBottomAnchor(control, 0.0);
+        AnchorPane.setLeftAnchor(control, 0.0);
+        AnchorPane.setRightAnchor(control, 0.0);
+
+        schema.setItems(control, data);
+
+        ScrollPane scroller = new ScrollPane(rootLayout);
+        scroller.setFitToWidth(true);
+
+        Scene scene = new Scene(scroller);
+        primaryStage.setScene(scene);
+
         primaryStage.show();
     }
 }

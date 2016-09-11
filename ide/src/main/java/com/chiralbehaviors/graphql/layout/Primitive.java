@@ -120,7 +120,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected AnchorPane outlineElement(JsonNode item) {
+    protected ControlMaster outlineElement() {
         AnchorPane anchor = new AnchorPane();
         HBox box = new HBox(5);
         box.getChildren()
@@ -135,7 +135,8 @@ public class Primitive extends SchemaNode {
         AnchorPane.setBottomAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
         AnchorPane.setRightAnchor(box, 0.0);
-        return anchor;
+        return new ControlMaster(item -> control.setText(item.asText()),
+                                 anchor);
     }
 
     private float valueWidth(String text) {

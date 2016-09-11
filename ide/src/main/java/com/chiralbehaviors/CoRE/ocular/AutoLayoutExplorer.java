@@ -32,7 +32,6 @@ import com.hellblazer.utils.Utils;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -80,10 +79,7 @@ public class AutoLayoutExplorer extends Application {
 
         schema.setItems(control, data);
 
-        ScrollPane scroller = new ScrollPane(rootLayout);
-        scroller.setFitToWidth(true);
-
-        Scene scene = new Scene(scroller);
+        Scene scene = new Scene(rootLayout, control.getPrefHeight(), 1024);
         primaryStage.setScene(scene);
 
         primaryStage.show();

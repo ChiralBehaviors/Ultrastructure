@@ -22,7 +22,9 @@ package com.chiralbehaviors.graphql.layout;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -51,7 +53,6 @@ public class Relation extends SchemaNode implements Cloneable {
     private final List<SchemaNode> children           = new ArrayList<>();
     private RelationConstraints    constraints;
     private float                  outlineLabelWidth  = 0;
-
     private boolean                useTable           = false;
 
     public Relation(String label) {
@@ -147,7 +148,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 return asList(cellData.getValue()
                                       .get(field));
             }
-
         });
         column.setCellFactory(c -> new TableCell<JsonNode, List<JsonNode>>() {
             @Override
@@ -156,7 +156,10 @@ public class Relation extends SchemaNode implements Cloneable {
                     return;
                 super.updateItem(item, empty);
                 super.setText(null);
-
+                if (empty) {
+                    super.setGraphic(null);
+                    return;
+                }
                 TableView<JsonNode> table = buildNestedTable();
                 item = item == null ? Collections.emptyList() : item;
                 table.setItems(new ObservableListWrapper<>(item));
@@ -221,14 +224,42 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListView<JsonNode> buildOutline() {
         ListView<JsonNode> list = new ListView<>();
+        Map<SchemaNode, ControlMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
+            AnchorPane anchor = new AnchorPane();
+            {
+
+                VBox box = new VBox(5);
+                children.forEach(child -> {
+                    ControlMaster master = child.outlineElement();
+                    controls.put(child, master);
+                    box.getChildren()
+                       .add(master.anchor);
+                });
+                box.setVisible(true);
+                anchor.getChildren()
+                      .add(box);
+                AnchorPane.setTopAnchor(box, 0.0);
+                AnchorPane.setBottomAnchor(box, 0.0);
+                AnchorPane.setLeftAnchor(box, 0.0);
+                AnchorPane.setRightAnchor(box, 0.0);
+                setGraphic(anchor);
+            }
+
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem())
                     return;
                 super.updateItem(item, empty);
                 super.setText(null);
-                super.setGraphic(outline(item));
+                if (empty) {
+                    super.setGraphic(null);
+                    return;
+                }
+                super.setGraphic(anchor);
+                children.forEach(child -> {
+                    controls.get(child).items.accept(item.get(child.field));
+                });
             }
         });
         list.setPrefWidth(tableColumnWidth);
@@ -240,32 +271,13 @@ public class Relation extends SchemaNode implements Cloneable {
         return list;
     }
 
-    private AnchorPane outline(JsonNode item) {
-        AnchorPane anchor = new AnchorPane();
-        VBox box = new VBox(5);
-        children.forEach(child -> {
-            box.getChildren()
-               .add(child.outlineElement(item == null ? JsonNodeFactory.instance.arrayNode()
-                                                      : item.get(child.field)));
-        });
-        box.setVisible(true);
-        anchor.getChildren()
-              .add(box);
-        AnchorPane.setTopAnchor(box, 0.0);
-        AnchorPane.setBottomAnchor(box, 0.0);
-        AnchorPane.setLeftAnchor(box, 0.0);
-        AnchorPane.setRightAnchor(box, 0.0);
-        return anchor;
-    }
-
     @Override
-    protected AnchorPane outlineElement(JsonNode item) {
+    protected ControlMaster outlineElement() {
         AnchorPane anchor = new AnchorPane();
         VBox box = new VBox(5);
         box.getChildren()
            .add(new Text(label));
         Control control = buildControl();
-        setItems(control, item);
         box.getChildren()
            .add(control);
         box.setVisible(true);
@@ -275,7 +287,7 @@ public class Relation extends SchemaNode implements Cloneable {
         AnchorPane.setBottomAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
         AnchorPane.setRightAnchor(box, 0.0);
-        return anchor;
+        return new ControlMaster(item -> setItems(control, item), anchor);
     }
 
     public void nestTables() {

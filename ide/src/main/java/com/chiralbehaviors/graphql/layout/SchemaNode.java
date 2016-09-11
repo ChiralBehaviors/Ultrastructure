@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import java.util.function.Consumer;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.javafx.tk.FontLoader;
@@ -35,6 +37,17 @@ import javafx.scene.text.Font;
  *
  */
 abstract public class SchemaNode {
+
+    public class ControlMaster {
+        public final AnchorPane         anchor;
+        public final Consumer<JsonNode> items;
+
+        public ControlMaster(Consumer<JsonNode> items, AnchorPane anchor) {
+            this.items = items;
+            this.anchor = anchor;
+        }
+    }
+
     protected static FontLoader FONT_LOADER              = Toolkit.getToolkit()
                                                                   .getFontLoader();
     protected final String      field;
@@ -78,5 +91,5 @@ abstract public class SchemaNode {
 
     abstract protected void measure(ArrayNode data);
 
-    abstract protected AnchorPane outlineElement(JsonNode item);
+    abstract protected ControlMaster outlineElement();
 }

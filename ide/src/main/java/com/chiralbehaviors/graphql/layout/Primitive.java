@@ -22,9 +22,9 @@ package com.chiralbehaviors.graphql.layout;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
@@ -72,13 +72,13 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected TableColumn<ObjectNode, ?> buildTableColumn() {
-        TableColumn<ObjectNode, String> column = new TableColumn<>(label);
+    protected TableColumn<JsonNode, ?> buildTableColumn() {
+        TableColumn<JsonNode, String> column = new TableColumn<>(label);
         column.setPrefWidth(tableColumnWidth);
         column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
                                                                                 .get(field)
                                                                                 .asText()));
-        column.setCellFactory(c -> new TableCell<ObjectNode, String>() {
+        column.setCellFactory(c -> new TableCell<JsonNode, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 if (item == getItem())
@@ -108,5 +108,14 @@ public class Primitive extends SchemaNode {
 
     private float valueWidth(String text) {
         return FONT_LOADER.computeStringWidth(text, valueFont);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
+     */
+    @Override
+    public Control buildControl() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

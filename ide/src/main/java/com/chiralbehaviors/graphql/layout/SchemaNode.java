@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.scene.control.Control;
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
 
@@ -52,6 +53,8 @@ abstract public class SchemaNode {
         this.field = field;
     }
 
+    abstract public Control buildControl();
+
     public String getField() {
         return field;
     }
@@ -62,7 +65,7 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract protected TableColumn<? extends JsonNode, ?> buildTableColumn();
+    abstract protected TableColumn<JsonNode, ?> buildTableColumn();
 
     protected float labelWidth() {
         return FONT_LOADER.computeStringWidth(label, labelFont);

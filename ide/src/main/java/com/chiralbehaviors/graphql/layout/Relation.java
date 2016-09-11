@@ -27,26 +27,32 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.javafx.collections.ObservableListWrapper;
 
 import javafx.beans.binding.ObjectBinding;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 /**
  * @author hhildebrand
  *
  */
 public class Relation extends SchemaNode implements Cloneable {
-    private int                    averageCardinality;
-    private final List<SchemaNode> children          = new ArrayList<>();
+
+    private int                    averageCardinality = 1;
+    private final List<SchemaNode> children           = new ArrayList<>();
     private RelationConstraints    constraints;
-    private float                  outlineLabelWidth = 0;
-    private boolean                useTable          = false;
+    private float                  outlineLabelWidth  = 0;
+
+    private boolean                useTable           = false;
 
     public Relation(String label) {
         super(label);
@@ -57,6 +63,7 @@ public class Relation extends SchemaNode implements Cloneable {
         outlineLabelWidth = Math.max(child.labelWidth(), outlineLabelWidth);
     }
 
+    @Override
     public Control buildControl() {
         return useTable ? buildNestedTable() : buildOutline();
     }
@@ -96,6 +103,18 @@ public class Relation extends SchemaNode implements Cloneable {
         this.constraints = constraints;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void setItems(Control control, JsonNode item) {
+        if (control instanceof ListView) {
+            ((ListView<?>) control).setItems(new ObservableListWrapper(asList(item)));
+        } else if (control instanceof TableView) {
+            ((TableView<?>) control).setItems(new ObservableListWrapper(asList(item)));
+        } else {
+            throw new IllegalArgumentException(String.format("Unknown control %s",
+                                                             control));
+        }
+    }
+
     @Override
     public String toString() {
         return toString(0);
@@ -119,24 +138,24 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    protected TableColumn<ObjectNode, ?> buildTableColumn() {
-        TableColumn<ObjectNode, List<ObjectNode>> column = new TableColumn<>(label);
+    protected TableColumn<JsonNode, ?> buildTableColumn() {
+        TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
         column.setPrefWidth(tableColumnWidth);
-        column.setCellValueFactory(cellData -> new ObjectBinding<List<ObjectNode>>() {
+        column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
             @Override
-            protected List<ObjectNode> computeValue() {
+            protected List<JsonNode> computeValue() {
                 return asList(cellData.getValue()
                                       .get(field));
             }
 
         });
-        column.setCellFactory(c -> new TableCell<ObjectNode, List<ObjectNode>>() {
+        column.setCellFactory(c -> new TableCell<JsonNode, List<JsonNode>>() {
             @Override
-            protected void updateItem(List<ObjectNode> item, boolean empty) {
+            protected void updateItem(List<JsonNode> item, boolean empty) {
                 if (item == getItem())
                     return;
 
-                TableView<ObjectNode> table = buildNestedTable();
+                TableView<JsonNode> table = buildNestedTable();
                 table.setItems(new ObservableListWrapper<>(item));
 
                 super.updateItem(item, empty);
@@ -149,7 +168,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     protected void measure(ArrayNode data) {
-        if (data.isNull()) {
+        if (data.isNull() || children.size() == 0) {
             return;
         }
         int sum = 0;
@@ -173,26 +192,64 @@ public class Relation extends SchemaNode implements Cloneable {
         averageCardinality = Math.max(1, sum / children.size());
     }
 
-    private List<ObjectNode> asList(JsonNode jsonNode) {
-        List<ObjectNode> nodes = new ArrayList<>();
+    private List<JsonNode> asList(JsonNode jsonNode) {
+        List<JsonNode> nodes = new ArrayList<>();
+        if (jsonNode == null) {
+            return nodes;
+        }
         if (jsonNode.isArray()) {
-            jsonNode.forEach(node -> nodes.add((ObjectNode) node));
+            jsonNode.forEach(node -> nodes.add(node));
         } else {
-            return Collections.singletonList((ObjectNode) jsonNode);
+            return Collections.singletonList(jsonNode);
         }
         return nodes;
     }
 
-    private TableView<ObjectNode> buildNestedTable() {
-        TableView<ObjectNode> table = new TableView<>();
+    private TableView<JsonNode> buildNestedTable() {
+        TableView<JsonNode> table = new TableView<>();
+        ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         children.forEach(node -> {
-            node.buildTableColumn();
+            columns.add(node.buildTableColumn());
         });
         return table;
     }
 
-    private ListView<ObjectNode> buildOutline() {
-        // TODO Auto-generated method stub
-        return null;
+    private ListView<JsonNode> buildOutline() {
+        ListView<JsonNode> list = new ListView<>();
+        list.setCellFactory(c -> new ListCell<JsonNode>() {
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem())
+                    return;
+                super.updateItem(item, empty);
+                super.setText(null);
+                super.setGraphic(outlineElement(item));
+            }
+        });
+        return list;
+    }
+
+    private VBox outlineElement(JsonNode item) {
+        VBox vBox = new VBox();
+        vBox.getChildren()
+            .add(new Text(label));
+        children.forEach(child -> {
+            vBox.getChildren()
+                .add(outlineElement(child,
+                                    item == null ? JsonNodeFactory.instance.arrayNode()
+                                                 : item.get(child.field)));
+        });
+        return vBox;
+    }
+
+    private HBox outlineElement(SchemaNode node, JsonNode item) {
+        HBox box = new HBox();
+        box.getChildren()
+           .add(new Text(node.label));
+        Control control = node.buildControl();
+        setItems(control, item);
+        box.getChildren()
+           .add(control);
+        return box;
     }
 }

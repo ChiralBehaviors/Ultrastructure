@@ -37,6 +37,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -109,6 +110,8 @@ public class Relation extends SchemaNode implements Cloneable {
             ((ListView<?>) control).setItems(new ObservableListWrapper(asList(item)));
         } else if (control instanceof TableView) {
             ((TableView<?>) control).setItems(new ObservableListWrapper(asList(item)));
+        } else if (control instanceof TextField) {
+            ((TextField) control).setText(item.asText());
         } else {
             throw new IllegalArgumentException(String.format("Unknown control %s",
                                                              control));
@@ -211,6 +214,7 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });
+        table.setVisible(true);
         return table;
     }
 
@@ -226,6 +230,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 super.setGraphic(outlineElement(item));
             }
         });
+        list.setVisible(true);
         return list;
     }
 
@@ -239,6 +244,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                     item == null ? JsonNodeFactory.instance.arrayNode()
                                                  : item.get(child.field)));
         });
+        vBox.setVisible(true);
         return vBox;
     }
 
@@ -250,6 +256,7 @@ public class Relation extends SchemaNode implements Cloneable {
         setItems(control, item);
         box.getChildren()
            .add(control);
+        box.setVisible(true);
         return box;
     }
 }

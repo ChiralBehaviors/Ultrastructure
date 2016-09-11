@@ -65,7 +65,8 @@ public class AutoLayoutExplorer extends Application {
         Control control = schema.buildControl();
         rootLayout.getChildren()
                   .add(control);
-        schema.setItems(control, data);
+        schema.setItems(control, data.get("data")
+                                     .get(source));
         primaryStage.show();
     }
 }

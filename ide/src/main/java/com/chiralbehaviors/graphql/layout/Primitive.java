@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 
 /**
@@ -115,7 +116,6 @@ public class Primitive extends SchemaNode {
      */
     @Override
     public Control buildControl() {
-        // TODO Auto-generated method stub
-        return null;
+        return new TextField();
     }
 }

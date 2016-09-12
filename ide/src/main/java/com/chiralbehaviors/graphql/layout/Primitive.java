@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -51,8 +51,8 @@ public class Primitive extends SchemaNode {
      * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
      */
     @Override
-    public TextArea buildControl() {
-        TextArea textArea = new TextArea();
+    public TextField buildControl() {
+        TextField textArea = new TextField();
         textArea.setPrefWidth(tableColumnWidth);
         return textArea;
     }
@@ -125,7 +125,7 @@ public class Primitive extends SchemaNode {
         HBox box = new HBox(5);
         box.getChildren()
            .add(new Text(label));
-        TextArea control = buildControl();
+        TextField control = buildControl();
         box.getChildren()
            .add(control);
         box.setVisible(true);

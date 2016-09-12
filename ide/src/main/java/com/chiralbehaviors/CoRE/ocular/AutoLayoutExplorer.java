@@ -65,7 +65,7 @@ public class AutoLayoutExplorer extends Application {
         Relation rootSchema = (Relation) schema.getChildren()
                                                .get(0);
 
-        rootSchema.nestTables();
+        //        rootSchema.nestTables();
 
         Control control = rootSchema.buildControl();
         AnchorPane.setTopAnchor(control, 0.0);

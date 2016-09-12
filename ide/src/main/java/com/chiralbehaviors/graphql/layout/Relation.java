@@ -224,7 +224,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> buildOutline() {
-        ListView<JsonNode> list = new ListView<>();
+        ListView<JsonNode> list = new ListViewFixed<>();
         Map<SchemaNode, ControlMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
             AnchorPane anchor = new AnchorPane();

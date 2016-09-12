@@ -27,9 +27,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableColumn;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
 /**
@@ -38,13 +38,13 @@ import javafx.scene.text.Font;
  */
 abstract public class SchemaNode {
 
-    public class ControlMaster {
-        public final AnchorPane         anchor;
+    public class NodeMaster {
+        public final Node               node;
         public final Consumer<JsonNode> items;
 
-        public ControlMaster(Consumer<JsonNode> items, AnchorPane anchor) {
+        public NodeMaster(Consumer<JsonNode> items, Node node) {
             this.items = items;
-            this.anchor = anchor;
+            this.node = node;
         }
     }
 
@@ -91,5 +91,5 @@ abstract public class SchemaNode {
 
     abstract protected void measure(ArrayNode data);
 
-    abstract protected ControlMaster outlineElement();
+    abstract protected NodeMaster outlineElement();
 }

@@ -33,6 +33,7 @@ import com.sun.javafx.collections.ObservableListWrapper;
 
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -154,6 +155,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
             @Override
             protected void updateItem(List<JsonNode> item, boolean empty) {
+                setAlignment(Pos.CENTER_LEFT);
                 if (item == getItem())
                     return;
                 super.updateItem(item, empty);
@@ -225,19 +227,19 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListView<JsonNode> buildOutline() {
         ListView<JsonNode> list = new ListViewFixed<>();
-        Map<SchemaNode, ControlMaster> controls = new HashMap<>();
+        Map<SchemaNode, NodeMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
             AnchorPane anchor = new AnchorPane();
             {
-
                 VBox box = new VBox(5);
                 children.forEach(child -> {
-                    ControlMaster master = child.outlineElement();
+                    NodeMaster master = child.outlineElement();
                     controls.put(child, master);
                     box.getChildren()
-                       .add(master.anchor);
+                       .add(master.node);
                 });
                 box.setVisible(true);
+                box.setAlignment(Pos.CENTER_LEFT);
                 anchor.getChildren()
                       .add(box);
                 AnchorPane.setTopAnchor(box, 0.0);
@@ -273,8 +275,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    protected ControlMaster outlineElement() {
-        AnchorPane anchor = new AnchorPane();
+    protected NodeMaster outlineElement() {
         VBox box = new VBox(5);
         box.getChildren()
            .add(new Text(label));
@@ -282,13 +283,12 @@ public class Relation extends SchemaNode implements Cloneable {
         box.getChildren()
            .add(control);
         box.setVisible(true);
-        anchor.getChildren()
-              .add(box);
+        box.setAlignment(Pos.CENTER_LEFT);
         AnchorPane.setTopAnchor(box, 0.0);
         AnchorPane.setBottomAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
         AnchorPane.setRightAnchor(box, 0.0);
-        return new ControlMaster(item -> setItems(control, item), anchor);
+        return new NodeMaster(item -> setItems(control, item), box);
     }
 
     public void nestTables() {

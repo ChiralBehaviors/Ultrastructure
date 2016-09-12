@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
@@ -88,9 +89,8 @@ public class Primitive extends SchemaNode {
     protected TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, String> column = new TableColumn<>(label);
         column.setPrefWidth(tableColumnWidth);
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(String.format("%s",
-                                                                                      cellData.getValue()
-                                                                                              .get(field))));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(toString(cellData.getValue()
+                                                                                         .get(field))));
         column.setCellFactory(c -> new TableCell<JsonNode, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -98,6 +98,7 @@ public class Primitive extends SchemaNode {
                     return;
                 super.updateItem(item, empty);
                 super.setText(item);
+                setAlignment(Pos.CENTER_LEFT);
             }
         });
         return column;
@@ -108,7 +109,7 @@ public class Primitive extends SchemaNode {
         float sum = 0;
         float max = 0;
         for (JsonNode prim : data) {
-            float width = valueWidth(prim.toString());
+            float width = valueWidth(toString(prim));
             sum += width;
             max = Math.max(max, width);
         }
@@ -120,26 +121,47 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected ControlMaster outlineElement() {
-        AnchorPane anchor = new AnchorPane();
+    protected NodeMaster outlineElement() {
         HBox box = new HBox(5);
         box.getChildren()
            .add(new Text(label));
         TextField control = buildControl();
+        control.setAlignment(Pos.CENTER_LEFT);
         box.getChildren()
            .add(control);
+        box.setAlignment(Pos.CENTER_LEFT);
         box.setVisible(true);
-        anchor.getChildren()
-              .add(box);
         AnchorPane.setTopAnchor(box, 0.0);
         AnchorPane.setBottomAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
         AnchorPane.setRightAnchor(box, 0.0);
-        return new ControlMaster(item -> control.setText(item.toString()),
-                                 anchor);
+        return new NodeMaster(item -> control.setText(item.toString()), box);
     }
 
     private float valueWidth(String text) {
         return FONT_LOADER.computeStringWidth(text, valueFont);
+    }
+
+    private String toString(JsonNode value) {
+        if (value == null) {
+            return "";
+        }
+        if (value instanceof ArrayNode) {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for (JsonNode e : value) {
+                if (first) {
+                    first = false;
+                    builder.append('[');
+                } else {
+                    builder.append(", ");
+                }
+                builder.append(e.asText());
+            }
+            ;
+            return builder.toString();
+        } else {
+            return value.asText();
+        }
     }
 }

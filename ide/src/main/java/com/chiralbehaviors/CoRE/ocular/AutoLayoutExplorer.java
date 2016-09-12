@@ -33,6 +33,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -53,8 +54,6 @@ public class AutoLayoutExplorer extends Application {
     }
 
     public void initRootLayout(Stage primaryStage) throws IOException {
-        AnchorPane rootLayout = new AnchorPane();
-
         String input = Utils.getDocument(new FileInputStream("src/test/resources/testQuery.gql"));
         String source = "allFilms";
         Relation schema = (Relation) AutoLayout.buildSchema(input, source);
@@ -62,24 +61,25 @@ public class AutoLayoutExplorer extends Application {
         data = data.get("data")
                    .get(source);
         schema.measure(data);
-        //        ((Relation) schema.getChildren()
-        //                          .get(0)).nestTables();
 
-        Control control = schema.buildControl();
-        // control.setPrefHeight(1024);
-        rootLayout.setPrefWidth(schema.getTableColumnWidth());
-        rootLayout.setPrefHeight(1024);
-        rootLayout.getChildren()
-                  .add(control);
-        rootLayout.setMaxHeight(Double.MAX_VALUE);
+        Relation rootSchema = (Relation) schema.getChildren()
+                                               .get(0);
+
+        rootSchema.nestTables();
+
+        Control control = rootSchema.buildControl();
         AnchorPane.setTopAnchor(control, 0.0);
         AnchorPane.setBottomAnchor(control, 0.0);
         AnchorPane.setLeftAnchor(control, 0.0);
         AnchorPane.setRightAnchor(control, 0.0);
 
-        schema.setItems(control, data);
+        StackPane root = new StackPane();
+        root.getChildren()
+            .add(control);
 
-        Scene scene = new Scene(rootLayout, control.getPrefHeight(), 1024);
+        rootSchema.setItems(control, data.get("films"));
+
+        Scene scene = new Scene(root, control.getPrefHeight(), 1024);
         primaryStage.setScene(scene);
 
         primaryStage.show();

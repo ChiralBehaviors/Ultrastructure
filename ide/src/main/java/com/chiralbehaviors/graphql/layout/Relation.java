@@ -150,6 +150,8 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, List<JsonNode>>() {
+            TableView<JsonNode> table = buildNestedTable();
+
             @Override
             protected void updateItem(List<JsonNode> item, boolean empty) {
                 if (item == getItem())
@@ -160,7 +162,6 @@ public class Relation extends SchemaNode implements Cloneable {
                     super.setGraphic(null);
                     return;
                 }
-                TableView<JsonNode> table = buildNestedTable();
                 item = item == null ? Collections.emptyList() : item;
                 table.setItems(new ObservableListWrapper<>(item));
                 super.setGraphic(table);

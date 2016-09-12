@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -51,10 +51,10 @@ public class Primitive extends SchemaNode {
      * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
      */
     @Override
-    public TextField buildControl() {
-        TextField textField = new TextField();
-        textField.setPrefWidth(tableColumnWidth);
-        return textField;
+    public TextArea buildControl() {
+        TextArea textArea = new TextArea();
+        textArea.setPrefWidth(tableColumnWidth);
+        return textArea;
     }
 
     public PrimitiveConstraints getConstraints() {
@@ -88,9 +88,9 @@ public class Primitive extends SchemaNode {
     protected TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, String> column = new TableColumn<>(label);
         column.setPrefWidth(tableColumnWidth);
-        column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()
-                                                                                .get(field)
-                                                                                .asText()));
+        column.setCellValueFactory(cellData -> new SimpleStringProperty(String.format("%s",
+                                                                                      cellData.getValue()
+                                                                                              .get(field))));
         column.setCellFactory(c -> new TableCell<JsonNode, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -108,7 +108,7 @@ public class Primitive extends SchemaNode {
         float sum = 0;
         float max = 0;
         for (JsonNode prim : data) {
-            float width = valueWidth(prim.asText());
+            float width = valueWidth(prim.toString());
             sum += width;
             max = Math.max(max, width);
         }
@@ -125,7 +125,7 @@ public class Primitive extends SchemaNode {
         HBox box = new HBox(5);
         box.getChildren()
            .add(new Text(label));
-        TextField control = buildControl();
+        TextArea control = buildControl();
         box.getChildren()
            .add(control);
         box.setVisible(true);
@@ -135,7 +135,7 @@ public class Primitive extends SchemaNode {
         AnchorPane.setBottomAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
         AnchorPane.setRightAnchor(box, 0.0);
-        return new ControlMaster(item -> control.setText(item.asText()),
+        return new ControlMaster(item -> control.setText(item.toString()),
                                  anchor);
     }
 

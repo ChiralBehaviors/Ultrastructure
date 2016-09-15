@@ -54,13 +54,14 @@ public class Primitive extends SchemaNode {
     @Override
     public TextArea buildControl() {
         TextArea textArea = new TextArea();
-        textArea.setPrefWidth(tableColumnWidth);
-        textArea.setWrapText(isVariableLength);
+        textArea.setWrapText(true);
+        textArea.setMaxWidth(tableColumnWidth);
         AnchorPane.setTopAnchor(textArea, 0.0);
         AnchorPane.setBottomAnchor(textArea, 0.0);
         AnchorPane.setLeftAnchor(textArea, 0.0);
         AnchorPane.setRightAnchor(textArea, 0.0);
         textArea.setPrefWidth(tableColumnWidth);
+        textArea.setFont(valueFont);
         return textArea;
     }
 
@@ -108,6 +109,7 @@ public class Primitive extends SchemaNode {
                 TextArea control = buildControl();
                 control.setText(item);
                 super.setGraphic(control);
+                getProperties().put("deferToParentPrefWidth", Boolean.TRUE);
             }
         });
         return column;

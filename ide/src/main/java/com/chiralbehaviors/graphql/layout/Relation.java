@@ -299,13 +299,16 @@ public class Relation extends SchemaNode implements Cloneable {
             columns.add(node.buildTableColumn());
         });
         table.setVisible(true);
-        table.setPrefWidth(tableColumnWidth + 20);
+        table.setPrefWidth(tableColumnWidth);
         table.visibleRowCountProperty()
              .set(averageCardinality);
         AnchorPane.setTopAnchor(table, 0.0);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         AnchorPane.setRightAnchor(table, 0.0);
+        //        table.getProperties()
+        //             .put("deferToParentPrefWidth", Boolean.TRUE);
+        //        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         return table;
     }
 

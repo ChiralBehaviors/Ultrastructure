@@ -75,7 +75,8 @@ public class AutoLayoutExplorer extends Application {
 
         schema.setItems(control, data);
 
-        Scene scene = new Scene(root, control.getPrefHeight(), 1024);
+        Scene scene = new Scene(root, control.getPrefWidth(),
+                                control.getPrefHeight());
         primaryStage.setScene(scene);
 
         primaryStage.show();

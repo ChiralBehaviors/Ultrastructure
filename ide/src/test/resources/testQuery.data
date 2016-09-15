@@ -1,1017 +1,851 @@
 {
-  "data": {
-    "allFilms": {
-      "films": [
-        {
-          "title": "A New Hope",
-          "episodeID": 4,
-          "director": "George Lucas",
-          "producers": [
-            "Gary Kurtz",
-            "Rick McCallum"
-          ],
-          "vehicleConnection": {
-            "vehicles": [
-              {
-                "name": "Sand Crawler",
-                "model": "Digger Crawler",
-                "manufacturers": [
-                  "Corellia Mining Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "T-16 skyhopper",
-                "model": "T-16 skyhopper",
-                "manufacturers": [
-                  "Incom Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "X-34 landspeeder",
-                "model": "X-34 landspeeder",
-                "manufacturers": [
-                  "SoroSuub Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "TIE/LN starfighter",
-                "model": "Twin Ion Engine/Ln Starfighter",
-                "manufacturers": [
-                  "Sienar Fleet Systems"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
+  "data": { 
+    "films": [
+      {
+        "title": "A New Hope",
+        "episodeID": 4,
+        "director": "George Lucas",
+        "producers": [
+          "Gary Kurtz",
+          "Rick McCallum"
+        ], 
+          "vehicles": [
+            {
+              "name": "Sand Crawler",
+              "model": "Digger Crawler",
+              "manufacturers": [
+                "Corellia Mining Corporation"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "T-16 skyhopper",
+              "model": "T-16 skyhopper",
+              "manufacturers": [
+                "Incom Corporation"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "X-34 landspeeder",
+              "model": "X-34 landspeeder",
+              "manufacturers": [
+                "SoroSuub Corporation"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "TIE/LN starfighter",
+              "model": "Twin Ion Engine/Ln Starfighter",
+              "manufacturers": [
+                "Sienar Fleet Systems"
+              ], 
+                "pilots": [] 
+            }
+          ] 
+      },
+      {
+        "title": "The Empire Strikes Back",
+        "episodeID": 5,
+        "director": "Irvin Kershner",
+        "producers": [
+          "Gary Kutz",
+          "Rick McCallum"
+        ], 
+          "vehicles": [
+            {
+              "name": "TIE/LN starfighter",
+              "model": "Twin Ion Engine/Ln Starfighter",
+              "manufacturers": [
+                "Sienar Fleet Systems"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Snowspeeder",
+              "model": "t-47 airspeeder",
+              "manufacturers": [
+                "Incom corporation"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Luke Skywalker",
+                    "birthYear": "19BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  },
+                  {
+                    "name": "Wedge Antilles",
+                    "birthYear": "21BBY",
+                    "eyeColor": "hazel",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "TIE bomber",
+              "model": "TIE/sa bomber",
+              "manufacturers": [
+                "Sienar Fleet Systems"
+              ],
+              "pilotConnection": {
+                "pilots": []
               }
-            ]
-          }
-        },
-        {
-          "title": "The Empire Strikes Back",
-          "episodeID": 5,
-          "director": "Irvin Kershner",
-          "producers": [
-            "Gary Kutz",
-            "Rick McCallum"
-          ],
-          "vehicleConnection": {
-            "vehicles": [
-              {
-                "name": "TIE/LN starfighter",
-                "model": "Twin Ion Engine/Ln Starfighter",
-                "manufacturers": [
-                  "Sienar Fleet Systems"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Snowspeeder",
-                "model": "t-47 airspeeder",
-                "manufacturers": [
-                  "Incom corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Luke Skywalker",
-                      "birthYear": "19BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    },
-                    {
-                      "name": "Wedge Antilles",
-                      "birthYear": "21BBY",
-                      "eyeColor": "hazel",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "TIE bomber",
-                "model": "TIE/sa bomber",
-                "manufacturers": [
-                  "Sienar Fleet Systems"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-AT",
-                "model": "All Terrain Armored Transport",
-                "manufacturers": [
-                  "Kuat Drive Yards",
-                  "Imperial Department of Military Research"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-ST",
-                "model": "All Terrain Scout Transport",
-                "manufacturers": [
-                  "Kuat Drive Yards",
-                  "Imperial Department of Military Research"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Chewbacca",
-                      "birthYear": "200BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Storm IV Twin-Pod cloud car",
-                "model": "Storm IV Twin-Pod",
-                "manufacturers": [
-                  "Bespin Motors"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
+            },
+            {
+              "name": "AT-AT",
+              "model": "All Terrain Armored Transport",
+              "manufacturers": [
+                "Kuat Drive Yards",
+                "Imperial Department of Military Research"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-ST",
+              "model": "All Terrain Scout Transport",
+              "manufacturers": [
+                "Kuat Drive Yards",
+                "Imperial Department of Military Research"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Chewbacca",
+                    "birthYear": "200BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Storm IV Twin-Pod cloud car",
+              "model": "Storm IV Twin-Pod",
+              "manufacturers": [
+                "Bespin Motors"
+              ], 
+                "pilots": [] 
+            }
+          ] 
+      },
+      {
+        "title": "Return of the Jedi",
+        "episodeID": 6,
+        "director": "Richard Marquand",
+        "producers": [
+          "Howard G. Kazanjian",
+          "George Lucas",
+          "Rick McCallum"
+        ], 
+          "vehicles": [
+            {
+              "name": "TIE/LN starfighter",
+              "model": "Twin Ion Engine/Ln Starfighter",
+              "manufacturers": [
+                "Sienar Fleet Systems"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "TIE bomber",
+              "model": "TIE/sa bomber",
+              "manufacturers": [
+                "Sienar Fleet Systems"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-AT",
+              "model": "All Terrain Armored Transport",
+              "manufacturers": [
+                "Kuat Drive Yards",
+                "Imperial Department of Military Research"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-ST",
+              "model": "All Terrain Scout Transport",
+              "manufacturers": [
+                "Kuat Drive Yards",
+                "Imperial Department of Military Research"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Chewbacca",
+                    "birthYear": "200BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Sail barge",
+              "model": "Modified Luxury Sail Barge",
+              "manufacturers": [
+                "Ubrikkian Industries Custom Vehicle Division"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Bantha-II cargo skiff",
+              "model": "Bantha-II",
+              "manufacturers": [
+                "Ubrikkian Industries"
+              ], 
+                "pilots": [] 
+            }
+          ] 
+      },
+      {
+        "title": "The Phantom Menace",
+        "episodeID": 1,
+        "director": "George Lucas",
+        "producers": [
+          "Rick McCallum"
+        ], 
+          "vehicles": [
+            {
+              "name": "Vulture Droid",
+              "model": "Vulture-class droid starfighter",
+              "manufacturers": [
+                "Haor Chall Engineering",
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Multi-Troop Transport",
+              "model": "Multi-Troop Transport",
+              "manufacturers": [
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Armored Assault Tank",
+              "model": "Armoured Assault Tank",
+              "manufacturers": [
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Single Trooper Aerial Platform",
+              "model": "Single Trooper Aerial Platform",
+              "manufacturers": [
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "C-9979 landing craft",
+              "model": "C-9979 landing craft",
+              "manufacturers": [
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Tribubble bongo",
+              "model": "Tribubble bongo",
+              "manufacturers": [
+                "Otoh Gunga Bongameken Cooperative"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Obi-Wan Kenobi",
+                    "birthYear": "57BBY",
+                    "eyeColor": "blue-gray",
+                    "gender": "male"
+                  },
+                  {
+                    "name": "Qui-Gon Jinn",
+                    "birthYear": "92BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Sith speeder",
+              "model": "FC-20 speeder bike",
+              "manufacturers": [
+                "Razalon"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Darth Maul",
+                    "birthYear": "54BBY",
+                    "eyeColor": "yellow",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Vulture Droid",
+              "model": "Vulture-class droid starfighter",
+              "manufacturers": [
+                "Haor Chall Engineering",
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Multi-Troop Transport",
+              "model": "Multi-Troop Transport",
+              "manufacturers": [
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Armored Assault Tank",
+              "model": "Armoured Assault Tank",
+              "manufacturers": [
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Single Trooper Aerial Platform",
+              "model": "Single Trooper Aerial Platform",
+              "manufacturers": [
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "C-9979 landing craft",
+              "model": "C-9979 landing craft",
+              "manufacturers": [
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Tribubble bongo",
+              "model": "Tribubble bongo",
+              "manufacturers": [
+                "Otoh Gunga Bongameken Cooperative"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Obi-Wan Kenobi",
+                    "birthYear": "57BBY",
+                    "eyeColor": "blue-gray",
+                    "gender": "male"
+                  },
+                  {
+                    "name": "Qui-Gon Jinn",
+                    "birthYear": "92BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Sith speeder",
+              "model": "FC-20 speeder bike",
+              "manufacturers": [
+                "Razalon"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Darth Maul",
+                    "birthYear": "54BBY",
+                    "eyeColor": "yellow",
+                    "gender": "male"
+                  }
+                ] 
+            }
+          ]
+      },
+      {
+        "title": "Attack of the Clones",
+        "episodeID": 2,
+        "director": "George Lucas",
+        "producers": [
+          "Rick McCallum"
+        ],
+          "vehicles": [
+            {
+              "name": "Sand Crawler",
+              "model": "Digger Crawler",
+              "manufacturers": [
+                "Corellia Mining Corporation"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Zephyr-G swoop bike",
+              "model": "Zephyr-G swoop bike",
+              "manufacturers": [
+                "Mobquet Swoops and Speeders"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Anakin Skywalker",
+                    "birthYear": "41.9BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Koro-2 Exodrive airspeeder",
+              "model": "Koro-2 Exodrive airspeeder",
+              "manufacturers": [
+                "Desler Gizh Outworld Mobility Corporation"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Zam Wesell",
+                    "birthYear": "unknown",
+                    "eyeColor": "yellow",
+                    "gender": "female"
+                  }
+                ] 
+            },
+            {
+              "name": "XJ-6 airspeeder",
+              "model": "XJ-6 airspeeder",
+              "manufacturers": [
+                "Narglatch AirTech prefabricated kit"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Anakin Skywalker",
+                    "birthYear": "41.9BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "LAAT/i",
+              "model": "Low Altitude Assault Transport/infrantry",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "LAAT/c",
+              "model": "Low Altitude Assault Transport/carrier",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-TE",
+              "model": "All Terrain Tactical Enforcer",
+              "manufacturers": [
+                "Rothana Heavy Engineering",
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "SPHA",
+              "model": "Self-Propelled Heavy Artillery",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Flitknot speeder",
+              "model": "Flitknot speeder",
+              "manufacturers": [
+                "Huppla Pasa Tisc Shipwrights Collective"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Dooku",
+                    "birthYear": "102BBY",
+                    "eyeColor": "brown",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Neimoidian shuttle",
+              "model": "Sheathipede-class transport shuttle",
+              "manufacturers": [
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Geonosian starfighter",
+              "model": "Nantex-class territorial defense",
+              "manufacturers": [
+                "Huppla Pasa Tisc Shipwrights Collective"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Sand Crawler",
+              "model": "Digger Crawler",
+              "manufacturers": [
+                "Corellia Mining Corporation"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Zephyr-G swoop bike",
+              "model": "Zephyr-G swoop bike",
+              "manufacturers": [
+                "Mobquet Swoops and Speeders"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Anakin Skywalker",
+                    "birthYear": "41.9BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Koro-2 Exodrive airspeeder",
+              "model": "Koro-2 Exodrive airspeeder",
+              "manufacturers": [
+                "Desler Gizh Outworld Mobility Corporation"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Zam Wesell",
+                    "birthYear": "unknown",
+                    "eyeColor": "yellow",
+                    "gender": "female"
+                  }
+                ] 
+            },
+            {
+              "name": "XJ-6 airspeeder",
+              "model": "XJ-6 airspeeder",
+              "manufacturers": [
+                "Narglatch AirTech prefabricated kit"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Anakin Skywalker",
+                    "birthYear": "41.9BBY",
+                    "eyeColor": "blue",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "LAAT/i",
+              "model": "Low Altitude Assault Transport/infrantry",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "LAAT/c",
+              "model": "Low Altitude Assault Transport/carrier",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-TE",
+              "model": "All Terrain Tactical Enforcer",
+              "manufacturers": [
+                "Rothana Heavy Engineering",
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "SPHA",
+              "model": "Self-Propelled Heavy Artillery",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Flitknot speeder",
+              "model": "Flitknot speeder",
+              "manufacturers": [
+                "Huppla Pasa Tisc Shipwrights Collective"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Dooku",
+                    "birthYear": "102BBY",
+                    "eyeColor": "brown",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Neimoidian shuttle",
+              "model": "Sheathipede-class transport shuttle",
+              "manufacturers": [
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Geonosian starfighter",
+              "model": "Nantex-class territorial defense",
+              "manufacturers": [
+                "Huppla Pasa Tisc Shipwrights Collective"
+              ], 
+                "pilots": [] 
+            }
+          ]
+      },
+      {
+        "title": "Revenge of the Sith",
+        "episodeID": 3,
+        "director": "George Lucas",
+        "producers": [
+          "Rick McCallum"
+        ],
+          "vehicles": [
+            {
+              "name": "Vulture Droid",
+              "model": "Vulture-class droid starfighter",
+              "manufacturers": [
+                "Haor Chall Engineering",
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "LAAT/i",
+              "model": "Low Altitude Assault Transport/infrantry",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-TE",
+              "model": "All Terrain Tactical Enforcer",
+              "manufacturers": [
+                "Rothana Heavy Engineering",
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Neimoidian shuttle",
+              "model": "Sheathipede-class transport shuttle",
+              "manufacturers": [
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Tsmeu-6 personal wheel bike",
+              "model": "Tsmeu-6 personal wheel bike",
+              "manufacturers": [
+                "Z-Gomot Ternbuell Guppat Corporation"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Grievous",
+                    "birthYear": "unknown",
+                    "eyeColor": "green, yellow",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Emergency Firespeeder",
+              "model": "Fire suppression speeder",
+              "manufacturers": [
+                "unknown"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Droid tri-fighter",
+              "model": "tri-fighter",
+              "manufacturers": [
+                "Colla Designs",
+                "Phlac-Arphocc Automata Industries"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Oevvaor jet catamaran",
+              "model": "Oevvaor jet catamaran",
+              "manufacturers": [
+                "Appazanna Engineering Works"
+              ],
+              "pilotConnection": {
+                "pilots": []
               }
-            ]
-          }
-        },
-        {
-          "title": "Return of the Jedi",
-          "episodeID": 6,
-          "director": "Richard Marquand",
-          "producers": [
-            "Howard G. Kazanjian",
-            "George Lucas",
-            "Rick McCallum"
-          ],
-          "vehicleConnection": {
-            "vehicles": [
-              {
-                "name": "TIE/LN starfighter",
-                "model": "Twin Ion Engine/Ln Starfighter",
-                "manufacturers": [
-                  "Sienar Fleet Systems"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "TIE bomber",
-                "model": "TIE/sa bomber",
-                "manufacturers": [
-                  "Sienar Fleet Systems"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-AT",
-                "model": "All Terrain Armored Transport",
-                "manufacturers": [
-                  "Kuat Drive Yards",
-                  "Imperial Department of Military Research"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-ST",
-                "model": "All Terrain Scout Transport",
-                "manufacturers": [
-                  "Kuat Drive Yards",
-                  "Imperial Department of Military Research"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Chewbacca",
-                      "birthYear": "200BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Sail barge",
-                "model": "Modified Luxury Sail Barge",
-                "manufacturers": [
-                  "Ubrikkian Industries Custom Vehicle Division"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Bantha-II cargo skiff",
-                "model": "Bantha-II",
-                "manufacturers": [
-                  "Ubrikkian Industries"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              }
-            ]
-          }
-        },
-        {
-          "title": "The Phantom Menace",
-          "episodeID": 1,
-          "director": "George Lucas",
-          "producers": [
-            "Rick McCallum"
-          ],
-          "vehicleConnection": {
-            "vehicles": [
-              {
-                "name": "Vulture Droid",
-                "model": "Vulture-class droid starfighter",
-                "manufacturers": [
-                  "Haor Chall Engineering",
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Multi-Troop Transport",
-                "model": "Multi-Troop Transport",
-                "manufacturers": [
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Armored Assault Tank",
-                "model": "Armoured Assault Tank",
-                "manufacturers": [
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Single Trooper Aerial Platform",
-                "model": "Single Trooper Aerial Platform",
-                "manufacturers": [
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "C-9979 landing craft",
-                "model": "C-9979 landing craft",
-                "manufacturers": [
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Tribubble bongo",
-                "model": "Tribubble bongo",
-                "manufacturers": [
-                  "Otoh Gunga Bongameken Cooperative"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Obi-Wan Kenobi",
-                      "birthYear": "57BBY",
-                      "eyeColor": "blue-gray",
-                      "gender": "male"
-                    },
-                    {
-                      "name": "Qui-Gon Jinn",
-                      "birthYear": "92BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Sith speeder",
-                "model": "FC-20 speeder bike",
-                "manufacturers": [
-                  "Razalon"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Darth Maul",
-                      "birthYear": "54BBY",
-                      "eyeColor": "yellow",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Vulture Droid",
-                "model": "Vulture-class droid starfighter",
-                "manufacturers": [
-                  "Haor Chall Engineering",
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Multi-Troop Transport",
-                "model": "Multi-Troop Transport",
-                "manufacturers": [
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Armored Assault Tank",
-                "model": "Armoured Assault Tank",
-                "manufacturers": [
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Single Trooper Aerial Platform",
-                "model": "Single Trooper Aerial Platform",
-                "manufacturers": [
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "C-9979 landing craft",
-                "model": "C-9979 landing craft",
-                "manufacturers": [
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Tribubble bongo",
-                "model": "Tribubble bongo",
-                "manufacturers": [
-                  "Otoh Gunga Bongameken Cooperative"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Obi-Wan Kenobi",
-                      "birthYear": "57BBY",
-                      "eyeColor": "blue-gray",
-                      "gender": "male"
-                    },
-                    {
-                      "name": "Qui-Gon Jinn",
-                      "birthYear": "92BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Sith speeder",
-                "model": "FC-20 speeder bike",
-                "manufacturers": [
-                  "Razalon"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Darth Maul",
-                      "birthYear": "54BBY",
-                      "eyeColor": "yellow",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "title": "Attack of the Clones",
-          "episodeID": 2,
-          "director": "George Lucas",
-          "producers": [
-            "Rick McCallum"
-          ],
-          "vehicleConnection": {
-            "vehicles": [
-              {
-                "name": "Sand Crawler",
-                "model": "Digger Crawler",
-                "manufacturers": [
-                  "Corellia Mining Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Zephyr-G swoop bike",
-                "model": "Zephyr-G swoop bike",
-                "manufacturers": [
-                  "Mobquet Swoops and Speeders"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Anakin Skywalker",
-                      "birthYear": "41.9BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Koro-2 Exodrive airspeeder",
-                "model": "Koro-2 Exodrive airspeeder",
-                "manufacturers": [
-                  "Desler Gizh Outworld Mobility Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Zam Wesell",
-                      "birthYear": "unknown",
-                      "eyeColor": "yellow",
-                      "gender": "female"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "XJ-6 airspeeder",
-                "model": "XJ-6 airspeeder",
-                "manufacturers": [
-                  "Narglatch AirTech prefabricated kit"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Anakin Skywalker",
-                      "birthYear": "41.9BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "LAAT/i",
-                "model": "Low Altitude Assault Transport/infrantry",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "LAAT/c",
-                "model": "Low Altitude Assault Transport/carrier",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-TE",
-                "model": "All Terrain Tactical Enforcer",
-                "manufacturers": [
-                  "Rothana Heavy Engineering",
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "SPHA",
-                "model": "Self-Propelled Heavy Artillery",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Flitknot speeder",
-                "model": "Flitknot speeder",
-                "manufacturers": [
-                  "Huppla Pasa Tisc Shipwrights Collective"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Dooku",
-                      "birthYear": "102BBY",
-                      "eyeColor": "brown",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Neimoidian shuttle",
-                "model": "Sheathipede-class transport shuttle",
-                "manufacturers": [
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Geonosian starfighter",
-                "model": "Nantex-class territorial defense",
-                "manufacturers": [
-                  "Huppla Pasa Tisc Shipwrights Collective"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Sand Crawler",
-                "model": "Digger Crawler",
-                "manufacturers": [
-                  "Corellia Mining Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Zephyr-G swoop bike",
-                "model": "Zephyr-G swoop bike",
-                "manufacturers": [
-                  "Mobquet Swoops and Speeders"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Anakin Skywalker",
-                      "birthYear": "41.9BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Koro-2 Exodrive airspeeder",
-                "model": "Koro-2 Exodrive airspeeder",
-                "manufacturers": [
-                  "Desler Gizh Outworld Mobility Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Zam Wesell",
-                      "birthYear": "unknown",
-                      "eyeColor": "yellow",
-                      "gender": "female"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "XJ-6 airspeeder",
-                "model": "XJ-6 airspeeder",
-                "manufacturers": [
-                  "Narglatch AirTech prefabricated kit"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Anakin Skywalker",
-                      "birthYear": "41.9BBY",
-                      "eyeColor": "blue",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "LAAT/i",
-                "model": "Low Altitude Assault Transport/infrantry",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "LAAT/c",
-                "model": "Low Altitude Assault Transport/carrier",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-TE",
-                "model": "All Terrain Tactical Enforcer",
-                "manufacturers": [
-                  "Rothana Heavy Engineering",
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "SPHA",
-                "model": "Self-Propelled Heavy Artillery",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Flitknot speeder",
-                "model": "Flitknot speeder",
-                "manufacturers": [
-                  "Huppla Pasa Tisc Shipwrights Collective"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Dooku",
-                      "birthYear": "102BBY",
-                      "eyeColor": "brown",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Neimoidian shuttle",
-                "model": "Sheathipede-class transport shuttle",
-                "manufacturers": [
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Geonosian starfighter",
-                "model": "Nantex-class territorial defense",
-                "manufacturers": [
-                  "Huppla Pasa Tisc Shipwrights Collective"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              }
-            ]
-          }
-        },
-        {
-          "title": "Revenge of the Sith",
-          "episodeID": 3,
-          "director": "George Lucas",
-          "producers": [
-            "Rick McCallum"
-          ],
-          "vehicleConnection": {
-            "vehicles": [
-              {
-                "name": "Vulture Droid",
-                "model": "Vulture-class droid starfighter",
-                "manufacturers": [
-                  "Haor Chall Engineering",
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "LAAT/i",
-                "model": "Low Altitude Assault Transport/infrantry",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-TE",
-                "model": "All Terrain Tactical Enforcer",
-                "manufacturers": [
-                  "Rothana Heavy Engineering",
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Neimoidian shuttle",
-                "model": "Sheathipede-class transport shuttle",
-                "manufacturers": [
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Tsmeu-6 personal wheel bike",
-                "model": "Tsmeu-6 personal wheel bike",
-                "manufacturers": [
-                  "Z-Gomot Ternbuell Guppat Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Grievous",
-                      "birthYear": "unknown",
-                      "eyeColor": "green, yellow",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Emergency Firespeeder",
-                "model": "Fire suppression speeder",
-                "manufacturers": [
-                  "unknown"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Droid tri-fighter",
-                "model": "tri-fighter",
-                "manufacturers": [
-                  "Colla Designs",
-                  "Phlac-Arphocc Automata Industries"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Oevvaor jet catamaran",
-                "model": "Oevvaor jet catamaran",
-                "manufacturers": [
-                  "Appazanna Engineering Works"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Raddaugh Gnasp fluttercraft",
-                "model": "Raddaugh Gnasp fluttercraft",
-                "manufacturers": [
-                  "Appazanna Engineering Works"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Clone turbo tank",
-                "model": "HAVw A6 Juggernaut",
-                "manufacturers": [
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Corporate Alliance tank droid",
-                "model": "NR-N99 Persuader-class droid enforcer",
-                "manufacturers": [
-                  "Techno Union"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Droid gunship",
-                "model": "HMP droid gunship",
-                "manufacturers": [
-                  "Baktoid Fleet Ordnance",
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-RT",
-                "model": "All Terrain Recon Transport",
-                "manufacturers": [
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Vulture Droid",
-                "model": "Vulture-class droid starfighter",
-                "manufacturers": [
-                  "Haor Chall Engineering",
-                  "Baktoid Armor Workshop"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "LAAT/i",
-                "model": "Low Altitude Assault Transport/infrantry",
-                "manufacturers": [
-                  "Rothana Heavy Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-TE",
-                "model": "All Terrain Tactical Enforcer",
-                "manufacturers": [
-                  "Rothana Heavy Engineering",
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Neimoidian shuttle",
-                "model": "Sheathipede-class transport shuttle",
-                "manufacturers": [
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Tsmeu-6 personal wheel bike",
-                "model": "Tsmeu-6 personal wheel bike",
-                "manufacturers": [
-                  "Z-Gomot Ternbuell Guppat Corporation"
-                ],
-                "pilotConnection": {
-                  "pilots": [
-                    {
-                      "name": "Grievous",
-                      "birthYear": "unknown",
-                      "eyeColor": "green, yellow",
-                      "gender": "male"
-                    }
-                  ]
-                }
-              },
-              {
-                "name": "Emergency Firespeeder",
-                "model": "Fire suppression speeder",
-                "manufacturers": [
-                  "unknown"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Droid tri-fighter",
-                "model": "tri-fighter",
-                "manufacturers": [
-                  "Colla Designs",
-                  "Phlac-Arphocc Automata Industries"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Oevvaor jet catamaran",
-                "model": "Oevvaor jet catamaran",
-                "manufacturers": [
-                  "Appazanna Engineering Works"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Raddaugh Gnasp fluttercraft",
-                "model": "Raddaugh Gnasp fluttercraft",
-                "manufacturers": [
-                  "Appazanna Engineering Works"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Clone turbo tank",
-                "model": "HAVw A6 Juggernaut",
-                "manufacturers": [
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Corporate Alliance tank droid",
-                "model": "NR-N99 Persuader-class droid enforcer",
-                "manufacturers": [
-                  "Techno Union"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "Droid gunship",
-                "model": "HMP droid gunship",
-                "manufacturers": [
-                  "Baktoid Fleet Ordnance",
-                  "Haor Chall Engineering"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              },
-              {
-                "name": "AT-RT",
-                "model": "All Terrain Recon Transport",
-                "manufacturers": [
-                  "Kuat Drive Yards"
-                ],
-                "pilotConnection": {
-                  "pilots": []
-                }
-              }
-            ]
-          }
+            },
+            {
+              "name": "Raddaugh Gnasp fluttercraft",
+              "model": "Raddaugh Gnasp fluttercraft",
+              "manufacturers": [
+                "Appazanna Engineering Works"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Clone turbo tank",
+              "model": "HAVw A6 Juggernaut",
+              "manufacturers": [
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Corporate Alliance tank droid",
+              "model": "NR-N99 Persuader-class droid enforcer",
+              "manufacturers": [
+                "Techno Union"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Droid gunship",
+              "model": "HMP droid gunship",
+              "manufacturers": [
+                "Baktoid Fleet Ordnance",
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-RT",
+              "model": "All Terrain Recon Transport",
+              "manufacturers": [
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Vulture Droid",
+              "model": "Vulture-class droid starfighter",
+              "manufacturers": [
+                "Haor Chall Engineering",
+                "Baktoid Armor Workshop"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "LAAT/i",
+              "model": "Low Altitude Assault Transport/infrantry",
+              "manufacturers": [
+                "Rothana Heavy Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-TE",
+              "model": "All Terrain Tactical Enforcer",
+              "manufacturers": [
+                "Rothana Heavy Engineering",
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Neimoidian shuttle",
+              "model": "Sheathipede-class transport shuttle",
+              "manufacturers": [
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Tsmeu-6 personal wheel bike",
+              "model": "Tsmeu-6 personal wheel bike",
+              "manufacturers": [
+                "Z-Gomot Ternbuell Guppat Corporation"
+              ], 
+                "pilots": [
+                  {
+                    "name": "Grievous",
+                    "birthYear": "unknown",
+                    "eyeColor": "green, yellow",
+                    "gender": "male"
+                  }
+                ] 
+            },
+            {
+              "name": "Emergency Firespeeder",
+              "model": "Fire suppression speeder",
+              "manufacturers": [
+                "unknown"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Droid tri-fighter",
+              "model": "tri-fighter",
+              "manufacturers": [
+                "Colla Designs",
+                "Phlac-Arphocc Automata Industries"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Oevvaor jet catamaran",
+              "model": "Oevvaor jet catamaran",
+              "manufacturers": [
+                "Appazanna Engineering Works"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Raddaugh Gnasp fluttercraft",
+              "model": "Raddaugh Gnasp fluttercraft",
+              "manufacturers": [
+                "Appazanna Engineering Works"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Clone turbo tank",
+              "model": "HAVw A6 Juggernaut",
+              "manufacturers": [
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Corporate Alliance tank droid",
+              "model": "NR-N99 Persuader-class droid enforcer",
+              "manufacturers": [
+                "Techno Union"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "Droid gunship",
+              "model": "HMP droid gunship",
+              "manufacturers": [
+                "Baktoid Fleet Ordnance",
+                "Haor Chall Engineering"
+              ], 
+                "pilots": [] 
+            },
+            {
+              "name": "AT-RT",
+              "model": "All Terrain Recon Transport",
+              "manufacturers": [
+                "Kuat Drive Yards"
+              ], 
+                "pilots": [] 
+            }
+          ]
         }
-      ]
-    }
+    ] 
   }
 }

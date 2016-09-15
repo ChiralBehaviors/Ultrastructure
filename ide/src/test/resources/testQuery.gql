@@ -1,25 +1,19 @@
 query q {
-  allFilms {
-    films {
-      title
-      episodeID
-      director
-      producers
-      vehicleConnection {
-        vehicles {
-          name
-          model
-          manufacturers
-          pilotConnection {
-            pilots {
-              name
-              birthYear
-              eyeColor
-              gender
-            }
-          }
-        }
-      }
+  films {
+    title
+    episodeID
+    director
+    producers 
+    vehicles {
+      name
+      model
+      manufacturers 
+      pilots {
+        name
+        birthYear
+        eyeColor
+        gender
+      } 
     }
   }
 }

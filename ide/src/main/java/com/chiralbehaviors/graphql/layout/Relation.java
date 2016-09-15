@@ -31,6 +31,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.collections.ObservableListWrapper;
 
+import graphql.language.Definition;
+import graphql.language.Field;
+import graphql.language.FragmentSpread;
+import graphql.language.InlineFragment;
+import graphql.language.OperationDefinition;
+import graphql.language.OperationDefinition.Operation;
+import graphql.language.Selection;
+import graphql.parser.Parser;
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -50,10 +58,55 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
+    public static SchemaNode buildSchema(Field parentField) {
+        Relation parent = new Relation(parentField.getName());
+        for (Selection selection : parentField.getSelectionSet()
+                                              .getSelections()) {
+            if (selection instanceof Field) {
+                Field field = (Field) selection;
+                if (field.getSelectionSet() == null) {
+                    parent.addChild(new Primitive(field.getName()));
+                } else {
+                    parent.addChild(buildSchema(field));
+                }
+            } else if (selection instanceof InlineFragment) {
+
+            } else if (selection instanceof FragmentSpread) {
+
+            }
+        }
+        return parent;
+    }
+
+    public static SchemaNode buildSchema(String query, String source) {
+        for (Definition definition : new Parser().parseDocument(query)
+                                                 .getDefinitions()) {
+            if (definition instanceof OperationDefinition) {
+                OperationDefinition operation = (OperationDefinition) definition;
+                if (operation.getOperation()
+                             .equals(Operation.QUERY)) {
+                    for (Selection selection : operation.getSelectionSet()
+                                                        .getSelections()) {
+                        if (selection instanceof Field) {
+                            Field field = (Field) selection;
+                            if (source.equals(field.getName())) {
+                                return Relation.buildSchema(field);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        throw new IllegalStateException(String.format("Invalid query, cannot find source: %s",
+                                                      source));
+    }
+
     private int                    averageCardinality = 1;
     private final List<SchemaNode> children           = new ArrayList<>();
     private RelationConstraints    constraints;
+
     private float                  outlineLabelWidth  = 0;
+
     private boolean                useTable           = false;
 
     public Relation(String label) {
@@ -99,6 +152,15 @@ public class Relation extends SchemaNode implements Cloneable {
             singleton.add(jsonNode);
             measure(singleton);
         }
+    }
+
+    public void nestTables() {
+        this.useTable = true;
+        children.forEach(child -> {
+            if (child instanceof Relation) {
+                ((Relation) child).nestTables();
+            }
+        });
     }
 
     public void setConstraints(RelationConstraints constraints) {
@@ -198,6 +260,25 @@ public class Relation extends SchemaNode implements Cloneable {
         averageCardinality = Math.max(1, sum / children.size());
     }
 
+    @Override
+    protected NodeMaster outlineElement() {
+        VBox box = new VBox(5);
+        box.getChildren()
+           .add(new Text(label));
+        Control control = buildControl();
+        box.getChildren()
+           .add(control);
+        box.setVisible(true);
+        box.setAlignment(Pos.CENTER_LEFT);
+        AnchorPane.setTopAnchor(box, 0.0);
+        AnchorPane.setBottomAnchor(box, 0.0);
+        AnchorPane.setLeftAnchor(box, 0.0);
+        AnchorPane.setRightAnchor(box, 0.0);
+        box.layout();
+        box.getHeight();
+        return new NodeMaster(item -> setItems(control, item), box);
+    }
+
     private List<JsonNode> asList(JsonNode jsonNode) {
         List<JsonNode> nodes = new ArrayList<>();
         if (jsonNode == null) {
@@ -212,12 +293,15 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private TableView<JsonNode> buildNestedTable() {
-        TableView<JsonNode> table = new TableView<>();
+        TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });
         table.setVisible(true);
+        table.setPrefWidth(tableColumnWidth + 20);
+        table.visibleRowCountProperty()
+             .set(averageCardinality);
         AnchorPane.setTopAnchor(table, 0.0);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
@@ -272,31 +356,5 @@ public class Relation extends SchemaNode implements Cloneable {
         AnchorPane.setLeftAnchor(list, 0.0);
         AnchorPane.setRightAnchor(list, 0.0);
         return list;
-    }
-
-    @Override
-    protected NodeMaster outlineElement() {
-        VBox box = new VBox(5);
-        box.getChildren()
-           .add(new Text(label));
-        Control control = buildControl();
-        box.getChildren()
-           .add(control);
-        box.setVisible(true);
-        box.setAlignment(Pos.CENTER_LEFT);
-        AnchorPane.setTopAnchor(box, 0.0);
-        AnchorPane.setBottomAnchor(box, 0.0);
-        AnchorPane.setLeftAnchor(box, 0.0);
-        AnchorPane.setRightAnchor(box, 0.0);
-        return new NodeMaster(item -> setItems(control, item), box);
-    }
-
-    public void nestTables() {
-        this.useTable = true;
-        children.forEach(child -> {
-            if (child instanceof Relation) {
-                ((Relation) child).nestTables();
-            }
-        });
     }
 }

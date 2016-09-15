@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.graphql.layout.AutoLayout;
 import com.chiralbehaviors.graphql.layout.Relation;
 import com.chiralbehaviors.graphql.layout.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,7 +42,7 @@ public class TestParser {
     public void testSimple() throws Exception {
         String input = Utils.getDocument(TestParser.class.getResourceAsStream("/testQuery.gql"));
         String source = "allFilms";
-        Relation schema = (Relation) AutoLayout.buildSchema(input, source);
+        Relation schema = (Relation) Relation.buildSchema(input, source);
         JsonNode data = new ObjectMapper().readTree(TestParser.class.getResourceAsStream("/testQuery.data"));
         schema.measure(data.get("data")
                            .get(source));

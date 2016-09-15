@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.ocular;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import com.chiralbehaviors.graphql.layout.AutoLayout;
 import com.chiralbehaviors.graphql.layout.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,19 +54,16 @@ public class AutoLayoutExplorer extends Application {
 
     public void initRootLayout(Stage primaryStage) throws IOException {
         String input = Utils.getDocument(new FileInputStream("src/test/resources/testQuery.gql"));
-        String source = "allFilms";
-        Relation schema = (Relation) AutoLayout.buildSchema(input, source);
+        String source = "films";
+        Relation schema = (Relation) Relation.buildSchema(input, source);
         JsonNode data = new ObjectMapper().readTree(new FileInputStream("src/test/resources/testQuery.data"));
         data = data.get("data")
                    .get(source);
         schema.measure(data);
 
-        Relation rootSchema = (Relation) schema.getChildren()
-                                               .get(0);
+        schema.nestTables();
 
-        rootSchema.nestTables();
-
-        Control control = rootSchema.buildControl();
+        Control control = schema.buildControl();
         AnchorPane.setTopAnchor(control, 0.0);
         AnchorPane.setBottomAnchor(control, 0.0);
         AnchorPane.setLeftAnchor(control, 0.0);
@@ -77,7 +73,7 @@ public class AutoLayoutExplorer extends Application {
         root.getChildren()
             .add(control);
 
-        rootSchema.setItems(control, data.get("films"));
+        schema.setItems(control, data);
 
         Scene scene = new Scene(root, control.getPrefHeight(), 1024);
         primaryStage.setScene(scene);

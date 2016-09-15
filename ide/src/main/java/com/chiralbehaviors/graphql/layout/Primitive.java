@@ -27,7 +27,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -52,8 +52,14 @@ public class Primitive extends SchemaNode {
      * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
      */
     @Override
-    public TextField buildControl() {
-        TextField textArea = new TextField();
+    public TextArea buildControl() {
+        TextArea textArea = new TextArea();
+        textArea.setPrefWidth(tableColumnWidth);
+        textArea.setWrapText(isVariableLength);
+        AnchorPane.setTopAnchor(textArea, 0.0);
+        AnchorPane.setBottomAnchor(textArea, 0.0);
+        AnchorPane.setLeftAnchor(textArea, 0.0);
+        AnchorPane.setRightAnchor(textArea, 0.0);
         textArea.setPrefWidth(tableColumnWidth);
         return textArea;
     }
@@ -97,8 +103,11 @@ public class Primitive extends SchemaNode {
                 if (item == getItem())
                     return;
                 super.updateItem(item, empty);
-                super.setText(item);
+                super.setText(null);
                 setAlignment(Pos.CENTER_LEFT);
+                TextArea control = buildControl();
+                control.setText(item);
+                super.setGraphic(control);
             }
         });
         return column;
@@ -125,8 +134,7 @@ public class Primitive extends SchemaNode {
         HBox box = new HBox(5);
         box.getChildren()
            .add(new Text(label));
-        TextField control = buildControl();
-        control.setAlignment(Pos.CENTER_LEFT);
+        TextArea control = buildControl();
         box.getChildren()
            .add(control);
         box.setAlignment(Pos.CENTER_LEFT);
@@ -158,7 +166,7 @@ public class Primitive extends SchemaNode {
                 }
                 builder.append(e.asText());
             }
-            ;
+            builder.append(']');
             return builder.toString();
         } else {
             return value.asText();

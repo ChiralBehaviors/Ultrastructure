@@ -217,7 +217,6 @@ public class Relation extends SchemaNode implements Cloneable {
 
             @Override
             protected void updateItem(List<JsonNode> item, boolean empty) {
-                setAlignment(Pos.CENTER_LEFT);
                 if (item == getItem())
                     return;
                 super.updateItem(item, empty);
@@ -235,9 +234,9 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    protected void measure(ArrayNode data) {
+    protected float measure(ArrayNode data) {
         if (data.isNull() || children.size() == 0) {
-            return;
+            return 0;
         }
         int sum = 0;
         for (SchemaNode child : children) {
@@ -254,10 +253,10 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
             sum += data.size() == 0 ? 0 : cardSum / data.size();
-            child.measure(aggregate);
-            tableColumnWidth += child.tableColumnWidth;
+            tableColumnWidth += child.measure(aggregate) + 10;
         }
         averageCardinality = Math.max(1, sum / children.size());
+        return tableColumnWidth;
     }
 
     @Override
@@ -306,8 +305,8 @@ public class Relation extends SchemaNode implements Cloneable {
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         AnchorPane.setRightAnchor(table, 0.0);
-        //        table.getProperties()
-        //             .put("deferToParentPrefWidth", Boolean.TRUE);
+        table.getProperties()
+             .put("deferToParentPrefWidth", Boolean.TRUE);
         //        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         return table;
     }

@@ -40,9 +40,9 @@ import javafx.scene.text.Text;
 public class Primitive extends SchemaNode {
 
     private PrimitiveConstraints constraints;
-    private boolean              isVariableLength = false;
-    private float                valueDefaultWidth;
-    private Font                 valueFont        = Font.getDefault();
+    private boolean              isVariableLength  = false;
+    private float                valueDefaultWidth = 1;
+    private Font                 valueFont         = Font.getDefault();
 
     public Primitive(String label) {
         super(label);
@@ -55,13 +55,13 @@ public class Primitive extends SchemaNode {
     public TextArea buildControl() {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setMaxWidth(tableColumnWidth);
+        textArea.setMaxWidth(tableColumnWidth - 8);
+        textArea.setPrefWidth(tableColumnWidth - 8);
+        textArea.setFont(valueFont);
         AnchorPane.setTopAnchor(textArea, 0.0);
         AnchorPane.setBottomAnchor(textArea, 0.0);
         AnchorPane.setLeftAnchor(textArea, 0.0);
         AnchorPane.setRightAnchor(textArea, 0.0);
-        textArea.setPrefWidth(tableColumnWidth);
-        textArea.setFont(valueFont);
         return textArea;
     }
 
@@ -105,7 +105,6 @@ public class Primitive extends SchemaNode {
                     return;
                 super.updateItem(item, empty);
                 super.setText(null);
-                setAlignment(Pos.CENTER_LEFT);
                 TextArea control = buildControl();
                 control.setText(item);
                 super.setGraphic(control);
@@ -116,7 +115,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected void measure(ArrayNode data) {
+    protected float measure(ArrayNode data) {
         float sum = 0;
         float max = 0;
         for (JsonNode prim : data) {
@@ -124,11 +123,12 @@ public class Primitive extends SchemaNode {
             sum += width;
             max = Math.max(max, width);
         }
-        valueDefaultWidth = data.size() == 0 ? 0 : sum / data.size();
-        if (max > valueDefaultWidth) {
+        float averageWidth = data.size() == 0 ? 0 : sum / data.size();
+        if (max > averageWidth) {
             isVariableLength = true;
         }
-        tableColumnWidth = Math.max(label.length(), valueDefaultWidth);
+        tableColumnWidth = Math.max(labelWidth(), averageWidth);
+        return tableColumnWidth;
     }
 
     @Override

@@ -89,7 +89,7 @@ abstract public class SchemaNode {
         return FONT_LOADER.computeStringWidth(label, labelFont);
     }
 
-    abstract protected void measure(ArrayNode data);
+    abstract protected float measure(ArrayNode data);
 
     abstract protected NodeMaster outlineElement();
 }

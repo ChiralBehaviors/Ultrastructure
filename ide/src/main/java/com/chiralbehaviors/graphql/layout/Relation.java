@@ -50,6 +50,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -252,23 +253,22 @@ public class Relation extends SchemaNode implements Cloneable {
             sum += Math.round(cardSum / data.size()) + 1;
             tableColumnWidth += child.measure(aggregate);
         }
-        averageCardinality = Math.round(sum / children.size());
+        averageCardinality = Math.round(sum / children.size()) + 1;
         return tableColumnWidth + 25;
     }
 
     @Override
     protected NodeMaster outlineElement(float labelWidth) {
-        VBox box = new VBox(5);
+        HBox box = new HBox(5);
         TextArea labelText = new TextArea(label);
-        labelText.setMinWidth(labelWidth);
-        labelText.setMinHeight(labelHeight());
+        labelText.setMaxWidth(labelWidth);
+        labelText.setMaxHeight(labelHeight());
         box.getChildren()
            .add(labelText);
         Control control = buildControl();
         box.getChildren()
            .add(control);
         box.setVisible(true);
-        box.setAlignment(Pos.CENTER_LEFT);
         AnchorPane.setTopAnchor(box, 0.0);
         AnchorPane.setBottomAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
@@ -283,6 +283,7 @@ public class Relation extends SchemaNode implements Cloneable {
             columns.add(node.buildTableColumn());
         });
         table.setVisible(true);
+        table.setMaxWidth(tableColumnWidth);
         table.setMinWidth(tableColumnWidth);
         table.visibleRowCountProperty()
              .set(averageCardinality);

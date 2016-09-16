@@ -119,6 +119,10 @@ public class Primitive extends SchemaNode {
                     return;
                 super.updateItem(item, empty);
                 super.setText(null);
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
                 TextArea control = buildControl();
                 control.setText(asText(item));
                 control.setPrefRowCount(averageCardinality);

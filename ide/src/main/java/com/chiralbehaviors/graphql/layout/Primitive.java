@@ -103,6 +103,8 @@ public class Primitive extends SchemaNode {
     protected TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(tableColumnWidth);
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -121,7 +123,6 @@ public class Primitive extends SchemaNode {
                 control.setText(asText(item));
                 control.setPrefRowCount(averageCardinality);
                 super.setGraphic(control);
-                //                getProperties().put("deferToParentPrefWidth", Boolean.TRUE);
                 setAlignment(Pos.CENTER);
             }
         });
@@ -138,7 +139,7 @@ public class Primitive extends SchemaNode {
             cardSum += rows.size();
             float width = 0;
             for (JsonNode row : rows) {
-                width += valueWidth(toString(row));
+                width += valueWidth(toString(row)) + 20;
                 maxWidth = Math.max(maxWidth, width);
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
@@ -152,7 +153,7 @@ public class Primitive extends SchemaNode {
         if (averageCardinality == 1) {
             averageCardinality = (int) Math.max(1, maxWidth / tableColumnWidth);
         }
-        return tableColumnWidth;
+        return tableColumnWidth + 10;
     }
 
     @Override

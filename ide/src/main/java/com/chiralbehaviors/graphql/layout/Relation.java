@@ -249,12 +249,11 @@ public class Relation extends SchemaNode implements Cloneable {
                     cardSum += 1;
                 }
             }
-            sum += data.size() == 0 ? 0 : cardSum / data.size();
+            sum += data.size() == 0 ? 1 : cardSum / data.size();
             tableColumnWidth += child.measure(aggregate);
         }
         averageCardinality = Math.max(1, sum / children.size());
-        tableColumnWidth += 30;
-        return tableColumnWidth;
+        return tableColumnWidth + 25;
     }
 
     @Override
@@ -293,7 +292,7 @@ public class Relation extends SchemaNode implements Cloneable {
         AnchorPane.setRightAnchor(table, 0.0);
         table.getProperties()
              .put("deferToParentPrefWidth", Boolean.TRUE);
-        //        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         return table;
     }
 

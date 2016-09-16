@@ -48,7 +48,6 @@ public class AutoLayoutExplorer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        primaryStage.setTitle("AutoLayoutExplorer");
         initRootLayout(primaryStage);
     }
 
@@ -62,6 +61,7 @@ public class AutoLayoutExplorer extends Application {
         schema.measure(data);
 
         schema.nestTables();
+        primaryStage.setTitle(schema.getLabel());
 
         Control control = schema.buildControl();
         AnchorPane.setTopAnchor(control, 0.0);

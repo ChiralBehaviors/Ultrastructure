@@ -20,6 +20,9 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,8 +42,8 @@ import javafx.scene.text.Font;
 abstract public class SchemaNode {
 
     public class NodeMaster {
-        public final Node               node;
         public final Consumer<JsonNode> items;
+        public final Node               node;
 
         public NodeMaster(Consumer<JsonNode> items, Node node) {
             this.items = items;
@@ -50,6 +53,7 @@ abstract public class SchemaNode {
 
     protected static FontLoader FONT_LOADER              = Toolkit.getToolkit()
                                                                   .getFontLoader();
+    protected int               averageCardinality       = 1;
     protected final String      field;
     protected final String      label;
     protected Font              labelFont                = Font.getDefault();
@@ -83,7 +87,25 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
+    protected List<JsonNode> asList(JsonNode jsonNode) {
+        List<JsonNode> nodes = new ArrayList<>();
+        if (jsonNode == null) {
+            return nodes;
+        }
+        if (jsonNode.isArray()) {
+            jsonNode.forEach(node -> nodes.add(node));
+        } else {
+            return Collections.singletonList(jsonNode);
+        }
+        return nodes;
+    }
+
     abstract protected TableColumn<JsonNode, ?> buildTableColumn();
+
+    protected float labelHeight() {
+        return FONT_LOADER.getFontMetrics(labelFont)
+                          .getLineHeight();
+    }
 
     protected float labelWidth() {
         return FONT_LOADER.computeStringWidth(label, labelFont);
@@ -91,5 +113,5 @@ abstract public class SchemaNode {
 
     abstract protected float measure(ArrayNode data);
 
-    abstract protected NodeMaster outlineElement();
+    abstract protected NodeMaster outlineElement(float labelWidth);
 }

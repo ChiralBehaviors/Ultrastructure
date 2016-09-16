@@ -249,10 +249,10 @@ public class Relation extends SchemaNode implements Cloneable {
                     cardSum += 1;
                 }
             }
-            sum += data.size() == 0 ? 1 : cardSum / data.size();
+            sum += Math.round(cardSum / data.size()) + 1;
             tableColumnWidth += child.measure(aggregate);
         }
-        averageCardinality = Math.max(1, sum / children.size());
+        averageCardinality = Math.round(sum / children.size());
         return tableColumnWidth + 25;
     }
 

@@ -108,7 +108,7 @@ abstract public class SchemaNode {
     }
 
     protected float labelWidth() {
-        return FONT_LOADER.computeStringWidth(label, labelFont) + 10;
+        return FONT_LOADER.computeStringWidth(label, labelFont) + 15;
     }
 
     abstract protected float measure(ArrayNode data);

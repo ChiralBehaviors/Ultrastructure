@@ -103,7 +103,6 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private final List<SchemaNode> children          = new ArrayList<>();
-    private RelationConstraints    constraints;
 
     private float                  outlineLabelWidth = 0;
 
@@ -126,10 +125,6 @@ public class Relation extends SchemaNode implements Cloneable {
 
     public List<SchemaNode> getChildren() {
         return children;
-    }
-
-    public RelationConstraints getConstraints() {
-        return constraints;
     }
 
     public float getOutlineLabelWidth() {
@@ -158,10 +153,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 ((Relation) child).nestTables();
             }
         });
-    }
-
-    public void setConstraints(RelationConstraints constraints) {
-        this.constraints = constraints;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -262,7 +253,7 @@ public class Relation extends SchemaNode implements Cloneable {
         HBox box = new HBox(5);
         TextArea labelText = new TextArea(label);
         labelText.setMaxWidth(labelWidth);
-        labelText.setMaxHeight(labelHeight());
+        labelText.setMinHeight(labelHeight());
         box.getChildren()
            .add(labelText);
         Control control = buildControl();

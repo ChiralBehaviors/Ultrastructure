@@ -59,13 +59,13 @@ public class AutoLayoutExplorer extends Application {
         data = data.get("data")
                    .get(source);
         schema.measure(data);
-        schema.nestTables();
-        //        schema.getChildren()
-        //              .forEach(node -> {
-        //                  if ("vehicles".equals(node.getLabel())) {
-        //                      ((Relation) node).nestTables();
-        //                  }
-        //              });
+        //        schema.nestTables();
+        schema.getChildren()
+              .forEach(node -> {
+                  if ("vehicles".equals(node.getLabel())) {
+                      ((Relation) node).nestTables();
+                  }
+              });
 
         primaryStage.setTitle(schema.getLabel());
 

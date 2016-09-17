@@ -40,10 +40,9 @@ import javafx.scene.text.Font;
  */
 public class Primitive extends SchemaNode {
 
-    private PrimitiveConstraints constraints;
-    private boolean              isVariableLength  = false;
-    private float                valueDefaultWidth = 1;
-    private Font                 valueFont         = Font.getDefault();
+    private boolean isVariableLength  = false;
+    private float   valueDefaultWidth = 1;
+    private Font    valueFont         = Font.getDefault();
 
     public Primitive(String label) {
         super(label);
@@ -72,20 +71,12 @@ public class Primitive extends SchemaNode {
         return averageCardinality;
     }
 
-    public PrimitiveConstraints getConstraints() {
-        return constraints;
-    }
-
     public float getValueDefaultWidth() {
         return valueDefaultWidth;
     }
 
     public boolean isVariableLength() {
         return isVariableLength;
-    }
-
-    public void setConstraints(PrimitiveConstraints constraints) {
-        this.constraints = constraints;
     }
 
     @Override

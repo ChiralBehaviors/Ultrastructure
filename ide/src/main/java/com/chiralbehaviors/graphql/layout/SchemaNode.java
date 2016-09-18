@@ -41,6 +41,8 @@ import javafx.scene.text.Font;
  */
 abstract public class SchemaNode {
 
+    static final String INDENT = " * ";
+
     public class NodeMaster {
         public final Consumer<JsonNode> items;
         public final Node               node;
@@ -51,16 +53,18 @@ abstract public class SchemaNode {
         }
     }
 
-    protected static FontLoader FONT_LOADER              = Toolkit.getToolkit()
-                                                                  .getFontLoader();
-    protected int               averageCardinality       = 1;
-    protected final String      field;
-    protected final String      label;
-    protected Font              labelFont                = Font.getDefault();
-    protected boolean           startNewOutlineColumn    = false;
-    protected boolean           startNewOutlineColumnSet = false;
-    protected float             tableColumnWidth         = 0;
-    protected boolean           useVerticalTableHeader   = false;
+    static FontLoader FONT_LOADER              = Toolkit.getToolkit()
+                                                        .getFontLoader();
+    int               averageCardinality       = 1;
+    final String      field;
+    boolean           isVariableLength         = false;
+    float             justifiedWidth           = 0;
+    final String      label;
+    Font              labelFont                = Font.getDefault();
+    boolean           startNewOutlineColumn    = false;
+    boolean           startNewOutlineColumnSet = false;
+    float             tableColumnWidth         = 0;
+    boolean           useVerticalTableHeader   = false;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -81,13 +85,9 @@ abstract public class SchemaNode {
         return label;
     }
 
-    public float getTableColumnWidth() {
-        return tableColumnWidth;
-    }
-
     abstract public String toString(int indent);
 
-    protected List<JsonNode> asList(JsonNode jsonNode) {
+    List<JsonNode> asList(JsonNode jsonNode) {
         List<JsonNode> nodes = new ArrayList<>();
         if (jsonNode == null) {
             return nodes;
@@ -100,18 +100,36 @@ abstract public class SchemaNode {
         return nodes;
     }
 
-    abstract protected TableColumn<JsonNode, ?> buildTableColumn();
+    abstract TableColumn<JsonNode, ?> buildTableColumn();
 
-    protected float labelHeight() {
+    void incrementNesting() {
+        // noop
+    }
+
+    float indentWidth() {
+        return FONT_LOADER.computeStringWidth(INDENT, labelFont);
+    }
+
+    void justify(float width) {
+        justifiedWidth = width;
+    }
+
+    float labelHeight() {
         return FONT_LOADER.getFontMetrics(labelFont)
                           .getLineHeight();
     }
 
-    protected float labelWidth() {
-        return FONT_LOADER.computeStringWidth(label, labelFont) + 15;
+    float labelWidth() {
+        return FONT_LOADER.computeStringWidth(label, labelFont);
     }
 
-    abstract protected float measure(ArrayNode data);
+    abstract float layout(float width);
 
-    abstract protected NodeMaster outlineElement(float labelWidth);
+    abstract float measure(ArrayNode data);
+
+    abstract NodeMaster outlineElement(float labelWidth);
+
+    float outlineWidth() {
+        return tableColumnWidth;
+    }
 }

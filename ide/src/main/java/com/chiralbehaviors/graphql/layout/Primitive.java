@@ -40,9 +40,8 @@ import javafx.scene.text.Font;
  */
 public class Primitive extends SchemaNode {
 
-    private boolean isVariableLength  = false;
-    private float   valueDefaultWidth = 1;
-    private Font    valueFont         = Font.getDefault();
+    private float valueDefaultWidth;
+    private Font  valueFont = Font.getDefault();
 
     public Primitive(String label) {
         super(label);
@@ -67,22 +66,9 @@ public class Primitive extends SchemaNode {
         return textArea;
     }
 
-    public int getAverageCardinality() {
-        return averageCardinality;
-    }
-
-    public float getValueDefaultWidth() {
-        return valueDefaultWidth;
-    }
-
-    public boolean isVariableLength() {
-        return isVariableLength;
-    }
-
     @Override
     public String toString() {
-        return String.format("Primitive [%s:%s]", getLabel(),
-                             valueDefaultWidth);
+        return String.format("Primitive [%s:%s]", label, valueDefaultWidth);
     }
 
     @Override
@@ -91,7 +77,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected TableColumn<JsonNode, ?> buildTableColumn() {
+    TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(tableColumnWidth);
         column.getProperties()
@@ -125,7 +111,12 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected float measure(ArrayNode data) {
+    float layout(float width) {
+        return Math.max(width, tableColumnWidth);
+    }
+
+    @Override
+    float measure(ArrayNode data) {
         float sum = 0;
         float maxWidth = 0;
         int cardSum = 0;
@@ -152,11 +143,12 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    protected NodeMaster outlineElement(float labelWidth) {
-        HBox box = new HBox(5);
+    NodeMaster outlineElement(float labelWidth) {
+        HBox box = new HBox();
         TextArea labelText = new TextArea(label);
-        labelText.setPrefWidth(labelWidth);
-        labelText.setPrefHeight(labelHeight() + 20);
+        labelText.setMinWidth(labelWidth);
+        labelText.setMaxWidth(labelWidth);
+        labelText.setPrefRowCount(1);
         box.getChildren()
            .add(labelText);
         TextArea control = buildControl();

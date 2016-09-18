@@ -60,6 +60,8 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
+    private static final int SCROLL_WIDTH = 22;
+
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
@@ -104,7 +106,6 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private final List<SchemaNode> children          = new ArrayList<>();
-    private int                    nestingLevel      = 0;
     private float                  outlineLabelWidth = 0;
     private boolean                useTable          = false;
 
@@ -115,13 +116,13 @@ public class Relation extends SchemaNode implements Cloneable {
     public void addChild(SchemaNode child) {
         incrementNesting();
         children.add(child);
-        outlineLabelWidth = Math.max(child.labelWidth() + 20,
+        outlineLabelWidth = Math.max(child.labelWidth() + SCROLL_WIDTH,
                                      outlineLabelWidth);
     }
 
     @Override
     public Control buildControl() {
-        return useTable ? buildNestedTable(false) : buildOutline();
+        return useTable ? buildNestedTable() : buildOutline();
     }
 
     public List<SchemaNode> getChildren() {
@@ -218,7 +219,7 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, List<JsonNode>>() {
-            TableView<JsonNode> table = buildNestedTable(false);
+            TableView<JsonNode> table = buildNestedTable();
 
             @Override
             protected void updateItem(List<JsonNode> item, boolean empty) {
@@ -265,12 +266,6 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    void incrementNesting() {
-        nestingLevel += 1;
-        children.forEach(child -> child.incrementNesting());
-    }
-
-    @Override
     void justify(float width) {
         if (!useTable) {
             return;
@@ -291,6 +286,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
+        tableColumnWidth = SCROLL_WIDTH;
         int sum = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
@@ -309,15 +305,14 @@ public class Relation extends SchemaNode implements Cloneable {
             tableColumnWidth += child.measure(aggregate);
             isVariableLength |= child.isVariableLength;
         }
-        averageCardinality = Math.round(sum / children.size()) + 1;
-        tableColumnWidth += 20;
+        averageCardinality = Math.round(sum / children.size());
         return tableColumnWidth;
     }
 
     @Override
     NodeMaster outlineElement(float labelWidth) {
         float outlineWidth = outlineWidth();
-        Control control = useTable ? buildNestedTable(true) : buildOutline();
+        Control control = useTable ? buildNestedTable() : buildOutline();
         Pane element;
         if (useTable) {
             element = new HBox();
@@ -347,32 +342,25 @@ public class Relation extends SchemaNode implements Cloneable {
     @Override
     float outlineWidth() {
         if (useTable) {
-            return tableColumnWidth + indentWidth();
+            return tableColumnWidth;
         }
         float outlineWidth = 0;
         for (SchemaNode child : children) {
             outlineWidth = Math.max(outlineWidth, child.outlineWidth());
         }
-        outlineWidth += indentWidth() + outlineLabelWidth + 20;
+        outlineWidth += indentWidth() + outlineLabelWidth + SCROLL_WIDTH;
         return Math.max(labelWidth(), outlineWidth);
     }
 
-    private TableViewWithVisibleRowCount<JsonNode> buildNestedTable(boolean outline) {
+    private TableViewWithVisibleRowCount<JsonNode> buildNestedTable() {
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
-        if (outline) {
-            columns.add(buildIndentColumn());
-            float outlineWidth = outlineWidth();
-            table.setMaxWidth(outlineWidth);
-            table.setMinWidth(outlineWidth);
-        } else {
-            table.setMaxWidth(tableColumnWidth);
-            table.setMinWidth(tableColumnWidth);
-        }
+        //        columns.add(buildIndentColumn());
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });
-        table.setVisible(true);
+        table.setMaxWidth(tableColumnWidth);
+        table.setMinWidth(tableColumnWidth);
         table.visibleRowCountProperty()
              .set(averageCardinality);
         table.getProperties()

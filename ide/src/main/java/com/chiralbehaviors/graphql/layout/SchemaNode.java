@@ -121,7 +121,7 @@ abstract public class SchemaNode {
     }
 
     float labelWidth() {
-        return FONT_LOADER.computeStringWidth(label, labelFont) + 8;
+        return FONT_LOADER.computeStringWidth(label, labelFont);
     }
 
     abstract float layout(float width);

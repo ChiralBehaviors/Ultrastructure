@@ -286,7 +286,7 @@ public class Relation extends SchemaNode implements Cloneable {
             tableColumnWidth += child.measure(aggregate);
             isVariableLength |= child.isVariableLength;
         }
-        averageCardinality = Math.round(sum / children.size());
+        averageCardinality = Math.round(sum / children.size()) + 1;
         return tableColumnWidth;
     }
 

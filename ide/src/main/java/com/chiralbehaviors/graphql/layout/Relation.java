@@ -49,7 +49,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -210,6 +209,7 @@ public class Relation extends SchemaNode implements Cloneable {
     TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
         column.setMinWidth(tableColumnWidth);
+        column.setMaxWidth(tableColumnWidth);
         column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
             @Override
             protected List<JsonNode> computeValue() {
@@ -247,6 +247,8 @@ public class Relation extends SchemaNode implements Cloneable {
         TableColumn<JsonNode, String> column = new TableColumn<>("");
         column.setMinWidth(indentWidth());
         column.setMaxWidth(indentWidth());
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
             @Override
             protected String computeValue() {
@@ -308,7 +310,8 @@ public class Relation extends SchemaNode implements Cloneable {
             isVariableLength |= child.isVariableLength;
         }
         averageCardinality = Math.round(sum / children.size()) + 1;
-        return tableColumnWidth + 25;
+        tableColumnWidth += 20;
+        return tableColumnWidth;
     }
 
     @Override
@@ -317,16 +320,16 @@ public class Relation extends SchemaNode implements Cloneable {
         Control control = useTable ? buildNestedTable(true) : buildOutline();
         Pane element;
         if (useTable) {
-            element = new HBox(5);
+            element = new HBox();
         } else {
-            element = new VBox(5);
+            element = new VBox();
         }
         TextArea labelText = new TextArea(label);
         labelText.setWrapText(true);
         labelText.setPrefRowCount(1);
         if (useTable) {
-            labelText.setMinWidth(outlineLabelWidth);
-            labelText.setMaxWidth(outlineLabelWidth);
+            labelText.setMinWidth(labelWidth);
+            labelText.setMaxWidth(labelWidth);
         } else {
             labelText.setMinWidth(outlineWidth);
             labelText.setMaxWidth(outlineWidth);
@@ -336,23 +339,21 @@ public class Relation extends SchemaNode implements Cloneable {
         element.getChildren()
                .add(control);
         element.setVisible(true);
-        element.setPrefWidth(outlineWidth);
+        element.setMinWidth(outlineWidth);
+        element.setMaxWidth(outlineWidth);
         return new NodeMaster(item -> setItems(control, item), element);
     }
 
     @Override
     float outlineWidth() {
         if (useTable) {
-            return tableColumnWidth;
+            return tableColumnWidth + indentWidth();
         }
         float outlineWidth = 0;
         for (SchemaNode child : children) {
-            outlineWidth = Math.max(outlineWidth,
-                                    (nestingLevel * indentWidth())
-                                                  + outlineLabelWidth
-                                                  + child.outlineWidth());
+            outlineWidth = Math.max(outlineWidth, child.outlineWidth());
         }
-        outlineWidth += indentWidth();
+        outlineWidth += indentWidth() + outlineLabelWidth + 20;
         return Math.max(labelWidth(), outlineWidth);
     }
 
@@ -361,19 +362,19 @@ public class Relation extends SchemaNode implements Cloneable {
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         if (outline) {
             columns.add(buildIndentColumn());
+            float outlineWidth = outlineWidth();
+            table.setMaxWidth(outlineWidth);
+            table.setMinWidth(outlineWidth);
+        } else {
+            table.setMaxWidth(tableColumnWidth);
+            table.setMinWidth(tableColumnWidth);
         }
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });
         table.setVisible(true);
-        table.setMaxWidth(tableColumnWidth);
-        table.setMinWidth(tableColumnWidth);
         table.visibleRowCountProperty()
              .set(averageCardinality);
-        AnchorPane.setTopAnchor(table, 0.0);
-        AnchorPane.setBottomAnchor(table, 0.0);
-        AnchorPane.setLeftAnchor(table, 0.0);
-        AnchorPane.setRightAnchor(table, 0.0);
         table.getProperties()
              .put("deferToParentPrefWidth", Boolean.TRUE);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -381,14 +382,15 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> buildOutline() {
+        float outlineWidth = outlineWidth();
         ListView<JsonNode> list = new ListViewFixed<>();
         Map<SchemaNode, NodeMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox cell = new HBox(5);
+            HBox cell = new HBox();
 
             {
                 cell.getChildren()
-                    .add(new Text(" * "));
+                    .add(new Text(INDENT));
                 VBox box = new VBox(5);
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth);
@@ -396,14 +398,11 @@ public class Relation extends SchemaNode implements Cloneable {
                     box.getChildren()
                        .add(master.node);
                 });
-                box.setVisible(true);
-                box.setAlignment(Pos.CENTER_LEFT);
                 cell.getChildren()
                     .add(box);
-                AnchorPane.setTopAnchor(box, 0.0);
-                AnchorPane.setBottomAnchor(box, 0.0);
-                AnchorPane.setLeftAnchor(box, 0.0);
-                AnchorPane.setRightAnchor(box, 0.0);
+                cell.getProperties()
+                    .put("deferToParentPrefWidth", Boolean.TRUE);
+                cell.setVisible(true);
             }
 
             @Override
@@ -423,14 +422,11 @@ public class Relation extends SchemaNode implements Cloneable {
                 });
             }
         });
-        float outlineWidth = outlineWidth();
         list.setMaxWidth(outlineWidth);
         list.setMinWidth(outlineWidth);
         list.setVisible(true);
-        AnchorPane.setTopAnchor(list, 0.0);
-        AnchorPane.setBottomAnchor(list, 0.0);
-        AnchorPane.setLeftAnchor(list, 0.0);
-        AnchorPane.setRightAnchor(list, 0.0);
+        list.getProperties()
+            .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;
     }
 }

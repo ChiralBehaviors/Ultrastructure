@@ -54,15 +54,10 @@ public class Primitive extends SchemaNode {
     public TextArea buildControl() {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setMaxWidth(tableColumnWidth - 8);
-        textArea.setMinWidth(tableColumnWidth - 8);
-        textArea.setPrefRowCount(averageCardinality + 1);
+        textArea.setMaxWidth(tableColumnWidth);
+        textArea.setMinWidth(tableColumnWidth);
+        textArea.setPrefRowCount(averageCardinality);
         textArea.setFont(valueFont);
-        textArea.setPrefRowCount(0);
-        AnchorPane.setTopAnchor(textArea, 0.0);
-        AnchorPane.setBottomAnchor(textArea, 0.0);
-        AnchorPane.setLeftAnchor(textArea, 0.0);
-        AnchorPane.setRightAnchor(textArea, 0.0);
         return textArea;
     }
 
@@ -139,7 +134,8 @@ public class Primitive extends SchemaNode {
         if (averageCardinality == 1) {
             averageCardinality = (int) Math.max(1, maxWidth / tableColumnWidth);
         }
-        return tableColumnWidth + 10;
+        tableColumnWidth += 15;
+        return tableColumnWidth;
     }
 
     @Override

@@ -246,6 +246,7 @@ public class Relation extends SchemaNode implements Cloneable {
     TableColumn<JsonNode, ?> buildIndentColumn() {
         TableColumn<JsonNode, String> column = new TableColumn<>("");
         column.setMinWidth(indentWidth());
+        column.setMaxWidth(indentWidth());
         column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
             @Override
             protected String computeValue() {
@@ -355,7 +356,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return Math.max(labelWidth(), outlineWidth);
     }
 
-    private TableView<JsonNode> buildNestedTable(boolean outline) {
+    private TableViewWithVisibleRowCount<JsonNode> buildNestedTable(boolean outline) {
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         if (outline) {

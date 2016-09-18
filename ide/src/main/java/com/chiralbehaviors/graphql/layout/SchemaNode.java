@@ -41,7 +41,8 @@ import javafx.scene.text.Font;
  */
 abstract public class SchemaNode {
 
-    static final String INDENT = " * ";
+    static final String INDENT         = " * ";
+    static final String INDENT_MEASURE = "***";
 
     public class NodeMaster {
         public final Consumer<JsonNode> items;
@@ -107,7 +108,7 @@ abstract public class SchemaNode {
     }
 
     float indentWidth() {
-        return FONT_LOADER.computeStringWidth(INDENT, labelFont);
+        return FONT_LOADER.computeStringWidth(INDENT_MEASURE, labelFont);
     }
 
     void justify(float width) {

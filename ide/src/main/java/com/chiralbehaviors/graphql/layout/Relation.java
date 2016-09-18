@@ -211,6 +211,8 @@ public class Relation extends SchemaNode implements Cloneable {
         TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
         column.setMinWidth(tableColumnWidth);
         column.setMaxWidth(tableColumnWidth);
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
             @Override
             protected List<JsonNode> computeValue() {
@@ -244,27 +246,6 @@ public class Relation extends SchemaNode implements Cloneable {
         return column;
     }
 
-    TableColumn<JsonNode, ?> buildIndentColumn() {
-        TableColumn<JsonNode, String> column = new TableColumn<>("");
-        column.setMinWidth(indentWidth());
-        column.setMaxWidth(indentWidth());
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
-        column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
-            @Override
-            protected String computeValue() {
-                return INDENT;
-            }
-        });
-        column.setCellFactory(c -> new TableCell<JsonNode, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                setGraphic(new Text(item));
-            }
-        });
-        return column;
-    }
-
     @Override
     void justify(float width) {
         if (!useTable) {
@@ -286,7 +267,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
-        tableColumnWidth = SCROLL_WIDTH;
+        tableColumnWidth = SCROLL_WIDTH + indentWidth();
         int sum = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
@@ -352,10 +333,31 @@ public class Relation extends SchemaNode implements Cloneable {
         return Math.max(labelWidth(), outlineWidth);
     }
 
+    private TableColumn<JsonNode, ?> buildIndentColumn() {
+        TableColumn<JsonNode, String> column = new TableColumn<>("");
+        column.setMinWidth(indentWidth());
+        column.setMaxWidth(indentWidth());
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
+        column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
+            @Override
+            protected String computeValue() {
+                return INDENT;
+            }
+        });
+        column.setCellFactory(c -> new TableCell<JsonNode, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                setGraphic(new Text(item));
+            }
+        });
+        return column;
+    }
+
     private TableViewWithVisibleRowCount<JsonNode> buildNestedTable() {
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
-        //        columns.add(buildIndentColumn());
+        columns.add(buildIndentColumn());
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });

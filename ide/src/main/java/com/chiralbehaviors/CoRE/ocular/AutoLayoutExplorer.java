@@ -59,7 +59,6 @@ public class AutoLayoutExplorer extends Application {
                    .get(source);
         schema.measure(data);
         schema.layout(1024);
-        //        schema.nestTables();
 
         primaryStage.setTitle(schema.getLabel());
 

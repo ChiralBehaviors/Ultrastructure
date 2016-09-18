@@ -373,15 +373,15 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListView<JsonNode> buildOutline() {
         float outlineWidth = outlineWidth();
-        ListView<JsonNode> list = new ListViewFixed<>();
+        ListView<JsonNode> list = new ListView<>();
         Map<SchemaNode, NodeMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox cell = new HBox();
-
-            {
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                HBox cell = new HBox();
                 cell.getChildren()
                     .add(new Text(INDENT));
-                VBox box = new VBox(5);
+                VBox box = new VBox();
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth);
                     controls.put(child, master);
@@ -393,10 +393,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 cell.getProperties()
                     .put("deferToParentPrefWidth", Boolean.TRUE);
                 cell.setVisible(true);
-            }
-
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem()) {
                     return;
                 }

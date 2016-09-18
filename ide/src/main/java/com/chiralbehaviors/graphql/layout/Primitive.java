@@ -120,13 +120,13 @@ public class Primitive extends SchemaNode {
             cardSum += rows.size();
             float width = 0;
             for (JsonNode row : rows) {
-                width += valueWidth(toString(row)) + 20;
+                width += valueWidth(toString(row));
                 maxWidth = Math.max(maxWidth, width);
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
         averageCardinality = Math.max(1, cardSum / data.size());
-        float averageWidth = data.size() == 0 ? 0 : (sum / data.size()) + 1;
+        float averageWidth = data.size() == 0 ? 0 : (sum / data.size());
         if (maxWidth > averageWidth) {
             isVariableLength = true;
         }
@@ -134,7 +134,6 @@ public class Primitive extends SchemaNode {
         if (averageCardinality == 1) {
             averageCardinality = (int) Math.max(1, maxWidth / tableColumnWidth);
         }
-        tableColumnWidth += 15;
         return tableColumnWidth;
     }
 
@@ -148,7 +147,7 @@ public class Primitive extends SchemaNode {
         box.getChildren()
            .add(labelText);
         TextArea control = buildControl();
-        control.setPrefHeight(averageCardinality * labelHeight() + 20);
+        //        control.setPrefHeight(averageCardinality * labelHeight() + 20);
         box.getChildren()
            .add(control);
         box.setAlignment(Pos.CENTER_LEFT);

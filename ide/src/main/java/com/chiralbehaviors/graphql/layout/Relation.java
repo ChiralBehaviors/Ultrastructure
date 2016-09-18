@@ -410,7 +410,6 @@ public class Relation extends SchemaNode implements Cloneable {
         });
         list.setMaxWidth(outlineWidth);
         list.setMinWidth(outlineWidth);
-        list.setVisible(true);
         list.getProperties()
             .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;

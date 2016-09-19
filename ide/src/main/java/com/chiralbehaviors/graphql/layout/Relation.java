@@ -59,7 +59,7 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
-    private static final int SCROLL_WIDTH = 22;
+    private static final int SCROLL_WIDTH = 25;
 
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)

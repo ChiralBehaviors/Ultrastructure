@@ -360,7 +360,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> buildOutline() {
-        ListView<JsonNode> list = new ListView<>();
+        ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
         Map<SchemaNode, NodeMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
             @Override
@@ -397,6 +397,9 @@ public class Relation extends SchemaNode implements Cloneable {
         });
         list.setMaxWidth(justifiedWidth);
         list.setMinWidth(justifiedWidth);
+        list.setPrefWidth(justifiedWidth);
+        list.visibleRowCountProperty()
+            .set(averageCardinality);
         list.getProperties()
             .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;

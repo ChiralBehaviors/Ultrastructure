@@ -58,7 +58,7 @@ public class AutoLayoutExplorer extends Application {
         data = data.get("data")
                    .get(source);
         schema.measure(data);
-        int width = 800;
+        int width = 400;
 
         schema.autoLayout(width);
 

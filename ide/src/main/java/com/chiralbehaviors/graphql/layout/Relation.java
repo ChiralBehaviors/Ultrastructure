@@ -41,7 +41,6 @@ import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -120,6 +119,11 @@ public class Relation extends SchemaNode implements Cloneable {
                                      outlineLabelWidth);
     }
 
+    public void autoLayout(float width) {
+        layout(width);
+        justify(width);
+    }
+
     @Override
     public Control buildControl() {
         return useTable ? buildNestedTable() : buildOutline();
@@ -127,26 +131,6 @@ public class Relation extends SchemaNode implements Cloneable {
 
     public List<SchemaNode> getChildren() {
         return children;
-    }
-
-    /**
-     * Layout of the receiver
-     * 
-     * @param width
-     *            - the width alloted to the relation
-     * @return
-     */
-    @Override
-    public float layout(float width) {
-        Float outlineWidth = children.stream()
-                                     .map(child -> child.layout(width))
-                                     .reduce((max, layout) -> Math.max(max,
-                                                                       layout))
-                                     .get();
-        if (tableColumnWidth < outlineWidth) {
-            nestTables();
-        }
-        return 0;
     }
 
     public void measure(JsonNode jsonNode) {
@@ -192,8 +176,9 @@ public class Relation extends SchemaNode implements Cloneable {
     @Override
     public String toString(int indent) {
         StringBuffer buf = new StringBuffer();
-        buf.append(String.format("Relation [%s:%s x %s]", label,
-                                 tableColumnWidth, averageCardinality));
+        buf.append(String.format("Relation [%s:%.2f(%.2f) x %s]", label,
+                                 justifiedWidth, tableColumnWidth,
+                                 averageCardinality));
         buf.append('\n');
         children.forEach(c -> {
             for (int i = 0; i < indent; i++) {
@@ -209,8 +194,9 @@ public class Relation extends SchemaNode implements Cloneable {
     @Override
     TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
-        column.setMinWidth(tableColumnWidth);
-        column.setMaxWidth(tableColumnWidth);
+        column.setMinWidth(justifiedWidth);
+        column.setMaxWidth(justifiedWidth);
+        column.setPrefWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
@@ -240,7 +226,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 if (item.isEmpty()) {
 
                 }
-                setAlignment(Pos.CENTER);
             }
         });
         return column;
@@ -248,18 +233,35 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     void justify(float width) {
-        if (!useTable) {
-            return;
+        assert width >= 0 : "Invalid width";
+        if (useTable) {
+            justifyTable(width);
+        } else {
+            justifyOutline(width);
         }
-        float slack = width - tableColumnWidth;
-        if (slack <= 0) {
-            return;
+    }
+
+    /**
+     * Layout of the receiver
+     * 
+     * @param width
+     *            - the width alloted to the relation
+     * @return
+     */
+    @Override
+    float layout(float width) {
+        useTable = false;
+        float available = width - outlineLabelWidth - indentWidth();
+        float outlineWidth = children.stream()
+                                     .map(child -> child.layout(available))
+                                     .max((a, b) -> Float.compare(a, b))
+                                     .get();
+        outlineWidth += outlineLabelWidth;
+        if (tableColumnWidth <= outlineWidth) {
+            nestTables();
+            return tableColumnWidth;
         }
-        justifiedWidth = width;
-        children.stream()
-                .filter(child -> child.isVariableLength)
-                .forEach(child -> child.justify(width * (child.tableColumnWidth
-                                                         / tableColumnWidth)));
+        return outlineWidth;
     }
 
     @Override
@@ -284,53 +286,38 @@ public class Relation extends SchemaNode implements Cloneable {
             }
             sum += Math.round(cardSum / data.size()) + 1;
             tableColumnWidth += child.measure(aggregate);
-            isVariableLength |= child.isVariableLength;
+            variableLength |= child.variableLength;
         }
         averageCardinality = Math.round(sum / children.size()) + 1;
+        justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }
 
     @Override
     NodeMaster outlineElement(float labelWidth) {
-        float outlineWidth = outlineWidth();
         Control control = useTable ? buildNestedTable() : buildOutline();
+        TextArea labelText = new TextArea(label);
+        labelText.setStyle("-fx-background-color: red;");
         Pane element;
         if (useTable) {
-            element = new HBox();
-        } else {
-            element = new VBox();
-        }
-        TextArea labelText = new TextArea(label);
-        labelText.setWrapText(true);
-        labelText.setPrefRowCount(1);
-        if (useTable) {
+            element = new HBox(2);
             labelText.setMinWidth(labelWidth);
             labelText.setMaxWidth(labelWidth);
         } else {
-            labelText.setMinWidth(outlineWidth);
-            labelText.setMaxWidth(outlineWidth);
+            element = new VBox(2);
+            labelText.setMinWidth(justifiedWidth);
+            labelText.setMaxWidth(justifiedWidth);
         }
+        labelText.setWrapText(true);
+        labelText.setPrefRowCount(1);
         element.getChildren()
                .add(labelText);
         element.getChildren()
                .add(control);
-        element.setVisible(true);
-        element.setMinWidth(outlineWidth);
-        element.setMaxWidth(outlineWidth);
+        element.setMinWidth(justifiedWidth);
+        element.setMaxWidth(justifiedWidth);
+        element.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> setItems(control, item), element);
-    }
-
-    @Override
-    float outlineWidth() {
-        if (useTable) {
-            return tableColumnWidth;
-        }
-        float outlineWidth = 0;
-        for (SchemaNode child : children) {
-            outlineWidth = Math.max(outlineWidth, child.outlineWidth());
-        }
-        outlineWidth += indentWidth() + outlineLabelWidth + SCROLL_WIDTH;
-        return Math.max(labelWidth(), outlineWidth);
     }
 
     private TableColumn<JsonNode, ?> buildIndentColumn() {
@@ -361,8 +348,9 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });
-        table.setMaxWidth(tableColumnWidth);
-        table.setMinWidth(tableColumnWidth);
+        table.setMaxWidth(justifiedWidth);
+        table.setMinWidth(justifiedWidth);
+        table.setPrefWidth(justifiedWidth);
         table.visibleRowCountProperty()
              .set(averageCardinality);
         table.getProperties()
@@ -372,16 +360,15 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> buildOutline() {
-        float outlineWidth = outlineWidth();
         ListView<JsonNode> list = new ListView<>();
         Map<SchemaNode, NodeMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
-                HBox cell = new HBox();
+                HBox cell = new HBox(2);
                 cell.getChildren()
                     .add(new Text(INDENT));
-                VBox box = new VBox();
+                VBox box = new VBox(2);
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth);
                     controls.put(child, master);
@@ -408,10 +395,48 @@ public class Relation extends SchemaNode implements Cloneable {
                 });
             }
         });
-        list.setMaxWidth(outlineWidth);
-        list.setMinWidth(outlineWidth);
+        list.setMaxWidth(justifiedWidth);
+        list.setMinWidth(justifiedWidth);
         list.getProperties()
             .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;
+    }
+
+    private void justifyOutline(float width) {
+        if (variableLength) {
+            justifiedWidth = width;
+            float available = width - outlineLabelWidth - indentWidth()
+                              - SCROLL_WIDTH;
+            float tableWidth = width - indentWidth() - SCROLL_WIDTH;
+            children.forEach(child -> {
+                if (child instanceof Relation) {
+                    if (((Relation) child).useTable) {
+                        child.justify(available);
+                    } else {
+                        child.justify(tableWidth);
+                    }
+                } else {
+                    child.justify(available);
+                }
+            });
+        }
+    }
+
+    private void justifyTable(float width) {
+        justifiedWidth = width;
+        float slack = width - tableColumnWidth;
+        assert slack >= 0 : String.format("Negative slack: %.2f (%.2f) \n%s",
+                                          slack, width, this);
+        float total = children.stream()
+                              .filter(child -> child.variableLength)
+                              .map(child -> child.tableColumnWidth)
+                              .reduce((a, b) -> a + b)
+                              .get();
+        children.stream()
+                .filter(child -> child.variableLength)
+                .forEach(child -> child.justify(slack
+                                                * (child.tableColumnWidth
+                                                   / total)
+                                                + child.tableColumnWidth));
     }
 }

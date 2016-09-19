@@ -30,7 +30,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
@@ -40,8 +39,8 @@ import javafx.scene.text.Font;
  */
 public class Primitive extends SchemaNode {
 
-    private float valueDefaultWidth;
-    private Font  valueFont = Font.getDefault();
+    private float valueDefaultWidth = 0;
+    private Font  valueFont         = Font.getDefault();
 
     public Primitive(String label) {
         super(label);
@@ -54,8 +53,9 @@ public class Primitive extends SchemaNode {
     public TextArea buildControl() {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setMaxWidth(tableColumnWidth);
-        textArea.setMinWidth(tableColumnWidth);
+        textArea.setMaxWidth(justifiedWidth);
+        textArea.setMinWidth(justifiedWidth);
+        textArea.setPrefWidth(justifiedWidth);
         textArea.setPrefRowCount(averageCardinality);
         textArea.setFont(valueFont);
         return textArea;
@@ -63,7 +63,8 @@ public class Primitive extends SchemaNode {
 
     @Override
     public String toString() {
-        return String.format("Primitive [%s:%s]", label, valueDefaultWidth);
+        return String.format("Primitive [%s:%.2f(%.2f)]", label, justifiedWidth,
+                             tableColumnWidth);
     }
 
     @Override
@@ -74,7 +75,8 @@ public class Primitive extends SchemaNode {
     @Override
     TableColumn<JsonNode, ?> buildTableColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.setMinWidth(tableColumnWidth);
+        column.setMinWidth(justifiedWidth);
+        column.setMaxWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
@@ -107,7 +109,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     float layout(float width) {
-        return Math.max(width, tableColumnWidth);
+        return variableLength ? width : Math.min(width, tableColumnWidth);
     }
 
     @Override
@@ -127,13 +129,16 @@ public class Primitive extends SchemaNode {
         }
         averageCardinality = Math.max(1, cardSum / data.size());
         float averageWidth = data.size() == 0 ? 0 : (sum / data.size());
-        if (maxWidth > averageWidth) {
-            isVariableLength = true;
+
+        if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
+            variableLength = true;
         }
-        tableColumnWidth = Math.max(labelWidth(), averageWidth);
+        tableColumnWidth = Math.max(labelWidth(),
+                                    Math.max(valueDefaultWidth, averageWidth));
         if (averageCardinality == 1) {
             averageCardinality = (int) Math.max(1, maxWidth / tableColumnWidth);
         }
+        justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }
 
@@ -141,6 +146,7 @@ public class Primitive extends SchemaNode {
     NodeMaster outlineElement(float labelWidth) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
+        labelText.setStyle("-fx-background-color: red;");
         labelText.setMinWidth(labelWidth);
         labelText.setMaxWidth(labelWidth);
         labelText.setPrefRowCount(1);
@@ -150,12 +156,9 @@ public class Primitive extends SchemaNode {
         //        control.setPrefHeight(averageCardinality * labelHeight() + 20);
         box.getChildren()
            .add(control);
-        box.setAlignment(Pos.CENTER_LEFT);
-        box.setVisible(true);
-        AnchorPane.setTopAnchor(box, 0.0);
-        AnchorPane.setBottomAnchor(box, 0.0);
-        AnchorPane.setLeftAnchor(box, 0.0);
-        AnchorPane.setRightAnchor(box, 0.0);
+        box.setMinWidth(justifiedWidth);
+        box.setMaxWidth(justifiedWidth);
+        box.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> control.setText(asText(item)), box);
     }
 

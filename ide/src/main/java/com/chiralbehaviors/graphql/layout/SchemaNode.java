@@ -58,7 +58,7 @@ abstract public class SchemaNode {
                                                         .getFontLoader();
     int               averageCardinality       = 1;
     final String      field;
-    boolean           isVariableLength         = false;
+    boolean           variableLength           = false;
     float             justifiedWidth           = 0;
     final String      label;
     Font              labelFont                = Font.getDefault();
@@ -112,7 +112,9 @@ abstract public class SchemaNode {
     }
 
     void justify(float width) {
-        justifiedWidth = width;
+        if (variableLength) {
+            justifiedWidth = width;
+        }
     }
 
     float labelHeight() {

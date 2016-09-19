@@ -58,8 +58,9 @@ public class AutoLayoutExplorer extends Application {
         data = data.get("data")
                    .get(source);
         schema.measure(data);
-        schema.layout(1000);
-        //        schema.nestTables();
+        int width = 800;
+
+        schema.autoLayout(width);
 
         primaryStage.setTitle(schema.getLabel());
 
@@ -71,8 +72,7 @@ public class AutoLayoutExplorer extends Application {
 
         schema.setItems(control, data);
 
-        Scene scene = new Scene(root, control.getPrefWidth(),
-                                control.getPrefHeight());
+        Scene scene = new Scene(root, width, control.getPrefHeight());
         primaryStage.setScene(scene);
 
         primaryStage.show();

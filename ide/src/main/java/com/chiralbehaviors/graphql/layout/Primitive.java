@@ -87,6 +87,8 @@ public class Primitive extends SchemaNode {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+            TextArea control = buildControl();
+
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem())
@@ -97,7 +99,6 @@ public class Primitive extends SchemaNode {
                     setGraphic(null);
                     return;
                 }
-                TextArea control = buildControl();
                 control.setText(asText(item));
                 control.setPrefRowCount(averageCardinality);
                 super.setGraphic(control);

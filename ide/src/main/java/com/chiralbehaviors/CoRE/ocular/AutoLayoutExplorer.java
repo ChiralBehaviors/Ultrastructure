@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.ocular;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import com.chiralbehaviors.graphql.layout.AutoLayoutView;
 import com.chiralbehaviors.graphql.layout.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +31,6 @@ import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -57,22 +56,14 @@ public class AutoLayoutExplorer extends Application {
         JsonNode data = new ObjectMapper().readTree(new FileInputStream("src/test/resources/testQuery.data"));
         data = data.get("data")
                    .get(source);
-        schema.measure(data);
-        int width = 400;
-
-        schema.autoLayout(width);
 
         primaryStage.setTitle(schema.getLabel());
+        AutoLayoutView layout = new AutoLayoutView(schema);
+        schema.measure(data);
+        layout.dataProperty()
+              .setValue(data);
 
-        Control control = schema.buildControl();
-
-        StackPane root = new StackPane();
-        root.getChildren()
-            .add(control);
-
-        schema.setItems(control, data);
-
-        Scene scene = new Scene(root, width, control.getPrefHeight());
+        Scene scene = new Scene(layout, 800, 800);
         primaryStage.setScene(scene);
 
         primaryStage.show();

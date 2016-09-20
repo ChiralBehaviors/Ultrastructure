@@ -41,9 +41,6 @@ import javafx.scene.text.Font;
  */
 abstract public class SchemaNode {
 
-    static final String INDENT         = " * ";
-    static final String INDENT_MEASURE = "****";
-
     public class NodeMaster {
         public final Consumer<JsonNode> items;
         public final Node               node;
@@ -54,18 +51,37 @@ abstract public class SchemaNode {
         }
     }
 
-    static FontLoader FONT_LOADER              = Toolkit.getToolkit()
-                                                        .getFontLoader();
-    int               averageCardinality       = 1;
-    final String      field;
-    boolean           variableLength           = false;
-    float             justifiedWidth           = 0;
-    final String      label;
-    Font              labelFont                = Font.getDefault();
-    boolean           startNewOutlineColumn    = false;
-    boolean           startNewOutlineColumnSet = false;
-    float             tableColumnWidth         = 0;
-    boolean           useVerticalTableHeader   = false;
+    static FontLoader   FONT_LOADER    = Toolkit.getToolkit()
+                                                .getFontLoader();
+
+    static final String INDENT         = " * ";
+
+    static final String INDENT_MEASURE = "****";
+
+    public static List<JsonNode> asList(JsonNode jsonNode) {
+        List<JsonNode> nodes = new ArrayList<>();
+        if (jsonNode == null) {
+            return nodes;
+        }
+        if (jsonNode.isArray()) {
+            jsonNode.forEach(node -> nodes.add(node));
+        } else {
+            return Collections.singletonList(jsonNode);
+        }
+        return nodes;
+    }
+
+    int          averageCardinality       = 1;
+    final String field;
+    float        justifiedWidth           = 0;
+    final String label;
+    Font         labelFont                = Font.getDefault();
+    boolean      startNewOutlineColumn    = false;
+    boolean      startNewOutlineColumnSet = false;
+    float        tableColumnWidth         = 0;
+    boolean      useVerticalTableHeader   = false;
+
+    boolean      variableLength           = false;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -87,19 +103,6 @@ abstract public class SchemaNode {
     }
 
     abstract public String toString(int indent);
-
-    List<JsonNode> asList(JsonNode jsonNode) {
-        List<JsonNode> nodes = new ArrayList<>();
-        if (jsonNode == null) {
-            return nodes;
-        }
-        if (jsonNode.isArray()) {
-            jsonNode.forEach(node -> nodes.add(node));
-        } else {
-            return Collections.singletonList(jsonNode);
-        }
-        return nodes;
-    }
 
     abstract TableColumn<JsonNode, ?> buildTableColumn();
 

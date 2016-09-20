@@ -144,16 +144,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
     }
 
-    public void nestTables() {
-        useTable = true;
-        children.forEach(child -> {
-            if (child instanceof Relation) {
-                ((Relation) child).nestTables();
-            }
-        });
-    }
-
-    public void setItems(Control control, JsonNode item) {
+    public static void setItems(Control control, JsonNode item) {
         if (control instanceof ListView) {
             @SuppressWarnings("unchecked")
             ListView<JsonNode> listView = (ListView<JsonNode>) control;
@@ -361,11 +352,10 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListView<JsonNode> buildOutline() {
         ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
-        Map<SchemaNode, NodeMaster> controls = new HashMap<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                HBox cell = new HBox(2);
+            HBox                        cell     = new HBox(2);
+            Map<SchemaNode, NodeMaster> controls = new HashMap<>();
+            {
                 cell.getChildren()
                     .add(new Text(INDENT));
                 VBox box = new VBox(2);
@@ -379,7 +369,10 @@ public class Relation extends SchemaNode implements Cloneable {
                     .add(box);
                 cell.getProperties()
                     .put("deferToParentPrefWidth", Boolean.TRUE);
-                cell.setVisible(true);
+            }
+
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem()) {
                     return;
                 }
@@ -389,10 +382,10 @@ public class Relation extends SchemaNode implements Cloneable {
                     super.setGraphic(null);
                     return;
                 }
-                super.setGraphic(cell);
                 children.forEach(child -> {
                     controls.get(child).items.accept(item.get(child.field));
                 });
+                super.setGraphic(cell);
             }
         });
         list.setMaxWidth(justifiedWidth);
@@ -434,12 +427,21 @@ public class Relation extends SchemaNode implements Cloneable {
                               .filter(child -> child.variableLength)
                               .map(child -> child.tableColumnWidth)
                               .reduce((a, b) -> a + b)
-                              .get();
+                              .orElse(0.0f);
         children.stream()
                 .filter(child -> child.variableLength)
                 .forEach(child -> child.justify(slack
                                                 * (child.tableColumnWidth
                                                    / total)
                                                 + child.tableColumnWidth));
+    }
+
+    private void nestTables() {
+        useTable = true;
+        children.forEach(child -> {
+            if (child instanceof Relation) {
+                ((Relation) child).nestTables();
+            }
+        });
     }
 }

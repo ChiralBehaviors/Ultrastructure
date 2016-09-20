@@ -47,10 +47,30 @@ public class AutoLayoutView extends AnchorPane {
         return data;
     }
 
-    private void setContent() {
-        if (layout != null) {
-            Relation.setItems(layout, data.get());
-        }
+    public JsonNode getData() {
+        return data.get();
+    }
+
+    public Relation getRoot() {
+        return root.get();
+    }
+
+    public void measure(JsonNode data) {
+        Relation relation = root.get();
+        relation.measure(data);
+        resize((float) getWidth());
+    }
+
+    public Property<Relation> rootProperty() {
+        return root;
+    }
+
+    public void setData(JsonNode node) {
+        data.set(node);
+    }
+
+    public void setRoot(Relation rootRelationship) {
+        root.set(rootRelationship);
     }
 
     private void resize(float width) {
@@ -65,5 +85,11 @@ public class AutoLayoutView extends AnchorPane {
         AnchorPane.setRightAnchor(layout, 0.0);
         AnchorPane.setBottomAnchor(layout, 0.0);
         getChildren().add(layout);
+    }
+
+    private void setContent() {
+        if (layout != null) {
+            Relation.setItems(layout, data.get());
+        }
     }
 }

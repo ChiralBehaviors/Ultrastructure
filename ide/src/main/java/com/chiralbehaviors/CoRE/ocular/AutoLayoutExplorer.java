@@ -59,9 +59,8 @@ public class AutoLayoutExplorer extends Application {
 
         primaryStage.setTitle(schema.getLabel());
         AutoLayoutView layout = new AutoLayoutView(schema);
-        schema.measure(data);
-        layout.dataProperty()
-              .setValue(data);
+        layout.measure(data);
+        layout.setData(data);
 
         Scene scene = new Scene(layout, 800, 800);
         primaryStage.setScene(scene);

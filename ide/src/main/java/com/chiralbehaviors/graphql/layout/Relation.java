@@ -224,7 +224,9 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     void justify(float width) {
-        assert width >= 0 : "Invalid width";
+        if (width <= 0)
+            return;
+
         if (useTable) {
             justifyTable(width);
         } else {

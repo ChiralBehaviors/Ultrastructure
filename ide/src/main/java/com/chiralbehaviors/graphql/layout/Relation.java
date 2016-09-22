@@ -59,7 +59,7 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
-    private static final int SCROLL_WIDTH = 25;
+    private static final int SCROLL_WIDTH = 27; // hate this
 
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
@@ -187,7 +187,7 @@ public class Relation extends SchemaNode implements Cloneable {
         TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
-        column.setPrefWidth(justifiedWidth);
+//        column.setPrefWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
@@ -308,15 +308,12 @@ public class Relation extends SchemaNode implements Cloneable {
         element.getChildren()
                .add(control);
         element.setMinWidth(justifiedWidth);
-        element.setMaxWidth(justifiedWidth);
-        element.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> setItems(control, item), element);
     }
 
     private TableColumn<JsonNode, ?> buildIndentColumn() {
         TableColumn<JsonNode, String> column = new TableColumn<>("");
         column.setMinWidth(indentWidth());
-        column.setMaxWidth(indentWidth());
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
@@ -341,8 +338,6 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(node -> {
             columns.add(node.buildTableColumn());
         });
-        table.setMaxWidth(justifiedWidth);
-        table.setMinWidth(justifiedWidth);
         table.setPrefWidth(justifiedWidth);
         table.visibleRowCountProperty()
              .set(averageCardinality);
@@ -390,9 +385,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 super.setGraphic(cell);
             }
         });
-        list.setMaxWidth(justifiedWidth);
-        list.setMinWidth(justifiedWidth);
         list.setPrefWidth(justifiedWidth);
+//        list.setMinWidth(justifiedWidth);
         list.visibleRowCountProperty()
             .set(averageCardinality);
         list.getProperties()

@@ -25,13 +25,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Control;
+import javafx.scene.control.Skin;
 import javafx.scene.layout.AnchorPane;
 
 /**
  * @author hhildebrand
  *
  */
-public class AutoLayoutView extends AnchorPane {
+public class AutoLayoutView extends Control {
 
     private SimpleObjectProperty<JsonNode>       data = new SimpleObjectProperty<>();
     private Control                              layout;
@@ -91,5 +92,10 @@ public class AutoLayoutView extends AnchorPane {
         if (layout != null) {
             Relation.setItems(layout, data.get());
         }
+    }
+
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new AutoLayoutSkin(this);
     }
 }

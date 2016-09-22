@@ -30,7 +30,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 /**
@@ -57,12 +61,30 @@ public class AutoLayoutExplorer extends Application {
         data = data.get("data")
                    .get(source);
 
-        primaryStage.setTitle(schema.getLabel());
+        SplitPane root = new SplitPane();
+        root.setOrientation(Orientation.VERTICAL);
+        root.setDividerPositions(0.4f, 0.6f);
+
+        WebView webView = new WebView();
+        AnchorPane.setTopAnchor(webView, 0.0);
+        AnchorPane.setLeftAnchor(webView, 0.0);
+        AnchorPane.setRightAnchor(webView, 0.0);
+        AnchorPane.setBottomAnchor(webView, 0.0);
+        AnchorPane wvAnchor = new AnchorPane();
+        wvAnchor.getChildren()
+                .add(webView);
+
         AutoLayoutView layout = new AutoLayoutView(schema);
+
         layout.measure(data);
         layout.setData(data);
 
-        Scene scene = new Scene(layout, 800, 800);
+        root.getItems()
+            .add(wvAnchor);
+        root.getItems()
+            .add(layout);
+        primaryStage.setTitle(schema.getLabel());
+        Scene scene = new Scene(root, 800, 800);
         primaryStage.setScene(scene);
 
         primaryStage.show();

@@ -66,6 +66,10 @@ public class AutoLayoutExplorer extends Application {
         root.setDividerPositions(0.4f, 0.6f);
 
         WebView webView = new WebView();
+
+        webView.getEngine()
+               .load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
+                               .toExternalForm());
         AnchorPane.setTopAnchor(webView, 0.0);
         AnchorPane.setLeftAnchor(webView, 0.0);
         AnchorPane.setRightAnchor(webView, 0.0);

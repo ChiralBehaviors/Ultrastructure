@@ -23,8 +23,6 @@ package com.chiralbehaviors.CoRE.ocular;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.controlsfx.control.MasterDetailPane;
-
 import com.chiralbehaviors.graphql.layout.AutoLayoutController;
 import com.chiralbehaviors.graphql.layout.AutoLayoutView;
 import com.chiralbehaviors.graphql.layout.Relation;
@@ -36,13 +34,10 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import netscape.javascript.JSObject;
+import netscape.javascript.JSObject; 
 
 /**
  * A class to allow me to explore the autolayout. I hate UIs.
@@ -79,42 +74,15 @@ public class AutoLayoutExplorer extends Application {
         JsonNode data = new ObjectMapper().readTree(new FileInputStream("src/test/resources/testQuery.data"));
         data = data.get("data")
                    .get(source);
-        
 
         AutoLayoutView layout = new AutoLayoutView(schema);
 
         layout.measure(data);
         layout.setData(data);
-        
+
         AutoLayoutController controller = new AutoLayoutController();
         controller.masterDetail.setMasterNode(layout);
-
-        primaryStage.setTitle(schema.getLabel());
-        Scene scene = new Scene(controller.root, 800, 800);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
-    }
-
-    public MasterDetailPane masterDetail(AutoLayoutView layout,
-                                         AnchorPane wvAnchor) {
-        MasterDetailPane root = new MasterDetailPane();
-        root.showDetailNodeProperty();
-        root.setMasterNode(layout);
-        root.setDetailNode(wvAnchor);
-        root.setDetailSide(Side.TOP);
-        root.setShowDetailNode(false);
-        return root;
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        initRootLayout(primaryStage);
-    }
-
-    private WebView graphiql() {
-        WebView webView = new WebView(); 
-        WebEngine webEngine = webView.getEngine();
+        WebEngine webEngine = controller.graphiql.webview.getEngine();
         webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
                                  .toExternalForm());
         webEngine.getLoadWorker()
@@ -128,10 +96,16 @@ public class AutoLayoutExplorer extends Application {
                      }
 
                  });
-        AnchorPane.setTopAnchor(webView, 0.0);
-        AnchorPane.setLeftAnchor(webView, 0.0);
-        AnchorPane.setRightAnchor(webView, 0.0);
-        AnchorPane.setBottomAnchor(webView, 0.0);
-        return webView;
+
+        primaryStage.setTitle(schema.getLabel());
+        Scene scene = new Scene(controller.root, 800, 800);
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        initRootLayout(primaryStage);
     }
 }

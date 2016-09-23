@@ -8,17 +8,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 public class AutoLayoutController {
     @FXML
-    public BorderPane       root;
+    public Button             edit;
+    public GraphiqlController graphiql;
     @FXML
-    public MasterDetailPane masterDetail;
+    public MasterDetailPane   masterDetail;
     @FXML
-    public Button           edit;
+    public Button             refresh;
     @FXML
-    public Button           refresh;
+    public BorderPane         root;
+    @FXML
+    public Button             showSchema;
 
     public AutoLayoutController() throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -28,9 +32,14 @@ public class AutoLayoutController {
 
         loader = new FXMLLoader(getClass().getResource("/com/chiralbehaviors/graphql/layout/graphiql.fxml"));
         Node detail = loader.load();
-        GraphiqlController graphiql = loader.getController();
-        masterDetail.setDetailNode(detail);
+        graphiql = loader.getController();
 
+        AnchorPane.setTopAnchor(graphiql.webview, 0.0);
+        AnchorPane.setLeftAnchor(graphiql.webview, 0.0);
+        AnchorPane.setRightAnchor(graphiql.webview, 0.0);
+        AnchorPane.setBottomAnchor(graphiql.webview, 0.0);
+        masterDetail.setDetailNode(detail);
+        
         edit.setOnAction(e -> masterDetail.setShowDetailNode(true));
         graphiql.close.setOnAction(e -> masterDetail.setShowDetailNode(false));
     }

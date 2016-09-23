@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import org.controlsfx.control.MasterDetailPane?>
 
-<BorderPane fx:id="root" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
 	<center>
 		<MasterDetailPane fx:id="masterDetail" detailSide="TOP" showDetailNode="false" BorderPane.alignment="CENTER" />
 	</center>
@@ -14,7 +14,6 @@
          <buttons>
 				<Button fx:id="refresh" mnemonicParsing="false" text="Refresh" />
 				<Button fx:id="edit" mnemonicParsing="false" text="Edit Query" />
-				<Button fx:id="showSchema" mnemonicParsing="false" text="Show Schema" />
          </buttons>
       </ButtonBar>
    </bottom>

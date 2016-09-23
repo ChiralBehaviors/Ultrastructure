@@ -74,7 +74,7 @@ abstract public class SchemaNode {
     int          averageCardinality = 1;
     final String field;
     float        justifiedWidth     = 0;
-    final String label;
+    String       label;
     Font         labelFont          = Font.getDefault();
     float        tableColumnWidth   = 0;
     boolean      variableLength     = false;
@@ -112,6 +112,10 @@ abstract public class SchemaNode {
 
     public void setAverageCardinality(int averageCardinality) {
         this.averageCardinality = averageCardinality;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public void setTableColumnWidth(float tableColumnWidth) {

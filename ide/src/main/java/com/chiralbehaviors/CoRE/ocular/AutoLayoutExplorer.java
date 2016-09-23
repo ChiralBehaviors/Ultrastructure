@@ -23,6 +23,9 @@ package com.chiralbehaviors.CoRE.ocular;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.controlsfx.control.MasterDetailPane;
+
+import com.chiralbehaviors.graphql.layout.AutoLayoutController;
 import com.chiralbehaviors.graphql.layout.AutoLayoutView;
 import com.chiralbehaviors.graphql.layout.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,12 +33,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
-import javafx.geometry.Orientation;
+import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Worker;
+import javafx.concurrent.Worker.State;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import netscape.javascript.JSObject;
 
 /**
  * A class to allow me to explore the autolayout. I hate UIs.
@@ -44,13 +51,25 @@ import javafx.stage.Stage;
  *
  */
 public class AutoLayoutExplorer extends Application {
-    public static void main(String[] args) {
-        launch(args);
+
+    public class App {
+        public void onEditOperationName(String newOperationName) {
+            System.out.println(String.format("New operation name: %s",
+                                             newOperationName));
+        }
+
+        public void onEditQuery(String newQuery) {
+            System.out.println(String.format("New query: %s", newQuery));
+        }
+
+        public void onEditVariables(String newVariables) {
+            System.out.println(String.format("New variables: %s",
+                                             newVariables));
+        }
     }
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        initRootLayout(primaryStage);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     public void initRootLayout(Stage primaryStage) throws IOException {
@@ -60,37 +79,59 @@ public class AutoLayoutExplorer extends Application {
         JsonNode data = new ObjectMapper().readTree(new FileInputStream("src/test/resources/testQuery.data"));
         data = data.get("data")
                    .get(source);
-
-        SplitPane root = new SplitPane();
-        root.setOrientation(Orientation.VERTICAL);
-        root.setDividerPositions(0.4f, 0.6f);
-
-        WebView webView = new WebView();
-
-        webView.getEngine()
-               .load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
-                               .toExternalForm());
-        AnchorPane.setTopAnchor(webView, 0.0);
-        AnchorPane.setLeftAnchor(webView, 0.0);
-        AnchorPane.setRightAnchor(webView, 0.0);
-        AnchorPane.setBottomAnchor(webView, 0.0);
-        AnchorPane wvAnchor = new AnchorPane();
-        wvAnchor.getChildren()
-                .add(webView);
+        
 
         AutoLayoutView layout = new AutoLayoutView(schema);
 
         layout.measure(data);
         layout.setData(data);
+        
+        AutoLayoutController controller = new AutoLayoutController();
+        controller.masterDetail.setMasterNode(layout);
 
-        root.getItems()
-            .add(wvAnchor);
-        root.getItems()
-            .add(layout);
         primaryStage.setTitle(schema.getLabel());
-        Scene scene = new Scene(root, 800, 800);
+        Scene scene = new Scene(controller.root, 800, 800);
         primaryStage.setScene(scene);
 
         primaryStage.show();
+    }
+
+    public MasterDetailPane masterDetail(AutoLayoutView layout,
+                                         AnchorPane wvAnchor) {
+        MasterDetailPane root = new MasterDetailPane();
+        root.showDetailNodeProperty();
+        root.setMasterNode(layout);
+        root.setDetailNode(wvAnchor);
+        root.setDetailSide(Side.TOP);
+        root.setShowDetailNode(false);
+        return root;
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        initRootLayout(primaryStage);
+    }
+
+    private WebView graphiql() {
+        WebView webView = new WebView(); 
+        WebEngine webEngine = webView.getEngine();
+        webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
+                                 .toExternalForm());
+        webEngine.getLoadWorker()
+                 .stateProperty()
+                 .addListener((ChangeListener<State>) (ov, oldState,
+                                                       newState) -> {
+
+                     if (newState == Worker.State.SUCCEEDED) {
+                         JSObject jsobj = (JSObject) webEngine.executeScript("window");
+                         jsobj.setMember("app", new App());
+                     }
+
+                 });
+        AnchorPane.setTopAnchor(webView, 0.0);
+        AnchorPane.setLeftAnchor(webView, 0.0);
+        AnchorPane.setRightAnchor(webView, 0.0);
+        AnchorPane.setBottomAnchor(webView, 0.0);
+        return webView;
     }
 }

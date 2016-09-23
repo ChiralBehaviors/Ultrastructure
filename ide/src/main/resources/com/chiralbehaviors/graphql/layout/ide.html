@@ -26,14 +26,18 @@
 		var parameters = {};
 		var targetURL = "http://graphql-swapi.parseapp.com/";
 		
+		function setTargetURL(url) {
+			targetURL = url;	
+		}
+		
 		function onEditQuery(newQuery) {
-			
+			app.onEditQuery(newQuery);
 		}
 		function onEditVariables(newVariables) {
-			
+			app.onEditVariables(newVariables);
 		}
 		function onEditOperationName(newOperationName) {
-			
+			app.onEditOperationName(newOperationName);
 		}
 		
 		function graphQLFetcher(graphQLParams) {

@@ -71,17 +71,13 @@ abstract public class SchemaNode {
         return nodes;
     }
 
-    int          averageCardinality       = 1;
+    int          averageCardinality = 1;
     final String field;
-    float        justifiedWidth           = 0;
+    float        justifiedWidth     = 0;
     final String label;
-    Font         labelFont                = Font.getDefault();
-    boolean      startNewOutlineColumn    = false;
-    boolean      startNewOutlineColumnSet = false;
-    float        tableColumnWidth         = 0;
-    boolean      useVerticalTableHeader   = false;
-
-    boolean      variableLength           = false;
+    Font         labelFont          = Font.getDefault();
+    float        tableColumnWidth   = 0;
+    boolean      variableLength     = false;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -94,12 +90,36 @@ abstract public class SchemaNode {
 
     abstract public Control buildControl();
 
+    public int getAverageCardinality() {
+        return averageCardinality;
+    }
+
     public String getField() {
         return field;
     }
 
     public String getLabel() {
         return label;
+    }
+
+    public float getTableColumnWidth() {
+        return tableColumnWidth;
+    }
+
+    public boolean isVariableLength() {
+        return variableLength;
+    }
+
+    public void setAverageCardinality(int averageCardinality) {
+        this.averageCardinality = averageCardinality;
+    }
+
+    public void setTableColumnWidth(float tableColumnWidth) {
+        this.tableColumnWidth = tableColumnWidth;
+    }
+
+    public void setVariableLength(boolean variableLength) {
+        this.variableLength = variableLength;
     }
 
     abstract public String toString(int indent);

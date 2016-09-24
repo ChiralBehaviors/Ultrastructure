@@ -38,6 +38,10 @@ public class AutoLayoutView extends Control {
     private Control                              layout;
     private final SimpleObjectProperty<Relation> root = new SimpleObjectProperty<>();
 
+    public AutoLayoutView() {
+        this(null);
+    }
+
     public AutoLayoutView(Relation root) {
         this.root.set(root);
         widthProperty().addListener((o, p, c) -> resize(c.floatValue()));
@@ -50,6 +54,10 @@ public class AutoLayoutView extends Control {
 
     public JsonNode getData() {
         return data.get();
+    }
+
+    public SimpleObjectProperty<Relation> root() {
+        return root;
     }
 
     public Relation getRoot() {
@@ -75,9 +83,11 @@ public class AutoLayoutView extends Control {
     }
 
     private void resize(float width) {
-        Control oldLayout = layout;
-        getChildren().remove(oldLayout);
+        getChildren().clear();
         Relation relation = root.get();
+        if (relation == null) {
+            return;
+        }
         relation.autoLayout((float) width);
         layout = relation.buildControl();
         Relation.setItems(layout, data.get());

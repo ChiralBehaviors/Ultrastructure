@@ -20,26 +20,14 @@
 
 package com.chiralbehaviors.CoRE.ocular;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import com.chiralbehaviors.graphql.layout.AutoLayoutController;
 import com.chiralbehaviors.graphql.layout.AutoLayoutView;
-import com.chiralbehaviors.graphql.layout.Relation;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hellblazer.utils.Utils;
-import com.sun.javafx.webkit.WebConsoleListener;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.concurrent.Worker;
-import javafx.concurrent.Worker.State;
 import javafx.scene.Scene;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import netscape.javascript.JSObject;
 
 /**
  * A class to allow me to explore the autolayout. I hate UIs.
@@ -49,65 +37,19 @@ import netscape.javascript.JSObject;
  */
 public class AutoLayoutExplorer extends Application {
 
-    public class App {
-        public void onEditOperationName(String newOperationName) {
-            System.out.println(String.format("New operation name: %s",
-                                             newOperationName));
-        }
-
-        public void onEditQuery(String newQuery) {
-            System.out.println(String.format("New query: %s", newQuery));
-        }
-
-        public void onEditVariables(String newVariables) {
-            System.out.println(String.format("New variables: %s",
-                                             newVariables));
-        }
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
 
     public void initRootLayout(Stage primaryStage) throws IOException {
-        String input = Utils.getDocument(new FileInputStream("src/test/resources/testQuery.gql"));
-        String source = "films";
-        Relation schema = (Relation) Relation.buildSchema(input, source);
-        JsonNode data = new ObjectMapper().readTree(new FileInputStream("src/test/resources/testQuery.data"));
-        data = data.get("data")
-                   .get(source);
+        String source = "allFilms";
 
-        AutoLayoutView layout = new AutoLayoutView(schema);
+        AutoLayoutView layout = new AutoLayoutView();
 
-        layout.measure(data);
-        layout.setData(data);
+        AutoLayoutController controller = new AutoLayoutController(layout,
+                                                                   source);
 
-        AutoLayoutController controller = new AutoLayoutController(layout);
-        WebEngine webEngine = controller.getEngine();
-        webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
-                                 .toExternalForm());
-        com.sun.javafx.webkit.WebConsoleListener.setDefaultListener(new com.sun.javafx.webkit.WebConsoleListener() {
-            @Override
-            public void messageAdded(WebView webView, String message,
-                                     int lineNumber, String sourceId) {
-                System.out.println("Console: [" + sourceId + ":" + lineNumber
-                                   + "] " + message);
-
-            }
-        });
-
-        webEngine.getLoadWorker()
-                 .stateProperty()
-                 .addListener((ChangeListener<State>) (ov, oldState,
-                                                       newState) -> {
-                     if (newState == Worker.State.SUCCEEDED) {
-                         JSObject jsobj = (JSObject) webEngine.executeScript("window");
-                         jsobj.setMember("app", new App());
-                     }
-                 });
-
-        primaryStage.setTitle(schema.getLabel());
-        Scene scene = new Scene(controller.root, 800, 800);
+        Scene scene = new Scene(controller.getRoot(), 800, 800);
         primaryStage.setScene(scene);
 
         primaryStage.show();

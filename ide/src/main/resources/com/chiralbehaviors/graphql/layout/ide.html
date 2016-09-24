@@ -22,7 +22,7 @@ html, body {
 }
 </style>
 <link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.7.0/graphiql.min.css" />
+	href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.7.1/graphiql.min.css" />
 <script src="http://cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
 <script src="http://cdn.jsdelivr.net/react/15.0.1/react.min.js"></script>
 <script src="http://cdn.jsdelivr.net/react/15.0.1/react-dom.min.js"></script>
@@ -32,25 +32,18 @@ html, body {
 <body>
 	<div id="graphiql">Loading...</div>
 	<script>
-		var parameters = {};
-		var targetURL = "http://graphql-swapi.parseapp.com/";
-
-		function setTargetURL(url) {
-			targetURL = url;
+		function setQuery(newQuery) {
+			app.setQuery(newQuery);
 		}
-
-		function onEditQuery(newQuery) {
-			app.onEditQuery(newQuery);
+		function setVariables(newVariables) {
+			app.setVariables(newVariables);
 		}
-		function onEditVariables(newVariables) {
-			app.onEditVariables(newVariables);
-		}
-		function onEditOperationName(newOperationName) {
-			app.onEditOperationName(newOperationName);
+		function setOperationName(newOperationName) {
+			app.setOperationName(newOperationName);
 		}
 
 		function graphQLFetcher(graphQLParams) {
-			return fetch(targetURL, {
+			return fetch(app.getTargetURL(), {
 				method : 'post',
 				headers : {
 					'Accept' : 'application/json',
@@ -62,6 +55,7 @@ html, body {
 				return response.text();
 			}).then(function(responseBody) {
 				try {
+					app.setData(responseBody)
 					return JSON.parse(responseBody);
 				} catch (error) {
 					return responseBody;
@@ -71,12 +65,12 @@ html, body {
 		// Render <GraphiQL /> into the body.
 		ReactDOM.render(React.createElement(GraphiQL, {
 			fetcher : graphQLFetcher,
-			query : parameters.query,
-			variables : parameters.variables,
-			operationName : parameters.operationName,
-			onEditQuery : onEditQuery,
-			onEditVariables : onEditVariables,
-			onEditOperationName : onEditOperationName
+			query : app.getQuery(),
+			variables : app.getVariables(),
+			operationName : app.getOperationName(),
+			onEditQuery : setQuery,
+			onEditVariables : setVariables,
+			onEditOperationName : setOperationName
 		}), document.getElementById('graphiql'));
 	</script>
 </body>

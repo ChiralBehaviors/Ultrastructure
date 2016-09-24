@@ -21,18 +21,12 @@
 package com.chiralbehaviors.graphql.layout;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
 
 public class GraphiqlController {
     @FXML
-    public TextField         url;
+    public TextField url;
     @FXML
-    public ProgressIndicator loadProgress;
-    @FXML
-    public Button            close;
-    @FXML
-    public WebView           webview;
+    public WebView   webview;
 }

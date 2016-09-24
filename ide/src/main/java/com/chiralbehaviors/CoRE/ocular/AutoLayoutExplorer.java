@@ -29,6 +29,7 @@ import com.chiralbehaviors.graphql.layout.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
+import com.sun.javafx.webkit.WebConsoleListener;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -36,8 +37,9 @@ import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import netscape.javascript.JSObject; 
+import netscape.javascript.JSObject;
 
 /**
  * A class to allow me to explore the autolayout. I hate UIs.
@@ -80,9 +82,20 @@ public class AutoLayoutExplorer extends Application {
         layout.measure(data);
         layout.setData(data);
 
-        AutoLayoutController controller = new AutoLayoutController();
-        controller.masterDetail.setContent(layout);
-        WebEngine webEngine = controller.graphiql.webview.getEngine();
+        AutoLayoutController controller = new AutoLayoutController(layout);
+        WebEngine webEngine = controller.getEngine();
+        webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
+                                 .toExternalForm());
+        com.sun.javafx.webkit.WebConsoleListener.setDefaultListener(new com.sun.javafx.webkit.WebConsoleListener() {
+            @Override
+            public void messageAdded(WebView webView, String message,
+                                     int lineNumber, String sourceId) {
+                System.out.println("Console: [" + sourceId + ":" + lineNumber
+                                   + "] " + message);
+
+            }
+        });
+
         webEngine.getLoadWorker()
                  .stateProperty()
                  .addListener((ChangeListener<State>) (ov, oldState,
@@ -98,12 +111,11 @@ public class AutoLayoutExplorer extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
-        webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
-                       .toExternalForm());
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         initRootLayout(primaryStage);
     }
+
 }

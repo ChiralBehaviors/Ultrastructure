@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
+import com.chiralbehaviors.graphql.layout.TableViewWithVisibleRowCount;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -84,21 +86,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                                       source));
     }
 
-    public static void setItems(Control control, JsonNode item) {
-        if (control instanceof ListView) {
-            @SuppressWarnings("unchecked")
-            ListView<JsonNode> listView = (ListView<JsonNode>) control;
-            listView.setItems(new ObservableListWrapper<>(asList(item)));
-        } else if (control instanceof TableView) {
-            @SuppressWarnings("unchecked")
-            TableView<JsonNode> tableView = (TableView<JsonNode>) control;
-            tableView.setItems(new ObservableListWrapper<>(asList(item)));
-        } else {
-            throw new IllegalArgumentException(String.format("Unknown control %s",
-                                                             control));
-        }
-    }
-
     private static SchemaNode buildSchema(Field parentField) {
         Relation parent = new Relation(parentField.getName());
         for (Selection selection : parentField.getSelectionSet()
@@ -118,10 +105,11 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         return parent;
     }
-    private final List<SchemaNode> children          = new ArrayList<>();
-    private boolean                fold              = false;
-    private float                  outlineLabelWidth = 0;
 
+    private final List<SchemaNode> children          = new ArrayList<>();
+
+    private Relation               fold;
+    private float                  outlineLabelWidth = 0;
     private boolean                useTable          = false;
 
     public Relation(String label) {
@@ -142,6 +130,9 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     public Control buildControl() {
+        if (fold != null) {
+            return fold.buildControl();
+        }
         return useTable ? buildNestedTable() : buildOutline();
     }
 
@@ -150,7 +141,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public boolean isFold() {
-        return fold;
+        return fold != null;
     }
 
     public boolean isUseTable() {
@@ -158,6 +149,10 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public void measure(JsonNode jsonNode) {
+        if (fold != null) {
+            fold.measure(jsonNode);
+            return;
+        }
         if (jsonNode.isArray()) {
             ArrayNode array = (ArrayNode) jsonNode;
             measure(array);
@@ -169,7 +164,35 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public void setFold(boolean fold) {
-        this.fold = fold;
+        this.fold = (fold && children.size() == 1
+                     && children.get(0) instanceof Relation) ? (Relation) children.get(0)
+                                                             : null;
+    }
+
+    public void setItems(Control control, JsonNode data) {
+        if (data == null) {
+            data = JsonNodeFactory.instance.arrayNode();
+        }
+        if (fold != null) {
+            ArrayNode flattened = JsonNodeFactory.instance.arrayNode();
+            data.forEach(node -> {
+                flattened.add(node);
+            });
+            fold.setItems(control, data);
+            return;
+        }
+        if (control instanceof ListView) {
+            @SuppressWarnings("unchecked")
+            ListView<JsonNode> listView = (ListView<JsonNode>) control;
+            listView.setItems(new ObservableListWrapper<>(asList(data)));
+        } else if (control instanceof TableView) {
+            @SuppressWarnings("unchecked")
+            TableView<JsonNode> tableView = (TableView<JsonNode>) control;
+            tableView.setItems(new ObservableListWrapper<>(asList(data)));
+        } else {
+            throw new IllegalArgumentException(String.format("Unknown control %s",
+                                                             control));
+        }
     }
 
     public void setUseTable(boolean useTable) {
@@ -201,6 +224,9 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn() {
+        if (fold != null) {
+            return fold.buildTableColumn();
+        }
         TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
@@ -241,6 +267,10 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     void justify(float width) {
+        if (fold != null) {
+            fold.justify(width);
+            return;
+        }
         if (width <= 0)
             return;
 
@@ -260,6 +290,9 @@ public class Relation extends SchemaNode implements Cloneable {
      */
     @Override
     float layout(float width) {
+        if (fold != null) {
+            return fold.layout(width);
+        }
         useTable = false;
         float available = width - outlineLabelWidth - indentWidth();
         float outlineWidth = children.stream()
@@ -276,6 +309,13 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     float measure(ArrayNode data) {
+        if (fold != null) {
+            ArrayNode flattened = JsonNodeFactory.instance.arrayNode();
+            data.forEach(node -> {
+                flattened.add(node);
+            });
+            return fold.measure(flattened);
+        }
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
@@ -349,6 +389,9 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private TableViewWithVisibleRowCount<JsonNode> buildNestedTable() {
+        if (fold != null) {
+            return fold.buildNestedTable();
+        }
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         columns.add(buildIndentColumn());
@@ -365,6 +408,9 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> buildOutline() {
+        if (fold != null) {
+            return fold.buildOutline();
+        }
         ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
             HBox                        cell     = new HBox(2);

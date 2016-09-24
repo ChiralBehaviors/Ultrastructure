@@ -21,11 +21,11 @@
 package com.chiralbehaviors.graphql.layout;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -44,55 +44,6 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 public class AutoLayoutController {
-    public class DelegatingQueryState implements QueryState {
-        private final QueryState delegate;
-
-        public DelegatingQueryState(QueryState delegate) {
-            this.delegate = delegate;
-        }
-
-        public String getData() {
-            return delegate.getData();
-        }
-
-        public String getOperationName() {
-            return delegate.getOperationName();
-        }
-
-        public String getQuery() {
-            return delegate.getQuery();
-        }
-
-        public String getTargetURL() {
-            return delegate.getTargetURL();
-        }
-
-        public String getVariables() {
-            return delegate.getVariables();
-        }
-
-        public void setData(String data) {
-            delegate.setData(data);
-            setData.accept(data);
-        }
-
-        public void setOperationName(String operationName) {
-            delegate.setOperationName(operationName);
-        }
-
-        public void setQuery(String query) {
-            delegate.setQuery(query);
-        }
-
-        public void setTargetURL(String targetURL) {
-            delegate.setTargetURL(targetURL);
-        }
-
-        public void setVariables(String variables) {
-            delegate.setVariables(variables);
-        }
-
-    }
 
     private static final String DATA   = "data";
     private static final String ERRORS = "errors";
@@ -105,46 +56,47 @@ public class AutoLayoutController {
     private final QueryState    queryState;
     @FXML
     private BorderPane          root;
-    private Consumer<String>    setData;
     @FXML
     private RadioButton         showLayout;
     @FXML
     private RadioButton         showQuery;
     @FXML
     private RadioButton         showSchema;
-    private String              source;
 
-    public AutoLayoutController(AutoLayoutView layout, String source,
-                                QueryState queryState) throws IOException {
-        this.queryState = new DelegatingQueryState(queryState);
-        this.source = source;
+    public AutoLayoutController(QueryState queryState) throws IOException {
+        this.queryState = queryState;
         SchemaView schema = constructSchema();
-        initialize(layout, schema);
+        AutoLayoutView layout = initialize(schema);
         load();
         anchor.getChildren()
               .add(layout);
-
         Node graphiql = constructGraphiql();
-
         showLayout.setSelected(true);
         page.selectedToggleProperty()
             .addListener((o, p, c) -> {
                 anchor.getChildren()
                       .clear();
-                RadioButton chk = (RadioButton) c.getToggleGroup()
-                                                 .getSelectedToggle();
-                if (chk == showLayout) {
+                RadioButton prev = (RadioButton) p;
+                RadioButton current = (RadioButton) c;
+
+                if (prev == showSchema) {
+                    layout.autoLayout();
+                } else if (prev == showQuery) {
+                    setData(layout, schema);
+                }
+
+                if (current == showLayout) {
                     anchor.getChildren()
                           .add(layout);
-                } else if (chk == showSchema) {
+                } else if (current == showSchema) {
                     anchor.getChildren()
                           .add(schema);
-                } else if (chk == showQuery) {
+                } else if (current == showQuery) {
                     anchor.getChildren()
                           .add(graphiql);
                 } else {
                     throw new IllegalStateException(String.format("Invalid radio button: %s",
-                                                                  chk));
+                                                                  current));
                 }
             });
     }
@@ -174,18 +126,13 @@ public class AutoLayoutController {
         return schema;
     }
 
-    private void initialize(AutoLayoutView layout, SchemaView schemaView) {
+    private AutoLayoutView initialize(SchemaView schemaView) {
+        AutoLayoutView layout = new AutoLayoutView();
         AnchorPane.setTopAnchor(layout, 0.0);
         AnchorPane.setLeftAnchor(layout, 0.0);
         AnchorPane.setBottomAnchor(layout, 0.0);
         AnchorPane.setRightAnchor(layout, 0.0);
-        setData = dataString -> {
-            try {
-                setData(layout, schemaView, dataString);
-            } catch (Exception e) {
-                log.error("cannot set data", e);
-            }
-        };
+        return layout;
     }
 
     private void initialize(WebEngine engine) {
@@ -211,27 +158,30 @@ public class AutoLayoutController {
         loader.load();
     }
 
-    private void setData(AutoLayoutView layout, SchemaView schemaView,
-                         String dataString) {
+    private void setData(AutoLayoutView layout, SchemaView schemaView) {
+        if (queryState.getData() == null || queryState.getQuery() == null) {
+            layout.setData(JsonNodeFactory.instance.arrayNode());
+            return;
+        }
         JsonNode data;
         try {
-            data = new ObjectMapper().readTree(dataString);
+            data = new ObjectMapper().readTree(queryState.getData());
         } catch (IOException e) {
-            log.warn("Cannot deserialize json data {}", dataString);
+            log.warn("Cannot deserialize json data {}", queryState.getData());
             layout.setData(JsonNodeFactory.instance.arrayNode());
             return;
         }
 
         if (data.has(ERRORS) || !data.get(DATA)
-                                     .has(source)) {
+                                     .has(queryState.getSource())) {
             layout.setData(JsonNodeFactory.instance.arrayNode());
             return;
         }
         Relation schema = (Relation) Relation.buildSchema(queryState.getQuery(),
-                                                          source);
+                                                          queryState.getSource());
         schemaView.setRoot(schema);
         data = data.get(DATA)
-                   .get(source);
+                   .get(queryState.getSource());
         layout.setRoot(schema);
         layout.measure(data);
         layout.setData(data);

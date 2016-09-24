@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.beans.property.Property;
@@ -64,10 +65,13 @@ public class AutoLayoutView extends Control {
         return root.get();
     }
 
+    public void autoLayout() {
+        resize(getWidth());
+    }
+
     public void measure(JsonNode data) {
         Relation relation = root.get();
         relation.measure(data);
-        resize((float) getWidth());
     }
 
     public Property<Relation> rootProperty() {
@@ -82,7 +86,7 @@ public class AutoLayoutView extends Control {
         root.set(rootRelationship);
     }
 
-    private void resize(float width) {
+    private void resize(double width) {
         getChildren().clear();
         Relation relation = root.get();
         if (relation == null) {
@@ -90,7 +94,7 @@ public class AutoLayoutView extends Control {
         }
         relation.autoLayout((float) width);
         layout = relation.buildControl();
-        Relation.setItems(layout, data.get());
+        relation.setItems(layout, data.get());
         AnchorPane.setTopAnchor(layout, 0.0);
         AnchorPane.setLeftAnchor(layout, 0.0);
         AnchorPane.setRightAnchor(layout, 0.0);
@@ -100,7 +104,10 @@ public class AutoLayoutView extends Control {
 
     private void setContent() {
         if (layout != null) {
-            Relation.setItems(layout, data.get());
+            Relation relation = root.get();
+            if (relation != null) {
+                relation.setItems(layout, data.get());
+            }
         }
     }
 

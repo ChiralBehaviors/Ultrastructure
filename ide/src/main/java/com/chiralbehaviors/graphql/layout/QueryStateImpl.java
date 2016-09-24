@@ -24,14 +24,15 @@ public class QueryStateImpl implements QueryState {
     private String data;
     private String operationName;
     private String query;
+    private String source;
     private String targetURL;
+
     private String variables;
 
     @Override
     public String getData() {
         return data;
     }
-
     @Override
     public String getOperationName() {
         return operationName;
@@ -40,6 +41,11 @@ public class QueryStateImpl implements QueryState {
     @Override
     public String getQuery() {
         return query;
+    }
+
+    @Override
+    public String getSource() {
+        return source;
     }
 
     @Override
@@ -65,6 +71,11 @@ public class QueryStateImpl implements QueryState {
     @Override
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    @Override
+    public void setSource(String source) {
+        this.source = source;
     }
 
     @Override

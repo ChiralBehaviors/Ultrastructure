@@ -22,24 +22,28 @@ package com.chiralbehaviors.graphql.layout;
 
 public interface QueryState {
 
-    void setVariables(String variables);
-
-    void setTargetURL(String targetURL);
-
-    void setQuery(String query);
-
-    void setOperationName(String operationName);
-
-    void setData(String data);
-
-    String getVariables();
-
-    String getTargetURL();
-
-    String getQuery();
+    String getData();
 
     String getOperationName();
 
-    String getData();
+    String getQuery();
+
+    String getSource();
+
+    String getTargetURL();
+
+    String getVariables();
+
+    void setData(String data);
+
+    void setOperationName(String operationName);
+
+    void setQuery(String query);
+
+    void setSource(String source);
+
+    void setTargetURL(String targetURL);
+
+    void setVariables(String variables);
 
 }

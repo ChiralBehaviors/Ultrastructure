@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.graphql.layout.Relation;
-import com.chiralbehaviors.graphql.layout.SchemaNode;
+import com.chiralbehaviors.graphql.layout.schema.Relation;
+import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;

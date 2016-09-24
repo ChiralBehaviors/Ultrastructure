@@ -22,6 +22,8 @@ package com.chiralbehaviors.graphql.layout;
 
 import org.controlsfx.control.CheckTreeView;
 
+import com.chiralbehaviors.graphql.layout.schema.Relation;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.CheckBoxTreeItem;
@@ -59,13 +61,13 @@ public class SchemaView extends Control {
     }
 
     private CheckBoxTreeItem<String> buildItem(Relation node) {
-        final CheckBoxTreeItem<String> item = new CheckBoxTreeItem<String>(node.label);
+        final CheckBoxTreeItem<String> item = new CheckBoxTreeItem<String>(node.getLabel());
         item.setExpanded(true);
         item.setIndependent(true);
         item.setSelected(!node.isFold());
-        item.independentProperty()
+        item.selectedProperty()
             .addListener((o, p, c) -> {
-                node.setFold(c);
+                node.setFold(!c);
             });
         node.getChildren()
             .stream()

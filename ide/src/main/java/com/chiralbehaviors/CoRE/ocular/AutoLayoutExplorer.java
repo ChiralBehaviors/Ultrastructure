@@ -81,20 +81,16 @@ public class AutoLayoutExplorer extends Application {
         layout.setData(data);
 
         AutoLayoutController controller = new AutoLayoutController();
-        controller.masterDetail.setMasterNode(layout);
+        controller.masterDetail.setContent(layout);
         WebEngine webEngine = controller.graphiql.webview.getEngine();
-        webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
-                                 .toExternalForm());
         webEngine.getLoadWorker()
                  .stateProperty()
                  .addListener((ChangeListener<State>) (ov, oldState,
                                                        newState) -> {
-
                      if (newState == Worker.State.SUCCEEDED) {
                          JSObject jsobj = (JSObject) webEngine.executeScript("window");
                          jsobj.setMember("app", new App());
                      }
-
                  });
 
         primaryStage.setTitle(schema.getLabel());
@@ -102,6 +98,8 @@ public class AutoLayoutExplorer extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+        webEngine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
+                       .toExternalForm());
     }
 
     @Override

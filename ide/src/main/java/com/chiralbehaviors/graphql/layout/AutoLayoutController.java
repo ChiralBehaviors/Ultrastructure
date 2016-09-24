@@ -2,13 +2,13 @@ package com.chiralbehaviors.graphql.layout;
 
 import java.io.IOException;
 
-import org.controlsfx.control.MasterDetailPane;
+import org.controlsfx.control.HiddenSidesPane;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 public class AutoLayoutController {
@@ -16,7 +16,7 @@ public class AutoLayoutController {
     public Button             edit;
     public GraphiqlController graphiql;
     @FXML
-    public MasterDetailPane   masterDetail;
+    public HiddenSidesPane   masterDetail;
     @FXML
     public Button             refresh;
     @FXML
@@ -33,14 +33,9 @@ public class AutoLayoutController {
         loader = new FXMLLoader(getClass().getResource("/com/chiralbehaviors/graphql/layout/graphiql.fxml"));
         Node detail = loader.load();
         graphiql = loader.getController();
-
-        AnchorPane.setTopAnchor(graphiql.webview, 0.0);
-        AnchorPane.setLeftAnchor(graphiql.webview, 0.0);
-        AnchorPane.setRightAnchor(graphiql.webview, 0.0);
-        AnchorPane.setBottomAnchor(graphiql.webview, 0.0);
-        masterDetail.setDetailNode(detail);
+        masterDetail.setTop(detail);
         
-        edit.setOnAction(e -> masterDetail.setShowDetailNode(true));
-        graphiql.close.setOnAction(e -> masterDetail.setShowDetailNode(false));
+        edit.setOnAction(e -> masterDetail.setPinnedSide(Side.TOP));
+        graphiql.close.setOnAction(e -> masterDetail.setPinnedSide(null));
     }
 }

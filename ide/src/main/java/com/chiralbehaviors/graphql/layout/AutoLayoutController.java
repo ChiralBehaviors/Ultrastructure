@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
+ * 
+ 
+ *  This file is part of Ultrastructure.
+ *
+ *  Ultrastructure is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ULtrastructure is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.chiralbehaviors.graphql.layout;
 
 import java.io.IOException;
@@ -24,65 +44,65 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 public class AutoLayoutController {
-    private static final String ERRORS = "errors";
-    private static final String DATA   = "data";
-    private static final Logger log    = LoggerFactory.getLogger(AutoLayoutController.class);
+    public class DelegatingQueryState implements QueryState {
+        private final QueryState delegate;
 
-    public class GraphiqlState {
-        private String data;
-        private String operationName;
-        private String query;
-        private String targetURL = "http://graphql-swapi.parseapp.com/";
-        private String variables;
+        public DelegatingQueryState(QueryState delegate) {
+            this.delegate = delegate;
+        }
 
         public String getData() {
-            return data;
+            return delegate.getData();
         }
 
         public String getOperationName() {
-            return operationName;
+            return delegate.getOperationName();
         }
 
         public String getQuery() {
-            return query;
+            return delegate.getQuery();
         }
 
         public String getTargetURL() {
-            return targetURL;
+            return delegate.getTargetURL();
         }
 
         public String getVariables() {
-            return variables;
+            return delegate.getVariables();
         }
 
         public void setData(String data) {
-            this.data = data;
+            delegate.setData(data);
             setData.accept(data);
         }
 
         public void setOperationName(String operationName) {
-            this.operationName = operationName;
+            delegate.setOperationName(operationName);
         }
 
         public void setQuery(String query) {
-            this.query = query;
+            delegate.setQuery(query);
         }
 
         public void setTargetURL(String targetURL) {
-            this.targetURL = targetURL;
+            delegate.setTargetURL(targetURL);
         }
 
         public void setVariables(String variables) {
-            this.variables = variables;
+            delegate.setVariables(variables);
         }
 
     }
+
+    private static final String DATA   = "data";
+    private static final String ERRORS = "errors";
+    private static final Logger log    = LoggerFactory.getLogger(AutoLayoutController.class);
 
     @FXML
     ToggleGroup                 page;
     @FXML
     private AnchorPane          anchor;
-    private final GraphiqlState queryState = new GraphiqlState();
+    private final QueryState    queryState;
     @FXML
     private BorderPane          root;
     private Consumer<String>    setData;
@@ -94,8 +114,9 @@ public class AutoLayoutController {
     private RadioButton         showSchema;
     private String              source;
 
-    public AutoLayoutController(AutoLayoutView layout,
-                                String source) throws IOException {
+    public AutoLayoutController(AutoLayoutView layout, String source,
+                                QueryState queryState) throws IOException {
+        this.queryState = new DelegatingQueryState(queryState);
         this.source = source;
         SchemaView schema = constructSchema();
         initialize(layout, schema);
@@ -167,31 +188,6 @@ public class AutoLayoutController {
         };
     }
 
-    private void setData(AutoLayoutView layout, SchemaView schemaView,
-                         String dataString) {
-        JsonNode data;
-        try {
-            data = new ObjectMapper().readTree(dataString);
-        } catch (IOException e) {
-            log.warn("Cannot deserialize json data {}", dataString);
-            layout.setData(JsonNodeFactory.instance.arrayNode());
-            return;
-        }
-
-        if (data.has(ERRORS) || !data.get(DATA)
-                                     .has(source)) {
-            layout.setData(JsonNodeFactory.instance.arrayNode());
-            return;
-        }
-        Relation schema = (Relation) Relation.buildSchema(queryState.getQuery(),
-                                                          source);
-        schemaView.setRoot(schema);
-        data = data.get(DATA).get(source);
-        layout.setRoot(schema);
-        layout.measure(data);
-        layout.setData(data);
-    }
-
     private void initialize(WebEngine engine) {
         WebConsoleListener.setDefaultListener(new WebConsoleListener() {
             @Override
@@ -213,5 +209,31 @@ public class AutoLayoutController {
         loader.setController(this);
         loader.setLocation(getClass().getResource("/com/chiralbehaviors/graphql/layout/autolayout.fxml"));
         loader.load();
+    }
+
+    private void setData(AutoLayoutView layout, SchemaView schemaView,
+                         String dataString) {
+        JsonNode data;
+        try {
+            data = new ObjectMapper().readTree(dataString);
+        } catch (IOException e) {
+            log.warn("Cannot deserialize json data {}", dataString);
+            layout.setData(JsonNodeFactory.instance.arrayNode());
+            return;
+        }
+
+        if (data.has(ERRORS) || !data.get(DATA)
+                                     .has(source)) {
+            layout.setData(JsonNodeFactory.instance.arrayNode());
+            return;
+        }
+        Relation schema = (Relation) Relation.buildSchema(queryState.getQuery(),
+                                                          source);
+        schemaView.setRoot(schema);
+        data = data.get(DATA)
+                   .get(source);
+        layout.setRoot(schema);
+        layout.measure(data);
+        layout.setData(data);
     }
 }

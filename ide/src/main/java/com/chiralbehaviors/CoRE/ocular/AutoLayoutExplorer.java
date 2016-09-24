@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import com.chiralbehaviors.graphql.layout.AutoLayoutController;
 import com.chiralbehaviors.graphql.layout.AutoLayoutView;
+import com.chiralbehaviors.graphql.layout.QueryStateImpl;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -46,8 +47,12 @@ public class AutoLayoutExplorer extends Application {
 
         AutoLayoutView layout = new AutoLayoutView();
 
+        QueryStateImpl queryState = new QueryStateImpl();
+        queryState.setTargetURL("http://graphql-swapi.parseapp.com/");
+        queryState.setQuery("{allFilms { films { title } } }");
         AutoLayoutController controller = new AutoLayoutController(layout,
-                                                                   source);
+                                                                   source,
+                                                                   queryState);
 
         Scene scene = new Scene(controller.getRoot(), 800, 800);
         primaryStage.setScene(scene);

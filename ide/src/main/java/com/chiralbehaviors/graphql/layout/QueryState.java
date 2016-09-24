@@ -20,11 +20,26 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import javafx.scene.control.SkinBase;
+public interface QueryState {
 
-public class SchemaViewSkin extends SkinBase<SchemaView> {
+    void setVariables(String variables);
 
-    protected SchemaViewSkin(SchemaView control) {
-        super(control);
-    }
+    void setTargetURL(String targetURL);
+
+    void setQuery(String query);
+
+    void setOperationName(String operationName);
+
+    void setData(String data);
+
+    String getVariables();
+
+    String getTargetURL();
+
+    String getQuery();
+
+    String getOperationName();
+
+    String getData();
+
 }

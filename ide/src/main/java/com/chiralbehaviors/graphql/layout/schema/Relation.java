@@ -145,6 +145,9 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public boolean isUseTable() {
+        if (fold != null) {
+            return fold.isUseTable();
+        }
         return useTable;
     }
 
@@ -336,7 +339,7 @@ public class Relation extends SchemaNode implements Cloneable {
             }
             sum += Math.round(cardSum / data.size()) + 1;
             tableColumnWidth += child.measure(aggregate);
-            variableLength |= child.variableLength;
+            variableLength |= child.isVariableLength();
         }
         averageCardinality = Math.round(sum / children.size()) + 1;
         justifiedWidth = tableColumnWidth;
@@ -465,7 +468,7 @@ public class Relation extends SchemaNode implements Cloneable {
             float tableWidth = width - indentWidth() - SCROLL_WIDTH;
             children.forEach(child -> {
                 if (child instanceof Relation) {
-                    if (((Relation) child).useTable) {
+                    if (((Relation) child).isUseTable()) {
                         child.justify(available);
                     } else {
                         child.justify(tableWidth);
@@ -483,16 +486,24 @@ public class Relation extends SchemaNode implements Cloneable {
         assert slack >= 0 : String.format("Negative slack: %.2f (%.2f) \n%s",
                                           slack, width, this);
         float total = children.stream()
-                              .filter(child -> child.variableLength)
-                              .map(child -> child.tableColumnWidth)
+                              .filter(child -> child.isVariableLength())
+                              .map(child -> child.getTableColumnWidth())
                               .reduce((a, b) -> a + b)
                               .orElse(0.0f);
         children.stream()
-                .filter(child -> child.variableLength)
+                .filter(child -> child.isVariableLength())
                 .forEach(child -> child.justify(slack
-                                                * (child.tableColumnWidth
+                                                * (child.getTableColumnWidth()
                                                    / total)
-                                                + child.tableColumnWidth));
+                                                + child.getTableColumnWidth()));
+    }
+
+    @Override
+    public float getTableColumnWidth() {
+        if (fold != null) {
+            return fold.getTableColumnWidth();
+        }
+        return super.getTableColumnWidth();
     }
 
     private void nestTables() {
@@ -502,5 +513,13 @@ public class Relation extends SchemaNode implements Cloneable {
                 ((Relation) child).nestTables();
             }
         });
+    }
+
+    @Override
+    public boolean isVariableLength() {
+        if (fold != null) {
+            return fold.isVariableLength();
+        }
+        return super.isVariableLength();
     }
 }

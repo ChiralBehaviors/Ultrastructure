@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
@@ -57,6 +58,16 @@ abstract public class SchemaNode {
     static final String INDENT         = " * ";
 
     static final String INDENT_MEASURE = "****";
+
+    public static ArrayNode asArray(JsonNode node) {
+        if (node.isArray()) {
+            return (ArrayNode) node;
+        }
+
+        ArrayNode array = JsonNodeFactory.instance.arrayNode();
+        array.add(node);
+        return array;
+    }
 
     public static List<JsonNode> asList(JsonNode jsonNode) {
         List<JsonNode> nodes = new ArrayList<>();
@@ -104,6 +115,10 @@ abstract public class SchemaNode {
 
     public float getTableColumnWidth() {
         return tableColumnWidth;
+    }
+
+    public boolean isRelation() { 
+        return false;
     }
 
     public boolean isVariableLength() {

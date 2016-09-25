@@ -26,8 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.graphql.layout.schema.Relation;
+import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.webkit.WebConsoleListener;
 
@@ -44,18 +46,32 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 public class AutoLayoutController {
+    public class ActiveState extends QueryState {
+        public ActiveState() {
+            super();
+        }
 
-    private static final String DATA   = "data";
-    private static final String ERRORS = "errors";
-    private static final Logger log    = LoggerFactory.getLogger(AutoLayoutController.class);
+        @Override
+        public void setData(String data) {
+            super.setData(data);
+            setQueryState(new QueryState(this));
+        }
+    }
 
-    @FXML
-    ToggleGroup                 page;
+    private static final String DATA        = "data";
+    private static final String ERRORS      = "errors";
+    private static final Logger log         = LoggerFactory.getLogger(AutoLayoutController.class);
+
+    private final ActiveState   activeQuery = new ActiveState();
     @FXML
     private AnchorPane          anchor;
-    private final QueryState    queryState;
+    private AutoLayoutView      layout;
+    @FXML
+    private ToggleGroup         page;
+    private QueryState          queryState;
     @FXML
     private BorderPane          root;
+    private SchemaView          schemaView;
     @FXML
     private RadioButton         showLayout;
     @FXML
@@ -64,9 +80,9 @@ public class AutoLayoutController {
     private RadioButton         showSchema;
 
     public AutoLayoutController(QueryState queryState) throws IOException {
+        initialize();
+        this.activeQuery.initializeFrom(queryState);
         this.queryState = queryState;
-        SchemaView schema = constructSchema();
-        AutoLayoutView layout = initialize(schema);
         load();
         anchor.getChildren()
               .add(layout);
@@ -81,8 +97,6 @@ public class AutoLayoutController {
 
                 if (prev == showSchema) {
                     layout.autoLayout();
-                } else if (prev == showQuery) {
-                    setData(layout, schema);
                 }
 
                 if (current == showLayout) {
@@ -90,7 +104,7 @@ public class AutoLayoutController {
                           .add(layout);
                 } else if (current == showSchema) {
                     anchor.getChildren()
-                          .add(schema);
+                          .add(schemaView);
                 } else if (current == showQuery) {
                     anchor.getChildren()
                           .add(graphiql);
@@ -105,6 +119,40 @@ public class AutoLayoutController {
         return root;
     }
 
+    public void setQueryState(QueryState state) {
+        String previousDataString = queryState.getData();
+        String oldQuery = queryState.getQuery();
+        if (state == null) {
+            state = new QueryState();
+        }
+        if (queryState.equals(state)) {
+            return;
+        }
+        queryState = state;
+        if (previousDataString == state.getData()) {
+            return;
+        }
+        JsonNode data;
+        try {
+            data = new ObjectMapper().readTree(queryState.getData());
+        } catch (IOException e) {
+            log.warn("Cannot deserialize json data {}", queryState.getData());
+            data = JsonNodeFactory.instance.arrayNode();
+        }
+
+        if (data.has(ERRORS) || !data.get(DATA)
+                                     .has(queryState.getSource())) {
+            queryState.setData(null);
+            data = JsonNodeFactory.instance.arrayNode();
+        } else {
+            data = data.get(DATA)
+                       .get(queryState.getSource());
+        }
+        setData(data != null ? SchemaNode.asArray(data)
+                             : JsonNodeFactory.instance.arrayNode(),
+                isNewQuery(oldQuery));
+    }
+
     private Node constructGraphiql() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/chiralbehaviors/graphql/layout/graphiql.fxml"));
         Node graphiql = loader.load();
@@ -117,22 +165,18 @@ public class AutoLayoutController {
         return graphiql;
     }
 
-    private SchemaView constructSchema() {
-        SchemaView schema = new SchemaView();
-        AnchorPane.setTopAnchor(schema, 0.0);
-        AnchorPane.setLeftAnchor(schema, 0.0);
-        AnchorPane.setBottomAnchor(schema, 0.0);
-        AnchorPane.setRightAnchor(schema, 0.0);
-        return schema;
-    }
-
-    private AutoLayoutView initialize(SchemaView schemaView) {
-        AutoLayoutView layout = new AutoLayoutView();
+    private void initialize() {
+        layout = new AutoLayoutView();
         AnchorPane.setTopAnchor(layout, 0.0);
         AnchorPane.setLeftAnchor(layout, 0.0);
         AnchorPane.setBottomAnchor(layout, 0.0);
         AnchorPane.setRightAnchor(layout, 0.0);
-        return layout;
+
+        schemaView = new SchemaView();
+        AnchorPane.setTopAnchor(schemaView, 0.0);
+        AnchorPane.setLeftAnchor(schemaView, 0.0);
+        AnchorPane.setBottomAnchor(schemaView, 0.0);
+        AnchorPane.setRightAnchor(schemaView, 0.0);
     }
 
     private void initialize(WebEngine engine) {
@@ -146,9 +190,18 @@ public class AutoLayoutController {
             }
         });
         JSObject jsobj = (JSObject) engine.executeScript("window");
-        jsobj.setMember("app", queryState);
+        jsobj.setMember("app", activeQuery);
         engine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
                               .toExternalForm());
+    }
+
+    private boolean isNewQuery(String oldQuery) {
+        if (queryState.getQuery() == null) {
+            return oldQuery != null;
+        }
+
+        return queryState.getQuery()
+                         .equals(oldQuery);
     }
 
     private void load() throws IOException {
@@ -158,32 +211,15 @@ public class AutoLayoutController {
         loader.load();
     }
 
-    private void setData(AutoLayoutView layout, SchemaView schemaView) {
-        if (queryState.getData() == null || queryState.getQuery() == null) {
-            layout.setData(JsonNodeFactory.instance.arrayNode());
-            return;
-        }
-        JsonNode data;
-        try {
-            data = new ObjectMapper().readTree(queryState.getData());
-        } catch (IOException e) {
-            log.warn("Cannot deserialize json data {}", queryState.getData());
-            layout.setData(JsonNodeFactory.instance.arrayNode());
-            return;
-        }
+    private void setData(ArrayNode data, boolean newQuery) {
+        assert data != null;
 
-        if (data.has(ERRORS) || !data.get(DATA)
-                                     .has(queryState.getSource())) {
-            layout.setData(JsonNodeFactory.instance.arrayNode());
-            return;
-        }
         Relation schema = (Relation) Relation.buildSchema(queryState.getQuery(),
                                                           queryState.getSource());
         schemaView.setRoot(schema);
-        data = data.get(DATA)
-                   .get(queryState.getSource());
         layout.setRoot(schema);
         layout.measure(data);
         layout.setData(data);
+        layout.autoLayout();
     }
 }

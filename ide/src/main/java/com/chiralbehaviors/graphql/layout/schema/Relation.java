@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
 import com.chiralbehaviors.graphql.layout.TableViewWithVisibleRowCount;
@@ -107,9 +108,9 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private final List<SchemaNode> children          = new ArrayList<>();
-
     private Relation               fold;
     private float                  outlineLabelWidth = 0;
+
     private boolean                useTable          = false;
 
     public Relation(String label) {
@@ -130,7 +131,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     public Control buildControl() {
-        if (fold != null) {
+        if (isFold()) {
             return fold.buildControl();
         }
         return useTable ? buildNestedTable() : buildOutline();
@@ -140,20 +141,41 @@ public class Relation extends SchemaNode implements Cloneable {
         return children;
     }
 
+    @Override
+    public float getTableColumnWidth() {
+        if (isFold()) {
+            return fold.getTableColumnWidth();
+        }
+        return super.getTableColumnWidth();
+    }
+
     public boolean isFold() {
         return fold != null;
     }
 
+    @Override
+    public boolean isRelation() {
+        return true;
+    }
+
     public boolean isUseTable() {
-        if (fold != null) {
+        if (isFold()) {
             return fold.isUseTable();
         }
         return useTable;
     }
 
+    @Override
+    public boolean isVariableLength() {
+        if (isFold()) {
+            return fold.isVariableLength();
+        }
+        return super.isVariableLength();
+    }
+
     public void measure(JsonNode jsonNode) {
-        if (fold != null) {
-            fold.measure(jsonNode);
+        if (isFold()) {
+            fold.measure(flatten(jsonNode));
             return;
         }
         if (jsonNode.isArray()) {
@@ -167,21 +189,17 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public void setFold(boolean fold) {
-        this.fold = (fold && children.size() == 1
-                     && children.get(0) instanceof Relation) ? (Relation) children.get(0)
-                                                             : null;
+        this.fold = (fold && children.size() == 1 && children.get(0)
+                                                             .isRelation()) ? (Relation) children.get(0)
+                                                                            : null;
     }
 
     public void setItems(Control control, JsonNode data) {
         if (data == null) {
             data = JsonNodeFactory.instance.arrayNode();
         }
-        if (fold != null) {
-            ArrayNode flattened = JsonNodeFactory.instance.arrayNode();
-            data.forEach(node -> {
-                flattened.add(node);
-            });
-            fold.setItems(control, data);
+        if (isFold()) {
+            fold.setItems(control, flatten(data));
             return;
         }
         if (control instanceof ListView) {
@@ -227,7 +245,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn() {
-        if (fold != null) {
+        if (isFold()) {
             return fold.buildTableColumn();
         }
         TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
@@ -270,7 +288,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     void justify(float width) {
-        if (fold != null) {
+        if (isFold()) {
             fold.justify(width);
             return;
         }
@@ -293,7 +311,7 @@ public class Relation extends SchemaNode implements Cloneable {
      */
     @Override
     float layout(float width) {
-        if (fold != null) {
+        if (isFold()) {
             return fold.layout(width);
         }
         useTable = false;
@@ -312,12 +330,8 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     float measure(ArrayNode data) {
-        if (fold != null) {
-            ArrayNode flattened = JsonNodeFactory.instance.arrayNode();
-            data.forEach(node -> {
-                flattened.add(node);
-            });
-            return fold.measure(flattened);
+        if (isFold()) {
+            return fold.measure(flatten(data));
         }
         if (data.isNull() || children.size() == 0) {
             return 0;
@@ -392,7 +406,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private TableViewWithVisibleRowCount<JsonNode> buildNestedTable() {
-        if (fold != null) {
+        if (isFold()) {
             return fold.buildNestedTable();
         }
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
@@ -411,7 +425,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> buildOutline() {
-        if (fold != null) {
+        if (isFold()) {
             return fold.buildOutline();
         }
         ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
@@ -460,6 +474,20 @@ public class Relation extends SchemaNode implements Cloneable {
         return list;
     }
 
+    private ArrayNode flatten(JsonNode data) {
+        ArrayNode flattened = JsonNodeFactory.instance.arrayNode();
+        if (data != null) {
+            if (data.isArray()) {
+                data.forEach(item -> {
+                    flattened.addAll(asArray(item.get(fold.getField())));
+                });
+            } else {
+                flattened.addAll(asArray(data.get(fold.getField())));
+            }
+        }
+        return flattened;
+    }
+
     private void justifyOutline(float width) {
         if (variableLength) {
             justifiedWidth = width;
@@ -467,7 +495,7 @@ public class Relation extends SchemaNode implements Cloneable {
                               - SCROLL_WIDTH;
             float tableWidth = width - indentWidth() - SCROLL_WIDTH;
             children.forEach(child -> {
-                if (child instanceof Relation) {
+                if (child.isRelation()) {
                     if (((Relation) child).isUseTable()) {
                         child.justify(available);
                     } else {
@@ -498,28 +526,12 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    @Override
-    public float getTableColumnWidth() {
-        if (fold != null) {
-            return fold.getTableColumnWidth();
-        }
-        return super.getTableColumnWidth();
-    }
-
     private void nestTables() {
         useTable = true;
         children.forEach(child -> {
-            if (child instanceof Relation) {
+            if (child.isRelation()) {
                 ((Relation) child).nestTables();
             }
         });
-    }
-
-    @Override
-    public boolean isVariableLength() {
-        if (fold != null) {
-            return fold.isVariableLength();
-        }
-        return super.isVariableLength();
     }
 }

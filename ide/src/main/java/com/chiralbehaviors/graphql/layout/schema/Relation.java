@@ -245,45 +245,10 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn() {
-        if (isFold()) {
-            return fold.buildTableColumn();
-        }
-        TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
-        column.setMinWidth(justifiedWidth);
-        column.setMaxWidth(justifiedWidth);
-        //        column.setPrefWidth(justifiedWidth);
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
-        column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
-            @Override
-            protected List<JsonNode> computeValue() {
-                return asList(cellData.getValue()
-                                      .get(field));
-            }
-        });
-        column.setCellFactory(c -> new TableCell<JsonNode, List<JsonNode>>() {
-            TableView<JsonNode> table = buildNestedTable();
+        return isFold() ? fold.buildTableColumn(n -> n == null ? null
+                                                               : n.get(field))
+                        : buildTableColumn(n -> n);
 
-            @Override
-            protected void updateItem(List<JsonNode> item, boolean empty) {
-                if (item == getItem()) {
-                    return;
-                }
-                super.updateItem(item, empty);
-                super.setText(null);
-                if (empty) {
-                    super.setGraphic(null);
-                    return;
-                }
-                item = item == null ? Collections.emptyList() : item;
-                table.setItems(new ObservableListWrapper<>(item));
-                super.setGraphic(table);
-                if (item.isEmpty()) {
-
-                }
-            }
-        });
-        return column;
     }
 
     @Override
@@ -472,6 +437,48 @@ public class Relation extends SchemaNode implements Cloneable {
         list.getProperties()
             .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;
+    }
+
+    private TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor) {
+        TableColumn<JsonNode, List<JsonNode>> column = new TableColumn<>(label);
+        column.setMinWidth(justifiedWidth);
+        column.setMaxWidth(justifiedWidth);
+        //        column.setPrefWidth(justifiedWidth);
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
+        column.setCellValueFactory(cellData -> new ObjectBinding<List<JsonNode>>() {
+            @Override
+            protected List<JsonNode> computeValue() {
+                if (cellData.getValue() == null) {
+                    return Collections.emptyList();
+                }
+                return asList(extractor.apply(cellData.getValue()
+                                                      .get(field)));
+            }
+        });
+        column.setCellFactory(c -> new TableCell<JsonNode, List<JsonNode>>() {
+            TableView<JsonNode> table = buildNestedTable();
+
+            @Override
+            protected void updateItem(List<JsonNode> item, boolean empty) {
+                if (item == getItem()) {
+                    return;
+                }
+                super.updateItem(item, empty);
+                super.setText(null);
+                if (empty) {
+                    super.setGraphic(null);
+                    return;
+                }
+                item = item == null ? Collections.emptyList() : item;
+                table.setItems(new ObservableListWrapper<>(item));
+                super.setGraphic(table);
+                if (item.isEmpty()) {
+
+                }
+            }
+        });
+        return column;
     }
 
     private ArrayNode flatten(JsonNode data) {

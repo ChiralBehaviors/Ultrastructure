@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -143,7 +144,7 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, ?> buildTableColumn();
+    abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor);
 
     void incrementNesting() {
         // noop

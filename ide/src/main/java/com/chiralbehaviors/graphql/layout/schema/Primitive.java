@@ -21,6 +21,7 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -73,7 +74,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, ?> buildTableColumn() {
+    TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
@@ -82,8 +83,8 @@ public class Primitive extends SchemaNode {
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
-                return cellData.getValue()
-                               .get(field);
+                return extractor.apply(cellData.getValue()
+                                               .get(field));
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {

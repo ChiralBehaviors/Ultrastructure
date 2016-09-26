@@ -351,7 +351,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     cardSum += 1;
                 }
             }
-            sum += Math.round(cardSum / data.size()) + 1;
+            sum += data.size() == 0 ? 0 : Math.round(cardSum / data.size()) + 1;
             tableColumnWidth += child.measure(aggregate);
             variableLength |= child.isVariableLength();
         }

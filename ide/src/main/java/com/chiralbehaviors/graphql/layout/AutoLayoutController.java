@@ -54,7 +54,11 @@ public class AutoLayoutController {
         @Override
         public void setData(String data) {
             super.setData(data);
-            setQueryState(new QueryState(this));
+            try {
+                setQueryState(new QueryState(this));
+            } catch (Exception e) {
+                log.error("unable to set query state", e);
+            }
         }
     }
 
@@ -217,7 +221,9 @@ public class AutoLayoutController {
 
     private void setData(ArrayNode data, boolean newQuery) {
         assert data != null;
-
+        if (queryState.getQuery() == null) {
+            return;
+        }
         Relation schema = (Relation) Relation.buildSchema(queryState.getQuery(),
                                                           queryState.getSource());
         schemaView.setRoot(schema);

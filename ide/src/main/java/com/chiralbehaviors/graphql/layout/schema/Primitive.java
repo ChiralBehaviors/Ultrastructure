@@ -129,7 +129,7 @@ public class Primitive extends SchemaNode {
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
-        averageCardinality = Math.max(1, cardSum / data.size());
+        averageCardinality = data.size() == 0 ? 0 : Math.max(1, cardSum / data.size());
         float averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {

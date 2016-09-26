@@ -241,7 +241,6 @@ public class Relation extends SchemaNode implements Cloneable {
     @Override
     TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor) {
         if (isFold()) {
-            //            return fold.buildTableColumn(extractor);
             return fold.buildTableColumn(n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
@@ -265,7 +264,7 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            Control table = buildNestedTable(extractor);
+            Control table = buildNestedTable(n -> n);
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {

@@ -129,7 +129,6 @@ public class AutoLayoutController {
 
     public void setQueryState(QueryState state) {
         String previousDataString = queryState.getData();
-        String oldQuery = queryState.getQuery();
         if (state == null) {
             state = new QueryState();
         }
@@ -156,9 +155,7 @@ public class AutoLayoutController {
             data = data.get(DATA)
                        .get(queryState.getSource());
         }
-        setData(data != null ? SchemaNode.asArray(data)
-                             : JsonNodeFactory.instance.arrayNode(),
-                isNewQuery(oldQuery));
+        setData(SchemaNode.asArray(data));
     }
 
     private Node constructGraphiql() throws IOException {
@@ -203,15 +200,6 @@ public class AutoLayoutController {
                               .toExternalForm());
     }
 
-    private boolean isNewQuery(String oldQuery) {
-        if (queryState.getQuery() == null) {
-            return oldQuery != null;
-        }
-
-        return queryState.getQuery()
-                         .equals(oldQuery);
-    }
-
     private void load() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setController(this);
@@ -219,7 +207,7 @@ public class AutoLayoutController {
         loader.load();
     }
 
-    private void setData(ArrayNode data, boolean newQuery) {
+    private void setData(ArrayNode data) {
         assert data != null;
         if (queryState.getQuery() == null) {
             return;

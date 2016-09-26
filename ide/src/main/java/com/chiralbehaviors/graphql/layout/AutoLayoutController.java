@@ -147,13 +147,13 @@ public class AutoLayoutController {
             data = JsonNodeFactory.instance.arrayNode();
         }
 
-        if (data.has(ERRORS) || !data.get(DATA)
-                                     .has(queryState.getSource())) {
+        JsonNode errors = data.get(ERRORS);
+        if ((errors != null && errors.size() != 0) || !data.get(DATA)
+                                                           .has(queryState.getSource())) {
             queryState.setData(null);
             data = JsonNodeFactory.instance.arrayNode();
         } else {
-            data = data.get(DATA)
-                       .get(queryState.getSource());
+            data = data.get(DATA).get(queryState.getSource());
         }
         setData(SchemaNode.asArray(data));
     }

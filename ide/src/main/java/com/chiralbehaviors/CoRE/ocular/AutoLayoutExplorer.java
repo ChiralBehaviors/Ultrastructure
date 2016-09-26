@@ -43,8 +43,9 @@ public class AutoLayoutExplorer extends Application {
 
     public void initRootLayout(Stage primaryStage) throws IOException {
         QueryState queryState = new QueryState();
-        queryState.setTargetURL("http://graphql-swapi.parseapp.com/");
 //        queryState.setTargetURL("https://quiet-fjord-8091.herokuapp.com/api/workspace/urn%3Auuid%3Ae54ba249-751e-53fd-b279-5e4eccd7ff85");
+//        queryState.setSource("customers");
+        queryState.setTargetURL("http://graphql-swapi.parseapp.com/");
         queryState.setQuery("{" + "allFilms {\n" + "films {\n" + "title\n"
                             + "starshipConnection {\n" + "starships{\n" + "name\n"
                             + "pilotConnection {\n" + "pilots {\n" + "name\n" + "}\n"

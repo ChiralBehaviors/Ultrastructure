@@ -90,27 +90,31 @@ public class AutoLayoutController {
         showLayout.setSelected(true);
         page.selectedToggleProperty()
             .addListener((o, p, c) -> {
-                anchor.getChildren()
-                      .clear();
-                RadioButton prev = (RadioButton) p;
-                RadioButton current = (RadioButton) c;
+                try {
+                    anchor.getChildren()
+                          .clear();
+                    RadioButton prev = (RadioButton) p;
+                    RadioButton current = (RadioButton) c;
 
-                if (prev == showSchema) {
-                    layout.autoLayout();
-                }
+                    if (prev == showSchema) {
+                        layout.autoLayout();
+                    }
 
-                if (current == showLayout) {
-                    anchor.getChildren()
-                          .add(layout);
-                } else if (current == showSchema) {
-                    anchor.getChildren()
-                          .add(schemaView);
-                } else if (current == showQuery) {
-                    anchor.getChildren()
-                          .add(graphiql);
-                } else {
-                    throw new IllegalStateException(String.format("Invalid radio button: %s",
-                                                                  current));
+                    if (current == showLayout) {
+                        anchor.getChildren()
+                              .add(layout);
+                    } else if (current == showSchema) {
+                        anchor.getChildren()
+                              .add(schemaView);
+                    } else if (current == showQuery) {
+                        anchor.getChildren()
+                              .add(graphiql);
+                    } else {
+                        throw new IllegalStateException(String.format("Invalid radio button: %s",
+                                                                      current));
+                    }
+                } catch (Exception e) {
+                    log.error("exception processing toggle", e);
                 }
             });
     }

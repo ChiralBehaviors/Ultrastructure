@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
 import com.chiralbehaviors.graphql.layout.TableViewWithVisibleRowCount;
@@ -187,31 +186,24 @@ public class Relation extends SchemaNode implements Cloneable {
         this.fold = (fold && children.size() == 1 && children.get(0)
                                                              .isRelation()) ? (Relation) children.get(0)
                                                                             : null;
-    }
+    } 
 
-    public void setItems(Control control, JsonNode data) {
-        setItems(control, data, n -> n);
-    }
-
-    public void setItems(Control control, JsonNode data,
-                         Function<JsonNode, JsonNode> extractor) {
+    public void setItems(Control control, JsonNode data
+                          ) {
         if (data == null) {
             data = JsonNodeFactory.instance.arrayNode();
         }
         if (isFold()) {
-            fold.setItems(control, flatten(data), extractor);
+            fold.setItems(control, flatten(data));
         } else {
-            List<JsonNode> resolved = asList(data).stream()
-                                                  .map(extractor)
-                                                  .collect(Collectors.toList());
             if (control instanceof ListView) {
                 @SuppressWarnings("unchecked")
                 ListView<JsonNode> listView = (ListView<JsonNode>) control;
-                listView.setItems(new ObservableListWrapper<>(resolved));
+                listView.setItems(new ObservableListWrapper<>(asList(data)));
             } else if (control instanceof TableView) {
                 @SuppressWarnings("unchecked")
                 TableView<JsonNode> tableView = (TableView<JsonNode>) control;
-                tableView.setItems(new ObservableListWrapper<>(resolved));
+                tableView.setItems(new ObservableListWrapper<>(asList(data)));
             } else {
                 throw new IllegalArgumentException(String.format("Unknown control %s",
                                                                  control));
@@ -403,7 +395,7 @@ public class Relation extends SchemaNode implements Cloneable {
             if (item == null) {
                 return;
             }
-            setItems(control, item.get(field), n -> n);
+            setItems(control, item.get(field));
         }, element);
     }
 

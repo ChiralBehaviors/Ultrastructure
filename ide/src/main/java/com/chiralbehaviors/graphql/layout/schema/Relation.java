@@ -61,7 +61,7 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
-    private static final int SCROLL_WIDTH = 27; // hate this
+    private static final int SCROLL_WIDTH = 20; // hate this
 
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
@@ -117,7 +117,6 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public void addChild(SchemaNode child) {
-        incrementNesting();
         children.add(child);
         outlineLabelWidth = Math.max(child.labelWidth() + SCROLL_WIDTH,
                                      outlineLabelWidth);
@@ -133,7 +132,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (isFold()) {
             return fold.buildControl();
         }
-        return useTable ? buildNestedTable(n -> n) : buildOutline();
+        return useTable ? buildNestedTable(n -> n) : buildOutline(n -> n);
     }
 
     public List<SchemaNode> getChildren() {
@@ -315,7 +314,7 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.layout(width);
         }
         useTable = false;
-        float available = width - outlineLabelWidth - indentWidth();
+        float available = width - outlineLabelWidth - INDENT_WIDTH;
         float outlineWidth = children.stream()
                                      .map(child -> child.layout(available))
                                      .max((a, b) -> Float.compare(a, b))
@@ -336,7 +335,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
-        tableColumnWidth = SCROLL_WIDTH + indentWidth();
+        tableColumnWidth = SCROLL_WIDTH + INDENT_WIDTH;
         int sum = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
@@ -361,8 +360,10 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    NodeMaster outlineElement(float labelWidth) {
-        Control control = useTable ? buildNestedTable(n -> n) : buildOutline();
+    NodeMaster outlineElement(float labelWidth,
+                              Function<JsonNode, JsonNode> extractor) {
+        Control control = useTable ? buildNestedTable(n -> n)
+                                   : buildOutline(n -> n);
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
         Pane element;
@@ -382,12 +383,14 @@ public class Relation extends SchemaNode implements Cloneable {
         element.getChildren()
                .add(control);
         element.setMinWidth(justifiedWidth);
-        return new NodeMaster(item -> setItems(control, item), element);
+        return new NodeMaster(item -> {
+            setItems(control, extractor.apply(item));
+        }, element);
     }
 
     private TableColumn<JsonNode, ?> buildIndentColumn() {
         TableColumn<JsonNode, String> column = new TableColumn<>("");
-        column.setMinWidth(indentWidth());
+        column.setMaxWidth(INDENT_WIDTH);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
@@ -399,7 +402,7 @@ public class Relation extends SchemaNode implements Cloneable {
         column.setCellFactory(c -> new TableCell<JsonNode, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
-                setGraphic(new Text(item));
+                setText(INDENT);
             }
         });
         return column;
@@ -427,9 +430,12 @@ public class Relation extends SchemaNode implements Cloneable {
         return table;
     }
 
-    private ListView<JsonNode> buildOutline() {
+    private ListView<JsonNode> buildOutline(Function<JsonNode, JsonNode> extractor) {
         if (isFold()) {
-            return fold.buildOutline();
+            return fold.buildOutline(n -> {
+                JsonNode resolved = extractor.apply(n);
+                return resolved == null ? null : resolved.get(field);
+            });
         }
         ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
@@ -440,7 +446,8 @@ public class Relation extends SchemaNode implements Cloneable {
                     .add(new Text(INDENT));
                 VBox box = new VBox(2);
                 children.forEach(child -> {
-                    NodeMaster master = child.outlineElement(outlineLabelWidth);
+                    NodeMaster master = child.outlineElement(outlineLabelWidth,
+                                                             extractor);
                     controls.put(child, master);
                     box.getChildren()
                        .add(master.node);
@@ -494,9 +501,9 @@ public class Relation extends SchemaNode implements Cloneable {
     private void justifyOutline(float width) {
         if (variableLength) {
             justifiedWidth = width;
-            float available = width - outlineLabelWidth - indentWidth()
+            float available = width - outlineLabelWidth - INDENT_WIDTH
                               - SCROLL_WIDTH;
-            float tableWidth = width - indentWidth() - SCROLL_WIDTH;
+            float tableWidth = width - INDENT_WIDTH - SCROLL_WIDTH;
             children.forEach(child -> {
                 if (child.isRelation()) {
                     if (((Relation) child).isUseTable()) {

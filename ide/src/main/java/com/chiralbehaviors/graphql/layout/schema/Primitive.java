@@ -129,7 +129,9 @@ public class Primitive extends SchemaNode {
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
-        averageCardinality = data.size() == 0 ? 0 : Math.max(1, cardSum / data.size());
+        averageCardinality = data.size() == 0 ? 0
+                                              : Math.max(1,
+                                                         cardSum / data.size());
         float averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
@@ -145,7 +147,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    NodeMaster outlineElement(float labelWidth) {
+    NodeMaster outlineElement(float labelWidth, Function<JsonNode, JsonNode> extractor) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
@@ -161,7 +163,9 @@ public class Primitive extends SchemaNode {
         box.setMinWidth(justifiedWidth);
         box.setMaxWidth(justifiedWidth);
         box.setPrefWidth(justifiedWidth);
-        return new NodeMaster(item -> control.setText(asText(item)), box);
+        return new NodeMaster(item -> { 
+            control.setText(asText(extractor.apply(item)));
+        }, box);
     }
 
     private String asText(JsonNode node) {

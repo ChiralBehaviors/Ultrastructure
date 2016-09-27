@@ -53,12 +53,15 @@ abstract public class SchemaNode {
         }
     }
 
-    static FontLoader   FONT_LOADER    = Toolkit.getToolkit()
-                                                .getFontLoader();
+    static FontLoader   FONT_LOADER = Toolkit.getToolkit()
+                                             .getFontLoader();
+    static final String INDENT      = " * ";
+    static float        INDENT_WIDTH;
 
-    static final String INDENT         = " * ";
-
-    static final String INDENT_MEASURE = "****";
+    static {
+        INDENT_WIDTH = FONT_LOADER.computeStringWidth("****",
+                                                      Font.getDefault());
+    }
 
     public static ArrayNode asArray(JsonNode node) {
         if (node.isArray()) {
@@ -118,7 +121,7 @@ abstract public class SchemaNode {
         return tableColumnWidth;
     }
 
-    public boolean isRelation() { 
+    public boolean isRelation() {
         return false;
     }
 
@@ -146,14 +149,6 @@ abstract public class SchemaNode {
 
     abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor);
 
-    void incrementNesting() {
-        // noop
-    }
-
-    float indentWidth() {
-        return FONT_LOADER.computeStringWidth(INDENT_MEASURE, labelFont);
-    }
-
     void justify(float width) {
         if (variableLength) {
             justifiedWidth = width;
@@ -173,7 +168,8 @@ abstract public class SchemaNode {
 
     abstract float measure(ArrayNode data);
 
-    abstract NodeMaster outlineElement(float labelWidth);
+    abstract NodeMaster outlineElement(float labelWidth,
+                                       Function<JsonNode, JsonNode> extractor);
 
     float outlineWidth() {
         return tableColumnWidth;

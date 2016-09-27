@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
 import com.chiralbehaviors.graphql.layout.TableViewWithVisibleRowCount;
@@ -61,7 +62,7 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
-    private static final int SCROLL_WIDTH = 20; // hate this
+    private static final int SCROLL_WIDTH = 25; // hate this
 
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
@@ -189,24 +190,32 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     public void setItems(Control control, JsonNode data) {
+        setItems(control, data, n -> n);
+    }
+
+    public void setItems(Control control, JsonNode data,
+                         Function<JsonNode, JsonNode> extractor) {
         if (data == null) {
             data = JsonNodeFactory.instance.arrayNode();
         }
         if (isFold()) {
-            fold.setItems(control, flatten(data));
-            return;
-        }
-        if (control instanceof ListView) {
-            @SuppressWarnings("unchecked")
-            ListView<JsonNode> listView = (ListView<JsonNode>) control;
-            listView.setItems(new ObservableListWrapper<>(asList(data)));
-        } else if (control instanceof TableView) {
-            @SuppressWarnings("unchecked")
-            TableView<JsonNode> tableView = (TableView<JsonNode>) control;
-            tableView.setItems(new ObservableListWrapper<>(asList(data)));
+            fold.setItems(control, flatten(data), extractor);
         } else {
-            throw new IllegalArgumentException(String.format("Unknown control %s",
-                                                             control));
+            List<JsonNode> resolved = asList(data).stream()
+                                                  .map(extractor)
+                                                  .collect(Collectors.toList());
+            if (control instanceof ListView) {
+                @SuppressWarnings("unchecked")
+                ListView<JsonNode> listView = (ListView<JsonNode>) control;
+                listView.setItems(new ObservableListWrapper<>(resolved));
+            } else if (control instanceof TableView) {
+                @SuppressWarnings("unchecked")
+                TableView<JsonNode> tableView = (TableView<JsonNode>) control;
+                tableView.setItems(new ObservableListWrapper<>(resolved));
+            } else {
+                throw new IllegalArgumentException(String.format("Unknown control %s",
+                                                                 control));
+            }
         }
     }
 
@@ -354,7 +363,7 @@ public class Relation extends SchemaNode implements Cloneable {
             tableColumnWidth += child.measure(aggregate);
             variableLength |= child.isVariableLength();
         }
-        averageCardinality = Math.round(sum / children.size()) + 1;
+        averageCardinality = Math.round(sum / children.size());
         justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }
@@ -362,6 +371,13 @@ public class Relation extends SchemaNode implements Cloneable {
     @Override
     NodeMaster outlineElement(float labelWidth,
                               Function<JsonNode, JsonNode> extractor) {
+        if (isFold()) {
+            //            return fold.outlineElement(labelWidth, extractor);
+            return fold.outlineElement(labelWidth, n -> {
+                JsonNode resolved = extractor.apply(n);
+                return resolved == null ? null : resolved.get(field);
+            });
+        }
         Control control = useTable ? buildNestedTable(n -> n)
                                    : buildOutline(n -> n);
         TextArea labelText = new TextArea(label);
@@ -384,8 +400,18 @@ public class Relation extends SchemaNode implements Cloneable {
                .add(control);
         element.setMinWidth(justifiedWidth);
         return new NodeMaster(item -> {
-            setItems(control, extractor.apply(item));
+            if (item == null) {
+                return;
+            }
+            setItems(control, item.get(field), n -> n);
         }, element);
+    }
+
+    float outlineWidth() {
+        if (isFold()) {
+            return fold.outlineWidth();
+        }
+        return super.outlineWidth();
     }
 
     private TableColumn<JsonNode, ?> buildIndentColumn() {
@@ -393,16 +419,16 @@ public class Relation extends SchemaNode implements Cloneable {
         column.setMaxWidth(INDENT_WIDTH);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
-        column.setCellValueFactory(cellData -> new ObjectBinding<String>() {
-            @Override
-            protected String computeValue() {
-                return INDENT;
-            }
-        });
         column.setCellFactory(c -> new TableCell<JsonNode, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
-                setText(INDENT);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(null);
+                    setGraphic(new Text(INDENT));
+                }
             }
         });
         return column;
@@ -470,7 +496,9 @@ public class Relation extends SchemaNode implements Cloneable {
                     return;
                 }
                 children.forEach(child -> {
-                    controls.get(child).items.accept(item.get(child.field));
+                    JsonNode resolved = extractor.apply(item);
+                    controls.get(child).items.accept(resolved != null ? resolved.get(child.field)
+                                                                      : null);
                 });
                 super.setGraphic(cell);
             }

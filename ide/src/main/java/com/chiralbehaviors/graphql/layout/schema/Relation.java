@@ -132,7 +132,11 @@ public class Relation extends SchemaNode implements Cloneable {
         if (isFold()) {
             return fold.buildControl();
         }
-        return useTable ? buildNestedTable(n -> n) : buildOutline(n -> n);
+        Function<JsonNode, JsonNode> extractor = n -> {
+            JsonNode temp = n;
+            return temp;
+        };
+        return useTable ? buildNestedTable(extractor) : buildOutline(n -> n);
     }
 
     public List<SchemaNode> getChildren() {
@@ -186,24 +190,25 @@ public class Relation extends SchemaNode implements Cloneable {
         this.fold = (fold && children.size() == 1 && children.get(0)
                                                              .isRelation()) ? (Relation) children.get(0)
                                                                             : null;
-    } 
+    }
 
-    public void setItems(Control control, JsonNode data
-                          ) {
+    public void setItems(Control control, JsonNode data) {
         if (data == null) {
             data = JsonNodeFactory.instance.arrayNode();
         }
         if (isFold()) {
             fold.setItems(control, flatten(data));
         } else {
+            List<JsonNode> dataList = asList(data);
+            ObservableListWrapper<JsonNode> observedData = new ObservableListWrapper<>(dataList);
             if (control instanceof ListView) {
                 @SuppressWarnings("unchecked")
                 ListView<JsonNode> listView = (ListView<JsonNode>) control;
-                listView.setItems(new ObservableListWrapper<>(asList(data)));
+                listView.setItems(observedData);
             } else if (control instanceof TableView) {
                 @SuppressWarnings("unchecked")
                 TableView<JsonNode> tableView = (TableView<JsonNode>) control;
-                tableView.setItems(new ObservableListWrapper<>(asList(data)));
+                tableView.setItems(observedData);
             } else {
                 throw new IllegalArgumentException(String.format("Unknown control %s",
                                                                  control));
@@ -395,7 +400,8 @@ public class Relation extends SchemaNode implements Cloneable {
             if (item == null) {
                 return;
             }
-            setItems(control, item.get(field));
+            JsonNode extracted = extractor.apply(item);
+            setItems(control, extracted == null ? null : extracted.get(field));
         }, element);
     }
 
@@ -488,9 +494,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     return;
                 }
                 children.forEach(child -> {
-                    JsonNode resolved = extractor.apply(item);
-                    controls.get(child).items.accept(resolved != null ? resolved.get(child.field)
-                                                                      : null);
+                    controls.get(child).items.accept(item);
                 });
                 super.setGraphic(cell);
             }

@@ -164,7 +164,7 @@ public class Primitive extends SchemaNode {
         box.setMaxWidth(justifiedWidth);
         box.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> { 
-            control.setText(asText(extractor.apply(item)));
+            control.setText(asText(extractor.apply(item).get(field)));
         }, box);
     }
 

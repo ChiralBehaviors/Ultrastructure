@@ -21,6 +21,7 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -351,25 +352,28 @@ public class Relation extends SchemaNode implements Cloneable {
             return 0;
         }
         tableColumnWidth = SCROLL_WIDTH + INDENT_WIDTH;
-        int sum = 0;
+        List<Integer> cardinalities = new ArrayList<>();
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
-            int cardSum = 0;
             for (JsonNode node : data) {
                 JsonNode sub = node.get(child.field);
                 if (sub instanceof ArrayNode) {
                     aggregate.addAll((ArrayNode) sub);
-                    cardSum += sub.size();
+                    cardinalities.add(sub.size());
                 } else {
                     aggregate.add(sub);
-                    cardSum += 1;
+                    cardinalities.add(1);
                 }
             }
-            sum += data.size() == 0 ? 0 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate);
             variableLength |= child.isVariableLength();
         }
-        averageCardinality = Math.round(sum / children.size());
+        Collections.sort(cardinalities);
+        averageCardinality = cardinalities.isEmpty() ? 0
+                                                     : cardinalities.get(Math.max(0,
+                                                                                  (cardinalities.size()
+                                                                                   / 2)
+                                                                                     - 1));
         justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }

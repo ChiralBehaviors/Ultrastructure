@@ -106,11 +106,11 @@ public class Relation extends SchemaNode implements Cloneable {
         return parent;
     }
 
-    private final List<SchemaNode> children          = new ArrayList<>();
+    private int                    averageCardinality = 1;
+    private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
-    private float                  outlineLabelWidth = 0;
-
-    private boolean                useTable          = false;
+    private float                  outlineLabelWidth  = 0;
+    private boolean                useTable           = false;
 
     public Relation(String label) {
         super(label);
@@ -127,7 +127,6 @@ public class Relation extends SchemaNode implements Cloneable {
         justify(width);
     }
 
-    @Override
     public Control buildControl() {
         if (isFold()) {
             return fold.buildControl();
@@ -136,7 +135,12 @@ public class Relation extends SchemaNode implements Cloneable {
             JsonNode temp = n;
             return temp;
         };
-        return useTable ? buildNestedTable(extractor) : buildOutline(n -> n);
+        return useTable ? buildNestedTable(extractor, -1)
+                        : buildOutline(n -> n, -1);
+    }
+
+    public int getAverageCardinality() {
+        return averageCardinality;
     }
 
     public List<SchemaNode> getChildren() {
@@ -184,6 +188,10 @@ public class Relation extends SchemaNode implements Cloneable {
             singleton.add(jsonNode);
             measure(singleton);
         }
+    }
+
+    public void setAverageCardinality(int averageCardinality) {
+        this.averageCardinality = averageCardinality;
     }
 
     public void setFold(boolean fold) {
@@ -244,12 +252,13 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor) {
+    TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
+                                              int cardinality) {
         if (isFold()) {
             return fold.buildTableColumn(n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
-            });
+            }, averageCardinality);
         }
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
@@ -269,7 +278,7 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            Control table = buildNestedTable(n -> n);
+            Control table = buildNestedTable(n -> n, cardinality);
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
@@ -356,7 +365,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     cardSum += 1;
                 }
             }
-            sum += data.size() == 0 ? 0 : Math.round(cardSum / data.size()) + 1;
+            sum += data.size() == 0 ? 0 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate);
             variableLength |= child.isVariableLength();
         }
@@ -367,16 +376,17 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     NodeMaster outlineElement(float labelWidth,
-                              Function<JsonNode, JsonNode> extractor) {
+                              Function<JsonNode, JsonNode> extractor,
+                              int cardinality) {
         if (isFold()) {
             //            return fold.outlineElement(labelWidth, extractor);
             return fold.outlineElement(labelWidth, n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
-            });
+            }, averageCardinality);
         }
-        Control control = useTable ? buildNestedTable(n -> n)
-                                   : buildOutline(n -> n);
+        Control control = useTable ? buildNestedTable(n -> n, cardinality)
+                                   : buildOutline(n -> n, cardinality);
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
         Pane element;
@@ -432,34 +442,36 @@ public class Relation extends SchemaNode implements Cloneable {
         return column;
     }
 
-    private Control buildNestedTable(Function<JsonNode, JsonNode> extractor) {
+    private Control buildNestedTable(Function<JsonNode, JsonNode> extractor,
+                                     int cardinality) {
         if (isFold()) {
             return fold.buildNestedTable(n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
-            });
+            }, averageCardinality);
         }
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         columns.add(buildIndentColumn());
         children.forEach(node -> {
-            columns.add(node.buildTableColumn(extractor));
+            columns.add(node.buildTableColumn(extractor, averageCardinality));
         });
         table.setPrefWidth(justifiedWidth);
         table.visibleRowCountProperty()
-             .set(averageCardinality);
+             .set(cardinality);
         table.getProperties()
              .put("deferToParentPrefWidth", Boolean.TRUE);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         return table;
     }
 
-    private ListView<JsonNode> buildOutline(Function<JsonNode, JsonNode> extractor) {
+    private ListView<JsonNode> buildOutline(Function<JsonNode, JsonNode> extractor,
+                                            int cardinality) {
         if (isFold()) {
             return fold.buildOutline(n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
-            });
+            }, averageCardinality);
         }
         ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
@@ -471,7 +483,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 VBox box = new VBox(2);
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth,
-                                                             extractor);
+                                                             extractor,
+                                                             averageCardinality);
                     controls.put(child, master);
                     box.getChildren()
                        .add(master.node);
@@ -500,9 +513,8 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         list.setPrefWidth(justifiedWidth);
-        //        list.setMinWidth(justifiedWidth);
         list.visibleRowCountProperty()
-            .set(averageCardinality);
+            .set(cardinality);
         list.getProperties()
             .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;

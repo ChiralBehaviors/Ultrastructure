@@ -47,21 +47,6 @@ public class Primitive extends SchemaNode {
         super(label);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.graphql.layout.SchemaNode#buildControl()
-     */
-    @Override
-    public TextArea buildControl() {
-        TextArea textArea = new TextArea();
-        textArea.setWrapText(true);
-        textArea.setMaxWidth(justifiedWidth);
-        textArea.setMinWidth(justifiedWidth);
-        textArea.setPrefWidth(justifiedWidth);
-        textArea.setPrefRowCount(averageCardinality);
-        textArea.setFont(valueFont);
-        return textArea;
-    }
-
     @Override
     public String toString() {
         return String.format("Primitive [%s:%.2f(%.2f)]", label, justifiedWidth,
@@ -74,7 +59,8 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor) {
+    TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
+                                              int cardinality) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
@@ -88,7 +74,7 @@ public class Primitive extends SchemaNode {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            TextArea control = buildControl();
+            TextArea control = buildControl(cardinality);
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
@@ -101,7 +87,7 @@ public class Primitive extends SchemaNode {
                     return;
                 }
                 control.setText(asText(item));
-                control.setPrefRowCount(averageCardinality);
+                control.setPrefRowCount(cardinality);
                 super.setGraphic(control);
                 setAlignment(Pos.CENTER);
             }
@@ -118,10 +104,8 @@ public class Primitive extends SchemaNode {
     float measure(ArrayNode data) {
         float sum = 0;
         float maxWidth = 0;
-        int cardSum = 0;
         for (JsonNode prim : data) {
             List<JsonNode> rows = asList(prim);
-            cardSum += rows.size();
             float width = 0;
             for (JsonNode row : rows) {
                 width += valueWidth(toString(row));
@@ -129,9 +113,6 @@ public class Primitive extends SchemaNode {
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
-        averageCardinality = data.size() == 0 ? 0
-                                              : Math.max(1,
-                                                         cardSum / data.size());
         float averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
@@ -139,32 +120,31 @@ public class Primitive extends SchemaNode {
         }
         tableColumnWidth = Math.max(labelWidth(),
                                     Math.max(valueDefaultWidth, averageWidth));
-        if (averageCardinality == 1) {
-            averageCardinality = (int) Math.max(1, maxWidth / tableColumnWidth);
-        }
         justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }
 
     @Override
-    NodeMaster outlineElement(float labelWidth, Function<JsonNode, JsonNode> extractor) {
+    NodeMaster outlineElement(float labelWidth,
+                              Function<JsonNode, JsonNode> extractor,
+                              int cardinality) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
         labelText.setMinWidth(labelWidth);
         labelText.setMaxWidth(labelWidth);
-        labelText.setPrefRowCount(1);
+        labelText.setPrefRowCount(cardinality);
         box.getChildren()
            .add(labelText);
-        TextArea control = buildControl();
-        //        control.setPrefHeight(averageCardinality * labelHeight() + 20);
+        TextArea control = buildControl(cardinality);
         box.getChildren()
            .add(control);
         box.setMinWidth(justifiedWidth);
         box.setMaxWidth(justifiedWidth);
         box.setPrefWidth(justifiedWidth);
-        return new NodeMaster(item -> { 
-            control.setText(asText(extractor.apply(item).get(field)));
+        return new NodeMaster(item -> {
+            control.setText(asText(extractor.apply(item)
+                                            .get(field)));
         }, box);
     }
 
@@ -186,6 +166,17 @@ public class Primitive extends SchemaNode {
             return builder.toString();
         }
         return node.asText();
+    }
+
+    private TextArea buildControl(int cardinality) {
+        TextArea textArea = new TextArea();
+        textArea.setWrapText(true);
+        textArea.setMaxWidth(justifiedWidth);
+        textArea.setMinWidth(justifiedWidth);
+        textArea.setPrefWidth(justifiedWidth);
+        textArea.setPrefRowCount(cardinality);
+        textArea.setFont(valueFont);
+        return textArea;
     }
 
     private String toString(JsonNode value) {

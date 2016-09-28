@@ -67,6 +67,7 @@ public class AutoLayoutView extends Control {
     }
 
     public void autoLayout() {
+        layoutWidth = 0.0;
         resize(getWidth());
     }
 

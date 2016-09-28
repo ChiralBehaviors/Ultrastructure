@@ -33,7 +33,6 @@ import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
 import javafx.scene.Node;
-import javafx.scene.control.Control;
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Font;
 
@@ -86,7 +85,6 @@ abstract public class SchemaNode {
         return nodes;
     }
 
-    int          averageCardinality = 1;
     final String field;
     float        justifiedWidth     = 0;
     String       label;
@@ -101,12 +99,6 @@ abstract public class SchemaNode {
     public SchemaNode(String field, String label) {
         this.label = label;
         this.field = field;
-    }
-
-    abstract public Control buildControl();
-
-    public int getAverageCardinality() {
-        return averageCardinality;
     }
 
     public String getField() {
@@ -129,10 +121,6 @@ abstract public class SchemaNode {
         return variableLength;
     }
 
-    public void setAverageCardinality(int averageCardinality) {
-        this.averageCardinality = averageCardinality;
-    }
-
     public void setLabel(String label) {
         this.label = label;
     }
@@ -147,7 +135,7 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor);
+    abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor, int cardinality);
 
     void justify(float width) {
         if (variableLength) {
@@ -169,7 +157,7 @@ abstract public class SchemaNode {
     abstract float measure(ArrayNode data);
 
     abstract NodeMaster outlineElement(float labelWidth,
-                                       Function<JsonNode, JsonNode> extractor);
+                                       Function<JsonNode, JsonNode> extractor, int cardinality);
 
     float outlineWidth() {
         return tableColumnWidth;

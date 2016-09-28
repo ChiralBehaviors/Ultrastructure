@@ -264,9 +264,14 @@ public class Relation extends SchemaNode implements Cloneable {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
-        //        column.setPrefWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
+
+        children.forEach(node -> {
+            column.getColumns()
+                  .add(node.buildTableColumn(n -> extract(extractor, n),
+                                             averageCardinality));
+        });
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -278,27 +283,13 @@ public class Relation extends SchemaNode implements Cloneable {
                 return resolved == null ? null : resolved.get(field);
             }
         });
-        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            Control table = buildNestedTable(n -> n, cardinality);
-
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem()) {
-                    return;
-                }
-                super.updateItem(item, empty);
-                super.setText(null);
-                if (empty) {
-                    super.setGraphic(null);
-                    return;
-                }
-                item = item == null ? JsonNodeFactory.instance.arrayNode()
-                                    : item;
-                setItems(table, item);
-                super.setGraphic(table);
-            }
-        });
         return column;
+    }
+
+    private JsonNode extract(Function<JsonNode, JsonNode> extractor,
+                             JsonNode n) {
+        return n == null ? null : extractor.apply(n)
+                                           .get(field);
     }
 
     @Override

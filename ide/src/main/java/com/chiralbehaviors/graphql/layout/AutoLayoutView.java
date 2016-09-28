@@ -38,6 +38,7 @@ public class AutoLayoutView extends Control {
     private SimpleObjectProperty<JsonNode>       data = new SimpleObjectProperty<>();
     private Control                              layout;
     private final SimpleObjectProperty<Relation> root = new SimpleObjectProperty<>();
+    private double layoutWidth = 0.0;
 
     public AutoLayoutView() {
         this(null);
@@ -87,6 +88,10 @@ public class AutoLayoutView extends Control {
     }
 
     private void resize(double width) {
+        if (layoutWidth == width) {
+            return; 
+        }
+        layoutWidth = width;
         getChildren().clear();
         Relation relation = root.get();
         if (relation == null) {

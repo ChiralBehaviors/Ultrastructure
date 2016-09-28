@@ -266,6 +266,36 @@ public class Relation extends SchemaNode implements Cloneable {
         column.setMaxWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
+        
+
+//        ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
+//        list.setCellFactory(c -> new ListCell<JsonNode>() {
+//            HBox                        cell     = new HBox(2);
+//
+//            @Override
+//            protected void updateItem(JsonNode item, boolean empty) {
+//                if (item == getItem()) {
+//                    return;
+//                }
+//                super.updateItem(item, empty);
+//                super.setText(null);
+//                if (empty) {
+//                    super.setGraphic(null);
+//                    return;
+//                }
+//                children.forEach(child -> {
+//                    controls.get(child).items.accept(item);
+//                });
+//                super.setGraphic(cell);
+//            }
+//        });
+//        list.setPrefWidth(justifiedWidth);
+//        list.visibleRowCountProperty()
+//            .set(cardinality);
+//        list.getProperties()
+//            .put("deferToParentPrefWidth", Boolean.TRUE);
+//        
+//        list.toString();
 
         children.forEach(node -> {
             column.getColumns()
@@ -281,6 +311,26 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
                 JsonNode resolved = extractor.apply(data);
                 return resolved == null ? null : resolved.get(field);
+            }
+        });
+        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+            Control table = buildNestedTable(n -> n, cardinality);
+
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem()) {
+                    return;
+                }
+                super.updateItem(item, empty);
+                super.setText(null);
+                if (empty) {
+                    super.setGraphic(null);
+                    return;
+                }
+                item = item == null ? JsonNodeFactory.instance.arrayNode()
+                                    : item;
+                setItems(table, item);
+                super.setGraphic(table);
             }
         });
         return column;

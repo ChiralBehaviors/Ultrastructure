@@ -21,7 +21,6 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -264,44 +263,9 @@ public class Relation extends SchemaNode implements Cloneable {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
+        //        column.setPrefWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
-        
-
-//        ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
-//        list.setCellFactory(c -> new ListCell<JsonNode>() {
-//            HBox                        cell     = new HBox(2);
-//
-//            @Override
-//            protected void updateItem(JsonNode item, boolean empty) {
-//                if (item == getItem()) {
-//                    return;
-//                }
-//                super.updateItem(item, empty);
-//                super.setText(null);
-//                if (empty) {
-//                    super.setGraphic(null);
-//                    return;
-//                }
-//                children.forEach(child -> {
-//                    controls.get(child).items.accept(item);
-//                });
-//                super.setGraphic(cell);
-//            }
-//        });
-//        list.setPrefWidth(justifiedWidth);
-//        list.visibleRowCountProperty()
-//            .set(cardinality);
-//        list.getProperties()
-//            .put("deferToParentPrefWidth", Boolean.TRUE);
-//        
-//        list.toString();
-
-        children.forEach(node -> {
-            column.getColumns()
-                  .add(node.buildTableColumn(n -> extract(extractor, n),
-                                             averageCardinality));
-        });
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -334,12 +298,6 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         return column;
-    }
-
-    private JsonNode extract(Function<JsonNode, JsonNode> extractor,
-                             JsonNode n) {
-        return n == null ? null : extractor.apply(n)
-                                           .get(field);
     }
 
     @Override
@@ -393,28 +351,25 @@ public class Relation extends SchemaNode implements Cloneable {
             return 0;
         }
         tableColumnWidth = SCROLL_WIDTH + INDENT_WIDTH;
-        List<Integer> cardinalities = new ArrayList<>();
+        int sum = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
+            int cardSum = 0;
             for (JsonNode node : data) {
                 JsonNode sub = node.get(child.field);
                 if (sub instanceof ArrayNode) {
                     aggregate.addAll((ArrayNode) sub);
-                    cardinalities.add(sub.size());
+                    cardSum += sub.size();
                 } else {
                     aggregate.add(sub);
-                    cardinalities.add(1);
+                    cardSum += 1;
                 }
             }
+            sum += data.size() == 0 ? 0 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate);
             variableLength |= child.isVariableLength();
         }
-        Collections.sort(cardinalities);
-        averageCardinality = cardinalities.isEmpty() ? 0
-                                                     : cardinalities.get(Math.max(0,
-                                                                                  (cardinalities.size()
-                                                                                   / 2)
-                                                                                     - 1));
+        averageCardinality = Math.round(sum / children.size());
         justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }

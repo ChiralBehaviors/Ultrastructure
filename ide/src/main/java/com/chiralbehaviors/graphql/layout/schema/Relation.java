@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
+import com.chiralbehaviors.graphql.layout.NestedTableView;
 import com.chiralbehaviors.graphql.layout.TableViewWithVisibleRowCount;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -42,6 +43,8 @@ import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
@@ -135,8 +138,7 @@ public class Relation extends SchemaNode implements Cloneable {
             JsonNode temp = n;
             return temp;
         };
-        return useTable ? buildNestedTable(extractor, -1)
-                        : buildOutline(n -> n, -1);
+        return useTable ? buildTable(extractor, -1) : buildOutline(n -> n, -1);
     }
 
     public int getAverageCardinality() {
@@ -217,6 +219,10 @@ public class Relation extends SchemaNode implements Cloneable {
                 @SuppressWarnings("unchecked")
                 TableView<JsonNode> tableView = (TableView<JsonNode>) control;
                 tableView.setItems(observedData);
+            } else if (control instanceof NestedTableView) {
+                @SuppressWarnings("unchecked")
+                NestedTableView<JsonNode> tableView = (NestedTableView<JsonNode>) control;
+                tableView.setItems(observedData);
             } else {
                 throw new IllegalArgumentException(String.format("Unknown control %s",
                                                                  control));
@@ -252,6 +258,24 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
+    TableColumn<String, ?> buildHeader() {
+        if (isFold()) {
+            return fold.buildHeader();
+        }
+        TableColumn<String, ?> header = new TableColumn<>(label);
+        header.setMaxWidth(justifiedWidth);
+        header.setMinWidth(justifiedWidth);
+        header.setPrefWidth(justifiedWidth);
+//        header.getProperties()
+//                    .put("deferToParentPrefWidth", Boolean.TRUE);
+        children.forEach(node -> {
+            header.getColumns()
+                        .add(node.buildHeader());
+        });
+        return header;
+    }
+
+    @Override
     TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
                                               int cardinality) {
         if (isFold()) {
@@ -260,10 +284,10 @@ public class Relation extends SchemaNode implements Cloneable {
                 return resolved == null ? null : resolved.get(field);
             }, averageCardinality);
         }
+
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        column.setPrefWidth(justifiedWidth);
         column.setMinWidth(justifiedWidth);
-        column.setMaxWidth(justifiedWidth);
-        //        column.setPrefWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
@@ -385,7 +409,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 return resolved == null ? null : resolved.get(field);
             }, averageCardinality);
         }
-        Control control = useTable ? buildNestedTable(n -> n, cardinality)
+        Control control = useTable ? buildTable(n -> n, cardinality)
                                    : buildOutline(n -> n, cardinality);
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
@@ -415,6 +439,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }, element);
     }
 
+    @Override
     float outlineWidth() {
         if (isFold()) {
             return fold.outlineWidth();
@@ -442,14 +467,44 @@ public class Relation extends SchemaNode implements Cloneable {
         return column;
     }
 
-    private Control buildNestedTable(Function<JsonNode, JsonNode> extractor,
-                                     int cardinality) {
+    /**
+     * Builds the top level nested table
+     */
+    private Control buildTable(Function<JsonNode, JsonNode> extractor,
+                               int cardinality) {
+        if (isFold()) {
+            return fold.buildTable(n -> {
+                JsonNode resolved = extractor.apply(n);
+                return resolved == null ? null : resolved.get(field);
+            }, averageCardinality);
+        }
+        TableViewWithVisibleRowCount<String> header = new TableViewWithVisibleRowCount<>();
+        header.setFixedCellSize(0);
+        header.visibleRowCountProperty()
+              .set(0);
+        header.setPlaceholder(new Text());
+        header.getColumns()
+              .add(buildHeader());
+        header.setPrefWidth(justifiedWidth);
+        header.getProperties()
+        .put("deferToParentPrefWidth", Boolean.TRUE);
+        header.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        TableView<JsonNode> table = buildNestedTable(extractor, cardinality);
+        return new NestedTableView<JsonNode>(header, table);
+    }
+
+    /**
+     * Recursive case
+     */
+    private TableView<JsonNode> buildNestedTable(Function<JsonNode, JsonNode> extractor,
+                                                 int cardinality) {
         if (isFold()) {
             return fold.buildNestedTable(n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
             }, averageCardinality);
         }
+
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
         columns.add(buildIndentColumn());
@@ -462,6 +517,22 @@ public class Relation extends SchemaNode implements Cloneable {
         table.getProperties()
              .put("deferToParentPrefWidth", Boolean.TRUE);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.widthProperty()
+             .addListener(new ChangeListener<Number>() {
+                 @Override
+                 public void changed(ObservableValue<? extends Number> ov,
+                                     Number t, Number t1) {
+                     // Get the table header
+                     Pane header = (Pane) table.lookup("TableHeaderRow");
+                     if (header != null && header.isVisible()) {
+                         header.setMaxHeight(0);
+                         header.setMinHeight(0);
+                         header.setPrefHeight(0);
+                         header.setVisible(false);
+                         header.setManaged(false);
+                     }
+                 }
+             });
         return table;
     }
 

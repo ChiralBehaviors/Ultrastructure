@@ -57,15 +57,21 @@ public class Primitive extends SchemaNode {
     public String toString(int indent) {
         return toString();
     }
+    
+    TableColumn<String, ?> buildHeader() {
+        TableColumn<String, ?> header = new TableColumn<>(label);
+        header.setMinWidth(justifiedWidth);
+        header.setPrefWidth(justifiedWidth);
+        return header;
+    }
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                              int cardinality) {
+                                              int cardinality) { 
+
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        column.setPrefWidth(justifiedWidth);
         column.setMinWidth(justifiedWidth);
-        column.setMaxWidth(justifiedWidth);
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -132,15 +138,13 @@ public class Primitive extends SchemaNode {
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
         labelText.setMinWidth(labelWidth);
-        labelText.setMaxWidth(labelWidth);
+        labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
         box.getChildren()
            .add(labelText);
         TextArea control = buildControl(cardinality);
         box.getChildren()
-           .add(control);
-        box.setMinWidth(justifiedWidth);
-        box.setMaxWidth(justifiedWidth);
+           .add(control); 
         box.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> {
             control.setText(asText(extractor.apply(item)
@@ -171,7 +175,6 @@ public class Primitive extends SchemaNode {
     private TextArea buildControl(int cardinality) {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setMaxWidth(justifiedWidth);
         textArea.setMinWidth(justifiedWidth);
         textArea.setPrefWidth(justifiedWidth);
         textArea.setPrefRowCount(cardinality);

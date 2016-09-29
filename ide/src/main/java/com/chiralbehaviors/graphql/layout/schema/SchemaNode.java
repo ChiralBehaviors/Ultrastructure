@@ -86,11 +86,11 @@ abstract public class SchemaNode {
     }
 
     final String field;
-    float        justifiedWidth     = 0;
+    float        justifiedWidth   = 0;
     String       label;
-    Font         labelFont          = Font.getDefault();
-    float        tableColumnWidth   = 0;
-    boolean      variableLength     = false;
+    Font         labelFont        = Font.getDefault();
+    float        tableColumnWidth = 0;
+    boolean      variableLength   = false;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -135,7 +135,10 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor, int cardinality);
+    abstract TableColumn<String, ?> buildHeader();
+
+    abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
+                                                       int cardinality);
 
     void justify(float width) {
         if (variableLength) {
@@ -157,7 +160,8 @@ abstract public class SchemaNode {
     abstract float measure(ArrayNode data);
 
     abstract NodeMaster outlineElement(float labelWidth,
-                                       Function<JsonNode, JsonNode> extractor, int cardinality);
+                                       Function<JsonNode, JsonNode> extractor,
+                                       int cardinality);
 
     float outlineWidth() {
         return tableColumnWidth;

@@ -52,8 +52,8 @@ abstract public class SchemaNode {
         }
     }
 
-    static FontLoader   FONT_LOADER       = Toolkit.getToolkit()
-                                                   .getFontLoader();
+    static FontLoader FONT_LOADER = Toolkit.getToolkit()
+                                           .getFontLoader();
 
     public static ArrayNode asArray(JsonNode node) {
         if (node.isArray()) {
@@ -125,15 +125,16 @@ abstract public class SchemaNode {
     public void setVariableLength(boolean variableLength) {
         this.variableLength = variableLength;
     }
-    
-    protected static int SCROLL_WIDTH = 30;
+
+    protected static int SCROLL_WIDTH = 34;
 
     abstract public String toString(int indent);
 
     abstract TableColumn<String, ?> buildHeader();
 
     abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                       int cardinality, boolean last);
+                                                       int cardinality,
+                                                       boolean last);
 
     void constrain(TableColumn<?, ?> column, boolean last) {
         column.setPrefWidth(justifiedWidth - (last ? SCROLL_WIDTH : 0));
@@ -141,10 +142,10 @@ abstract public class SchemaNode {
         if (!last) {
             column.setMaxWidth(justifiedWidth);
             column.setMinWidth(justifiedWidth);
+            column.getProperties()
+                  .put("deferToParentPrefWidth", Boolean.TRUE);
         }
-//        column.getProperties()
-//              .put("deferToParentPrefWidth", Boolean.TRUE);
-    } 
+    }
 
     void justify(float width) {
         if (variableLength) {

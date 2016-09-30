@@ -265,7 +265,12 @@ public class Relation extends SchemaNode implements Cloneable {
                 setMinWidth(justifiedWidth);
             }
         });
-        constrain(header, false);
+        header.setPrefWidth(justifiedWidth);
+        header.setStyle("-fx-padding: 0 0 0 0;");
+//        header.setMaxWidth(justifiedWidth);
+        header.setMinWidth(justifiedWidth);
+        header.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
 
         children.forEach(node -> {
             header.getColumns()
@@ -313,8 +318,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
                 item = item == null ? JsonNodeFactory.instance.arrayNode()
                                     : item;
-                setItems(table, item);
                 super.setGraphic(table);
+                setItems(table, item);
             }
         });
         return column;
@@ -385,11 +390,11 @@ public class Relation extends SchemaNode implements Cloneable {
                     cardSum += 1;
                 }
             }
-            sum += data.size() == 0 ? 0 : Math.round(cardSum / data.size());
+            sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate);
             variableLength |= child.isVariableLength();
         }
-        averageCardinality = Math.round(sum / children.size());
+        averageCardinality = Math.max(2, Math.round(sum / children.size()));
         justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }
@@ -464,6 +469,7 @@ public class Relation extends SchemaNode implements Cloneable {
             columns.add(node.buildTableColumn(extractor, averageCardinality,
                                               last == node));
         });
+        table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.visibleRowCountProperty()
              .set(cardinality);
@@ -562,9 +568,10 @@ public class Relation extends SchemaNode implements Cloneable {
         header.getColumns()
               .add(buildHeader());
         header.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        header.setPrefWidth(justifiedWidth);
         TableView<JsonNode> table = buildNestedTable(extractor, cardinality);
         return new NestedTableView<JsonNode>(header, table);
-    } 
+    }
 
     private ArrayNode flatten(JsonNode data) {
         ArrayNode flattened = JsonNodeFactory.instance.arrayNode();

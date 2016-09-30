@@ -59,7 +59,12 @@ public class Primitive extends SchemaNode {
 
     TableColumn<String, ?> buildHeader() {
         TableColumn<String, ?> header = new TableColumn<>(label);
-        constrain(header, false);
+        header.setPrefWidth(justifiedWidth);
+        header.setStyle("-fx-padding: 0 0 0 0;");
+        header.setMaxWidth(justifiedWidth);
+        header.setMinWidth(justifiedWidth);
+        header.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
         return header;
     }
 

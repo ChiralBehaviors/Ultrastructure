@@ -54,14 +54,6 @@ abstract public class SchemaNode {
 
     static FontLoader   FONT_LOADER       = Toolkit.getToolkit()
                                                    .getFontLoader();
-    static final String INDENT            = " * ";
-    static float        INDENT_WIDTH;
-    static final int    TABEL_CELL_INDENT = 0;
-
-    static {
-        INDENT_WIDTH = FONT_LOADER.computeStringWidth("****",
-                                                      Font.getDefault());
-    }
 
     public static ArrayNode asArray(JsonNode node) {
         if (node.isArray()) {
@@ -133,20 +125,25 @@ abstract public class SchemaNode {
     public void setVariableLength(boolean variableLength) {
         this.variableLength = variableLength;
     }
+    
+    protected static int SCROLL_WIDTH = 30;
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<String, ?> buildHeader(int nest);
+    abstract TableColumn<String, ?> buildHeader();
 
     abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                       int cardinality);
+                                                       int cardinality, boolean last);
 
-    void constrain(TableColumn<?, ?> column, int nest) {
-        float headerWidth = justifiedWidth ;
-        column.setPrefWidth(headerWidth);
-        column.setMaxWidth(headerWidth);
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
+    void constrain(TableColumn<?, ?> column, boolean last) {
+        column.setPrefWidth(justifiedWidth - (last ? SCROLL_WIDTH : 0));
+        column.setStyle("-fx-padding: 0 0 0 0;");
+        if (!last) {
+            column.setMaxWidth(justifiedWidth);
+            column.setMinWidth(justifiedWidth);
+        }
+//        column.getProperties()
+//              .put("deferToParentPrefWidth", Boolean.TRUE);
     } 
 
     void justify(float width) {

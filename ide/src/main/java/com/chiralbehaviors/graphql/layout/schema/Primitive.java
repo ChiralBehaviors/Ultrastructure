@@ -57,18 +57,18 @@ public class Primitive extends SchemaNode {
         return toString();
     }
 
-    TableColumn<String, ?> buildHeader(int nest) {
+    TableColumn<String, ?> buildHeader() {
         TableColumn<String, ?> header = new TableColumn<>(label);
-        constrain(header, nest);
+        constrain(header, false);
         return header;
     }
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                              int cardinality) {
+                                              int cardinality, boolean last) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        constrain(column, 0);
+        constrain(column, last);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -123,7 +123,7 @@ public class Primitive extends SchemaNode {
         tableColumnWidth = Math.max(labelWidth(),
                                     Math.max(valueDefaultWidth, averageWidth));
         justifiedWidth = tableColumnWidth;
-        return tableColumnWidth;
+        return tableColumnWidth + 4;
     }
 
     @Override
@@ -171,6 +171,7 @@ public class Primitive extends SchemaNode {
     private TextArea buildControl(int cardinality) {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
+        textArea.setPrefWidth(justifiedWidth - 4);
         textArea.setPrefRowCount(cardinality);
         textArea.setFont(valueFont);
         return textArea;

@@ -63,8 +63,6 @@ import javafx.scene.text.Text;
  *
  */
 public class Relation extends SchemaNode implements Cloneable {
-    private static final int SCROLL_WIDTH = 25; // hate this
-
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
@@ -120,8 +118,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     public void addChild(SchemaNode child) {
         children.add(child);
-        outlineLabelWidth = Math.max(child.labelWidth() + SCROLL_WIDTH,
-                                     outlineLabelWidth);
+        outlineLabelWidth = Math.max(child.labelWidth(), outlineLabelWidth);
     }
 
     public void autoLayout(float width) {
@@ -257,39 +254,38 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    TableColumn<String, ?> buildHeader(int nest) {
+    TableColumn<String, ?> buildHeader() {
         if (isFold()) {
-            return fold.buildHeader(nest);
+            return fold.buildHeader();
         }
-        TableColumn<String, ?> header = new TableColumn<>(label);
-        constrain(header, nest);
-        TableColumn<String, ?> indent = new TableColumn<>("");
-        float nestIndent =  INDENT_WIDTH + TABEL_CELL_INDENT;
-        indent.setPrefWidth(nestIndent);
-        indent.setMaxWidth(nestIndent);
-                indent.getProperties()
-                      .put("deferToParentPrefWidth", Boolean.TRUE);
-        header.getColumns()
-              .add(indent);
+        TableColumn<String, Object> header = new TableColumn<>(label);
+        header.setCellFactory(c -> new TableCell<String, Object>() {
+            @Override
+            protected void updateItem(Object item, boolean empty) {
+                setMinWidth(justifiedWidth);
+            }
+        });
+        constrain(header, false);
+
         children.forEach(node -> {
             header.getColumns()
-                  .add(node.buildHeader(nest + 1));
+                  .add(node.buildHeader());
         });
         return header;
     }
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                              int cardinality) {
+                                              int cardinality, boolean last) {
         if (isFold()) {
             return fold.buildTableColumn(n -> {
                 JsonNode resolved = extractor.apply(n);
                 return resolved == null ? null : resolved.get(field);
-            }, averageCardinality);
+            }, averageCardinality, last);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        constrain(column, 0);
+        constrain(column, last);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -353,7 +349,7 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.layout(width);
         }
         useTable = false;
-        float available = width - outlineLabelWidth - INDENT_WIDTH;
+        float available = width - outlineLabelWidth;
         float outlineWidth = children.stream()
                                      .map(child -> child.layout(available))
                                      .max((a, b) -> Float.compare(a, b))
@@ -374,7 +370,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
-        tableColumnWidth = SCROLL_WIDTH + INDENT_WIDTH;
+        tableColumnWidth = 0;
         int sum = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
@@ -447,28 +443,6 @@ public class Relation extends SchemaNode implements Cloneable {
         return super.outlineWidth();
     }
 
-    private TableColumn<JsonNode, ?> buildIndentColumn() {
-        TableColumn<JsonNode, String> column = new TableColumn<>("");
-        column.setMinWidth(INDENT_WIDTH);
-        column.setMaxWidth(INDENT_WIDTH);
-        column.setPrefWidth(INDENT_WIDTH);
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
-        column.setCellFactory(c -> new TableCell<JsonNode, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                if (item == null || empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(null);
-                    setGraphic(new Text(INDENT));
-                }
-            }
-        });
-        return column;
-    }
-
     /**
      * Recursive case
      */
@@ -483,11 +457,14 @@ public class Relation extends SchemaNode implements Cloneable {
 
         TableViewWithVisibleRowCount<JsonNode> table = new TableViewWithVisibleRowCount<>();
         ObservableList<TableColumn<JsonNode, ?>> columns = table.getColumns();
-        columns.add(buildIndentColumn());
+        SchemaNode last = children.isEmpty() ? null
+                                             : children.get(children.size()
+                                                            - 1);
         children.forEach(node -> {
-            columns.add(node.buildTableColumn(extractor, averageCardinality));
+            columns.add(node.buildTableColumn(extractor, averageCardinality,
+                                              last == node));
         });
-        constrain(table);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.visibleRowCountProperty()
              .set(cardinality);
         table.widthProperty()
@@ -503,6 +480,8 @@ public class Relation extends SchemaNode implements Cloneable {
                          header.setPrefHeight(0);
                          header.setVisible(false);
                          header.setManaged(false);
+                         header.getChildren()
+                               .clear();
                      }
                  }
              });
@@ -523,7 +502,7 @@ public class Relation extends SchemaNode implements Cloneable {
             Map<SchemaNode, NodeMaster> controls = new HashMap<>();
             {
                 cell.getChildren()
-                    .add(new Text(INDENT));
+                    .add(new Text(""));
                 VBox box = new VBox(2);
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth,
@@ -581,19 +560,11 @@ public class Relation extends SchemaNode implements Cloneable {
               .set(0);
         header.setPlaceholder(new Text());
         header.getColumns()
-              .add(buildHeader(0));
-        constrain(header);
+              .add(buildHeader());
+        header.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         TableView<JsonNode> table = buildNestedTable(extractor, cardinality);
         return new NestedTableView<JsonNode>(header, table);
-    }
-
-    private void constrain(TableViewWithVisibleRowCount<?> table) {
-        table.setMaxWidth(justifiedWidth);
-        table.setPrefWidth(justifiedWidth);
-        table.getProperties()
-             .put("deferToParentPrefWidth", Boolean.TRUE);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    }
+    } 
 
     private ArrayNode flatten(JsonNode data) {
         ArrayNode flattened = JsonNodeFactory.instance.arrayNode();
@@ -612,9 +583,8 @@ public class Relation extends SchemaNode implements Cloneable {
     private void justifyOutline(float width) {
         if (variableLength) {
             justifiedWidth = width;
-            float available = width - outlineLabelWidth - INDENT_WIDTH
-                              - SCROLL_WIDTH;
-            float tableWidth = width - INDENT_WIDTH - SCROLL_WIDTH;
+            float available = width - outlineLabelWidth;
+            float tableWidth = width;
             children.forEach(child -> {
                 if (child.isRelation()) {
                     if (((Relation) child).isUseTable()) {

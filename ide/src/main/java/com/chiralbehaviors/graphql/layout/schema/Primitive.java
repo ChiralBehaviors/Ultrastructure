@@ -77,7 +77,7 @@ public class Primitive extends SchemaNode {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            TextArea control = buildControl(cardinality);
+            TextArea control = buildControl(cardinality, last);
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
@@ -138,7 +138,7 @@ public class Primitive extends SchemaNode {
         labelText.setPrefRowCount(cardinality);
         box.getChildren()
            .add(labelText);
-        TextArea control = buildControl(cardinality);
+        TextArea control = buildControl(cardinality, false);
         box.getChildren()
            .add(control);
         box.setPrefWidth(justifiedWidth);
@@ -168,10 +168,10 @@ public class Primitive extends SchemaNode {
         return node.asText();
     }
 
-    private TextArea buildControl(int cardinality) {
+    private TextArea buildControl(int cardinality, boolean last) {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setPrefWidth(justifiedWidth - 4);
+        textArea.setPrefWidth(justifiedWidth - (last ? SCROLL_WIDTH : 0));
         textArea.setPrefRowCount(cardinality);
         textArea.setFont(valueFont);
         return textArea;

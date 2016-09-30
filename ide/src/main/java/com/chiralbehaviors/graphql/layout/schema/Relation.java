@@ -46,9 +46,12 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -259,19 +262,13 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.buildHeader();
         }
         TableColumn<String, Object> header = new TableColumn<>(label);
-        header.setCellFactory(c -> new TableCell<String, Object>() {
-            @Override
-            protected void updateItem(Object item, boolean empty) {
-                setMinWidth(justifiedWidth);
-            }
-        });
-        header.setPrefWidth(justifiedWidth);
+        float width = justifiedWidth;
+        header.setPrefWidth(width);
+        header.setMinWidth(width);
+        header.setMaxWidth(width);
         header.setStyle("-fx-padding: 0 0 0 0;");
-//        header.setMaxWidth(justifiedWidth);
-        header.setMinWidth(justifiedWidth);
         header.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
-
         children.forEach(node -> {
             header.getColumns()
                   .add(node.buildHeader());
@@ -470,7 +467,9 @@ public class Relation extends SchemaNode implements Cloneable {
                                               last == node));
         });
         table.setPlaceholder(new Text());
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.setPrefWidth(justifiedWidth);
+        table.setMaxWidth(justifiedWidth);
         table.visibleRowCountProperty()
              .set(cardinality);
         table.widthProperty()
@@ -567,7 +566,7 @@ public class Relation extends SchemaNode implements Cloneable {
         header.setPlaceholder(new Text());
         header.getColumns()
               .add(buildHeader());
-        header.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        header.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         header.setPrefWidth(justifiedWidth);
         TableView<JsonNode> table = buildNestedTable(extractor, cardinality);
         return new NestedTableView<JsonNode>(header, table);
@@ -585,6 +584,20 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         }
         return flattened;
+    }
+
+    private double getVerticalScrollbarWidth(TableView<?> table) {
+        ScrollBar result = null;
+        for (Node n : table.lookupAll(".scroll-bar")) {
+            if (n instanceof ScrollBar) {
+                ScrollBar bar = (ScrollBar) n;
+                if (bar.getOrientation()
+                       .equals(Orientation.VERTICAL)) {
+                    result = bar;
+                }
+            }
+        }
+        return result.getWidth();
     }
 
     private void justifyOutline(float width) {

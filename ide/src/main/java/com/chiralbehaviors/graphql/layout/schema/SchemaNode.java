@@ -137,10 +137,10 @@ abstract public class SchemaNode {
                                                        boolean last);
 
     void constrain(TableColumn<?, ?> column, boolean last) {
-        column.setPrefWidth(justifiedWidth - (last ? SCROLL_WIDTH : 0));
         column.setStyle("-fx-padding: 0 0 0 0;");
+        column.setPrefWidth(justifiedWidth);
+        column.setMaxWidth(justifiedWidth);
         if (!last) {
-            column.setMaxWidth(justifiedWidth);
             column.setMinWidth(justifiedWidth);
             column.getProperties()
                   .put("deferToParentPrefWidth", Boolean.TRUE);

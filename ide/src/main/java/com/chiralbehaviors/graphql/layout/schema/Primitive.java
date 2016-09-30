@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
@@ -57,21 +56,19 @@ public class Primitive extends SchemaNode {
     public String toString(int indent) {
         return toString();
     }
-    
-    TableColumn<String, ?> buildHeader() {
+
+    TableColumn<String, ?> buildHeader(int nest) {
         TableColumn<String, ?> header = new TableColumn<>(label);
-        header.setMinWidth(justifiedWidth);
-        header.setPrefWidth(justifiedWidth);
+        constrain(header, nest);
         return header;
     }
 
     @Override
     TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                              int cardinality) { 
+                                              int cardinality) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.setPrefWidth(justifiedWidth);
-        column.setMinWidth(justifiedWidth);
+        constrain(column, 0);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -95,7 +92,6 @@ public class Primitive extends SchemaNode {
                 control.setText(asText(item));
                 control.setPrefRowCount(cardinality);
                 super.setGraphic(control);
-                setAlignment(Pos.CENTER);
             }
         });
         return column;
@@ -137,14 +133,14 @@ public class Primitive extends SchemaNode {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
-        labelText.setMinWidth(labelWidth);
+        //        labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
         box.getChildren()
            .add(labelText);
         TextArea control = buildControl(cardinality);
         box.getChildren()
-           .add(control); 
+           .add(control);
         box.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> {
             control.setText(asText(extractor.apply(item)
@@ -175,8 +171,6 @@ public class Primitive extends SchemaNode {
     private TextArea buildControl(int cardinality) {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setMinWidth(justifiedWidth);
-        textArea.setPrefWidth(justifiedWidth);
         textArea.setPrefRowCount(cardinality);
         textArea.setFont(valueFont);
         return textArea;

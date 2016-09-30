@@ -63,7 +63,6 @@ import javafx.scene.text.Text;
  *
  */
 public class Relation extends SchemaNode implements Cloneable {
-
     private static final int SCROLL_WIDTH = 25; // hate this
 
     public static SchemaNode buildSchema(String query, String source) {
@@ -258,19 +257,23 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    TableColumn<String, ?> buildHeader() {
+    TableColumn<String, ?> buildHeader(int nest) {
         if (isFold()) {
-            return fold.buildHeader();
+            return fold.buildHeader(nest);
         }
         TableColumn<String, ?> header = new TableColumn<>(label);
-        header.setMaxWidth(justifiedWidth);
-        header.setMinWidth(justifiedWidth);
-        header.setPrefWidth(justifiedWidth);
-//        header.getProperties()
-//                    .put("deferToParentPrefWidth", Boolean.TRUE);
+        constrain(header, nest);
+        TableColumn<String, ?> indent = new TableColumn<>("");
+        float nestIndent =  INDENT_WIDTH + TABEL_CELL_INDENT;
+        indent.setPrefWidth(nestIndent);
+        indent.setMaxWidth(nestIndent);
+                indent.getProperties()
+                      .put("deferToParentPrefWidth", Boolean.TRUE);
+        header.getColumns()
+              .add(indent);
         children.forEach(node -> {
             header.getColumns()
-                        .add(node.buildHeader());
+                  .add(node.buildHeader(nest + 1));
         });
         return header;
     }
@@ -286,10 +289,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.setPrefWidth(justifiedWidth);
-        column.setMinWidth(justifiedWidth);
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
+        constrain(column, 0);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
@@ -416,11 +416,11 @@ public class Relation extends SchemaNode implements Cloneable {
         Pane element;
         if (useTable) {
             element = new HBox(2);
-            labelText.setMinWidth(labelWidth);
+            //            labelText.setMinWidth(labelWidth);
             labelText.setMaxWidth(labelWidth);
         } else {
             element = new VBox(2);
-            labelText.setMinWidth(justifiedWidth);
+            //            labelText.setMinWidth(justifiedWidth);
             labelText.setMaxWidth(justifiedWidth);
         }
         labelText.setWrapText(true);
@@ -449,7 +449,9 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private TableColumn<JsonNode, ?> buildIndentColumn() {
         TableColumn<JsonNode, String> column = new TableColumn<>("");
+        column.setMinWidth(INDENT_WIDTH);
         column.setMaxWidth(INDENT_WIDTH);
+        column.setPrefWidth(INDENT_WIDTH);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
         column.setCellFactory(c -> new TableCell<JsonNode, String>() {
@@ -465,32 +467,6 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         });
         return column;
-    }
-
-    /**
-     * Builds the top level nested table
-     */
-    private Control buildTable(Function<JsonNode, JsonNode> extractor,
-                               int cardinality) {
-        if (isFold()) {
-            return fold.buildTable(n -> {
-                JsonNode resolved = extractor.apply(n);
-                return resolved == null ? null : resolved.get(field);
-            }, averageCardinality);
-        }
-        TableViewWithVisibleRowCount<String> header = new TableViewWithVisibleRowCount<>();
-        header.setFixedCellSize(0);
-        header.visibleRowCountProperty()
-              .set(0);
-        header.setPlaceholder(new Text());
-        header.getColumns()
-              .add(buildHeader());
-        header.setPrefWidth(justifiedWidth);
-        header.getProperties()
-        .put("deferToParentPrefWidth", Boolean.TRUE);
-        header.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        TableView<JsonNode> table = buildNestedTable(extractor, cardinality);
-        return new NestedTableView<JsonNode>(header, table);
     }
 
     /**
@@ -511,12 +487,9 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(node -> {
             columns.add(node.buildTableColumn(extractor, averageCardinality));
         });
-        table.setPrefWidth(justifiedWidth);
+        constrain(table);
         table.visibleRowCountProperty()
              .set(cardinality);
-        table.getProperties()
-             .put("deferToParentPrefWidth", Boolean.TRUE);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.widthProperty()
              .addListener(new ChangeListener<Number>() {
                  @Override
@@ -589,6 +562,37 @@ public class Relation extends SchemaNode implements Cloneable {
         list.getProperties()
             .put("deferToParentPrefWidth", Boolean.TRUE);
         return list;
+    }
+
+    /**
+     * Builds the top level nested table
+     */
+    private Control buildTable(Function<JsonNode, JsonNode> extractor,
+                               int cardinality) {
+        if (isFold()) {
+            return fold.buildTable(n -> {
+                JsonNode resolved = extractor.apply(n);
+                return resolved == null ? null : resolved.get(field);
+            }, averageCardinality);
+        }
+        TableViewWithVisibleRowCount<String> header = new TableViewWithVisibleRowCount<>();
+        header.setFixedCellSize(0);
+        header.visibleRowCountProperty()
+              .set(0);
+        header.setPlaceholder(new Text());
+        header.getColumns()
+              .add(buildHeader(0));
+        constrain(header);
+        TableView<JsonNode> table = buildNestedTable(extractor, cardinality);
+        return new NestedTableView<JsonNode>(header, table);
+    }
+
+    private void constrain(TableViewWithVisibleRowCount<?> table) {
+        table.setMaxWidth(justifiedWidth);
+        table.setPrefWidth(justifiedWidth);
+        table.getProperties()
+             .put("deferToParentPrefWidth", Boolean.TRUE);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     private ArrayNode flatten(JsonNode data) {

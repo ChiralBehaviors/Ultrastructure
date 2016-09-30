@@ -52,10 +52,11 @@ abstract public class SchemaNode {
         }
     }
 
-    static FontLoader   FONT_LOADER = Toolkit.getToolkit()
-                                             .getFontLoader();
-    static final String INDENT      = " * ";
+    static FontLoader   FONT_LOADER       = Toolkit.getToolkit()
+                                                   .getFontLoader();
+    static final String INDENT            = " * ";
     static float        INDENT_WIDTH;
+    static final int    TABEL_CELL_INDENT = 0;
 
     static {
         INDENT_WIDTH = FONT_LOADER.computeStringWidth("****",
@@ -135,10 +136,18 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<String, ?> buildHeader();
+    abstract TableColumn<String, ?> buildHeader(int nest);
 
     abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
                                                        int cardinality);
+
+    void constrain(TableColumn<?, ?> column, int nest) {
+        float headerWidth = justifiedWidth ;
+        column.setPrefWidth(headerWidth);
+        column.setMaxWidth(headerWidth);
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
+    } 
 
     void justify(float width) {
         if (variableLength) {

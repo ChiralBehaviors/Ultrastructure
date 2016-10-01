@@ -73,83 +73,40 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, ListView<JsonNode>> nesting,
+    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
                                                      int cardinality,
-                                                     Function<JsonNode, JsonNode> topLevel) {
-        Function<JsonNode, ListView<JsonNode>> baseNest = n -> {
-            ListView<JsonNode> parent = nesting.apply(n);
-            parent.setCellFactory(c -> new ListCell<JsonNode>() {
-                ListView<JsonNode> base = split(cardinality);
-
-                @Override
-                protected void updateItem(JsonNode item, boolean empty) {
-                    if (item == getItem()) {
-                        return;
-                    }
-                    super.updateItem(item, empty);
-                    super.setText(null);
-                    if (empty || item == null) {
-                        super.setGraphic(null);
-                        return;
-                    }
-                    setGraphic(base);
-                    setItems(base, item.get(field));
-                }
-            });
-            return parent;
-        };
+                                                     Function<ListView<JsonNode>, ListView<JsonNode>> nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
+
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
                 return cellData.getValue();
             }
         });
+        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+            ListView<JsonNode> nestedView = nesting.apply(split(cardinality, extractor));
 
-        if (nesting == null) {
-            column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-                TextArea control = buildControl(cardinality);
-
-                @Override
-                protected void updateItem(JsonNode item, boolean empty) {
-                    if (item == getItem()) {
-                        return;
-                    }
-                    super.updateItem(item, empty);
-                    super.setText(null);
-                    if (empty) {
-                        super.setGraphic(null);
-                        return;
-                    }
-                    control.setText(asText(item.get(field)));
-                    control.setPrefRowCount(cardinality);
-                    setGraphic(control);
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem())
+                    return;
+                super.updateItem(item, empty);
+                super.setText(null);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    return;
                 }
-            });
-        } else {
-            column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-                @Override
-                protected void updateItem(JsonNode item, boolean empty) {
-                    if (item == getItem())
-                        return;
-                    super.updateItem(item, empty);
-                    super.setText(null);
-                    if (empty) {
-                        setGraphic(null);
-                        return;
-                    }
-                    ListView<JsonNode> nestedView = baseNest.apply(item);
-                    setGraphic(nestedView);
-                    setItems(nestedView, topLevel.apply(item));
-                }
-            });
-        }
+                setGraphic(nestedView);
+                setItems(nestedView, item);
+            }
+        });
         return column;
     }
 
-    private ListView<JsonNode> split(int cardinality) {
+    private ListView<JsonNode> split(int cardinality, Function<JsonNode, JsonNode> extractor) {
         ListViewWithVisibleRowCount<JsonNode> content = new ListViewWithVisibleRowCount<>();
         content.setCellFactory(c -> new ListCell<JsonNode>() {
             TextArea control = buildControl(cardinality);
@@ -160,17 +117,22 @@ public class Primitive extends SchemaNode {
                     return;
                 }
                 super.updateItem(item, empty);
-                super.setText(null);
-                if (empty) {
-                    super.setGraphic(null);
+                setText(null);
+                if (empty || item == null) {
+                    setGraphic(null);
                     return;
                 }
-                control.setText(asText(item));
+                JsonNode extracted = extractor.apply(item);
+                if (extracted == null) {
+                    setGraphic(null);
+                    return;
+                }
+                control.setText(asText(extracted.get(field)));
                 control.setPrefRowCount(cardinality);
                 setGraphic(control);
             }
         });
-        content.setPrefWidth(justifiedWidth);
+        content.setPrefWidth(justifiedWidth - 4);
         content.visibleRowCountProperty()
                .set(cardinality);
         return content;

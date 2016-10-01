@@ -234,57 +234,56 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, ListView<JsonNode>> nesting,
+    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
                                                      int cardinality,
-                                                     Function<JsonNode, JsonNode> e) {
+                                                     Function<ListView<JsonNode>, ListView<JsonNode>> nesting) {
         if (isFold()) {
-            return fold.buildTableColumn(nesting, cardinality, extract(e));
+            return fold.buildTableColumn(extract(extractor), cardinality,
+                                         nesting);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
         children.forEach(node -> {
-            Function<JsonNode, ListView<JsonNode>> baseNesting = n -> {
-                if (nesting == null) {
-                    return split(cardinality);
-                } else {
-                    ListView<JsonNode> parent = nesting.apply(n);
-                    parent.setCellFactory(c -> new ListCell<JsonNode>() {
-                        ListView<JsonNode> base = split(cardinality);
-
-                        @Override
-                        protected void updateItem(JsonNode item,
-                                                  boolean empty) {
-                            if (item == getItem()) {
-                                return;
-                            }
-                            super.updateItem(item, empty);
-                            super.setText(null);
-                            if (empty || item == null) {
-                                super.setGraphic(null);
-                                return;
-                            }
-                            setGraphic(base);
-                            setItems(base, item.get(field));
+            Function<ListView<JsonNode>, ListView<JsonNode>> baseNesting = n -> {
+                ListView<JsonNode> split = split(cardinality);
+                split.setCellFactory(c -> new ListCell<JsonNode>() {
+                    @Override
+                    protected void updateItem(JsonNode item, boolean empty) {
+                        if (item == getItem()) {
+                            return;
                         }
-                    });
-                    return parent;
-                }
+                        super.updateItem(item, empty);
+                        super.setText(null);
+                        if (empty || item == null) {
+                            setGraphic(null);
+                            return;
+                        }
+                        setGraphic(n);
+                        JsonNode extracted = extractor.apply(item);
+                        if (extracted == null) {
+                            setGraphic(null);
+                            return;
+                        }
+                        node.setItems(n, extracted.get(field));
+                    }
+                });
+                return nesting.apply(split);
             };
             column.getColumns()
-                  .add(node.buildTableColumn(baseNesting, averageCardinality,
-                                             e != null ? e : n -> n));
+                  .add(node.buildTableColumn(n -> n,
+                                             averageCardinality, baseNesting));
         });
 
         return column;
     }
 
-    private ListView<JsonNode> split(int cardinality) {
-        ListViewWithVisibleRowCount<JsonNode> content = new ListViewWithVisibleRowCount<>();
-        content.setPrefWidth(justifiedWidth);
-        content.visibleRowCountProperty()
-               .set(cardinality);
-        return content;
+    @Override
+    String getFoldedField() {
+        if (isFold()) {
+            return fold.getFoldedField();
+        }
+        return super.getFoldedField();
     }
 
     @Override
@@ -476,7 +475,8 @@ public class Relation extends SchemaNode implements Cloneable {
 
         children.forEach(node -> {
             top.getColumns()
-               .add(node.buildTableColumn(null, averageCardinality, extractor));
+               .add(node.buildTableColumn(extractor, averageCardinality,
+                                          n -> n));
         });
         constrain(top);
         table.setPlaceholder(new Text());
@@ -570,5 +570,13 @@ public class Relation extends SchemaNode implements Cloneable {
                 ((Relation) child).nestTables();
             }
         });
+    }
+
+    private ListView<JsonNode> split(int cardinality) {
+        ListViewWithVisibleRowCount<JsonNode> content = new ListViewWithVisibleRowCount<>();
+        content.setPrefWidth(justifiedWidth - 4);
+        content.visibleRowCountProperty()
+               .set(cardinality);
+        return content;
     }
 }

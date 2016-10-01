@@ -47,15 +47,13 @@ import javafx.scene.text.Font;
 abstract public class SchemaNode {
 
     public class ColumnMaster {
-        public final TableColumn<JsonNode, ?> column;
-        public final Consumer<JsonNode>       items;
-        public final Node                     node;
+        public final TableColumn<JsonNode, JsonNode> column;
+        public final Function<JsonNode, JsonNode>    extractor;
 
-        public ColumnMaster(Consumer<JsonNode> items,
-                            TableColumn<JsonNode, ?> column, Node node) {
-            this.items = items;
+        public ColumnMaster(Function<JsonNode, JsonNode> extractor,
+                            TableColumn<JsonNode, JsonNode> column) {
+            this.extractor = extractor;
             this.column = column;
-            this.node = node;
         }
     }
 
@@ -75,6 +73,9 @@ abstract public class SchemaNode {
     protected static int SCROLL_WIDTH = 34;
 
     public static ArrayNode asArray(JsonNode node) {
+        if (node == null) {
+            return JsonNodeFactory.instance.arrayNode();
+        }
         if (node.isArray()) {
             return (ArrayNode) node;
         }
@@ -98,11 +99,11 @@ abstract public class SchemaNode {
     }
 
     final String field;
+
     float        justifiedWidth   = 0;
     String       label;
     Font         labelFont        = Font.getDefault();
     float        tableColumnWidth = 0;
-
     boolean      variableLength   = false;
 
     public SchemaNode(String field) {
@@ -168,9 +169,9 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, ListView<JsonNode>> nesting,
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
                                                               int cardinality,
-                                                              Function<JsonNode, JsonNode> extractor);
+                                                              Function<ListView<JsonNode>, ListView<JsonNode>> nesting);
 
     void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");
@@ -179,6 +180,10 @@ abstract public class SchemaNode {
         column.setMinWidth(justifiedWidth);
         column.getProperties()
               .put("deferToParentPrefWidth", Boolean.TRUE);
+    }
+
+    String getFoldedField() {
+        return field;
     }
 
     void justify(float width) {

@@ -108,22 +108,44 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem())
-                    return;
-                super.updateItem(item, empty);
-                super.setText(null);
-                if (empty) {
-                    setGraphic(null);
-                    return;
+        if (nesting == null) {
+            column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+                TextArea control = buildControl(cardinality);
+
+                @Override
+                protected void updateItem(JsonNode item, boolean empty) {
+                    if (item == getItem()) {
+                        return;
+                    }
+                    super.updateItem(item, empty);
+                    super.setText(null);
+                    if (empty) {
+                        super.setGraphic(null);
+                        return;
+                    }
+                    control.setText(asText(item.get(field)));
+                    control.setPrefRowCount(cardinality);
+                    setGraphic(control);
                 }
-                ListView<JsonNode> nestedView = baseNest.apply(item);
-                setGraphic(nestedView);
-                setItems(nestedView, topLevel.apply(item));
-            }
-        });
+            });
+        } else {
+            column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+                @Override
+                protected void updateItem(JsonNode item, boolean empty) {
+                    if (item == getItem())
+                        return;
+                    super.updateItem(item, empty);
+                    super.setText(null);
+                    if (empty) {
+                        setGraphic(null);
+                        return;
+                    }
+                    ListView<JsonNode> nestedView = baseNest.apply(item);
+                    setGraphic(nestedView);
+                    setItems(nestedView, topLevel.apply(item));
+                }
+            });
+        }
         return column;
     }
 
@@ -151,8 +173,6 @@ public class Primitive extends SchemaNode {
         content.setPrefWidth(justifiedWidth);
         content.visibleRowCountProperty()
                .set(cardinality);
-        content.getProperties()
-               .put("deferToParentPrefWidth", Boolean.TRUE);
         return content;
     }
 

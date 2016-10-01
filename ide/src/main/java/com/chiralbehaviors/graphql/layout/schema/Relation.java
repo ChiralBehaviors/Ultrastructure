@@ -273,7 +273,7 @@ public class Relation extends SchemaNode implements Cloneable {
             };
             column.getColumns()
                   .add(node.buildTableColumn(baseNesting, averageCardinality,
-                                             e != null ? e : extract(e)));
+                                             e != null ? e : n -> n));
         });
 
         return column;
@@ -284,8 +284,6 @@ public class Relation extends SchemaNode implements Cloneable {
         content.setPrefWidth(justifiedWidth);
         content.visibleRowCountProperty()
                .set(cardinality);
-        content.getProperties()
-               .put("deferToParentPrefWidth", Boolean.TRUE);
         return content;
     }
 

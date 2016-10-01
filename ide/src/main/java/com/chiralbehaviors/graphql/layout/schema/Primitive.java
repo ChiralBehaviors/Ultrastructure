@@ -23,15 +23,18 @@ package com.chiralbehaviors.graphql.layout.schema;
 import java.util.List;
 import java.util.function.Function;
 
+import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import javafx.beans.binding.ObjectBinding;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.beans.binding.ObjectBinding;
 
 /**
  * @author hhildebrand
@@ -70,21 +73,42 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                              int cardinality, boolean last) {
+    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, ListView<JsonNode>> nesting,
+                                                     int cardinality,
+                                                     Function<JsonNode, JsonNode> topLevel) {
+        Function<JsonNode, ListView<JsonNode>> baseNest = n -> {
+            ListView<JsonNode> parent = nesting.apply(n);
+            parent.setCellFactory(c -> new ListCell<JsonNode>() {
+                ListView<JsonNode> base = split(cardinality);
+
+                @Override
+                protected void updateItem(JsonNode item, boolean empty) {
+                    if (item == getItem()) {
+                        return;
+                    }
+                    super.updateItem(item, empty);
+                    super.setText(null);
+                    if (empty || item == null) {
+                        super.setGraphic(null);
+                        return;
+                    }
+                    setGraphic(base);
+                    setItems(base, item.get(field));
+                }
+            });
+            return parent;
+        };
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        constrain(column, last);
+        constrain(column);
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
             protected JsonNode computeValue() {
-                return extractor.apply(cellData.getValue()
-                                               .get(field));
+                return cellData.getValue();
             }
         });
-        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            TextArea control = buildControl(cardinality, last);
 
+        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem())
@@ -95,12 +119,41 @@ public class Primitive extends SchemaNode {
                     setGraphic(null);
                     return;
                 }
-                control.setText(asText(item));
-                control.setPrefRowCount(cardinality);
-                super.setGraphic(control);
+                ListView<JsonNode> nestedView = baseNest.apply(item);
+                setGraphic(nestedView);
+                setItems(nestedView, topLevel.apply(item));
             }
         });
         return column;
+    }
+
+    private ListView<JsonNode> split(int cardinality) {
+        ListViewWithVisibleRowCount<JsonNode> content = new ListViewWithVisibleRowCount<>();
+        content.setCellFactory(c -> new ListCell<JsonNode>() {
+            TextArea control = buildControl(cardinality);
+
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem()) {
+                    return;
+                }
+                super.updateItem(item, empty);
+                super.setText(null);
+                if (empty) {
+                    super.setGraphic(null);
+                    return;
+                }
+                control.setText(asText(item));
+                control.setPrefRowCount(cardinality);
+                setGraphic(control);
+            }
+        });
+        content.setPrefWidth(justifiedWidth);
+        content.visibleRowCountProperty()
+               .set(cardinality);
+        content.getProperties()
+               .put("deferToParentPrefWidth", Boolean.TRUE);
+        return content;
     }
 
     @Override
@@ -127,7 +180,8 @@ public class Primitive extends SchemaNode {
             variableLength = true;
         }
         tableColumnWidth = Math.max(labelWidth(),
-                                    Math.max(valueDefaultWidth, averageWidth)) + 4;
+                                    Math.max(valueDefaultWidth, averageWidth))
+                           + 4;
         justifiedWidth = tableColumnWidth;
         return tableColumnWidth;
     }
@@ -139,12 +193,11 @@ public class Primitive extends SchemaNode {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
-        //        labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
         box.getChildren()
            .add(labelText);
-        TextArea control = buildControl(cardinality, false);
+        TextArea control = buildControl(cardinality);
         box.getChildren()
            .add(control);
         box.setPrefWidth(justifiedWidth);
@@ -174,10 +227,10 @@ public class Primitive extends SchemaNode {
         return node.asText();
     }
 
-    private TextArea buildControl(int cardinality, boolean last) {
+    private TextArea buildControl(int cardinality) {
         TextArea textArea = new TextArea();
         textArea.setWrapText(true);
-        textArea.setPrefWidth(justifiedWidth - (last ? SCROLL_WIDTH : 0));
+        textArea.setPrefWidth(justifiedWidth);
         textArea.setPrefRowCount(cardinality);
         textArea.setFont(valueFont);
         return textArea;

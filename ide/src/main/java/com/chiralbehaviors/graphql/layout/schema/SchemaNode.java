@@ -29,11 +29,15 @@ import java.util.function.Function;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
 import javafx.scene.Node;
+import javafx.scene.control.Control;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.text.Font;
 
 /**
@@ -41,6 +45,19 @@ import javafx.scene.text.Font;
  *
  */
 abstract public class SchemaNode {
+
+    public class ColumnMaster {
+        public final TableColumn<JsonNode, ?> column;
+        public final Consumer<JsonNode>       items;
+        public final Node                     node;
+
+        public ColumnMaster(Consumer<JsonNode> items,
+                            TableColumn<JsonNode, ?> column, Node node) {
+            this.items = items;
+            this.column = column;
+            this.node = node;
+        }
+    }
 
     public class NodeMaster {
         public final Consumer<JsonNode> items;
@@ -52,8 +69,10 @@ abstract public class SchemaNode {
         }
     }
 
-    static FontLoader FONT_LOADER = Toolkit.getToolkit()
-                                           .getFontLoader();
+    static FontLoader    FONT_LOADER  = Toolkit.getToolkit()
+                                               .getFontLoader();
+
+    protected static int SCROLL_WIDTH = 34;
 
     public static ArrayNode asArray(JsonNode node) {
         if (node.isArray()) {
@@ -83,6 +102,7 @@ abstract public class SchemaNode {
     String       label;
     Font         labelFont        = Font.getDefault();
     float        tableColumnWidth = 0;
+
     boolean      variableLength   = false;
 
     public SchemaNode(String field) {
@@ -114,6 +134,26 @@ abstract public class SchemaNode {
         return variableLength;
     }
 
+    public void setItems(Control control, JsonNode data) {
+        if (data == null) {
+            data = JsonNodeFactory.instance.arrayNode();
+        }
+        List<JsonNode> dataList = asList(data);
+        ObservableListWrapper<JsonNode> observedData = new ObservableListWrapper<>(dataList);
+        if (control instanceof ListView) {
+            @SuppressWarnings("unchecked")
+            ListView<JsonNode> listView = (ListView<JsonNode>) control;
+            listView.setItems(observedData);
+        } else if (control instanceof TableView) {
+            @SuppressWarnings("unchecked")
+            TableView<JsonNode> tableView = (TableView<JsonNode>) control;
+            tableView.setItems(observedData);
+        } else {
+            throw new IllegalArgumentException(String.format("Unknown control %s",
+                                                             control));
+        }
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
@@ -126,25 +166,19 @@ abstract public class SchemaNode {
         this.variableLength = variableLength;
     }
 
-    protected static int SCROLL_WIDTH = 34;
-
     abstract public String toString(int indent);
 
-    abstract TableColumn<String, ?> buildHeader();
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, ListView<JsonNode>> nesting,
+                                                              int cardinality,
+                                                              Function<JsonNode, JsonNode> extractor);
 
-    abstract TableColumn<JsonNode, ?> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                       int cardinality,
-                                                       boolean last);
-
-    void constrain(TableColumn<?, ?> column, boolean last) {
+    void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");
         column.setPrefWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
-        if (!last) {
-            column.setMinWidth(justifiedWidth);
-            column.getProperties()
-                  .put("deferToParentPrefWidth", Boolean.TRUE);
-        }
+        column.setMinWidth(justifiedWidth);
+        column.getProperties()
+              .put("deferToParentPrefWidth", Boolean.TRUE);
     }
 
     void justify(float width) {

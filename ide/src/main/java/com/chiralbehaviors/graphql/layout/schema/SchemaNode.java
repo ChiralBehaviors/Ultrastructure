@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.glassfish.jersey.internal.util.Producer;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -98,8 +100,41 @@ abstract public class SchemaNode {
         return nodes;
     }
 
-    final String field;
+    public static ArrayNode extractField(JsonNode node, String field) {
+        if (node == null) {
+            return JsonNodeFactory.instance.arrayNode();
+        }
+        if (!node.isArray()) {
+            JsonNode resolved = node.get(field);
+            if (resolved == null) {
+                return JsonNodeFactory.instance.arrayNode();
+            }
+            if (resolved.isArray()) {
+                return (ArrayNode) resolved;
+            }
+            ArrayNode array = JsonNodeFactory.instance.arrayNode();
+            array.add(resolved);
+            return array;
+        }
+        ArrayNode extracted = JsonNodeFactory.instance.arrayNode();
+        node.forEach(element -> extracted.add(element.get(field)));
+        return extracted;
+    }
 
+    public static List<JsonNode> extractList(JsonNode jsonNode, String field) {
+        List<JsonNode> nodes = new ArrayList<>();
+        if (jsonNode == null) {
+            return nodes;
+        }
+        if (jsonNode.isArray()) {
+            jsonNode.forEach(node -> nodes.add(node.get(field)));
+        } else {
+            return Collections.singletonList(jsonNode);
+        }
+        return nodes;
+    }
+
+    final String field;
     float        justifiedWidth   = 0;
     String       label;
     Font         labelFont        = Font.getDefault();
@@ -169,21 +204,31 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                              int cardinality,
-                                                              Function<ListView<JsonNode>, ListView<JsonNode>> nesting);
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
+                                                              Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting);
 
     void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");
         column.setPrefWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
         column.setMinWidth(justifiedWidth);
-        column.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
+        //        column.getProperties()
+        //              .put("deferToParentPrefWidth", Boolean.TRUE);
     }
 
-    String getFoldedField() {
-        return field;
+    Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
+        return n -> {
+            JsonNode extracted = extractor.apply(n);
+            return extracted == null ? null : extracted.get(field);
+        };
+    }
+
+    JsonNode extractFrom(JsonNode jsonNode) {
+        return extractField(jsonNode, field);
+    }
+
+    Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {
+        return extract(extractor);
     }
 
     void justify(float width) {

@@ -23,10 +23,12 @@ package com.chiralbehaviors.graphql.layout.schema;
 import java.util.List;
 import java.util.function.Function;
 
-import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
+import org.glassfish.jersey.internal.util.Producer;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import javafx.beans.binding.ObjectBinding;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
@@ -34,7 +36,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.beans.binding.ObjectBinding;
 
 /**
  * @author hhildebrand
@@ -73,9 +74,8 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                     int cardinality,
-                                                     Function<ListView<JsonNode>, ListView<JsonNode>> nesting) {
+    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
+                                                     Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
@@ -87,7 +87,7 @@ public class Primitive extends SchemaNode {
             }
         });
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            ListView<JsonNode> nestedView = nesting.apply(split(cardinality, extractor));
+            ListView<JsonNode> nestedView = nesting.apply(() -> split(cardinality));
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
@@ -104,38 +104,6 @@ public class Primitive extends SchemaNode {
             }
         });
         return column;
-    }
-
-    private ListView<JsonNode> split(int cardinality, Function<JsonNode, JsonNode> extractor) {
-        ListViewWithVisibleRowCount<JsonNode> content = new ListViewWithVisibleRowCount<>();
-        content.setCellFactory(c -> new ListCell<JsonNode>() {
-            TextArea control = buildControl(cardinality);
-
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem()) {
-                    return;
-                }
-                super.updateItem(item, empty);
-                setText(null);
-                if (empty || item == null) {
-                    setGraphic(null);
-                    return;
-                }
-                JsonNode extracted = extractor.apply(item);
-                if (extracted == null) {
-                    setGraphic(null);
-                    return;
-                }
-                control.setText(asText(extracted.get(field)));
-                control.setPrefRowCount(cardinality);
-                setGraphic(control);
-            }
-        });
-        content.setPrefWidth(justifiedWidth - 4);
-        content.visibleRowCountProperty()
-               .set(cardinality);
-        return content;
     }
 
     @Override
@@ -216,6 +184,30 @@ public class Primitive extends SchemaNode {
         textArea.setPrefRowCount(cardinality);
         textArea.setFont(valueFont);
         return textArea;
+    }
+
+    private ListView<JsonNode> split(int cardinality) {
+        ListView<JsonNode> content = new ListView<>();
+        content.setCellFactory(c -> new ListCell<JsonNode>() {
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem()) {
+                    return;
+                }
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
+                }
+                setWrapText(true);
+                setText(asText(item));
+            }
+        });
+        //        content.visibleRowCountProperty()
+        //               .set(1);
+        content.setStyle("-fx-background-insets: 0, 0 ;");
+        return content;
     }
 
     private String toString(JsonNode value) {

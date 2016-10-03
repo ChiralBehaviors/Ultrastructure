@@ -211,8 +211,7 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                              int cardinality,
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                               Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting);
 
     void constrain(TableColumn<?, ?> column) {
@@ -220,8 +219,6 @@ abstract public class SchemaNode {
         column.setPrefWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
         column.setMinWidth(justifiedWidth);
-        //        column.getProperties()
-        //              .put("deferToParentPrefWidth", Boolean.TRUE);
     }
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {

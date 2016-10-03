@@ -74,8 +74,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                     int cardinality,
+    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                      Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);

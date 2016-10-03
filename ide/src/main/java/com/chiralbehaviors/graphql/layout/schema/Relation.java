@@ -235,59 +235,22 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
-                                                     int cardinality,
+    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                      Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting) {
         if (isFold()) {
-            return fold.buildTableColumn(extract(extractor), cardinality,
-                                         nesting);
+            return fold.buildTableColumn(cardinality, nesting);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
         children.forEach(child -> {
             column.getColumns()
-                  .add(child.buildTableColumn(n -> n, averageCardinality,
-                                              nest(child, nesting, cardinality,
-                                                   extractor)));
+                  .add(child.buildTableColumn(averageCardinality,
+                                              nest(child, nesting,
+                                                   cardinality)));
         });
 
         return column;
-    }
-
-    private Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nest(SchemaNode child,
-                                                                            Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting,
-                                                                            int cardinality,
-                                                                            Function<JsonNode, JsonNode> extractor) {
-        return n -> {
-            return nesting.apply(() -> {
-                ListView<JsonNode> split = split(cardinality);
-                split.setCellFactory(c -> new ListCell<JsonNode>() {
-                    ListView<JsonNode> childList = n.call();
-
-                    @Override
-                    protected void updateItem(JsonNode item, boolean empty) {
-                        SchemaNode node = child;
-                        node.toString();
-                        String thisField = field;
-                        thisField.toString();
-                        if (item == getItem()) {
-                            return;
-                        }
-                        super.updateItem(item, empty);
-                        super.setText(null);
-                        if (empty || item == null) {
-                            setGraphic(null);
-                            return;
-                        }
-                        setGraphic(childList);
-                        JsonNode extracted = child.extractFrom(item);
-                        setItems(childList, extracted);
-                    }
-                });
-                return split;
-            });
-        };
     }
 
     JsonNode extractFrom(JsonNode jsonNode) {
@@ -494,9 +457,9 @@ public class Relation extends SchemaNode implements Cloneable {
         constrain(top);
         children.forEach(child -> {
             top.getColumns()
-               .add(child.buildTableColumn(n -> n, averageCardinality,
+               .add(child.buildTableColumn(averageCardinality,
                                            nest(child, n -> n.call(),
-                                                cardinality, extractor)));
+                                                cardinality)));
         });
         constrain(top);
         table.setPlaceholder(new Text());
@@ -569,6 +532,40 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 * (child.getTableColumnWidth()
                                                    / total)
                                                 + child.getTableColumnWidth()));
+    }
+
+    private Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nest(SchemaNode child,
+                                                                            Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting,
+                                                                            int cardinality) {
+        return n -> {
+            return nesting.apply(() -> {
+                ListView<JsonNode> split = split(cardinality);
+                split.setCellFactory(c -> new ListCell<JsonNode>() {
+                    ListView<JsonNode> childList = n.call();
+
+                    @Override
+                    protected void updateItem(JsonNode item, boolean empty) {
+                        SchemaNode node = child;
+                        node.toString();
+                        String thisField = field;
+                        thisField.toString();
+                        if (item == getItem()) {
+                            return;
+                        }
+                        super.updateItem(item, empty);
+                        super.setText(null);
+                        if (empty || item == null) {
+                            setGraphic(null);
+                            return;
+                        }
+                        setGraphic(childList);
+                        JsonNode extracted = child.extractFrom(item);
+                        setItems(childList, extracted);
+                    }
+                });
+                return split;
+            });
+        };
     }
 
     private void nestTables() {

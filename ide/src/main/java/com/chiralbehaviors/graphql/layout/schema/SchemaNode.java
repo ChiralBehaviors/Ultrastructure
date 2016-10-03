@@ -117,7 +117,14 @@ abstract public class SchemaNode {
             return array;
         }
         ArrayNode extracted = JsonNodeFactory.instance.arrayNode();
-        node.forEach(element -> extracted.add(element.get(field)));
+        node.forEach(element -> {
+            JsonNode resolved = element.get(field);
+            if (resolved.isArray()) {
+                extracted.addAll((ArrayNode) resolved);
+            } else {
+                extracted.add(resolved);
+            }
+        });
         return extracted;
     }
 
@@ -204,7 +211,8 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(Function<JsonNode, JsonNode> extractor,
+                                                              int cardinality,
                                                               Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting);
 
     void constrain(TableColumn<?, ?> column) {

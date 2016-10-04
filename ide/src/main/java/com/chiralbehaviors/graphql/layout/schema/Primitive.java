@@ -90,11 +90,10 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            NestedColumnView nestedView = new NestedColumnView(Primitive.this,
-                                                               split(cardinality));
+            NestedColumnView nestedView = new NestedColumnView();
             {
                 nesting.apply(() -> {
-                    return nestedView.getPrimitiveView();
+                    return split(cardinality);
                 }, nestedView);
             }
 

@@ -448,8 +448,7 @@ public class Relation extends SchemaNode implements Cloneable {
     private Control buildTable(Function<JsonNode, JsonNode> extractor,
                                int cardinality) {
         if (isFold()) {
-            Function<JsonNode, JsonNode> fetch = extract(extractor);
-            return fold.buildTable(fetch, averageCardinality);
+            return fold.buildTable(extract(extractor), averageCardinality);
         }
 
         TableView<JsonNode> table = new TableView<>();
@@ -543,6 +542,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return (p, view) -> {
             return nesting.apply(() -> {
                 ListView<JsonNode> split = split(cardinality);
+                
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     ListView<JsonNode> childList = p.call();
                     {

@@ -2,7 +2,6 @@ package com.chiralbehaviors.graphql.layout;
 
 import java.util.Stack;
 
-import com.chiralbehaviors.graphql.layout.schema.Primitive;
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -29,16 +28,9 @@ public class NestedColumnView extends Control {
 
     private final Stack<Nesting> nestings = new Stack<>();
 
-    public NestedColumnView(Primitive primitive, ListView<JsonNode> view) {
-        nestings.push(new Nesting(primitive, view));
-    }
-
-    public ListView<JsonNode> getPrimitiveView() {
-        return nestings.elementAt(0).view;
-    }
-
     public void manifest() {
-        ListView<JsonNode> view = nestings.peek().view;
+        Nesting top = nestings.peek();
+        ListView<JsonNode> view = top.view;
         this.getChildren().add(view);
     }
 

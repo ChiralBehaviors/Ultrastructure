@@ -39,6 +39,7 @@ import com.sun.javafx.tk.Toolkit;
 
 import javafx.scene.Node;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -71,8 +72,8 @@ abstract public class SchemaNode {
         }
     }
 
-    static FontLoader    FONT_LOADER  = Toolkit.getToolkit()
-                                               .getFontLoader();
+    static FontLoader FONT_LOADER = Toolkit.getToolkit()
+                                           .getFontLoader();
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
@@ -98,6 +99,26 @@ abstract public class SchemaNode {
             return Collections.singletonList(jsonNode);
         }
         return nodes;
+    }
+
+    public static String asText(JsonNode node) {
+        if (node == null) {
+            return "";
+        }
+        boolean first = true;
+        if (node.isArray()) {
+            StringBuilder builder = new StringBuilder();
+            for (JsonNode row : ((ArrayNode) node)) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append('\n');
+                }
+                builder.append(row.asText());
+            }
+            return builder.toString();
+        }
+        return node.asText();
     }
 
     public static ArrayNode extractField(JsonNode node, String field) {
@@ -155,6 +176,9 @@ abstract public class SchemaNode {
             @SuppressWarnings("unchecked")
             TableView<JsonNode> tableView = (TableView<JsonNode>) control;
             tableView.setItems(observedData);
+        } else if (control instanceof Label) {
+            Label label = (Label) control;
+            label.setText(asText(data));
         } else {
             throw new IllegalArgumentException(String.format("Unknown control %s",
                                                              control));
@@ -221,7 +245,7 @@ abstract public class SchemaNode {
     abstract public String toString(int indent);
 
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                              BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nesting);
+                                                              BiFunction<Producer<Control>, NestedColumnView, Control> nesting);
 
     void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");

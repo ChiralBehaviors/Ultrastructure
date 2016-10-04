@@ -92,9 +92,8 @@ public class ListViewWithVisibleRowCount<T> extends ListView<T> {
         @Override
         protected void handleControlPropertyChanged(String p) {
             super.handleControlPropertyChanged(p);
-            if ("VISIBLE_ROW_COUNT".equals(p)) {
-                // needCellsReconfigured = true;
-                getSkinnable().requestFocus();
+            if ("VISIBLE_ROW_COUNT".equals(p)) { 
+                getSkinnable().refresh();
             }
         }
 

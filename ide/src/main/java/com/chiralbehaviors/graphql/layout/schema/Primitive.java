@@ -31,8 +31,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
@@ -63,21 +63,9 @@ public class Primitive extends SchemaNode {
         return toString();
     }
 
-    TableColumn<String, ?> buildHeader() {
-        TableColumn<String, ?> header = new TableColumn<>(label);
-        float width = justifiedWidth;
-        header.setPrefWidth(width);
-        header.setMaxWidth(width);
-        header.setMinWidth(width);
-        header.setStyle("-fx-padding: 0 0 0 0;");
-        header.getProperties()
-              .put("deferToParentPrefWidth", Boolean.TRUE);
-        return header;
-    }
-
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nesting) {
+                                                     BiFunction<Producer<Control>, NestedColumnView, Control> nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
@@ -93,7 +81,7 @@ public class Primitive extends SchemaNode {
             NestedColumnView nestedView = new NestedColumnView();
             {
                 nesting.apply(() -> {
-                    return split(cardinality);
+                    return buildControl(cardinality);
                 }, nestedView);
             }
 
@@ -155,7 +143,7 @@ public class Primitive extends SchemaNode {
         labelText.setPrefRowCount(cardinality);
         box.getChildren()
            .add(labelText);
-        TextArea control = buildControl(cardinality);
+        Label control = buildControl(cardinality);
         box.getChildren()
            .add(control);
         box.setPrefWidth(justifiedWidth);
@@ -165,57 +153,14 @@ public class Primitive extends SchemaNode {
         }, box);
     }
 
-    private String asText(JsonNode node) {
-        if (node == null) {
-            return "";
-        }
-        boolean first = true;
-        if (node.isArray()) {
-            StringBuilder builder = new StringBuilder();
-            for (JsonNode row : ((ArrayNode) node)) {
-                if (first) {
-                    first = false;
-                } else {
-                    builder.append('\n');
-                }
-                builder.append(row.asText());
-            }
-            return builder.toString();
-        }
-        return node.asText();
-    }
-
-    private TextArea buildControl(int cardinality) {
-        TextArea textArea = new TextArea();
-        textArea.setWrapText(true);
-        textArea.setPrefWidth(justifiedWidth);
-        textArea.setPrefRowCount(cardinality);
-        textArea.setFont(valueFont);
-        return textArea;
-    }
-
-    private ListView<JsonNode> split(int cardinality) {
-        ListView<JsonNode> content = new ListView<>();
-        content.setCellFactory(c -> new ListCell<JsonNode>() {
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem()) {
-                    return;
-                }
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                    setText(null);
-                    return;
-                }
-                setWrapText(true);
-                setText(asText(item));
-            }
-        });
-//        content.visibleRowCountProperty()
-//               .set(1);
-        content.setStyle("-fx-background-insets: 0, 0 ;");
-        return content;
+    private Label buildControl(int cardinality) {
+        Label label = new Label();
+        label.setWrapText(true);
+        label.setPrefWidth(justifiedWidth -35);
+        label.setPrefHeight(cardinality * 24);
+        label.setStyle("-fx-background-insets: 0 ;");
+        label.setFont(valueFont);
+        return label;
     }
 
     private String toString(JsonNode value) {

@@ -542,7 +542,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return (p, view) -> {
             return nesting.apply(() -> {
                 ListView<JsonNode> split = split(cardinality);
-                
+
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     ListView<JsonNode> childList = p.call();
                     {
@@ -588,8 +588,8 @@ public class Relation extends SchemaNode implements Cloneable {
         content.setPlaceholder(new Text());
         content.setStyle("-fx-background-insets: 0 ;");
         //        content.setPrefWidth(justifiedWidth - 4);
-        //        content.visibleRowCountProperty()
-        //               .set(cardinality);
+//        content.visibleRowCountProperty()
+//               .set(cardinality);
         return content;
     }
 }

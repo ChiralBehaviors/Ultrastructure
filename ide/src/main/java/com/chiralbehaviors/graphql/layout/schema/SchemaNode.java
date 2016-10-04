@@ -74,8 +74,6 @@ abstract public class SchemaNode {
     static FontLoader    FONT_LOADER  = Toolkit.getToolkit()
                                                .getFontLoader();
 
-    protected static int SCROLL_WIDTH = 34;
-
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
             return JsonNodeFactory.instance.arrayNode();

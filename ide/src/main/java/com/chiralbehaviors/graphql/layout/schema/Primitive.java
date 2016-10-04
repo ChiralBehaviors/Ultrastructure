@@ -212,8 +212,8 @@ public class Primitive extends SchemaNode {
                 setText(asText(item));
             }
         });
-        //        content.visibleRowCountProperty()
-        //               .set(1);
+//        content.visibleRowCountProperty()
+//               .set(1);
         content.setStyle("-fx-background-insets: 0, 0 ;");
         return content;
     }

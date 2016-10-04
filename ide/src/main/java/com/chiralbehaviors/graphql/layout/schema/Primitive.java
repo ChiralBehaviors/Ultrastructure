@@ -21,10 +21,12 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.glassfish.jersey.internal.util.Producer;
 
+import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -75,7 +77,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting) {
+                                                     BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
@@ -86,8 +88,15 @@ public class Primitive extends SchemaNode {
                 return cellData.getValue();
             }
         });
+
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            ListView<JsonNode> nestedView = nesting.apply(() -> split(cardinality));
+            NestedColumnView nestedView = new NestedColumnView(Primitive.this,
+                                                               split(cardinality));
+            {
+                nesting.apply(() -> {
+                    return nestedView.getPrimitiveView();
+                }, nestedView);
+            }
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
@@ -100,7 +109,7 @@ public class Primitive extends SchemaNode {
                     return;
                 }
                 setGraphic(nestedView);
-                setItems(nestedView, item);
+                nestedView.setItem(item);
             }
         });
         return column;

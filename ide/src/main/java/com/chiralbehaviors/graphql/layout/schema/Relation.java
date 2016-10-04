@@ -24,11 +24,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.glassfish.jersey.internal.util.Producer;
 
 import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
+import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -134,6 +136,13 @@ public class Relation extends SchemaNode implements Cloneable {
         return useTable ? buildTable(extractor, -1) : buildOutline(n -> n, -1);
     }
 
+    public JsonNode extractFrom(JsonNode jsonNode) {
+        if (isFold()) {
+            return fold.extractFrom(super.extractFrom(jsonNode));
+        }
+        return super.extractFrom(jsonNode);
+    }
+
     public int getAverageCardinality() {
         return averageCardinality;
     }
@@ -236,7 +245,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting) {
+                                                     BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nesting) {
         if (isFold()) {
             return fold.buildTableColumn(cardinality, nesting);
         }
@@ -251,13 +260,6 @@ public class Relation extends SchemaNode implements Cloneable {
         });
 
         return column;
-    }
-
-    JsonNode extractFrom(JsonNode jsonNode) {
-        if (isFold()) {
-            return fold.extractFrom(super.extractFrom(jsonNode));
-        }
-        return super.extractFrom(jsonNode);
     }
 
     @Override
@@ -454,12 +456,13 @@ public class Relation extends SchemaNode implements Cloneable {
         TableColumn<JsonNode, JsonNode> top = new TableColumn<>(label);
         table.getColumns()
              .add(top);
-        constrain(top);
         children.forEach(child -> {
             top.getColumns()
-               .add(child.buildTableColumn(averageCardinality,
-                                           nest(child, n -> n.call(),
-                                                cardinality)));
+               .add(child.buildTableColumn(averageCardinality, (p, view) -> {
+                   view.push(child, p.call());
+                   view.manifest();
+                   return null;
+               }));
         });
         constrain(top);
         table.setPlaceholder(new Text());
@@ -534,14 +537,17 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    private Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nest(SchemaNode child,
-                                                                            Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting,
-                                                                            int cardinality) {
-        return n -> {
+    private BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nest(SchemaNode child,
+                                                                                                BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nesting,
+                                                                                                int cardinality) {
+        return (p, view) -> {
             return nesting.apply(() -> {
                 ListView<JsonNode> split = split(cardinality);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
-                    ListView<JsonNode> childList = n.call();
+                    ListView<JsonNode> childList = p.call();
+                    {
+                        view.push(child, childList);
+                    }
 
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
@@ -564,7 +570,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 return split;
-            });
+            }, view);
         };
     }
 

@@ -23,11 +23,13 @@ package com.chiralbehaviors.graphql.layout.schema;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.glassfish.jersey.internal.util.Producer;
 
+import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -141,11 +143,32 @@ abstract public class SchemaNode {
         return nodes;
     }
 
+    public static void setItemsOf(Control control, JsonNode data) {
+        if (data == null) {
+            data = JsonNodeFactory.instance.arrayNode();
+        }
+        List<JsonNode> dataList = asList(data);
+        ObservableListWrapper<JsonNode> observedData = new ObservableListWrapper<>(dataList);
+        if (control instanceof ListView) {
+            @SuppressWarnings("unchecked")
+            ListView<JsonNode> listView = (ListView<JsonNode>) control;
+            listView.setItems(observedData);
+        } else if (control instanceof TableView) {
+            @SuppressWarnings("unchecked")
+            TableView<JsonNode> tableView = (TableView<JsonNode>) control;
+            tableView.setItems(observedData);
+        } else {
+            throw new IllegalArgumentException(String.format("Unknown control %s",
+                                                             control));
+        }
+    }
+
     final String field;
     float        justifiedWidth   = 0;
     String       label;
     Font         labelFont        = Font.getDefault();
     float        tableColumnWidth = 0;
+
     boolean      variableLength   = false;
 
     public SchemaNode(String field) {
@@ -155,6 +178,10 @@ abstract public class SchemaNode {
     public SchemaNode(String field, String label) {
         this.label = label;
         this.field = field;
+    }
+
+    public JsonNode extractFrom(JsonNode jsonNode) {
+        return extractField(jsonNode, field);
     }
 
     public String getField() {
@@ -178,23 +205,7 @@ abstract public class SchemaNode {
     }
 
     public void setItems(Control control, JsonNode data) {
-        if (data == null) {
-            data = JsonNodeFactory.instance.arrayNode();
-        }
-        List<JsonNode> dataList = asList(data);
-        ObservableListWrapper<JsonNode> observedData = new ObservableListWrapper<>(dataList);
-        if (control instanceof ListView) {
-            @SuppressWarnings("unchecked")
-            ListView<JsonNode> listView = (ListView<JsonNode>) control;
-            listView.setItems(observedData);
-        } else if (control instanceof TableView) {
-            @SuppressWarnings("unchecked")
-            TableView<JsonNode> tableView = (TableView<JsonNode>) control;
-            tableView.setItems(observedData);
-        } else {
-            throw new IllegalArgumentException(String.format("Unknown control %s",
-                                                             control));
-        }
+        setItemsOf(control, data);
     }
 
     public void setLabel(String label) {
@@ -212,7 +223,7 @@ abstract public class SchemaNode {
     abstract public String toString(int indent);
 
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                              Function<Producer<ListView<JsonNode>>, ListView<JsonNode>> nesting);
+                                                              BiFunction<Producer<ListView<JsonNode>>, NestedColumnView, ListView<JsonNode>> nesting);
 
     void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");
@@ -226,10 +237,6 @@ abstract public class SchemaNode {
             JsonNode extracted = extractor.apply(n);
             return extracted == null ? null : extracted.get(field);
         };
-    }
-
-    JsonNode extractFrom(JsonNode jsonNode) {
-        return extractField(jsonNode, field);
     }
 
     Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {

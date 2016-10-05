@@ -153,7 +153,6 @@ public class Primitive extends SchemaNode {
     private Label buildControl(int cardinality) {
         Label label = new Label();
         label.setWrapText(true);
-        label.setPrefWidth(justifiedWidth -35);
         label.setPrefHeight(cardinality * 24);
         label.setStyle("-fx-background-insets: 0 ;");
         label.setFont(valueFont);

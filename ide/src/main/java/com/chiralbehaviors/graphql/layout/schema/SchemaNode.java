@@ -246,8 +246,6 @@ abstract public class SchemaNode {
     void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");
         column.setPrefWidth(justifiedWidth);
-        column.setMaxWidth(justifiedWidth);
-        column.setMinWidth(justifiedWidth);
     }
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {

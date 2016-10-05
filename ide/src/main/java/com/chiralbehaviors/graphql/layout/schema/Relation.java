@@ -463,7 +463,8 @@ public class Relation extends SchemaNode implements Cloneable {
         constrain(top);
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.setPrefWidth(justifiedWidth);
+        table.setMinWidth(0);
+        table.setPrefWidth(1);
         return table;
     }
 
@@ -581,6 +582,8 @@ public class Relation extends SchemaNode implements Cloneable {
         ListView<JsonNode> content = new ListView<>();
         content.setPlaceholder(new Text());
         content.setStyle("-fx-background-insets: 0 ;");
+        content.setMinWidth(0);
+        content.setPrefWidth(1);
         return content;
     }
 }

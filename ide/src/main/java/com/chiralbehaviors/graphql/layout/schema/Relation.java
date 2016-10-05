@@ -125,11 +125,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (isFold()) {
             return fold.buildControl();
         }
-        Function<JsonNode, JsonNode> extractor = n -> {
-            JsonNode temp = n;
-            return temp;
-        };
-        return useTable ? buildTable(extractor, -1) : buildOutline(n -> n, -1);
+        return useTable ? buildTable(n -> n, -1) : buildOutline(n -> n, -1);
     }
 
     public JsonNode extractFrom(JsonNode jsonNode) {

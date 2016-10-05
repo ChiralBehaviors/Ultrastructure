@@ -21,17 +21,13 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import org.glassfish.jersey.internal.util.Producer;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -65,7 +61,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     BiFunction<Producer<Control>, NestedColumnView, Control> nesting) {
+                                                     NestingFunction nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
@@ -77,12 +73,13 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+        
+        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() { 
             NestedColumnView nestedView = new NestedColumnView();
             {
                 nesting.apply(() -> {
                     return buildControl(cardinality);
-                }, nestedView);
+                }, nestedView, cardinality * 24);
             }
 
             @Override

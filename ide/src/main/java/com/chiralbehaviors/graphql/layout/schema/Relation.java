@@ -24,13 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.glassfish.jersey.internal.util.Producer;
-
 import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
-import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -245,7 +241,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     BiFunction<Producer<Control>, NestedColumnView, Control> nesting) {
+                                                     NestingFunction nesting) {
         if (isFold()) {
             return fold.buildTableColumn(cardinality, nesting);
         }
@@ -457,11 +453,12 @@ public class Relation extends SchemaNode implements Cloneable {
              .add(top);
         children.forEach(child -> {
             top.getColumns()
-               .add(child.buildTableColumn(averageCardinality, (p, view) -> {
-                   view.push(child, p.call(), cardinality);
-                   view.manifest(cardinality);
-                   return null;
-               }));
+               .add(child.buildTableColumn(averageCardinality,
+                                           (p, view, height) -> {
+                                               view.setTop(child, p.call());
+                                               view.manifest(cardinality);
+                                               return null;
+                                           }));
         });
         constrain(top);
         table.setPlaceholder(new Text());
@@ -536,18 +533,14 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    private BiFunction<Producer<Control>, NestedColumnView, Control> nest(SchemaNode child,
-                                                                          BiFunction<Producer<Control>, NestedColumnView, Control> nesting,
-                                                                          int cardinality) {
-        return (p, view) -> {
+    private NestingFunction nest(SchemaNode child, NestingFunction nesting,
+                                 int cardinality) {
+        return (p, view, height) -> {
             return nesting.apply(() -> {
                 ListView<JsonNode> split = split(cardinality);
 
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     Control childControl = p.call();
-                    {
-                        view.push(child, childControl, averageCardinality);
-                    }
 
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
@@ -569,8 +562,9 @@ public class Relation extends SchemaNode implements Cloneable {
                         setItemsOf(childControl, extracted);
                     }
                 });
+                split.setPrefHeight(cardinality * height);
                 return split;
-            }, view);
+            }, view, cardinality * height);
         };
     }
 

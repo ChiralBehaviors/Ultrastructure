@@ -23,13 +23,9 @@ package com.chiralbehaviors.graphql.layout.schema;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.glassfish.jersey.internal.util.Producer;
-
-import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -245,7 +241,7 @@ abstract public class SchemaNode {
     abstract public String toString(int indent);
 
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                              BiFunction<Producer<Control>, NestedColumnView, Control> nesting);
+                                                              NestingFunction nesting);
 
     void constrain(TableColumn<?, ?> column) {
         column.setStyle("-fx-padding: 0 0 0 0;");

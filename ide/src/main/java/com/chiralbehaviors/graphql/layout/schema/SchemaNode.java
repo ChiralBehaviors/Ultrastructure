@@ -39,6 +39,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 
 /**
@@ -47,24 +48,15 @@ import javafx.scene.text.Font;
  */
 abstract public class SchemaNode {
 
-    public class ColumnMaster {
-        public final TableColumn<JsonNode, JsonNode> column;
-        public final Function<JsonNode, JsonNode>    extractor;
-
-        public ColumnMaster(Function<JsonNode, JsonNode> extractor,
-                            TableColumn<JsonNode, JsonNode> column) {
-            this.extractor = extractor;
-            this.column = column;
-        }
-    }
-
     public class NodeMaster {
         public final Consumer<JsonNode> items;
         public final Node               node;
+        public final double             height;
 
-        public NodeMaster(Consumer<JsonNode> items, Node node) {
+        public NodeMaster(Consumer<JsonNode> items, Node node, double height) {
             this.items = items;
             this.node = node;
+            this.height = height;
         }
     }
 
@@ -175,6 +167,9 @@ abstract public class SchemaNode {
         } else if (control instanceof Label) {
             Label label = (Label) control;
             label.setText(asText(data));
+        } else if (control instanceof TextArea) {
+            TextArea label = (TextArea) control;
+            label.setText(asText(data));
         } else {
             throw new IllegalArgumentException(String.format("Unknown control %s",
                                                              control));
@@ -186,7 +181,6 @@ abstract public class SchemaNode {
     String       label;
     Font         labelFont        = Font.getDefault();
     float        tableColumnWidth = 0;
-
     boolean      variableLength   = false;
 
     public SchemaNode(String field) {
@@ -281,8 +275,4 @@ abstract public class SchemaNode {
     abstract NodeMaster outlineElement(float labelWidth,
                                        Function<JsonNode, JsonNode> extractor,
                                        int cardinality);
-
-    float outlineWidth() {
-        return tableColumnWidth;
-    }
 }

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.chiralbehaviors.graphql.layout.ListViewWithVisibleRowCount;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -350,36 +349,28 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setStyle("-fx-background-color: red;");
         Pane element;
         if (useTable) {
-            element = new HBox(2);
-            //            labelText.setMinWidth(labelWidth);
-            labelText.setMaxWidth(labelWidth);
+            element = new HBox(0);
         } else {
-            element = new VBox(2);
-            //            labelText.setMinWidth(justifiedWidth);
-            labelText.setMaxWidth(justifiedWidth);
+            element = new VBox(0);
         }
+        element.setPrefWidth(justifiedWidth);
         labelText.setWrapText(true);
         labelText.setPrefRowCount(1);
         element.getChildren()
                .add(labelText);
         element.getChildren()
                .add(control);
-        element.setMinWidth(justifiedWidth);
+        labelText.setMinWidth(0);
+        labelText.setPrefWidth(1);
         return new NodeMaster(item -> {
             if (item == null) {
                 return;
             }
             JsonNode extracted = extractor.apply(item);
-            setItems(control, extracted == null ? null : extracted.get(field));
-        }, element);
-    }
-
-    @Override
-    float outlineWidth() {
-        if (isFold()) {
-            return fold.outlineWidth();
-        }
-        return super.outlineWidth();
+            JsonNode extractedField = extracted == null ? null
+                                                        : extracted.get(field);
+            setItems(control, extractedField);
+        }, element, 1);
     }
 
     private ListView<JsonNode> buildOutline(Function<JsonNode, JsonNode> extractor,
@@ -387,9 +378,9 @@ public class Relation extends SchemaNode implements Cloneable {
         if (isFold()) {
             return fold.buildOutline(extract(extractor), averageCardinality);
         }
-        ListViewWithVisibleRowCount<JsonNode> list = new ListViewWithVisibleRowCount<>();
+        ListView<JsonNode> list = new ListView<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox                        cell     = new HBox(2);
+            HBox                        cell     = new HBox(0);
             Map<SchemaNode, NodeMaster> controls = new HashMap<>();
             {
                 cell.getChildren()
@@ -405,8 +396,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 });
                 cell.getChildren()
                     .add(box);
-                cell.getProperties()
-                    .put("deferToParentPrefWidth", Boolean.TRUE);
             }
 
             @Override
@@ -426,11 +415,9 @@ public class Relation extends SchemaNode implements Cloneable {
                 super.setGraphic(cell);
             }
         });
-        list.setPrefWidth(justifiedWidth);
-        list.visibleRowCountProperty()
-            .set(cardinality);
-        list.getProperties()
-            .put("deferToParentPrefWidth", Boolean.TRUE);
+        list.setMinWidth(0);
+        list.setPrefWidth(1);
+        list.setStyle("-fx-background-insets: 0 ;");
         return list;
     }
 

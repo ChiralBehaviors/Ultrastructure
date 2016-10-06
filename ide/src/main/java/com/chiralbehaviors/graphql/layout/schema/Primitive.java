@@ -28,11 +28,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.scene.control.Label;
+import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 
 /**
@@ -73,8 +74,7 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        
-        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() { 
+        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
             NestedColumnView nestedView = new NestedColumnView();
             {
                 nesting.apply(() -> {
@@ -136,27 +136,35 @@ public class Primitive extends SchemaNode {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
+        labelText.setMinWidth(0);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
+        HBox.setHgrow(labelText, Priority.ALWAYS);
         box.getChildren()
            .add(labelText);
-        Label control = buildControl(cardinality);
+        Control control = buildControl(cardinality);
+        HBox.setHgrow(control, Priority.ALWAYS);
+        control.setPrefWidth(justifiedWidth);
         box.getChildren()
            .add(control);
-        box.setPrefWidth(justifiedWidth);
+        //        box.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> {
-            control.setText(asText(extractor.apply(item)
-                                            .get(field)));
-        }, box);
+            JsonNode extracted = extractor.apply(item);
+            JsonNode extractedField = extracted.get(field);
+            setItemsOf(control, extractedField);
+        }, box, 1);
     }
 
-    private Label buildControl(int cardinality) {
-        Label label = new Label();
-        label.setWrapText(true);
-        label.setPrefHeight(cardinality * 24);
-        label.setStyle("-fx-background-insets: 0 ;");
-        label.setFont(valueFont);
-        return label;
+    private Control buildControl(int cardinality) {
+        TextArea text = new TextArea();
+        text.setWrapText(true);
+        text.setMinWidth(0);
+        text.setPrefWidth(1);
+        //        text.setMaxWidth(Double.MAX_VALUE);
+        text.setPrefHeight(cardinality * 24);
+        text.setStyle("-fx-background-insets: 0 ;");
+        text.setFont(valueFont);
+        return (Control) text;
     }
 
     private String toString(JsonNode value) {

@@ -72,14 +72,8 @@ public class NestedTableRow<T> extends TableRow<T> {
 
             });
             ScrollBar master = scrolls.size() > 1 ? scrolls.pop() : null;
-            scrolls.forEach(scrollbar -> scrollbar.setDisable(true));
             if (master != null) {
-                master.valueProperty()
-                      .addListener((o, p, c) -> {
-                          scrolls.forEach(scrollbar -> {
-                              scrollbar.setValue(c.doubleValue());
-                          });
-                      });
+                scrolls.forEach(scrollbar -> master.valueProperty().bindBidirectional(scrollbar.valueProperty()));
             }
             stacks = stacks.stream()
                            .filter(s -> !s.isEmpty())

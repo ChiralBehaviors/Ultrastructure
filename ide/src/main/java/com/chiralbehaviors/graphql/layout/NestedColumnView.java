@@ -20,33 +20,67 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import java.util.Stack;
+
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.scene.control.Control;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Skin;
+import javafx.util.Pair;
 
-public class NestedColumnView extends Control { 
-    private Control control;
-    private SchemaNode relation;
+public class NestedColumnView extends Control {
+    public static class Nested {
+        public final ListView<JsonNode> control;
+        public final double             height;
+        public final int                cardinality;
 
-    public void manifest(int cardinality) {   
+        public Nested(int cardinality, ListView<JsonNode> control,
+                      double height) {
+            this.cardinality = cardinality;
+            this.control = control;
+            this.height = height;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Nested [cardinality=%s, height=%s]", cardinality,
+                                 height);
+        }
+    }
+
+    private Stack<Nested>             nested = new Stack<>();
+    private Pair<SchemaNode, Control> top;
+
+    public Stack<Nested> getNested() {
+        return nested;
+    }
+
+    public void manifest(SchemaNode node, Control control, int cardinality) {
+        top = new Pair<>(node, control);
         this.getChildren()
-            .add(control);
-    }
-    
-    public void setTop(SchemaNode relation, Control control) {
-        this.relation = relation;
-        this.control = control;
+            .add(top.getValue());
     }
 
-    public void setItem(JsonNode item) { 
-        JsonNode extracted = relation.extractFrom(item);
-        SchemaNode.setItemsOf(control, extracted);
+    public void push(int cardinality, ListView<JsonNode> control, double height) {
+        nested.push(new Nested(cardinality, control, height));
+    }
+
+    public void setItem(JsonNode item) {
+        JsonNode extracted = top.getKey()
+                                .extractFrom(item);
+        SchemaNode.setItemsOf(top.getValue(), extracted);
+    }
+
+    public void setRow(NestedTableRow<?> row) {
+        if (row != null) {
+            row.register(this);
+        }
     }
 
     public String toString() {
-        return String.format("NestedView %s", relation);
+        return String.format("NestedView[%s]", top.getKey().getLabel());
     }
 
     @Override

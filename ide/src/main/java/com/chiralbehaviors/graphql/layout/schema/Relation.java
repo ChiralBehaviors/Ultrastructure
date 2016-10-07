@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -48,7 +49,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -347,21 +347,24 @@ public class Relation extends SchemaNode implements Cloneable {
                                    : buildOutline(n -> n, cardinality);
         TextArea labelText = new TextArea(label);
         labelText.setStyle("-fx-background-color: red;");
-        Pane element;
+        Node element;
         if (useTable) {
-            element = new HBox(0);
+            element = control;
         } else {
-            element = new VBox(0);
+            VBox box = new VBox();
+            box.getChildren()
+               .add(labelText);
+            box.setPrefWidth(justifiedWidth);
+            box.getChildren()
+               .add(control);
+            element = box;
         }
-        element.setPrefWidth(justifiedWidth);
+
         labelText.setWrapText(true);
         labelText.setPrefRowCount(1);
-        element.getChildren()
-               .add(labelText);
-        element.getChildren()
-               .add(control);
         labelText.setMinWidth(0);
         labelText.setPrefWidth(1);
+
         return new NodeMaster(item -> {
             if (item == null) {
                 return;
@@ -380,7 +383,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         ListView<JsonNode> list = new ListView<>();
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox                        cell     = new HBox(0);
+            HBox                        cell     = new HBox();
             Map<SchemaNode, NodeMaster> controls = new HashMap<>();
             {
                 cell.getChildren()
@@ -431,6 +434,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         TableView<JsonNode> table = new TableView<>();
+        table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
         TableColumn<JsonNode, JsonNode> top = new TableColumn<>(label);
         table.getColumns()
              .add(top);
@@ -438,8 +442,8 @@ public class Relation extends SchemaNode implements Cloneable {
             top.getColumns()
                .add(child.buildTableColumn(averageCardinality,
                                            (p, view, height) -> {
-                                               view.setTop(child, p.call());
-                                               view.manifest(cardinality);
+                                               view.manifest(child, p.call(),
+                                                             cardinality);
                                                return null;
                                            }));
         });
@@ -522,7 +526,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return (p, view, height) -> {
             return nesting.apply(() -> {
                 ListView<JsonNode> split = split(cardinality);
-
+                view.push(cardinality, split, height);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     Control childControl = p.call();
 
@@ -546,7 +550,6 @@ public class Relation extends SchemaNode implements Cloneable {
                         setItemsOf(childControl, extracted);
                     }
                 });
-                split.setPrefHeight(cardinality * height);
                 return split;
             }, view, cardinality * height);
         };

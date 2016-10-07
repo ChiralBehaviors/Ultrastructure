@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
+import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -77,6 +78,9 @@ public class Primitive extends SchemaNode {
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
             NestedColumnView nestedView = new NestedColumnView();
             {
+                tableRowProperty().addListener((o, p, c) -> {
+                    nestedView.setRow((NestedTableRow<?>) c);
+                });
                 nesting.apply(() -> {
                     return buildControl(cardinality);
                 }, nestedView, cardinality * 24);

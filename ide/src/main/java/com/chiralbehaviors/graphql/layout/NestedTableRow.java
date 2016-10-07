@@ -66,12 +66,13 @@ public class NestedTableRow<T> extends TableRow<T> {
                 p.control.setPrefHeight(p.cardinality * max);
                 p.control.setFixedCellSize(max);
                 for (Node node : p.control.lookupAll(".scroll-bar:vertical")) {
-                    scrolls.add((ScrollBar) node);
+                    scrolls.add((ScrollBar) node); 
                     break;
                 }
 
             });
             ScrollBar master = scrolls.size() > 1 ? scrolls.pop() : null;
+            scrolls.forEach(scrollbar -> scrollbar.setDisable(true));
             if (master != null) {
                 master.valueProperty()
                       .addListener((o, p, c) -> {

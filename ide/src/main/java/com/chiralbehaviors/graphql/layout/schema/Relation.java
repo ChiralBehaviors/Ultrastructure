@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.chiralbehaviors.graphql.layout.NestedTableRow.Nested;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -57,6 +58,7 @@ import javafx.scene.text.Text;
  *
  */
 public class Relation extends SchemaNode implements Cloneable {
+
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
@@ -243,12 +245,14 @@ public class Relation extends SchemaNode implements Cloneable {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
-        children.forEach(child -> {
+        int index = 0;
+        for (SchemaNode child : children) {
             column.getColumns()
                   .add(child.buildTableColumn(averageCardinality,
-                                              nest(child, nesting,
+                                              nest(child, index, nesting,
                                                    cardinality)));
-        });
+            index++;
+        }
 
         return column;
     }
@@ -441,7 +445,7 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(child -> {
             top.getColumns()
                .add(child.buildTableColumn(averageCardinality,
-                                           (p, view, height) -> {
+                                           (p, view, height, row) -> {
                                                view.manifest(child, p.call(),
                                                              cardinality);
                                                return null;
@@ -521,21 +525,18 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    private NestingFunction nest(SchemaNode child, NestingFunction nesting,
+    private NestingFunction nest(SchemaNode child, int column,
+                                 NestingFunction columnNesting,
                                  int cardinality) {
-        return (p, view, height) -> {
-            return nesting.apply(() -> {
-                ListView<JsonNode> split = split(cardinality);
-                view.push(cardinality, split, height);
+        return (p, view, height, row) -> {
+            return columnNesting.apply(() -> {
+                ListView<JsonNode> split = split(row, column, cardinality,
+                                                 height);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
-                    Control childControl = p.call();
+                    private final Control childControl = p.call();
 
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
-                        SchemaNode node = child;
-                        node.toString();
-                        String thisField = field;
-                        thisField.toString();
                         if (item == getItem()) {
                             return;
                         }
@@ -551,7 +552,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 return split;
-            }, view, cardinality * height);
+            }, view, cardinality * (height + 6), row);
         };
     }
 
@@ -564,10 +565,18 @@ public class Relation extends SchemaNode implements Cloneable {
         });
     }
 
-    private ListView<JsonNode> split(int cardinality) {
-        ListView<JsonNode> content = new ListView<>();
+    private ListView<JsonNode> split(NestedTableRow<JsonNode> row, int column,
+                                     int cardinality, double height) {
+        ListView<JsonNode> content = new ListView<JsonNode>() {
+            @Override
+            protected void layoutChildren() {
+                super.layoutChildren();
+                row.getNesting(Relation.this, children.size())
+                   .register(column, new Nested(Relation.this, cardinality,
+                                                this, height));
+            }
+        };
         content.setPlaceholder(new Text());
-        content.setStyle("-fx-background-insets: 0 ;");
         content.setMinWidth(0);
         content.setPrefWidth(1);
         return content;

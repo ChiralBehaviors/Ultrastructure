@@ -29,17 +29,17 @@ public class NestedTableRowSkin<S> extends TableRowSkin<S> {
     }
 
     @Override
-    protected void updateCells(boolean resetChildren) {
-        super.updateCells(resetChildren); 
-    }
-
-    private void link() {
-         ((NestedTableRow<S>) getSkinnable()).link();
+    protected void layoutChildren(double x, double y, double w, double h) {
+        super.layoutChildren(x, y, w, h);
     }
 
     @Override
-    protected void layoutChildren(double x, double y, double w, double h) {
-        super.layoutChildren(x, y, w, h); 
+    protected void updateCells(boolean resetChildren) {
+        super.updateCells(resetChildren);
         link();
+    }
+
+    private void link() {
+//        ((NestedTableRow<S>) getSkinnable()).link();
     }
 }

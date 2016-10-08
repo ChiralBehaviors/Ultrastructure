@@ -61,6 +61,7 @@ public class Primitive extends SchemaNode {
         return toString();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                      NestingFunction nesting) {
@@ -79,11 +80,13 @@ public class Primitive extends SchemaNode {
             NestedColumnView nestedView = new NestedColumnView();
             {
                 tableRowProperty().addListener((o, p, c) -> {
-                    nestedView.setRow((NestedTableRow<?>) c);
+                    NestedTableRow<JsonNode> nestedRow = (NestedTableRow<JsonNode>) c;
+                    nesting.apply(() -> {
+                        return buildControl(cardinality);
+                    }, nestedView, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
+                                  .getLineHeight()) + 24, nestedRow);
                 });
-                nesting.apply(() -> {
-                    return buildControl(cardinality);
-                }, nestedView, cardinality * 24);
+
             }
 
             @Override
@@ -165,8 +168,9 @@ public class Primitive extends SchemaNode {
         text.setMinWidth(0);
         text.setPrefWidth(1);
         //        text.setMaxWidth(Double.MAX_VALUE);
-        text.setPrefHeight(cardinality * 24);
-        text.setStyle("-fx-background-insets: 0 ;");
+        text.setPrefHeight((cardinality * FONT_LOADER.getFontMetrics(valueFont)
+                                                    .getLineHeight()) + 4);
+        //        text.setStyle("-fx-background-insets: 0 ;");
         text.setFont(valueFont);
         return (Control) text;
     }

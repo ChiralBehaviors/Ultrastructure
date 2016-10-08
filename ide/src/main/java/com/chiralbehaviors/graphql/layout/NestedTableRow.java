@@ -20,64 +20,104 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-import com.chiralbehaviors.graphql.layout.NestedColumnView.Nested;
+import com.chiralbehaviors.graphql.layout.schema.Relation;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.javafx.scene.control.skin.VirtualScrollBar;
 
+import javafx.beans.value.ChangeListener;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.Skin;
 import javafx.scene.control.TableRow;
 
 public class NestedTableRow<T> extends TableRow<T> {
-    private final List<NestedColumnView> nested = new ArrayList<>();
+    public static class Nested {
+        public final int                cardinality;
+        public final ListView<JsonNode> control;
+        public final double             height;
+        public final Relation           relation;
 
-    public List<NestedColumnView> getNested() {
-        return nested;
+        public Nested(Relation relation, int cardinality,
+                      ListView<JsonNode> control, double height) {
+            this.relation = relation;
+            this.cardinality = cardinality;
+            this.control = control;
+            this.height = height;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Nested [relation=%s, cardinality=%s, height=%s]",
+                                 relation.getLabel(), cardinality, height);
+        }
     }
 
-    public void register(NestedColumnView nestedView) {
-        nested.add(nestedView);
-    }
+    public static class Nesting {
+        private final Nested[] nested;
 
-    @Override
-    protected Skin<?> createDefaultSkin() {
-        return new NestedTableRowSkin<>(this);
-    }
+        public Nesting(int count) {
+            nested = new Nested[count];
+        }
 
-    public void link() {
-        List<Stack<Nested>> stacks = nested.stream()
-                                           .map(n -> n.getNested())
-                                           .collect(Collectors.toList());
-        do {
-            List<Nested> link = stacks.stream()
-                                      .filter(s -> !s.isEmpty())
-                                      .map(s -> s.pop())
-                                      .collect(Collectors.toList());
+        public void register(int column, Nested child) {
+            nested[column] = child;
+            for (Nested n : nested) {
+                if (n == null) {
+                    return;
+                }
+            }
+            link();
+        }
+
+        private void link() {
+            List<Nested> link = Arrays.asList(nested);
             double max = link.stream()
                              .mapToDouble(p -> p.height)
                              .max()
                              .orElse(-1);
+            linkScrollBars(link, max);
+        }
+
+        private void linkScrollBars(List<Nested> link, double max) {
             Stack<ScrollBar> scrolls = new Stack<>();
             link.forEach(p -> {
                 p.control.setPrefHeight(p.cardinality * max);
                 p.control.setFixedCellSize(max);
-                for (Node node : p.control.lookupAll(".scroll-bar:vertical")) {
-                    scrolls.add((ScrollBar) node); 
-                    break;
-                }
-
+                Set<Node> deadSeaScrolls = p.control.lookupAll(".scroll-bar:vertical");
+                scrolls.push(deadSeaScrolls.stream()
+                                           .filter(n -> n instanceof VirtualScrollBar)
+                                           .map(n -> (VirtualScrollBar) n)
+                                           .filter(n -> n.getOrientation()
+                                                         .equals(Orientation.VERTICAL))
+                                           .reduce((a, b) -> b)
+                                           .orElse(null));
             });
-            ScrollBar master = scrolls.size() > 1 ? scrolls.pop() : null;
-            if (master != null) {
-                scrolls.forEach(scrollbar -> master.valueProperty().bindBidirectional(scrollbar.valueProperty()));
-            }
-            stacks = stacks.stream()
-                           .filter(s -> !s.isEmpty())
-                           .collect(Collectors.toList());
-        } while (!stacks.isEmpty());
+            scrolls.forEach(scrollbar -> {
+                scrollbar.setDisable(scrollbar != scrolls.lastElement());
+                scrollbar.valueProperty()
+                         .addListener((ChangeListener<? super Number>) (o, p,
+                                                                        c) -> {
+                             scrolls.forEach(sibling -> {
+                                 if (sibling != scrollbar) {
+                                     sibling.setValue(c.doubleValue());
+                                 }
+                             });
+                         });
+            });
+        }
+    }
+
+    private final ConcurrentMap<Relation, Nesting> nestings = new ConcurrentHashMap<>();
+
+    public Nesting getNesting(Relation relation, int count) {
+        return nestings.computeIfAbsent(relation, k -> new Nesting(count));
     }
 }

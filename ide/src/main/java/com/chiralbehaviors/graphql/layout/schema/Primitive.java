@@ -77,17 +77,6 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            NestedColumnView nestedView = new NestedColumnView();
-            {
-                tableRowProperty().addListener((o, p, c) -> {
-                    NestedTableRow<JsonNode> nestedRow = (NestedTableRow<JsonNode>) c;
-                    nesting.apply(() -> {
-                        return buildControl(cardinality);
-                    }, nestedView, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
-                                  .getLineHeight()) + 24, nestedRow);
-                });
-
-            }
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
@@ -99,8 +88,12 @@ public class Primitive extends SchemaNode {
                     setGraphic(null);
                     return;
                 }
-                setGraphic(nestedView);
-                nestedView.setItem(item);
+                NestedColumnView view = (NestedColumnView) nesting.apply(node -> {
+                    return buildControl(cardinality);
+                }, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
+                                             .getLineHeight()), (NestedTableRow<JsonNode>) getTableRow());
+                setGraphic(view);
+                view.setItem(item);
             }
         });
         return column;
@@ -169,7 +162,7 @@ public class Primitive extends SchemaNode {
         text.setPrefWidth(1);
         //        text.setMaxWidth(Double.MAX_VALUE);
         text.setPrefHeight((cardinality * FONT_LOADER.getFontMetrics(valueFont)
-                                                    .getLineHeight()) + 4);
+                                                     .getLineHeight()));
         //        text.setStyle("-fx-background-insets: 0 ;");
         text.setFont(valueFont);
         return (Control) text;

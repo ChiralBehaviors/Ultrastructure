@@ -21,11 +21,11 @@
 package com.chiralbehaviors.graphql.layout;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -92,13 +92,25 @@ public class NestedTableRow<T> extends TableRow<T> {
                 p.control.setPrefHeight(p.cardinality * max);
                 p.control.setFixedCellSize(max);
                 Set<Node> deadSeaScrolls = p.control.lookupAll(".scroll-bar:vertical");
-                scrolls.push(deadSeaScrolls.stream()
-                                           .filter(n -> n instanceof VirtualScrollBar)
-                                           .map(n -> (VirtualScrollBar) n)
-                                           .filter(n -> n.getOrientation()
-                                                         .equals(Orientation.VERTICAL))
-                                           .reduce((a, b) -> b)
-                                           .orElse(null));
+                VirtualScrollBar scrollbar = deadSeaScrolls.stream()
+                                                           .filter(n -> n instanceof VirtualScrollBar)
+                                                           .map(n -> (VirtualScrollBar) n)
+                                                           .filter(n -> n.getOrientation()
+                                                                         .equals(Orientation.VERTICAL))
+                                                           .reduce((a, b) -> b)
+                                                           .orElse(null);
+                scrollbar.setUnitIncrement(max);
+                scrolls.push(scrollbar);
+                p.control.getSelectionModel()
+                         .selectedIndexProperty()
+                         .addListener((o, pr, c) -> {
+                             link.forEach(sibling -> {
+                                 if (sibling.control != p.control) {
+                                     sibling.control.getSelectionModel()
+                                                    .select(c.intValue());
+                                 }
+                             });
+                         });
             });
             scrolls.forEach(scrollbar -> {
                 scrollbar.setDisable(scrollbar != scrolls.lastElement());
@@ -115,9 +127,11 @@ public class NestedTableRow<T> extends TableRow<T> {
         }
     }
 
-    private final ConcurrentMap<Relation, Nesting> nestings = new ConcurrentHashMap<>();
+    private final Map<Relation, Map<Integer, Nesting>> nestings = new HashMap<>(3);
 
-    public Nesting getNesting(Relation relation, int count) {
-        return nestings.computeIfAbsent(relation, k -> new Nesting(count));
+    public Nesting getNesting(Relation relation, int count, Integer index) {
+        Map<Integer, Nesting> nested = nestings.computeIfAbsent(relation,
+                                                                k -> new HashMap<>(3));
+        return nested.computeIfAbsent(index, k -> new Nesting(count));
     }
 }

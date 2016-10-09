@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.chiralbehaviors.graphql.layout.NestedTableRow.Nested;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -445,10 +446,11 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(child -> {
             top.getColumns()
                .add(child.buildTableColumn(averageCardinality,
-                                           (p, view, height, row) -> {
-                                               view.manifest(child, p.call(),
+                                           (p, height, row) -> {
+                                               NestedColumnView view = new NestedColumnView();
+                                               view.manifest(child, p.apply(0),
                                                              cardinality);
-                                               return null;
+                                               return view;
                                            }));
         });
         constrain(top);
@@ -526,15 +528,12 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private NestingFunction nest(SchemaNode child, int column,
-                                 NestingFunction columnNesting,
-                                 int cardinality) {
-        return (p, view, height, row) -> {
-            return columnNesting.apply(() -> {
+                                 NestingFunction nesting, int cardinality) {
+        return (p, height, row) -> {
+            return nesting.apply(index -> {
                 ListView<JsonNode> split = split(row, column, cardinality,
-                                                 height);
+                                                 height, index);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
-                    private final Control childControl = p.call();
-
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
                         if (item == getItem()) {
@@ -546,13 +545,14 @@ public class Relation extends SchemaNode implements Cloneable {
                             setGraphic(null);
                             return;
                         }
+                        Control childControl = p.apply(getIndex());
                         setGraphic(childControl);
                         JsonNode extracted = child.extractFrom(item);
                         setItemsOf(childControl, extracted);
                     }
                 });
                 return split;
-            }, view, cardinality * (height + 6), row);
+            }, cardinality * height, row);
         };
     }
 
@@ -566,16 +566,32 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> split(NestedTableRow<JsonNode> row, int column,
-                                     int cardinality, double height) {
+                                     int cardinality, double height,
+                                     Integer index) {
         ListView<JsonNode> content = new ListView<JsonNode>() {
+            boolean registered = false;
+
             @Override
             protected void layoutChildren() {
                 super.layoutChildren();
-                row.getNesting(Relation.this, children.size())
-                   .register(column, new Nested(Relation.this, cardinality,
-                                                this, height));
+                if (!registered) {
+                    registered = true;
+                    row.getNesting(Relation.this, children.size(), index)
+                       .register(column, new Nested(Relation.this, cardinality,
+                                                    this, height));
+                }
             }
         };
+        if (column != children.size() - 1) {
+            content.getStylesheets()
+                   .add(getClass().getResource("hide-scrollbar.css")
+                                  .toExternalForm());
+        }
+        content.getStylesheets()
+               .add(
+
+                    getClass().getResource("nested.css")
+                              .toExternalForm());
         content.setPlaceholder(new Text());
         content.setMinWidth(0);
         content.setPrefWidth(1);

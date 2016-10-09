@@ -1,6 +1,0 @@
-query f {
-  facets {
-    id
-    name
-  }
-}

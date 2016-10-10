@@ -41,12 +41,10 @@ import graphql.language.OperationDefinition;
 import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -249,8 +247,8 @@ public class Relation extends SchemaNode implements Cloneable {
 
         Map<Primitive, Integer> leaves = new HashMap<>();
         int index = 0;
-        for (Primitive leaf: gatherLeaves()) {
-            leaves.put(leaf, index); 
+        for (Primitive leaf : gatherLeaves()) {
+            leaves.put(leaf, index);
             index++;
         }
         for (SchemaNode child : children) {
@@ -392,13 +390,22 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.buildOutline(extract(extractor), averageCardinality);
         }
         ListView<JsonNode> list = new ListView<>();
+        list.getStylesheets()
+            .add(
+
+                 getClass().getResource("nested.css")
+                           .toExternalForm());
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox                        cell     = new HBox();
+            HBox cell = new HBox();
+            {
+                cell.setMinWidth(0);
+                cell.setPrefWidth(1);
+            }
             Map<SchemaNode, NodeMaster> controls = new HashMap<>();
             {
                 cell.getChildren()
                     .add(new Text(""));
-                VBox box = new VBox(2);
+                VBox box = new VBox();
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth,
                                                              extractor,
@@ -430,7 +437,7 @@ public class Relation extends SchemaNode implements Cloneable {
         });
         list.setMinWidth(0);
         list.setPrefWidth(1);
-        list.setStyle("-fx-background-insets: 0 ;");
+        list.setPlaceholder(new Text());
         return list;
     }
 
@@ -480,27 +487,12 @@ public class Relation extends SchemaNode implements Cloneable {
         return flattened;
     }
 
-    List<Primitive> gatherLeaves() { 
+    List<Primitive> gatherLeaves() {
         List<Primitive> leaves = new ArrayList<>();
-        for (SchemaNode child: children) {
+        for (SchemaNode child : children) {
             leaves.addAll(child.gatherLeaves());
         }
         return leaves;
-    }
-
-    @SuppressWarnings("unused")
-    private double getVerticalScrollbarWidth(TableView<?> table) {
-        ScrollBar result = null;
-        for (Node n : table.lookupAll(".scroll-bar")) {
-            if (n instanceof ScrollBar) {
-                ScrollBar bar = (ScrollBar) n;
-                if (bar.getOrientation()
-                       .equals(Orientation.VERTICAL)) {
-                    result = bar;
-                }
-            }
-        }
-        return result.getWidth();
     }
 
     private void justifyOutline(float width) {

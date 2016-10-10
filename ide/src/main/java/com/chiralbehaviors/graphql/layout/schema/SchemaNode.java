@@ -33,7 +33,7 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
-import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -51,9 +51,9 @@ abstract public class SchemaNode {
     public class NodeMaster {
         public final double             height;
         public final Consumer<JsonNode> items;
-        public final Node               node;
+        public final Parent               node;
 
-        public NodeMaster(Consumer<JsonNode> items, Node node, double height) {
+        public NodeMaster(Consumer<JsonNode> items, Parent node, double height) {
             this.items = items;
             this.node = node;
             this.height = height;

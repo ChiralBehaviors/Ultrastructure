@@ -138,6 +138,6 @@ public class NestedTableRow<T> extends TableRow<T> {
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
-        nestings.clear();
+//        nestings.clear();
     }
 }

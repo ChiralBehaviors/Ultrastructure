@@ -41,7 +41,7 @@ import graphql.language.OperationDefinition;
 import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
-import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -57,6 +57,8 @@ import javafx.scene.text.Text;
  *
  */
 public class Relation extends SchemaNode implements Cloneable {
+
+    private static final String INDENT_STRING = " *  ";
 
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
@@ -261,6 +263,14 @@ public class Relation extends SchemaNode implements Cloneable {
         return column;
     }
 
+    List<Primitive> gatherLeaves() {
+        List<Primitive> leaves = new ArrayList<>();
+        for (SchemaNode child : children) {
+            leaves.addAll(child.gatherLeaves());
+        }
+        return leaves;
+    }
+
     @Override
     Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {
         if (isFold()) {
@@ -353,25 +363,28 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         Control control = useTable ? buildTable(n -> n, cardinality)
                                    : buildOutline(n -> n, cardinality);
-        TextArea labelText = new TextArea(label);
-        labelText.setStyle("-fx-background-color: red;");
-        Node element;
+        Parent element;
         if (useTable) {
             element = control;
+            control.setMinWidth(0);
+            control.setPrefWidth(1);
         } else {
+            TextArea labelText = new TextArea(label);
+            labelText.setStyle("-fx-background-color: red;");
+            labelText.setWrapText(true);
+            labelText.setMinWidth(0);
+            labelText.setPrefWidth(labelWidth);
+            //            labelText.setMinHeight(0);
+            labelText.setPrefHeight(FONT_LOADER.getFontMetrics(labelFont)
+                                               .getLineHeight());
             VBox box = new VBox();
             box.getChildren()
                .add(labelText);
-            box.setPrefWidth(justifiedWidth);
+            box.setMinWidth(justifiedWidth);
             box.getChildren()
                .add(control);
             element = box;
         }
-
-        labelText.setWrapText(true);
-        labelText.setPrefRowCount(1);
-        labelText.setMinWidth(0);
-        labelText.setPrefWidth(1);
 
         return new NodeMaster(item -> {
             if (item == null) {
@@ -396,16 +409,17 @@ public class Relation extends SchemaNode implements Cloneable {
                  getClass().getResource("nested.css")
                            .toExternalForm());
         list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox cell = new HBox();
+            HBox                        cell     = new HBox();
+            Map<SchemaNode, NodeMaster> controls = new HashMap<>();
             {
                 cell.setMinWidth(0);
                 cell.setPrefWidth(1);
             }
-            Map<SchemaNode, NodeMaster> controls = new HashMap<>();
             {
                 cell.getChildren()
-                    .add(new Text(""));
+                    .add(new Text(INDENT_STRING));
                 VBox box = new VBox();
+                box.setPrefWidth(justifiedWidth);
                 children.forEach(child -> {
                     NodeMaster master = child.outlineElement(outlineLabelWidth,
                                                              extractor,
@@ -460,8 +474,7 @@ public class Relation extends SchemaNode implements Cloneable {
                .add(child.buildTableColumn(averageCardinality,
                                            (p, height, row, primitive) -> {
                                                NestedColumnView view = new NestedColumnView();
-                                               view.manifest(child, p.apply(0),
-                                                             cardinality);
+                                               view.manifest(child, p.apply(0));
                                                return view;
                                            }));
         });
@@ -470,6 +483,7 @@ public class Relation extends SchemaNode implements Cloneable {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setMinWidth(0);
         table.setPrefWidth(1);
+//        table.setMinHeight(1);
         return table;
     }
 
@@ -485,14 +499,6 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         }
         return flattened;
-    }
-
-    List<Primitive> gatherLeaves() {
-        List<Primitive> leaves = new ArrayList<>();
-        for (SchemaNode child : children) {
-            leaves.addAll(child.gatherLeaves());
-        }
-        return leaves;
     }
 
     private void justifyOutline(float width) {

@@ -30,7 +30,7 @@ import javafx.util.Pair;
 public class NestedColumnView extends Control {
     private Pair<SchemaNode, Control> top;
 
-    public void manifest(SchemaNode node, Control control, int cardinality) {
+    public void manifest(SchemaNode node, Control control) {
         top = new Pair<>(node, control);
         this.getChildren()
             .add(top.getValue());

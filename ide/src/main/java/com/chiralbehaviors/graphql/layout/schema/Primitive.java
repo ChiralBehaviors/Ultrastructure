@@ -102,7 +102,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    List<Primitive> gatherLeaves() { 
+    List<Primitive> gatherLeaves() {
         return Collections.singletonList(this);
     }
 
@@ -146,12 +146,12 @@ public class Primitive extends SchemaNode {
         labelText.setMinWidth(0);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
-        HBox.setHgrow(labelText, Priority.ALWAYS);
+//        HBox.setHgrow(labelText, Priority.ALWAYS);
         box.getChildren()
            .add(labelText);
         Control control = buildControl(cardinality);
         HBox.setHgrow(control, Priority.ALWAYS);
-        control.setPrefWidth(justifiedWidth);
+//        control.setPrefWidth(justifiedWidth);
         box.getChildren()
            .add(control);
         //        box.setPrefWidth(justifiedWidth);
@@ -159,7 +159,8 @@ public class Primitive extends SchemaNode {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
             setItemsOf(control, extractedField);
-        }, box, 1);
+        }, box, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
+                                          .getLineHeight()));
     }
 
     private Control buildControl(int cardinality) {

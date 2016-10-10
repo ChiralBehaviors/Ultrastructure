@@ -67,14 +67,15 @@ public class NestedTableRow<T> extends TableRow<T> {
             nested = new Nested[count];
         }
 
-        public void register(int column, Nested child) {
+        public boolean register(int column, Nested child) {
             nested[column] = child;
             for (Nested n : nested) {
                 if (n == null) {
-                    return;
+                    return false;
                 }
             }
             link();
+            return true;
         }
 
         private void link() {
@@ -129,15 +130,23 @@ public class NestedTableRow<T> extends TableRow<T> {
 
     private final Map<Relation, Map<Integer, Nesting>> nestings = new HashMap<>(3);
 
-    public Nesting getNesting(Relation relation, int count, Integer index) {
-        Map<Integer, Nesting> nested = nestings.computeIfAbsent(relation,
-                                                                k -> new HashMap<>(3));
-        return nested.computeIfAbsent(index, k -> new Nesting(count));
-    }
-
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
-//        nestings.clear();
+    }
+
+    public void register(Integer index, Relation relation, Integer column,
+                         ListView<JsonNode> child, int cardinality,
+                         double height, int count) {
+        Map<Integer, Nesting> list = nestings.computeIfAbsent(relation,
+                                                              k -> new HashMap<>(3));
+        Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
+        if (nesting.register(column, new Nested(relation, cardinality, child,
+                                               height))) {
+            list.remove(column);
+            if (list.isEmpty()) {
+                nestings.remove(relation);
+            }
+        }
     }
 }

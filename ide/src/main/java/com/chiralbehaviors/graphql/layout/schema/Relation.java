@@ -28,7 +28,6 @@ import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
-import com.chiralbehaviors.graphql.layout.NestedTableRow.Nested;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -483,7 +482,7 @@ public class Relation extends SchemaNode implements Cloneable {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setMinWidth(0);
         table.setPrefWidth(1);
-//        table.setMinHeight(1);
+        //        table.setMinHeight(1);
         return table;
     }
 
@@ -591,9 +590,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 super.layoutChildren();
                 if (!registered) {
                     registered = true;
-                    row.getNesting(Relation.this, leaves.size(), index)
-                       .register(column, new Nested(Relation.this, cardinality,
-                                                    this, height));
+                    row.register(index, Relation.this, column, this,
+                                 cardinality, height, leaves.size());
                 }
             }
         };

@@ -29,7 +29,7 @@ import javafx.scene.control.Control;
 
 @FunctionalInterface
 public interface NestingFunction {
-    Control apply(Function<Integer, Control> inner,
-                  double height, NestedTableRow<JsonNode> row);
+    Control apply(Function<Integer, Control> inner, double height,
+                  NestedTableRow<JsonNode> row, Primitive primitive);
 
 }

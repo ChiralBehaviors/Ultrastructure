@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -91,12 +92,18 @@ public class Primitive extends SchemaNode {
                 NestedColumnView view = (NestedColumnView) nesting.apply(node -> {
                     return buildControl(cardinality);
                 }, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
-                                             .getLineHeight()), (NestedTableRow<JsonNode>) getTableRow());
+                                             .getLineHeight()), (NestedTableRow<JsonNode>) getTableRow(),
+                                                                         Primitive.this);
                 setGraphic(view);
                 view.setItem(item);
             }
         });
         return column;
+    }
+
+    @Override
+    List<Primitive> gatherLeaves() { 
+        return Collections.singletonList(this);
     }
 
     @Override

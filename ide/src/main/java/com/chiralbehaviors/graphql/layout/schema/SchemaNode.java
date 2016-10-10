@@ -49,9 +49,9 @@ import javafx.scene.text.Font;
 abstract public class SchemaNode {
 
     public class NodeMaster {
+        public final double             height;
         public final Consumer<JsonNode> items;
         public final Node               node;
-        public final double             height;
 
         public NodeMaster(Consumer<JsonNode> items, Node node, double height) {
             this.items = items;
@@ -248,6 +248,8 @@ abstract public class SchemaNode {
             return extracted == null ? null : extracted.get(field);
         };
     }
+
+    abstract List<Primitive> gatherLeaves();
 
     Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {
         return extract(extractor);

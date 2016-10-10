@@ -246,13 +246,18 @@ public class Relation extends SchemaNode implements Cloneable {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         constrain(column);
+
+        Map<Primitive, Integer> leaves = new HashMap<>();
         int index = 0;
+        for (Primitive leaf: gatherLeaves()) {
+            leaves.put(leaf, index); 
+            index++;
+        }
         for (SchemaNode child : children) {
             column.getColumns()
                   .add(child.buildTableColumn(averageCardinality,
-                                              nest(child, index, nesting,
+                                              nest(child, leaves, nesting,
                                                    cardinality)));
-            index++;
         }
 
         return column;
@@ -446,7 +451,7 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(child -> {
             top.getColumns()
                .add(child.buildTableColumn(averageCardinality,
-                                           (p, height, row) -> {
+                                           (p, height, row, primitive) -> {
                                                NestedColumnView view = new NestedColumnView();
                                                view.manifest(child, p.apply(0),
                                                              cardinality);
@@ -473,6 +478,14 @@ public class Relation extends SchemaNode implements Cloneable {
             }
         }
         return flattened;
+    }
+
+    List<Primitive> gatherLeaves() { 
+        List<Primitive> leaves = new ArrayList<>();
+        for (SchemaNode child: children) {
+            leaves.addAll(child.gatherLeaves());
+        }
+        return leaves;
     }
 
     @SuppressWarnings("unused")
@@ -527,12 +540,13 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    private NestingFunction nest(SchemaNode child, int column,
+    private NestingFunction nest(SchemaNode child,
+                                 Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, int cardinality) {
-        return (p, height, row) -> {
+        return (p, height, row, primitive) -> {
             return nesting.apply(index -> {
-                ListView<JsonNode> split = split(row, column, cardinality,
-                                                 height, index);
+                ListView<JsonNode> split = split(row, primitive, leaves,
+                                                 cardinality, height, index);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
@@ -552,7 +566,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 return split;
-            }, cardinality * height, row);
+            }, cardinality * height, row, primitive);
         };
     }
 
@@ -565,9 +579,12 @@ public class Relation extends SchemaNode implements Cloneable {
         });
     }
 
-    private ListView<JsonNode> split(NestedTableRow<JsonNode> row, int column,
+    private ListView<JsonNode> split(NestedTableRow<JsonNode> row,
+                                     Primitive primitive,
+                                     Map<Primitive, Integer> leaves,
                                      int cardinality, double height,
                                      Integer index) {
+        Integer column = leaves.get(primitive);
         ListView<JsonNode> content = new ListView<JsonNode>() {
             boolean registered = false;
 
@@ -576,13 +593,13 @@ public class Relation extends SchemaNode implements Cloneable {
                 super.layoutChildren();
                 if (!registered) {
                     registered = true;
-                    row.getNesting(Relation.this, children.size(), index)
+                    row.getNesting(Relation.this, leaves.size(), index)
                        .register(column, new Nested(Relation.this, cardinality,
                                                     this, height));
                 }
             }
         };
-        if (column != children.size() - 1) {
+        if (column != leaves.size() - 1) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")
                                   .toExternalForm());

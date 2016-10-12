@@ -30,6 +30,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -44,8 +47,8 @@ import javafx.scene.text.Font;
  */
 public class Primitive extends SchemaNode {
 
-    private float valueDefaultWidth = 0;
-    private Font  valueFont         = Font.getDefault();
+    private double lineHeight        = 0;
+    private float  valueDefaultWidth = 0;
 
     public Primitive(String label) {
         super(label);
@@ -91,8 +94,7 @@ public class Primitive extends SchemaNode {
                 }
                 NestedColumnView view = (NestedColumnView) nesting.apply(node -> {
                     return buildControl(cardinality);
-                }, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
-                                             .getLineHeight()), (NestedTableRow<JsonNode>) getTableRow(),
+                }, Primitive.this.getHeight(cardinality), (NestedTableRow<JsonNode>) getTableRow(),
                                                                          Primitive.this);
                 setGraphic(view);
                 view.setItem(item);
@@ -112,14 +114,33 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    float measure(ArrayNode data) {
+    float measure(ArrayNode data, List<String> styleSheets) {
+        TextArea text = new TextArea(label); 
+        Group root = new Group(text);
+        Scene scene = new Scene(root);
+        if (styleSheets != null) {
+            scene.getStylesheets()
+                 .addAll(styleSheets);
+        }
+        root.applyCss();
+        root.layout();
+        text.applyCss();
+        text.layout();
+        insets = text.getInsets();
+        @SuppressWarnings("unused")
+        Insets padding = text.getPadding();
+        Font valueFont = text.getFont();
+        lineHeight = FONT_LOADER.getFontMetrics(valueFont)
+                                .getLineHeight();
         float sum = 0;
         float maxWidth = 0;
         for (JsonNode prim : data) {
             List<JsonNode> rows = asList(prim);
             float width = 0;
             for (JsonNode row : rows) {
-                width += valueWidth(toString(row));
+                width += FONT_LOADER.computeStringWidth(toString(row),
+                                                        valueFont)
+                         + insets.getLeft() + insets.getRight();
                 maxWidth = Math.max(maxWidth, width);
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
@@ -146,12 +167,12 @@ public class Primitive extends SchemaNode {
         labelText.setMinWidth(0);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
-//        HBox.setHgrow(labelText, Priority.ALWAYS);
+        //        HBox.setHgrow(labelText, Priority.ALWAYS);
         box.getChildren()
            .add(labelText);
         Control control = buildControl(cardinality);
         HBox.setHgrow(control, Priority.ALWAYS);
-//        control.setPrefWidth(justifiedWidth);
+        //        control.setPrefWidth(justifiedWidth);
         box.getChildren()
            .add(control);
         //        box.setPrefWidth(justifiedWidth);
@@ -159,21 +180,21 @@ public class Primitive extends SchemaNode {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
             setItemsOf(control, extractedField);
-        }, box, (cardinality * FONT_LOADER.getFontMetrics(valueFont)
-                                          .getLineHeight()));
+        }, box, getHeight(cardinality));
     }
 
-    private Control buildControl(int cardinality) {
+    private TextArea buildControl(int cardinality) {
         TextArea text = new TextArea();
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        //        text.setMaxWidth(Double.MAX_VALUE);
-        text.setPrefHeight((cardinality * FONT_LOADER.getFontMetrics(valueFont)
-                                                     .getLineHeight()));
-        //        text.setStyle("-fx-background-insets: 0 ;");
-        text.setFont(valueFont);
-        return (Control) text;
+        text.setPrefHeight(getHeight(cardinality));
+        return text;
+    }
+
+    private double getHeight(int cardinality) {
+        return (cardinality * lineHeight) + insets.getTop()
+               + insets.getBottom();
     }
 
     private String toString(JsonNode value) {
@@ -197,9 +218,5 @@ public class Primitive extends SchemaNode {
         } else {
             return value.asText();
         }
-    }
-
-    private float valueWidth(String text) {
-        return FONT_LOADER.computeStringWidth(text, valueFont);
     }
 }

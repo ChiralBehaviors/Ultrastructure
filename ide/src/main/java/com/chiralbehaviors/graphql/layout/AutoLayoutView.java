@@ -73,7 +73,7 @@ public class AutoLayoutView extends Control {
 
     public void measure(JsonNode data) {
         Relation relation = root.get();
-        relation.measure(data);
+        relation.measure(data, getStylesheets());
     }
 
     public Property<Relation> rootProperty() {

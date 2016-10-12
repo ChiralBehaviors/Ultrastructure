@@ -33,6 +33,7 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -51,9 +52,10 @@ abstract public class SchemaNode {
     public class NodeMaster {
         public final double             height;
         public final Consumer<JsonNode> items;
-        public final Parent               node;
+        public final Parent             node;
 
-        public NodeMaster(Consumer<JsonNode> items, Parent node, double height) {
+        public NodeMaster(Consumer<JsonNode> items, Parent node,
+                          double height) {
             this.items = items;
             this.node = node;
             this.height = height;
@@ -177,6 +179,7 @@ abstract public class SchemaNode {
     }
 
     final String field;
+    Insets       insets;
     float        justifiedWidth   = 0;
     String       label;
     Font         labelFont        = Font.getDefault();
@@ -272,7 +275,7 @@ abstract public class SchemaNode {
 
     abstract float layout(float width);
 
-    abstract float measure(ArrayNode data);
+    abstract float measure(ArrayNode data, List<String> styleSheets);
 
     abstract NodeMaster outlineElement(float labelWidth,
                                        Function<JsonNode, JsonNode> extractor,

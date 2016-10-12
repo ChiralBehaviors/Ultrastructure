@@ -40,14 +40,20 @@ import graphql.language.OperationDefinition;
 import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -106,6 +112,8 @@ public class Relation extends SchemaNode implements Cloneable {
     private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
     private float                  outlineLabelWidth  = 0;
+    @SuppressWarnings("unused")
+    private Insets                 tableCellInsets;
     private boolean                useTable           = false;
 
     public Relation(String label) {
@@ -176,14 +184,14 @@ public class Relation extends SchemaNode implements Cloneable {
         return super.isVariableLength();
     }
 
-    public void measure(JsonNode jsonNode) {
+    public void measure(JsonNode jsonNode, List<String> styleSheets) {
         if (jsonNode.isArray()) {
             ArrayNode array = (ArrayNode) jsonNode;
-            measure(array);
+            measure(array, styleSheets);
         } else {
             ArrayNode singleton = JsonNodeFactory.instance.arrayNode();
             singleton.add(jsonNode);
-            measure(singleton);
+            measure(singleton, styleSheets);
         }
     }
 
@@ -321,13 +329,50 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    float measure(ArrayNode data) {
+    float measure(ArrayNode data, List<String> styleSheets) {
         if (isFold()) {
-            return fold.measure(flatten(data));
+            return fold.measure(flatten(data), styleSheets);
         }
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
+        TableView<String> table = new TableView<>();
+        TableRow<String> row = new TableRow<String>();
+        TableColumn<String, String> column = new TableColumn<>(label);
+        table.getColumns()
+             .add(column);
+        TableCell<String, String> tableCell = new TableCell<>();
+        tableCell.updateTableColumn(column);
+        tableCell.updateTableRow(row);
+        row.updateTableView(table);
+        ListView<String> listView = new ListView<>();
+        ListCell<String> listCell = new ListCell<>();
+        listCell.updateListView(listView);
+        Group root = new Group(table, listView);
+        Scene scene = new Scene(root);
+        if (styleSheets != null) {
+            scene.getStylesheets()
+                 .addAll(styleSheets);
+        }
+        root.applyCss();
+        root.layout();
+        table.applyCss();
+        table.layout();
+        row.applyCss();
+        row.layout();
+        tableCell.applyCss();
+        tableCell.layout();
+        listView.applyCss();
+        listView.layout();
+        listCell.applyCss();
+        listCell.layout();
+        insets = listCell.getInsets();
+        @SuppressWarnings("unused")
+        Insets padding = listCell.getPadding();
+        tableCellInsets = tableCell.getInsets();
+        @SuppressWarnings("unused")
+        Insets tableCellPadding = tableCell.getPadding();
+
         tableColumnWidth = 0;
         int sum = 0;
         for (SchemaNode child : children) {
@@ -344,7 +389,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
-            tableColumnWidth += child.measure(aggregate);
+            tableColumnWidth += child.measure(aggregate, styleSheets);
             variableLength |= child.isVariableLength();
         }
         averageCardinality = Math.max(2, Math.round(sum / children.size()));
@@ -363,27 +408,26 @@ public class Relation extends SchemaNode implements Cloneable {
         Control control = useTable ? buildTable(n -> n, cardinality)
                                    : buildOutline(n -> n, cardinality);
         Parent element;
-        if (useTable) {
-            element = control;
-            control.setMinWidth(0);
-            control.setPrefWidth(1);
+        TextArea labelText = new TextArea(label);
+        labelText.setStyle("-fx-background-color: red;");
+        labelText.setWrapText(true);
+        labelText.setMinWidth(labelWidth);
+        labelText.setPrefWidth(labelWidth);
+        labelText.setPrefHeight(FONT_LOADER.getFontMetrics(labelFont)
+                                           .getLineHeight());
+        Pane box;
+        if (useTable){
+            box = new HBox();
+            control.setPrefWidth(justifiedWidth);
         } else {
-            TextArea labelText = new TextArea(label);
-            labelText.setStyle("-fx-background-color: red;");
-            labelText.setWrapText(true);
-            labelText.setMinWidth(0);
-            labelText.setPrefWidth(labelWidth);
-            //            labelText.setMinHeight(0);
-            labelText.setPrefHeight(FONT_LOADER.getFontMetrics(labelFont)
-                                               .getLineHeight());
-            VBox box = new VBox();
-            box.getChildren()
-               .add(labelText);
-            box.setMinWidth(justifiedWidth);
-            box.getChildren()
-               .add(control);
-            element = box;
+            box = new VBox();
         }
+        box.getChildren()
+           .add(labelText);
+//        box.setMinWidth(justifiedWidth);
+        box.getChildren()
+           .add(control);
+        element = box;
 
         return new NodeMaster(item -> {
             if (item == null) {
@@ -415,8 +459,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 cell.setPrefWidth(1);
             }
             {
-                cell.getChildren()
-                    .add(new Text(INDENT_STRING));
                 VBox box = new VBox();
                 box.setPrefWidth(justifiedWidth);
                 children.forEach(child -> {
@@ -466,16 +508,15 @@ public class Relation extends SchemaNode implements Cloneable {
         TableView<JsonNode> table = new TableView<>();
         table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
         TableColumn<JsonNode, JsonNode> top = new TableColumn<>(label);
-        table.getColumns()
-             .add(top);
         children.forEach(child -> {
-            top.getColumns()
-               .add(child.buildTableColumn(averageCardinality,
-                                           (p, height, row, primitive) -> {
-                                               NestedColumnView view = new NestedColumnView();
-                                               view.manifest(child, p.apply(0));
-                                               return view;
-                                           }));
+            table.getColumns()
+                 .add(child.buildTableColumn(averageCardinality,
+                                             (p, height, row, primitive) -> {
+                                                 NestedColumnView view = new NestedColumnView();
+                                                 view.manifest(child,
+                                                               p.apply(0));
+                                                 return view;
+                                             }));
         });
         constrain(top);
         table.setPlaceholder(new Text());

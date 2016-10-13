@@ -48,7 +48,7 @@ import javafx.scene.text.Font;
 public class Primitive extends SchemaNode {
 
     private double lineHeight        = 0;
-    private float  valueDefaultWidth = 0;
+    private double valueDefaultWidth = 0;
 
     public Primitive(String label) {
         super(label);
@@ -81,7 +81,6 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem())
@@ -109,18 +108,18 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    float layout(float width) {
+    double layout(double width) {
         return variableLength ? width : Math.min(width, tableColumnWidth);
     }
 
     @Override
-    float measure(ArrayNode data, List<String> styleSheets) {
+    double measure(ArrayNode data, List<String> styleSheets) {
         Font valueFont = measure(styleSheets);
-        float sum = 0;
-        float maxWidth = 0;
+        double sum = 0;
+        double maxWidth = 0;
         for (JsonNode prim : data) {
             List<JsonNode> rows = asList(prim);
-            float width = 0;
+            double width = 0;
             for (JsonNode row : rows) {
                 width += FONT_LOADER.computeStringWidth(toString(row),
                                                         valueFont)
@@ -129,7 +128,7 @@ public class Primitive extends SchemaNode {
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
-        float averageWidth = data.size() == 0 ? 0 : (sum / data.size());
+        double averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
             variableLength = true;
@@ -142,7 +141,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    NodeMaster outlineElement(float labelWidth,
+    NodeMaster outlineElement(double labelWidth,
                               Function<JsonNode, JsonNode> extractor,
                               int cardinality) {
         HBox box = new HBox();
@@ -182,7 +181,7 @@ public class Primitive extends SchemaNode {
     }
 
     private Font measure(List<String> styleSheets) {
-        TextArea text = new TextArea(label); 
+        TextArea text = new TextArea(label);
         Group root = new Group(text);
         Scene scene = new Scene(root);
         if (styleSheets != null) {

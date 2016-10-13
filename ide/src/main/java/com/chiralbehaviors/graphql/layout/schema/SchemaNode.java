@@ -181,10 +181,10 @@ abstract public class SchemaNode {
     final String field;
     Insets       insets           = new Insets(0);
     Insets       padding          = new Insets(0);
-    float        justifiedWidth   = 0;
+    double       justifiedWidth   = 0;
     String       label;
     Font         labelFont        = Font.getDefault();
-    float        tableColumnWidth = 0;
+    double       tableColumnWidth = 0;
     boolean      variableLength   = false;
 
     public SchemaNode(String field) {
@@ -208,7 +208,7 @@ abstract public class SchemaNode {
         return label;
     }
 
-    public float getTableColumnWidth() {
+    public double getTableColumnWidth() {
         return tableColumnWidth;
     }
 
@@ -228,7 +228,7 @@ abstract public class SchemaNode {
         this.label = label;
     }
 
-    public void setTableColumnWidth(float tableColumnWidth) {
+    public void setTableColumnWidth(double tableColumnWidth) {
         this.tableColumnWidth = tableColumnWidth;
     }
 
@@ -259,26 +259,26 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
-    void justify(float width) {
+    void justify(double width) {
         if (variableLength) {
             justifiedWidth = width;
         }
     }
 
-    float labelHeight() {
+    double labelHeight() {
         return FONT_LOADER.getFontMetrics(labelFont)
                           .getLineHeight();
     }
 
-    float labelWidth() {
+    double labelWidth() {
         return FONT_LOADER.computeStringWidth(label, labelFont) + 12;
     }
 
-    abstract float layout(float width);
+    abstract double layout(double width);
 
-    abstract float measure(ArrayNode data, List<String> styleSheets);
+    abstract double measure(ArrayNode data, List<String> styleSheets);
 
-    abstract NodeMaster outlineElement(float labelWidth,
+    abstract NodeMaster outlineElement(double labelWidth,
                                        Function<JsonNode, JsonNode> extractor,
                                        int cardinality);
 }

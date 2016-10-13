@@ -115,23 +115,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     float measure(ArrayNode data, List<String> styleSheets) {
-        TextArea text = new TextArea(label); 
-        Group root = new Group(text);
-        Scene scene = new Scene(root);
-        if (styleSheets != null) {
-            scene.getStylesheets()
-                 .addAll(styleSheets);
-        }
-        root.applyCss();
-        root.layout();
-        text.applyCss();
-        text.layout();
-        insets = text.getInsets();
-        @SuppressWarnings("unused")
-        Insets padding = text.getPadding();
-        Font valueFont = text.getFont();
-        lineHeight = FONT_LOADER.getFontMetrics(valueFont)
-                                .getLineHeight();
+        Font valueFont = measure(styleSheets);
         float sum = 0;
         float maxWidth = 0;
         for (JsonNode prim : data) {
@@ -195,6 +179,27 @@ public class Primitive extends SchemaNode {
     private double getHeight(int cardinality) {
         return (cardinality * lineHeight) + insets.getTop()
                + insets.getBottom();
+    }
+
+    private Font measure(List<String> styleSheets) {
+        TextArea text = new TextArea(label); 
+        Group root = new Group(text);
+        Scene scene = new Scene(root);
+        if (styleSheets != null) {
+            scene.getStylesheets()
+                 .addAll(styleSheets);
+        }
+        root.applyCss();
+        root.layout();
+        text.applyCss();
+        text.layout();
+        insets = text.getInsets();
+        @SuppressWarnings("unused")
+        Insets padding = text.getPadding();
+        Font valueFont = text.getFont();
+        lineHeight = FONT_LOADER.getFontMetrics(valueFont)
+                                .getLineHeight();
+        return valueFont;
     }
 
     private String toString(JsonNode value) {

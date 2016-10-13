@@ -143,7 +143,7 @@ public class NestedTableRow<T> extends TableRow<T> {
         Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
         if (nesting.register(column, new Nested(relation, cardinality, child,
                                                height))) {
-            list.remove(column);
+//            list.remove(column);
             if (list.isEmpty()) {
                 nestings.remove(relation);
             }

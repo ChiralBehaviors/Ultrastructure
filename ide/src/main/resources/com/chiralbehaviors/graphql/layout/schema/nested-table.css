@@ -1,15 +1,15 @@
-.list-view {
+.table-view {
     -fx-padding: 0 ;
     -fx-background-insets: 0 ;
 }
 
-.list-cell {
+.table-cell {
     -fx-padding: 0 ;
     -fx-background-color: transparent, -fx-background ;
     -fx-background-insets: 0 ;
 }
 
-.list-cell:empty {
+.table-cell:empty {
     -fx-padding: 0 ;
     -fx-background-color: transparent ;
     -fx-background-insets: 0 ;

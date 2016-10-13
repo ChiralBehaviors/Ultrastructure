@@ -179,7 +179,8 @@ abstract public class SchemaNode {
     }
 
     final String field;
-    Insets       insets;
+    Insets       insets           = new Insets(0);
+    Insets       padding          = new Insets(0);
     float        justifiedWidth   = 0;
     String       label;
     Font         labelFont        = Font.getDefault();

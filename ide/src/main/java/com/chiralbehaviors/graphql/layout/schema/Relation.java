@@ -63,8 +63,6 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
-    private static final String INDENT_STRING = " *  ";
-
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
@@ -336,42 +334,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
-        TableView<String> table = new TableView<>();
-        TableRow<String> row = new TableRow<String>();
-        TableColumn<String, String> column = new TableColumn<>(label);
-        table.getColumns()
-             .add(column);
-        TableCell<String, String> tableCell = new TableCell<>();
-        tableCell.updateTableColumn(column);
-        tableCell.updateTableRow(row);
-        row.updateTableView(table);
-        ListView<String> listView = new ListView<>();
-        ListCell<String> listCell = new ListCell<>();
-        listCell.updateListView(listView);
-        Group root = new Group(table, listView);
-        Scene scene = new Scene(root);
-        if (styleSheets != null) {
-            scene.getStylesheets()
-                 .addAll(styleSheets);
-        }
-        root.applyCss();
-        root.layout();
-        table.applyCss();
-        table.layout();
-        row.applyCss();
-        row.layout();
-        tableCell.applyCss();
-        tableCell.layout();
-        listView.applyCss();
-        listView.layout();
-        listCell.applyCss();
-        listCell.layout();
-        insets = listCell.getInsets();
-        @SuppressWarnings("unused")
-        Insets padding = listCell.getPadding();
-        tableCellInsets = tableCell.getInsets();
-        @SuppressWarnings("unused")
-        Insets tableCellPadding = tableCell.getPadding();
+        measure(styleSheets);
 
         tableColumnWidth = 0;
         int sum = 0;
@@ -416,7 +379,7 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setPrefHeight(FONT_LOADER.getFontMetrics(labelFont)
                                            .getLineHeight());
         Pane box;
-        if (useTable){
+        if (useTable) {
             box = new HBox();
             control.setPrefWidth(justifiedWidth);
         } else {
@@ -424,7 +387,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         box.getChildren()
            .add(labelText);
-//        box.setMinWidth(justifiedWidth);
+        //        box.setMinWidth(justifiedWidth);
         box.getChildren()
            .add(control);
         element = box;
@@ -506,6 +469,9 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         TableView<JsonNode> table = new TableView<>();
+        table.getStylesheets()
+             .add(getClass().getResource("nested-table.css")
+                            .toExternalForm());
         table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
         TableColumn<JsonNode, JsonNode> top = new TableColumn<>(label);
         children.forEach(child -> {
@@ -576,6 +542,45 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 * (child.getTableColumnWidth()
                                                    / total)
                                                 + child.getTableColumnWidth()));
+    }
+
+    private void measure(List<String> styleSheets) {
+        TableView<String> table = new TableView<>();
+        TableRow<String> row = new TableRow<String>();
+        TableColumn<String, String> column = new TableColumn<>(label);
+        table.getColumns()
+             .add(column);
+        TableCell<String, String> tableCell = new TableCell<>();
+        tableCell.updateTableColumn(column);
+        tableCell.updateTableRow(row);
+        row.updateTableView(table);
+        ListView<String> listView = new ListView<>();
+        ListCell<String> listCell = new ListCell<>();
+        listCell.updateListView(listView);
+        Group root = new Group(table, listView);
+        Scene scene = new Scene(root);
+        if (styleSheets != null) {
+            scene.getStylesheets()
+                 .addAll(styleSheets);
+        }
+        root.applyCss();
+        root.layout();
+        table.applyCss();
+        table.layout();
+        row.applyCss();
+        row.layout();
+        tableCell.applyCss();
+        tableCell.layout();
+        listView.applyCss();
+        listView.layout();
+        listCell.applyCss();
+        listCell.layout();
+        insets = listCell.getInsets();
+        @SuppressWarnings("unused")
+        Insets padding = listCell.getPadding();
+        tableCellInsets = tableCell.getInsets();
+        @SuppressWarnings("unused")
+        Insets tableCellPadding = tableCell.getPadding();
     }
 
     private NestingFunction nest(SchemaNode child,

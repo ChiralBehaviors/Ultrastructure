@@ -33,6 +33,7 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -48,6 +49,12 @@ import javafx.scene.text.Font;
  */
 abstract public class SchemaNode {
 
+    public static Insets add(Insets a, Insets b) {
+        return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
+                          a.getBottom() + b.getBottom(),
+                          a.getRight() + b.getRight());
+    }
+
     public class NodeMaster {
         public final double             height;
         public final Consumer<JsonNode> items;
@@ -61,8 +68,10 @@ abstract public class SchemaNode {
         }
     }
 
+
     static FontLoader FONT_LOADER = Toolkit.getToolkit()
                                            .getFontLoader();
+    static final Insets ZERO_INSETS = new Insets(0);
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
@@ -230,11 +239,6 @@ abstract public class SchemaNode {
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                               NestingFunction nesting);
 
-    void constrain(TableColumn<?, ?> column) {
-        column.setStyle("-fx-padding: 0 0 0 0;");
-        column.setPrefWidth(justifiedWidth);
-    }
-
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
             JsonNode extracted = extractor.apply(n);
@@ -279,5 +283,17 @@ abstract public class SchemaNode {
 
     void setTableColumnWidth(double tableColumnWidth) {
         this.tableColumnWidth = tableColumnWidth;
+    }
+
+    String outlineListCellClass() {
+        return String.format("%s-outline-list-cell", field);
+    }
+
+    String tableColumnStyleClass() {
+        return String.format("%s-table-column", field);
+    }
+
+    String outlineLabelStyleClass() {
+        return String.format("%s-outline-label", field);
     }
 }

@@ -37,6 +37,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
@@ -49,6 +50,7 @@ public class Primitive extends SchemaNode {
 
     Insets         insets            = new Insets(0);
     private double lineHeight        = 0;
+    private double maxWidth          = 0;
     private double valueDefaultWidth = 0;
 
     public Primitive(String label) {
@@ -72,7 +74,9 @@ public class Primitive extends SchemaNode {
                                                      NestingFunction nesting) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        constrain(column);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
+        column.setPrefWidth(justifiedWidth);
 
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
@@ -82,6 +86,10 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+            {
+                getStyleClass().add(tableViewCellClass());
+            }
+
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
                 if (item == getItem())
@@ -108,6 +116,12 @@ public class Primitive extends SchemaNode {
         return Collections.singletonList(this);
     }
 
+    double getHeight(int cardinality) {
+        return Math.max(lineHeight,
+                        ((maxWidth * lineHeight) / getTableColumnWidth()))
+               + insets.getTop() + insets.getBottom() + 8;
+    }
+
     @Override
     double layout(double width) {
         return variableLength ? width : Math.min(width, getTableColumnWidth());
@@ -117,7 +131,7 @@ public class Primitive extends SchemaNode {
     double measure(ArrayNode data, List<String> styleSheets) {
         Font valueFont = measure(styleSheets);
         double sum = 0;
-        double maxWidth = 0;
+        maxWidth = 0;
         for (JsonNode prim : data) {
             List<JsonNode> rows = asList(prim);
             double width = 0;
@@ -147,7 +161,8 @@ public class Primitive extends SchemaNode {
                               int cardinality) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
-        labelText.setStyle("-fx-background-color: red;");
+        labelText.getStyleClass()
+                 .add(outlineLabelStyleClass());
         labelText.setMinWidth(0);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
@@ -166,20 +181,19 @@ public class Primitive extends SchemaNode {
 
     private TextArea buildControl(int cardinality) {
         TextArea text = new TextArea();
+        text.getStyleClass()
+            .add(valueClass());
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        text.setPrefHeight(getHeight(cardinality));
+        text.setPrefRowCount(Math.max(1, (int) (maxWidth
+                                                / getTableColumnWidth())));
         return text;
-    }
-
-    double getHeight(int cardinality) {
-        return (cardinality * lineHeight) + insets.getTop() + insets.getBottom()
-               + 8;
     }
 
     private Font measure(List<String> styleSheets) {
         TextArea text = new TextArea(label);
+        text.setPrefRowCount(1);
         Group root = new Group(text);
         Scene scene = new Scene(root);
         if (styleSheets != null) {
@@ -190,13 +204,22 @@ public class Primitive extends SchemaNode {
         root.layout();
         text.applyCss();
         text.layout();
-        insets = text.getInsets();
-        @SuppressWarnings("unused")
-        Insets padding = text.getPadding();
+
+        Border border = text.getBorder();
+        insets = add(border == null ? ZERO_INSETS : border.getOutsets(),
+                     add(border == null ? ZERO_INSETS : border.getInsets(),
+                         add(text.getInsets(),
+                             text.getBackground() == null ? ZERO_INSETS
+                                                          : text.getBackground()
+                                                                .getOutsets())));
         Font valueFont = text.getFont();
         lineHeight = FONT_LOADER.getFontMetrics(valueFont)
                                 .getLineHeight();
         return valueFont;
+    }
+
+    private String tableViewCellClass() {
+        return String.format("%s-table-cell", field);
     }
 
     private String toString(JsonNode value) {
@@ -220,5 +243,9 @@ public class Primitive extends SchemaNode {
         } else {
             return value.asText();
         }
+    }
+
+    private String valueClass() {
+        return String.format("%s-value", field);
     }
 }

@@ -52,6 +52,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -109,9 +110,10 @@ public class Relation extends SchemaNode implements Cloneable {
     private int                    averageCardinality = 1;
     private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
-    private Insets                 listCellInsets;
+    private Insets                 listCellInsets     = ZERO_INSETS;
+    private Insets                 listInsets         = ZERO_INSETS;
     private double                 outlineLabelWidth  = 0;
-    private Insets                 tableCellInsets;
+    private Insets                 tableCellInsets    = ZERO_INSETS;
     private boolean                useTable           = false;
 
     public Relation(String label) {
@@ -251,7 +253,9 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        constrain(column);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
+        column.setPrefWidth(justifiedWidth);
 
         Map<Primitive, Integer> leaves = new HashMap<>();
         int index = 0;
@@ -365,7 +369,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                 + child.measure(aggregate, styleSheets));
             variableLength |= child.isVariableLength();
         }
-        averageCardinality = Math.max(2, Math.round(sum / children.size()));
+        averageCardinality = Math.max(1, Math.round(sum / children.size()));
         setTableColumnWidth(Math.max(labelWidth(), getTableColumnWidth()));
         justifiedWidth = getTableColumnWidth();
         return getTableColumnWidth() + tableCellInsets.getLeft()
@@ -384,7 +388,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                    : buildOutline(n -> n, cardinality);
         Parent element;
         TextArea labelText = new TextArea(label);
-        labelText.setStyle("-fx-background-color: red;");
+        labelText.getStyleClass()
+                 .add(outlineLabelStyleClass());
         labelText.setWrapText(true);
         labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
@@ -422,11 +427,8 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.buildOutline(extract(extractor), averageCardinality);
         }
         ListView<JsonNode> list = new ListView<>();
-        list.getStylesheets()
-            .add(
-
-                 getClass().getResource("nested.css")
-                           .toExternalForm());
+        list.getStyleClass()
+            .add(outlineListStyleClass());
         list.setCellFactory(c -> new ListCell<JsonNode>() {
             HBox                        cell     = new HBox();
             Map<SchemaNode, NodeMaster> controls = new HashMap<>();
@@ -482,11 +484,9 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         TableView<JsonNode> table = new TableView<>();
-        table.getStylesheets()
-             .add(getClass().getResource("nested-table.css")
-                            .toExternalForm());
+        table.getStyleClass()
+             .add(tableViewStyleClass());
         table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
-        TableColumn<JsonNode, JsonNode> top = new TableColumn<>(label);
         children.forEach(child -> {
             table.getColumns()
                  .add(child.buildTableColumn(averageCardinality,
@@ -497,12 +497,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                                  return view;
                                              }));
         });
-        constrain(top);
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setMinWidth(0);
         table.setPrefWidth(1);
-        //        table.setMinHeight(1);
         return table;
     }
 
@@ -559,8 +557,12 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private void measure(List<String> styleSheets) {
         TableView<String> table = new TableView<>();
+        table.getStyleClass()
+             .add(tableViewStyleClass());
         TableRow<String> row = new TableRow<String>();
         TableColumn<String, String> column = new TableColumn<>(label);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
         table.getColumns()
              .add(column);
         TableCell<String, String> tableCell = new TableCell<>();
@@ -568,7 +570,11 @@ public class Relation extends SchemaNode implements Cloneable {
         tableCell.updateTableRow(row);
         row.updateTableView(table);
         ListView<String> listView = new ListView<>();
+        listView.getStyleClass()
+                .add(outlineListStyleClass());
         ListCell<String> listCell = new ListCell<>();
+        listCell.getStyleClass()
+                .add(outlineListCellClass());
         listCell.updateListView(listView);
         Group root = new Group(table, listView);
         Scene scene = new Scene(root);
@@ -588,12 +594,30 @@ public class Relation extends SchemaNode implements Cloneable {
         listView.layout();
         listCell.applyCss();
         listCell.layout();
-        listCellInsets = listCell.getInsets();
-        @SuppressWarnings("unused")
-        Insets padding = listCell.getPadding();
-        tableCellInsets = tableCell.getInsets();
-        @SuppressWarnings("unused")
-        Insets tableCellPadding = tableCell.getPadding();
+        Border border = listCell.getBorder();
+        listCellInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
+                             add(border == null ? ZERO_INSETS
+                                                : border.getInsets(),
+                                 add(listCell.getInsets(),
+                                     listCell.getBackground() == null ? ZERO_INSETS
+                                                                      : listCell.getBackground()
+                                                                                .getOutsets())));
+        border = listView.getBorder();
+        listInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
+                         add(border == null ? ZERO_INSETS : border.getInsets(),
+                             add(listView.getInsets(),
+                                 listView.getBackground() == null ? ZERO_INSETS
+                                                                  : listView.getBackground()
+                                                                            .getOutsets())));
+        border = tableCell.getBorder();
+        tableCellInsets = add(border == null ? ZERO_INSETS
+                                             : border.getOutsets(),
+                              add(border == null ? ZERO_INSETS
+                                                 : border.getInsets(),
+                                  add(tableCell.getInsets(),
+                                      tableCell.getBackground() == null ? ZERO_INSETS
+                                                                        : tableCell.getBackground()
+                                                                                   .getOutsets())));
     }
 
     private NestingFunction nest(SchemaNode child,
@@ -607,6 +631,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                                  cardinality, extendedHeight,
                                                  index);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
+                    {
+                        getStyleClass().add(nestedListCellClass());
+                    }
+
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
                         if (item == getItem()) {
@@ -625,9 +653,21 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 return split;
-            }, (cardinality * extendedHeight) + listCellInsets.getBottom()
-               + listCellInsets.getTop(), row, primitive);
+            }, (cardinality * extendedHeight) + listInsets.getBottom()
+               + listInsets.getTop(), row, primitive);
         };
+    }
+
+    private String nestedListCellClass() {
+        return String.format("%s-nest-list-cell", field);
+    }
+
+    private String nestedListScrollStyleClass() {
+        return String.format("%s-nested-list-scroll", field);
+    }
+
+    private String nestedListStyleClass() {
+        return String.format("%s-nested-list", field);
     }
 
     private void nestTables() {
@@ -637,6 +677,10 @@ public class Relation extends SchemaNode implements Cloneable {
                 ((Relation) child).nestTables();
             }
         });
+    }
+
+    private String outlineListStyleClass() {
+        return String.format("%s-outline-list", field);
     }
 
     private ListView<JsonNode> split(NestedTableRow<JsonNode> row,
@@ -658,19 +702,23 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
         };
+        content.getStyleClass()
+               .add(nestedListStyleClass());
         if (column != leaves.size() - 1) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")
                                   .toExternalForm());
+        } else {
+            content.getStyleClass()
+                   .add(nestedListScrollStyleClass());
         }
-        content.getStylesheets()
-               .add(
-
-                    getClass().getResource("nested.css")
-                              .toExternalForm());
         content.setPlaceholder(new Text());
         content.setMinWidth(0);
         content.setPrefWidth(1);
         return content;
+    }
+
+    private String tableViewStyleClass() {
+        return String.format("%s-table", field);
     }
 }

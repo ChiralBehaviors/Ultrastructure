@@ -109,6 +109,7 @@ public class Relation extends SchemaNode implements Cloneable {
     private int                    averageCardinality = 1;
     private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
+    private Insets                 listCellInsets;
     private double                 outlineLabelWidth  = 0;
     private Insets                 tableCellInsets;
     private boolean                useTable           = false;
@@ -154,7 +155,8 @@ public class Relation extends SchemaNode implements Cloneable {
         if (isFold()) {
             return fold.getTableColumnWidth();
         }
-        return super.getTableColumnWidth();
+        return super.getTableColumnWidth() + tableCellInsets.getLeft()
+               + tableCellInsets.getRight();
     }
 
     public boolean isFold() {
@@ -227,7 +229,7 @@ public class Relation extends SchemaNode implements Cloneable {
     public String toString(int indent) {
         StringBuffer buf = new StringBuffer();
         buf.append(String.format("Relation [%s:%.2f(%.2f) x %s]", label,
-                                 justifiedWidth, tableColumnWidth,
+                                 justifiedWidth, getTableColumnWidth(),
                                  averageCardinality));
         buf.append('\n');
         children.forEach(c -> {
@@ -283,6 +285,13 @@ public class Relation extends SchemaNode implements Cloneable {
         return super.getFoldExtractor(extractor);
     }
 
+    double getHeight(int cardinality) {
+        return children.stream()
+                       .map(child -> child.getHeight(averageCardinality))
+                       .reduce((a, b) -> a + b)
+                       .get();
+    }
+
     @Override
     void justify(double width) {
         if (isFold()) {
@@ -317,11 +326,11 @@ public class Relation extends SchemaNode implements Cloneable {
                                       .map(child -> child.layout(available))
                                       .max((a, b) -> Double.compare(a, b))
                                       .get();
-        outlineWidth += outlineLabelWidth + insets.getLeft()
-                        + insets.getRight();
-        if (tableColumnWidth <= outlineWidth) {
+        outlineWidth += outlineLabelWidth + listCellInsets.getLeft()
+                        + listCellInsets.getRight();
+        if (getTableColumnWidth() <= outlineWidth) {
             nestTables();
-            return tableColumnWidth;
+            return getTableColumnWidth();
         }
         return outlineWidth;
     }
@@ -336,8 +345,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         measure(styleSheets);
 
-        tableColumnWidth = tableCellInsets.getLeft()
-                           + tableCellInsets.getRight();
+        setTableColumnWidth(0);
         int sum = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
@@ -353,13 +361,15 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
-            tableColumnWidth += child.measure(aggregate, styleSheets);
+            setTableColumnWidth(getTableColumnWidth()
+                                + child.measure(aggregate, styleSheets));
             variableLength |= child.isVariableLength();
         }
         averageCardinality = Math.max(2, Math.round(sum / children.size()));
-        tableColumnWidth = Math.max(labelWidth(), tableColumnWidth);
-        justifiedWidth = tableColumnWidth;
-        return tableColumnWidth;
+        setTableColumnWidth(Math.max(labelWidth(), getTableColumnWidth()));
+        justifiedWidth = getTableColumnWidth();
+        return getTableColumnWidth() + tableCellInsets.getLeft()
+               + tableCellInsets.getRight();
     }
 
     @Override
@@ -380,6 +390,7 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefHeight(FONT_LOADER.getFontMetrics(labelFont)
                                            .getLineHeight());
+        double calculatedHeight = getHeight(averageCardinality);
         Pane box;
         if (useTable) {
             box = new HBox();
@@ -402,7 +413,7 @@ public class Relation extends SchemaNode implements Cloneable {
             JsonNode extractedField = extracted == null ? null
                                                         : extracted.get(field);
             setItems(control, extractedField);
-        }, element, 1);
+        }, element, calculatedHeight);
     }
 
     private ListView<JsonNode> buildOutline(Function<JsonNode, JsonNode> extractor,
@@ -530,7 +541,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private void justifyTable(double width) {
         justifiedWidth = width;
-        double slack = width - tableColumnWidth;
+        double slack = width - getTableColumnWidth();
         assert slack >= 0 : String.format("Negative slack: %.2f (%.2f) \n%s",
                                           slack, width, this);
         double total = children.stream()
@@ -577,7 +588,7 @@ public class Relation extends SchemaNode implements Cloneable {
         listView.layout();
         listCell.applyCss();
         listCell.layout();
-        insets = listCell.getInsets();
+        listCellInsets = listCell.getInsets();
         @SuppressWarnings("unused")
         Insets padding = listCell.getPadding();
         tableCellInsets = tableCell.getInsets();
@@ -589,9 +600,12 @@ public class Relation extends SchemaNode implements Cloneable {
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, int cardinality) {
         return (p, height, row, primitive) -> {
+            double extendedHeight = height + listCellInsets.getBottom()
+                                    + listCellInsets.getTop();
             return nesting.apply(index -> {
                 ListView<JsonNode> split = split(row, primitive, leaves,
-                                                 cardinality, height, index);
+                                                 cardinality, extendedHeight,
+                                                 index);
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     @Override
                     protected void updateItem(JsonNode item, boolean empty) {
@@ -611,8 +625,8 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 return split;
-            }, cardinality * (height + insets.getBottom() + insets.getTop()),
-                                 row, primitive);
+            }, (cardinality * extendedHeight) + listCellInsets.getBottom()
+               + listCellInsets.getTop(), row, primitive);
         };
     }
 

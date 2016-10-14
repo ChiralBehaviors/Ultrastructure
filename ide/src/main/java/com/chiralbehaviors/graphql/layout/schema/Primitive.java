@@ -47,6 +47,7 @@ import javafx.scene.text.Font;
  */
 public class Primitive extends SchemaNode {
 
+    Insets         insets            = new Insets(0);
     private double lineHeight        = 0;
     private double valueDefaultWidth = 0;
 
@@ -57,7 +58,7 @@ public class Primitive extends SchemaNode {
     @Override
     public String toString() {
         return String.format("Primitive [%s:%.2f(%.2f)]", label, justifiedWidth,
-                             tableColumnWidth);
+                             getTableColumnWidth());
     }
 
     @Override
@@ -109,7 +110,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     double layout(double width) {
-        return variableLength ? width : Math.min(width, tableColumnWidth);
+        return variableLength ? width : Math.min(width, getTableColumnWidth());
     }
 
     @Override
@@ -133,11 +134,11 @@ public class Primitive extends SchemaNode {
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
             variableLength = true;
         }
-        tableColumnWidth = Math.max(labelWidth(),
-                                    Math.max(valueDefaultWidth, averageWidth))
-                           + 4;
-        justifiedWidth = tableColumnWidth;
-        return tableColumnWidth;
+        setTableColumnWidth(Math.max(labelWidth(),
+                                     Math.max(valueDefaultWidth, averageWidth))
+                            + 4);
+        justifiedWidth = getTableColumnWidth();
+        return getTableColumnWidth();
     }
 
     @Override
@@ -150,15 +151,12 @@ public class Primitive extends SchemaNode {
         labelText.setMinWidth(0);
         labelText.setPrefWidth(labelWidth);
         labelText.setPrefRowCount(cardinality);
-        //        HBox.setHgrow(labelText, Priority.ALWAYS);
         box.getChildren()
            .add(labelText);
         Control control = buildControl(cardinality);
         HBox.setHgrow(control, Priority.ALWAYS);
-        //        control.setPrefWidth(justifiedWidth);
         box.getChildren()
            .add(control);
-        //        box.setPrefWidth(justifiedWidth);
         return new NodeMaster(item -> {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
@@ -175,9 +173,9 @@ public class Primitive extends SchemaNode {
         return text;
     }
 
-    private double getHeight(int cardinality) {
-        return (cardinality * lineHeight) + insets.getTop()
-               + insets.getBottom();
+    double getHeight(int cardinality) {
+        return (cardinality * lineHeight) + insets.getTop() + insets.getBottom()
+               + 8;
     }
 
     private Font measure(List<String> styleSheets) {

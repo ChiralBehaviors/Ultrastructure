@@ -33,7 +33,6 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -178,14 +177,12 @@ abstract public class SchemaNode {
         }
     }
 
-    final String field;
-    Insets       insets           = new Insets(0);
-    Insets       padding          = new Insets(0);
-    double       justifiedWidth   = 0;
-    String       label;
-    Font         labelFont        = Font.getDefault();
-    double       tableColumnWidth = 0;
-    boolean      variableLength   = false;
+    final String   field;
+    double         justifiedWidth   = 0;
+    String         label;
+    Font           labelFont        = Font.getDefault();
+    boolean        variableLength   = false;
+    private double tableColumnWidth = 0;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -208,10 +205,6 @@ abstract public class SchemaNode {
         return label;
     }
 
-    public double getTableColumnWidth() {
-        return tableColumnWidth;
-    }
-
     public boolean isRelation() {
         return false;
     }
@@ -226,10 +219,6 @@ abstract public class SchemaNode {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public void setTableColumnWidth(double tableColumnWidth) {
-        this.tableColumnWidth = tableColumnWidth;
     }
 
     public void setVariableLength(boolean variableLength) {
@@ -259,6 +248,12 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
+    abstract double getHeight(int cardinality);
+
+    double getTableColumnWidth() {
+        return tableColumnWidth;
+    }
+
     void justify(double width) {
         if (variableLength) {
             justifiedWidth = width;
@@ -271,7 +266,7 @@ abstract public class SchemaNode {
     }
 
     double labelWidth() {
-        return FONT_LOADER.computeStringWidth(label, labelFont) + 12;
+        return FONT_LOADER.computeStringWidth(label, labelFont) + 24;
     }
 
     abstract double layout(double width);
@@ -281,4 +276,8 @@ abstract public class SchemaNode {
     abstract NodeMaster outlineElement(double labelWidth,
                                        Function<JsonNode, JsonNode> extractor,
                                        int cardinality);
+
+    void setTableColumnWidth(double tableColumnWidth) {
+        this.tableColumnWidth = tableColumnWidth;
+    }
 }

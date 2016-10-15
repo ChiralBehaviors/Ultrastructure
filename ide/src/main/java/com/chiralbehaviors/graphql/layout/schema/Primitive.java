@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
+import javafx.geometry.Insets;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -72,7 +73,6 @@ public class Primitive extends SchemaNode {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
               .add(tableColumnStyleClass());
-        //        column.setPrefWidth(justifiedWidth);
 
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
@@ -82,16 +82,8 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
-            NestedColumnView view;
             {
                 getStyleClass().add(tableCellClass());
-                tableRowProperty().addListener((o, p, c) -> {
-                    view = (NestedColumnView) nesting.apply(node -> {
-                        return buildControl(cardinality, layout);
-                    }, Primitive.this.getValueHeight(cardinality, layout),
-                                                            (NestedTableRow<JsonNode>) getTableRow(),
-                                                            Primitive.this);
-                });
             }
 
             @Override
@@ -104,10 +96,16 @@ public class Primitive extends SchemaNode {
                     setGraphic(null);
                     return;
                 }
-                setGraphic(view);
-                if (view != null) {
-                    view.setItem(item);
+                if (getTableRow() == null) {
+                    return;
                 }
+                NestedColumnView view = (NestedColumnView) nesting.apply(node -> {
+                    return buildControl(cardinality, layout);
+                }, Primitive.this.getValueHeight(cardinality, layout),
+                                                                         (NestedTableRow<JsonNode>) getTableRow(),
+                                                                         Primitive.this);
+                setGraphic(view);
+                view.setItem(item);
             }
         });
         return column;
@@ -165,11 +163,13 @@ public class Primitive extends SchemaNode {
                              .getLeft()
                        + layout.getValueInsets()
                                .getRight();
+        columnWidth += 28;
 
-        nestingInset = nestingLevel * (layout.getListInsets()
-                                             .getLeft()
-                                       + layout.getListInsets()
-                                               .getRight());
+        Insets listInsets = layout.getListInsets();
+        Insets tableInsets = layout.getTableInsets();
+        nestingInset = nestingLevel
+                       * (listInsets.getLeft() + listInsets.getRight())
+                       + (tableInsets.getLeft() + tableInsets.getRight());
         justifiedWidth = getTableColumnWidth();
         return justifiedWidth;
     }

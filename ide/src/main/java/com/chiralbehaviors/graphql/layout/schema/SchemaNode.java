@@ -152,6 +152,10 @@ abstract public class SchemaNode {
         return nodes;
     }
 
+    public static String labelStyleClass() {
+        return "auto-layout-label";
+    }
+
     public static String nestedListCellClass() {
         return "auto-layout-nest-list-cell";
     }
@@ -198,16 +202,20 @@ abstract public class SchemaNode {
         }
     }
 
-    public static String tableColumnStyleClass() {
-        return "auto-layout-table-column";
-    }
-
     public static String tableCellClass() {
         return "auto-layout-table-cell";
     }
 
+    public static String tableColumnStyleClass() {
+        return "auto-layout-table-column";
+    }
+
     public static String tableStyleClass() {
         return "auto-layout-table";
+    }
+
+    public static String valueStyleClass() {
+        return "auto-layout-label";
     }
 
     final String field;
@@ -280,13 +288,13 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
-    abstract double getValueHeight(int cardinality, Layout layout);
-
     double getLabelWidth() {
         return labelWidth;
     }
 
     abstract double getTableColumnWidth();
+
+    abstract double getValueHeight(int cardinality, Layout layout);
 
     abstract void justify(double width);
 

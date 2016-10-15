@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.chiralbehaviors.graphql.layout.schema.Relation;
+import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.javafx.scene.control.skin.VirtualScrollBar;
 
@@ -23,9 +24,9 @@ public class NestedTableCell<S, T> extends TableCell<S, T> {
         public final int                cardinality;
         public final ListView<JsonNode> control;
         public final double             height;
-        public final Relation           relation;
+        public final SchemaNode           relation;
 
-        public Nested(Relation relation, int cardinality,
+        public Nested(SchemaNode relation, int cardinality,
                       ListView<JsonNode> control, double height) {
             this.relation = relation;
             this.cardinality = cardinality;

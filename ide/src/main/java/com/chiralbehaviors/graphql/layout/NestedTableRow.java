@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.chiralbehaviors.graphql.layout.schema.Relation;
+import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.javafx.scene.control.skin.VirtualScrollBar;
 
@@ -43,9 +44,9 @@ public class NestedTableRow<T> extends TableRow<T> {
         public final int                cardinality;
         public final ListView<JsonNode> control;
         public final double             height;
-        public final Relation           relation;
+        public final SchemaNode         relation;
 
-        public Nested(Relation relation, int cardinality,
+        public Nested(SchemaNode relation, int cardinality,
                       ListView<JsonNode> control, double height) {
             this.relation = relation;
             this.cardinality = cardinality;
@@ -67,31 +68,47 @@ public class NestedTableRow<T> extends TableRow<T> {
             nested = new Nested[count];
         }
 
-        public boolean register(int column, Nested child) {
+        public boolean layout(int column, Nested child) {
             nested[column] = child;
             for (Nested n : nested) {
                 if (n == null) {
                     return false;
                 }
             }
-            link();
+            layout();
             return true;
         }
 
-        private void link() {
+        public boolean link(int column, Nested child) {
+            nested[column] = child;
+            for (Nested n : nested) {
+                if (n == null) {
+                    return false;
+                }
+            }
+            link(Arrays.asList(nested));
+            return true;
+        }
+
+        private void layout() {
             List<Nested> link = Arrays.asList(nested);
             double max = link.stream()
                              .mapToDouble(p -> p.height)
                              .max()
                              .orElse(-1);
-            linkScrollBars(link, max);
+            layout(link, max);
         }
 
-        private void linkScrollBars(List<Nested> link, double max) {
-            Stack<ScrollBar> scrolls = new Stack<>();
+        private void layout(List<Nested> link, double max) {
             link.forEach(p -> {
                 p.control.setPrefHeight(p.cardinality * max);
                 p.control.setFixedCellSize(max);
+            });
+        }
+
+        private void link(List<Nested> link) {
+            Stack<ScrollBar> scrolls = new Stack<>();
+            link.forEach(p -> {
                 Set<Node> deadSeaScrolls = p.control.lookupAll(".scroll-bar:vertical");
                 VirtualScrollBar scrollbar = deadSeaScrolls.stream()
                                                            .filter(n -> n instanceof VirtualScrollBar)
@@ -100,7 +117,6 @@ public class NestedTableRow<T> extends TableRow<T> {
                                                                          .equals(Orientation.VERTICAL))
                                                            .reduce((a, b) -> b)
                                                            .orElse(null);
-                scrollbar.setUnitIncrement(max);
                 scrolls.push(scrollbar);
                 p.control.getSelectionModel()
                          .selectedIndexProperty()
@@ -135,15 +151,30 @@ public class NestedTableRow<T> extends TableRow<T> {
         super.layoutChildren();
     }
 
-    public void register(Integer index, Relation relation, Integer column,
-                         ListView<JsonNode> child, int cardinality,
-                         double height, int count) {
+    public void layout(Integer index, Relation relation, Integer column,
+                       ListView<JsonNode> child, int cardinality, double height,
+                       int count) {
         Map<Integer, Nesting> list = nestings.computeIfAbsent(relation,
                                                               k -> new HashMap<>(3));
         Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
-        if (nesting.register(column, new Nested(relation, cardinality, child,
-                                               height))) {
-//            list.remove(column);
+        if (nesting.layout(column,
+                           new Nested(relation, cardinality, child, height))) {
+            list.remove(index);
+            if (list.isEmpty()) {
+                nestings.remove(relation);
+            }
+        }
+    }
+
+    public void link(Integer index, Relation relation, Integer column,
+                     ListView<JsonNode> child, int cardinality, double height,
+                     int count) {
+        Map<Integer, Nesting> list = nestings.computeIfAbsent(relation,
+                                                              k -> new HashMap<>(3));
+        Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
+        if (nesting.link(column,
+                           new Nested(relation, cardinality, child, height))) {
+            list.remove(index);
             if (list.isEmpty()) {
                 nestings.remove(relation);
             }

@@ -30,17 +30,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.Font;
 
 /**
  * @author hhildebrand
@@ -48,9 +43,9 @@ import javafx.scene.text.Font;
  */
 public class Primitive extends SchemaNode {
 
-    Insets         insets            = new Insets(0);
-    private double lineHeight        = 0;
+    private double columnWidth;
     private double maxWidth          = 0;
+    private double nestingInset;
     private double valueDefaultWidth = 0;
 
     public Primitive(String label) {
@@ -71,12 +66,13 @@ public class Primitive extends SchemaNode {
     @SuppressWarnings("unchecked")
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     NestingFunction nesting) {
+                                                     NestingFunction nesting,
+                                                     Layout layout) {
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
               .add(tableColumnStyleClass());
-        column.setPrefWidth(justifiedWidth);
+        column.setMinWidth(justifiedWidth);
 
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
@@ -86,8 +82,16 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+            NestedColumnView view;
             {
                 getStyleClass().add(tableViewCellClass());
+                tableRowProperty().addListener((o, p, c) -> {
+                    view = (NestedColumnView) nesting.apply(node -> {
+                        return buildControl(cardinality, layout);
+                    }, Primitive.this.getValueHeight(cardinality, layout),
+                                                            (NestedTableRow<JsonNode>) getTableRow(),
+                                                            Primitive.this);
+                });
             }
 
             @Override
@@ -100,12 +104,10 @@ public class Primitive extends SchemaNode {
                     setGraphic(null);
                     return;
                 }
-                NestedColumnView view = (NestedColumnView) nesting.apply(node -> {
-                    return buildControl(cardinality);
-                }, Primitive.this.getHeight(cardinality), (NestedTableRow<JsonNode>) getTableRow(),
-                                                                         Primitive.this);
                 setGraphic(view);
-                view.setItem(item);
+                if (view != null) {
+                    view.setItem(item);
+                }
             }
         });
         return column;
@@ -116,10 +118,14 @@ public class Primitive extends SchemaNode {
         return Collections.singletonList(this);
     }
 
-    double getHeight(int cardinality) {
-        return Math.max(lineHeight,
-                        ((maxWidth * lineHeight) / getTableColumnWidth()))
-               + insets.getTop() + insets.getBottom() + 8;
+    double getValueHeight(int cardinality, Layout layout) {
+        return layout.valueHeight(Math.max(1.0, Math.round(maxWidth
+                                                           / justifiedWidth)));
+    }
+
+    @Override
+    double getTableColumnWidth() {
+        return columnWidth + nestingInset;
     }
 
     @Override
@@ -128,47 +134,55 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double measure(ArrayNode data, List<String> styleSheets) {
-        Font valueFont = measure(styleSheets);
+    double measure(ArrayNode data, int nestingLevel, Layout layout) {
+        labelWidth = layout.labelWidth(label) + layout.labelWidth(" ") * 2;
         double sum = 0;
         maxWidth = 0;
+        columnWidth = 0;
         for (JsonNode prim : data) {
             List<JsonNode> rows = asList(prim);
             double width = 0;
             for (JsonNode row : rows) {
-                width += FONT_LOADER.computeStringWidth(toString(row),
-                                                        valueFont)
-                         + insets.getLeft() + insets.getRight();
+                width += layout.valueWidth(toString(row));
                 maxWidth = Math.max(maxWidth, width);
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
         double averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
+        maxWidth += layout.valueWidth(" ") * 2;
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
             variableLength = true;
         }
-        setTableColumnWidth(Math.max(labelWidth(),
-                                     Math.max(valueDefaultWidth, averageWidth))
-                            + 4);
+        columnWidth = Math.max(labelWidth,
+                               Math.max(valueDefaultWidth, averageWidth));
+        columnWidth += layout.getValueInsets()
+                             .getLeft()
+                       + layout.getValueInsets()
+                               .getRight();
+
+        nestingInset = nestingLevel * (layout.getListInsets()
+                                             .getLeft()
+                                       + layout.getListInsets()
+                                               .getRight());
         justifiedWidth = getTableColumnWidth();
-        return getTableColumnWidth();
+        return justifiedWidth;
     }
 
     @Override
     NodeMaster outlineElement(double labelWidth,
                               Function<JsonNode, JsonNode> extractor,
-                              int cardinality) {
+                              int cardinality, Layout layout) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.getStyleClass()
                  .add(outlineLabelStyleClass());
         labelText.setMinWidth(0);
         labelText.setPrefWidth(labelWidth);
-        labelText.setPrefRowCount(cardinality);
+        labelText.setPrefRowCount(1);
         box.getChildren()
            .add(labelText);
-        Control control = buildControl(cardinality);
+        Control control = buildControl(cardinality, layout);
         HBox.setHgrow(control, Priority.ALWAYS);
         box.getChildren()
            .add(control);
@@ -176,50 +190,20 @@ public class Primitive extends SchemaNode {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
             setItemsOf(control, extractedField);
-        }, box, getHeight(cardinality));
+        }, box, getValueHeight(cardinality, layout));
     }
 
-    private TextArea buildControl(int cardinality) {
+    private TextArea buildControl(int cardinality, Layout layout) {
         TextArea text = new TextArea();
         text.getStyleClass()
             .add(valueClass());
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        text.setPrefRowCount(Math.max(1, (int) (maxWidth
-                                                / getTableColumnWidth())));
+        double height = getValueHeight(cardinality, layout);
+        text.setMinHeight(height);
+        text.setPrefHeight(height);
         return text;
-    }
-
-    private Font measure(List<String> styleSheets) {
-        TextArea text = new TextArea(label);
-        text.setPrefRowCount(1);
-        Group root = new Group(text);
-        Scene scene = new Scene(root);
-        if (styleSheets != null) {
-            scene.getStylesheets()
-                 .addAll(styleSheets);
-        }
-        root.applyCss();
-        root.layout();
-        text.applyCss();
-        text.layout();
-
-        Border border = text.getBorder();
-        insets = add(border == null ? ZERO_INSETS : border.getOutsets(),
-                     add(border == null ? ZERO_INSETS : border.getInsets(),
-                         add(text.getInsets(),
-                             text.getBackground() == null ? ZERO_INSETS
-                                                          : text.getBackground()
-                                                                .getOutsets())));
-        Font valueFont = text.getFont();
-        lineHeight = FONT_LOADER.getFontMetrics(valueFont)
-                                .getLineHeight();
-        return valueFont;
-    }
-
-    private String tableViewCellClass() {
-        return String.format("%s-table-cell", field);
     }
 
     private String toString(JsonNode value) {

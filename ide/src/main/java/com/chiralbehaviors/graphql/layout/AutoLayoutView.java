@@ -20,7 +20,12 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chiralbehaviors.graphql.layout.schema.Layout;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
+import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.beans.property.Property;
@@ -34,11 +39,12 @@ import javafx.scene.layout.AnchorPane;
  *
  */
 public class AutoLayoutView extends Control {
+    private static final Logger                  log         = LoggerFactory.getLogger(AutoLayoutView.class);
 
-    private SimpleObjectProperty<JsonNode>       data = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<JsonNode>       data        = new SimpleObjectProperty<>();
     private Control                              layout;
-    private final SimpleObjectProperty<Relation> root = new SimpleObjectProperty<>();
-    private double layoutWidth = 0.0;
+    private final SimpleObjectProperty<Relation> root        = new SimpleObjectProperty<>();
+    private double                               layoutWidth = 0.0;
 
     public AutoLayoutView() {
         this(null);
@@ -46,7 +52,7 @@ public class AutoLayoutView extends Control {
 
     public AutoLayoutView(Relation root) {
         this.root.set(root);
-        widthProperty().addListener((o, p, c) -> resize(c.floatValue()));
+        widthProperty().addListener((o, p, c) -> resize(c.doubleValue()));
         data.addListener((o, p, c) -> setContent());
     }
 
@@ -62,7 +68,7 @@ public class AutoLayoutView extends Control {
         return root;
     }
 
-    public Relation getRoot() {
+    public SchemaNode getRoot() {
         return root.get();
     }
 
@@ -72,8 +78,12 @@ public class AutoLayoutView extends Control {
     }
 
     public void measure(JsonNode data) {
-        Relation relation = root.get();
-        relation.measure(data, getStylesheets());
+        try {
+            Relation relation = root.get();
+            relation.measure(data, new Layout(getStylesheets()));
+        } catch (Throwable e) {
+            log.error("cannot measure", e);
+        }
     }
 
     public Property<Relation> rootProperty() {
@@ -89,31 +99,39 @@ public class AutoLayoutView extends Control {
     }
 
     private void resize(double width) {
-        if (layoutWidth == width) {
-            return; 
+        try {
+            if (layoutWidth == width) {
+                return;
+            }
+            layoutWidth = width;
+            getChildren().clear();
+            Relation relation = root.get();
+            if (relation == null) {
+                return;
+            }
+            relation.autoLayout((float) width);
+            layout = relation.buildControl(new Layout(getStylesheets()));
+            relation.setItems(layout, data.get());
+            AnchorPane.setTopAnchor(layout, 0.0);
+            AnchorPane.setLeftAnchor(layout, 0.0);
+            AnchorPane.setRightAnchor(layout, 0.0);
+            AnchorPane.setBottomAnchor(layout, 0.0);
+            getChildren().add(layout);
+        } catch (Throwable e) {
+            log.error("Unable to resize to {}", width, e);
         }
-        layoutWidth = width;
-        getChildren().clear();
-        Relation relation = root.get();
-        if (relation == null) {
-            return;
-        }
-        relation.autoLayout((float) width);
-        layout = relation.buildControl();
-        relation.setItems(layout, data.get());
-        AnchorPane.setTopAnchor(layout, 0.0);
-        AnchorPane.setLeftAnchor(layout, 0.0);
-        AnchorPane.setRightAnchor(layout, 0.0);
-        AnchorPane.setBottomAnchor(layout, 0.0);
-        getChildren().add(layout);
     }
 
     private void setContent() {
-        if (layout != null) {
-            Relation relation = root.get();
-            if (relation != null) {
-                relation.setItems(layout, data.get());
+        try {
+            if (layout != null) {
+                SchemaNode relation = root.get();
+                if (relation != null) {
+                    relation.setItems(layout, data.get());
+                }
             }
+        } catch (Throwable e) {
+            log.error("cannot set content", e);
         }
     }
 

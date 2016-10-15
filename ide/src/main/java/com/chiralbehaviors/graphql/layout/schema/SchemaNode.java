@@ -30,8 +30,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.collections.ObservableListWrapper;
-import com.sun.javafx.tk.FontLoader;
-import com.sun.javafx.tk.Toolkit;
 
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -41,19 +39,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.text.Font;
 
 /**
  * @author hhildebrand
  *
  */
 abstract public class SchemaNode {
-
-    public static Insets add(Insets a, Insets b) {
-        return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
-                          a.getBottom() + b.getBottom(),
-                          a.getRight() + b.getRight());
-    }
 
     public class NodeMaster {
         public final double             height;
@@ -68,10 +59,11 @@ abstract public class SchemaNode {
         }
     }
 
-
-    static FontLoader FONT_LOADER = Toolkit.getToolkit()
-                                           .getFontLoader();
-    static final Insets ZERO_INSETS = new Insets(0);
+    public static Insets add(Insets a, Insets b) {
+        return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
+                          a.getBottom() + b.getBottom(),
+                          a.getRight() + b.getRight());
+    }
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
@@ -160,6 +152,26 @@ abstract public class SchemaNode {
         return nodes;
     }
 
+    public static String nestedListCellClass() {
+        return "auto-layout-nest-list-cell";
+    }
+
+    public static String nestedListScrollStyleClass() {
+        return "auto-layout-nested-list-scroll";
+    }
+
+    public static String nestedListStyleClass() {
+        return "auto-layout-nested-list";
+    }
+
+    public static String outlineListCellClass() {
+        return "auto-layout-outline-list-cell";
+    }
+
+    public static String outlineListStyleClass() {
+        return "auto-layout-outline-list";
+    }
+
     public static void setItemsOf(Control control, JsonNode data) {
         if (data == null) {
             data = JsonNodeFactory.instance.arrayNode();
@@ -186,12 +198,27 @@ abstract public class SchemaNode {
         }
     }
 
-    final String   field;
-    double         justifiedWidth   = 0;
-    String         label;
-    Font           labelFont        = Font.getDefault();
-    boolean        variableLength   = false;
-    private double tableColumnWidth = 0;
+    public static String tableColumnStyleClass() {
+        return "auto-layout-table-column";
+    }
+
+    public static String tableViewCellClass() {
+        return "auto-layout-table-cell";
+    }
+
+    public static String tableViewStyleClass() {
+        return "auto-layout-table";
+    }
+
+    final String field;
+
+    double       justifiedWidth = 0;
+
+    String       label;
+
+    double       labelWidth     = 0;
+
+    boolean      variableLength = false;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -237,7 +264,8 @@ abstract public class SchemaNode {
     abstract public String toString(int indent);
 
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                              NestingFunction nesting);
+                                                              NestingFunction nesting,
+                                                              Layout layout);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -252,11 +280,13 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
-    abstract double getHeight(int cardinality);
+    abstract double getValueHeight(int cardinality, Layout layout);
 
-    double getTableColumnWidth() {
-        return tableColumnWidth;
+    double getLabelWidth() {
+        return labelWidth;
     }
+
+    abstract double getTableColumnWidth();
 
     void justify(double width) {
         if (variableLength) {
@@ -264,34 +294,13 @@ abstract public class SchemaNode {
         }
     }
 
-    double labelHeight() {
-        return FONT_LOADER.getFontMetrics(labelFont)
-                          .getLineHeight();
-    }
-
-    double labelWidth() {
-        return FONT_LOADER.computeStringWidth(label, labelFont) + 24;
-    }
-
     abstract double layout(double width);
 
-    abstract double measure(ArrayNode data, List<String> styleSheets);
+    abstract double measure(ArrayNode data, int nestingLevel, Layout layout);
 
     abstract NodeMaster outlineElement(double labelWidth,
                                        Function<JsonNode, JsonNode> extractor,
-                                       int cardinality);
-
-    void setTableColumnWidth(double tableColumnWidth) {
-        this.tableColumnWidth = tableColumnWidth;
-    }
-
-    String outlineListCellClass() {
-        return String.format("%s-outline-list-cell", field);
-    }
-
-    String tableColumnStyleClass() {
-        return String.format("%s-table-column", field);
-    }
+                                       int cardinality, Layout layout);
 
     String outlineLabelStyleClass() {
         return String.format("%s-outline-label", field);

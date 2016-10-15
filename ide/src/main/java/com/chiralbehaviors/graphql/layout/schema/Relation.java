@@ -636,7 +636,7 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         content.getStyleClass()
                .add(nestedListStyleClass());
-        if (column.equals(count - 1)) {
+        if (!column.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")
                                   .toExternalForm());

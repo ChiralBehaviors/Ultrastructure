@@ -72,7 +72,7 @@ public class Primitive extends SchemaNode {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
               .add(tableColumnStyleClass());
-        column.setMinWidth(justifiedWidth);
+        //        column.setPrefWidth(justifiedWidth);
 
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
@@ -84,7 +84,7 @@ public class Primitive extends SchemaNode {
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
             NestedColumnView view;
             {
-                getStyleClass().add(tableViewCellClass());
+                getStyleClass().add(tableCellClass());
                 tableRowProperty().addListener((o, p, c) -> {
                     view = (NestedColumnView) nesting.apply(node -> {
                         return buildControl(cardinality, layout);
@@ -119,8 +119,7 @@ public class Primitive extends SchemaNode {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return layout.valueHeight(Math.max(1.0, Math.round(maxWidth
-                                                           / justifiedWidth)));
+        return layout.valueHeight(Math.ceil(maxWidth / justifiedWidth));
     }
 
     @Override

@@ -497,7 +497,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
         TableView<JsonNode> table = new TableView<>();
         table.getStyleClass()
-             .add(tableViewStyleClass());
+             .add(tableStyleClass());
         table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
         children.forEach(child -> {
             table.getColumns()

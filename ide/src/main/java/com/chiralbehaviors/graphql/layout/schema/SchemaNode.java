@@ -202,11 +202,11 @@ abstract public class SchemaNode {
         return "auto-layout-table-column";
     }
 
-    public static String tableViewCellClass() {
+    public static String tableCellClass() {
         return "auto-layout-table-cell";
     }
 
-    public static String tableViewStyleClass() {
+    public static String tableStyleClass() {
         return "auto-layout-table";
     }
 

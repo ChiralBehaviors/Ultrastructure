@@ -21,16 +21,19 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.add;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.*;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableViewStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -61,57 +64,71 @@ public class Layout {
     private double              valueLineHeight;
 
     public Layout(List<String> styleSheets) {
+        AtomicReference<TableCell<String, String>> tableCell = new AtomicReference<>();
+        AtomicReference<ListCell<String>> listCell = new AtomicReference<>();
         TextArea valueText = new TextArea("lorus ipsum");
         TextArea labelText = new TextArea("lorus ipsum");
         TableView<String> table = new TableView<>();
         table.getStyleClass()
-             .add(tableViewStyleClass());
-        TableRow<String> row = new TableRow<String>();
+             .add(tableStyleClass());
         TableColumn<String, String> column = new TableColumn<>("");
+        column.setCellFactory(c -> new TableCell<String, String>() {
+            {
+                getStyleClass().add(tableCellClass());
+                tableCell.set(this);
+            }
+        });
         column.getStyleClass()
               .add(tableColumnStyleClass());
         table.getColumns()
              .add(column);
-        TableCell<String, String> tableCell = new TableCell<>();
-        tableCell.updateTableColumn(column);
-        tableCell.updateTableRow(row);
-        row.updateTableView(table);
         ListView<String> listView = new ListView<>();
+        listView.setCellFactory(v -> new ListCell<String>() {
+            {
+                getStyleClass().add(outlineListCellClass());
+                listCell.set(this);
+            }
+        });
         listView.getStyleClass()
                 .add(outlineListStyleClass());
-        ListCell<String> listCell = new ListCell<>();
-        listCell.getStyleClass()
-                .add(outlineListCellClass());
-        listCell.updateListView(listView);
         Group root = new Group(table, listView, valueText, labelText);
         Scene scene = new Scene(root);
         if (styleSheets != null) {
             scene.getStylesheets()
                  .addAll(styleSheets);
         }
+        ObservableList<String> tableItems = table.getItems();
+        tableItems.add("Lorem ipsum");
+        ObservableList<String> listItems = listView.getItems();
+        listItems.add("Lorem ipsum");
         root.applyCss();
         root.layout();
         table.applyCss();
         table.layout();
-        row.applyCss();
-        row.layout();
-        tableCell.applyCss();
-        tableCell.layout();
         listView.applyCss();
         listView.layout();
-        listCell.applyCss();
-        listCell.layout();
         labelText.applyCss();
         labelText.layout();
         valueText.applyCss();
         valueText.layout();
-        Border border = listCell.getBorder();
+        listView.refresh();
+        table.refresh();
+        listView.setItems(null);
+        listView.setItems(listItems);
+        table.setItems(null);
+        table.setItems(tableItems);
+        
+        Border border = listCell.get()
+                                .getBorder();
         listCellInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
                              add(border == null ? ZERO_INSETS
                                                 : border.getInsets(),
-                                 add(listCell.getInsets(),
-                                     listCell.getBackground() == null ? ZERO_INSETS
-                                                                      : listCell.getBackground()
+                                 add(listCell.get()
+                                             .getInsets(),
+                                     listCell.get()
+                                             .getBackground() == null ? ZERO_INSETS
+                                                                      : listCell.get()
+                                                                                .getBackground()
                                                                                 .getOutsets())));
         border = listView.getBorder();
         listInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
@@ -120,14 +137,18 @@ public class Layout {
                                  listView.getBackground() == null ? ZERO_INSETS
                                                                   : listView.getBackground()
                                                                             .getOutsets())));
-        border = tableCell.getBorder();
+        border = tableCell.get()
+                          .getBorder();
         tableCellInsets = add(border == null ? ZERO_INSETS
                                              : border.getOutsets(),
                               add(border == null ? ZERO_INSETS
                                                  : border.getInsets(),
-                                  add(tableCell.getInsets(),
-                                      tableCell.getBackground() == null ? ZERO_INSETS
-                                                                        : tableCell.getBackground()
+                                  add(tableCell.get()
+                                               .getInsets(),
+                                      tableCell.get()
+                                               .getBackground() == null ? ZERO_INSETS
+                                                                        : tableCell.get()
+                                                                                   .getBackground()
                                                                                    .getOutsets())));
         border = table.getBorder();
         tableInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
@@ -189,7 +210,7 @@ public class Layout {
     }
 
     public double labelHeight(double ratio) {
-        double height = ratio * labelLineHeight;
+        double height = (ratio + 1) * labelLineHeight;
         return Math.max(labelLineHeight, height) + labelInsets.getTop()
                + labelInsets.getBottom() + 18;
     }
@@ -198,10 +219,19 @@ public class Layout {
         return FONT_LOADER.computeStringWidth(label, labelFont);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Layout\n  labelFont=%s\n  labelInsets=%s\n  labelLineHeight=%s\n  listCellInsets=%s\n  listInsets=%s\n  tableCellInsets=%s\n  tableInsets=%s\n  valueFont=%s\n  valueInsets=%s\n  valueLineHeight=%s]",
+                             labelFont, labelInsets, labelLineHeight,
+                             listCellInsets, listInsets, tableCellInsets,
+                             tableInsets, valueFont, valueInsets,
+                             valueLineHeight);
+    }
+
     public double valueHeight(double ratio) {
-        double height = ratio * valueLineHeight;
+        double height = (ratio + 1) * valueLineHeight;
         return Math.max(valueLineHeight, height) + valueInsets.getTop()
-               + valueInsets.getBottom() + 18;
+               + valueInsets.getBottom();
     }
 
     public double valueWidth(String value) {

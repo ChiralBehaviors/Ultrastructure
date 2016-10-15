@@ -243,7 +243,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                                      NestingFunction nesting,
                                                      Layout layout) {
         if (isFold()) {
-            return fold.buildTableColumn(cardinality, nesting, layout);
+            return fold.buildTableColumn(averageCardinality, nesting, layout);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
@@ -578,7 +578,7 @@ public class Relation extends SchemaNode implements Cloneable {
             Insets listInsets = layout.getListInsets();
             return nesting.apply(index -> {
                 Integer column = leaves.get(primitive);
-                ListView<JsonNode> split = split(row, index, column,
+                ListView<JsonNode> split = split(index, row, column,
                                                  cardinality, height,
                                                  leaves.size());
                 row.layout(index, Relation.this, column, split, cardinality,
@@ -620,8 +620,8 @@ public class Relation extends SchemaNode implements Cloneable {
         });
     }
 
-    private ListView<JsonNode> split(NestedTableRow<JsonNode> row,
-                                     Integer index, Integer column,
+    private ListView<JsonNode> split(Integer index,
+                                     NestedTableRow<JsonNode> row, Integer column,
                                      int cardinality, double height,
                                      int count) {
         ListView<JsonNode> content = new ListView<JsonNode>() {
@@ -630,7 +630,7 @@ public class Relation extends SchemaNode implements Cloneable {
             protected void layoutChildren() {
                 super.layoutChildren();
                 row.link(index, Relation.this, column, this, cardinality,
-                           height, count);
+                         height, count);
             }
 
         };

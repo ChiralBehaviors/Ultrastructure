@@ -101,7 +101,8 @@ public class NestedTableRow<T> extends TableRow<T> {
 
         private void layout(List<Nested> link, double max) {
             link.forEach(p -> {
-                p.control.setPrefHeight(p.cardinality * max);
+                double height = p.cardinality * max;
+                p.control.setPrefHeight(height);
                 p.control.setFixedCellSize(max);
             });
         }

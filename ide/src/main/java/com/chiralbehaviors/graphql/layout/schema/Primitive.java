@@ -119,7 +119,7 @@ public class Primitive extends SchemaNode {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return layout.valueHeight(Math.ceil(maxWidth / justifiedWidth));
+        return layout.valueHeight(maxWidth, justifiedWidth);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class Primitive extends SchemaNode {
                              .getLeft()
                        + layout.getValueInsets()
                                .getRight();
-        columnWidth += 28;
+        columnWidth += layout.scrollWidth();
 
         Insets listInsets = layout.getListInsets();
         Insets tableInsets = layout.getTableInsets();

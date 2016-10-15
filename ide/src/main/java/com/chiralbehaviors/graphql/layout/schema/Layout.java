@@ -46,6 +46,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.text.Font;
 
 public class Layout {
+    private static final int    SCROLL_WIDTH    = 28;
     private static FontLoader   FONT_LOADER     = Toolkit.getToolkit()
                                                          .getFontLoader();
     private static final Insets ZERO_INSETS     = new Insets(0);
@@ -230,10 +231,11 @@ public class Layout {
         return valueLineHeight;
     }
 
-    public double labelHeight(double ratio) {
-        double height = (ratio + 1) * labelLineHeight;
-        return Math.max(labelLineHeight, height) + labelInsets.getTop()
-               + labelInsets.getBottom() + 18;
+    public double labelHeight(double maxWidth, double justifiedWidth) {
+        double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
+                         + 2)
+                        * labelLineHeight;
+        return height + labelInsets.getTop() + labelInsets.getBottom();
     }
 
     public double labelWidth(String label) {
@@ -249,13 +251,18 @@ public class Layout {
                              valueLineHeight);
     }
 
-    public double valueHeight(double ratio) {
-        double height = (ratio + 1) * valueLineHeight;
-        return Math.max(valueLineHeight, height) + valueInsets.getTop()
-               + valueInsets.getBottom();
+    public double valueHeight(double maxWidth, double justifiedWidth) {
+        double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
+                         + 2)
+                        * valueLineHeight;
+        return height + valueInsets.getTop() + valueInsets.getBottom();
     }
 
     public double valueWidth(String value) {
         return FONT_LOADER.computeStringWidth(value, valueFont);
+    }
+
+    public double scrollWidth() {
+        return SCROLL_WIDTH;
     }
 }

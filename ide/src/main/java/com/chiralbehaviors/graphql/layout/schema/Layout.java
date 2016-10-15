@@ -21,14 +21,13 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.add;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.*;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleClass;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
@@ -63,44 +62,67 @@ public class Layout {
     private double              valueLineHeight;
 
     public Layout(List<String> styleSheets) {
-        AtomicReference<TableCell<String, String>> tableCell = new AtomicReference<>();
-        AtomicReference<ListCell<String>> listCell = new AtomicReference<>();
-        AtomicReference<TextArea> valueText = new AtomicReference<>();
-        TableView<String> table = new TableView<>();
-        table.getStyleClass()
-             .add(tableStyleClass());
-        TableColumn<String, String> column = new TableColumn<>("");
-        column.setCellFactory(c -> new TableCell<String, String>() {
-            {
-                getStyleClass().add(tableCellClass());
-                tableCell.set(this);
+        TextArea valueText = new TextArea("lorum ipsum");
+        valueText.getStyleClass()
+                 .add(valueStyleClass());
+        ListCell<String> listCell = new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item == getItem()) {
+                    return;
+                }
+                setGraphic(valueText);
             }
-        });
-        column.getStyleClass()
-              .add(tableColumnStyleClass());
-        table.getColumns()
-             .add(column);
-        ListView<String> listView = new ListView<>();
-        listView.setCellFactory(v -> new ListCell<String>() {
-            {
-                getStyleClass().add(outlineListCellClass());
-                listCell.set(this);
-            }
+        };
+        listCell.getStyleClass()
+                .add(outlineListCellClass());
+        ListView<String> topLevel = new ListView<>();
+        ListView<String> nestedList = new ListView<>();
+        nestedList.setCellFactory(v -> listCell);
+        nestedList.getStyleClass()
+                  .add(outlineListStyleClass());
+        topLevel.setCellFactory(s -> new ListCell<String>() {
 
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                TextArea value = new TextArea(item);
-                value.getStyleClass()
-                     .add(valueStyleClass());
-                valueText.set(value);
-                setGraphic(value);
+                if (empty || item == null || item == getItem()) {
+                    return;
+                }
+                setGraphic(nestedList);
+                ObservableList<String> items = nestedList.getItems();
+                items.clear();
+                items.add(item);
+                nestedList.setItems(null);
+                nestedList.setItems(items);
             }
-
         });
-        listView.getStyleClass()
-                .add(outlineListStyleClass());
-        Group root = new Group(table, listView);
+        TableCell<String, String> tableCell = new TableCell<String, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item == getItem()) {
+                    return;
+                }
+                ObservableList<String> items = topLevel.getItems();
+                items.clear();
+                items.add(item);
+                topLevel.setItems(null);
+                topLevel.setItems(items);
+                setGraphic(topLevel);
+            }
+        };
+        TableView<String> table = new TableView<>();
+        table.getStyleClass()
+             .add(tableStyleClass());
+        TableColumn<String, String> column = new TableColumn<>("");
+        column.setCellFactory(c -> tableCell);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
+        table.getColumns()
+             .add(column);
+        Group root = new Group(table, nestedList);
         Scene scene = new Scene(root);
         if (styleSheets != null) {
             scene.getStylesheets()
@@ -108,52 +130,46 @@ public class Layout {
         }
         ObservableList<String> tableItems = table.getItems();
         tableItems.add("Lorem ipsum");
-        ObservableList<String> listItems = listView.getItems();
-        listItems.add("Lorem ipsum");
+        table.setItems(null);
+        table.setItems(tableItems);
         root.applyCss();
         root.layout();
         table.applyCss();
         table.layout();
-        listView.applyCss();
-        listView.layout();
-        listView.refresh();
         table.refresh();
-        listView.setItems(null);
-        listView.setItems(listItems);
-        table.setItems(null);
-        table.setItems(tableItems);
+        topLevel.applyCss();
+        topLevel.layout();
+        nestedList.applyCss();
+        nestedList.layout();
+        ObservableList<String> items = nestedList.getItems();
+        items.clear();
+        items.add("Lorem ipsum");
+        nestedList.setItems(null);
+        nestedList.setItems(items);
 
-        Border border = listCell.get()
-                                .getBorder();
+        Border border = listCell.getBorder();
         listCellInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
                              add(border == null ? ZERO_INSETS
                                                 : border.getInsets(),
-                                 add(listCell.get()
-                                             .getInsets(),
-                                     listCell.get()
-                                             .getBackground() == null ? ZERO_INSETS
-                                                                      : listCell.get()
-                                                                                .getBackground()
+                                 add(listCell.getInsets(),
+                                     listCell.getBackground() == null ? ZERO_INSETS
+                                                                      : listCell.getBackground()
                                                                                 .getOutsets())));
-        border = listView.getBorder();
+        border = nestedList.getBorder();
         listInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
                          add(border == null ? ZERO_INSETS : border.getInsets(),
-                             add(listView.getInsets(),
-                                 listView.getBackground() == null ? ZERO_INSETS
-                                                                  : listView.getBackground()
-                                                                            .getOutsets())));
-        border = tableCell.get()
-                          .getBorder();
+                             add(nestedList.getInsets(),
+                                 nestedList.getBackground() == null ? ZERO_INSETS
+                                                                    : nestedList.getBackground()
+                                                                                .getOutsets())));
+        border = tableCell.getBorder();
         tableCellInsets = add(border == null ? ZERO_INSETS
                                              : border.getOutsets(),
                               add(border == null ? ZERO_INSETS
                                                  : border.getInsets(),
-                                  add(tableCell.get()
-                                               .getInsets(),
-                                      tableCell.get()
-                                               .getBackground() == null ? ZERO_INSETS
-                                                                        : tableCell.get()
-                                                                                   .getBackground()
+                                  add(tableCell.getInsets(),
+                                      tableCell.getBackground() == null ? ZERO_INSETS
+                                                                        : tableCell.getBackground()
                                                                                    .getOutsets())));
         border = table.getBorder();
         tableInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
@@ -162,27 +178,19 @@ public class Layout {
                                   table.getBackground() == null ? ZERO_INSETS
                                                                 : table.getBackground()
                                                                        .getOutsets())));
-        border = valueText.get()
-                          .getBorder();
+        border = valueText.getBorder();
         valueInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
                           add(border == null ? ZERO_INSETS : border.getInsets(),
-                              add(valueText.get()
-                                           .getInsets(),
-                                  valueText.get()
-                                           .getBackground() == null ? ZERO_INSETS
-                                                                    : valueText.get()
-                                                                               .getBackground()
+                              add(valueText.getInsets(),
+                                  valueText.getBackground() == null ? ZERO_INSETS
+                                                                    : valueText.getBackground()
                                                                                .getOutsets())));
-        border = valueText.get()
-                          .getBorder();
+        border = valueText.getBorder();
         labelInsets = add(border == null ? ZERO_INSETS : border.getOutsets(),
                           add(border == null ? ZERO_INSETS : border.getInsets(),
-                              add(valueText.get()
-                                           .getInsets(),
-                                           valueText.get()
-                                           .getBackground() == null ? ZERO_INSETS
-                                                                    : valueText.get()
-                                                                               .getBackground()
+                              add(valueText.getInsets(),
+                                  valueText.getBackground() == null ? ZERO_INSETS
+                                                                    : valueText.getBackground()
                                                                                .getOutsets())));
         valueLineHeight = FONT_LOADER.getFontMetrics(valueFont)
                                      .getLineHeight();
@@ -223,7 +231,7 @@ public class Layout {
     }
 
     public double labelHeight(double ratio) {
-        double height = (ratio + 2) * labelLineHeight;
+        double height = (ratio + 1) * labelLineHeight;
         return Math.max(labelLineHeight, height) + labelInsets.getTop()
                + labelInsets.getBottom() + 18;
     }
@@ -242,7 +250,7 @@ public class Layout {
     }
 
     public double valueHeight(double ratio) {
-        double height = (ratio + 2) * valueLineHeight;
+        double height = (ratio + 1) * valueLineHeight;
         return Math.max(valueLineHeight, height) + valueInsets.getTop()
                + valueInsets.getBottom();
     }

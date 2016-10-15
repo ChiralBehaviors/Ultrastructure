@@ -239,11 +239,13 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
+    TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
+                                                     int cardinality,
                                                      NestingFunction nesting,
                                                      Layout layout) {
         if (isFold()) {
-            return fold.buildTableColumn(averageCardinality, nesting, layout);
+            return fold.buildTableColumn(topLevel, averageCardinality, nesting,
+                                         layout);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
@@ -260,9 +262,9 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         for (SchemaNode child : children) {
             column.getColumns()
-                  .add(child.buildTableColumn(averageCardinality,
-                                              nest(child, leaves, nesting,
-                                                   cardinality, layout),
+                  .add(child.buildTableColumn(false, averageCardinality,
+                                              nest(topLevel, child, leaves,
+                                                   nesting, cardinality, layout),
                                               layout));
         }
 
@@ -501,7 +503,7 @@ public class Relation extends SchemaNode implements Cloneable {
         table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
         children.forEach(child -> {
             table.getColumns()
-                 .add(child.buildTableColumn(averageCardinality,
+                 .add(child.buildTableColumn(true, averageCardinality,
                                              (p, height, row, primitive) -> {
                                                  NestedColumnView view = new NestedColumnView();
                                                  view.manifest(child,
@@ -567,7 +569,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    private NestingFunction nest(SchemaNode child,
+    private NestingFunction nest(boolean topLevel, SchemaNode child,
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, int cardinality,
                                  Layout layout) {
@@ -576,6 +578,10 @@ public class Relation extends SchemaNode implements Cloneable {
             double extendedHeight = height + listCellInsets.getTop()
                                     + listCellInsets.getBottom();
             Insets listInsets = layout.getListInsets();
+            Insets tableCelIInsets = layout.getTableCellInsets();
+            double tableInset = topLevel ? 0
+                                         : tableCelIInsets.getTop()
+                                           + tableCelIInsets.getBottom();
             return nesting.apply(index -> {
                 Integer column = leaves.get(primitive);
                 ListView<JsonNode> split = split(index, row, column,
@@ -607,7 +613,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 });
                 return split;
             }, (cardinality * extendedHeight) + listInsets.getTop()
-               + listInsets.getBottom(), row, primitive);
+               + listInsets.getBottom() + tableInset, row, primitive);
         };
     }
 
@@ -621,9 +627,9 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private ListView<JsonNode> split(Integer index,
-                                     NestedTableRow<JsonNode> row, Integer column,
-                                     int cardinality, double height,
-                                     int count) {
+                                     NestedTableRow<JsonNode> row,
+                                     Integer column, int cardinality,
+                                     double height, int count) {
         ListView<JsonNode> content = new ListView<JsonNode>() {
 
             @Override

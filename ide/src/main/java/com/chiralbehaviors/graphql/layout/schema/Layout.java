@@ -21,15 +21,15 @@
 package com.chiralbehaviors.graphql.layout.schema;
 
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.add;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.*;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
@@ -41,7 +41,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Border;

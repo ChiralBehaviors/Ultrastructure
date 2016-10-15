@@ -132,6 +132,12 @@ public class Primitive extends SchemaNode {
         return variableLength ? width : Math.min(width, getTableColumnWidth());
     }
 
+    void justify(double width) {
+        if (variableLength) {
+            justifiedWidth = Math.max(maxWidth, width);
+        }
+    }
+
     @Override
     double measure(ArrayNode data, int nestingLevel, Layout layout) {
         labelWidth = layout.labelWidth(label) + layout.labelWidth(" ") * 2;

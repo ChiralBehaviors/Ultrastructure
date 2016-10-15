@@ -288,11 +288,7 @@ abstract public class SchemaNode {
 
     abstract double getTableColumnWidth();
 
-    void justify(double width) {
-        if (variableLength) {
-            justifiedWidth = width;
-        }
-    }
+    abstract void justify(double width);
 
     abstract double layout(double width);
 

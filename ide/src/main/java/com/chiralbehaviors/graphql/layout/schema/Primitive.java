@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
 import javafx.geometry.Insets;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -84,28 +85,45 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+            NestedColumnView view;
             {
                 getStyleClass().add(tableCellClass());
+                itemProperty().addListener((obs, oldItem, newItem) -> {
+                    if (newItem != null) {
+                        NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
+                        if (row == null) {
+                            return;
+                        }
+                        view = (NestedColumnView) nesting.apply(label -> {
+                            return buildControl(cardinality, layout);
+                        }, height, row, Primitive.this);
+                    } else {
+                        view = null;
+                    }
+                });
+                emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
+                    if (isEmpty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(view);
+                    }
+                });
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
 
             @Override
             protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem())
+                if (item == getItem()) {
                     return;
+                }
                 super.updateItem(item, empty);
                 super.setText(null);
                 if (empty || item == null) {
-                    setGraphic(null);
                     return;
                 }
-                if (getTableRow() == null) {
-                    return;
+                if (view != null) {
+                    view.setItem(item);
                 }
-                NestedColumnView view = (NestedColumnView) nesting.apply(node -> {
-                    return buildControl(cardinality, layout);
-                }, height, (NestedTableRow<JsonNode>) getTableRow(), Primitive.this);
-                setGraphic(view);
-                view.setItem(item);
             }
         });
         return column;

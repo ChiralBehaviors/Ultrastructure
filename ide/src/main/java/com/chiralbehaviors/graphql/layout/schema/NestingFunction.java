@@ -22,6 +22,8 @@ package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.function.Function;
 
+import org.glassfish.jersey.internal.util.Producer;
+
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -29,7 +31,7 @@ import javafx.scene.control.Control;
 
 @FunctionalInterface
 public interface NestingFunction {
-    Control apply(Function<Integer, Control> inner, double height,
+    Control apply(Function<Producer<String>, Control> inner, double height,
                   NestedTableRow<JsonNode> row, Primitive primitive);
 
 }

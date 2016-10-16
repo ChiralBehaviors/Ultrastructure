@@ -42,6 +42,7 @@ import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -287,19 +288,19 @@ public class Relation extends SchemaNode implements Cloneable {
         return super.getFoldExtractor(extractor);
     }
 
+    double getLabelWidth() {
+        if (isFold()) {
+            return fold.getLabelWidth();
+        }
+        return labelWidth;
+    }
+
     double getValueHeight(int cardinality, Layout layout) {
         return children.stream()
                        .map(child -> child.getValueHeight(averageCardinality,
                                                           layout))
                        .reduce((a, b) -> a + b)
                        .get();
-    }
-
-    double getLabelWidth() {
-        if (isFold()) {
-            return fold.getLabelWidth();
-        }
-        return labelWidth;
     }
 
     @Override
@@ -509,7 +510,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                              (p, height, row, primitive) -> {
                                                  NestedColumnView view = new NestedColumnView();
                                                  view.manifest(child,
-                                                               p.apply(0));
+                                                               p.apply(() -> "0"));
                                                  return view;
                                              }, layout));
         });
@@ -593,16 +594,35 @@ public class Relation extends SchemaNode implements Cloneable {
 
             double cellHeight = height + listCellInset;
 
-            return nesting.apply(index -> {
+            return nesting.apply(id -> {
                 Integer column = leaves.get(primitive);
-                ListView<JsonNode> split = split(index, row, column,
+                String label = id.call();
+                ListView<JsonNode> split = split(label, column, row,
                                                  leaves.size());
-                row.layout(index, Relation.this, column, split, cardinality,
-                           cellHeight, leaves.size());
+                row.layout(label, column, split, cardinality, cellHeight,
+                           leaves.size());
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     Control childControl;
                     {
                         getStyleClass().add(nestedListCellClass());
+                        itemProperty().addListener((obs, oldItem, newItem) -> {
+                            if (newItem != null) {
+                                childControl = p.apply(() -> String.format("%s.%s",
+                                                                           label,
+                                                                           getIndex()));
+                            } else {
+                                childControl = null;
+                            }
+                        });
+                        emptyProperty().addListener((obs, wasEmpty,
+                                                     isEmpty) -> {
+                            if (isEmpty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(childControl);
+                            }
+                        });
+                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                     }
 
                     @Override
@@ -610,18 +630,11 @@ public class Relation extends SchemaNode implements Cloneable {
                         if (item == getItem()) {
                             return;
                         }
-                        super.updateItem(item, empty);
-                        super.setText(null);
+                        super.updateItem(item, empty); 
                         if (empty || item == null) {
-                            setGraphic(null);
                             return;
                         }
-                        if (childControl == null) {
-                            childControl = p.apply(getIndex());
-                        }
-                        setGraphic(childControl);
-                        JsonNode extracted = child.extractFrom(item);
-                        setItemsOf(childControl, extracted);
+                        setItemsOf(childControl, child.extractFrom(item));
                     }
                 });
                 return split;
@@ -639,15 +652,14 @@ public class Relation extends SchemaNode implements Cloneable {
         });
     }
 
-    private ListView<JsonNode> split(Integer index,
-                                     NestedTableRow<JsonNode> row,
-                                     Integer column, int count) {
+    private ListView<JsonNode> split(String id, Integer column,
+                                     NestedTableRow<JsonNode> row, int count) {
         ListView<JsonNode> content = new ListView<JsonNode>() {
 
             @Override
             protected void layoutChildren() {
                 super.layoutChildren();
-                row.link(index, Relation.this, column, this, count);
+                row.link(id, column, this, count);
             }
 
         };

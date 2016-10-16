@@ -1,0 +1,25 @@
+{
+  allFilms {
+    films {
+      episodeID
+      title
+      starshipConnection {
+        starships {
+          name
+          maxAtmospheringSpeed
+          pilotConnection {
+            pilots {
+              name
+              gender
+              birthYear
+              homeworld {
+                name
+                population
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

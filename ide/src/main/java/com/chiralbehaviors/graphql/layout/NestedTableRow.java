@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import com.chiralbehaviors.graphql.layout.schema.Relation;
-import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.javafx.scene.control.skin.VirtualScrollBar;
 
@@ -42,34 +40,36 @@ import javafx.scene.control.TableRow;
 public class NestedTableRow<T> extends TableRow<T> {
 
     public static class Nested {
-        public final int                cardinality;
         public final ListView<JsonNode> control;
         public final double             height;
-        public final SchemaNode         relation;
 
-        public Nested(SchemaNode relation, int cardinality,
-                      ListView<JsonNode> control, double height) {
-            this.relation = relation;
-            this.cardinality = cardinality;
+        public Nested(ListView<JsonNode> control, double height) {
             this.control = control;
             this.height = height;
         }
 
         @Override
         public String toString() {
-            return String.format("Nested [relation=%s, cardinality=%s, height=%s]",
-                                 relation.getLabel(), cardinality, height);
+            return String.format("Nested [height=%s, control=%s]", height,
+                                 control);
         }
     }
 
     public static class Nesting {
         private final Nested[] nested;
+        private final int      cardinality;
 
-        public Nesting(int count) {
+        public Nesting(int count, int cardinality) {
             nested = new Nested[count];
+            this.cardinality = cardinality;
         }
 
-        public boolean layout(int column, Nested child) {
+        public boolean layout(String id, int column, Nested child) {
+//            if (nested[column] != null
+//                && nested[column].control != child.control) {
+//                System.out.println(String.format("%s[%s] already exists", id,
+//                                                 column));
+//            }
             nested[column] = child;
             for (Nested n : nested) {
                 if (n == null) {
@@ -91,43 +91,41 @@ public class NestedTableRow<T> extends TableRow<T> {
 
         private void layout(List<Nested> link, double max) {
             link.forEach(p -> {
-                double height = p.cardinality * max;
+                double height = cardinality * max;
                 p.control.setPrefHeight(height);
                 p.control.setFixedCellSize(max);
             });
         }
     }
 
-    private final Map<Relation, Map<Integer, Nesting>>              layouts = new HashMap<>(3);
-    private final Map<Relation, Map<Integer, ListView<JsonNode>[]>> links   = new HashMap<>(3);
+    private final Map<String, Nesting>              layouts = new HashMap<>(3);
+    private final Map<String, ListView<JsonNode>[]> links   = new HashMap<>(3);
 
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
     }
 
-    public void layout(Integer index, Relation relation, Integer column,
-                       ListView<JsonNode> child, int cardinality, double height,
-                       int count) {
-        Map<Integer, Nesting> list = layouts.computeIfAbsent(relation,
-                                                             k -> new HashMap<>(3));
-        Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
-        if (nesting.layout(column,
-                           new Nested(relation, cardinality, child, height))) {
-            list.remove(index);
-            if (list.isEmpty()) {
-                layouts.remove(relation);
-            }
+    public void layout(String id, Integer column, ListView<JsonNode> child,
+                       int cardinality, double height, int count) {
+        Nesting nesting = layouts.computeIfAbsent(id,
+                                                  k -> new Nesting(count,
+                                                                   cardinality));
+        if (nesting.layout(id, column, new Nested(child, height))) {
+            layouts.remove(id);
         }
     }
 
-    public void link(Integer index, Relation relation, Integer column,
-                     ListView<JsonNode> child, int count) {
-        Map<Integer, ListView<JsonNode>[]> list = links.computeIfAbsent(relation,
-                                                                        k -> new HashMap<>(3));
+    public void link(String id, Integer column, ListView<JsonNode> child,
+                     int count) {
         @SuppressWarnings("unchecked")
-        ListView<JsonNode>[] link = list.computeIfAbsent(index,
-                                                         k -> new ListView[count]);
+        ListView<JsonNode>[] link = links.computeIfAbsent(id,
+                                                          k -> new ListView[count]);
+//        if (link[column] != null && link[column] != child) {
+//            System.out.println(String.format("%s[%s]:%s != %s", id, column,
+//                                             child, link[column]));
+//        }
+
         link[column] = child;
         for (Object v : link) {
             if (v == null) {
@@ -135,12 +133,9 @@ public class NestedTableRow<T> extends TableRow<T> {
             }
         }
         link(Arrays.asList(link));
-        list.remove(index);
-        if (list.isEmpty()) {
-            links.remove(relation);
-        }
+        links.remove(id);
     }
-    
+
     private void link(List<ListView<JsonNode>> link) {
         Stack<ScrollBar> scrolls = new Stack<>();
         link.forEach(p -> {
@@ -154,15 +149,15 @@ public class NestedTableRow<T> extends TableRow<T> {
                                                        .orElse(null);
             scrolls.push(scrollbar);
             p.getSelectionModel()
-                     .selectedIndexProperty()
-                     .addListener((o, pr, c) -> {
-                         link.forEach(sibling -> {
-                             if (sibling != p) {
-                                 sibling.getSelectionModel()
-                                                .select(c.intValue());
-                             }
-                         });
-                     });
+             .selectedIndexProperty()
+             .addListener((o, pr, c) -> {
+                 link.forEach(sibling -> {
+                     if (sibling != p) {
+                         sibling.getSelectionModel()
+                                .select(c.intValue());
+                     }
+                 });
+             });
         });
         scrolls.forEach(scrollbar -> {
             scrollbar.setDisable(scrollbar != scrolls.lastElement());

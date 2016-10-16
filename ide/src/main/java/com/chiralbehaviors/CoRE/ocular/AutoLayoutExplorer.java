@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import com.chiralbehaviors.graphql.layout.AutoLayoutController;
 import com.chiralbehaviors.graphql.layout.QueryState;
+import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -43,13 +44,10 @@ public class AutoLayoutExplorer extends Application {
 
     public void initRootLayout(Stage primaryStage) throws IOException {
         QueryState queryState = new QueryState();
-//        queryState.setTargetURL("https://quiet-fjord-8091.herokuapp.com/api/workspace/urn%3Auuid%3Ae54ba249-751e-53fd-b279-5e4eccd7ff85");
-//        queryState.setSource("customers");
+        //        queryState.setTargetURL("https://quiet-fjord-8091.herokuapp.com/api/workspace/urn%3Auuid%3Ae54ba249-751e-53fd-b279-5e4eccd7ff85");
+        //        queryState.setSource("customers");
         queryState.setTargetURL("http://graphql-swapi.parseapp.com/");
-        queryState.setQuery("{" + "allFilms {\n" + "films {\n" + "title\n"
-                            + "starshipConnection {\n" + "starships{\n" + "name\n"
-                            + "pilotConnection {\n" + "pilots {\n" + "name\n" + "}\n"
-                            + "}\n" + "}\n" + "}\n" + "}\n" + "}\n" + "}");
+        queryState.setQuery(Utils.getDocument(getClass().getResourceAsStream("/testQuery.gql")));
         queryState.setSource("allFilms");
         AutoLayoutController controller = new AutoLayoutController(queryState);
         primaryStage.setScene(new Scene(controller.getRoot(), 800, 800));

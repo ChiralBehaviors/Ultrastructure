@@ -70,6 +70,7 @@ public class Primitive extends SchemaNode {
                                                      int cardinality,
                                                      NestingFunction nesting,
                                                      Layout layout) {
+        double height = getValueHeight(cardinality, layout);
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
@@ -82,9 +83,6 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        Insets insets = layout.getTableCellInsets();
-        double height = getValueHeight(cardinality, layout)
-                        + (topLevel ? 0 : insets.getTop() + insets.getBottom());
         column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
             {
                 getStyleClass().add(tableCellClass());
@@ -165,13 +163,13 @@ public class Primitive extends SchemaNode {
                              .getLeft()
                        + layout.getValueInsets()
                                .getRight();
-        columnWidth += layout.scrollWidth();
 
         Insets listInsets = layout.getListInsets();
-        Insets tableInsets = layout.getTableInsets();
+        Insets tableCellInsets = layout.getTableCellInsets();
         nestingInset = nestingLevel
                        * (listInsets.getLeft() + listInsets.getRight())
-                       + (tableInsets.getLeft() + tableInsets.getRight());
+                       + (tableCellInsets.getLeft()
+                          + tableCellInsets.getRight());
         justifiedWidth = getTableColumnWidth();
         return justifiedWidth;
     }

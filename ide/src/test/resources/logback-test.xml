@@ -16,4 +16,7 @@
         <level value="WARN" />
         <appender-ref ref="C" />
     </root>
+    <logger name="com.sun.javafx">
+        <level value="WARN" />
+    </logger> 
 </configuration>

@@ -357,7 +357,9 @@ public class Relation extends SchemaNode implements Cloneable {
                       + layout.getLabelInsets()
                               .getRight();
         int sum = 0;
-        double columnWidth = 0;
+        Insets listCellInsets = layout.getListCellInsets();
+        double columnWidth = listCellInsets.getLeft()
+                             + listCellInsets.getRight();
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
             int cardSum = 0;
@@ -573,22 +575,32 @@ public class Relation extends SchemaNode implements Cloneable {
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, int cardinality,
                                  Layout layout) {
+
+        double listCellInset = layout.getListCellInsets()
+                                     .getTop()
+                               + layout.getListCellInsets()
+                                       .getBottom();
+        double tableInset = topLevel ? layout.getTableCellInsets()
+                                             .getTop()
+                                       + layout.getTableCellInsets()
+                                               .getBottom()
+                                     : 0;
+        double listInset = layout.getListInsets()
+                                 .getTop()
+                           + layout.getListInsets()
+                                   .getBottom();
+
         return (p, height, row, primitive) -> {
-            Insets listCellInsets = layout.getListCellInsets();
-            double extendedHeight = height + listCellInsets.getTop()
-                                    + listCellInsets.getBottom();
-            Insets listInsets = layout.getListInsets();
-            Insets tableCelIInsets = layout.getTableCellInsets();
-            double tableInset = topLevel ? 0
-                                         : tableCelIInsets.getTop()
-                                           + tableCelIInsets.getBottom();
+
+            double cellHeight = height + listCellInset;
+
             return nesting.apply(index -> {
                 Integer column = leaves.get(primitive);
                 ListView<JsonNode> split = split(index, row, column,
-                                                 cardinality, height,
+                                                 cardinality, cellHeight,
                                                  leaves.size());
                 row.layout(index, Relation.this, column, split, cardinality,
-                           height, leaves.size());
+                           cellHeight, leaves.size());
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
                     {
                         getStyleClass().add(nestedListCellClass());
@@ -612,8 +624,8 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 return split;
-            }, (cardinality * extendedHeight) + listInsets.getTop()
-               + listInsets.getBottom() + tableInset, row, primitive);
+            }, (cardinality * cellHeight) + listInset + tableInset, row,
+                                 primitive);
         };
     }
 
@@ -642,6 +654,9 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         content.getStyleClass()
                .add(nestedListStyleClass());
+        content.getStylesheets()
+               .add(getClass().getResource("nested.css")
+                              .toExternalForm());
         if (!column.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")

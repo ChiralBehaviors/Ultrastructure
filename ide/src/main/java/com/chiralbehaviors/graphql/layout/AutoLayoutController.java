@@ -149,7 +149,7 @@ public class AutoLayoutController {
 
         JsonNode errors = data.get(ERRORS);
         if ((errors != null && errors.size() != 0)
-            || !data.has(DATA) && !data.get(DATA)
+            || !data.has(DATA) || !data.get(DATA)
                                        .has(queryState.getSource())) {
             queryState.setData(null);
             data = JsonNodeFactory.instance.arrayNode();

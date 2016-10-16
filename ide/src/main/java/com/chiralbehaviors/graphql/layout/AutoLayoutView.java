@@ -78,10 +78,14 @@ public class AutoLayoutView extends Control {
     }
 
     public void measure(JsonNode data) {
-        try {
-            Relation relation = root.get();
-            Layout layoutConstants = new Layout(getStylesheets());
-            relation.measure(data, layoutConstants);
+        Relation top = root.get();
+        if (top == null) {
+            return;
+        }
+        try { 
+            Layout constraints = new Layout(getStylesheets());
+            System.out.println(constraints);
+            top.measure(data, constraints);
         } catch (Throwable e) {
             log.error("cannot measure", e);
         }

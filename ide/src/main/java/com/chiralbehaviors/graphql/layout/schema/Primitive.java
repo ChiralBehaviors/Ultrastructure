@@ -88,19 +88,6 @@ public class Primitive extends SchemaNode {
             NestedColumnView view;
             {
                 getStyleClass().add(tableCellClass());
-                itemProperty().addListener((obs, oldItem, newItem) -> {
-                    if (newItem != null) {
-                        NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
-                        if (row == null) {
-                            return;
-                        }
-                        view = (NestedColumnView) nesting.apply(label -> {
-                            return buildControl(cardinality, layout);
-                        }, height, row, Primitive.this);
-                    } else {
-                        view = null;
-                    }
-                });
                 emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
                     if (isEmpty) {
                         setGraphic(null);
@@ -109,6 +96,20 @@ public class Primitive extends SchemaNode {
                     }
                 });
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            }
+
+            @Override
+            public void updateIndex(int i) {
+                int prev = getIndex();
+                if (prev != i) {
+                    NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
+                    if (row != null) {
+                        view = (NestedColumnView) nesting.apply(label -> {
+                            return buildControl(cardinality, layout);
+                        }, height, row, Primitive.this);
+                    }
+                }
+                super.updateIndex(i);
             }
 
             @Override

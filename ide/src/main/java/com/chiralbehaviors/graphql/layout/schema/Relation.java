@@ -605,15 +605,6 @@ public class Relation extends SchemaNode implements Cloneable {
                     Control childControl;
                     {
                         getStyleClass().add(nestedListCellClass());
-                        itemProperty().addListener((obs, oldItem, newItem) -> {
-                            if (newItem != null) {
-                                childControl = p.apply(() -> String.format("%s.%s",
-                                                                           label,
-                                                                           getIndex()));
-                            } else {
-                                childControl = null;
-                            }
-                        });
                         emptyProperty().addListener((obs, wasEmpty,
                                                      isEmpty) -> {
                             if (isEmpty) {
@@ -626,11 +617,23 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
 
                     @Override
+                    public void updateIndex(int i) {
+                        int oldIndex = getIndex();
+                        if (i != oldIndex) {
+                            childControl = p.apply(() -> String.format("%s.%s",
+                                                                       label,
+                                                                       i));
+                            setGraphic(childControl);
+                        }
+                        super.updateIndex(i);
+                    }
+
+                    @Override
                     protected void updateItem(JsonNode item, boolean empty) {
                         if (item == getItem()) {
                             return;
                         }
-                        super.updateItem(item, empty); 
+                        super.updateItem(item, empty);
                         if (empty || item == null) {
                             return;
                         }

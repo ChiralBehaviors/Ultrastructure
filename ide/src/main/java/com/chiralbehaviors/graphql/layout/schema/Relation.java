@@ -515,7 +515,6 @@ public class Relation extends SchemaNode implements Cloneable {
         });
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        //        table.setMinWidth(0);
         table.setPrefWidth(justifiedWidth);
         return table;
     }
@@ -597,11 +596,11 @@ public class Relation extends SchemaNode implements Cloneable {
             return nesting.apply(index -> {
                 Integer column = leaves.get(primitive);
                 ListView<JsonNode> split = split(index, row, column,
-                                                 cardinality, cellHeight,
                                                  leaves.size());
                 row.layout(index, Relation.this, column, split, cardinality,
                            cellHeight, leaves.size());
                 split.setCellFactory(c -> new ListCell<JsonNode>() {
+                    Control childControl;
                     {
                         getStyleClass().add(nestedListCellClass());
                     }
@@ -617,7 +616,9 @@ public class Relation extends SchemaNode implements Cloneable {
                             setGraphic(null);
                             return;
                         }
-                        Control childControl = p.apply(getIndex());
+                        if (childControl == null) {
+                            childControl = p.apply(getIndex());
+                        }
                         setGraphic(childControl);
                         JsonNode extracted = child.extractFrom(item);
                         setItemsOf(childControl, extracted);
@@ -640,23 +641,18 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListView<JsonNode> split(Integer index,
                                      NestedTableRow<JsonNode> row,
-                                     Integer column, int cardinality,
-                                     double height, int count) {
+                                     Integer column, int count) {
         ListView<JsonNode> content = new ListView<JsonNode>() {
 
             @Override
             protected void layoutChildren() {
                 super.layoutChildren();
-                row.link(index, Relation.this, column, this, cardinality,
-                         height, count);
+                row.link(index, Relation.this, column, this, count);
             }
 
         };
         content.getStyleClass()
                .add(nestedListStyleClass());
-        content.getStylesheets()
-               .add(getClass().getResource("nested.css")
-                              .toExternalForm());
         if (!column.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")

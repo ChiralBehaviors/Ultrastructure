@@ -40,6 +40,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableRow;
 
 public class NestedTableRow<T> extends TableRow<T> {
+
     public static class Nested {
         public final int                cardinality;
         public final ListView<JsonNode> control;
@@ -79,17 +80,6 @@ public class NestedTableRow<T> extends TableRow<T> {
             return true;
         }
 
-        public boolean link(int column, Nested child) {
-            nested[column] = child;
-            for (Nested n : nested) {
-                if (n == null) {
-                    return false;
-                }
-            }
-            link(Arrays.asList(nested));
-            return true;
-        }
-
         private void layout() {
             List<Nested> link = Arrays.asList(nested);
             double max = link.stream()
@@ -106,46 +96,10 @@ public class NestedTableRow<T> extends TableRow<T> {
                 p.control.setFixedCellSize(max);
             });
         }
-
-        private void link(List<Nested> link) {
-            Stack<ScrollBar> scrolls = new Stack<>();
-            link.forEach(p -> {
-                Set<Node> deadSeaScrolls = p.control.lookupAll(".scroll-bar:vertical");
-                VirtualScrollBar scrollbar = deadSeaScrolls.stream()
-                                                           .filter(n -> n instanceof VirtualScrollBar)
-                                                           .map(n -> (VirtualScrollBar) n)
-                                                           .filter(n -> n.getOrientation()
-                                                                         .equals(Orientation.VERTICAL))
-                                                           .reduce((a, b) -> b)
-                                                           .orElse(null);
-                scrolls.push(scrollbar);
-                p.control.getSelectionModel()
-                         .selectedIndexProperty()
-                         .addListener((o, pr, c) -> {
-                             link.forEach(sibling -> {
-                                 if (sibling.control != p.control) {
-                                     sibling.control.getSelectionModel()
-                                                    .select(c.intValue());
-                                 }
-                             });
-                         });
-            });
-            scrolls.forEach(scrollbar -> {
-                scrollbar.setDisable(scrollbar != scrolls.lastElement());
-                scrollbar.valueProperty()
-                         .addListener((ChangeListener<? super Number>) (o, p,
-                                                                        c) -> {
-                             scrolls.forEach(sibling -> {
-                                 if (sibling != scrollbar) {
-                                     sibling.setValue(c.doubleValue());
-                                 }
-                             });
-                         });
-            });
-        }
     }
 
-    private final Map<Relation, Map<Integer, Nesting>> nestings = new HashMap<>(3);
+    private final Map<Relation, Map<Integer, Nesting>>              layouts = new HashMap<>(3);
+    private final Map<Relation, Map<Integer, ListView<JsonNode>[]>> links   = new HashMap<>(3);
 
     @Override
     protected void layoutChildren() {
@@ -155,30 +109,72 @@ public class NestedTableRow<T> extends TableRow<T> {
     public void layout(Integer index, Relation relation, Integer column,
                        ListView<JsonNode> child, int cardinality, double height,
                        int count) {
-        Map<Integer, Nesting> list = nestings.computeIfAbsent(relation,
-                                                              k -> new HashMap<>(3));
+        Map<Integer, Nesting> list = layouts.computeIfAbsent(relation,
+                                                             k -> new HashMap<>(3));
         Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
         if (nesting.layout(column,
                            new Nested(relation, cardinality, child, height))) {
             list.remove(index);
             if (list.isEmpty()) {
-                nestings.remove(relation);
+                layouts.remove(relation);
             }
         }
     }
 
     public void link(Integer index, Relation relation, Integer column,
-                     ListView<JsonNode> child, int cardinality, double height,
-                     int count) {
-        Map<Integer, Nesting> list = nestings.computeIfAbsent(relation,
-                                                              k -> new HashMap<>(3));
-        Nesting nesting = list.computeIfAbsent(index, k -> new Nesting(count));
-        if (nesting.link(column,
-                           new Nested(relation, cardinality, child, height))) {
-            list.remove(index);
-            if (list.isEmpty()) {
-                nestings.remove(relation);
+                     ListView<JsonNode> child, int count) {
+        Map<Integer, ListView<JsonNode>[]> list = links.computeIfAbsent(relation,
+                                                                        k -> new HashMap<>(3));
+        @SuppressWarnings("unchecked")
+        ListView<JsonNode>[] link = list.computeIfAbsent(index,
+                                                         k -> new ListView[count]);
+        link[column] = child;
+        for (Object v : link) {
+            if (v == null) {
+                return;
             }
         }
+        link(Arrays.asList(link));
+        list.remove(index);
+        if (list.isEmpty()) {
+            links.remove(relation);
+        }
+    }
+    
+    private void link(List<ListView<JsonNode>> link) {
+        Stack<ScrollBar> scrolls = new Stack<>();
+        link.forEach(p -> {
+            Set<Node> deadSeaScrolls = p.lookupAll(".scroll-bar:vertical");
+            VirtualScrollBar scrollbar = deadSeaScrolls.stream()
+                                                       .filter(n -> n instanceof VirtualScrollBar)
+                                                       .map(n -> (VirtualScrollBar) n)
+                                                       .filter(n -> n.getOrientation()
+                                                                     .equals(Orientation.VERTICAL))
+                                                       .reduce((a, b) -> b)
+                                                       .orElse(null);
+            scrolls.push(scrollbar);
+            p.getSelectionModel()
+                     .selectedIndexProperty()
+                     .addListener((o, pr, c) -> {
+                         link.forEach(sibling -> {
+                             if (sibling != p) {
+                                 sibling.getSelectionModel()
+                                                .select(c.intValue());
+                             }
+                         });
+                     });
+        });
+        scrolls.forEach(scrollbar -> {
+            scrollbar.setDisable(scrollbar != scrolls.lastElement());
+            scrollbar.valueProperty()
+                     .addListener((ChangeListener<? super Number>) (o, p,
+                                                                    c) -> {
+                         scrolls.forEach(sibling -> {
+                             if (sibling != scrollbar) {
+                                 sibling.setValue(c.doubleValue());
+                             }
+                         });
+                     });
+        });
     }
 }

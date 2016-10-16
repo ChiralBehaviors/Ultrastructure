@@ -83,11 +83,9 @@ public class AutoLayoutView extends Control {
             return;
         }
         try { 
-            Layout constraints = new Layout(getStylesheets());
-            System.out.println(constraints);
-            top.measure(data, constraints);
+            top.measure(data, new Layout(getStylesheets()));
         } catch (Throwable e) {
-            log.error("cannot measure", e);
+            log.error("cannot measure data", e);
         }
     }
 

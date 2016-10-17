@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.scene.layout.AnchorPane;
@@ -115,7 +116,9 @@ public class AutoLayoutView extends Control {
                 return;
             }
             relation.autoLayout((float) width);
-            layout = relation.buildControl(new Layout(getStylesheets()));
+            ObservableList<String> stylesheets = getStylesheets();
+            Layout style = new Layout(stylesheets);
+            layout = relation.buildControl(style);
             relation.setItems(layout, data.get());
             AnchorPane.setTopAnchor(layout, 0.0);
             AnchorPane.setLeftAnchor(layout, 0.0);

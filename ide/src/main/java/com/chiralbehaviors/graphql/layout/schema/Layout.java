@@ -59,8 +59,8 @@ public class Layout {
     }
 
     public static double snap(double y) {
-        return ((int) y) + .5;
-        //        return y;
+//        return ((int) y) + .5;
+                return y;
     }
 
     private Font   labelFont       = Font.getDefault();
@@ -264,7 +264,7 @@ public class Layout {
 
     public double labelHeight(double maxWidth, double justifiedWidth) {
         double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
-                         + 2)
+                         + 1.5)
                         * labelLineHeight;
         return snap(height + labelInsets.getTop() + labelInsets.getBottom());
     }
@@ -288,7 +288,7 @@ public class Layout {
 
     public double valueHeight(double maxWidth, double justifiedWidth) {
         double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
-                         + 2)
+                         + 1.5)
                         * valueLineHeight;
         return snap(height + valueInsets.getTop() + valueInsets.getBottom());
     }

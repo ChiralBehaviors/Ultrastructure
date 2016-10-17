@@ -33,6 +33,7 @@ import com.sun.javafx.scene.control.skin.VirtualScrollBar;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableRow;
@@ -40,10 +41,10 @@ import javafx.scene.control.TableRow;
 public class NestedTableRow<T> extends TableRow<T> {
 
     public static class Nested {
-        public final ListView<JsonNode> control;
-        public final double             height;
+        public final Control control;
+        public final double  height;
 
-        public Nested(ListView<JsonNode> control, double height) {
+        public Nested(Control control, double height) {
             this.control = control;
             this.height = height;
         }
@@ -65,11 +66,11 @@ public class NestedTableRow<T> extends TableRow<T> {
         }
 
         public boolean layout(String id, int column, Nested child) {
-//            if (nested[column] != null
-//                && nested[column].control != child.control) {
-//                System.out.println(String.format("%s[%s] already exists", id,
-//                                                 column));
-//            }
+            //            if (nested[column] != null
+            //                && nested[column].control != child.control) {
+            //                System.out.println(String.format("%s[%s] already exists", id,
+            //                                                 column));
+            //            }
             nested[column] = child;
             for (Nested n : nested) {
                 if (n == null) {
@@ -86,14 +87,12 @@ public class NestedTableRow<T> extends TableRow<T> {
                              .mapToDouble(p -> p.height)
                              .max()
                              .orElse(-1);
-            layout(link, max);
-        }
-
-        private void layout(List<Nested> link, double max) {
-            link.forEach(p -> {
+            link.forEach(p1 -> {
                 double height = cardinality * max;
-                p.control.setPrefHeight(height);
-                p.control.setFixedCellSize(max);
+                p1.control.setPrefHeight(height);
+                if (p1.control instanceof ListView) {
+                    ((ListView<?>) p1.control).setFixedCellSize(max);
+                }
             });
         }
     }
@@ -106,7 +105,7 @@ public class NestedTableRow<T> extends TableRow<T> {
         super.layoutChildren();
     }
 
-    public void layout(String id, Integer column, ListView<JsonNode> child,
+    public void layout(String id, Integer column, Control child,
                        int cardinality, double height, int count) {
         Nesting nesting = layouts.computeIfAbsent(id,
                                                   k -> new Nesting(count,
@@ -121,10 +120,10 @@ public class NestedTableRow<T> extends TableRow<T> {
         @SuppressWarnings("unchecked")
         ListView<JsonNode>[] link = links.computeIfAbsent(id,
                                                           k -> new ListView[count]);
-//        if (link[column] != null && link[column] != child) {
-//            System.out.println(String.format("%s[%s]:%s != %s", id, column,
-//                                             child, link[column]));
-//        }
+        //        if (link[column] != null && link[column] != child) {
+        //            System.out.println(String.format("%s[%s]:%s != %s", id, column,
+        //                                             child, link[column]));
+        //        }
 
         link[column] = child;
         for (Object v : link) {

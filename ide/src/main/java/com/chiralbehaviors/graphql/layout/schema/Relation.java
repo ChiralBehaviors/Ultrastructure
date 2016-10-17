@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.glassfish.jersey.internal.util.Producer;
+
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -261,11 +263,18 @@ public class Relation extends SchemaNode implements Cloneable {
             leaves.put(leaf, index);
             index++;
         }
+        double minHeight = children.stream()
+                                   .filter(c -> c instanceof Primitive)
+                                   .mapToDouble(p -> p.getValueHeight(cardinality,
+                                                                      layout))
+                                   .max()
+                                   .orElseGet(() -> 0.0d);
         for (SchemaNode child : children) {
             column.getColumns()
                   .add(child.buildTableColumn(false, averageCardinality,
                                               nest(topLevel, child, leaves,
-                                                   nesting, cardinality, layout),
+                                                   nesting, cardinality,
+                                                   minHeight, layout),
                                               layout));
         }
 
@@ -504,20 +513,64 @@ public class Relation extends SchemaNode implements Cloneable {
         table.getStyleClass()
              .add(tableStyleClass());
         table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
+        Map<Primitive, Integer> leaves = new HashMap<>();
+        int index = 0;
+        for (Primitive leaf : gatherLeaves()) {
+            leaves.put(leaf, index);
+            index++;
+        }
         children.forEach(child -> {
             table.getColumns()
                  .add(child.buildTableColumn(true, averageCardinality,
-                                             (p, height, row, primitive) -> {
-                                                 NestedColumnView view = new NestedColumnView();
-                                                 view.manifest(child,
-                                                               p.apply(() -> "0"));
-                                                 return view;
-                                             }, layout));
+                                             layoutMaster(cardinality, child,
+                                                          leaves, layout),
+                                             layout));
         });
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefWidth(justifiedWidth);
         return table;
+    }
+
+    private ListCell<JsonNode> createListCell(SchemaNode child,
+                                              Function<Producer<String>, Control> p) {
+        return new ListCell<JsonNode>() {
+            Control childControl;
+            {
+                getStyleClass().add(nestedListCellClass());
+                emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
+                    if (isEmpty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(childControl);
+                    }
+                });
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            }
+
+            @Override
+            public void updateIndex(int i) {
+                int oldIndex = getIndex();
+                if (i != oldIndex) {
+                    childControl = p.apply(() -> String.format("%s.%s", label,
+                                                               i));
+                    setGraphic(childControl);
+                }
+                super.updateIndex(i);
+            }
+
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem()) {
+                    return;
+                }
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    return;
+                }
+                setItemsOf(childControl, child.extractFrom(item));
+            }
+        };
     }
 
     private ArrayNode flatten(JsonNode data) {
@@ -571,29 +624,50 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
+    private NestingFunction layoutMaster(int cardinality, SchemaNode child,
+                                         Map<Primitive, Integer> leaves,
+                                         Layout layout) {
+        return (p, height, row, primitive) -> {
+            NestedColumnView view = new NestedColumnView();
+            Control control = view.manifest(child, p.apply(() -> "0"));
+            if (child instanceof Primitive) {
+                row.layout(label, leaves.get(primitive), control,
+                           Math.max(1, cardinality),
+                           height + layout.getTableCellInsets()
+                                          .getTop() + layout.getTableCellInsets()
+                                                            .getBottom()
+                                                     + layout.getListInsets()
+                                                             .getTop()
+                                                     + layout.getListInsets()
+                                                             .getBottom(),
+                           leaves.size());
+            }
+            return view;
+        };
+    }
+
     private NestingFunction nest(boolean topLevel, SchemaNode child,
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, int cardinality,
-                                 Layout layout) {
-
-        double listCellInset = layout.getListCellInsets()
-                                     .getTop()
-                               + layout.getListCellInsets()
-                                       .getBottom();
-        double tableInset = topLevel ? layout.getTableCellInsets()
-                                             .getTop()
-                                       + layout.getTableCellInsets()
-                                               .getBottom()
-                                     : 0;
+                                 double minHeight, Layout layout) {
         double listInset = layout.getListInsets()
                                  .getTop()
                            + layout.getListInsets()
                                    .getBottom();
+        double tableCellInset = topLevel ? layout.getTableCellInsets()
+                                                 .getTop()
+                                           + layout.getTableCellInsets()
+                                                   .getBottom()
+                                         : 0;
+        double listCellInset = layout.getListCellInsets()
+                                     .getTop()
+                               + layout.getListCellInsets()
+                                       .getBottom();
 
         return (p, height, row, primitive) -> {
-
-            double cellHeight = height + listCellInset;
-
+            double cellHeight = Math.max(minHeight, height) + listCellInset + 2;
+            double thisHeight = (cardinality * cellHeight) + tableCellInset
+                                + listInset;
             return nesting.apply(id -> {
                 Integer column = leaves.get(primitive);
                 String label = id.call();
@@ -601,48 +675,9 @@ public class Relation extends SchemaNode implements Cloneable {
                                                  leaves.size());
                 row.layout(label, column, split, cardinality, cellHeight,
                            leaves.size());
-                split.setCellFactory(c -> new ListCell<JsonNode>() {
-                    Control childControl;
-                    {
-                        getStyleClass().add(nestedListCellClass());
-                        emptyProperty().addListener((obs, wasEmpty,
-                                                     isEmpty) -> {
-                            if (isEmpty) {
-                                setGraphic(null);
-                            } else {
-                                setGraphic(childControl);
-                            }
-                        });
-                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                    }
-
-                    @Override
-                    public void updateIndex(int i) {
-                        int oldIndex = getIndex();
-                        if (i != oldIndex) {
-                            childControl = p.apply(() -> String.format("%s.%s",
-                                                                       label,
-                                                                       i));
-                            setGraphic(childControl);
-                        }
-                        super.updateIndex(i);
-                    }
-
-                    @Override
-                    protected void updateItem(JsonNode item, boolean empty) {
-                        if (item == getItem()) {
-                            return;
-                        }
-                        super.updateItem(item, empty);
-                        if (empty || item == null) {
-                            return;
-                        }
-                        setItemsOf(childControl, child.extractFrom(item));
-                    }
-                });
+                split.setCellFactory(c -> createListCell(child, p));
                 return split;
-            }, (cardinality * cellHeight) + listInset + tableInset, row,
-                                 primitive);
+            }, thisHeight, row, primitive);
         };
     }
 
@@ -668,6 +703,9 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         content.getStyleClass()
                .add(nestedListStyleClass());
+                content.getStylesheets()
+                       .add(getClass().getResource("nested.css")
+                                      .toExternalForm());
         if (!column.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")

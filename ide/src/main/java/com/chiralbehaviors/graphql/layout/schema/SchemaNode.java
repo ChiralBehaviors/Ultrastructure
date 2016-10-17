@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.collections.ObservableListWrapper;
 
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -57,12 +56,6 @@ abstract public class SchemaNode {
             this.node = node;
             this.height = height;
         }
-    }
-
-    public static Insets add(Insets a, Insets b) {
-        return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
-                          a.getBottom() + b.getBottom(),
-                          a.getRight() + b.getRight());
     }
 
     public static ArrayNode asArray(JsonNode node) {

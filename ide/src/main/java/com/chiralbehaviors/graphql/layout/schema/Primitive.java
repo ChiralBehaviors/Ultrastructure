@@ -64,8 +64,7 @@ public class Primitive extends SchemaNode {
     public String toString(int indent) {
         return toString();
     }
-
-    @SuppressWarnings("unchecked")
+ 
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
                                                      int cardinality,
@@ -84,7 +83,16 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        column.setCellFactory(c -> new TableCell<JsonNode, JsonNode>() {
+        column.setCellFactory(c -> createCell(cardinality, nesting, layout,
+                                              height));
+        return column;
+    }
+
+    private TableCell<JsonNode, JsonNode> createCell(int cardinality,
+                                                     NestingFunction nesting,
+                                                     Layout layout,
+                                                     double height) {
+        return new TableCell<JsonNode, JsonNode>() {
             NestedColumnView view;
             {
                 getStyleClass().add(tableCellClass());
@@ -102,6 +110,7 @@ public class Primitive extends SchemaNode {
             public void updateIndex(int i) {
                 int prev = getIndex();
                 if (prev != i) {
+                    @SuppressWarnings("unchecked")
                     NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
                     if (row != null) {
                         view = (NestedColumnView) nesting.apply(label -> {
@@ -126,8 +135,7 @@ public class Primitive extends SchemaNode {
                     view.setItem(item);
                 }
             }
-        });
-        return column;
+        };
     }
 
     @Override

@@ -30,10 +30,11 @@ import javafx.util.Pair;
 public class NestedColumnView extends Control {
     private Pair<SchemaNode, Control> top;
 
-    public void manifest(SchemaNode node, Control control) {
+    public Control manifest(SchemaNode node, Control control) {
         top = new Pair<>(node, control);
         this.getChildren()
             .add(top.getValue());
+        return control;
     }
 
     public void setItem(JsonNode item) {

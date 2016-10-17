@@ -87,11 +87,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.chiralbehaviors</groupId>
-				<artifactId>snapkit</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</dependency>
-			<dependency>
 				<groupId>com.bendb.dropwizard</groupId>
 				<artifactId>dropwizard-jooq</artifactId>
 				<version>0.9.1-1</version>

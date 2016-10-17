@@ -264,7 +264,7 @@ public class Layout {
 
     public double labelHeight(double maxWidth, double justifiedWidth) {
         double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
-                         + 1)
+                         + 2)
                         * labelLineHeight;
         return snap(height + labelInsets.getTop() + labelInsets.getBottom());
     }
@@ -288,7 +288,7 @@ public class Layout {
 
     public double valueHeight(double maxWidth, double justifiedWidth) {
         double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
-                         + 1)
+                         + 2)
                         * valueLineHeight;
         return snap(height + valueInsets.getTop() + valueInsets.getBottom());
     }

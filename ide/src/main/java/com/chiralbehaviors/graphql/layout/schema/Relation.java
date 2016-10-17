@@ -654,20 +654,19 @@ public class Relation extends SchemaNode implements Cloneable {
                                  .getTop()
                            + layout.getListInsets()
                                    .getBottom();
-        double tableCellInset = topLevel ? layout.getTableCellInsets()
-                                                 .getTop()
-                                           + layout.getTableCellInsets()
-                                                   .getBottom()
-                                         : 0;
+        double tableCellInset = layout.getTableCellInsets()
+                                      .getTop()
+                                + layout.getTableCellInsets()
+                                        .getBottom();
         double listCellInset = layout.getListCellInsets()
                                      .getTop()
                                + layout.getListCellInsets()
                                        .getBottom();
+        double thisInset = (topLevel ? tableCellInset : 0) + listInset;
 
         return (p, height, row, primitive) -> {
             double cellHeight = Math.max(minHeight, height) + listCellInset + 2;
-            double thisHeight = (cardinality * cellHeight) + tableCellInset
-                                + listInset;
+            double thisHeight = (cardinality * cellHeight) + thisInset;
             return nesting.apply(id -> {
                 Integer column = leaves.get(primitive);
                 String label = id.call();
@@ -703,9 +702,6 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         content.getStyleClass()
                .add(nestedListStyleClass());
-                content.getStylesheets()
-                       .add(getClass().getResource("nested.css")
-                                      .toExternalForm());
         if (!column.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")

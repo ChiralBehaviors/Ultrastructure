@@ -46,6 +46,7 @@ public class AutoLayoutView extends Control {
     private Control                              layout;
     private final SimpleObjectProperty<Relation> root        = new SimpleObjectProperty<>();
     private double                               layoutWidth = 0.0;
+    private Layout                               style       = new Layout(getStylesheets());
 
     public AutoLayoutView() {
         this(null);
@@ -55,6 +56,9 @@ public class AutoLayoutView extends Control {
         this.root.set(root);
         widthProperty().addListener((o, p, c) -> resize(c.doubleValue()));
         data.addListener((o, p, c) -> setContent());
+        parentProperty().addListener((o, p, c) -> {
+            style = new Layout(getStylesheets());
+        });
     }
 
     public Property<JsonNode> dataProperty() {
@@ -84,9 +88,7 @@ public class AutoLayoutView extends Control {
             return;
         }
         try {
-            Layout constants = new Layout(getStylesheets());
-            System.out.println(constants);
-            top.measure(data, constants);
+            top.measure(data, style);
         } catch (Throwable e) {
             log.error("cannot measure data", e);
         }

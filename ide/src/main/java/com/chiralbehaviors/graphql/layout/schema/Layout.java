@@ -29,6 +29,7 @@ import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleCla
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
@@ -42,25 +43,41 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Border;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextBoundsType;
 
 public class Layout {
-    private static FontLoader   FONT_LOADER  = Toolkit.getToolkit()
-                                                      .getFontLoader();
-    private static final int    SCROLL_WIDTH = 28;
-    private static final Insets ZERO_INSETS  = new Insets(0);
+    private final static FontLoader FONT_LOADER = Toolkit.getToolkit()
+                                                         .getFontLoader();
+    private static final TextLayout layout      = Toolkit.getToolkit()
+                                                         .getTextLayoutFactory()
+                                                         .createLayout();
+    private static final Insets     ZERO_INSETS = new Insets(0);
 
     public static Insets add(Insets a, Insets b) {
-        return new Insets(snap(a.getTop() + b.getTop()),
-                          snap(a.getRight() + b.getRight()),
-                          snap(a.getBottom() + b.getBottom()),
-                          snap(a.getRight() + b.getRight()));
+        return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
+                          a.getBottom() + b.getBottom(),
+                          a.getRight() + b.getRight());
     }
 
     public static double snap(double y) {
-//        return ((int) y) + .5;
-                return y;
+        return ((int) y) + .5;
+    }
+
+    @SuppressWarnings("deprecation")
+    static double computeTextHeight(Font font, String text,
+                                    double wrappingWidth, double lineSpacing,
+                                    TextBoundsType boundsType) {
+        layout.setContent(text != null ? text : "", font.impl_getNativeFont());
+        layout.setWrapWidth((float) wrappingWidth);
+        layout.setLineSpacing((float) lineSpacing);
+        if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {
+            layout.setBoundsType(TextLayout.BOUNDS_CENTER);
+        } else {
+            layout.setBoundsType(0);
+        }
+        return layout.getBounds()
+                     .getHeight();
     }
 
     private Font   labelFont       = Font.getDefault();
@@ -71,9 +88,7 @@ public class Layout {
     private Insets tableCellInsets = ZERO_INSETS;
     private Insets tableInsets     = ZERO_INSETS;
     private Font   valueFont       = Font.getDefault();
-
     private Insets valueInsets     = ZERO_INSETS;
-
     private double valueLineHeight;
 
     public Layout(List<String> styleSheets) {
@@ -154,76 +169,49 @@ public class Layout {
         topLevel.layout();
         topLevel.refresh();
 
-        Border border = listCell.get()
-                                .getBorder();
-        listCellInsets = Layout.add(border == null ? ZERO_INSETS
-                                                   : border.getOutsets(),
-                                    Layout.add(border == null ? ZERO_INSETS
-                                                              : border.getInsets(),
-                                               Layout.add(listCell.get()
-                                                                  .getInsets(),
-                                                          listCell.get()
-                                                                  .getBackground() == null ? ZERO_INSETS
-                                                                                           : listCell.get()
-                                                                                                     .getBackground()
-                                                                                                     .getOutsets())));
-        border = nestedList.get()
-                           .getBorder();
-        listInsets = Layout.add(border == null ? ZERO_INSETS
-                                               : border.getOutsets(),
-                                Layout.add(border == null ? ZERO_INSETS
-                                                          : border.getInsets(),
-                                           Layout.add(nestedList.get()
-                                                                .getInsets(),
-                                                      nestedList.get()
-                                                                .getBackground() == null ? ZERO_INSETS
-                                                                                         : nestedList.get()
-                                                                                                     .getBackground()
-                                                                                                     .getOutsets())));
-        border = tableCell.getBorder();
-        tableCellInsets = Layout.add(border == null ? ZERO_INSETS
-                                                    : border.getOutsets(),
-                                     Layout.add(border == null ? ZERO_INSETS
-                                                               : border.getInsets(),
-                                                Layout.add(tableCell.getInsets(),
-                                                           tableCell.getBackground() == null ? ZERO_INSETS
-                                                                                             : tableCell.getBackground()
-                                                                                                        .getOutsets())));
-        border = table.getBorder();
-        tableInsets = Layout.add(border == null ? ZERO_INSETS
-                                                : border.getOutsets(),
-                                 Layout.add(border == null ? ZERO_INSETS
-                                                           : border.getInsets(),
-                                            Layout.add(table.getInsets(),
-                                                       table.getBackground() == null ? ZERO_INSETS
-                                                                                     : table.getBackground()
-                                                                                            .getOutsets())));
-        border = valueText.get()
-                          .getBorder();
-        valueInsets = Layout.add(border == null ? ZERO_INSETS
-                                                : border.getOutsets(),
-                                 Layout.add(border == null ? ZERO_INSETS
-                                                           : border.getInsets(),
-                                            Layout.add(valueText.get()
-                                                                .getInsets(),
-                                                       valueText.get()
-                                                                .getBackground() == null ? ZERO_INSETS
-                                                                                         : valueText.get()
-                                                                                                    .getBackground()
-                                                                                                    .getOutsets())));
-        border = valueText.get()
-                          .getBorder();
-        labelInsets = Layout.add(border == null ? ZERO_INSETS
-                                                : border.getOutsets(),
-                                 Layout.add(border == null ? ZERO_INSETS
-                                                           : border.getInsets(),
-                                            Layout.add(valueText.get()
-                                                                .getInsets(),
-                                                       valueText.get()
-                                                                .getBackground() == null ? ZERO_INSETS
-                                                                                         : valueText.get()
-                                                                                                    .getBackground()
-                                                                                                    .getOutsets())));
+        valueFont = valueText.get()
+                             .getFont();
+
+        labelFont = valueFont;
+
+        listCellInsets = new Insets(listCell.get()
+                                            .snappedTopInset(),
+                                    listCell.get()
+                                            .snappedRightInset(),
+                                    listCell.get()
+                                            .snappedBottomInset(),
+                                    listCell.get()
+                                            .snappedLeftInset());
+
+        listInsets = new Insets(nestedList.get()
+                                          .snappedTopInset(),
+                                nestedList.get()
+                                          .snappedRightInset(),
+                                nestedList.get()
+                                          .snappedBottomInset(),
+                                nestedList.get()
+                                          .snappedLeftInset());
+
+        tableCellInsets = new Insets(tableCell.snappedTopInset(),
+                                     tableCell.snappedRightInset(),
+                                     tableCell.snappedBottomInset(),
+                                     tableCell.snappedLeftInset());
+
+        tableInsets = new Insets(table.snappedTopInset(),
+                                 table.snappedRightInset(),
+                                 table.snappedBottomInset(),
+                                 table.snappedLeftInset());
+
+        valueInsets = new Insets(valueText.get()
+                                          .snappedTopInset(),
+                                 valueText.get()
+                                          .snappedRightInset(),
+                                 valueText.get()
+                                          .snappedBottomInset(),
+                                 valueText.get()
+                                          .snappedLeftInset());
+
+        labelInsets = valueInsets;
         valueLineHeight = FONT_LOADER.getFontMetrics(valueFont)
                                      .getLineHeight();
         labelLineHeight = FONT_LOADER.getFontMetrics(labelFont)
@@ -262,19 +250,8 @@ public class Layout {
         return valueLineHeight;
     }
 
-    public double labelHeight(double maxWidth, double justifiedWidth) {
-        double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
-                         + 1.5)
-                        * labelLineHeight;
-        return snap(height + labelInsets.getTop() + labelInsets.getBottom());
-    }
-
     public double labelWidth(String label) {
         return FONT_LOADER.computeStringWidth(label, labelFont);
-    }
-
-    public double scrollWidth() {
-        return SCROLL_WIDTH;
     }
 
     @Override
@@ -286,14 +263,21 @@ public class Layout {
                              valueLineHeight);
     }
 
-    public double valueHeight(double maxWidth, double justifiedWidth) {
-        double height = (Math.ceil(maxWidth / (justifiedWidth - scrollWidth()))
-                         + 1.5)
-                        * valueLineHeight;
-        return snap(height + valueInsets.getTop() + valueInsets.getBottom());
+    public double computeLabelHeight(String text, double wrappingWidth) {
+        return computeTextHeight(labelFont, text, wrappingWidth, 0,
+                                 TextBoundsType.LOGICAL)
+               + labelLineHeight;
+    }
+
+    public double computeValueHeight(String text, double wrappingWidth) {
+        return computeTextHeight(valueFont, text, wrappingWidth, 0,
+                                 TextBoundsType.LOGICAL)
+               + valueLineHeight;
     }
 
     public double valueWidth(String value) {
-        return FONT_LOADER.computeStringWidth(value, valueFont);
+        return FONT_LOADER.computeStringWidth(value, valueFont)
+               + FONT_LOADER.computeStringWidth(" ", valueFont);
     }
+
 }

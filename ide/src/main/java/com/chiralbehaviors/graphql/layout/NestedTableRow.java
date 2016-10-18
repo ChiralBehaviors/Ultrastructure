@@ -89,10 +89,10 @@ public class NestedTableRow<T> extends TableRow<T> {
                              .orElse(-1);
             link.forEach(p1 -> {
                 double height = cardinality * max;
-                p1.control.setPrefHeight(height);
                 if (p1.control instanceof ListView) {
                     ((ListView<?>) p1.control).setFixedCellSize(max);
                 }
+                p1.control.setPrefHeight(height);
             });
         }
     }

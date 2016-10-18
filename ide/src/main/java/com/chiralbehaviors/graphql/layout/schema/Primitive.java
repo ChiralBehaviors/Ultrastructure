@@ -49,6 +49,7 @@ public class Primitive extends SchemaNode {
     private double maxWidth          = 0;
     private double nestingInset;
     private double valueDefaultWidth = 0;
+    private String maxElement;
 
     public Primitive(String label) {
         super(label);
@@ -64,7 +65,7 @@ public class Primitive extends SchemaNode {
     public String toString(int indent) {
         return toString();
     }
- 
+
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
                                                      int cardinality,
@@ -144,7 +145,7 @@ public class Primitive extends SchemaNode {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return layout.valueHeight(maxWidth, justifiedWidth);
+        return layout.computeValueHeight(maxElement, columnWidth);
     }
 
     @Override
@@ -165,7 +166,8 @@ public class Primitive extends SchemaNode {
 
     @Override
     double measure(ArrayNode data, int nestingLevel, Layout layout) {
-        labelWidth = layout.labelWidth(label) + layout.labelWidth(" ") * 2;
+        maxElement = "";
+        labelWidth = layout.labelWidth(label);
         double sum = 0;
         maxWidth = 0;
         columnWidth = 0;
@@ -173,30 +175,32 @@ public class Primitive extends SchemaNode {
             List<JsonNode> rows = asList(prim);
             double width = 0;
             for (JsonNode row : rows) {
-                width += layout.valueWidth(toString(row));
+                String element = toString(row);
+                if (element.length() > maxElement.length()) {
+                    maxElement = element;
+                }
+                width += layout.valueWidth(element);
                 maxWidth = Math.max(maxWidth, width);
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
         }
         double averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
-        maxWidth += layout.valueWidth(" ") * 2;
         if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
             variableLength = true;
         }
         columnWidth = Math.max(labelWidth,
                                Math.max(valueDefaultWidth, averageWidth));
-        columnWidth += layout.getValueInsets()
-                             .getLeft()
-                       + layout.getValueInsets()
-                               .getRight();
 
         Insets listInsets = layout.getListInsets();
         Insets tableCellInsets = layout.getTableCellInsets();
-        nestingInset = nestingLevel
-                       * (listInsets.getLeft() + listInsets.getRight())
-                       + (tableCellInsets.getLeft()
-                          + tableCellInsets.getRight());
+        nestingInset = (nestingLevel
+                        * (listInsets.getLeft() + listInsets.getRight()))
+                       + tableCellInsets.getLeft() + tableCellInsets.getRight()
+                       + layout.getValueInsets()
+                               .getLeft()
+                       + layout.getValueInsets()
+                               .getRight();
         justifiedWidth = getTableColumnWidth();
         return justifiedWidth;
     }

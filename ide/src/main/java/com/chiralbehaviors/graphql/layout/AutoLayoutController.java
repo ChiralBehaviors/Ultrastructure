@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
+f * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  * 
  
  *  This file is part of Ultrastructure.
@@ -127,6 +127,10 @@ public class AutoLayoutController {
         return root;
     }
 
+    public AutoLayoutView getLayout() {
+        return layout;
+    }
+
     public void setQueryState(QueryState state) {
         String previousDataString = queryState.getData();
         if (state == null) {
@@ -148,9 +152,9 @@ public class AutoLayoutController {
         }
 
         JsonNode errors = data.get(ERRORS);
-        if ((errors != null && errors.size() != 0)
-            || !data.has(DATA) || !data.get(DATA)
-                                       .has(queryState.getSource())) {
+        if ((errors != null && errors.size() != 0) || !data.has(DATA)
+            || !data.get(DATA)
+                    .has(queryState.getSource())) {
             queryState.setData(null);
             data = JsonNodeFactory.instance.arrayNode();
         } else {

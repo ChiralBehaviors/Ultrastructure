@@ -63,6 +63,8 @@ import javafx.scene.text.Text;
  */
 public class Relation extends SchemaNode implements Cloneable {
 
+    private static final String ZERO = "0";
+
     public static SchemaNode buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
@@ -416,7 +418,7 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setPrefColumnCount(1);
         labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
-        labelText.setPrefHeight(layout.getLabelLineHeight());
+        labelText.setPrefHeight(layout.computeLabelHeight(label, labelWidth));
         double calculatedHeight = getValueHeight(averageCardinality, layout);
         Pane box;
         if (useTable) {
@@ -522,9 +524,12 @@ public class Relation extends SchemaNode implements Cloneable {
         children.forEach(child -> {
             table.getColumns()
                  .add(child.buildTableColumn(true, averageCardinality,
-                                             layoutMaster(cardinality, child,
-                                                          leaves, layout),
-                                             layout));
+                                             (p, height, row, primitive) -> {
+                                                 NestedColumnView view = new NestedColumnView();
+                                                 view.manifest(child,
+                                                               p.apply(() -> ZERO));
+                                                 return view;
+                                             }, layout));
         });
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -624,28 +629,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                                 + child.getTableColumnWidth()));
     }
 
-    private NestingFunction layoutMaster(int cardinality, SchemaNode child,
-                                         Map<Primitive, Integer> leaves,
-                                         Layout layout) {
-        return (p, height, row, primitive) -> {
-            NestedColumnView view = new NestedColumnView();
-            Control control = view.manifest(child, p.apply(() -> "0"));
-            if (child instanceof Primitive) {
-                row.layout(label, leaves.get(primitive), control,
-                           Math.max(1, cardinality),
-                           height + layout.getTableCellInsets()
-                                          .getTop() + layout.getTableCellInsets()
-                                                            .getBottom()
-                                                     + layout.getListInsets()
-                                                             .getTop()
-                                                     + layout.getListInsets()
-                                                             .getBottom(),
-                           leaves.size());
-            }
-            return view;
-        };
-    }
-
     private NestingFunction nest(boolean topLevel, SchemaNode child,
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, int cardinality,
@@ -665,15 +648,17 @@ public class Relation extends SchemaNode implements Cloneable {
         double thisInset = (topLevel ? tableCellInset : 0) + listInset;
 
         return (p, height, row, primitive) -> {
-            double cellHeight = Math.max(minHeight, height) + listCellInset + 2;
+            double cellHeight = Math.max(minHeight, height) + listCellInset;
             double thisHeight = (cardinality * cellHeight) + thisInset;
             return nesting.apply(id -> {
                 Integer column = leaves.get(primitive);
                 String label = id.call();
                 ListView<JsonNode> split = split(label, column, row,
                                                  leaves.size());
-                row.layout(label, column, split, cardinality, cellHeight,
-                           leaves.size());
+                if (leaves.size() > 1) {
+                    row.layout(label, column, split, cardinality, cellHeight,
+                               leaves.size());
+                }
                 split.setCellFactory(c -> createListCell(child, p));
                 return split;
             }, thisHeight, row, primitive);
@@ -696,7 +681,9 @@ public class Relation extends SchemaNode implements Cloneable {
             @Override
             protected void layoutChildren() {
                 super.layoutChildren();
-                row.link(id, column, this, count);
+                if (count > 1) {
+                    row.link(id, column, this, count);
+                }
             }
 
         };

@@ -26,13 +26,12 @@ import org.glassfish.jersey.internal.util.Producer;
 
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.util.concurrent.AtomicDouble;
 
 import javafx.scene.control.Control;
 
 @FunctionalInterface
 public interface NestingFunction {
-    Control apply(BiFunction<Producer<String>, AtomicDouble, Control> inner,
+    Control apply(BiFunction<Producer<String>, Producer<Double>, Control> inner,
                   NestedTableRow<JsonNode> row, Primitive primitive);
 
 }

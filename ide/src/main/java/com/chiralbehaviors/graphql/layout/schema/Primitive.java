@@ -71,10 +71,6 @@ public class Primitive extends SchemaNode {
     double buildTableColumn(boolean topLevel, int cardinality,
                             NestingFunction nesting, Layout layout,
                             ObservableList<TableColumn<JsonNode, ?>> parent) {
-        double listCellInset = layout.getListCellInsets()
-                                     .getTop()
-                               + layout.getListCellInsets()
-                                       .getBottom();
         double insets = layout.getValueInsets()
                               .getTop()
                         + layout.getValueInsets()
@@ -93,7 +89,7 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        double extendedHeight = baseHeight + listCellInset + insets;
+        double extendedHeight = baseHeight + insets;
         column.setCellFactory(c -> createCell(cardinality, nesting, layout,
                                               extendedHeight));
         return extendedHeight;
@@ -125,12 +121,16 @@ public class Primitive extends SchemaNode {
                     NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
                     if (row != null) {
                         view = (NestedColumnView) nesting.apply((label,
-                                                                 height) -> {
+                                                                 heightF) -> {
+                            double height = heightF.call();
                             TextArea control = buildControl(cardinality,
                                                             layout);
-                            control.setMinHeight(height.get());
-                            control.setPrefHeight(height.get());
-                            control.setMaxHeight(height.get());
+                            control.setMinHeight(height);
+                            control.setPrefHeight(height);
+                            control.setMaxHeight(height);
+                            System.out.println(String.format("%s:%s",
+                                                             Primitive.this.label,
+                                                             height));
                             return control;
                         }, row, Primitive.this);
                     }
@@ -235,6 +235,7 @@ public class Primitive extends SchemaNode {
         box.getChildren()
            .add(labelText);
         Control control = buildControl(cardinality, layout);
+        control.setPrefHeight(getValueHeight(cardinality, layout));
         HBox.setHgrow(control, Priority.ALWAYS);
         box.getChildren()
            .add(control);
@@ -252,7 +253,6 @@ public class Primitive extends SchemaNode {
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        text.setPrefHeight(getValueHeight(cardinality, layout));
         return text;
     }
 

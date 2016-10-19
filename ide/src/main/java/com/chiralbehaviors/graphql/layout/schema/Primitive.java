@@ -128,9 +128,6 @@ public class Primitive extends SchemaNode {
                             control.setMinHeight(height);
                             control.setPrefHeight(height);
                             control.setMaxHeight(height);
-                            System.out.println(String.format("%s:%s",
-                                                             Primitive.this.label,
-                                                             height));
                             return control;
                         }, row, Primitive.this);
                     }

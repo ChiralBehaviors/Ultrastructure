@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
-import static com.chiralbehaviors.graphql.layout.schema.Layout.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -295,8 +294,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                  .getTop()
                            + layout.getListInsets()
                                    .getBottom();
-        extendedHeight.set(snap((childheight.get() + listCellInset)
-                                * cardinality)
+        extendedHeight.set(((childheight.get() + listCellInset) * cardinality)
                            + listInset);
         return extendedHeight.get();
 
@@ -542,13 +540,12 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         AtomicDouble childHeight = new AtomicDouble();
-        Producer<Double> childHeightF = () -> childHeight.get();
         childHeight.set(children.stream()
                                 .mapToDouble(child -> child.buildTableColumn(true,
                                                                              averageCardinality,
                                                                              (p,
                                                                               row, primitive) -> {
-                                                                                 Double height = childHeightF.call();
+                                                                                 Double height = childHeight.get();
                                                                                  NestedColumnView view = new NestedColumnView();
                                                                                  view.manifest(child,
                                                                                                p.apply(() -> ZERO,
@@ -666,34 +663,39 @@ public class Relation extends SchemaNode implements Cloneable {
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting,
                                  Producer<Double> childHeightF, Layout layout,
-                                 int cardinality, AtomicDouble myHeight) {
+                                 int cardinality, AtomicDouble calcHeight) {
 
         return (p, row, primitive) -> {
-            return nesting.apply((id, heightF) -> {
-                double height = heightF.call();
-                double childHeight = childHeightF.call();
+            return nesting.apply((id, renderedF) -> {
+                final double renderedHeight = renderedF.call();
+                final double childHeight = childHeightF.call();
+
+                final double listInset = layout.getListInsets()
+                                               .getTop()
+                                         + layout.getListInsets()
+                                                 .getBottom();
+                final double listCellInset = layout.getListCellInsets()
+                                                   .getTop()
+                                             + layout.getListCellInsets()
+                                                     .getBottom();
+                final double deficit = Math.max(0, renderedHeight
+                                                   - calcHeight.get());
+
+                final double childDeficit = Math.max(0, deficit / cardinality);
+                final double childLayoutHeight = childHeight + childDeficit
+                                                 - listInset;
+
                 Integer column = leaves.get(primitive);
                 String label = id.call();
+
                 ListView<JsonNode> split = split(label, column, row,
                                                  leaves.size());
-                split.setMinHeight(height);
-                split.setPrefHeight(height);
-                split.setMaxHeight(height);
-                double deficit = Math.max(0, height - myHeight.get());
-
-                double listCellInset = layout.getListCellInsets()
-                                             .getTop()
-                                       + layout.getListCellInsets()
-                                               .getBottom();
-
-                @SuppressWarnings("unused")
-                double celledInsets = listCellInset * cardinality;
-                double childDeficit = Math.max(0, deficit / cardinality);
-                double layoutHeight = snap(childHeight + childDeficit
-                                           + listCellInset);
-                split.setFixedCellSize(layoutHeight);
+                split.setMinHeight(renderedHeight);
+                split.setPrefHeight(renderedHeight);
+                split.setMaxHeight(renderedHeight);
+                split.setFixedCellSize(childLayoutHeight + listCellInset);
                 split.setCellFactory(c -> createListCell(child, p,
-                                                         () -> layoutHeight));
+                                                         () -> childLayoutHeight));
                 return split;
             }, row, primitive);
         };

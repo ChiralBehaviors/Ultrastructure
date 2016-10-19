@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
@@ -50,7 +51,6 @@ public class Primitive extends SchemaNode {
     private double nestingInset;
     private double valueDefaultWidth = 0;
     private String maxElement;
-    private double height            = 0;
 
     public Primitive(String label) {
         super(label);
@@ -68,25 +68,21 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
-                                                     int cardinality,
-                                                     double minPrimSize,
-                                                     NestingFunction nesting,
-                                                     int level, Layout layout) {
-        double listInsets = layout.getListInsets()
-                                  .getTop()
-                            + layout.getListInsets()
-                                    .getBottom();
+    double buildTableColumn(boolean topLevel, int cardinality,
+                            NestingFunction nesting, Layout layout,
+                            ObservableList<TableColumn<JsonNode, ?>> parent) {
         double listCellInset = layout.getListCellInsets()
                                      .getTop()
                                + layout.getListCellInsets()
                                        .getBottom();
+        double insets = layout.getValueInsets()
+                              .getTop()
+                        + layout.getValueInsets()
+                                .getBottom();
         double baseHeight = getValueHeight(cardinality, layout);
-        height = baseHeight
-                 + Math.max(0, minPrimSize - baseHeight - (level * listInsets))
-                 - listCellInset;
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        parent.add(column);
         column.getStyleClass()
               .add(tableColumnStyleClass());
 
@@ -97,9 +93,10 @@ public class Primitive extends SchemaNode {
             }
         });
 
+        double extendedHeight = baseHeight + listCellInset + insets;
         column.setCellFactory(c -> createCell(cardinality, nesting, layout,
-                                              height));
-        return column;
+                                              extendedHeight));
+        return extendedHeight;
     }
 
     private TableCell<JsonNode, JsonNode> createCell(int cardinality,
@@ -127,9 +124,15 @@ public class Primitive extends SchemaNode {
                     @SuppressWarnings("unchecked")
                     NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
                     if (row != null) {
-                        view = (NestedColumnView) nesting.apply(label -> {
-                            return buildControl(cardinality, layout);
-                        }, height, row, Primitive.this);
+                        view = (NestedColumnView) nesting.apply((label,
+                                                                 height) -> {
+                            TextArea control = buildControl(cardinality,
+                                                            layout);
+                            control.setMinHeight(height.get());
+                            control.setPrefHeight(height.get());
+                            control.setMaxHeight(height.get());
+                            return control;
+                        }, row, Primitive.this);
                     }
                 }
                 super.updateIndex(i);
@@ -249,11 +252,7 @@ public class Primitive extends SchemaNode {
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        if (height <= 0) {
-            height = getValueHeight(cardinality, layout);
-        }
-//        text.setMinHeight(height);
-        text.setPrefHeight(height);
+        text.setPrefHeight(getValueHeight(cardinality, layout));
         return text;
     }
 

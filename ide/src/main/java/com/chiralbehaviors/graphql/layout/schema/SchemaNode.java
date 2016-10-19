@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.collections.ObservableListWrapper;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -264,9 +265,9 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
-                                                              int cardinality,
-                                                              double minPrimSize, NestingFunction nesting, int level, Layout layout);
+    abstract double buildTableColumn(boolean topLevel, int cardinality,
+                                     NestingFunction nesting, Layout layout,
+                                     ObservableList<TableColumn<JsonNode, ?>> parent);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {

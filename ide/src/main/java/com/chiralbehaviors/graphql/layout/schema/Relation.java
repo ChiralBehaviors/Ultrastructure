@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
+import static com.chiralbehaviors.graphql.layout.schema.Layout.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -268,10 +269,10 @@ public class Relation extends SchemaNode implements Cloneable {
             leaves.put(leaf, index);
             index++;
         }
-        double listCellInsets = layout.getListCellInsets()
-                                      .getTop()
-                                + layout.getListCellInsets()
-                                        .getBottom();
+        double listCellInset = layout.getListCellInsets()
+                                     .getTop()
+                               + layout.getListCellInsets()
+                                       .getBottom();
         AtomicDouble childheight = new AtomicDouble();
         Producer<Double> childHeightF = () -> childheight.get();
         AtomicDouble extendedHeight = new AtomicDouble();
@@ -290,11 +291,13 @@ public class Relation extends SchemaNode implements Cloneable {
                                 .max()
                                 .getAsDouble());
 
-        extendedHeight.set(((childheight.get() + listCellInsets) * cardinality)
+        double listInset = layout.getListInsets()
+                                 .getTop()
                            + layout.getListInsets()
-                                   .getTop()
-                           + layout.getListInsets()
-                                   .getBottom());
+                                   .getBottom();
+        extendedHeight.set(snap((childheight.get() + listCellInset)
+                                * cardinality)
+                           + listInset);
         return extendedHeight.get();
 
     }
@@ -559,6 +562,9 @@ public class Relation extends SchemaNode implements Cloneable {
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefWidth(justifiedWidth);
+        if (cardinality > 0) {
+            table.setMinHeight(cardinality * childHeight.get());
+        }
         return table;
     }
 
@@ -666,10 +672,6 @@ public class Relation extends SchemaNode implements Cloneable {
             return nesting.apply((id, heightF) -> {
                 double height = heightF.call();
                 double childHeight = childHeightF.call();
-                double deficit = Math.max(0, height - myHeight.get());
-
-                System.out.println(String.format("%s:[%s:%s] + %s", label,
-                                                 height, childHeight, deficit));
                 Integer column = leaves.get(primitive);
                 String label = id.call();
                 ListView<JsonNode> split = split(label, column, row,
@@ -677,16 +679,19 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setMinHeight(height);
                 split.setPrefHeight(height);
                 split.setMaxHeight(height);
+                double deficit = Math.max(0, height - myHeight.get());
+
                 double listCellInset = layout.getListCellInsets()
                                              .getTop()
                                        + layout.getListCellInsets()
                                                .getBottom();
-                double childDeficit = Math.max(0,
-                                               (deficit
-                                                - (listCellInset * cardinality))
-                                                  / cardinality);
-                double layoutHeight = childHeight + childDeficit;
-                //                split.setFixedCellSize(layoutHeight);
+
+                @SuppressWarnings("unused")
+                double celledInsets = listCellInset * cardinality;
+                double childDeficit = Math.max(0, deficit / cardinality);
+                double layoutHeight = snap(childHeight + childDeficit
+                                           + listCellInset);
+                split.setFixedCellSize(layoutHeight);
                 split.setCellFactory(c -> createListCell(child, p,
                                                          () -> layoutHeight));
                 return split;

@@ -88,6 +88,7 @@ public class AutoLayoutView extends Control {
             return;
         }
         try {
+            System.out.println(style);
             top.measure(data, style);
         } catch (Throwable e) {
             log.error("cannot measure data", e);

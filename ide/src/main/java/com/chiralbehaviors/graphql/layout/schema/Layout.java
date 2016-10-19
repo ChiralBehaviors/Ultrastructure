@@ -264,15 +264,15 @@ public class Layout {
     }
 
     public double computeLabelHeight(String text, double wrappingWidth) {
-        return computeTextHeight(labelFont, text, wrappingWidth, 0,
+        return snap(computeTextHeight(labelFont, text, wrappingWidth, 0,
                                  TextBoundsType.LOGICAL)
-               + labelLineHeight;
+               + labelLineHeight) + 3;
     }
 
     public double computeValueHeight(String text, double wrappingWidth) {
-        return computeTextHeight(valueFont, text, wrappingWidth, 0,
+        return snap(computeTextHeight(valueFont, text, wrappingWidth, 0,
                                  TextBoundsType.LOGICAL)
-               + valueLineHeight;
+               + valueLineHeight)+ 3;
     }
 
     public double valueWidth(String value) {

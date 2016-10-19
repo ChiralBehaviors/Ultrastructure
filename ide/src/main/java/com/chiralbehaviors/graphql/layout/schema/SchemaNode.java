@@ -266,7 +266,7 @@ abstract public class SchemaNode {
 
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
                                                               int cardinality,
-                                                              NestingFunction nesting, Layout layout);
+                                                              double minPrimSize, NestingFunction nesting, int level, Layout layout);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {

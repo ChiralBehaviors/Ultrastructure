@@ -50,6 +50,7 @@ public class Primitive extends SchemaNode {
     private double nestingInset;
     private double valueDefaultWidth = 0;
     private String maxElement;
+    private double height            = 0;
 
     public Primitive(String label) {
         super(label);
@@ -69,9 +70,21 @@ public class Primitive extends SchemaNode {
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
                                                      int cardinality,
+                                                     double minPrimSize,
                                                      NestingFunction nesting,
-                                                     Layout layout) {
-        double height = getValueHeight(cardinality, layout);
+                                                     int level, Layout layout) {
+        double listInsets = layout.getListInsets()
+                                  .getTop()
+                            + layout.getListInsets()
+                                    .getBottom();
+        double listCellInset = layout.getListCellInsets()
+                                     .getTop()
+                               + layout.getListCellInsets()
+                                       .getBottom();
+        double baseHeight = getValueHeight(cardinality, layout);
+        height = baseHeight
+                 + Math.max(0, minPrimSize - baseHeight - (level * listInsets))
+                 - listCellInset;
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
@@ -236,8 +249,10 @@ public class Primitive extends SchemaNode {
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        double height = getValueHeight(cardinality, layout);
-        text.setMinHeight(height);
+        if (height <= 0) {
+            height = getValueHeight(cardinality, layout);
+        }
+//        text.setMinHeight(height);
         text.setPrefHeight(height);
         return text;
     }

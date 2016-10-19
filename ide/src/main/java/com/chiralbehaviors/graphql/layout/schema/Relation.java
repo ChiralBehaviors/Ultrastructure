@@ -246,11 +246,11 @@ public class Relation extends SchemaNode implements Cloneable {
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(boolean topLevel,
                                                      int cardinality,
-                                                     NestingFunction nesting,
-                                                     Layout layout) {
+                                                     double minPrimSize,
+                                                     NestingFunction nesting, int level, Layout layout) {
         if (isFold()) {
-            return fold.buildTableColumn(topLevel, averageCardinality, nesting,
-                                         layout);
+            return fold.buildTableColumn(topLevel, averageCardinality, minPrimSize,
+                                         nesting, level, layout);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
@@ -274,10 +274,10 @@ public class Relation extends SchemaNode implements Cloneable {
         for (SchemaNode child : children) {
             column.getColumns()
                   .add(child.buildTableColumn(false, averageCardinality,
+                                              minPrimSize,
                                               nest(topLevel, child, leaves,
                                                    nesting, cardinality,
-                                                   minHeight, layout),
-                                              layout));
+                                                   minHeight, layout), level + 1, layout));
         }
 
         return column;
@@ -521,15 +521,22 @@ public class Relation extends SchemaNode implements Cloneable {
             leaves.put(leaf, index);
             index++;
         }
+        double minPrimSize = children.stream()
+                                     .filter(c -> c instanceof Primitive)
+                                     .mapToDouble(c -> c.getValueHeight(0,
+                                                                        layout))
+                                     .max()
+                                     .orElse(0);
         children.forEach(child -> {
             table.getColumns()
                  .add(child.buildTableColumn(true, averageCardinality,
+                                             minPrimSize,
                                              (p, height, row, primitive) -> {
                                                  NestedColumnView view = new NestedColumnView();
                                                  view.manifest(child,
                                                                p.apply(() -> ZERO));
                                                  return view;
-                                             }, layout));
+                                             }, 0, layout));
         });
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

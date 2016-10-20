@@ -560,7 +560,18 @@ public class Relation extends SchemaNode implements Cloneable {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefWidth(justifiedWidth);
         if (cardinality > 0) {
-            table.setMinHeight(cardinality * childHeight.get());
+            double headerHeight = layout.measureHeader(table);
+            double tableCellInset = layout.getTableCellInsets()
+                                          .getTop()
+                                    + layout.getTableCellInsets()
+                                            .getBottom();
+            double tableInset = layout.getTableInsets()
+                                      .getTop()
+                                + layout.getTableInsets()
+                                        .getBottom();
+            table.setPrefHeight((cardinality
+                                 * (childHeight.get() + tableCellInset))
+                                + headerHeight + tableInset);
         }
         return table;
     }
@@ -586,10 +597,15 @@ public class Relation extends SchemaNode implements Cloneable {
             public void updateIndex(int i) {
                 int oldIndex = getIndex();
                 if (i != oldIndex) {
-                    childControl = p.apply(() -> String.format("%s.%s", label,
-                                                               i),
-                                           childHeight);
-                    setGraphic(childControl);
+                    if (i < 0) {
+                        setGraphic(null);
+                        childControl = null;
+                    } else {
+                        childControl = p.apply(() -> String.format("%s.%s",
+                                                                   label, i),
+                                               childHeight);
+                        setGraphic(childControl);
+                    }
                 }
                 super.updateIndex(i);
             }

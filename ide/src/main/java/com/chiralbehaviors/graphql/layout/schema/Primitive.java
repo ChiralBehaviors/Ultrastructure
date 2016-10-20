@@ -117,19 +117,24 @@ public class Primitive extends SchemaNode {
             public void updateIndex(int i) {
                 int prev = getIndex();
                 if (prev != i) {
-                    @SuppressWarnings("unchecked")
-                    NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
-                    if (row != null) {
-                        view = (NestedColumnView) nesting.apply((label,
-                                                                 heightF) -> {
-                            double height = heightF.call();
-                            TextArea control = buildControl(cardinality,
-                                                            layout);
-                            control.setMinHeight(height);
-                            control.setPrefHeight(height);
-                            control.setMaxHeight(height);
-                            return control;
-                        }, row, Primitive.this);
+                    if (i < 0) {
+                        setGraphic(null);
+                        view = null;
+                    } else {
+                        @SuppressWarnings("unchecked")
+                        NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
+                        if (row != null) {
+                            view = (NestedColumnView) nesting.apply((label,
+                                                                     heightF) -> {
+                                double height = heightF.call();
+                                TextArea control = buildControl(cardinality,
+                                                                layout);
+                                control.setMinHeight(height);
+                                control.setPrefHeight(height);
+                                control.setMaxHeight(height);
+                                return control;
+                            }, row, Primitive.this);
+                        }
                     }
                 }
                 super.updateIndex(i);

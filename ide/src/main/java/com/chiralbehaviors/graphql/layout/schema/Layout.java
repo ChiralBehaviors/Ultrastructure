@@ -29,6 +29,8 @@ import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleCla
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
@@ -80,18 +82,20 @@ public class Layout {
                      .getHeight();
     }
 
-    private Font   labelFont       = Font.getDefault();
-    private Insets labelInsets     = ZERO_INSETS;
-    private double labelLineHeight;
-    private Insets listCellInsets  = ZERO_INSETS;
-    private Insets listInsets      = ZERO_INSETS;
-    private Insets tableCellInsets = ZERO_INSETS;
-    private Insets tableInsets     = ZERO_INSETS;
-    private Font   valueFont       = Font.getDefault();
-    private Insets valueInsets     = ZERO_INSETS;
-    private double valueLineHeight;
+    private Font         labelFont       = Font.getDefault();
+    private Insets       labelInsets     = ZERO_INSETS;
+    private double       labelLineHeight;
+    private Insets       listCellInsets  = ZERO_INSETS;
+    private Insets       listInsets      = ZERO_INSETS;
+    private List<String> styleSheets;
+    private Insets       tableCellInsets = ZERO_INSETS;
+    private Insets       tableInsets     = ZERO_INSETS;
+    private Font         valueFont       = Font.getDefault();
+    private Insets       valueInsets     = ZERO_INSETS;
+    private double       valueLineHeight;
 
     public Layout(List<String> styleSheets) {
+        this.styleSheets = styleSheets;
         AtomicReference<TextArea> valueText = new AtomicReference<>();
         AtomicReference<ListCell<String>> listCell = new AtomicReference<>();
         AtomicReference<ListView<String>> nestedList = new AtomicReference<>();
@@ -218,6 +222,18 @@ public class Layout {
                                      .getLineHeight();
     }
 
+    public double computeLabelHeight(String text, double wrappingWidth) {
+        return snap(computeTextHeight(labelFont, text, wrappingWidth, 0,
+                                      TextBoundsType.LOGICAL)
+                    + labelLineHeight);
+    }
+
+    public double computeValueHeight(String text, double wrappingWidth) {
+        return snap(computeTextHeight(valueFont, text, wrappingWidth, 0,
+                                      TextBoundsType.LOGICAL)
+                    + valueLineHeight);
+    }
+
     public Insets getLabelInsets() {
         return labelInsets;
     }
@@ -254,6 +270,24 @@ public class Layout {
         return FONT_LOADER.computeStringWidth(label, labelFont);
     }
 
+    public double measureHeader(TableView<?> table) {
+        Group root = new Group(table);
+        Scene scene = new Scene(root);
+        if (styleSheets != null) {
+            scene.getStylesheets()
+                 .addAll(styleSheets);
+        }
+        root.applyCss();
+        root.layout();
+        table.applyCss();
+        table.layout();
+        @SuppressWarnings("rawtypes")
+        TableHeaderRow headerRow = ((TableViewSkinBase) table.getSkin()).getTableHeaderRow();
+        root.getChildren()
+            .clear();
+        return headerRow.getHeight();
+    }
+
     @Override
     public String toString() {
         return String.format("Layout\n  labelFont=%s\n  labelInsets=%s\n  labelLineHeight=%s\n  listCellInsets=%s\n  listInsets=%s\n  tableCellInsets=%s\n  tableInsets=%s\n  valueFont=%s\n  valueInsets=%s\n  valueLineHeight=%s]",
@@ -263,21 +297,8 @@ public class Layout {
                              valueLineHeight);
     }
 
-    public double computeLabelHeight(String text, double wrappingWidth) {
-        return snap(computeTextHeight(labelFont, text, wrappingWidth, 0,
-                                      TextBoundsType.LOGICAL)
-                    + labelLineHeight);
-    }
-
-    public double computeValueHeight(String text, double wrappingWidth) {
-        return snap(computeTextHeight(valueFont, text, wrappingWidth, 0,
-                                      TextBoundsType.LOGICAL)
-                    + valueLineHeight);
-    }
-
     public double valueWidth(String value) {
         return FONT_LOADER.computeStringWidth(value, valueFont)
                + FONT_LOADER.computeStringWidth(" ", valueFont);
     }
-
 }

@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
@@ -56,8 +57,11 @@ public class AutoLayoutView extends Control {
         this.root.set(root);
         widthProperty().addListener((o, p, c) -> resize(c.doubleValue()));
         data.addListener((o, p, c) -> setContent());
-        parentProperty().addListener((o, p, c) -> {
-            style = new Layout(getStylesheets());
+        getStylesheets().addListener(new ListChangeListener<String>() { 
+            @Override
+            public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> c) { 
+                style = new Layout(getStylesheets());
+            } 
         });
     }
 
@@ -88,7 +92,6 @@ public class AutoLayoutView extends Control {
             return;
         }
         try {
-            System.out.println(style);
             top.measure(data, style);
         } catch (Throwable e) {
             log.error("cannot measure data", e);

@@ -46,6 +46,7 @@ import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
@@ -591,6 +592,7 @@ public class Relation extends SchemaNode implements Cloneable {
                     }
                 });
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                setAlignment(Pos.CENTER);
             }
 
             @Override

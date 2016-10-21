@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.*;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
@@ -96,24 +96,30 @@ public class Layout {
 
     public Layout(List<String> styleSheets) {
         this.styleSheets = styleSheets;
+        AtomicReference<TextArea> labelText = new AtomicReference<>();
         AtomicReference<TextArea> valueText = new AtomicReference<>();
         AtomicReference<ListCell<String>> listCell = new AtomicReference<>();
         AtomicReference<ListView<String>> nestedList = new AtomicReference<>();
 
         ListView<String> topLevel = new ListView<>();
+        topLevel.getStyleClass()
+                .add(outlineListStyleClass());
         topLevel.setCellFactory(s -> new ListCell<String>() {
+            {
+                getStyleClass().add(outlineListCellClass());
+            }
 
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 ListView<String> nested = new ListView<String>();
                 nested.getStyleClass()
-                      .add(outlineListStyleClass());
+                      .add(nestedListStyleClass());
                 nestedList.set(nested);
                 nested.setCellFactory(v -> new ListCell<String>() {
                     {
                         listCell.set(this);
-                        getStyleClass().add(outlineListCellClass());
+                        getStyleClass().add(nestedListCellClass());
                     }
 
                     @Override
@@ -123,7 +129,12 @@ public class Layout {
                         value.getStyleClass()
                              .add(valueStyleClass());
                         valueText.set(value);
-                        setGraphic(value);
+                        TextArea label = new TextArea("lorum ipsum");
+                        label.getStyleClass()
+                             .add(labelStyleClass());
+                        labelText.set(value);
+                        Group group = new Group(label, value);
+                        setGraphic(group);
                     }
                 });
                 setGraphic(nested);
@@ -134,6 +145,10 @@ public class Layout {
             };
         });
         TableCell<String, String> tableCell = new TableCell<String, String>() {
+            {
+                getStyleClass().add(tableCellClass());
+            }
+
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);

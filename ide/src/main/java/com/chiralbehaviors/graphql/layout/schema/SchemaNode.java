@@ -209,7 +209,7 @@ abstract public class SchemaNode {
     }
 
     public static String valueStyleClass() {
-        return "auto-layout-label";
+        return "auto-layout-value";
     }
 
     final String field;

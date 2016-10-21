@@ -1,7 +1,7 @@
 workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/acm-95"
            version: 1 
            "Northwind" 
-           "Ultrstructure ontology for ACM '95 Ultrastructure order processing example"
+           "Ultrastructure ontology for ACM '95 Ultrastructure order processing example"
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }

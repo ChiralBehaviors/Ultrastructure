@@ -28,7 +28,6 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -212,16 +211,9 @@ abstract public class SchemaNode {
         return "auto-layout-value";
     }
 
-    @JsonProperty
     final String field;
-
-    @JsonProperty
     double       justifiedWidth = 0;
-
-    @JsonProperty
     String       label;
-
-    @JsonProperty
     double       labelWidth     = 0;
 
     public SchemaNode(String field) {

@@ -33,9 +33,7 @@ import org.glassfish.jersey.internal.util.Producer;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -71,7 +69,6 @@ import javafx.util.Pair;
  * @author hhildebrand
  *
  */
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 public class Relation extends SchemaNode implements Cloneable {
 
     private static final String ZERO = "0";
@@ -119,12 +116,9 @@ public class Relation extends SchemaNode implements Cloneable {
         return parent;
     }
 
-    @JsonProperty
     private int                    averageCardinality = 1;
-    @JsonProperty
     private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
-    @JsonProperty
     private double                 tableColumnWidth   = 0;
     private boolean                useTable           = false;
 

@@ -27,9 +27,6 @@ import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -51,17 +48,11 @@ import javafx.util.Pair;
  * @author hhildebrand
  *
  */
-@JsonAutoDetect(fieldVisibility = Visibility.NONE)
 public class Primitive extends SchemaNode {
-    @JsonProperty
     private double  columnWidth       = 0;
-    @JsonProperty
     private double  maxWidth          = 0;
-    @JsonProperty
     private double  nestingInset      = 0;
-    @JsonProperty
     private double  valueDefaultWidth = 0;
-    @JsonProperty
     private boolean variableLength    = false;
 
     public Primitive(String label) {

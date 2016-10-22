@@ -71,7 +71,7 @@ public class Primitive extends SchemaNode {
     @Override
     double buildTableColumn(boolean topLevel, int cardinality,
                             NestingFunction nesting, Layout layout,
-                            ObservableList<TableColumn<JsonNode, ?>> parent) {
+                            ObservableList<TableColumn<JsonNode, ?>> parent, int columnIndex) {
         double insets = layout.getValueInsets()
                               .getTop()
                         + layout.getValueInsets()
@@ -212,7 +212,7 @@ public class Primitive extends SchemaNode {
         columnWidth = Math.max(labelWidth,
                                Math.max(valueDefaultWidth, averageWidth));
 
-        Insets listInsets = layout.getListInsets();
+        Insets listInsets = layout.getNestedListInsets();
         Insets tableCellInsets = layout.getTableCellInsets();
         nestingInset = (nestingLevel
                         * (listInsets.getLeft() + listInsets.getRight()))
@@ -233,12 +233,14 @@ public class Primitive extends SchemaNode {
         TextArea labelText = new TextArea(label);
         labelText.getStyleClass()
                  .add(outlineLabelStyleClass());
-        labelText.setMinWidth(0);
+        labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
+        labelText.setMaxWidth(labelWidth);
         labelText.setPrefRowCount(1);
         box.getChildren()
            .add(labelText);
         Control control = buildControl(cardinality, layout);
+        control.setPrefWidth(columnWidth);
         control.setPrefHeight(getValueHeight(cardinality, layout));
         HBox.setHgrow(control, Priority.ALWAYS);
         box.getChildren()

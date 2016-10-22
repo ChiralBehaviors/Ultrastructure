@@ -70,7 +70,8 @@ public class Layout {
     static double computeTextHeight(Font font, String text,
                                     double wrappingWidth, double lineSpacing,
                                     TextBoundsType boundsType) {
-        layout.setContent(text != null ? text : "", font.impl_getNativeFont());
+        layout.setContent(text != null ? String.format("W%sW\n", text) : "",
+                          font.impl_getNativeFont());
         layout.setWrapWidth((float) wrappingWidth);
         layout.setLineSpacing((float) lineSpacing);
         if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {
@@ -82,24 +83,31 @@ public class Layout {
                      .getHeight();
     }
 
-    private Font         labelFont       = Font.getDefault();
-    private Insets       labelInsets     = ZERO_INSETS;
-    private double       labelLineHeight;
-    private Insets       listCellInsets  = ZERO_INSETS;
-    private Insets       listInsets      = ZERO_INSETS;
+    private Font         labelFont               = Font.getDefault();
+    private Insets       labelInsets             = ZERO_INSETS;
+    private double       labelLineHeight         = 0;
+    private Insets       nested1stListCellInsets = ZERO_INSETS;
+    private Insets       nested1stListInsets     = ZERO_INSETS;
+    private Insets       nestedListCellInsets    = ZERO_INSETS;
+    private Insets       nestedListInsets        = ZERO_INSETS;
+    private Insets       outlineListCellInsets   = ZERO_INSETS;
+    private Insets       outlineListInsets       = ZERO_INSETS;
     private List<String> styleSheets;
-    private Insets       tableCellInsets = ZERO_INSETS;
-    private Insets       tableInsets     = ZERO_INSETS;
-    private Font         valueFont       = Font.getDefault();
-    private Insets       valueInsets     = ZERO_INSETS;
-    private double       valueLineHeight;
+    private Insets       tableCellInsets         = ZERO_INSETS;
+    private Insets       tableInsets             = ZERO_INSETS;
+    private Font         valueFont               = Font.getDefault();
+    private Insets       valueInsets             = ZERO_INSETS;
+    private double       valueLineHeight         = 0;
 
     public Layout(List<String> styleSheets) {
         this.styleSheets = styleSheets;
         AtomicReference<TextArea> labelText = new AtomicReference<>();
         AtomicReference<TextArea> valueText = new AtomicReference<>();
-        AtomicReference<ListCell<String>> listCell = new AtomicReference<>();
+        AtomicReference<ListCell<String>> nestedListCell = new AtomicReference<>();
         AtomicReference<ListView<String>> nestedList = new AtomicReference<>();
+        AtomicReference<ListCell<String>> outlineListCell = new AtomicReference<>();
+        AtomicReference<ListCell<String>> nested1stListCell = new AtomicReference<>();
+        AtomicReference<ListView<String>> nested1stList = new AtomicReference<>();
 
         ListView<String> topLevel = new ListView<>();
         topLevel.getStyleClass()
@@ -107,6 +115,7 @@ public class Layout {
         topLevel.setCellFactory(s -> new ListCell<String>() {
             {
                 getStyleClass().add(outlineListCellClass());
+                outlineListCell.set(this);
             }
 
             @Override
@@ -114,11 +123,11 @@ public class Layout {
                 super.updateItem(item, empty);
                 ListView<String> nested = new ListView<String>();
                 nested.getStyleClass()
-                      .add(nestedListStyleClass());
+                      .add(nestedListClass());
                 nestedList.set(nested);
                 nested.setCellFactory(v -> new ListCell<String>() {
                     {
-                        listCell.set(this);
+                        nestedListCell.set(this);
                         getStyleClass().add(nestedListCellClass());
                     }
 
@@ -133,8 +142,28 @@ public class Layout {
                         label.getStyleClass()
                              .add(labelStyleClass());
                         labelText.set(value);
-                        Group group = new Group(label, value);
+                        ListView<String> frist = new ListView<String>();
+                        frist.getStyleClass()
+                             .add(nestedListCellClass());
+                        frist.setCellFactory(l -> new ListCell<String>() {
+                            {
+                                nested1stListCell.set(this);
+                            }
+
+                            @Override
+                            protected void updateItem(String item,
+                                                      boolean empty) {
+                                super.updateItem(item, empty);
+                                setText(item);
+                            }
+                        });
+                        nested1stList.set(frist);
+                        Group group = new Group(label, value, frist);
                         setGraphic(group);
+                        ObservableList<String> listItems = frist.getItems();
+                        listItems.add("Lorem ipsum");
+                        frist.setItems(null);
+                        frist.setItems(listItems);
                     }
                 });
                 setGraphic(nested);
@@ -193,23 +222,55 @@ public class Layout {
 
         labelFont = valueFont;
 
-        listCellInsets = new Insets(listCell.get()
-                                            .snappedTopInset(),
-                                    listCell.get()
-                                            .snappedRightInset(),
-                                    listCell.get()
-                                            .snappedBottomInset(),
-                                    listCell.get()
-                                            .snappedLeftInset());
+        nestedListCellInsets = new Insets(nestedListCell.get()
+                                                        .snappedTopInset(),
+                                          nestedListCell.get()
+                                                        .snappedRightInset(),
+                                          nestedListCell.get()
+                                                        .snappedBottomInset(),
+                                          nestedListCell.get()
+                                                        .snappedLeftInset());
 
-        listInsets = new Insets(nestedList.get()
-                                          .snappedTopInset(),
-                                nestedList.get()
-                                          .snappedRightInset(),
-                                nestedList.get()
-                                          .snappedBottomInset(),
-                                nestedList.get()
-                                          .snappedLeftInset());
+        nestedListInsets = new Insets(nestedList.get()
+                                                .snappedTopInset(),
+                                      nestedList.get()
+                                                .snappedRightInset(),
+                                      nestedList.get()
+                                                .snappedBottomInset(),
+                                      nestedList.get()
+                                                .snappedLeftInset());
+
+        nested1stListCellInsets = new Insets(nested1stListCell.get()
+                                                              .snappedTopInset(),
+                                             nested1stListCell.get()
+                                                              .snappedRightInset(),
+                                             nested1stListCell.get()
+                                                              .snappedBottomInset(),
+                                             nested1stListCell.get()
+                                                              .snappedLeftInset());
+
+        nested1stListInsets = new Insets(nested1stList.get()
+                                                      .snappedTopInset(),
+                                         nested1stList.get()
+                                                      .snappedRightInset(),
+                                         nested1stList.get()
+                                                      .snappedBottomInset(),
+                                         nested1stList.get()
+                                                      .snappedLeftInset());
+
+        outlineListCellInsets = new Insets(outlineListCell.get()
+                                                          .snappedTopInset(),
+                                           outlineListCell.get()
+                                                          .snappedRightInset(),
+                                           outlineListCell.get()
+                                                          .snappedBottomInset(),
+                                           outlineListCell.get()
+                                                          .snappedLeftInset());
+
+        outlineListInsets = new Insets(topLevel.snappedTopInset(),
+                                       topLevel.snappedRightInset(),
+                                       topLevel.snappedBottomInset(),
+                                       topLevel.snappedLeftInset());
 
         tableCellInsets = new Insets(tableCell.snappedTopInset(),
                                      tableCell.snappedRightInset(),
@@ -238,15 +299,13 @@ public class Layout {
     }
 
     public double computeLabelHeight(String text, double wrappingWidth) {
-        return snap(computeTextHeight(labelFont, text, wrappingWidth, 0,
-                                      TextBoundsType.LOGICAL)
-                    + labelLineHeight);
+        return computeTextHeight(labelFont, text, wrappingWidth, 0,
+                                      TextBoundsType.LOGICAL);
     }
 
     public double computeValueHeight(String text, double wrappingWidth) {
-        return snap(computeTextHeight(valueFont, text, wrappingWidth, 0,
-                                      TextBoundsType.LOGICAL)
-                    + valueLineHeight);
+        return computeTextHeight(valueFont, text, wrappingWidth, 0,
+                                      TextBoundsType.LOGICAL);
     }
 
     public Insets getLabelInsets() {
@@ -257,12 +316,28 @@ public class Layout {
         return labelLineHeight;
     }
 
-    public Insets getListCellInsets() {
-        return listCellInsets;
+    public Insets getNested1stListCellInsets() {
+        return nested1stListCellInsets;
     }
 
-    public Insets getListInsets() {
-        return listInsets;
+    public Insets getNested1stListInsets() {
+        return nested1stListInsets;
+    }
+
+    public Insets getNestedListCellInsets() {
+        return nestedListCellInsets;
+    }
+
+    public Insets getNestedListInsets() {
+        return nestedListInsets;
+    }
+
+    public Insets getOutlineListCellInsets() {
+        return outlineListCellInsets;
+    }
+
+    public Insets getOutlineListInsets() {
+        return outlineListInsets;
     }
 
     public Insets getTableCellInsets() {
@@ -282,7 +357,8 @@ public class Layout {
     }
 
     public double labelWidth(String label) {
-        return FONT_LOADER.computeStringWidth(label, labelFont);
+        return FONT_LOADER.computeStringWidth(String.format("W%sW", label),
+                                              labelFont);
     }
 
     public double measureHeader(TableView<?> table) {
@@ -307,13 +383,13 @@ public class Layout {
     public String toString() {
         return String.format("Layout\n  labelFont=%s\n  labelInsets=%s\n  labelLineHeight=%s\n  listCellInsets=%s\n  listInsets=%s\n  tableCellInsets=%s\n  tableInsets=%s\n  valueFont=%s\n  valueInsets=%s\n  valueLineHeight=%s]",
                              labelFont, labelInsets, labelLineHeight,
-                             listCellInsets, listInsets, tableCellInsets,
-                             tableInsets, valueFont, valueInsets,
-                             valueLineHeight);
+                             nestedListCellInsets, nestedListInsets,
+                             tableCellInsets, tableInsets, valueFont,
+                             valueInsets, valueLineHeight);
     }
 
     public double valueWidth(String value) {
-        return FONT_LOADER.computeStringWidth(value, valueFont)
-               + FONT_LOADER.computeStringWidth(" ", valueFont);
+        return FONT_LOADER.computeStringWidth(String.format("W%sW", value),
+                                              valueFont);
     }
 }

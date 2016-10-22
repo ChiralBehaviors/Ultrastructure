@@ -20,8 +20,12 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.*;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.labelStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListCellClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleClass;
@@ -300,12 +304,12 @@ public class Layout {
 
     public double computeLabelHeight(String text, double wrappingWidth) {
         return computeTextHeight(labelFont, text, wrappingWidth, 0,
-                                      TextBoundsType.LOGICAL);
+                                 TextBoundsType.LOGICAL_VERTICAL_CENTER);
     }
 
     public double computeValueHeight(String text, double wrappingWidth) {
         return computeTextHeight(valueFont, text, wrappingWidth, 0,
-                                      TextBoundsType.LOGICAL);
+                                 TextBoundsType.LOGICAL_VERTICAL_CENTER);
     }
 
     public Insets getLabelInsets() {

@@ -324,18 +324,17 @@ public class Relation extends SchemaNode implements Cloneable {
     double getValueHeight(int cardinality, Layout layout) {
         return useTable ? buildTable(n -> n, cardinality, layout)
                                                                  .getPrefHeight()
-                        : children.stream()
-                                  .mapToDouble(child -> child.getValueHeight(averageCardinality,
-                                                                             layout))
-                                  .map(childHeight -> outlineHeight(layout,
-                                                                    cardinality,
-                                                                    childHeight))
-                                  .reduce((a, b) -> a + b)
-                                  .getAsDouble()
+                        : (children.stream()
+                                   .mapToDouble(child -> child.getValueHeight(averageCardinality,
+                                                                              layout))
+                                   .reduce((a, b) -> a + b)
+                                   .getAsDouble()
+                           * cardinality)
                           + layout.getOutlineListInsets()
                                   .getTop()
                           + layout.getOutlineListInsets()
-                                  .getBottom();
+                                  .getBottom()
+                          + layout.computeLabelHeight("W", labelWidth);
     }
 
     @Override
@@ -720,16 +719,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 ((Relation) child).nestTables();
             }
         });
-    }
-
-    private double outlineHeight(Layout layout, int cardinality,
-                                 double childHeight) {
-
-        double cellInset = layout.getOutlineListCellInsets()
-                                 .getTop()
-                           + layout.getOutlineListCellInsets()
-                                   .getBottom();
-        return (childHeight + cellInset) * cardinality;
     }
 
     private ListCell<JsonNode> outlineListCell(double outlineLabelWidth,

@@ -331,7 +331,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                   .getTop()
                           + layout.getOutlineListInsets()
                                   .getBottom()
-                          + layout.computeLabelHeight("W", labelWidth);
+                          + (layout.getLabelLineHeight() * 2);
     }
 
     @Override
@@ -447,7 +447,7 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setPrefColumnCount(1);
         labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
-        double labelHeight = layout.computeLabelHeight(label, labelWidth);
+        double labelHeight = 2 * layout.getLabelLineHeight();
         labelText.setPrefHeight(labelHeight);
         Pane box;
         if (useTable) {

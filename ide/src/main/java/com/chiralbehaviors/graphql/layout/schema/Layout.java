@@ -302,16 +302,6 @@ public class Layout {
                                      .getLineHeight();
     }
 
-    public double computeLabelHeight(String text, double wrappingWidth) {
-        return computeTextHeight(labelFont, text, wrappingWidth, 0,
-                                 TextBoundsType.LOGICAL_VERTICAL_CENTER);
-    }
-
-    public double computeValueHeight(String text, double wrappingWidth) {
-        return computeTextHeight(valueFont, text, wrappingWidth, 0,
-                                 TextBoundsType.LOGICAL_VERTICAL_CENTER);
-    }
-
     public Insets getLabelInsets() {
         return labelInsets;
     }

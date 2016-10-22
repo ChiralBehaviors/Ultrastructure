@@ -27,6 +27,8 @@ import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -48,13 +50,13 @@ import javafx.util.Pair;
  * @author hhildebrand
  *
  */
+@JsonAutoDetect(fieldVisibility = Visibility.NONE)
 public class Primitive extends SchemaNode {
-
-    private double columnWidth;
-    private double maxWidth          = 0;
-    private double nestingInset;
-    private double valueDefaultWidth = 0;
-    private String maxElement;
+    private double  columnWidth       = 0;
+    private double  maxWidth          = 0;
+    private double  nestingInset      = 0;
+    private double  valueDefaultWidth = 0;
+    private boolean variableLength    = false;
 
     public Primitive(String label) {
         super(label);
@@ -98,6 +100,112 @@ public class Primitive extends SchemaNode {
         column.setCellFactory(c -> createCell(cardinality, nesting, layout,
                                               extendedHeight));
         return extendedHeight;
+    }
+
+    @Override
+    List<Primitive> gatherLeaves() {
+        return Collections.singletonList(this);
+    }
+
+    @Override
+    double getTableColumnWidth() {
+        return columnWidth + nestingInset;
+    }
+
+    double getValueHeight(int cardinality, Layout layout) {
+        return (Math.ceil(maxWidth / columnWidth) + 1) * layout.getValueLineHeight();
+    }
+
+    @Override
+    boolean isJusifiable() {
+        return variableLength || justifiedWidth < maxWidth;
+    }
+
+    void justify(double width) {
+        if (variableLength) {
+            justifiedWidth = Math.max(maxWidth, width);
+        }
+    }
+
+    @Override
+    double layout(double width) {
+        return variableLength ? width : Math.min(width, getTableColumnWidth());
+    }
+
+    @Override
+    double measure(ArrayNode data, int nestingLevel, Layout layout) {
+        labelWidth = layout.labelWidth(label);
+        double sum = 0;
+        maxWidth = 0;
+        columnWidth = 0;
+        for (JsonNode prim : data) {
+            List<JsonNode> rows = asList(prim);
+            double width = 0;
+            for (JsonNode row : rows) {
+                width += layout.valueWidth(toString(row));
+                maxWidth = Math.max(maxWidth, width);
+            }
+            sum += rows.isEmpty() ? 1 : width / rows.size();
+        }
+        double averageWidth = data.size() == 0 ? 0 : (sum / data.size());
+
+        columnWidth = Math.max(labelWidth,
+                               Math.max(valueDefaultWidth, averageWidth));
+        if (maxWidth > averageWidth) {
+            variableLength = true;
+        }
+
+        Insets listInsets = layout.getNestedListInsets();
+        Insets tableCellInsets = layout.getTableCellInsets();
+        nestingInset = (nestingLevel
+                        * (listInsets.getLeft() + listInsets.getRight()))
+                       + tableCellInsets.getLeft() + tableCellInsets.getRight()
+                       + layout.getValueInsets()
+                               .getLeft()
+                       + layout.getValueInsets()
+                               .getRight();
+        justifiedWidth = getTableColumnWidth();
+        return justifiedWidth;
+    }
+
+    @Override
+    Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
+                                                    Function<JsonNode, JsonNode> extractor,
+                                                    int cardinality,
+                                                    Layout layout) {
+        HBox box = new HBox();
+        TextArea labelText = new TextArea(label);
+        labelText.getStyleClass()
+                 .add(outlineLabelStyleClass());
+        labelText.setMinWidth(labelWidth);
+        labelText.setPrefWidth(labelWidth);
+        labelText.setMaxWidth(labelWidth);
+        labelText.setPrefRowCount(1);
+        box.getChildren()
+           .add(labelText);
+        Control control = buildControl(cardinality, layout);
+        control.setPrefWidth(columnWidth);
+        double valueHeight = getValueHeight(cardinality, layout);
+        control.setPrefHeight(valueHeight);
+        HBox.setHgrow(control, Priority.ALWAYS);
+        box.getChildren()
+           .add(control);
+        box.setPrefHeight(valueHeight);
+        return new Pair<>(item -> {
+            JsonNode extracted = extractor.apply(item);
+            JsonNode extractedField = extracted.get(field);
+            setItemsOf(control, extractedField);
+        }, box);
+    }
+
+    private TextArea buildControl(int cardinality, Layout layout) {
+        TextArea text = new TextArea();
+        text.getStyleClass()
+            .add(valueClass());
+        text.setWrapText(true);
+        text.setMinWidth(0);
+        text.setPrefWidth(1);
+        return text;
     }
 
     private TableCell<JsonNode, JsonNode> createCell(int cardinality,
@@ -161,112 +269,6 @@ public class Primitive extends SchemaNode {
                 }
             }
         };
-    }
-
-    @Override
-    List<Primitive> gatherLeaves() {
-        return Collections.singletonList(this);
-    }
-
-    double getValueHeight(int cardinality, Layout layout) {
-        return layout.computeValueHeight(maxElement, columnWidth);
-    }
-
-    @Override
-    double getTableColumnWidth() {
-        return columnWidth + nestingInset;
-    }
-
-    @Override
-    double layout(double width) {
-        return variableLength ? width : Math.min(width, getTableColumnWidth());
-    }
-
-    void justify(double width) {
-        if (variableLength) {
-            justifiedWidth = Math.max(maxWidth, width);
-        }
-    }
-
-    @Override
-    double measure(ArrayNode data, int nestingLevel, Layout layout) {
-        maxElement = "";
-        labelWidth = layout.labelWidth(label);
-        double sum = 0;
-        maxWidth = 0;
-        columnWidth = 0;
-        for (JsonNode prim : data) {
-            List<JsonNode> rows = asList(prim);
-            double width = 0;
-            for (JsonNode row : rows) {
-                String element = toString(row);
-                if (element.length() > maxElement.length()) {
-                    maxElement = element;
-                }
-                width += layout.valueWidth(element);
-                maxWidth = Math.max(maxWidth, width);
-            }
-            sum += rows.isEmpty() ? 1 : width / rows.size();
-        }
-        double averageWidth = data.size() == 0 ? 0 : (sum / data.size());
-
-        if (maxWidth > valueDefaultWidth && maxWidth > averageWidth) {
-            variableLength = true;
-        }
-        columnWidth = Math.max(labelWidth,
-                               Math.max(valueDefaultWidth, averageWidth));
-
-        Insets listInsets = layout.getNestedListInsets();
-        Insets tableCellInsets = layout.getTableCellInsets();
-        nestingInset = (nestingLevel
-                        * (listInsets.getLeft() + listInsets.getRight()))
-                       + tableCellInsets.getLeft() + tableCellInsets.getRight()
-                       + layout.getValueInsets()
-                               .getLeft()
-                       + layout.getValueInsets()
-                               .getRight();
-        justifiedWidth = getTableColumnWidth();
-        return justifiedWidth;
-    }
-
-    @Override
-    Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
-                                                    Function<JsonNode, JsonNode> extractor,
-                                                    int cardinality,
-                                                    Layout layout) {
-        HBox box = new HBox();
-        TextArea labelText = new TextArea(label);
-        labelText.getStyleClass()
-                 .add(outlineLabelStyleClass());
-        labelText.setMinWidth(labelWidth);
-        labelText.setPrefWidth(labelWidth);
-        labelText.setMaxWidth(labelWidth);
-        labelText.setPrefRowCount(1);
-        box.getChildren()
-           .add(labelText);
-        Control control = buildControl(cardinality, layout);
-        control.setPrefWidth(columnWidth);
-        double valueHeight = getValueHeight(cardinality, layout);
-        control.setPrefHeight(valueHeight);
-        HBox.setHgrow(control, Priority.ALWAYS);
-        box.getChildren()
-           .add(control);
-        box.setPrefHeight(valueHeight);
-        return new Pair<>(item -> {
-            JsonNode extracted = extractor.apply(item);
-            JsonNode extractedField = extracted.get(field);
-            setItemsOf(control, extractedField);
-        }, box);
-    }
-
-    private TextArea buildControl(int cardinality, Layout layout) {
-        TextArea text = new TextArea();
-        text.getStyleClass()
-            .add(valueClass());
-        text.setWrapText(true);
-        text.setMinWidth(0);
-        text.setPrefWidth(1);
-        return text;
     }
 
     private String toString(JsonNode value) {

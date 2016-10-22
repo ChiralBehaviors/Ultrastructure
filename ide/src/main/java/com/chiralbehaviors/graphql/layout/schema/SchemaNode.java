@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -138,10 +139,6 @@ abstract public class SchemaNode {
         return "auto-layout-label";
     }
 
-    public static String nestedListCellClass() {
-        return "auto-layout-nest-list-cell";
-    }
-
     public static String nested1stListCellClass() {
         return "auto-layout-nest-1st-list-cell";
     }
@@ -150,12 +147,16 @@ abstract public class SchemaNode {
         return "auto-layout-nest-1st-list";
     }
 
-    public static String nestedListScrollStyleClass() {
-        return "auto-layout-nest-list-scroll";
+    public static String nestedListCellClass() {
+        return "auto-layout-nest-list-cell";
     }
 
     public static String nestedListClass() {
         return "auto-layout-nest-list";
+    }
+
+    public static String nestedListScrollStyleClass() {
+        return "auto-layout-nest-list-scroll";
     }
 
     public static String outlineListCellClass() {
@@ -208,15 +209,16 @@ abstract public class SchemaNode {
         return "auto-layout-value";
     }
 
+    @JsonProperty
     final String field;
 
     double       justifiedWidth = 0;
 
+    @JsonProperty
     String       label;
 
+    @JsonProperty
     double       labelWidth     = 0;
-
-    boolean      variableLength = false;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -243,20 +245,12 @@ abstract public class SchemaNode {
         return false;
     }
 
-    public boolean isVariableLength() {
-        return variableLength;
-    }
-
     public void setItems(Control control, JsonNode data) {
         setItemsOf(control, data);
     }
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public void setVariableLength(boolean variableLength) {
-        this.variableLength = variableLength;
     }
 
     abstract public String toString(int indent);
@@ -287,6 +281,8 @@ abstract public class SchemaNode {
 
     abstract double getValueHeight(int cardinality, Layout layout);
 
+    abstract boolean isJusifiable();
+
     abstract void justify(double width);
 
     abstract double layout(double width);
@@ -294,9 +290,9 @@ abstract public class SchemaNode {
     abstract double measure(ArrayNode data, int nestingLevel, Layout layout);
 
     abstract Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
-                                                              Function<JsonNode, JsonNode> extractor,
-                                                              int cardinality,
-                                                              Layout layout);
+                                                             Function<JsonNode, JsonNode> extractor,
+                                                             int cardinality,
+                                                             Layout layout);
 
     String outlineLabelStyleClass() {
         return String.format("%s-outline-label", field);

@@ -33,6 +33,7 @@ import org.glassfish.jersey.internal.util.Producer;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -115,9 +116,12 @@ public class Relation extends SchemaNode implements Cloneable {
         return parent;
     }
 
+    @JsonProperty
     private int                    averageCardinality = 1;
+    @JsonProperty
     private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
+    @JsonProperty
     private double                 tableColumnWidth   = 0;
     private boolean                useTable           = false;
 
@@ -165,6 +169,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return tableColumnWidth;
     }
 
+    @JsonProperty
     public boolean isFold() {
         return fold != null;
     }
@@ -179,14 +184,6 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.isUseTable();
         }
         return useTable;
-    }
-
-    @Override
-    public boolean isVariableLength() {
-        if (isFold()) {
-            return fold.isVariableLength();
-        }
-        return super.isVariableLength();
     }
 
     public void measure(JsonNode jsonNode, Layout layout) {
@@ -338,6 +335,17 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
+    boolean isJusifiable() {
+        if (isFold()) {
+            return fold.isJusifiable();
+        }
+        return children.stream()
+                       .map(child -> child.isJusifiable())
+                       .reduce((a, b) -> a & b)
+                       .get();
+    }
+
+    @Override
     void justify(double width) {
         if (isFold()) {
             fold.justify(width);
@@ -413,7 +421,6 @@ public class Relation extends SchemaNode implements Cloneable {
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
             columnWidth += child.measure(aggregate, nestingLevel + 1, layout);
-            variableLength |= child.isVariableLength();
         }
         averageCardinality = Math.max(1, Math.round(sum / children.size()));
         tableColumnWidth = Math.max(labelWidth, columnWidth);
@@ -615,7 +622,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private void justifyOutline(double width) {
-        if (variableLength) {
+        if (isJusifiable()) {
             double outlineLabelWidth = children.stream()
                                                .mapToDouble(child -> child.getLabelWidth())
                                                .max()
@@ -643,12 +650,12 @@ public class Relation extends SchemaNode implements Cloneable {
         assert slack >= 0 : String.format("Negative slack: %.2f (%.2f) \n%s",
                                           slack, width, this);
         double total = children.stream()
-                               .filter(child -> child.isVariableLength())
+                               .filter(child -> child.isJusifiable())
                                .map(child -> child.getTableColumnWidth())
                                .reduce((a, b) -> a + b)
                                .orElse(0.0d);
         children.stream()
-                .filter(child -> child.isVariableLength())
+                .filter(child -> child.isJusifiable())
                 .forEach(child -> child.justify(slack
                                                 * (child.getTableColumnWidth()
                                                    / total)

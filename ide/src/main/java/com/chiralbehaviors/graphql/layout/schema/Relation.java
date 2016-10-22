@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.glassfish.jersey.internal.util.Producer;
@@ -61,6 +62,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 /**
  * @author hhildebrand
@@ -270,15 +272,11 @@ public class Relation extends SchemaNode implements Cloneable {
             leaves.put(leaf, index);
             index++;
         }
-        double listCellInset = layout.getNestedListCellInsets()
-                                     .getTop()
-                               + layout.getNestedListCellInsets()
-                                       .getBottom();
-        AtomicDouble childheight = new AtomicDouble();
-        Producer<Double> childHeightF = () -> childheight.get();
+        AtomicDouble childHeight = new AtomicDouble();
+        Producer<Double> childHeightF = () -> childHeight.get();
         AtomicDouble extendedHeight = new AtomicDouble();
         AtomicInteger childColumnIndex = new AtomicInteger(0);
-        childheight.set(children.stream()
+        childHeight.set(children.stream()
                                 .mapToDouble(child -> child.buildTableColumn(false,
                                                                              averageCardinality,
                                                                              nest(child,
@@ -294,13 +292,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                              childColumnIndex.getAndIncrement()))
                                 .max()
                                 .getAsDouble());
-
-        double listInset = layout.getNestedListInsets()
-                                 .getTop()
-                           + layout.getNestedListInsets()
-                                   .getBottom();
-        extendedHeight.set(((childheight.get() + listCellInset) * cardinality)
-                           + listInset);
+        extendedHeight.set(nestedHeight(layout, cardinality,
+                                        childHeight.get()));
         return extendedHeight.get();
 
     }
@@ -329,11 +322,20 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return children.stream()
-                       .map(child -> child.getValueHeight(averageCardinality,
-                                                          layout))
-                       .reduce((a, b) -> a + b)
-                       .get();
+        return useTable ? buildTable(n -> n, cardinality, layout)
+                                                                 .getPrefHeight()
+                        : children.stream()
+                                  .mapToDouble(child -> child.getValueHeight(averageCardinality,
+                                                                             layout))
+                                  .map(childHeight -> outlineHeight(layout,
+                                                                    cardinality,
+                                                                    childHeight))
+                                  .reduce((a, b) -> a + b)
+                                  .getAsDouble()
+                          + layout.getOutlineListInsets()
+                                  .getTop()
+                          + layout.getOutlineListInsets()
+                                  .getBottom();
     }
 
     @Override
@@ -421,9 +423,10 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    NodeMaster outlineElement(double labelWidth,
-                              Function<JsonNode, JsonNode> extractor,
-                              int cardinality, Layout layout) {
+    Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
+                                                    Function<JsonNode, JsonNode> extractor,
+                                                    int cardinality,
+                                                    Layout layout) {
         if (isFold()) {
             return fold.outlineElement(labelWidth, extract(extractor),
                                        averageCardinality, layout);
@@ -438,8 +441,8 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setPrefColumnCount(1);
         labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
-        labelText.setPrefHeight(layout.computeLabelHeight(label, labelWidth));
-        double calculatedHeight = getValueHeight(averageCardinality, layout);
+        double labelHeight = layout.computeLabelHeight(label, labelWidth);
+        labelText.setPrefHeight(labelHeight);
         Pane box;
         if (useTable) {
             box = new HBox();
@@ -455,7 +458,7 @@ public class Relation extends SchemaNode implements Cloneable {
            .add(control);
         element = box;
 
-        return new NodeMaster(item -> {
+        return new Pair<>(item -> {
             if (item == null) {
                 return;
             }
@@ -463,7 +466,7 @@ public class Relation extends SchemaNode implements Cloneable {
             JsonNode extractedField = extracted == null ? null
                                                         : extracted.get(field);
             setItems(control, extractedField);
-        }, element, calculatedHeight);
+        }, element);
     }
 
     private ListView<JsonNode> buildOutline(Function<JsonNode, JsonNode> extractor,
@@ -478,48 +481,11 @@ public class Relation extends SchemaNode implements Cloneable {
                                            .max()
                                            .getAsDouble();
         ListView<JsonNode> list = new ListView<>();
+        list.setPrefHeight(getValueHeight(cardinality, layout));
         list.getStyleClass()
             .add(outlineListStyleClass());
-        list.setCellFactory(c -> new ListCell<JsonNode>() {
-            HBox                        cell     = new HBox();
-            Map<SchemaNode, NodeMaster> controls = new HashMap<>();
-            {
-                cell.setMinWidth(0);
-                cell.setPrefWidth(1);
-            }
-            {
-                VBox box = new VBox();
-                box.setPrefWidth(justifiedWidth);
-                children.forEach(child -> {
-                    NodeMaster master = child.outlineElement(outlineLabelWidth,
-                                                             extractor,
-                                                             averageCardinality,
-                                                             layout);
-                    controls.put(child, master);
-                    box.getChildren()
-                       .add(master.node);
-                });
-                cell.getChildren()
-                    .add(box);
-            }
-
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem()) {
-                    return;
-                }
-                super.updateItem(item, empty);
-                super.setText(null);
-                if (empty) {
-                    super.setGraphic(null);
-                    return;
-                }
-                children.forEach(child -> {
-                    controls.get(child).items.accept(item);
-                });
-                super.setGraphic(cell);
-            }
-        });
+        list.setCellFactory(c -> outlineListCell(outlineLabelWidth, extractor,
+                                                 layout));
         list.setMinWidth(0);
         list.setPrefWidth(1);
         list.setPlaceholder(new Text());
@@ -568,6 +534,7 @@ public class Relation extends SchemaNode implements Cloneable {
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefWidth(justifiedWidth);
+        Double prefHeight = -1d;
         if (cardinality > 0) {
             double headerHeight = layout.measureHeader(table);
             double tableCellInset = layout.getTableCellInsets()
@@ -578,9 +545,9 @@ public class Relation extends SchemaNode implements Cloneable {
                                       .getTop()
                                 + layout.getTableInsets()
                                         .getBottom();
-            table.setPrefHeight((cardinality
-                                 * (childHeight.get() + tableCellInset))
-                                + headerHeight + tableInset);
+            prefHeight = (cardinality * (childHeight.get() + tableCellInset))
+                         + headerHeight + tableInset;
+            table.setPrefHeight(prefHeight);
         }
         return table;
     }
@@ -733,6 +700,19 @@ public class Relation extends SchemaNode implements Cloneable {
         };
     }
 
+    private double nestedHeight(Layout layout, int cardinality,
+                                double childHeight) {
+        double listCellInset = layout.getNestedListCellInsets()
+                                     .getTop()
+                               + layout.getNestedListCellInsets()
+                                       .getBottom();
+        double listInset = layout.getNestedListInsets()
+                                 .getTop()
+                           + layout.getNestedListInsets()
+                                   .getBottom();
+        return ((childHeight + listCellInset) * cardinality) + listInset;
+    }
+
     private void nestTables() {
         useTable = true;
         children.forEach(child -> {
@@ -740,6 +720,63 @@ public class Relation extends SchemaNode implements Cloneable {
                 ((Relation) child).nestTables();
             }
         });
+    }
+
+    private double outlineHeight(Layout layout, int cardinality,
+                                 double childHeight) {
+
+        double cellInset = layout.getOutlineListCellInsets()
+                                 .getTop()
+                           + layout.getOutlineListCellInsets()
+                                   .getBottom();
+        return (childHeight + cellInset) * cardinality;
+    }
+
+    private ListCell<JsonNode> outlineListCell(double outlineLabelWidth,
+                                               Function<JsonNode, JsonNode> extractor,
+                                               Layout layout) {
+        return new ListCell<JsonNode>() {
+            HBox                                              cell     = new HBox();
+            Map<SchemaNode, Pair<Consumer<JsonNode>, Parent>> controls = new HashMap<>();
+            {
+                cell.setMinWidth(0);
+                cell.setPrefWidth(1);
+            }
+            {
+                VBox box = new VBox();
+                box.setPrefWidth(justifiedWidth);
+                children.forEach(child -> {
+                    Pair<Consumer<JsonNode>, Parent> master = child.outlineElement(outlineLabelWidth,
+                                                                                   extractor,
+                                                                                   averageCardinality,
+                                                                                   layout);
+                    controls.put(child, master);
+                    box.getChildren()
+                       .add(master.getValue());
+                });
+                cell.getChildren()
+                    .add(box);
+            }
+
+            @Override
+            protected void updateItem(JsonNode item, boolean empty) {
+                if (item == getItem()) {
+                    return;
+                }
+                super.updateItem(item, empty);
+                super.setText(null);
+                if (empty) {
+                    super.setGraphic(null);
+                    return;
+                }
+                children.forEach(child -> {
+                    controls.get(child)
+                            .getKey()
+                            .accept(item);
+                });
+                super.setGraphic(cell);
+            }
+        };
     }
 
     private ListView<JsonNode> split(boolean frist, String id,

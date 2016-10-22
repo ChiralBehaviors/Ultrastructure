@@ -39,25 +39,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.util.Pair;
 
 /**
  * @author hhildebrand
  *
  */
 abstract public class SchemaNode {
-
-    public class NodeMaster {
-        public final double             height;
-        public final Consumer<JsonNode> items;
-        public final Parent             node;
-
-        public NodeMaster(Consumer<JsonNode> items, Parent node,
-                          double height) {
-            this.items = items;
-            this.node = node;
-            this.height = height;
-        }
-    }
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
@@ -305,9 +293,10 @@ abstract public class SchemaNode {
 
     abstract double measure(ArrayNode data, int nestingLevel, Layout layout);
 
-    abstract NodeMaster outlineElement(double labelWidth,
-                                       Function<JsonNode, JsonNode> extractor,
-                                       int cardinality, Layout layout);
+    abstract Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
+                                                              Function<JsonNode, JsonNode> extractor,
+                                                              int cardinality,
+                                                              Layout layout);
 
     String outlineLabelStyleClass() {
         return String.format("%s-outline-label", field);

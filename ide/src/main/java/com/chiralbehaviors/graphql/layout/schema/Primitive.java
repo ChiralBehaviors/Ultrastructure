@@ -22,6 +22,7 @@ package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
@@ -33,6 +34,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
@@ -40,6 +42,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.util.Pair;
 
 /**
  * @author hhildebrand
@@ -71,7 +74,8 @@ public class Primitive extends SchemaNode {
     @Override
     double buildTableColumn(boolean topLevel, int cardinality,
                             NestingFunction nesting, Layout layout,
-                            ObservableList<TableColumn<JsonNode, ?>> parent, int columnIndex) {
+                            ObservableList<TableColumn<JsonNode, ?>> parent,
+                            int columnIndex) {
         double insets = layout.getValueInsets()
                               .getTop()
                         + layout.getValueInsets()
@@ -226,9 +230,10 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    NodeMaster outlineElement(double labelWidth,
-                              Function<JsonNode, JsonNode> extractor,
-                              int cardinality, Layout layout) {
+    Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
+                                                    Function<JsonNode, JsonNode> extractor,
+                                                    int cardinality,
+                                                    Layout layout) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
         labelText.getStyleClass()
@@ -241,15 +246,17 @@ public class Primitive extends SchemaNode {
            .add(labelText);
         Control control = buildControl(cardinality, layout);
         control.setPrefWidth(columnWidth);
-        control.setPrefHeight(getValueHeight(cardinality, layout));
+        double valueHeight = getValueHeight(cardinality, layout);
+        control.setPrefHeight(valueHeight);
         HBox.setHgrow(control, Priority.ALWAYS);
         box.getChildren()
            .add(control);
-        return new NodeMaster(item -> {
+        box.setPrefHeight(valueHeight);
+        return new Pair<>(item -> {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
             setItemsOf(control, extractedField);
-        }, box, getValueHeight(cardinality, layout));
+        }, box);
     }
 
     private TextArea buildControl(int cardinality, Layout layout) {

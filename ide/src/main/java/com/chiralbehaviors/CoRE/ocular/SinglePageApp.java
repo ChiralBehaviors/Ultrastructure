@@ -39,7 +39,6 @@ import javafx.stage.Stage;
 public class SinglePageApp extends Application {
 
     private GraphqlApplication application;
-    
 
     public static void main(String[] args) {
         launch(args);

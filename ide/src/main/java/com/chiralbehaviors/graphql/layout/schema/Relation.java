@@ -371,6 +371,10 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.layout(width, layout);
         }
         useTable = false;
+        double listInset = layout.getOutlineListInsets()
+                                 .getLeft()
+                           + layout.getOutlineListInsets()
+                                   .getRight();
         double available = width - children.stream()
                                            .mapToDouble(child -> child.getLabelWidth(layout))
                                            .max()
@@ -379,7 +383,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                       .mapToDouble(child -> child.layout(available,
                                                                          layout))
                                       .max()
-                                      .getAsDouble();
+                                      .getAsDouble()
+                              + listInset;
         if (getTableColumnWidth() <= outlineWidth) {
             nestTables();
             return getTableColumnWidth();

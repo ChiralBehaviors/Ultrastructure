@@ -110,7 +110,8 @@ public class Primitive extends SchemaNode {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return (Math.ceil(maxWidth / columnWidth) + 1) * layout.getValueLineHeight();
+        return (Math.ceil(maxWidth / columnWidth) + 1)
+               * layout.getValueLineHeight();
     }
 
     @Override
@@ -126,7 +127,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     double layout(double width, Layout layout) {
-        return variableLength ? width : Math.min(width, getTableColumnWidth());
+        return variableLength ? width : Math.min(width, columnWidth);
     }
 
     @Override
@@ -165,7 +166,7 @@ public class Primitive extends SchemaNode {
         return justifiedWidth;
     }
 
-     double getLabelWidth(Layout layout) {
+    double getLabelWidth(Layout layout) {
         return layout.labelWidth(label);
     }
 

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.ocular;
 
+import java.net.URL;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,5 +32,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class GraphqlApplication {
     @JsonProperty
+    private URL               endpoint;
+    @JsonProperty
+    private String            root;
+    @JsonProperty
     private Map<String, Page> routes;
+
+    public Page getRoot() {
+        return routes.get(root);
+    }
+
+    public URL getEndpoint() {
+        return endpoint;
+    }
 }

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -72,7 +72,27 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private static final String ZERO = "0";
 
-    public static SchemaNode buildSchema(String query, String source) {
+    public static Relation buildSchema(String query) {
+        for (Definition definition : new Parser().parseDocument(query)
+                                                 .getDefinitions()) {
+            if (definition instanceof OperationDefinition) {
+                OperationDefinition operation = (OperationDefinition) definition;
+                if (operation.getOperation()
+                             .equals(Operation.QUERY)) {
+                    for (Selection selection : operation.getSelectionSet()
+                                                        .getSelections()) {
+                        if (selection instanceof Field) {
+                            return Relation.buildSchema((Field) selection);
+                        }
+                    }
+                }
+            }
+        }
+        throw new IllegalStateException(String.format("Invalid query, cannot find a source: %s",
+                                                      query));
+    }
+
+    public static Relation buildSchema(String query, String source) {
         for (Definition definition : new Parser().parseDocument(query)
                                                  .getDefinitions()) {
             if (definition instanceof OperationDefinition) {
@@ -95,7 +115,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                                       source));
     }
 
-    private static SchemaNode buildSchema(Field parentField) {
+    private static Relation buildSchema(Field parentField) {
         Relation parent = new Relation(parentField.getName());
         for (Selection selection : parentField.getSelectionSet()
                                               .getSelections()) {
@@ -115,6 +135,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return parent;
     }
 
+    private boolean                autoFold           = true;
     private int                    averageCardinality = 1;
     private final List<SchemaNode> children           = new ArrayList<>();
     private Relation               fold;
@@ -246,10 +267,10 @@ public class Relation extends SchemaNode implements Cloneable {
     double buildTableColumn(boolean topLevel, int cardinality,
                             NestingFunction nesting, Layout layout,
                             ObservableList<TableColumn<JsonNode, ?>> parent,
-                            int columnIndex) {
+                            boolean k) {
         if (isFold()) {
             return fold.buildTableColumn(topLevel, averageCardinality, nesting,
-                                         layout, parent, columnIndex);
+                                         layout, parent, k);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
@@ -268,7 +289,7 @@ public class Relation extends SchemaNode implements Cloneable {
         AtomicDouble childHeight = new AtomicDouble();
         Producer<Double> childHeightF = () -> childHeight.get();
         AtomicDouble extendedHeight = new AtomicDouble();
-        AtomicInteger childColumnIndex = new AtomicInteger(0);
+        AtomicBoolean key = new AtomicBoolean(true);
         childHeight.set(children.stream()
                                 .mapToDouble(child -> child.buildTableColumn(false,
                                                                              averageCardinality,
@@ -279,10 +300,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                                   layout,
                                                                                   cardinality,
                                                                                   extendedHeight,
-                                                                                  childColumnIndex.get()),
+                                                                                  key.getAndSet(false)),
                                                                              layout,
                                                                              column.getColumns(),
-                                                                             childColumnIndex.getAndIncrement()))
+                                                                             false))
                                 .max()
                                 .getAsDouble());
         extendedHeight.set(nestedHeight(layout, cardinality,
@@ -398,8 +419,9 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     double measure(ArrayNode data, int nestingLevel, Layout layout) {
-        if (isFold()) {
-            return fold.measure(flatten(data), nestingLevel, layout);
+        if (fold == null && autoFold && children.size() == 1
+            && children.get(children.size() - 1) instanceof Relation) {
+            fold = ((Relation) children.get(children.size() - 1));
         }
         if (data.isNull() || children.size() == 0) {
             return 0;
@@ -425,11 +447,14 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
-            tableColumnWidth += child.measure(aggregate, nestingLevel + 1, layout);
+            tableColumnWidth += child.measure(aggregate,
+                                              isFold() ? nestingLevel
+                                                       : nestingLevel + 1,
+                                              layout);
         }
         averageCardinality = Math.max(1, Math.round(sum / children.size()));
         tableColumnWidth = Math.max(labelWidth, tableColumnWidth);
-        return getTableColumnWidth();
+        return isFold() ? fold.getTableColumnWidth() : getTableColumnWidth();
     }
 
     @Override
@@ -491,7 +516,9 @@ public class Relation extends SchemaNode implements Cloneable {
                                            .max()
                                            .getAsDouble();
         ListView<JsonNode> list = new ListView<>();
-        list.setPrefHeight(getValueHeight(cardinality, layout));
+        if (cardinality > 0) {
+            list.setPrefHeight(getValueHeight(cardinality, layout));
+        }
         list.getStyleClass()
             .add(outlineListStyleClass());
         list.setCellFactory(c -> outlineListCell(outlineLabelWidth, extractor,
@@ -524,6 +551,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         AtomicDouble childHeight = new AtomicDouble();
+        AtomicBoolean key = new AtomicBoolean(true);
         childHeight.set(children.stream()
                                 .mapToDouble(child -> child.buildTableColumn(true,
                                                                              averageCardinality,
@@ -538,7 +566,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                              },
                                                                              layout,
                                                                              table.getColumns(),
-                                                                             0))
+                                                                             key.getAndSet(false)))
                                 .max()
                                 .getAsDouble());
         table.setPlaceholder(new Text());
@@ -672,7 +700,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                  NestingFunction nesting,
                                  Producer<Double> childHeightF, Layout layout,
                                  int cardinality, AtomicDouble calcHeight,
-                                 int columnIndex) {
+                                 boolean key) {
 
         return (p, row, primitive) -> {
             return nesting.apply((id, renderedF) -> {
@@ -697,9 +725,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 Integer primitiveColumn = leaves.get(primitive);
                 String label = id.call();
 
-                ListView<JsonNode> split = split(columnIndex == 0, label,
-                                                 primitiveColumn, row,
-                                                 leaves.size());
+                ListView<JsonNode> split = split(key, label, primitiveColumn,
+                                                 row, leaves.size());
                 split.setMinHeight(renderedHeight);
                 split.setPrefHeight(renderedHeight);
                 split.setMaxHeight(renderedHeight);
@@ -780,7 +807,7 @@ public class Relation extends SchemaNode implements Cloneable {
         };
     }
 
-    private ListView<JsonNode> split(boolean frist, String id,
+    private ListView<JsonNode> split(boolean key, String id,
                                      Integer primitiveColumn,
                                      NestedTableRow<JsonNode> row, int count) {
         ListView<JsonNode> content = new ListView<JsonNode>() {
@@ -796,8 +823,8 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         ObservableList<String> styleClass = content.getStyleClass();
 
-        if (frist) {
-            styleClass.add(nested1stListClass());
+        if (key) {
+            styleClass.add(nestedKeyListClass());
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")
                                   .toExternalForm());

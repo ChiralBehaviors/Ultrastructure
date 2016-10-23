@@ -141,12 +141,12 @@ abstract public class SchemaNode {
         return "auto-layout-label";
     }
 
-    public static String nested1stListCellClass() {
-        return "auto-layout-nest-1st-list-cell";
+    public static String nestedKeyListCellClass() {
+        return "auto-layout-nest-key-list-cell";
     }
 
-    public static String nested1stListClass() {
-        return "auto-layout-nest-1st-list";
+    public static String nestedKeyListClass() {
+        return "auto-layout-nest-key-list";
     }
 
     public static String nestedListCellClass() {
@@ -197,6 +197,10 @@ abstract public class SchemaNode {
 
     public static String tableCellClass() {
         return "auto-layout-table-cell";
+    }
+
+    public static String tableKeyCellClass() {
+        return "auto-layout-table-key-cell";
     }
 
     public static String tableColumnStyleClass() {
@@ -253,7 +257,7 @@ abstract public class SchemaNode {
     abstract double buildTableColumn(boolean topLevel, int cardinality,
                                      NestingFunction nesting, Layout layout,
                                      ObservableList<TableColumn<JsonNode, ?>> parent,
-                                     int columnIndex);
+                                     boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {

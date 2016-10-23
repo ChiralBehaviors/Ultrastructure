@@ -1,3 +1,5 @@
+endpoint: "http://graphql-swapi.parseapp.com/"
+root: films
 routes:
     films:
         title: Star Wars Films

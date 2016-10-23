@@ -21,9 +21,17 @@
 package com.chiralbehaviors.CoRE.ocular;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Stack;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+
+import com.chiralbehaviors.CoRE.ocular.PageContext.QueryException;
+import com.chiralbehaviors.graphql.layout.AutoLayoutView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import javafx.application.Application;
@@ -38,24 +46,63 @@ import javafx.stage.Stage;
  */
 public class SinglePageApp extends Application {
 
-    private GraphqlApplication application;
+    private GraphqlApplication       application;
+    private final Stack<PageContext> history = new Stack<>();
+    private AnchorPane               anchor;
+    private WebTarget                endpoint;
+    private AutoLayoutView           layout;
+    private Stage primaryStage;
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public void initRootLayout(Stage primaryStage) throws IOException {
-
+    public void initRootLayout(Stage ps) throws IOException,
+                                                   URISyntaxException,
+                                                   QueryException {
+        primaryStage = ps;
+        anchor = new AnchorPane();
+        primaryStage.setScene(new Scene(anchor, 800, 600));
         Map<String, String> parameters = getParameters().getNamed();
         application = new ObjectMapper(new YAMLFactory()).readValue(getClass().getResourceAsStream(parameters.get("app")),
                                                                     GraphqlApplication.class);
-        AnchorPane anchor = new AnchorPane();
-        primaryStage.setScene(new Scene(anchor, 800, 600));
+        endpoint = ClientBuilder.newClient()
+                                .target(application.getEndpoint()
+                                                   .toURI());
+        push(new PageContext(application.getRoot()));
         primaryStage.show();
     }
 
+    private void push(PageContext pageContext) throws QueryException {
+        history.push(pageContext);
+        anchor.getChildren()
+              .clear();
+        layout = layout(pageContext);
+        AnchorPane.setTopAnchor(layout, 0.0);
+        AnchorPane.setLeftAnchor(layout, 0.0);
+        AnchorPane.setBottomAnchor(layout, 0.0);
+        AnchorPane.setRightAnchor(layout, 0.0);
+        anchor.getChildren()
+              .add(layout);
+        ObjectNode data = pageContext.evaluate(endpoint);
+        layout.measure(data);
+        layout.setData(data);
+    }
+
+    private AutoLayoutView layout(PageContext pageContext) throws QueryException {
+        AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot());
+        layout.getStylesheets()
+              .add(getClass().getResource("/nested.css")
+                             .toExternalForm());
+        ObjectNode data = pageContext.evaluate(endpoint);
+        layout.setData(data);
+        layout.measure(data);
+        return layout;
+    }
+
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException,
+                                          URISyntaxException, QueryException {
         initRootLayout(primaryStage);
     }
 

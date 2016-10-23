@@ -31,6 +31,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Page {
     @JsonProperty
+    private String                           path;
+    @JsonProperty
     private String                           query;
 
     @JsonProperty
@@ -38,4 +40,16 @@ public class Page {
 
     @JsonProperty
     private String                           title;
+
+    public String getQuery() {
+        return query;
+    }
+
+    public Map<String, Map<String, String>> getRouting() {
+        return routing;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

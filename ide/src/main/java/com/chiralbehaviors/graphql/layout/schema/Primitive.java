@@ -74,7 +74,7 @@ public class Primitive extends SchemaNode {
     double buildTableColumn(boolean topLevel, int cardinality,
                             NestingFunction nesting, Layout layout,
                             ObservableList<TableColumn<JsonNode, ?>> parent,
-                            int columnIndex) {
+                            boolean key) {
         double insets = layout.getValueInsets()
                               .getTop()
                         + layout.getValueInsets()
@@ -95,7 +95,7 @@ public class Primitive extends SchemaNode {
 
         double extendedHeight = baseHeight + insets;
         column.setCellFactory(c -> createCell(cardinality, nesting, layout,
-                                              extendedHeight));
+                                              extendedHeight, key));
         return extendedHeight;
     }
 
@@ -114,8 +114,8 @@ public class Primitive extends SchemaNode {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return (Math.ceil(maxWidth / columnWidth) + 1)
-               * layout.getValueLineHeight();
+        return layout.getValueLineHeight()
+               * (Math.ceil(maxWidth / columnWidth) + 1);
     }
 
     @Override
@@ -212,11 +212,16 @@ public class Primitive extends SchemaNode {
     private TableCell<JsonNode, JsonNode> createCell(int cardinality,
                                                      NestingFunction nesting,
                                                      Layout layout,
-                                                     double height) {
+                                                     double height,
+                                                     boolean key) {
         return new TableCell<JsonNode, JsonNode>() {
             NestedColumnView view;
             {
-                getStyleClass().add(tableCellClass());
+                if (key) {
+                    getStyleClass().add(tableKeyCellClass());
+                } else {
+                    getStyleClass().add(tableCellClass());
+                }
                 emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
                     if (isEmpty) {
                         setGraphic(null);

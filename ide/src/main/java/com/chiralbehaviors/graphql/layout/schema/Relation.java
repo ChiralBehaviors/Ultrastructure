@@ -130,9 +130,9 @@ public class Relation extends SchemaNode implements Cloneable {
         children.add(child);
     }
 
-    public void autoLayout(double width) {
-        layout(width);
-        justify(width);
+    public void autoLayout(double width, Layout layout) {
+        layout(width, layout);
+        justify(width, layout);
     }
 
     public Control buildControl(Layout layout) {
@@ -308,11 +308,11 @@ public class Relation extends SchemaNode implements Cloneable {
         return super.getFoldExtractor(extractor);
     }
 
-    double getLabelWidth() {
+    double getLabelWidth(Layout layout) {
         if (isFold()) {
-            return fold.getLabelWidth();
+            return fold.getLabelWidth(layout);
         }
-        return labelWidth;
+        return layout.labelWidth(label);
     }
 
     double getValueHeight(int cardinality, Layout layout) {
@@ -343,18 +343,18 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    void justify(double width) {
+    void justify(double width, Layout layout) {
         if (isFold()) {
-            fold.justify(width);
+            fold.justify(width, layout);
             return;
         }
         if (width <= 0)
             return;
 
         if (useTable) {
-            justifyTable(width);
+            justifyTable(width, layout);
         } else {
-            justifyOutline(width);
+            justifyOutline(width, layout);
         }
     }
 
@@ -366,17 +366,18 @@ public class Relation extends SchemaNode implements Cloneable {
      * @return
      */
     @Override
-    double layout(double width) {
+    double layout(double width, Layout layout) {
         if (isFold()) {
-            return fold.layout(width);
+            return fold.layout(width, layout);
         }
         useTable = false;
         double available = width - children.stream()
-                                           .mapToDouble(child -> child.getLabelWidth())
+                                           .mapToDouble(child -> child.getLabelWidth(layout))
                                            .max()
                                            .getAsDouble();
         double outlineWidth = children.stream()
-                                      .mapToDouble(child -> child.layout(available))
+                                      .mapToDouble(child -> child.layout(available,
+                                                                         layout))
                                       .max()
                                       .getAsDouble();
         if (getTableColumnWidth() <= outlineWidth) {
@@ -394,7 +395,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
-        labelWidth = layout.labelWidth(label);
+        double labelWidth = layout.labelWidth(label);
         labelWidth += layout.getLabelInsets()
                             .getLeft()
                       + layout.getLabelInsets()
@@ -480,7 +481,7 @@ public class Relation extends SchemaNode implements Cloneable {
         }
 
         double outlineLabelWidth = children.stream()
-                                           .mapToDouble(child -> child.getLabelWidth())
+                                           .mapToDouble(child -> child.getLabelWidth(layout))
                                            .max()
                                            .getAsDouble();
         ListView<JsonNode> list = new ListView<>();
@@ -618,10 +619,10 @@ public class Relation extends SchemaNode implements Cloneable {
         return flattened;
     }
 
-    private void justifyOutline(double width) {
+    private void justifyOutline(double width, Layout layout) {
         if (isJusifiable()) {
             double outlineLabelWidth = children.stream()
-                                               .mapToDouble(child -> child.getLabelWidth())
+                                               .mapToDouble(child -> child.getLabelWidth(layout))
                                                .max()
                                                .getAsDouble();
             justifiedWidth = width;
@@ -630,18 +631,18 @@ public class Relation extends SchemaNode implements Cloneable {
             children.forEach(child -> {
                 if (child.isRelation()) {
                     if (((Relation) child).isUseTable()) {
-                        child.justify(available);
+                        child.justify(available, layout);
                     } else {
-                        child.justify(tableWidth);
+                        child.justify(tableWidth, layout);
                     }
                 } else {
-                    child.justify(available);
+                    child.justify(available, layout);
                 }
             });
         }
     }
 
-    private void justifyTable(double width) {
+    private void justifyTable(double width, Layout layout) {
         justifiedWidth = width;
         double slack = width - getTableColumnWidth();
         assert slack >= 0 : String.format("Negative slack: %.2f (%.2f) \n%s",
@@ -656,7 +657,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 .forEach(child -> child.justify(slack
                                                 * (child.getTableColumnWidth()
                                                    / total)
-                                                + child.getTableColumnWidth()));
+                                                + child.getTableColumnWidth(),
+                                                layout));
     }
 
     private NestingFunction nest(SchemaNode child,

@@ -214,7 +214,6 @@ abstract public class SchemaNode {
     final String field;
     double       justifiedWidth = 0;
     String       label;
-    double       labelWidth     = 0;
 
     public SchemaNode(String field) {
         this(field, field);
@@ -269,9 +268,7 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
-    double getLabelWidth() {
-        return labelWidth;
-    }
+    abstract double getLabelWidth(Layout layout);
 
     abstract double getTableColumnWidth();
 
@@ -279,9 +276,9 @@ abstract public class SchemaNode {
 
     abstract boolean isJusifiable();
 
-    abstract void justify(double width);
+    abstract void justify(double width, Layout layout);
 
-    abstract double layout(double width);
+    abstract double layout(double width, Layout layout);
 
     abstract double measure(ArrayNode data, int nestingLevel, Layout layout);
 

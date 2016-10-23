@@ -118,20 +118,20 @@ public class Primitive extends SchemaNode {
         return variableLength || justifiedWidth < maxWidth;
     }
 
-    void justify(double width) {
+    void justify(double width, Layout layout) {
         if (variableLength) {
             justifiedWidth = Math.max(maxWidth, width);
         }
     }
 
     @Override
-    double layout(double width) {
+    double layout(double width, Layout layout) {
         return variableLength ? width : Math.min(width, getTableColumnWidth());
     }
 
     @Override
     double measure(ArrayNode data, int nestingLevel, Layout layout) {
-        labelWidth = layout.labelWidth(label);
+        double labelWidth = getLabelWidth(layout);
         double sum = 0;
         maxWidth = 0;
         columnWidth = 0;
@@ -163,6 +163,10 @@ public class Primitive extends SchemaNode {
                                .getRight();
         justifiedWidth = getTableColumnWidth();
         return justifiedWidth;
+    }
+
+     double getLabelWidth(Layout layout) {
+        return layout.labelWidth(label);
     }
 
     @Override

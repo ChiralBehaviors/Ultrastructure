@@ -57,11 +57,11 @@ public class AutoLayoutView extends Control {
         this.root.set(root);
         widthProperty().addListener((o, p, c) -> resize(c.doubleValue()));
         data.addListener((o, p, c) -> setContent());
-        getStylesheets().addListener(new ListChangeListener<String>() { 
+        getStylesheets().addListener(new ListChangeListener<String>() {
             @Override
-            public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> c) { 
+            public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> c) {
                 style = new Layout(getStylesheets());
-            } 
+            }
         });
     }
 
@@ -122,7 +122,7 @@ public class AutoLayoutView extends Control {
             if (relation == null) {
                 return;
             }
-            relation.autoLayout((float) width);
+            relation.autoLayout(width, style);
             ObservableList<String> stylesheets = getStylesheets();
             Layout style = new Layout(stylesheets);
             layout = relation.buildControl(style);

@@ -48,7 +48,6 @@ import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
@@ -375,6 +374,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                  .getLeft()
                            + layout.getOutlineListInsets()
                                    .getRight();
+        double tableInset = layout.getTableInsets()
+                                  .getLeft()
+                            + layout.getOutlineListInsets()
+                                    .getRight();
         double available = width - children.stream()
                                            .mapToDouble(child -> child.getLabelWidth(layout))
                                            .max()
@@ -385,9 +388,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                       .max()
                                       .getAsDouble()
                               + listInset;
-        if (getTableColumnWidth() <= outlineWidth) {
+        double tableWidth = getTableColumnWidth() + tableInset;
+        if (tableWidth <= outlineWidth) {
             nestTables();
-            return getTableColumnWidth();
+            return tableWidth;
         }
         return outlineWidth;
     }
@@ -406,9 +410,7 @@ public class Relation extends SchemaNode implements Cloneable {
                       + layout.getLabelInsets()
                               .getRight();
         int sum = 0;
-        Insets listCellInsets = layout.getNestedListCellInsets();
-        double columnWidth = listCellInsets.getLeft()
-                             + listCellInsets.getRight();
+        tableColumnWidth = 0;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
             int cardSum = 0;
@@ -423,11 +425,10 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
-            columnWidth += child.measure(aggregate, nestingLevel + 1, layout);
+            tableColumnWidth += child.measure(aggregate, nestingLevel + 1, layout);
         }
         averageCardinality = Math.max(1, Math.round(sum / children.size()));
-        tableColumnWidth = Math.max(labelWidth, columnWidth);
-        justifiedWidth = getTableColumnWidth();
+        tableColumnWidth = Math.max(labelWidth, tableColumnWidth);
         return getTableColumnWidth();
     }
 

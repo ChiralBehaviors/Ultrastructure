@@ -104,6 +104,10 @@ public class Primitive extends SchemaNode {
         return Collections.singletonList(this);
     }
 
+    double getLabelWidth(Layout layout) {
+        return layout.labelWidth(label);
+    }
+
     @Override
     double getTableColumnWidth() {
         return columnWidth + nestingInset;
@@ -162,12 +166,7 @@ public class Primitive extends SchemaNode {
                                .getLeft()
                        + layout.getValueInsets()
                                .getRight();
-        justifiedWidth = getTableColumnWidth();
-        return justifiedWidth;
-    }
-
-    double getLabelWidth(Layout layout) {
-        return layout.labelWidth(label);
+        return columnWidth + nestingInset;
     }
 
     @Override

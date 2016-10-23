@@ -51,15 +51,14 @@ public class SinglePageApp extends Application {
     private AnchorPane               anchor;
     private WebTarget                endpoint;
     private AutoLayoutView           layout;
-    private Stage primaryStage;
+    private Stage                    primaryStage;
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public void initRootLayout(Stage ps) throws IOException,
-                                                   URISyntaxException,
-                                                   QueryException {
+    public void initRootLayout(Stage ps) throws IOException, URISyntaxException,
+                                         QueryException {
         primaryStage = ps;
         anchor = new AnchorPane();
         primaryStage.setScene(new Scene(anchor, 800, 600));
@@ -87,6 +86,8 @@ public class SinglePageApp extends Application {
         ObjectNode data = pageContext.evaluate(endpoint);
         layout.measure(data);
         layout.setData(data);
+        primaryStage.setTitle(pageContext.getPage()
+                                         .getTitle());
     }
 
     private AutoLayoutView layout(PageContext pageContext) throws QueryException {

@@ -252,6 +252,7 @@ public class Primitive extends SchemaNode {
                                 control.setMinHeight(height);
                                 control.setPrefHeight(height);
                                 control.setMaxHeight(height);
+                                layout.getModel().apply(control, Primitive.this);
                                 return control;
                             }, row, Primitive.this);
                         }

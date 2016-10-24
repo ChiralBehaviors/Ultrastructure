@@ -1,31 +1,57 @@
 endpoint: "http://graphql-swapi.parseapp.com/"
 root: films
 routes:
-    films:
-        title: Star Wars Films
-        query: > 
-            {
-              allFilms {
-                films {
-                  episodeID
-                  title
-                  starshipConnection {
-                    starships {
+  films:
+    title: Star Wars Films
+    query: | 
+      {
+        allFilms {
+          films {
+            id
+            episodeID
+            title
+            starshipConnection {
+              starships {
+                id
+                name
+                maxAtmospheringSpeed
+                pilotConnection {
+                  pilots {
+                    id
+                    name
+                    gender
+                    birthYear
+                    homeworld {
+                      id
                       name
-                      maxAtmospheringSpeed
-                      pilotConnection {
-                        pilots {
-                          name
-                          gender
-                          birthYear
-                          homeworld {
-                            name
-                            population
-                          }
-                        }
-                      }
+                      population
                     }
                   }
                 }
               }
             }
+          }
+        }
+      }
+      
+    routing:
+      films:
+        path: film
+        extract:
+          id: id
+  film:
+    title: Film
+    query: | 
+      query films($id: ID) {
+        film(id: $id) {
+          title
+          episodeID
+          openingCrawl
+          director
+          producers
+          releaseDate
+          created
+          edited
+          id
+        }
+      }

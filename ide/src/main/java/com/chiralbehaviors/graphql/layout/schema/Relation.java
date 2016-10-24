@@ -31,6 +31,7 @@ import java.util.function.Function;
 
 import org.glassfish.jersey.internal.util.Producer;
 
+import com.chiralbehaviors.graphql.layout.LayoutModel;
 import com.chiralbehaviors.graphql.layout.NestedColumnView;
 import com.chiralbehaviors.graphql.layout.NestedTableRow;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -122,7 +123,10 @@ public class Relation extends SchemaNode implements Cloneable {
             if (selection instanceof Field) {
                 Field field = (Field) selection;
                 if (field.getSelectionSet() == null) {
-                    parent.addChild(new Primitive(field.getName()));
+                    if (!field.getName()
+                              .equals("id")) {
+                        parent.addChild(new Primitive(field.getName()));
+                    }
                 } else {
                     parent.addChild(buildSchema(field));
                 }
@@ -300,7 +304,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                                   layout,
                                                                                   cardinality,
                                                                                   extendedHeight,
-                                                                                  key.getAndSet(false)),
+                                                                                  key.getAndSet(false),
+                                                                                  layout.getModel()),
                                                                              layout,
                                                                              column.getColumns(),
                                                                              false))
@@ -516,13 +521,20 @@ public class Relation extends SchemaNode implements Cloneable {
                                            .max()
                                            .getAsDouble();
         ListView<JsonNode> list = new ListView<>();
+        layout.getModel()
+              .apply(list, this);
         if (cardinality > 0) {
             list.setPrefHeight(getValueHeight(cardinality, layout));
         }
         list.getStyleClass()
             .add(outlineListStyleClass());
-        list.setCellFactory(c -> outlineListCell(outlineLabelWidth, extractor,
-                                                 layout));
+        list.setCellFactory(c -> {
+            ListCell<JsonNode> cell = outlineListCell(outlineLabelWidth,
+                                                      extractor, layout);
+            layout.getModel()
+                  .apply(cell, this);
+            return cell;
+        });
         list.setMinWidth(0);
         list.setPrefWidth(1);
         list.setPlaceholder(new Text());
@@ -542,7 +554,14 @@ public class Relation extends SchemaNode implements Cloneable {
         TableView<JsonNode> table = new TableView<>();
         table.getStyleClass()
              .add(tableStyleClass());
-        table.setRowFactory(tableView -> new NestedTableRow<JsonNode>());
+        table.setRowFactory(tableView -> {
+            NestedTableRow<JsonNode> row = new NestedTableRow<JsonNode>();
+            layout.getModel()
+                  .apply(row, Relation.this);
+            return row;
+        });
+        layout.getModel()
+              .apply(table, this);
         Map<Primitive, Integer> leaves = new HashMap<>();
         int index = 0;
         for (Primitive leaf : gatherLeaves()) {
@@ -700,7 +719,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                  NestingFunction nesting,
                                  Producer<Double> childHeightF, Layout layout,
                                  int cardinality, AtomicDouble calcHeight,
-                                 boolean key) {
+                                 boolean key, LayoutModel model) {
 
         return (p, row, primitive) -> {
             return nesting.apply((id, renderedF) -> {
@@ -727,12 +746,17 @@ public class Relation extends SchemaNode implements Cloneable {
 
                 ListView<JsonNode> split = split(key, label, primitiveColumn,
                                                  row, leaves.size());
+                model.apply(split, Relation.this, child);
                 split.setMinHeight(renderedHeight);
                 split.setPrefHeight(renderedHeight);
                 split.setMaxHeight(renderedHeight);
                 split.setFixedCellSize(childLayoutHeight + listCellInset);
-                split.setCellFactory(c -> createListCell(child, p,
-                                                         () -> childLayoutHeight));
+                split.setCellFactory(c -> {
+                    ListCell<JsonNode> cell = createListCell(child, p,
+                                                             () -> childLayoutHeight);
+                    model.apply(cell, Relation.this);
+                    return cell;
+                });
                 return split;
             }, row, primitive);
         };

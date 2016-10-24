@@ -38,11 +38,15 @@ public class GraphqlApplication {
     @JsonProperty
     private Map<String, Page> routes;
 
+    public URL getEndpoint() {
+        return endpoint;
+    }
+
     public Page getRoot() {
         return routes.get(root);
     }
 
-    public URL getEndpoint() {
-        return endpoint;
+    public Page route(String path) {
+        return routes.get(path);
     }
 }

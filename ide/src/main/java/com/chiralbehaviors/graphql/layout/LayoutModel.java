@@ -18,52 +18,41 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.ocular;
+package com.chiralbehaviors.graphql.layout;
 
-import java.util.Map;
-
+import com.chiralbehaviors.graphql.layout.schema.Primitive;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 
 /**
  * 
  * @author hhildebrand
  *
  */
-public class Page {
-    public static class Route {
-        @JsonProperty
-        private String              path;
-        @JsonProperty
-        private Map<String, String> extract;
+public interface LayoutModel {
 
-        public String getPath() {
-            return path;
-        }
-
-        public Map<String, String> getExtract() {
-            return extract;
-        }
+    default void apply(ListCell<JsonNode> cell, Relation relation) {
     }
 
-    @JsonProperty
-    private String             endpoint;
-    @JsonProperty
-    private String             query;
-    @JsonProperty
-    private Map<String, Route> routing;
-    @JsonProperty
-    private String             title;
-
-    public String getQuery() {
-        return query;
+    default void apply(ListView<JsonNode> list, Relation relation) {
     }
 
-    public Route getRoute(Relation relation) {
-        return routing.get(relation.getField());
+    default void apply(ListView<JsonNode> list, Relation relation,
+                       SchemaNode child) {
     }
 
-    public String getTitle() {
-        return title;
+    default void apply(NestedTableRow<JsonNode> row, Relation relation) {
+    }
+
+    default void apply(TableView<JsonNode> table, Relation relation) {
+    }
+
+    default void apply(TextArea control, Primitive primitive) {
     }
 }

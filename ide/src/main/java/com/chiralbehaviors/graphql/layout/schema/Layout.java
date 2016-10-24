@@ -33,9 +33,9 @@ import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleCla
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.chiralbehaviors.graphql.layout.LayoutModel;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkinBase;
-import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
@@ -50,15 +50,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextBoundsType;
 
 public class Layout {
-    private final static FontLoader FONT_LOADER = Toolkit.getToolkit()
-                                                         .getFontLoader();
-    private static final TextLayout layout      = Toolkit.getToolkit()
-                                                         .getTextLayoutFactory()
-                                                         .createLayout();
-    private static final Insets     ZERO_INSETS = new Insets(0);
+    private static FontLoader FONT_LOADER = Toolkit.getToolkit()
+                                                   .getFontLoader();
+    private static Insets     ZERO_INSETS = new Insets(0);
 
     public static Insets add(Insets a, Insets b) {
         return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
@@ -70,26 +66,10 @@ public class Layout {
         return ((int) y) + .5;
     }
 
-    @SuppressWarnings("deprecation")
-    static double computeTextHeight(Font font, String text,
-                                    double wrappingWidth, double lineSpacing,
-                                    TextBoundsType boundsType) {
-        layout.setContent(text != null ? String.format("W%sW\n", text) : "",
-                          font.impl_getNativeFont());
-        layout.setWrapWidth((float) wrappingWidth);
-        layout.setLineSpacing((float) lineSpacing);
-        if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {
-            layout.setBoundsType(TextLayout.BOUNDS_CENTER);
-        } else {
-            layout.setBoundsType(0);
-        }
-        return layout.getBounds()
-                     .getHeight();
-    }
-
     private Font         labelFont               = Font.getDefault();
     private Insets       labelInsets             = ZERO_INSETS;
     private double       labelLineHeight         = 0;
+    private LayoutModel  model;
     private Insets       nested1stListCellInsets = ZERO_INSETS;
     private Insets       nested1stListInsets     = ZERO_INSETS;
     private Insets       nestedListCellInsets    = ZERO_INSETS;
@@ -104,6 +84,12 @@ public class Layout {
     private double       valueLineHeight         = 0;
 
     public Layout(List<String> styleSheets) {
+        this(styleSheets, new LayoutModel() {
+        });
+    }
+
+    public Layout(List<String> styleSheets, LayoutModel model) {
+        this.model = model;
         this.styleSheets = styleSheets;
         AtomicReference<TextArea> labelText = new AtomicReference<>();
         AtomicReference<TextArea> valueText = new AtomicReference<>();
@@ -308,6 +294,10 @@ public class Layout {
 
     public double getLabelLineHeight() {
         return labelLineHeight;
+    }
+
+    public LayoutModel getModel() {
+        return model;
     }
 
     public Insets getNested1stListCellInsets() {

@@ -47,20 +47,28 @@ public class AutoLayoutView extends Control {
     private Control                              layout;
     private final SimpleObjectProperty<Relation> root        = new SimpleObjectProperty<>();
     private double                               layoutWidth = 0.0;
-    private Layout                               style       = new Layout(getStylesheets());
+    private Layout                               style;
+    private LayoutModel                          model;
 
     public AutoLayoutView() {
         this(null);
     }
 
     public AutoLayoutView(Relation root) {
+        this(root, new LayoutModel() {
+        });
+    }
+
+    public AutoLayoutView(Relation root, LayoutModel model) {
+        this.model = model;
+        style = new Layout(getStylesheets(), this.model);
         this.root.set(root);
         widthProperty().addListener((o, p, c) -> resize(c.doubleValue()));
         data.addListener((o, p, c) -> setContent());
         getStylesheets().addListener(new ListChangeListener<String>() {
             @Override
             public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> c) {
-                style = new Layout(getStylesheets());
+                style = new Layout(getStylesheets(), AutoLayoutView.this.model);
             }
         });
     }
@@ -122,8 +130,6 @@ public class AutoLayoutView extends Control {
                 return;
             }
             relation.autoLayout(width, style);
-            ObservableList<String> stylesheets = getStylesheets();
-            Layout style = new Layout(stylesheets);
             layout = relation.buildControl(style);
             relation.setItems(layout, data.get());
             AnchorPane.setTopAnchor(layout, 0.0);

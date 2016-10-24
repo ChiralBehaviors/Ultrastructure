@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.controls;
 
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;

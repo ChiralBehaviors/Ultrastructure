@@ -23,7 +23,6 @@ package com.chiralbehaviors.graphql.layout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.graphql.layout.schema.Layout;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;

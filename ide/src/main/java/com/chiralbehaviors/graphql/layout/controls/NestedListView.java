@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.controls;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.javafx.scene.control.skin.VirtualScrollBar;

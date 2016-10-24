@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.graphql.layout;
 
+import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.chiralbehaviors.graphql.layout.schema.Primitive;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;

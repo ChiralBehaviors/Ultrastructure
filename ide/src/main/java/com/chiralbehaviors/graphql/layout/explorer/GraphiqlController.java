@@ -18,13 +18,15 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.explorer;
 
-import javafx.scene.control.SkinBase;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
+import javafx.scene.web.WebView;
 
-public class SchemaViewSkin extends SkinBase<SchemaView> {
-
-    protected SchemaViewSkin(SchemaView control) {
-        super(control);
-    }
+public class GraphiqlController {
+    @FXML
+    public TextField url;
+    @FXML
+    public WebView   webview;
 }

@@ -18,13 +18,15 @@ f * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.explorer;
 
 import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.graphql.layout.AutoLayoutView;
+import com.chiralbehaviors.graphql.layout.controls.SchemaView;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;

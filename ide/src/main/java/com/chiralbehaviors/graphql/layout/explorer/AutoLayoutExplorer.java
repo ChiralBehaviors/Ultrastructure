@@ -18,12 +18,10 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.ocular;
+package com.chiralbehaviors.graphql.layout.explorer;
 
 import java.io.IOException;
 
-import com.chiralbehaviors.graphql.layout.AutoLayoutController;
-import com.chiralbehaviors.graphql.layout.QueryState;
 import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;

@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout.schema;
+package com.chiralbehaviors.graphql.layout;
 
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.labelStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListCellClass;
@@ -33,7 +33,6 @@ import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleCla
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.chiralbehaviors.graphql.layout.LayoutModel;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import com.sun.javafx.tk.FontLoader;

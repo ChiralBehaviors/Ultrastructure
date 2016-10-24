@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.chiralbehaviors.graphql.layout.NestedColumnView;
-import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.chiralbehaviors.graphql.layout.Layout;
+import com.chiralbehaviors.graphql.layout.controls.NestedColumnView;
+import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 

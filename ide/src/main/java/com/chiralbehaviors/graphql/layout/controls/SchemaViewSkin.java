@@ -18,13 +18,13 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.controls;
 
 import javafx.scene.control.SkinBase;
 
-public class NestedColumnViewSkin extends SkinBase<NestedColumnView> {
+public class SchemaViewSkin extends SkinBase<SchemaView> {
 
-    protected NestedColumnViewSkin(NestedColumnView control) {
+    protected SchemaViewSkin(SchemaView control) {
         super(control);
     }
 }

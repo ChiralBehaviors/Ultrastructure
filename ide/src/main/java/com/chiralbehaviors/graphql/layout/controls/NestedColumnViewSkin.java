@@ -18,15 +18,13 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout;
+package com.chiralbehaviors.graphql.layout.controls;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.scene.web.WebView;
+import javafx.scene.control.SkinBase;
 
-public class GraphiqlController {
-    @FXML
-    public TextField url;
-    @FXML
-    public WebView   webview;
+public class NestedColumnViewSkin extends SkinBase<NestedColumnView> {
+
+    protected NestedColumnViewSkin(NestedColumnView control) {
+        super(control);
+    }
 }

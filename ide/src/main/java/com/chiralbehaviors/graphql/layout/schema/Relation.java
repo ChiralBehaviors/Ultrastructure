@@ -31,9 +31,10 @@ import java.util.function.Function;
 
 import org.glassfish.jersey.internal.util.Producer;
 
+import com.chiralbehaviors.graphql.layout.Layout;
 import com.chiralbehaviors.graphql.layout.LayoutModel;
-import com.chiralbehaviors.graphql.layout.NestedColumnView;
-import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.chiralbehaviors.graphql.layout.controls.NestedColumnView;
+import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;

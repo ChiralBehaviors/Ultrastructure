@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.ocular.Page.Route;
 import com.chiralbehaviors.CoRE.ocular.PageContext.QueryException;
 import com.chiralbehaviors.graphql.layout.AutoLayoutView;
 import com.chiralbehaviors.graphql.layout.LayoutModel;
-import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
 import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;

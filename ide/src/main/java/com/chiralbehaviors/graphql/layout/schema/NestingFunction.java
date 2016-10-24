@@ -24,11 +24,16 @@ import java.util.function.BiFunction;
 
 import org.glassfish.jersey.internal.util.Producer;
 
-import com.chiralbehaviors.graphql.layout.NestedTableRow;
+import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.scene.control.Control;
 
+/**
+ * 
+ * @author hhildebrand
+ *
+ */
 @FunctionalInterface
 public interface NestingFunction {
     Control apply(BiFunction<Producer<String>, Producer<Double>, Control> inner,

@@ -73,15 +73,55 @@ public class SinglePageApp extends Application implements LayoutModel {
 
     @Override
     public void apply(ListView<JsonNode> list, Relation relation) {
-        // TODO Auto-generated method stub
-        LayoutModel.super.apply(list, relation);
+        list.setOnMouseClicked(event -> {
+            Route route = history.peek()
+                                 .getRoute(relation);
+            if (route == null) {
+                return;
+            }
+            if (!list.getItems()
+                     .isEmpty()
+                && event.getButton() == MouseButton.PRIMARY
+                && event.getClickCount() == 2) {
+                JsonNode item = list.getSelectionModel()
+                                    .getSelectedItem();
+                if (item == null) {
+                    return;
+                }
+                try {
+                    push(extract(route, item));
+                } catch (QueryException e) {
+                    log.error("Unable to push page: %s", route.getPath(), e);
+                }
+            }
+        });
     }
 
     @Override
     public void apply(ListView<JsonNode> list, Relation relation,
                       SchemaNode child) {
-        // TODO Auto-generated method stub
-        LayoutModel.super.apply(list, relation, child);
+        list.setOnMouseClicked(event -> {
+            Route route = history.peek()
+                                 .getRoute(relation);
+            if (route == null) {
+                return;
+            }
+            if (!list.getItems()
+                     .isEmpty()
+                && event.getButton() == MouseButton.PRIMARY
+                && event.getClickCount() == 2) {
+                JsonNode item = list.getSelectionModel()
+                                    .getSelectedItem();
+                if (item == null) {
+                    return;
+                }
+                try {
+                    push(extract(route, item));
+                } catch (QueryException e) {
+                    log.error("Unable to push page: %s", route.getPath(), e);
+                }
+            }
+        });
     }
 
     @Override
@@ -137,6 +177,24 @@ public class SinglePageApp extends Application implements LayoutModel {
         return node;
     }
 
+    private void displayCurrentPage() throws QueryException {
+        PageContext pageContext = history.peek();
+        anchor.getChildren()
+              .clear();
+        layout = layout(pageContext);
+        AnchorPane.setTopAnchor(layout, 0.0);
+        AnchorPane.setLeftAnchor(layout, 0.0);
+        AnchorPane.setBottomAnchor(layout, 0.0);
+        AnchorPane.setRightAnchor(layout, 0.0);
+        anchor.getChildren()
+              .add(layout);
+        ObjectNode data = pageContext.evaluate(endpoint);
+        layout.measure(data);
+        layout.setData(data);
+        primaryStage.setTitle(pageContext.getPage()
+                                         .getTitle());
+    }
+
     private PageContext extract(Route route, JsonNode item) {
         Map<String, Object> variables = new HashMap<>();
         route.getExtract()
@@ -161,21 +219,17 @@ public class SinglePageApp extends Application implements LayoutModel {
         return layout;
     }
 
+    @SuppressWarnings("unused")
+    private void pop() throws QueryException {
+        if (history.size() == 1) {
+            return;
+        }
+        history.pop();
+        displayCurrentPage();
+    }
+
     private void push(PageContext pageContext) throws QueryException {
         history.push(pageContext);
-        anchor.getChildren()
-              .clear();
-        layout = layout(pageContext);
-        AnchorPane.setTopAnchor(layout, 0.0);
-        AnchorPane.setLeftAnchor(layout, 0.0);
-        AnchorPane.setBottomAnchor(layout, 0.0);
-        AnchorPane.setRightAnchor(layout, 0.0);
-        anchor.getChildren()
-              .add(layout);
-        ObjectNode data = pageContext.evaluate(endpoint);
-        layout.measure(data);
-        layout.setData(data);
-        primaryStage.setTitle(pageContext.getPage()
-                                         .getTitle());
+        displayCurrentPage();
     }
 }

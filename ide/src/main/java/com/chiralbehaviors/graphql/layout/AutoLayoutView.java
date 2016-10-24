@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.scene.layout.AnchorPane;

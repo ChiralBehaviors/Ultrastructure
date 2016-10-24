@@ -44,14 +44,32 @@ routes:
     query: | 
       query films($id: ID) {
         film(id: $id) {
+          id
           title
           episodeID
-          openingCrawl
           director
           producers
           releaseDate
           created
           edited
-          id
+          openingCrawl
+          characterConnection {
+            characters {
+              id
+              name
+              height
+              species {
+                id
+                name
+                classification
+              }
+            }
+          }
+          speciesConnection {
+            species {
+              id
+              name
+            }
+          }
         }
       }

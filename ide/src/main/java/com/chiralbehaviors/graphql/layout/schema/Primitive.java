@@ -41,7 +41,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.util.Pair;
 
 /**
@@ -115,7 +114,7 @@ public class Primitive extends SchemaNode {
 
     double getValueHeight(int cardinality, Layout layout) {
         return layout.getValueLineHeight()
-               * (Math.ceil(maxWidth / columnWidth) + 1);
+               * (Math.ceil(maxWidth / justifiedWidth) + 1);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class Primitive extends SchemaNode {
 
     void justify(double width, Layout layout) {
         if (variableLength) {
-            justifiedWidth = Math.max(maxWidth, width);
+            justifiedWidth = width;
         }
     }
 
@@ -188,14 +187,13 @@ public class Primitive extends SchemaNode {
         box.getChildren()
            .add(labelText);
         Control control = buildControl(cardinality, layout);
-        control.setPrefWidth(columnWidth);
+        control.setPrefWidth(justifiedWidth);
         double valueHeight = getValueHeight(cardinality, layout);
-        control.setPrefHeight(valueHeight);
-        HBox.setHgrow(control, Priority.ALWAYS); 
+        control.setPrefHeight(valueHeight); 
         box.getChildren()
            .add(control);
         box.setPrefHeight(valueHeight);
-        box.setPrefWidth(labelWidth + columnWidth); 
+        box.setPrefWidth(justifiedWidth); 
         return new Pair<>(item -> {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);

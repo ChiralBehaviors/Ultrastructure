@@ -136,7 +136,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double measure(ArrayNode data, int nestingLevel, Layout layout) {
+    double measure(ArrayNode data, Layout layout) {
         double labelWidth = getLabelWidth(layout);
         double sum = 0;
         maxWidth = 0;
@@ -158,11 +158,8 @@ public class Primitive extends SchemaNode {
             variableLength = true;
         }
 
-        Insets listInsets = layout.getNestedListInsets();
         Insets tableCellInsets = layout.getTableCellInsets();
-        nestingInset = (nestingLevel
-                        * (listInsets.getLeft() + listInsets.getRight()))
-                       + tableCellInsets.getLeft() + tableCellInsets.getRight()
+        nestingInset = tableCellInsets.getLeft() + tableCellInsets.getRight()
                        + layout.getValueInsets()
                                .getLeft()
                        + layout.getValueInsets()
@@ -253,7 +250,8 @@ public class Primitive extends SchemaNode {
                                 control.setMinHeight(height);
                                 control.setPrefHeight(height);
                                 control.setMaxHeight(height);
-                                layout.getModel().apply(control, Primitive.this);
+                                layout.getModel()
+                                      .apply(control, Primitive.this);
                                 return control;
                             }, row, Primitive.this);
                         }

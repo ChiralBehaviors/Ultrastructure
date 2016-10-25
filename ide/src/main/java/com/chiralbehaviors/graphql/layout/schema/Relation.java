@@ -50,6 +50,7 @@ import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
@@ -211,11 +212,11 @@ public class Relation extends SchemaNode implements Cloneable {
     public void measure(JsonNode jsonNode, Layout layout) {
         if (jsonNode.isArray()) {
             ArrayNode array = (ArrayNode) jsonNode;
-            measure(array, 0, layout);
+            measure(array, layout);
         } else {
             ArrayNode singleton = JsonNodeFactory.instance.arrayNode();
             singleton.add(jsonNode);
-            measure(singleton, 0, layout);
+            measure(singleton, layout);
         }
     }
 
@@ -424,7 +425,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    double measure(ArrayNode data, int nestingLevel, Layout layout) {
+    double measure(ArrayNode data, Layout layout) {
         if (fold == null && autoFold && children.size() == 1
             && children.get(children.size() - 1) instanceof Relation) {
             fold = ((Relation) children.get(children.size() - 1));
@@ -439,6 +440,7 @@ public class Relation extends SchemaNode implements Cloneable {
                               .getRight();
         int sum = 0;
         tableColumnWidth = 0;
+        Insets listInsets = layout.getNestedListInsets();
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
             int cardSum = 0;
@@ -454,9 +456,8 @@ public class Relation extends SchemaNode implements Cloneable {
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate,
-                                              isFold() ? nestingLevel
-                                                       : nestingLevel + 1,
                                               layout);
+            tableColumnWidth += listInsets.getLeft() + listInsets.getRight();
         }
         averageCardinality = Math.max(1, Math.round(sum / children.size()));
         tableColumnWidth = Math.max(labelWidth, tableColumnWidth);

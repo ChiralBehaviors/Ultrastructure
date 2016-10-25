@@ -285,7 +285,7 @@ abstract public class SchemaNode {
 
     abstract double layout(double width, Layout layout);
 
-    abstract double measure(ArrayNode data, int nestingLevel, Layout layout);
+    abstract double measure(ArrayNode data, Layout layout);
 
     abstract Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
                                                              Function<JsonNode, JsonNode> extractor,

@@ -191,10 +191,11 @@ public class Primitive extends SchemaNode {
         control.setPrefWidth(columnWidth);
         double valueHeight = getValueHeight(cardinality, layout);
         control.setPrefHeight(valueHeight);
-        HBox.setHgrow(control, Priority.ALWAYS);
+        HBox.setHgrow(control, Priority.ALWAYS); 
         box.getChildren()
            .add(control);
         box.setPrefHeight(valueHeight);
+        box.setPrefWidth(labelWidth + columnWidth); 
         return new Pair<>(item -> {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);

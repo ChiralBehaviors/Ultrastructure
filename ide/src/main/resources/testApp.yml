@@ -38,7 +38,20 @@ routes:
       films:
         path: film
         extract:
+          id: id 
+      homeworld:
+        path: homeworld
+        extract:
+          id: id  
+      starships:
+        path: starship
+        extract:
           id: id
+      pilots:
+        path: person
+        extract:
+          id: id
+
   film:
     title: Film
     query: | 
@@ -73,3 +86,214 @@ routes:
           }
         }
       }
+  
+    routing:
+      characters:
+        path: person
+        extract:
+          id: id
+      homeworld:
+        path: planet
+        extract:
+          id: id 
+      pilots:
+        path: person
+        extract:
+          id: id
+      species:
+        path: species
+        extract:
+          id: id
+          
+  person:
+    title: Person
+    query: |
+      query person($id: ID) {
+        person(id: $id) {
+          id
+          name
+          birthYear
+          eyeColor
+          gender
+          hairColor
+          height
+          mass
+          skinColor
+          homeworld {
+            id
+            name
+            population
+            surfaceWater
+          }
+          species {
+            id
+            name
+            classification
+            designation
+          }
+          starshipConnection {
+            starships {
+              id
+              name
+              model
+            }
+          }
+        } 
+      }
+    routing:
+      homeworld:
+        path: planet
+        extract:
+          id: id
+      species:
+        path: species
+        extract:
+          id: id
+      starships:
+        path: starship
+        extract:
+          id: id
+      
+  planet:
+    title: Planet
+    query: | 
+      query planet($id: ID) {
+        planet(id: $id) {
+          id
+          name
+          diameter
+          rotationPeriod
+          orbitalPeriod
+          gravity
+          population
+          climates
+          terrains
+          surfaceWater
+          filmConnection {
+            films {
+              id
+              title
+              episodeID
+            }
+          }
+          residentConnection {
+            residents {
+              id
+              name
+              gender
+            }
+          }
+        }
+      }
+    routing:
+      films:
+        path: film
+        extract:
+          id: id
+      residents:
+        path: person
+        extract:
+          id: id
+          
+  species:
+    title: Specie
+    query: |
+      query species($id:ID) {
+        species(id:$id) {
+          id
+          name
+          classification
+          designation
+          averageHeight
+          averageLifespan
+          eyeColors
+          hairColors
+          skinColors
+          language
+          homeworld {
+            id
+            name
+            population
+            climates
+          }
+          personConnection {
+            people {
+              id
+              name
+              gender
+              skinColor
+            }
+          }
+          filmConnection {
+            films {
+              id
+              title
+              episodeID
+            }
+          }
+        }
+      }
+    routing:
+      films:
+        path: film
+        extract:
+          id: id 
+      homeworld:
+        path: homeworld
+        extract:
+          id: id 
+      people:
+        path: person
+        extract:
+          id: id
+
+  starship:
+    title: Starship
+    query: |
+      query starship($id:ID) {
+        starship(id:$id) {
+          id
+          name
+          model
+          starshipClass
+          manufacturers
+          costInCredits
+          consumables
+          length
+          maxAtmospheringSpeed
+          hyperdriveRating
+          cargoCapacity
+          pilotConnection {
+            pilots {
+              id
+              name
+              gender
+              species {
+                name
+                designation
+              }
+            }
+          }
+          filmConnection {
+            films {
+              id
+              title
+              episodeID
+            }
+          }
+        }
+      }
+    routing:
+      pilots:
+        path: person
+        extract:
+          id: id 
+      species:
+        path: species
+        extract:
+          id: id
+      films:
+        path: film
+        extract:
+          id: id 
+          

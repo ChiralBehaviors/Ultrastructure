@@ -309,8 +309,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                        layout.getModel()),
                                                                   layout,
                                                                   column.getColumns(),
-                                                                  key.getAndSet(false));
+                                                                  key.get());
                                 })
+                                .map(height -> key.getAndSet(false) ? height
+                                                                    : height)
                                 .max()
                                 .getAsDouble());
         extendedHeight.set(nestedHeight(layout, cardinality,

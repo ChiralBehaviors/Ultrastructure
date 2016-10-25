@@ -625,7 +625,8 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListCell<JsonNode> createListCell(SchemaNode child,
                                               BiFunction<Producer<String>, Producer<Double>, Control> p,
-                                              Producer<Double> childHeight) {
+                                              Producer<Double> childHeight,
+                                              String id) {
         return new ListCell<JsonNode>() {
             Control childControl;
             {
@@ -649,8 +650,8 @@ public class Relation extends SchemaNode implements Cloneable {
                         setGraphic(null);
                         childControl = null;
                     } else {
-                        childControl = p.apply(() -> String.format("%s.%s",
-                                                                   label, i),
+                        childControl = p.apply(() -> String.format("%s.%s", id,
+                                                                   i),
                                                childHeight);
                         setGraphic(childControl);
                     }
@@ -736,7 +737,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                  boolean key, LayoutModel model) {
 
         return (p, row, primitive) -> {
-            return nesting.apply((id, renderedF) -> {
+            return nesting.apply((parentId, renderedF) -> {
                 final double renderedHeight = renderedF.call();
                 final double childHeight = childHeightF.call();
 
@@ -756,10 +757,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                                  - listInset;
 
                 Integer primitiveColumn = leaves.get(primitive);
-                String label = id.call();
+                String id = parentId.call();
 
-                ListView<JsonNode> split = split(key, label, primitiveColumn,
-                                                 row, leaves.size());
+                ListView<JsonNode> split = split(key, id, primitiveColumn, row,
+                                                 leaves.size());
                 model.apply(split, Relation.this, child);
                 split.setMinHeight(renderedHeight);
                 split.setPrefHeight(renderedHeight);
@@ -767,7 +768,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setFixedCellSize(childLayoutHeight + listCellInset);
                 split.setCellFactory(c -> {
                     ListCell<JsonNode> cell = createListCell(child, p,
-                                                             () -> childLayoutHeight);
+                                                             () -> childLayoutHeight,
+                                                             id);
                     model.apply(cell, Relation.this);
                     return cell;
                 });

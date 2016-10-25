@@ -69,8 +69,8 @@ public class Layout {
     private Insets       labelInsets             = ZERO_INSETS;
     private double       labelLineHeight         = 0;
     private LayoutModel  model;
-    private Insets       nested1stListCellInsets = ZERO_INSETS;
-    private Insets       nested1stListInsets     = ZERO_INSETS;
+    private Insets       nestedKeyListCellInsets = ZERO_INSETS;
+    private Insets       nestedKeyListInsets     = ZERO_INSETS;
     private Insets       nestedListCellInsets    = ZERO_INSETS;
     private Insets       nestedListInsets        = ZERO_INSETS;
     private Insets       outlineListCellInsets   = ZERO_INSETS;
@@ -78,6 +78,7 @@ public class Layout {
     private List<String> styleSheets;
     private Insets       tableCellInsets         = ZERO_INSETS;
     private Insets       tableInsets             = ZERO_INSETS;
+    private Insets       tableKeyCellInsets      = ZERO_INSETS;
     private Font         valueFont               = Font.getDefault();
     private Insets       valueInsets             = ZERO_INSETS;
     private double       valueLineHeight         = 0;
@@ -229,7 +230,7 @@ public class Layout {
                                       nestedList.get()
                                                 .snappedLeftInset());
 
-        nested1stListCellInsets = new Insets(nested1stListCell.get()
+        nestedKeyListCellInsets = new Insets(nested1stListCell.get()
                                                               .snappedTopInset(),
                                              nested1stListCell.get()
                                                               .snappedRightInset(),
@@ -238,7 +239,7 @@ public class Layout {
                                              nested1stListCell.get()
                                                               .snappedLeftInset());
 
-        nested1stListInsets = new Insets(nested1stList.get()
+        nestedKeyListInsets = new Insets(nested1stList.get()
                                                       .snappedTopInset(),
                                          nested1stList.get()
                                                       .snappedRightInset(),
@@ -265,6 +266,7 @@ public class Layout {
                                      tableCell.snappedRightInset(),
                                      tableCell.snappedBottomInset(),
                                      tableCell.snappedLeftInset());
+        tableKeyCellInsets = tableCellInsets;
 
         tableInsets = new Insets(table.snappedTopInset(),
                                  table.snappedRightInset(),
@@ -299,12 +301,12 @@ public class Layout {
         return model;
     }
 
-    public Insets getNested1stListCellInsets() {
-        return nested1stListCellInsets;
+    public Insets getNestedKeyListCellInsets() {
+        return nestedKeyListCellInsets;
     }
 
-    public Insets getNested1stListInsets() {
-        return nested1stListInsets;
+    public Insets getNestedKeyListInsets() {
+        return nestedKeyListInsets;
     }
 
     public Insets getNestedListCellInsets() {
@@ -329,6 +331,10 @@ public class Layout {
 
     public Insets getTableInsets() {
         return tableInsets;
+    }
+
+    public Insets getTableKeyCellInsets() {
+        return tableKeyCellInsets;
     }
 
     public Insets getValueInsets() {

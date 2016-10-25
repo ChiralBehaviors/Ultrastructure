@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
@@ -72,9 +71,8 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double buildTableColumn(boolean topLevel, int cardinality,
-                            NestingFunction nesting, Layout layout,
-                            ObservableList<TableColumn<JsonNode, ?>> parent,
+    double buildTableColumn(int cardinality, NestingFunction nesting,
+                            Layout layout, ObservableList<TableColumn<JsonNode, ?>> parent,
                             boolean key) {
         double insets = layout.getValueInsets()
                               .getTop()
@@ -95,6 +93,7 @@ public class Primitive extends SchemaNode {
         });
 
         double extendedHeight = baseHeight + insets;
+        
         column.setCellFactory(c -> createCell(cardinality, nesting, layout,
                                               extendedHeight, key));
         return extendedHeight;
@@ -136,7 +135,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double measure(ArrayNode data, Layout layout) {
+    double measure(ArrayNode data, Layout layout, boolean key) {
         double labelWidth = getLabelWidth(layout);
         double sum = 0;
         maxWidth = 0;
@@ -158,12 +157,18 @@ public class Primitive extends SchemaNode {
             variableLength = true;
         }
 
-        Insets tableCellInsets = layout.getTableCellInsets();
-        nestingInset = tableCellInsets.getLeft() + tableCellInsets.getRight()
-                       + layout.getValueInsets()
-                               .getLeft()
+        nestingInset = layout.getValueInsets()
+                             .getLeft()
                        + layout.getValueInsets()
                                .getRight();
+        nestingInset += key ? layout.getTableKeyCellInsets()
+                                    .getLeft()
+                              + layout.getTableKeyCellInsets()
+                                      .getRight()
+                            : layout.getTableCellInsets()
+                                    .getLeft()
+                              + layout.getTableCellInsets()
+                                      .getRight();
         return columnWidth + nestingInset;
     }
 

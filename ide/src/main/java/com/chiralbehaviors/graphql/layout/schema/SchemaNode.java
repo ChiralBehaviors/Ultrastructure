@@ -255,9 +255,8 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract double buildTableColumn(boolean topLevel, int cardinality,
-                                     NestingFunction nesting, Layout layout,
-                                     ObservableList<TableColumn<JsonNode, ?>> parent,
+    abstract double buildTableColumn(int cardinality, NestingFunction nesting,
+                                     Layout layout, ObservableList<TableColumn<JsonNode, ?>> parent,
                                      boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
@@ -285,7 +284,7 @@ abstract public class SchemaNode {
 
     abstract double layout(double width, Layout layout);
 
-    abstract double measure(ArrayNode data, Layout layout);
+    abstract double measure(ArrayNode data, Layout layout, boolean key);
 
     abstract Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
                                                              Function<JsonNode, JsonNode> extractor,

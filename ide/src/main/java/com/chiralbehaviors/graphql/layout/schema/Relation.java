@@ -50,7 +50,6 @@ import graphql.language.OperationDefinition.Operation;
 import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
@@ -212,11 +211,11 @@ public class Relation extends SchemaNode implements Cloneable {
     public void measure(JsonNode jsonNode, Layout layout) {
         if (jsonNode.isArray()) {
             ArrayNode array = (ArrayNode) jsonNode;
-            measure(array, layout);
+            measure(array, layout, false);
         } else {
             ArrayNode singleton = JsonNodeFactory.instance.arrayNode();
             singleton.add(jsonNode);
-            measure(singleton, layout);
+            measure(singleton, layout, false);
         }
     }
 
@@ -270,13 +269,13 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    double buildTableColumn(boolean topLevel, int cardinality,
-                            NestingFunction nesting, Layout layout,
+    double buildTableColumn(int cardinality, NestingFunction nesting,
+                            Layout layout,
                             ObservableList<TableColumn<JsonNode, ?>> parent,
                             boolean k) {
         if (isFold()) {
-            return fold.buildTableColumn(topLevel, averageCardinality, nesting,
-                                         layout, parent, k);
+            return fold.buildTableColumn(averageCardinality, nesting, layout,
+                                         parent, k);
         }
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
@@ -297,20 +296,21 @@ public class Relation extends SchemaNode implements Cloneable {
         AtomicDouble extendedHeight = new AtomicDouble();
         AtomicBoolean key = new AtomicBoolean(true);
         childHeight.set(children.stream()
-                                .mapToDouble(child -> child.buildTableColumn(false,
-                                                                             averageCardinality,
-                                                                             nest(child,
-                                                                                  leaves,
-                                                                                  nesting,
-                                                                                  childHeightF,
-                                                                                  layout,
-                                                                                  cardinality,
-                                                                                  extendedHeight,
-                                                                                  key.getAndSet(false),
-                                                                                  layout.getModel()),
-                                                                             layout,
-                                                                             column.getColumns(),
-                                                                             false))
+                                .mapToDouble(child -> {
+                                    return child.buildTableColumn(averageCardinality,
+                                                                  nest(child,
+                                                                       leaves,
+                                                                       nesting,
+                                                                       childHeightF,
+                                                                       layout,
+                                                                       cardinality,
+                                                                       extendedHeight,
+                                                                       key.get(),
+                                                                       layout.getModel()),
+                                                                  layout,
+                                                                  column.getColumns(),
+                                                                  key.getAndSet(false));
+                                })
                                 .max()
                                 .getAsDouble());
         extendedHeight.set(nestedHeight(layout, cardinality,
@@ -425,7 +425,7 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    double measure(ArrayNode data, Layout layout) {
+    double measure(ArrayNode data, Layout layout, boolean k) {
         if (fold == null && autoFold && children.size() == 1
             && children.get(children.size() - 1) instanceof Relation) {
             fold = ((Relation) children.get(children.size() - 1));
@@ -440,7 +440,15 @@ public class Relation extends SchemaNode implements Cloneable {
                               .getRight();
         int sum = 0;
         tableColumnWidth = 0;
-        Insets listInsets = layout.getNestedListInsets();
+        double listInset = layout.getNestedListInsets()
+                                 .getLeft()
+                           + layout.getNestedListInsets()
+                                   .getRight();
+        double keyInset = layout.getNestedKeyListInsets()
+                                .getLeft()
+                          + layout.getNestedKeyListInsets()
+                                  .getRight();
+        boolean key = true;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
             int cardSum = 0;
@@ -455,10 +463,13 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
-            tableColumnWidth += child.measure(aggregate,
-                                              layout);
-            tableColumnWidth += listInsets.getLeft() + listInsets.getRight();
+            tableColumnWidth += child.measure(aggregate, layout, key);
+            key = false;
         }
+        tableColumnWidth += (children.size() - 1) * listInset;
+
+        tableColumnWidth += children.get(0)
+                                    .isRelation() ? keyInset : 0; // Primitives are displayed in a relation without a list
         averageCardinality = Math.max(1, Math.round(sum / children.size()));
         tableColumnWidth = Math.max(labelWidth, tableColumnWidth);
         return isFold() ? fold.getTableColumnWidth() : getTableColumnWidth();
@@ -574,8 +585,7 @@ public class Relation extends SchemaNode implements Cloneable {
         AtomicDouble childHeight = new AtomicDouble();
         AtomicBoolean key = new AtomicBoolean(true);
         childHeight.set(children.stream()
-                                .mapToDouble(child -> child.buildTableColumn(true,
-                                                                             averageCardinality,
+                                .mapToDouble(child -> child.buildTableColumn(averageCardinality,
                                                                              (p,
                                                                               row, primitive) -> {
                                                                                  Double height = childHeight.get();

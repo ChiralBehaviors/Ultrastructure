@@ -294,7 +294,8 @@ public class Relation extends SchemaNode implements Cloneable {
         AtomicDouble childHeight = new AtomicDouble();
         Producer<Double> childHeightF = () -> childHeight.get();
         AtomicDouble extendedHeight = new AtomicDouble();
-        AtomicBoolean key = new AtomicBoolean(true);
+        boolean isKey = children.get(0) instanceof Primitive;
+        AtomicBoolean key = new AtomicBoolean(isKey);
         childHeight.set(children.stream()
                                 .mapToDouble(child -> {
                                     return child.buildTableColumn(averageCardinality,
@@ -312,11 +313,19 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                   key.get());
                                 })
                                 .map(height -> key.getAndSet(false) ? height
+                                                                      + layout.getNestedKeyListInsets()
+                                                                              .getTop()
+                                                                      + layout.getNestedKeyListInsets()
+                                                                              .getBottom()
+                                                                      + layout.getNestedKeyListCellInsets()
+                                                                              .getTop()
+                                                                      + layout.getNestedKeyListCellInsets()
+                                                                              .getBottom()
                                                                     : height)
                                 .max()
                                 .getAsDouble());
-        extendedHeight.set(nestedHeight(layout, cardinality,
-                                        childHeight.get()));
+        extendedHeight.set(nestedHeight(layout, cardinality, childHeight.get(),
+                                        isKey));
         return extendedHeight.get();
 
     }
@@ -466,6 +475,15 @@ public class Relation extends SchemaNode implements Cloneable {
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate, layout, key);
+            tableColumnWidth += key
+                                && !child.isRelation() ? layout.getTableKeyCellInsets()
+                                                               .getLeft()
+                                                         + layout.getTableKeyCellInsets()
+                                                                 .getRight()
+                                                       : layout.getTableCellInsets()
+                                                               .getLeft()
+                                                         + layout.getTableCellInsets()
+                                                                 .getRight();
             key = false;
         }
         tableColumnWidth += (children.size() - 1) * listInset;
@@ -623,14 +641,18 @@ public class Relation extends SchemaNode implements Cloneable {
         return table;
     }
 
-    private ListCell<JsonNode> createListCell(SchemaNode child,
-                                              BiFunction<Producer<String>, Producer<Double>, Control> p,
-                                              Producer<Double> childHeight,
-                                              String id) {
+    private ListCell<JsonNode> nestListCell(SchemaNode child,
+                                            BiFunction<Producer<String>, Producer<Double>, Control> p,
+                                            Producer<Double> childHeight,
+                                            String id, boolean key) {
         return new ListCell<JsonNode>() {
             Control childControl;
             {
-                getStyleClass().add(nestedListCellClass());
+                if (key) {
+                    getStyleClass().add(nestedKeyListCellClass());
+                } else {
+                    getStyleClass().add(nestedListCellClass());
+                }
                 emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
                     if (isEmpty) {
                         setGraphic(null);
@@ -741,14 +763,29 @@ public class Relation extends SchemaNode implements Cloneable {
                 final double renderedHeight = renderedF.call();
                 final double childHeight = childHeightF.call();
 
-                final double listInset = layout.getNestedListInsets()
+                double keyInset = layout.getNestedKeyListInsets()
+                                        .getTop()
+                                  + layout.getNestedKeyListInsets()
+                                          .getBottom();
+                double nestedListInset = layout.getNestedListInsets()
                                                .getTop()
                                          + layout.getNestedListInsets()
                                                  .getBottom();
-                final double listCellInset = layout.getNestedListCellInsets()
-                                                   .getTop()
-                                             + layout.getNestedListCellInsets()
-                                                     .getBottom();
+                double keyCellInset = layout.getNestedKeyListCellInsets()
+                                            .getTop()
+                                      + layout.getNestedKeyListCellInsets()
+                                              .getBottom();
+                double nestedCellInset = layout.getNestedListCellInsets()
+                                               .getTop()
+                                         + layout.getNestedListCellInsets()
+                                                 .getBottom();
+
+                final double listInset = key ? keyInset
+                                             : nestedListInset;
+                
+                final double listCellInset = key ? keyCellInset
+                                                 : nestedCellInset;
+                
                 final double deficit = Math.max(0, renderedHeight
                                                    - calcHeight.get());
 
@@ -767,9 +804,9 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setMaxHeight(renderedHeight);
                 split.setFixedCellSize(childLayoutHeight + listCellInset);
                 split.setCellFactory(c -> {
-                    ListCell<JsonNode> cell = createListCell(child, p,
-                                                             () -> childLayoutHeight,
-                                                             id);
+                    ListCell<JsonNode> cell = nestListCell(child, p,
+                                                           () -> childLayoutHeight,
+                                                           id, key);
                     model.apply(cell, Relation.this);
                     return cell;
                 });
@@ -779,15 +816,26 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private double nestedHeight(Layout layout, int cardinality,
-                                double childHeight) {
-        double listCellInset = layout.getNestedListCellInsets()
-                                     .getTop()
-                               + layout.getNestedListCellInsets()
-                                       .getBottom();
-        double listInset = layout.getNestedListInsets()
-                                 .getTop()
-                           + layout.getNestedListInsets()
-                                   .getBottom();
+                                double childHeight, boolean key) {
+        double nestedCellInset = layout.getNestedKeyListCellInsets()
+                                       .getTop()
+                                 + layout.getNestedKeyListCellInsets()
+                                         .getBottom();
+        double listCellInset = key ? Math.max(nestedCellInset,
+                                              layout.getNestedListCellInsets()
+                                                    .getTop() + layout.getNestedListCellInsets()
+                                                                      .getBottom())
+                                   : nestedCellInset;
+        double nestedInset = layout.getNestedKeyListInsets()
+                                   .getTop()
+                             + layout.getNestedKeyListInsets()
+                                     .getBottom();
+        double listInset = key ? Math.max(nestedInset,
+                                          layout.getNestedListInsets()
+                                                .getTop()
+                                                       + layout.getNestedListInsets()
+                                                               .getBottom())
+                               : nestedInset;
         return ((childHeight + listCellInset) * cardinality) + listInset;
     }
 
@@ -863,19 +911,12 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         ObservableList<String> styleClass = content.getStyleClass();
 
-        if (key) {
-            styleClass.add(nestedKeyListClass());
+        styleClass.add(key ? nestedKeyListClass() : nestedListClass());
+        if (!primitiveColumn.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")
                                   .toExternalForm());
-        } else if (!primitiveColumn.equals(count - 1)) {
-            content.getStylesheets()
-                   .add(getClass().getResource("hide-scrollbar.css")
-                                  .toExternalForm());
-        } else {
-            styleClass.add(nestedListScrollStyleClass());
         }
-        styleClass.add(nestedListClass());
         content.setPlaceholder(new Text());
         content.setMinWidth(0);
         content.setPrefWidth(1);

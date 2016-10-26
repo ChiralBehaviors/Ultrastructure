@@ -367,16 +367,11 @@ public class Layout {
             .clear();
         return headerRow.getHeight();
     }
-
-    @Override
-    public String toString() {
-        return String.format("Layout\n  labelFont=%s\n  labelInsets=%s\n  labelLineHeight=%s\n  listCellInsets=%s\n  listInsets=%s\n  tableCellInsets=%s\n  tableInsets=%s\n  valueFont=%s\n  valueInsets=%s\n  valueLineHeight=%s]",
-                             labelFont, labelInsets, labelLineHeight,
-                             nestedListCellInsets, nestedListInsets,
-                             tableCellInsets, tableInsets, valueFont,
-                             valueInsets, valueLineHeight);
+ 
+    public double valueDoubleSpaceWidth() {
+        return FONT_LOADER.computeStringWidth("WW",
+                                              valueFont);
     }
-
     public double valueWidth(String value) {
         return FONT_LOADER.computeStringWidth(String.format("W%sW", value),
                                               valueFont);

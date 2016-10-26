@@ -14,7 +14,7 @@
 
 /* Key nested list cell */
 .auto-layout-nest-key-list-cell {
-    -fx-padding: 0.0 ;
+    -fx-padding: 0 ;
     -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }
@@ -27,7 +27,7 @@
 
 /* Nested list */
 .auto-layout-nest-list {
-    -fx-padding: 0.0 ;
+    -fx-padding: 0 ;
     -fx-background-insets:0 ;
 }
 
@@ -39,7 +39,7 @@
 
 /* Nested list cell */
 .auto-layout-nest-list-cell {
-    -fx-padding: 0.0 ;
+    -fx-padding: 0 ;
     -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }

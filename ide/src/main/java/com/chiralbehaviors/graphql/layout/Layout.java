@@ -21,17 +21,19 @@
 package com.chiralbehaviors.graphql.layout;
 
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.labelStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedKeyListCellClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedKeyListClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableKeyCellClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleClass;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkinBase;
@@ -48,6 +50,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class Layout {
@@ -91,78 +94,57 @@ public class Layout {
     public Layout(List<String> styleSheets, LayoutModel model) {
         this.model = model;
         this.styleSheets = styleSheets;
-        AtomicReference<TextArea> labelText = new AtomicReference<>();
-        AtomicReference<TextArea> valueText = new AtomicReference<>();
-        AtomicReference<ListCell<String>> nestedListCell = new AtomicReference<>();
-        AtomicReference<ListView<String>> nestedList = new AtomicReference<>();
-        AtomicReference<ListCell<String>> outlineListCell = new AtomicReference<>();
-        AtomicReference<ListCell<String>> nested1stListCell = new AtomicReference<>();
-        AtomicReference<ListView<String>> nested1stList = new AtomicReference<>();
+        TextArea valueText = new TextArea("Lorem Ipsum");
+        TextArea labelText = new TextArea("Lorem Ipsum");
 
-        ListView<String> topLevel = new ListView<>();
-        topLevel.getStyleClass()
-                .add(outlineListStyleClass());
-        topLevel.setCellFactory(s -> new ListCell<String>() {
-            {
-                getStyleClass().add(outlineListCellClass());
-                outlineListCell.set(this);
-            }
+        valueText.getStyleClass()
+                 .add(valueStyleClass());
+        valueText.getStyleClass()
+                 .add(labelStyleClass());
 
+        ListView<String> outlineList = new ListView<>();
+        outlineList.getStyleClass()
+                   .add(outlineListStyleClass());
+
+        ListCell<String> outlineListCell = new ListCell<String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                ListView<String> nested = new ListView<String>();
-                nested.getStyleClass()
-                      .add(nestedListClass());
-                nestedList.set(nested);
-                nested.setCellFactory(v -> new ListCell<String>() {
-                    {
-                        nestedListCell.set(this);
-                        getStyleClass().add(nestedListCellClass());
-                    }
-
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        TextArea value = new TextArea("lorum ipsum");
-                        value.getStyleClass()
-                             .add(valueStyleClass());
-                        valueText.set(value);
-                        TextArea label = new TextArea("lorum ipsum");
-                        label.getStyleClass()
-                             .add(labelStyleClass());
-                        labelText.set(value);
-                        ListView<String> frist = new ListView<String>();
-                        frist.getStyleClass()
-                             .add(nestedListCellClass());
-                        frist.setCellFactory(l -> new ListCell<String>() {
-                            {
-                                nested1stListCell.set(this);
-                            }
-
-                            @Override
-                            protected void updateItem(String item,
-                                                      boolean empty) {
-                                super.updateItem(item, empty);
-                                setText(item);
-                            }
-                        });
-                        nested1stList.set(frist);
-                        Group group = new Group(label, value, frist);
-                        setGraphic(group);
-                        ObservableList<String> listItems = frist.getItems();
-                        listItems.add("Lorem ipsum");
-                        frist.setItems(null);
-                        frist.setItems(listItems);
-                    }
-                });
-                setGraphic(nested);
-                ObservableList<String> listItems = nested.getItems();
-                listItems.add("Lorem ipsum");
-                nested.setItems(null);
-                nested.setItems(listItems);
+                setText(item);
             };
-        });
+        };
+        outlineListCell.getStyleClass()
+                       .add(outlineListCellClass());
+        outlineList.setCellFactory(s -> outlineListCell);
+
+        ListCell<String> nestedKeyListCell = new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(item);
+            };
+        };
+        nestedKeyListCell.getStyleClass()
+                         .add(nestedKeyListCellClass());
+        ListView<String> nestedKeyList = new ListView<>();
+        nestedKeyList.getStyleClass()
+                     .add(nestedKeyListClass());
+        nestedKeyList.setCellFactory(s -> nestedKeyListCell);
+
+        ListCell<String> nestedListCell = new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(item);
+            };
+        };
+        nestedListCell.getStyleClass()
+                      .add(nestedListCellClass());
+        ListView<String> nestedList = new ListView<>();
+        nestedList.getStyleClass()
+                  .add(nestedListClass());
+        nestedList.setCellFactory(s -> nestedListCell);
+
         TableCell<String, String> tableCell = new TableCell<String, String>() {
             {
                 getStyleClass().add(tableCellClass());
@@ -174,21 +156,50 @@ public class Layout {
                 setText(item);
             }
         };
+
+        TableCell<String, String> tableKeyCell = new TableCell<String, String>() {
+            {
+                getStyleClass().add(tableKeyCellClass());
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(item);
+            }
+        };
+
         TableView<String> table = new TableView<>();
         table.getStyleClass()
              .add(tableStyleClass());
         TableColumn<String, String> column = new TableColumn<>("");
+        TableColumn<String, String> keyColumn = new TableColumn<>("");
         column.setCellFactory(c -> tableCell);
         column.getStyleClass()
               .add(tableColumnStyleClass());
+        keyColumn.setCellFactory(c -> tableKeyCell);
+        keyColumn.getStyleClass()
+                 .add(tableColumnStyleClass());
         table.getColumns()
              .add(column);
-        Group root = new Group(table, topLevel);
+        table.getColumns()
+             .add(keyColumn);
+
+        VBox root = new VBox();
+        root.getChildren()
+            .addAll(table, outlineList, nestedKeyList, nestedList, valueText,
+                    labelText);
         Scene scene = new Scene(root);
         if (styleSheets != null) {
             scene.getStylesheets()
                  .addAll(styleSheets);
         }
+        valueText.applyCss();
+        valueText.layout();
+
+        labelText.applyCss();
+        labelText.layout();
+
         ObservableList<String> tableItems = table.getItems();
         tableItems.add("Lorem ipsum");
         table.setItems(null);
@@ -199,88 +210,89 @@ public class Layout {
         table.layout();
         table.refresh();
 
-        ObservableList<String> listItems = topLevel.getItems();
+        ObservableList<String> listItems = outlineList.getItems();
         listItems.add("Lorem ipsum");
-        topLevel.setItems(null);
-        topLevel.setItems(listItems);
-        topLevel.applyCss();
-        topLevel.layout();
-        topLevel.refresh();
+        outlineList.setItems(null);
+        outlineList.setItems(listItems);
+        outlineList.applyCss();
+        outlineList.layout();
+        outlineList.refresh();
+        outlineListCell.applyCss();
+        outlineListCell.layout();
 
-        valueFont = valueText.get()
-                             .getFont();
+        listItems = nestedKeyList.getItems();
+        listItems.add("Lorem ipsum");
+        nestedKeyList.setItems(null);
+        nestedKeyList.setItems(listItems);
+        nestedKeyList.applyCss();
+        nestedKeyList.layout();
+        nestedKeyList.refresh();
+
+        nestedKeyListCell.applyCss();
+        nestedKeyListCell.layout();
+
+        listItems = nestedList.getItems();
+        listItems.add("Lorem ipsum");
+        nestedList.setItems(null);
+        nestedList.setItems(listItems);
+        nestedList.applyCss();
+        nestedList.layout();
+        nestedList.refresh();
+        nestedListCell.applyCss();
+        nestedListCell.layout();
+
+        valueFont = valueText.getFont();
 
         labelFont = valueFont;
 
-        nestedListCellInsets = new Insets(nestedListCell.get()
-                                                        .snappedTopInset(),
-                                          nestedListCell.get()
-                                                        .snappedRightInset(),
-                                          nestedListCell.get()
-                                                        .snappedBottomInset(),
-                                          nestedListCell.get()
-                                                        .snappedLeftInset());
+        nestedListCellInsets = new Insets(nestedListCell.snappedTopInset(),
+                                          nestedListCell.snappedRightInset(),
+                                          nestedListCell.snappedBottomInset(),
+                                          nestedListCell.snappedLeftInset());
 
-        nestedListInsets = new Insets(nestedList.get()
-                                                .snappedTopInset(),
-                                      nestedList.get()
-                                                .snappedRightInset(),
-                                      nestedList.get()
-                                                .snappedBottomInset(),
-                                      nestedList.get()
-                                                .snappedLeftInset());
+        nestedListInsets = new Insets(nestedList.snappedTopInset(),
+                                      nestedList.snappedRightInset(),
+                                      nestedList.snappedBottomInset(),
+                                      nestedList.snappedLeftInset());
 
-        nestedKeyListCellInsets = new Insets(nested1stListCell.get()
-                                                              .snappedTopInset(),
-                                             nested1stListCell.get()
-                                                              .snappedRightInset(),
-                                             nested1stListCell.get()
-                                                              .snappedBottomInset(),
-                                             nested1stListCell.get()
-                                                              .snappedLeftInset());
+        nestedKeyListCellInsets = new Insets(nestedKeyListCell.snappedTopInset(),
+                                             nestedKeyListCell.snappedRightInset(),
+                                             nestedKeyListCell.snappedBottomInset(),
+                                             nestedKeyListCell.snappedLeftInset());
 
-        nestedKeyListInsets = new Insets(nested1stList.get()
-                                                      .snappedTopInset(),
-                                         nested1stList.get()
-                                                      .snappedRightInset(),
-                                         nested1stList.get()
-                                                      .snappedBottomInset(),
-                                         nested1stList.get()
-                                                      .snappedLeftInset());
+        nestedKeyListInsets = new Insets(nestedKeyList.snappedTopInset(),
+                                         nestedKeyList.snappedRightInset(),
+                                         nestedKeyList.snappedBottomInset(),
+                                         nestedKeyList.snappedLeftInset());
 
-        outlineListCellInsets = new Insets(outlineListCell.get()
-                                                          .snappedTopInset(),
-                                           outlineListCell.get()
-                                                          .snappedRightInset(),
-                                           outlineListCell.get()
-                                                          .snappedBottomInset(),
-                                           outlineListCell.get()
-                                                          .snappedLeftInset());
+        outlineListCellInsets = new Insets(outlineListCell.snappedTopInset(),
+                                           outlineListCell.snappedRightInset(),
+                                           outlineListCell.snappedBottomInset(),
+                                           outlineListCell.snappedLeftInset());
 
-        outlineListInsets = new Insets(topLevel.snappedTopInset(),
-                                       topLevel.snappedRightInset(),
-                                       topLevel.snappedBottomInset(),
-                                       topLevel.snappedLeftInset());
+        outlineListInsets = new Insets(outlineList.snappedTopInset(),
+                                       outlineList.snappedRightInset(),
+                                       outlineList.snappedBottomInset(),
+                                       outlineList.snappedLeftInset());
 
         tableCellInsets = new Insets(tableCell.snappedTopInset(),
                                      tableCell.snappedRightInset(),
                                      tableCell.snappedBottomInset(),
                                      tableCell.snappedLeftInset());
-        tableKeyCellInsets = tableCellInsets;
+        tableKeyCellInsets = new Insets(tableKeyCell.snappedTopInset(),
+                                        tableKeyCell.snappedRightInset(),
+                                        tableKeyCell.snappedBottomInset(),
+                                        tableKeyCell.snappedLeftInset());
 
         tableInsets = new Insets(table.snappedTopInset(),
                                  table.snappedRightInset(),
                                  table.snappedBottomInset(),
                                  table.snappedLeftInset());
 
-        valueInsets = new Insets(valueText.get()
-                                          .snappedTopInset(),
-                                 valueText.get()
-                                          .snappedRightInset(),
-                                 valueText.get()
-                                          .snappedBottomInset(),
-                                 valueText.get()
-                                          .snappedLeftInset());
+        valueInsets = new Insets(valueText.snappedTopInset(),
+                                 valueText.snappedRightInset(),
+                                 valueText.snappedBottomInset(),
+                                 valueText.snappedLeftInset());
 
         labelInsets = valueInsets;
         valueLineHeight = FONT_LOADER.getFontMetrics(valueFont)
@@ -346,7 +358,7 @@ public class Layout {
     }
 
     public double labelWidth(String label) {
-        return FONT_LOADER.computeStringWidth(String.format("W%sW", label),
+        return FONT_LOADER.computeStringWidth(String.format("W%sW\n", label),
                                               labelFont);
     }
 
@@ -367,11 +379,28 @@ public class Layout {
             .clear();
         return headerRow.getHeight();
     }
- 
-    public double valueDoubleSpaceWidth() {
-        return FONT_LOADER.computeStringWidth("WW",
-                                              valueFont);
+
+    @Override
+    public String toString() {
+        return "Layout [labelFont=" + labelFont + "\n labelInsets="
+               + labelInsets + "\n labelLineHeight=" + labelLineHeight
+               + "\n model=" + model + "\n nestedKeyListCellInsets="
+               + nestedKeyListCellInsets + "\n nestedKeyListInsets="
+               + nestedKeyListInsets + "\n nestedListCellInsets="
+               + nestedListCellInsets + "\n nestedListInsets="
+               + nestedListInsets + "\n outlineListCellInsets="
+               + outlineListCellInsets + "\n outlineListInsets="
+               + outlineListInsets + "\n styleSheets=" + styleSheets
+               + "\n tableCellInsets=" + tableCellInsets + "\n tableInsets="
+               + tableInsets + "\n tableKeyCellInsets=" + tableKeyCellInsets
+               + "\n valueFont=" + valueFont + "\n valueInsets=" + valueInsets
+               + "\n valueLineHeight=" + valueLineHeight + "]";
     }
+
+    public double valueDoubleSpaceWidth() {
+        return FONT_LOADER.computeStringWidth("WW", valueFont);
+    }
+
     public double valueWidth(String value) {
         return FONT_LOADER.computeStringWidth(String.format("W%sW", value),
                                               valueFont);

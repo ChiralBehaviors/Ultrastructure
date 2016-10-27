@@ -544,6 +544,7 @@ public class Relation extends SchemaNode implements Cloneable {
         if (useTable) {
             box = new HBox();
             control.setPrefWidth(justifiedWidth);
+            VBox.setVgrow(control, Priority.NEVER);
         } else {
             box = new VBox();
             box.setPrefWidth(justifiedWidth);

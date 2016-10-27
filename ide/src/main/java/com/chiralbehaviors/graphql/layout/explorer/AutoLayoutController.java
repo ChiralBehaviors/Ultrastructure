@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.webkit.WebConsoleListener;
 
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -156,12 +157,12 @@ public class AutoLayoutController {
         JsonNode errors = data.get(ERRORS);
         if ((errors != null && errors.size() != 0) || !data.has(DATA)
             || !data.get(DATA)
-                    .has(queryState.getSource())) {
+                    .has(queryState.getSelection())) {
             queryState.setData(null);
             data = JsonNodeFactory.instance.arrayNode();
         } else {
             data = data.get(DATA)
-                       .get(queryState.getSource());
+                       .get(queryState.getSelection());
         }
         setData(SchemaNode.asArray(data));
     }
@@ -174,7 +175,35 @@ public class AutoLayoutController {
         AnchorPane.setBottomAnchor(graphiql, 0.0);
         AnchorPane.setRightAnchor(graphiql, 0.0);
         GraphiqlController controller = loader.getController();
-        initialize(controller.webview.getEngine());
+        WebEngine engine = controller.webview.getEngine();
+        engine.getLoadWorker()
+              .stateProperty()
+              .addListener((o, oldState, newState) -> {
+                  if (newState == State.SUCCEEDED) {
+                      JSObject jsobj = (JSObject) engine.executeScript("window");
+                      jsobj.call("setApp", activeQuery);
+                  }
+              });
+        initialize(engine);
+        controller.url.setText(queryState.getTargetURL());
+        controller.url.textProperty()
+                      .addListener((o, p, c) -> {
+                          if (c != null) {
+                              activeQuery.setTargetURL(c);
+                              JSObject jsobj = (JSObject) engine.executeScript("window");
+                              jsobj.setMember("app", activeQuery);
+                              engine.reload();
+                          }
+                      });
+
+        controller.selection.setText(queryState.getSelection());
+        controller.selection.textProperty()
+                            .addListener((o, p, c) -> {
+                                if (c != null) {
+                                    activeQuery.setSelection(c);
+                                }
+                            });
+
         return graphiql;
     }
 
@@ -202,8 +231,6 @@ public class AutoLayoutController {
 
             }
         });
-        JSObject jsobj = (JSObject) engine.executeScript("window");
-        jsobj.setMember("app", activeQuery);
         engine.load(getClass().getResource("/com/chiralbehaviors/graphql/layout/ide.html")
                               .toExternalForm());
     }
@@ -221,7 +248,7 @@ public class AutoLayoutController {
             return;
         }
         Relation schema = (Relation) Relation.buildSchema(queryState.getQuery(),
-                                                          queryState.getSource());
+                                                          queryState.getSelection());
         schemaView.setRoot(schema);
         layout.setRoot(schema);
         layout.measure(data);

@@ -126,7 +126,8 @@ public class Primitive extends SchemaNode {
 
     @Override
     boolean isJusifiable() {
-        return variableLength || justifiedWidth < maxWidth;
+        return true;
+        //        return variableLength || justifiedWidth < maxWidth;
     }
 
     void justify(double width, Layout layout) {
@@ -165,6 +166,7 @@ public class Primitive extends SchemaNode {
                              .getLeft()
                        + layout.getValueInsets()
                                .getRight();
+        justifiedWidth = columnWidth;
         return columnWidth + nestingInset;
     }
 
@@ -191,8 +193,8 @@ public class Primitive extends SchemaNode {
            .add(control);
         box.setPrefHeight(valueHeight);
         box.setPrefWidth(justifiedWidth);
-        VBox.setVgrow(labelText, Priority.NEVER);
-        VBox.setVgrow(control, Priority.ALWAYS);
+        //        VBox.setVgrow(labelText, Priority.NEVER);
+        //        VBox.setVgrow(control, Priority.ALWAYS);
         return new Pair<>(item -> {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
@@ -207,6 +209,7 @@ public class Primitive extends SchemaNode {
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
+        text.setPrefHeight(getValueHeight(cardinality, layout));
         return text;
     }
 

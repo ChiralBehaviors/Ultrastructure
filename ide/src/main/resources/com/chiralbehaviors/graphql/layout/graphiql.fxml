@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -8,24 +8,27 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.web.WebView?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0"
-	xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.chiralbehaviors.graphql.layout.explorer.GraphiqlController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.chiralbehaviors.graphql.layout.explorer.GraphiqlController">
 	<top>
 		<GridPane BorderPane.alignment="CENTER">
 			<columnConstraints>
-				<ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="102.0" minWidth="10.0" prefWidth="35.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="345.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="72.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="148.0" />
 			</columnConstraints>
 			<rowConstraints>
 				<RowConstraints vgrow="NEVER" />
 			</rowConstraints>
 			<children>
-				<TextField fx:id="url" />
+            <Label text="Url: " GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" />
+				<TextField fx:id="url" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+            <Label text="Selection: " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" />
+            <TextField fx:id="selection" GridPane.columnIndex="3" />
 			</children>
 		</GridPane>
 	</top>
 	<center>
-		<WebView fx:id="webview" minHeight="-1.0" minWidth="-1.0"
-			prefHeight="-1.0" prefWidth="-1.0" />
+		<WebView fx:id="webview" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
 	</center>
 </BorderPane>

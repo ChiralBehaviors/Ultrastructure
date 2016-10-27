@@ -40,7 +40,7 @@ routes:
         extract:
           id: id 
       homeworld:
-        path: homeworld
+        path: planet
         extract:
           id: id  
       starships:
@@ -196,7 +196,7 @@ routes:
           id: id
           
   species:
-    title: Specie
+    title: Species
     query: |
       query species($id:ID) {
         species(id:$id) {
@@ -239,7 +239,7 @@ routes:
         extract:
           id: id 
       homeworld:
-        path: homeworld
+        path: planet
         extract:
           id: id 
       people:

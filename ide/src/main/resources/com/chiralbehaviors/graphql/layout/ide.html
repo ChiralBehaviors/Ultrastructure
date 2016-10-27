@@ -32,6 +32,20 @@ html, body {
 <body>
 	<div id="graphiql">Loading...</div>
 	<script>
+	    function setApp(newApp) {
+	    	app = newApp;
+	        // Render <GraphiQL /> into the body.
+	        ReactDOM.render(React.createElement(GraphiQL, {
+	            fetcher : graphQLFetcher,
+	            query : app.getQuery(),
+	            variables : app.getVariables(),
+	            operationName : app.getOperationName(),
+	            onEditQuery : setQuery,
+	            onEditVariables : setVariables,
+	            onEditOperationName : setOperationName
+	        }), document.getElementById('graphiql'));
+	    }
+	    
 		function setQuery(newQuery) {
 			app.setQuery(newQuery);
 		}
@@ -62,16 +76,6 @@ html, body {
 				}
 			});
 		}
-		// Render <GraphiQL /> into the body.
-		ReactDOM.render(React.createElement(GraphiQL, {
-			fetcher : graphQLFetcher,
-			query : app.getQuery(),
-			variables : app.getVariables(),
-			operationName : app.getOperationName(),
-			onEditQuery : setQuery,
-			onEditVariables : setVariables,
-			onEditOperationName : setOperationName
-		}), document.getElementById('graphiql'));
 	</script>
 </body>
 </html>

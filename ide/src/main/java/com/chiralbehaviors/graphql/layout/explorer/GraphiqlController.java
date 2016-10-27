@@ -26,6 +26,8 @@ import javafx.scene.web.WebView;
 
 public class GraphiqlController {
     @FXML
+    public TextField selection;
+    @FXML
     public TextField url;
     @FXML
     public WebView   webview;

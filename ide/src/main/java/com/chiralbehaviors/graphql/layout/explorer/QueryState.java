@@ -24,7 +24,7 @@ public class QueryState {
     private String data;
     private String operationName;
     private String query;
-    private String source;
+    private String selection;
     private String targetURL;
     private String variables;
 
@@ -36,7 +36,7 @@ public class QueryState {
         query = state.getQuery();
         variables = state.getVariables();
         operationName = state.getOperationName();
-        source = state.getSource();
+        selection = state.getSelection();
         data = state.getData();
     }
 
@@ -46,7 +46,7 @@ public class QueryState {
         this.query = query;
         this.variables = variables;
         this.operationName = operationName;
-        this.source = source;
+        this.selection = source;
         this.data = data;
     }
 
@@ -55,7 +55,7 @@ public class QueryState {
         query = null;
         variables = null;
         operationName = null;
-        source = null;
+        selection = null;
         data = null;
     }
 
@@ -83,10 +83,10 @@ public class QueryState {
                 return false;
         } else if (!query.equals(other.query))
             return false;
-        if (source == null) {
-            if (other.source != null)
+        if (selection == null) {
+            if (other.selection != null)
                 return false;
-        } else if (!source.equals(other.source))
+        } else if (!selection.equals(other.selection))
             return false;
         if (targetURL == null) {
             if (other.targetURL != null)
@@ -113,8 +113,8 @@ public class QueryState {
         return query;
     }
 
-    public String getSource() {
-        return source;
+    public String getSelection() {
+        return selection;
     }
 
     public String getTargetURL() {
@@ -133,7 +133,7 @@ public class QueryState {
         result = prime * result
                  + ((operationName == null) ? 0 : operationName.hashCode());
         result = prime * result + ((query == null) ? 0 : query.hashCode());
-        result = prime * result + ((source == null) ? 0 : source.hashCode());
+        result = prime * result + ((selection == null) ? 0 : selection.hashCode());
         result = prime * result
                  + ((targetURL == null) ? 0 : targetURL.hashCode());
         result = prime * result
@@ -146,7 +146,7 @@ public class QueryState {
         query = state.getQuery();
         variables = state.getVariables();
         operationName = state.getOperationName();
-        source = state.getSource();
+        selection = state.getSelection();
         data = state.getData();
     }
 
@@ -162,8 +162,8 @@ public class QueryState {
         this.query = query;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setSelection(String source) {
+        this.selection = source;
     }
 
     public void setTargetURL(String targetURL) {
@@ -176,8 +176,8 @@ public class QueryState {
 
     @Override
     public String toString() {
-        return String.format("QueryState [data=%s, operationName=%s, query=%s, source=%s, targetURL=%s, variables=%s]",
-                             data, operationName, query, source, targetURL,
+        return String.format("QueryState [data=%s, operationName=%s, query=%s, selection=%s, targetURL=%s, variables=%s]",
+                             data, operationName, query, selection, targetURL,
                              variables);
     }
 }

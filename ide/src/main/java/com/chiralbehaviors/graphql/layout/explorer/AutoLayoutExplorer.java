@@ -43,15 +43,15 @@ public class AutoLayoutExplorer extends Application {
     public void initRootLayout(Stage primaryStage) throws IOException {
         QueryState queryState = new QueryState();
         //        queryState.setTargetURL("https://quiet-fjord-8091.herokuapp.com/api/workspace/urn%3Auuid%3Ae54ba249-751e-53fd-b279-5e4eccd7ff85");
-        //        queryState.setSource("customers");
+        //        queryState.setSelection("customers");
         queryState.setTargetURL("http://graphql-swapi.parseapp.com/");
         queryState.setQuery(Utils.getDocument(getClass().getResourceAsStream("/testQuery.gql")));
-        queryState.setSource("allFilms");
+        queryState.setSelection("allFilms");
         AutoLayoutController controller = new AutoLayoutController(queryState);
-//        controller.getLayout()
-//                  .getStylesheets()
-//                  .add(getClass().getResource("/nested.css")
-//                                 .toExternalForm());
+        //        controller.getLayout()
+        //                  .getStylesheets()
+        //                  .add(getClass().getResource("/nested.css")
+        //                                 .toExternalForm());
         primaryStage.setScene(new Scene(controller.getRoot(), 800, 800));
         primaryStage.show();
     }

@@ -40,6 +40,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -146,38 +147,38 @@ public class Layout {
         nestedList.setCellFactory(s -> nestedListCell);
 
         TableCell<String, String> tableCell = new TableCell<String, String>() {
-            {
-                getStyleClass().add(tableCellClass());
-            }
-
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(item);
             }
         };
+        tableCell.getStyleClass()
+                 .add(tableCellClass());
 
         TableCell<String, String> tableKeyCell = new TableCell<String, String>() {
-            {
-                getStyleClass().add(tableKeyCellClass());
-            }
-
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(item);
             }
         };
+        tableKeyCell.getStyleClass()
+                    .add(tableKeyCellClass());
 
         TableView<String> table = new TableView<>();
         table.getStyleClass()
              .add(tableStyleClass());
+
         TableColumn<String, String> column = new TableColumn<>("");
-        TableColumn<String, String> keyColumn = new TableColumn<>("");
         column.setCellFactory(c -> tableCell);
         column.getStyleClass()
               .add(tableColumnStyleClass());
+        column.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
+
+        TableColumn<String, String> keyColumn = new TableColumn<>("");
         keyColumn.setCellFactory(c -> tableKeyCell);
+        keyColumn.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
         keyColumn.getStyleClass()
                  .add(tableColumnStyleClass());
         table.getColumns()

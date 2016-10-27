@@ -348,8 +348,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                      .getTop()
                                + layout.getNestedKeyListCellInsets()
                                        .getBottom();
-            height += key ? Math.max(keyInsets, nestedCellInset)
-                          : nestedCellInset;
+            height += Math.max(keyInsets, nestedCellInset);
         }
         return height;
     }
@@ -398,10 +397,11 @@ public class Relation extends SchemaNode implements Cloneable {
         if (isFold()) {
             return fold.isJusifiable();
         }
-        return children.stream()
-                       .map(child -> child.isJusifiable())
-                       .reduce((a, b) -> a & b)
-                       .get();
+        return true;
+//        return children.stream()
+//                       .map(child -> child.isJusifiable())
+//                       .reduce((a, b) -> a & b)
+//                       .get();
     }
 
     @Override
@@ -546,6 +546,7 @@ public class Relation extends SchemaNode implements Cloneable {
             control.setPrefWidth(justifiedWidth);
         } else {
             box = new VBox();
+            box.setPrefWidth(justifiedWidth);
             VBox.setVgrow(labelText, Priority.NEVER);
             VBox.setVgrow(control, Priority.ALWAYS);
         }
@@ -824,8 +825,17 @@ public class Relation extends SchemaNode implements Cloneable {
                 double deficit = Math.max(0, renderedHeight - calcHeight.get()
                                              - listInset);
 
-                final double childDeficit = Math.max(0, Layout.snap(deficit / cardinality));
+                final double childDeficit = Math.max(0,
+                                                     Layout.snap(deficit
+                                                                 / cardinality));
                 final double childLayoutHeight = childHeight + childDeficit;
+
+                //                System.out.println(String.format("%s -> [%s:%s] [%s:%s] = %s -> %s[%s:%s]",
+                //                                                 Relation.this.getLabel(),
+                //                                                 keyInset, nestedListInset,
+                //                                                 keyCellInset, nestedCellInset,
+                //                                                 deficit, childLayoutHeight,
+                //                                                 childHeight, childDeficit));
 
                 Integer primitiveColumn = leaves.get(primitive);
                 String id = parentId.call();

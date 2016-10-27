@@ -41,6 +41,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 /**
@@ -78,7 +80,11 @@ public class Primitive extends SchemaNode {
                               .getTop()
                         + layout.getValueInsets()
                                 .getBottom();
-        double height = getValueHeight(cardinality, layout) + insets;
+        double height = Layout.snap(getValueHeight(cardinality, layout)
+                                    + insets);
+
+        //        System.out.println(String.format("%s -> [%s:%s]", this.getLabel(),
+        //                                         height, insets));
 
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         parent.add(column);
@@ -124,9 +130,7 @@ public class Primitive extends SchemaNode {
     }
 
     void justify(double width, Layout layout) {
-        if (variableLength) {
-            justifiedWidth = width;
-        }
+        justifiedWidth = width;
     }
 
     @Override
@@ -187,6 +191,8 @@ public class Primitive extends SchemaNode {
            .add(control);
         box.setPrefHeight(valueHeight);
         box.setPrefWidth(justifiedWidth);
+        VBox.setVgrow(labelText, Priority.NEVER);
+        VBox.setVgrow(control, Priority.ALWAYS);
         return new Pair<>(item -> {
             JsonNode extracted = extractor.apply(item);
             JsonNode extractedField = extracted.get(field);
@@ -242,6 +248,9 @@ public class Primitive extends SchemaNode {
                             view = (NestedColumnView) nesting.apply((label,
                                                                      heightF) -> {
                                 double height = heightF.call();
+                                //                                System.out.println(String.format("%s -> %s",
+                                //                                                                 Primitive.this.getLabel(),
+                                //                                                                 height));
                                 TextArea control = buildControl(cardinality,
                                                                 layout);
                                 control.setMinHeight(height);

@@ -2,13 +2,13 @@
 /*  Key nested list */
 .auto-layout-nest-key-list {
     -fx-padding: 0 ;
-    -fx-background-color: transparent ;
+    -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }
 
 .auto-layout-nest-key-list:empty {
     -fx-padding: 0 ;
-    -fx-background-color: transparent ;
+    -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }
 
@@ -21,19 +21,20 @@
 
 .auto-layout-nest-key-list-cell:empty {
     -fx-padding: 0 ;
-    -fx-background-color: transparent ;
+    -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }
 
 /* Nested list */
 .auto-layout-nest-list {
     -fx-padding: 0 ;
+    -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }
 
 .auto-layout-nest-list:empty {
     -fx-padding: 0 ;
-    -fx-background-color: transparent ;
+    -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }
 
@@ -46,6 +47,6 @@
 
 .auto-layout-nest-list-cell:empty {
     -fx-padding: 0 ;
-    -fx-background-color: transparent ;
+    -fx-background-color: transparent, -fx-background ;
     -fx-background-insets:0 ;
 }

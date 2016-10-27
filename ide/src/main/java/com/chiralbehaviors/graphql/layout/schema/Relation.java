@@ -827,13 +827,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 final double childDeficit = Math.max(0, Layout.snap(deficit / cardinality));
                 final double childLayoutHeight = childHeight + childDeficit;
 
-                System.out.println(String.format("%s -> [%s:%s] [%s:%s] = %s -> %s[%s:%s]",
-                                                 Relation.this.getLabel(),
-                                                 keyInset, nestedListInset,
-                                                 keyCellInset, nestedCellInset,
-                                                 deficit, childLayoutHeight,
-                                                 childHeight, childDeficit));
-
                 Integer primitiveColumn = leaves.get(primitive);
                 String id = parentId.call();
 

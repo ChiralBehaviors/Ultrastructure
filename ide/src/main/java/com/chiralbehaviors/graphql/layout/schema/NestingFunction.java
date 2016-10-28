@@ -36,7 +36,7 @@ import javafx.scene.control.Control;
  */
 @FunctionalInterface
 public interface NestingFunction {
-    Control apply(BiFunction<Producer<String>, Producer<Double>, Control> inner,
+    Control apply(BiFunction<Producer<String>, Double, Control> inner,
                   NestedTableRow<JsonNode> row, Primitive primitive);
 
 }

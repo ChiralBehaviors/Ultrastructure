@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import javafx.beans.binding.ObjectBinding;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
@@ -41,8 +40,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 /**
@@ -54,6 +51,7 @@ public class Primitive extends SchemaNode {
     private double  maxWidth          = 0;
     private double  nestingInset      = 0;
     private double  valueDefaultWidth = 0;
+    private double  valueHeight       = 0;
     private boolean variableLength    = false;
 
     public Primitive(String label) {
@@ -72,22 +70,11 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double buildTableColumn(int cardinality, NestingFunction nesting,
-                            Layout layout,
-                            ObservableList<TableColumn<JsonNode, ?>> parent,
-                            boolean key) {
-        double insets = layout.getValueInsets()
-                              .getTop()
-                        + layout.getValueInsets()
-                                .getBottom();
-        double height = Layout.snap(getValueHeight(cardinality, layout)
-                                    + insets);
-
-        //        System.out.println(String.format("%s -> [%s:%s]", this.getLabel(),
-        //                                         height, insets));
-
+    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
+                                                     NestingFunction nesting,
+                                                     Layout layout,
+                                                     boolean key) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        parent.add(column);
         column.getStyleClass()
               .add(tableColumnStyleClass());
 
@@ -99,13 +86,20 @@ public class Primitive extends SchemaNode {
         });
 
         column.setCellFactory(c -> createCell(cardinality, nesting, layout,
-                                              height, key));
-        return height;
+                                              key));
+        return column;
     }
 
     @Override
     List<Primitive> gatherLeaves() {
         return Collections.singletonList(this);
+    }
+
+    TableColumn<JsonNode, JsonNode> getColumn() {
+        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
+        return column;
     }
 
     double getLabelWidth(Layout layout) {
@@ -118,10 +112,7 @@ public class Primitive extends SchemaNode {
     }
 
     double getValueHeight(int cardinality, Layout layout) {
-        return layout.getValueLineHeight()
-               * (Math.ceil((maxWidth + layout.valueDoubleSpaceWidth())
-                            / justifiedWidth)
-                  + 1);
+        return getValueHeight(layout);
     }
 
     @Override
@@ -131,12 +122,23 @@ public class Primitive extends SchemaNode {
     }
 
     void justify(double width, Layout layout) {
+        valueHeight = 0;
         justifiedWidth = width;
     }
 
     @Override
     double layout(double width, Layout layout) {
         return variableLength ? width : Math.min(width, columnWidth);
+    }
+
+    @Override
+    double layoutRow(Layout layout) {
+        valueHeight = Layout.snap(getValueHeight(layout)
+                                  + (layout.getValueInsets()
+                                           .getTop()
+                                     + layout.getValueInsets()
+                                             .getBottom()));
+        return valueHeight;
     }
 
     @Override
@@ -216,7 +218,6 @@ public class Primitive extends SchemaNode {
     private TableCell<JsonNode, JsonNode> createCell(int cardinality,
                                                      NestingFunction nesting,
                                                      Layout layout,
-                                                     double height,
                                                      boolean key) {
         return new TableCell<JsonNode, JsonNode>() {
             NestedColumnView view;
@@ -249,16 +250,11 @@ public class Primitive extends SchemaNode {
                         NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
                         if (row != null) {
                             view = (NestedColumnView) nesting.apply((label,
-                                                                     heightF) -> {
-                                double height = heightF.call();
-                                //                                System.out.println(String.format("%s -> %s",
-                                //                                                                 Primitive.this.getLabel(),
-                                //                                                                 height));
+                                                                     height) -> {
                                 TextArea control = buildControl(cardinality,
                                                                 layout);
                                 control.setMinHeight(height);
                                 control.setPrefHeight(height);
-                                control.setMaxHeight(height);
                                 layout.getModel()
                                       .apply(control, Primitive.this);
                                 return control;
@@ -284,6 +280,13 @@ public class Primitive extends SchemaNode {
                 }
             }
         };
+    }
+
+    private double getValueHeight(Layout layout) {
+        return layout.getValueLineHeight()
+               * (Math.ceil((maxWidth + layout.valueDoubleSpaceWidth())
+                            / justifiedWidth)
+                  + 1);
     }
 
     private String toString(JsonNode value) {

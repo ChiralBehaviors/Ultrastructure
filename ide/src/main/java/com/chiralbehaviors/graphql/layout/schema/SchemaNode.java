@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.collections.ObservableListWrapper;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -50,7 +49,6 @@ import javafx.util.Pair;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 abstract public class SchemaNode {
-
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
             return JsonNodeFactory.instance.arrayNode();
@@ -138,6 +136,10 @@ abstract public class SchemaNode {
         return nodes;
     }
 
+    public static double labelHeight(Layout layout) {
+        return 2 * layout.getLabelLineHeight();
+    }
+
     public static String labelStyleClass() {
         return "auto-layout-label";
     }
@@ -196,12 +198,12 @@ abstract public class SchemaNode {
         return "auto-layout-table-cell";
     }
 
-    public static String tableKeyCellClass() {
-        return "auto-layout-table-key-cell";
-    }
-
     public static String tableColumnStyleClass() {
         return "auto-layout-table-column";
+    }
+
+    public static String tableKeyCellClass() {
+        return "auto-layout-table-key-cell";
     }
 
     public static String tableStyleClass() {
@@ -251,8 +253,9 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract double buildTableColumn(int cardinality, NestingFunction nesting,
-                                     Layout layout, ObservableList<TableColumn<JsonNode, ?>> parent, boolean key);
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality, NestingFunction nesting,
+                                     Layout layout,
+                                     boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -267,6 +270,15 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
+    TableColumn<JsonNode, JsonNode> buildColumn() {
+        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
+        column.setPrefWidth(justifiedWidth);
+        column.setMinWidth(justifiedWidth);
+        return column;
+    }
+
     abstract double getLabelWidth(Layout layout);
 
     abstract double getTableColumnWidth();
@@ -278,6 +290,8 @@ abstract public class SchemaNode {
     abstract void justify(double width, Layout layout);
 
     abstract double layout(double width, Layout layout);
+
+    abstract double layoutRow(Layout layout);
 
     abstract double measure(ArrayNode data, Layout layout, boolean key);
 

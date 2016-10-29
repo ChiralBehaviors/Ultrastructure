@@ -253,8 +253,7 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality, NestingFunction nesting,
-                                     Layout layout,
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(NestingFunction nesting, Layout layout,
                                      boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {

@@ -70,8 +70,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     NestingFunction nesting,
+    TableColumn<JsonNode, JsonNode> buildTableColumn(NestingFunction nesting,
                                                      Layout layout,
                                                      boolean key) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
@@ -85,8 +84,7 @@ public class Primitive extends SchemaNode {
             }
         });
 
-        column.setCellFactory(c -> createCell(cardinality, nesting, layout,
-                                              key));
+        column.setCellFactory(c -> createCell(nesting, layout, key));
         return column;
     }
 
@@ -215,8 +213,7 @@ public class Primitive extends SchemaNode {
         return text;
     }
 
-    private TableCell<JsonNode, JsonNode> createCell(int cardinality,
-                                                     NestingFunction nesting,
+    private TableCell<JsonNode, JsonNode> createCell(NestingFunction nesting,
                                                      Layout layout,
                                                      boolean key) {
         return new TableCell<JsonNode, JsonNode>() {
@@ -251,8 +248,7 @@ public class Primitive extends SchemaNode {
                         if (row != null) {
                             view = (NestedColumnView) nesting.apply((label,
                                                                      height) -> {
-                                TextArea control = buildControl(cardinality,
-                                                                layout);
+                                TextArea control = buildControl(1, layout);
                                 control.setMinHeight(height);
                                 control.setPrefHeight(height);
                                 layout.getModel()

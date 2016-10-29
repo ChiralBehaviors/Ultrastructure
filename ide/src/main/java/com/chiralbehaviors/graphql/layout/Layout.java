@@ -49,6 +49,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
@@ -83,6 +84,7 @@ public class Layout {
     private Insets       tableCellInsets         = ZERO_INSETS;
     private Insets       tableInsets             = ZERO_INSETS;
     private Insets       tableKeyCellInsets      = ZERO_INSETS;
+    private Insets       tableRowInsets;
     private Font         valueFont               = Font.getDefault();
     private Insets       valueInsets             = ZERO_INSETS;
     private double       valueLineHeight         = 0;
@@ -170,6 +172,9 @@ public class Layout {
         table.getStyleClass()
              .add(tableStyleClass());
 
+        TableRow<String> tableRow = new TableRow<>();
+        table.setRowFactory(v -> tableRow);
+
         TableColumn<String, String> column = new TableColumn<>("");
         column.setCellFactory(c -> tableCell);
         column.getStyleClass()
@@ -210,6 +215,8 @@ public class Layout {
         table.applyCss();
         table.layout();
         table.refresh();
+        tableRow.applyCss();
+        tableRow.layout();
 
         ObservableList<String> listItems = outlineList.getItems();
         listItems.add("Lorem ipsum");
@@ -290,6 +297,11 @@ public class Layout {
                                  table.snappedBottomInset(),
                                  table.snappedLeftInset());
 
+        tableRowInsets = new Insets(tableRow.snappedTopInset(),
+                                    tableRow.snappedRightInset(),
+                                    tableRow.snappedBottomInset(),
+                                    tableRow.snappedLeftInset());
+
         valueInsets = new Insets(valueText.snappedTopInset(),
                                  valueText.snappedRightInset(),
                                  valueText.snappedBottomInset(),
@@ -348,6 +360,10 @@ public class Layout {
 
     public Insets getTableKeyCellInsets() {
         return tableKeyCellInsets;
+    }
+
+    public Insets getTableRowInsets() {
+        return tableRowInsets;
     }
 
     public Insets getValueInsets() {

@@ -274,6 +274,9 @@ public class Relation extends SchemaNode implements Cloneable {
 
     @Override
     TableColumn<JsonNode, JsonNode> buildColumn() {
+        if (isFold()) {
+            return fold.buildColumn();
+        }
         TableColumn<JsonNode, JsonNode> column = super.buildColumn();
         ObservableList<TableColumn<JsonNode, ?>> columns = column.getColumns();
         children.forEach(child -> columns.add(child.buildColumn()));
@@ -342,7 +345,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                    .mapToDouble(child -> {
                                        double height = child.getValueHeight(averageCardinality,
                                                                             layout);
-                                       if (child.isRelation()  && !child.isUseTable()) {
+                                       if (child.isRelation()
+                                           && !child.isUseTable()) {
                                            height += labelHeight(layout);
                                        }
                                        return height;
@@ -740,7 +744,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                        .add(child.buildColumn()));
         table.setPrefWidth(justifiedWidth);
         tableLabelHeight = layout.measureHeader(table);
-        System.out.println(String.format("** %s: %s", label, tableLabelHeight));
     }
 
     private NestingFunction nest(SchemaNode child,

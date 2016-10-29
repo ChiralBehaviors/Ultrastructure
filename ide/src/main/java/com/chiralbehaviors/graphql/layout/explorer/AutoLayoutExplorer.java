@@ -22,6 +22,8 @@ package com.chiralbehaviors.graphql.layout.explorer;
 
 import java.io.IOException;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
@@ -35,6 +37,12 @@ import javafx.stage.Stage;
  *
  */
 public class AutoLayoutExplorer extends Application {
+    {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        //        Logger.getLogger("com.sun.javafx").setLevel(Level.FINEST);
+        //        Logger.getLogger("javafx").setLevel(Level.FINEST);
+    }
 
     public static void main(String[] args) {
         launch(args);

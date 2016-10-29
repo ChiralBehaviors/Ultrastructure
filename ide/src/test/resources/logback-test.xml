@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration>
+<configuration> 
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <!-- reset all previous level configurations of all j.u.l. loggers -->
+        <resetJUL>true</resetJUL>
+    </contextListener> 
     <appender name="C" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${testing.logging.consoleLayoutPattern}</pattern>
@@ -13,10 +17,13 @@
         <level value="WARN" />
     </logger> 
     <root>
-        <level value="WARN" />
+        <level value="TRACE" />
         <appender-ref ref="C" />
     </root>
     <logger name="com.sun.javafx">
-        <level value="WARN" />
+        <level value="TRACE" />
+    </logger> 
+    <logger name="javafx">
+        <level value="TRACE" />
     </logger> 
 </configuration>

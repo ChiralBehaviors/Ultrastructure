@@ -253,8 +253,19 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(NestingFunction nesting, Layout layout,
-                                     boolean key);
+    TableColumn<JsonNode, JsonNode> buildColumn() {
+        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        column.getStyleClass()
+              .add(tableColumnStyleClass());
+        column.setPrefWidth(justifiedWidth);
+        column.setMinWidth(justifiedWidth);
+        column.setMaxWidth(justifiedWidth);
+        return column;
+    }
+
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(NestingFunction nesting,
+                                                              Layout layout,
+                                                              boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -269,15 +280,6 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
-    TableColumn<JsonNode, JsonNode> buildColumn() {
-        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.getStyleClass()
-              .add(tableColumnStyleClass());
-        column.setPrefWidth(justifiedWidth);
-        column.setMinWidth(justifiedWidth);
-        return column;
-    }
-
     abstract double getLabelWidth(Layout layout);
 
     abstract double getTableColumnWidth();
@@ -285,6 +287,10 @@ abstract public class SchemaNode {
     abstract double getValueHeight(int cardinality, Layout layout);
 
     abstract boolean isJusifiable();
+
+    boolean isUseTable() {
+        return false;
+    }
 
     abstract void justify(double width, Layout layout);
 

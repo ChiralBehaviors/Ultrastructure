@@ -287,11 +287,7 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.buildTableColumn(nesting, layout, k);
         }
 
-        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.getStyleClass()
-              .add(tableColumnStyleClass());
-        column.setPrefWidth(justifiedWidth);
-        column.setMinWidth(justifiedWidth);
+        TableColumn<JsonNode, JsonNode> column = super.buildColumn();
 
         Map<Primitive, Integer> leaves = new HashMap<>();
         int index = 0;
@@ -346,7 +342,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                    .mapToDouble(child -> {
                                        double height = child.getValueHeight(averageCardinality,
                                                                             layout);
-                                       if (child.isRelation()) {
+                                       if (child.isRelation()  && !child.isUseTable()) {
                                            height += labelHeight(layout);
                                        }
                                        return height;
@@ -584,7 +580,7 @@ public class Relation extends SchemaNode implements Cloneable {
         return list;
     }
 
-    private TableView<JsonNode> buildTable() {
+    private TableView<JsonNode> tableBase() {
         TableView<JsonNode> table = new TableView<>();
         table.getStyleClass()
              .add(tableStyleClass());
@@ -594,9 +590,6 @@ public class Relation extends SchemaNode implements Cloneable {
         return table;
     }
 
-    /**
-     * Builds the top level nested table
-     */
     private TableView<JsonNode> buildTable(Function<JsonNode, JsonNode> extractor,
                                            int cardinality, Layout layout) {
         if (isFold()) {
@@ -604,7 +597,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                    layout);
         }
 
-        TableView<JsonNode> table = buildTable();
+        TableView<JsonNode> table = tableBase();
         table.setRowFactory(tableView -> {
             NestedTableRow<JsonNode> row = new NestedTableRow<JsonNode>();
             row.setPrefHeight(getRowHeight(layout));
@@ -630,10 +623,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                            return view;
                                        }, layout, key.getAndSet(false))));
 
-        if (cardinality > 0) {
-            double tableHeight = getTableHeight(cardinality, layout);
-            table.setPrefHeight(tableHeight);
-        }
+        double tableHeight = getTableHeight(cardinality, layout);
+        table.setPrefHeight(tableHeight);
         return table;
     }
 
@@ -744,10 +735,12 @@ public class Relation extends SchemaNode implements Cloneable {
     private void layoutTable(Layout layout) {
         nestTables();
         layoutRow(layout);
-        TableView<JsonNode> table = buildTable();
-        table.getColumns()
-             .add(buildColumn());
+        TableView<JsonNode> table = tableBase();
+        children.forEach(child -> table.getColumns()
+                                       .add(child.buildColumn()));
+        table.setPrefWidth(justifiedWidth);
         tableLabelHeight = layout.measureHeader(table);
+        System.out.println(String.format("** %s: %s", label, tableLabelHeight));
     }
 
     private NestingFunction nest(SchemaNode child,

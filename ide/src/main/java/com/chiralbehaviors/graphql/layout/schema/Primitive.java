@@ -166,8 +166,8 @@ public class Primitive extends SchemaNode {
                              .getLeft()
                        + layout.getValueInsets()
                                .getRight();
-        justifiedWidth = columnWidth;
-        return columnWidth + nestingInset;
+        justifiedWidth = columnWidth + nestingInset;
+        return justifiedWidth;
     }
 
     @Override

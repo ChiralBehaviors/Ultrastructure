@@ -66,8 +66,8 @@ public class Layout {
                           a.getRight() + b.getRight());
     }
 
-    public static double snap(double y) {
-        return ((int) y) + .5;
+    public static double snap(double value) {
+        return Math.ceil(value);
     }
 
     private Font         labelFont               = Font.getDefault();

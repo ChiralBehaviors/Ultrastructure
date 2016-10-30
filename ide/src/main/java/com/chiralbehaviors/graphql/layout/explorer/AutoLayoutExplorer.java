@@ -54,10 +54,10 @@ public class AutoLayoutExplorer extends Application {
         queryState.setQuery(Utils.getDocument(getClass().getResourceAsStream("/testQuery.gql")));
         queryState.setSelection("allFilms");
         AutoLayoutController controller = new AutoLayoutController(queryState);
-        //        controller.getLayout()
-        //                  .getStylesheets()
-        //                  .add(getClass().getResource("/nested.css")
-        //                                 .toExternalForm());
+        controller.getLayout()
+                  .getStylesheets()
+                  .add(getClass().getResource("/nested.css")
+                                 .toExternalForm());
         primaryStage.setScene(new Scene(controller.getRoot(), 800, 800));
         primaryStage.show();
     }

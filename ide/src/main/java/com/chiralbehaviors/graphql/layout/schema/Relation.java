@@ -451,9 +451,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                 .getAsDouble();
 
         double extendedHeight = extendedHeight(layout, cardinality);
-        System.out.println(String.format("%s: %s x %s -> %s", label,
-                                         elementHeight, cardinality,
-                                         extendedHeight));
         return extendedHeight;
     }
 
@@ -627,7 +624,7 @@ public class Relation extends SchemaNode implements Cloneable {
         boolean isKey = !children.get(0)
                                  .isRelation();
         AtomicBoolean key = new AtomicBoolean(isKey);
-        double height = extendedHeight(layout, cardinality);
+        double height = extendedHeight(layout, 1);
 
         children.forEach(child -> table.getColumns()
                                        .add(child.buildTableColumn(averageCardinality,
@@ -640,11 +637,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                                                        return view;
                                                                    }, layout,
                                                                    key.getAndSet(false))));
-
-        System.out.println(String.format("Table: %s: %s x %s = %s", label,
-                                         rowHeight, cardinality,
-                                         contentHeight));
-        //        table.setMinHeight(contentHeight);
         table.setPrefHeight(contentHeight);
         if (cardinality > 1) {
             table.setMinHeight(contentHeight);
@@ -752,9 +744,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                 .getTop()
                         + layout.getTableInsets()
                                 .getBottom();
-        System.out.println(String.format("Table (layout) %s: %s x %s + %s -> %s",
-                                         label, elementHeight, cardinality,
-                                         tableLabelHeight, contentHeight));
         return contentHeight;
     }
 
@@ -780,7 +769,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                       .getBottom();
         double listInset = key ? keyListInset : nestedListInset;
         double cellInset = key ? keyCellInset : nestedCellInset;
-        double cellHeight = Layout.snap(elementHeight + cellInset);
+        double cellHeight = elementHeight + cellInset;
         double calculatedHeight = cellHeight * cardinality;
         return (p, row, primitive) -> {
             return nesting.apply((parentId, rendered) -> {
@@ -791,12 +780,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                              - calculatedHeight);
                 double childDeficit = Math.max(0, deficit / cardinality);
                 double extended = Layout.snap(cellHeight + childDeficit);
-
-                System.out.println(String.format("Nest: %s[%s] %s:%s %s:%s -> %s",
-                                                 Relation.this.label,
-                                                 averageCardinality, deficit,
-                                                 childDeficit, elementHeight,
-                                                 cellHeight, extended));
+                
                 ListView<JsonNode> split = split(key, id, primitiveColumn, row,
                                                  leaves.size());
                 model.apply(split, Relation.this, child);

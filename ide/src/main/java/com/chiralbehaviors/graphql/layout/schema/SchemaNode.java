@@ -217,6 +217,8 @@ abstract public class SchemaNode {
     final String field;
     double       justifiedWidth = 0;
     String       label;
+    
+    abstract double layoutOutline(int cardinality, Layout layout);
 
     public SchemaNode(String field) {
         this(field, field);
@@ -263,9 +265,9 @@ abstract public class SchemaNode {
         return column;
     }
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(NestingFunction nesting,
-                                                              Layout layout,
-                                                              boolean key);
+    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
+                                                              NestingFunction nesting,
+                                                              Layout layout, boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -284,19 +286,17 @@ abstract public class SchemaNode {
 
     abstract double getTableColumnWidth();
 
-    abstract double getValueHeight(int cardinality, Layout layout);
-
     abstract boolean isJusifiable();
 
     boolean isUseTable() {
         return false;
     }
 
-    abstract void justify(double width, Layout layout);
+    abstract void justify(int cardinality, double width, Layout layout);
 
     abstract double layout(double width, Layout layout);
 
-    abstract double layoutRow(Layout layout);
+    abstract double layoutRow(int cardinality, Layout layout);
 
     abstract double measure(ArrayNode data, Layout layout, boolean key);
 

@@ -261,6 +261,7 @@ public class Primitive extends SchemaNode {
                                 TextArea control = buildControl(1, layout);
                                 control.setMinHeight(height);
                                 control.setPrefHeight(height);
+                                control.setMaxHeight(height);
                                 layout.getModel()
                                       .apply(control, Primitive.this);
                                 return control;

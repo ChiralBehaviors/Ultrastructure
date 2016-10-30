@@ -545,6 +545,7 @@ public class Relation extends SchemaNode implements Cloneable {
             box = new VBox();
             box.setPrefWidth(justifiedWidth);
         }
+        control.setMinHeight(contentHeight);
         box.getChildren()
            .add(labelText);
         box.getChildren()
@@ -585,7 +586,6 @@ public class Relation extends SchemaNode implements Cloneable {
         layout.getModel()
               .apply(list, this);
         list.setPrefHeight(contentHeight);
-        //        list.setMinHeight(contentHeight);
         list.setFixedCellSize(elementHeight);
         list.getStyleClass()
             .add(outlineListStyleClass());
@@ -597,6 +597,7 @@ public class Relation extends SchemaNode implements Cloneable {
             return cell;
         });
         list.setMinWidth(0);
+        list.setPrefWidth(1);
         list.setPrefWidth(1);
         list.setPlaceholder(new Text());
         return list;
@@ -612,6 +613,7 @@ public class Relation extends SchemaNode implements Cloneable {
         TableView<JsonNode> table = tableBase();
         table.setRowFactory(tableView -> {
             NestedTableRow<JsonNode> row = new NestedTableRow<JsonNode>();
+            row.setMinHeight(rowHeight);
             row.setPrefHeight(rowHeight);
             layout.getModel()
                   .apply(row, Relation.this);
@@ -644,6 +646,9 @@ public class Relation extends SchemaNode implements Cloneable {
                                          contentHeight));
         //        table.setMinHeight(contentHeight);
         table.setPrefHeight(contentHeight);
+        if (cardinality > 1) {
+            table.setMinHeight(contentHeight);
+        }
         return table;
     }
 
@@ -787,6 +792,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setFixedCellSize(extended);
                 split.setMinHeight(rendered);
                 split.setPrefHeight(rendered);
+                split.setMaxHeight(rendered);
                 split.setCellFactory(c -> {
                     ListCell<JsonNode> cell = nestListCell(child, p, id, key,
                                                            averageCardinality * extended);

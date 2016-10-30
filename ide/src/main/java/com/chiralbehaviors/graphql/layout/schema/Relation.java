@@ -762,6 +762,14 @@ public class Relation extends SchemaNode implements Cloneable {
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, Layout layout,
                                  boolean key, LayoutModel model) {
+        double nestedListInset = layout.getNestedListInsets()
+                                       .getTop()
+                                 + layout.getNestedListInsets()
+                                         .getBottom();
+        double keyListInset = layout.getNestedKeyListInsets()
+                                    .getTop()
+                              + layout.getNestedKeyListInsets()
+                                      .getBottom();
         double nestedCellInset = layout.getNestedListCellInsets()
                                        .getTop()
                                  + layout.getNestedListCellInsets()
@@ -770,19 +778,20 @@ public class Relation extends SchemaNode implements Cloneable {
                                     .getTop()
                               + layout.getNestedKeyListCellInsets()
                                       .getBottom();
+        double listInset = key ? keyListInset : nestedListInset;
         double cellInset = key ? keyCellInset : nestedCellInset;
         double cellHeight = Layout.snap(elementHeight + cellInset);
         double calculatedHeight = cellHeight * cardinality;
         return (p, row, primitive) -> {
             return nesting.apply((parentId, rendered) -> {
-                double deficit = Math.max(0, rendered - calculatedHeight);
+                String id = parentId.call();
+                Integer primitiveColumn = leaves.get(primitive);
+
+                double deficit = Math.max(0, rendered - listInset
+                                             - calculatedHeight);
                 double childDeficit = Math.max(0, deficit / cardinality);
                 double extended = Layout.snap(cellHeight + childDeficit);
-                double extendedCellHeight = Layout.snap(averageCardinality
-                                                        * extended);
 
-                Integer primitiveColumn = leaves.get(primitive);
-                String id = parentId.call();
                 System.out.println(String.format("Nest: %s[%s] %s:%s %s:%s -> %s",
                                                  Relation.this.label,
                                                  averageCardinality, deficit,
@@ -797,7 +806,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setMaxHeight(rendered);
                 split.setCellFactory(c -> {
                     ListCell<JsonNode> cell = nestListCell(child, p, id, key,
-                                                           extendedCellHeight);
+                                                           extended);
                     if (key) {
                         cell.getStyleClass()
                             .add(nestedKeyListCellClass());

@@ -788,9 +788,8 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setMinHeight(rendered);
                 split.setPrefHeight(rendered);
                 split.setCellFactory(c -> {
-                    ListCell<JsonNode> cell = nestListCell(child, p, id,
-                                                           key, cardinality
-                                                                * extended);
+                    ListCell<JsonNode> cell = nestListCell(child, p, id, key,
+                                                           averageCardinality * extended);
                     if (key) {
                         cell.getStyleClass()
                             .add(nestedKeyListCellClass());

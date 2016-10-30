@@ -33,10 +33,12 @@ import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableKeyCellC
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleClass;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkinBase;
+import com.sun.javafx.scene.control.skin.TextAreaSkin;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
@@ -52,6 +54,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -301,11 +304,23 @@ public class Layout {
                                     tableRow.snappedRightInset(),
                                     tableRow.snappedBottomInset(),
                                     tableRow.snappedLeftInset());
-
-        valueInsets = new Insets(valueText.snappedTopInset(),
-                                 valueText.snappedRightInset(),
-                                 valueText.snappedBottomInset(),
-                                 valueText.snappedLeftInset());
+        Field contentField;
+        try {
+            contentField = TextAreaSkin.class.getDeclaredField("contentView");
+        } catch (NoSuchFieldException | SecurityException e) {
+            throw new IllegalStateException(e);
+        }
+        contentField.setAccessible(true);
+        Region content;
+        try {
+            content = (Region) contentField.get(valueText.getSkin());
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
+        valueInsets = new Insets(content.snappedTopInset() + 1,
+                                 content.snappedRightInset() + 1,
+                                 content.snappedBottomInset() + 1,
+                                 content.snappedLeftInset() + 1);
 
         labelInsets = valueInsets;
         valueLineHeight = FONT_LOADER.getFontMetrics(valueFont)

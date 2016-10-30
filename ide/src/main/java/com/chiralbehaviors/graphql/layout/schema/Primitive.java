@@ -72,7 +72,8 @@ public class Primitive extends SchemaNode {
     @Override
     TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                      NestingFunction nesting,
-                                                     Layout layout, boolean key) {
+                                                     Layout layout,
+                                                     boolean key) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
               .add(tableColumnStyleClass());
@@ -108,17 +109,6 @@ public class Primitive extends SchemaNode {
     @Override
     double getTableColumnWidth() {
         return columnWidth + nestingInset;
-    }
-
-    double getValueHeight(Layout layout) {
-        double rows = Math.ceil((maxWidth + layout.valueDoubleSpaceWidth())
-                                / justifiedWidth)
-                      + 1;
-        return Layout.snap(layout.getValueLineHeight() * rows)
-               + layout.getValueInsets()
-                       .getTop()
-               + layout.getValueInsets()
-                       .getBottom();
     }
 
     @Override
@@ -229,6 +219,7 @@ public class Primitive extends SchemaNode {
         return new TableCell<JsonNode, JsonNode>() {
             NestedColumnView view;
             {
+                setAlignment(Pos.CENTER);
                 if (key) {
                     getStyleClass().add(tableKeyCellClass());
                 } else {
@@ -287,6 +278,16 @@ public class Primitive extends SchemaNode {
                 }
             }
         };
+    }
+
+    private double getValueHeight(Layout layout) {
+        double rows = Math.ceil((maxWidth + layout.valueDoubleSpaceWidth())
+                                / justifiedWidth) + 1;
+        return Layout.snap(layout.getValueLineHeight() * rows)
+               + layout.getValueInsets()
+                       .getTop()
+               + layout.getValueInsets()
+                       .getBottom();
     }
 
     private String toString(JsonNode value) {

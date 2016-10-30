@@ -66,7 +66,7 @@ public class Layout {
     public static Insets add(Insets a, Insets b) {
         return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
                           a.getBottom() + b.getBottom(),
-                          a.getRight() + b.getRight());
+                          a.getLeft() + b.getLeft());
     }
 
     public static double snap(double value) {
@@ -198,7 +198,7 @@ public class Layout {
         root.getChildren()
             .addAll(table, outlineList, nestedKeyList, nestedList, valueText,
                     labelText);
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 800, 600);
         if (styleSheets != null) {
             scene.getStylesheets()
                  .addAll(styleSheets);
@@ -213,6 +213,13 @@ public class Layout {
         tableItems.add("Lorem ipsum");
         table.setItems(null);
         table.setItems(tableItems);
+
+        ObservableList<String> listItems = outlineList.getItems();
+        listItems.add("Lorem ipsum");
+        outlineList.setItems(null);
+        outlineList.setItems(listItems);
+        outlineList.requestLayout();
+
         root.applyCss();
         root.layout();
         table.applyCss();
@@ -221,10 +228,6 @@ public class Layout {
         tableRow.applyCss();
         tableRow.layout();
 
-        ObservableList<String> listItems = outlineList.getItems();
-        listItems.add("Lorem ipsum");
-        outlineList.setItems(null);
-        outlineList.setItems(listItems);
         outlineList.applyCss();
         outlineList.layout();
         outlineList.refresh();
@@ -317,10 +320,10 @@ public class Layout {
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
-        valueInsets = new Insets(content.snappedTopInset() + 1,
-                                 content.snappedRightInset() + 1,
-                                 content.snappedBottomInset() + 1,
-                                 content.snappedLeftInset() + 1);
+        valueInsets = new Insets(content.snappedTopInset(),
+                                 content.snappedRightInset(),
+                                 content.snappedBottomInset(),
+                                 content.snappedLeftInset());
 
         labelInsets = valueInsets;
         valueLineHeight = FONT_LOADER.getFontMetrics(valueFont)
@@ -434,7 +437,7 @@ public class Layout {
     }
 
     public double valueWidth(String value) {
-        return FONT_LOADER.computeStringWidth(String.format("W%sW", value),
+        return FONT_LOADER.computeStringWidth(String.format("W%sW\n", value),
                                               valueFont);
     }
 }

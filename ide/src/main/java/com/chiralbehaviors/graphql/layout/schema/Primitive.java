@@ -76,7 +76,7 @@ public class Primitive extends SchemaNode {
                                                      boolean key) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
-              .add(tableColumnStyleClass());
+              .add(AUTO_LAYOUT_TABLE_COLUMN);
 
         column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
             @Override
@@ -97,13 +97,8 @@ public class Primitive extends SchemaNode {
     TableColumn<JsonNode, JsonNode> getColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
-              .add(tableColumnStyleClass());
+              .add(AUTO_LAYOUT_TABLE_COLUMN);
         return column;
-    }
-
-    @Override
-    double getLabelWidth(Layout layout) {
-        return layout.labelWidth(label);
     }
 
     @Override
@@ -221,9 +216,9 @@ public class Primitive extends SchemaNode {
             {
                 setAlignment(Pos.CENTER);
                 if (key) {
-                    getStyleClass().add(tableKeyCellClass());
+                    getStyleClass().add(AUTO_LAYOUT_TABLE_KEY_CELL);
                 } else {
-                    getStyleClass().add(tableCellClass());
+                    getStyleClass().add(AUTO_LAYOUT_TABLE_CELL);
                 }
                 emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
                     if (isEmpty) {
@@ -282,11 +277,11 @@ public class Primitive extends SchemaNode {
 
     private double getValueHeight(Layout layout) {
         double rows = Math.ceil(maxWidth / justifiedWidth) + 1;
-        return Layout.snap(layout.getValueLineHeight() * rows)
-               + layout.getValueInsets()
-                       .getTop()
-               + layout.getValueInsets()
-                       .getBottom();
+        return Math.min(43, Layout.snap(layout.getValueLineHeight() * rows)
+                            + layout.getValueInsets()
+                                    .getTop()
+                            + layout.getValueInsets()
+                                    .getBottom());
     }
 
     private String toString(JsonNode value) {

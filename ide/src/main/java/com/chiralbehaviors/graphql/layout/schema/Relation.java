@@ -421,20 +421,21 @@ public class Relation extends SchemaNode implements Cloneable {
                             + layout.getOutlineListCellInsets()
                                     .getBottom();
 
-        elementHeight = Layout.snap(children.stream()
+        double height = Layout.snap(children.stream()
                                             .mapToDouble(child -> child.layoutOutline(averageCardinality,
                                                                                       layout))
                                             .peek(h -> childHeights.add(h))
                                             .reduce((a, b) -> a + b)
-                                            .getAsDouble()
-                                    + cellInsets);
+                                            .getAsDouble());
+        elementHeight = height + cellInsets;
         contentHeight = Layout.snap(cardinality * elementHeight) + listInsets;
         double labeledHeight = Layout.snap(contentHeight + labelHeight(layout));
 
-        System.out.println(String.format("%s: (%s + %s) x %s -> %s : %s \n %s",
-                                         label, elementHeight, cellInsets,
-                                         cardinality, contentHeight,
-                                         labeledHeight, childHeights));
+        System.out.println(String.format("Layout %s: (%s:%s -> %s) x %s + %s-> %s : %s \n %s",
+                                         label, height, cellInsets,
+                                         elementHeight, cardinality, listInsets,
+                                         contentHeight, labeledHeight,
+                                         childHeights));
         return labeledHeight;
     }
 
@@ -587,7 +588,7 @@ public class Relation extends SchemaNode implements Cloneable {
         list.setPrefHeight(contentHeight);
         list.setFixedCellSize(elementHeight);
         list.getStyleClass()
-            .add(outlineListStyleClass());
+            .add(AUTO_LAYOUT_OUTLINE_LIST);
         list.setCellFactory(c -> {
             ListCell<JsonNode> cell = outlineListCell(outlineLabelWidth,
                                                       extractor, layout);
@@ -780,7 +781,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                              - calculatedHeight);
                 double childDeficit = Math.max(0, deficit / cardinality);
                 double extended = Layout.snap(cellHeight + childDeficit);
-                
+
                 ListView<JsonNode> split = split(key, id, primitiveColumn, row,
                                                  leaves.size());
                 model.apply(split, Relation.this, child);
@@ -789,14 +790,21 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setPrefHeight(rendered);
                 split.setMaxHeight(rendered);
                 split.setCellFactory(c -> {
-                    ListCell<JsonNode> cell = nestListCell(child, p, id, key,
+                    ListCell<JsonNode> cell = nestListCell(child, p, id,
                                                            extended);
                     if (key) {
                         cell.getStyleClass()
-                            .add(nestedKeyListCellClass());
+                            .add(AUTO_LAYOUT_NEST_KEY_LIST_CELL);
                     } else {
                         cell.getStyleClass()
-                            .add(nestedListCellClass());
+                            .add(AUTO_LAYOUT_NEST_LIST_CELL);
+                    }
+                    if (key) {
+                        cell.getStyleClass()
+                            .add(AUTO_LAYOUT_NEST_KEY_LIST_CELL);
+                    } else {
+                        cell.getStyleClass()
+                            .add(AUTO_LAYOUT_NEST_LIST_CELL);
                     }
                     model.apply(cell, Relation.this);
                     return cell;
@@ -808,16 +816,10 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private ListCell<JsonNode> nestListCell(SchemaNode child,
                                             BiFunction<Producer<String>, Double, Control> p,
-                                            String id, boolean isKey,
-                                            double childHeight) {
+                                            String id, double childHeight) {
         return new ListCell<JsonNode>() {
             Control childControl;
             {
-                if (isKey) {
-                    getStyleClass().add(nestedKeyListCellClass());
-                } else {
-                    getStyleClass().add(nestedListCellClass());
-                }
                 emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
                     if (isEmpty) {
                         setGraphic(null);
@@ -876,6 +878,7 @@ public class Relation extends SchemaNode implements Cloneable {
             VBox                                              cell     = new VBox();
             Map<SchemaNode, Pair<Consumer<JsonNode>, Parent>> controls = new HashMap<>();
             {
+                getStyleClass().add(AUTO_LAYOUT_OUTLINE_LIST_CELL);
                 cell.setMinWidth(0);
                 cell.setPrefWidth(1);
                 cell.setMinHeight(elementHeight);
@@ -928,7 +931,7 @@ public class Relation extends SchemaNode implements Cloneable {
         };
         ObservableList<String> styleClass = content.getStyleClass();
 
-        styleClass.add(key ? nestedKeyListClass() : nestedListClass());
+        styleClass.add(key ? AUTO_LAYOUT_NEST_KEY_LIST : AUTO_LAYOUT_NEST_LIST);
         if (!primitiveColumn.equals(count - 1)) {
             content.getStylesheets()
                    .add(getClass().getResource("hide-scrollbar.css")
@@ -943,7 +946,7 @@ public class Relation extends SchemaNode implements Cloneable {
     private TableView<JsonNode> tableBase() {
         TableView<JsonNode> table = new TableView<>();
         table.getStyleClass()
-             .add(tableStyleClass());
+             .add(AUTO_LAYOUT_TABLE);
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefWidth(justifiedWidth);

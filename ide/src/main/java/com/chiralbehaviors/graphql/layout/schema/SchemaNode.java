@@ -49,6 +49,19 @@ import javafx.util.Pair;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 abstract public class SchemaNode {
+    public static final String AUTO_LAYOUT_VALUE = "auto-layout-value";
+    public static final String AUTO_LAYOUT_TABLE = "auto-layout-table";
+    public static final String AUTO_LAYOUT_TABLE_KEY_CELL = "auto-layout-table-key-cell";
+    public static final String AUTO_LAYOUT_TABLE_COLUMN = "auto-layout-table-column";
+    public static final String AUTO_LAYOUT_TABLE_CELL = "auto-layout-table-cell";
+    public static final String AUTO_LAYOUT_LABEL              = "auto-layout-label";
+    public static final String AUTO_LAYOUT_NEST_KEY_LIST      = "auto-layout-nest-key-list";
+    public static final String AUTO_LAYOUT_NEST_KEY_LIST_CELL = "auto-layout-nest-key-list-cell";
+    public static final String AUTO_LAYOUT_NEST_LIST          = "auto-layout-nest-list";
+    public static final String AUTO_LAYOUT_NEST_LIST_CELL     = "auto-layout-nest-list-cell";
+    public static final String AUTO_LAYOUT_OUTLINE_LIST       = "auto-layout-outline-list";
+    public static final String AUTO_LAYOUT_OUTLINE_LIST_CELL  = "auto-layout-outline-list-cell";
+
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
             return JsonNodeFactory.instance.arrayNode();
@@ -137,35 +150,11 @@ abstract public class SchemaNode {
     }
 
     public static double labelHeight(Layout layout) {
-        return 2 * layout.getLabelLineHeight();
-    }
-
-    public static String labelStyleClass() {
-        return "auto-layout-label";
-    }
-
-    public static String nestedKeyListCellClass() {
-        return "auto-layout-nest-key-list-cell";
-    }
-
-    public static String nestedKeyListClass() {
-        return "auto-layout-nest-key-list";
-    }
-
-    public static String nestedListCellClass() {
-        return "auto-layout-nest-list-cell";
-    }
-
-    public static String nestedListClass() {
-        return "auto-layout-nest-list";
-    }
-
-    public static String outlineListCellClass() {
-        return "auto-layout-outline-list-cell";
-    }
-
-    public static String outlineListStyleClass() {
-        return "auto-layout-outline-list";
+        return Layout.snap(layout.getValueLineHeight() * 2)
+               + layout.getValueInsets()
+                       .getTop()
+               + layout.getValueInsets()
+                       .getBottom();
     }
 
     public static void setItemsOf(Control control, JsonNode data) {
@@ -194,31 +183,9 @@ abstract public class SchemaNode {
         }
     }
 
-    public static String tableCellClass() {
-        return "auto-layout-table-cell";
-    }
-
-    public static String tableColumnStyleClass() {
-        return "auto-layout-table-column";
-    }
-
-    public static String tableKeyCellClass() {
-        return "auto-layout-table-key-cell";
-    }
-
-    public static String tableStyleClass() {
-        return "auto-layout-table";
-    }
-
-    public static String valueStyleClass() {
-        return "auto-layout-value";
-    }
-
     final String field;
     double       justifiedWidth = 0;
     String       label;
-    
-    abstract double layoutOutline(int cardinality, Layout layout);
 
     public SchemaNode(String field) {
         this(field, field);
@@ -258,7 +225,7 @@ abstract public class SchemaNode {
     TableColumn<JsonNode, JsonNode> buildColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.getStyleClass()
-              .add(tableColumnStyleClass());
+              .add(AUTO_LAYOUT_TABLE_COLUMN);
         column.setPrefWidth(justifiedWidth);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);
@@ -267,7 +234,8 @@ abstract public class SchemaNode {
 
     abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
                                                               NestingFunction nesting,
-                                                              Layout layout, boolean key);
+                                                              Layout layout,
+                                                              boolean key);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -282,7 +250,9 @@ abstract public class SchemaNode {
         return extract(extractor);
     }
 
-    abstract double getLabelWidth(Layout layout);
+    double getLabelWidth(Layout layout) {
+        return layout.labelWidth(label);
+    }
 
     abstract double getTableColumnWidth();
 
@@ -295,6 +265,8 @@ abstract public class SchemaNode {
     abstract void justify(int cardinality, double width, Layout layout);
 
     abstract double layout(double width, Layout layout);
+
+    abstract double layoutOutline(int cardinality, Layout layout);
 
     abstract double layoutRow(int cardinality, Layout layout);
 

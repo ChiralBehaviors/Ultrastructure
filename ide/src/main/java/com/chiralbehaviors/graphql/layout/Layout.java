@@ -20,18 +20,18 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.labelStyleClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedKeyListCellClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedKeyListClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListCellClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.nestedListClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListCellClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.outlineListStyleClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableCellClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableColumnStyleClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableKeyCellClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.tableStyleClass;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.valueStyleClass;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_LABEL;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_KEY_LIST;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_KEY_LIST_CELL;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_LIST;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_LIST_CELL;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_OUTLINE_LIST;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_OUTLINE_LIST_CELL;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_CELL;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_COLUMN;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_KEY_CELL;
+import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_VALUE;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -104,13 +104,13 @@ public class Layout {
         TextArea labelText = new TextArea("Lorem Ipsum");
 
         valueText.getStyleClass()
-                 .add(valueStyleClass());
+                 .add(AUTO_LAYOUT_VALUE);
         valueText.getStyleClass()
-                 .add(labelStyleClass());
+                 .add(AUTO_LAYOUT_LABEL);
 
         ListView<String> outlineList = new ListView<>();
         outlineList.getStyleClass()
-                   .add(outlineListStyleClass());
+                   .add(AUTO_LAYOUT_OUTLINE_LIST);
 
         ListCell<String> outlineListCell = new ListCell<String>() {
             @Override
@@ -120,7 +120,7 @@ public class Layout {
             };
         };
         outlineListCell.getStyleClass()
-                       .add(outlineListCellClass());
+                       .add(AUTO_LAYOUT_OUTLINE_LIST_CELL);
         outlineList.setCellFactory(s -> outlineListCell);
 
         ListCell<String> nestedKeyListCell = new ListCell<String>() {
@@ -131,10 +131,10 @@ public class Layout {
             };
         };
         nestedKeyListCell.getStyleClass()
-                         .add(nestedKeyListCellClass());
+                         .add(AUTO_LAYOUT_NEST_KEY_LIST_CELL);
         ListView<String> nestedKeyList = new ListView<>();
         nestedKeyList.getStyleClass()
-                     .add(nestedKeyListClass());
+                     .add(AUTO_LAYOUT_NEST_KEY_LIST);
         nestedKeyList.setCellFactory(s -> nestedKeyListCell);
 
         ListCell<String> nestedListCell = new ListCell<String>() {
@@ -145,10 +145,10 @@ public class Layout {
             };
         };
         nestedListCell.getStyleClass()
-                      .add(nestedListCellClass());
+                      .add(AUTO_LAYOUT_NEST_LIST_CELL);
         ListView<String> nestedList = new ListView<>();
         nestedList.getStyleClass()
-                  .add(nestedListClass());
+                  .add(AUTO_LAYOUT_NEST_LIST);
         nestedList.setCellFactory(s -> nestedListCell);
 
         TableCell<String, String> tableCell = new TableCell<String, String>() {
@@ -159,7 +159,7 @@ public class Layout {
             }
         };
         tableCell.getStyleClass()
-                 .add(tableCellClass());
+                 .add(AUTO_LAYOUT_TABLE_CELL);
 
         TableCell<String, String> tableKeyCell = new TableCell<String, String>() {
             @Override
@@ -169,11 +169,11 @@ public class Layout {
             }
         };
         tableKeyCell.getStyleClass()
-                    .add(tableKeyCellClass());
+                    .add(AUTO_LAYOUT_TABLE_KEY_CELL);
 
         TableView<String> table = new TableView<>();
         table.getStyleClass()
-             .add(tableStyleClass());
+             .add(AUTO_LAYOUT_TABLE);
 
         TableRow<String> tableRow = new TableRow<>();
         table.setRowFactory(v -> tableRow);
@@ -181,14 +181,14 @@ public class Layout {
         TableColumn<String, String> column = new TableColumn<>("");
         column.setCellFactory(c -> tableCell);
         column.getStyleClass()
-              .add(tableColumnStyleClass());
+              .add(AUTO_LAYOUT_TABLE_COLUMN);
         column.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
 
         TableColumn<String, String> keyColumn = new TableColumn<>("");
         keyColumn.setCellFactory(c -> tableKeyCell);
         keyColumn.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
         keyColumn.getStyleClass()
-                 .add(tableColumnStyleClass());
+                 .add(AUTO_LAYOUT_TABLE_COLUMN);
         table.getColumns()
              .add(column);
         table.getColumns()

@@ -151,7 +151,7 @@ abstract public class SchemaNode {
     }
 
     public static double labelHeight(Layout layout) {
-        return Math.min(43, Layout.snap(layout.getValueLineHeight() * 2)
+        return Math.max(43, Layout.snap(layout.getValueLineHeight() * 2)
                             + layout.getValueVerticalInset());
     }
 

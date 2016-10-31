@@ -413,11 +413,11 @@ public class Relation extends SchemaNode implements Cloneable {
                                             .peek(h -> childHeights.add(h))
                                             .reduce((a, b) -> a + b)
                                             .getAsDouble());
-        contentHeight = Layout.snap(cardinality
-                                    * (elementHeight
-                                       + layout.getOutlineListCellVerticalInset()));
-        return Layout.snap(contentHeight + labelHeight(layout))
-               + layout.getOutlineListVerticalInset();
+        contentHeight = Layout.snap(cardinality * (elementHeight
+                                                   + layout.getOutlineListCellVerticalInset()))
+                        + layout.getOutlineListVerticalInset();
+        double labeledHeight = Layout.snap(contentHeight + labelHeight(layout));
+        return labeledHeight;
     }
 
     @Override
@@ -500,8 +500,6 @@ public class Relation extends SchemaNode implements Cloneable {
         labelText.setPrefColumnCount(1);
         labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
-        double labelHeight = labelHeight(layout);
-        labelText.setPrefHeight(labelHeight);
         Pane box;
         if (useTable) {
             box = new HBox();
@@ -511,6 +509,8 @@ public class Relation extends SchemaNode implements Cloneable {
         } else {
             box = new VBox();
             box.setPrefWidth(justifiedWidth);
+            labelText.setPrefHeight(labelHeight(layout));
+            labelText.setMaxHeight(labelHeight(layout));
         }
         box.getChildren()
            .add(labelText);
@@ -565,7 +565,6 @@ public class Relation extends SchemaNode implements Cloneable {
             return cell;
         });
         list.setMinWidth(0);
-        list.setPrefWidth(1);
         list.setPrefWidth(1);
         list.setPlaceholder(new Text());
         return list;
@@ -722,7 +721,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 split.setFixedCellSize(extended);
                 split.setMinHeight(rendered);
                 split.setPrefHeight(rendered);
-                split.setMaxHeight(rendered);
                 split.setCellFactory(c -> {
                     ListCell<JsonNode> cell = nestListCell(child, p, id,
                                                            extended);
@@ -802,24 +800,28 @@ public class Relation extends SchemaNode implements Cloneable {
                                                Function<JsonNode, JsonNode> extractor,
                                                Layout layout) {
         return new ListCell<JsonNode>() {
-            VBox                                              cell     = new VBox();
+            VBox                                              cell;
             Map<SchemaNode, Pair<Consumer<JsonNode>, Parent>> controls = new HashMap<>();
             {
+                itemProperty().addListener((obs, oldItem, newItem) -> {
+                    if (newItem != null) {
+                        if (cell == null) {
+                            initialize(outlineLabelWidth, extractor, layout);
+                        }
+                        setGraphic(cell);
+                    }
+                });
+                emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
+                    if (isEmpty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(cell);
+                    }
+                });
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                setAlignment(Pos.CENTER);
                 setAlignment(Pos.CENTER);
                 getStyleClass().add(AUTO_LAYOUT_OUTLINE_LIST_CELL);
-                cell.setMinWidth(0);
-                cell.setPrefWidth(1);
-                cell.setMinHeight(elementHeight);
-                cell.setPrefHeight(elementHeight);
-                children.forEach(child -> {
-                    Pair<Consumer<JsonNode>, Parent> master = child.outlineElement(outlineLabelWidth,
-                                                                                   extractor,
-                                                                                   averageCardinality,
-                                                                                   layout);
-                    controls.put(child, master);
-                    cell.getChildren()
-                        .add(master.getValue());
-                });
             }
 
             @Override
@@ -838,7 +840,25 @@ public class Relation extends SchemaNode implements Cloneable {
                             .getKey()
                             .accept(item);
                 });
-                super.setGraphic(cell);
+            }
+
+            private void initialize(double outlineLabelWidth,
+                                    Function<JsonNode, JsonNode> extractor,
+                                    Layout layout) {
+                cell = new VBox();
+                cell.setMinWidth(0);
+                cell.setPrefWidth(1);
+                cell.setMinHeight(elementHeight);
+                cell.setPrefHeight(elementHeight);
+                children.forEach(child -> {
+                    Pair<Consumer<JsonNode>, Parent> master = child.outlineElement(outlineLabelWidth,
+                                                                                   extractor,
+                                                                                   averageCardinality,
+                                                                                   layout);
+                    controls.put(child, master);
+                    cell.getChildren()
+                        .add(master.getValue());
+                });
             }
         };
     }

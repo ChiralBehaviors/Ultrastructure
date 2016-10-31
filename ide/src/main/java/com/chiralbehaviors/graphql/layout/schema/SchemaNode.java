@@ -150,11 +150,11 @@ abstract public class SchemaNode {
     }
 
     public static double labelHeight(Layout layout) {
-        return Layout.snap(layout.getValueLineHeight() * 2)
-               + layout.getValueInsets()
-                       .getTop()
-               + layout.getValueInsets()
-                       .getBottom();
+        return Math.min(43, Layout.snap(layout.getValueLineHeight() * 2)
+                            + layout.getValueInsets()
+                                    .getTop()
+                            + layout.getValueInsets()
+                                    .getBottom());
     }
 
     public static void setItemsOf(Control control, JsonNode data) {

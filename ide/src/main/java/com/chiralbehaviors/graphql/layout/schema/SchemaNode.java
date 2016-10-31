@@ -49,11 +49,6 @@ import javafx.util.Pair;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 abstract public class SchemaNode {
-    public static final String AUTO_LAYOUT_VALUE              = "auto-layout-value";
-    public static final String AUTO_LAYOUT_TABLE              = "auto-layout-table";
-    public static final String AUTO_LAYOUT_TABLE_KEY_CELL     = "auto-layout-table-key-cell";
-    public static final String AUTO_LAYOUT_TABLE_COLUMN       = "auto-layout-table-column";
-    public static final String AUTO_LAYOUT_TABLE_CELL         = "auto-layout-table-cell";
     public static final String AUTO_LAYOUT_LABEL              = "auto-layout-label";
     public static final String AUTO_LAYOUT_NEST_KEY_LIST      = "auto-layout-nest-key-list";
     public static final String AUTO_LAYOUT_NEST_KEY_LIST_CELL = "auto-layout-nest-key-list-cell";
@@ -61,6 +56,12 @@ abstract public class SchemaNode {
     public static final String AUTO_LAYOUT_NEST_LIST_CELL     = "auto-layout-nest-list-cell";
     public static final String AUTO_LAYOUT_OUTLINE_LIST       = "auto-layout-outline-list";
     public static final String AUTO_LAYOUT_OUTLINE_LIST_CELL  = "auto-layout-outline-list-cell";
+    public static final String AUTO_LAYOUT_TABLE              = "auto-layout-table";
+    public static final String AUTO_LAYOUT_TABLE_CELL         = "auto-layout-table-cell";
+    public static final String AUTO_LAYOUT_TABLE_COLUMN       = "auto-layout-table-column";
+    public static final String AUTO_LAYOUT_TABLE_KEY_CELL     = "auto-layout-table-key-cell";
+    public static final String AUTO_LAYOUT_VALUE              = "auto-layout-value";
+    public static final String NO_SCROLL_LIST                 = "no-scroll-list";
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {

@@ -1,6 +1,6 @@
 /* The main scrollbar **track** CSS class  */
 
-.list-view .scroll-bar:vertical .track{
+.no-scroll-list .scroll-bar:vertical .track{
         -fx-padding:0px;
     -fx-background-color:transparent;
     -fx-border-color:transparent;
@@ -11,23 +11,23 @@
 
 /* The increment and decrement button CSS class of scrollbar */
 
-.list-view .scroll-bar:vertical .increment-button ,
-.list-view .scroll-bar:vertical .decrement-button {
+.no-scroll-list .scroll-bar:vertical .increment-button ,
+.no-scroll-list .scroll-bar:vertical .decrement-button {
 
     -fx-background-color:transparent;
     -fx-background-radius: 0em;
     -fx-padding:0 0 0 0;
 }
 
-.list-view  .scroll-bar:vertical .increment-arrow,
-.list-view  .scroll-bar:vertical  .decrement-arrow
+.no-scroll-list  .scroll-bar:vertical .increment-arrow,
+.no-scroll-list  .scroll-bar:vertical  .decrement-arrow
 {
     -fx-shape: " "; 
     -fx-padding:0;        
 }
 
 /* The main scrollbar **thumb** CSS class which we drag every time (movable) */
-.list-view .scroll-bar:vertical .thumb {
+.no-scroll-list .scroll-bar:vertical .thumb {
     -fx-background-color:transparent;
     -fx-background-insets: 0, 0, 0;
     -fx-background-radius: 2em;

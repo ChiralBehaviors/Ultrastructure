@@ -551,8 +551,10 @@ public class Relation extends SchemaNode implements Cloneable {
         ListView<JsonNode> list = new ListView<>();
         layout.getModel()
               .apply(list, this);
-        list.setPrefHeight(contentHeight);
-        list.setFixedCellSize(elementHeight);
+        list.setPrefHeight(contentHeight
+                           + layout.getOutlineListVerticalInset());
+        list.setFixedCellSize(elementHeight
+                              + layout.getOutlineListCellVerticalInset());
         list.getStyleClass()
             .add(AUTO_LAYOUT_OUTLINE_LIST);
         list.setCellFactory(c -> {
@@ -859,9 +861,8 @@ public class Relation extends SchemaNode implements Cloneable {
 
         styleClass.add(key ? AUTO_LAYOUT_NEST_KEY_LIST : AUTO_LAYOUT_NEST_LIST);
         if (!primitiveColumn.equals(count - 1)) {
-            content.getStylesheets()
-                   .add(getClass().getResource("hide-scrollbar.css")
-                                  .toExternalForm());
+            content.getStyleClass()
+                   .add(NO_SCROLL_LIST);
         }
         content.setPlaceholder(new Text());
         content.setMinWidth(0);

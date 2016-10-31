@@ -39,14 +39,15 @@ import javafx.scene.layout.AnchorPane;
  *
  */
 public class AutoLayoutView extends Control {
-    private static final Logger                  log         = LoggerFactory.getLogger(AutoLayoutView.class);
+    private static final String                  HIDE_SCROLLBAR_CSS = "hide-scrollbar.css";
+    private static final Logger                  log                = LoggerFactory.getLogger(AutoLayoutView.class);
 
-    private SimpleObjectProperty<JsonNode>       data        = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<JsonNode>       data               = new SimpleObjectProperty<>();
     private Control                              layout;
-    private final SimpleObjectProperty<Relation> root        = new SimpleObjectProperty<>();
-    private double                               layoutWidth = 0.0;
-    private Layout                               style;
+    private double                               layoutWidth        = 0.0;
     private LayoutModel                          model;
+    private final SimpleObjectProperty<Relation> root               = new SimpleObjectProperty<>();
+    private Layout                               style;
 
     public AutoLayoutView() {
         this(null);
@@ -71,6 +72,11 @@ public class AutoLayoutView extends Control {
         });
     }
 
+    public void autoLayout() {
+        layoutWidth = 0.0;
+        resize(getWidth());
+    }
+
     public Property<JsonNode> dataProperty() {
         return data;
     }
@@ -79,17 +85,14 @@ public class AutoLayoutView extends Control {
         return data.get();
     }
 
-    public SimpleObjectProperty<Relation> root() {
-        return root;
-    }
-
     public SchemaNode getRoot() {
         return root.get();
     }
 
-    public void autoLayout() {
-        layoutWidth = 0.0;
-        resize(getWidth());
+    @Override
+    public String getUserAgentStylesheet() {
+        return getClass().getResource(HIDE_SCROLLBAR_CSS)
+                         .toExternalForm();
     }
 
     public void measure(JsonNode data) {
@@ -104,6 +107,10 @@ public class AutoLayoutView extends Control {
         }
     }
 
+    public SimpleObjectProperty<Relation> root() {
+        return root;
+    }
+
     public Property<Relation> rootProperty() {
         return root;
     }
@@ -114,6 +121,11 @@ public class AutoLayoutView extends Control {
 
     public void setRoot(Relation rootRelationship) {
         root.set(rootRelationship);
+    }
+
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new AutoLayoutSkin(this);
     }
 
     private void resize(double width) {
@@ -151,10 +163,5 @@ public class AutoLayoutView extends Control {
         } catch (Throwable e) {
             log.error("cannot set content", e);
         }
-    }
-
-    @Override
-    protected Skin<?> createDefaultSkin() {
-        return new AutoLayoutSkin(this);
     }
 }

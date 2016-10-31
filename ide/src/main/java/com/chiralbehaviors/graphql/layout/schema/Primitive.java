@@ -277,7 +277,7 @@ public class Primitive extends SchemaNode {
 
     private double getValueHeight(Layout layout) {
         double rows = Math.ceil(maxWidth / justifiedWidth) + 1;
-        return Math.min(43, Layout.snap(layout.getValueLineHeight() * rows)
+        return Math.max(43, Layout.snap(layout.getValueLineHeight() * rows)
                             + layout.getValueInsets()
                                     .getTop()
                             + layout.getValueInsets()

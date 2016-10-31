@@ -378,14 +378,8 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.layout(width, layout);
         }
         useTable = false;
-        double listInset = layout.getOutlineListInsets()
-                                 .getLeft()
-                           + layout.getOutlineListInsets()
-                                   .getRight();
-        double tableInset = layout.getTableInsets()
-                                  .getLeft()
-                            + layout.getOutlineListInsets()
-                                    .getRight();
+        double listInset = layout.getOutlineListHorizontalInset();
+        double tableInset = layout.getTableHorizontalInset();
         double available = width - children.stream()
                                            .mapToDouble(child -> child.getLabelWidth(layout))
                                            .max()
@@ -412,24 +406,18 @@ public class Relation extends SchemaNode implements Cloneable {
             return layoutTable(cardinality, layout);
         }
         List<Double> childHeights = new ArrayList<>();
-        double listInsets = layout.getOutlineListInsets()
-                                  .getTop()
-                            + layout.getOutlineListInsets()
-                                    .getBottom();
-        double cellInsets = layout.getOutlineListCellInsets()
-                                  .getTop()
-                            + layout.getOutlineListCellInsets()
-                                    .getBottom();
 
-        double height = Layout.snap(children.stream()
+        elementHeight = Layout.snap(children.stream()
                                             .mapToDouble(child -> child.layoutOutline(averageCardinality,
                                                                                       layout))
                                             .peek(h -> childHeights.add(h))
                                             .reduce((a, b) -> a + b)
                                             .getAsDouble());
-        elementHeight = height + cellInsets;
-        contentHeight = Layout.snap(cardinality * elementHeight) + listInsets;
-        return Layout.snap(contentHeight + labelHeight(layout));
+        contentHeight = Layout.snap(cardinality
+                                    * (elementHeight
+                                       + layout.getOutlineListCellVerticalInset()));
+        return Layout.snap(contentHeight + labelHeight(layout))
+               + layout.getOutlineListVerticalInset();
     }
 
     @Override
@@ -458,20 +446,11 @@ public class Relation extends SchemaNode implements Cloneable {
             return 0;
         }
         double labelWidth = layout.labelWidth(label);
-        labelWidth += layout.getLabelInsets()
-                            .getLeft()
-                      + layout.getLabelInsets()
-                              .getRight();
+        labelWidth += layout.getLabelHorizontalInset();
         int sum = 0;
         tableColumnWidth = 0;
-        double listInset = layout.getNestedListInsets()
-                                 .getLeft()
-                           + layout.getNestedListInsets()
-                                   .getRight();
-        double keyInset = layout.getNestedKeyListInsets()
-                                .getLeft()
-                          + layout.getNestedKeyListInsets()
-                                  .getRight();
+        double listInset = layout.getNestedListHorizontalInset();
+        double keyInset = layout.getNestedKeyListHorizontalInset();
         boolean key = true;
         for (SchemaNode child : children) {
             ArrayNode aggregate = JsonNodeFactory.instance.arrayNode();
@@ -489,14 +468,8 @@ public class Relation extends SchemaNode implements Cloneable {
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate, layout, key);
             tableColumnWidth += key
-                                && !child.isRelation() ? layout.getTableKeyCellInsets()
-                                                               .getLeft()
-                                                         + layout.getTableKeyCellInsets()
-                                                                 .getRight()
-                                                       : layout.getTableCellInsets()
-                                                               .getLeft()
-                                                         + layout.getTableCellInsets()
-                                                                 .getRight();
+                                && !child.isRelation() ? layout.getTableKeyCellHorizontalInset()
+                                                       : layout.getTableCellHorizontalInset();
             key = false;
         }
         tableColumnWidth += (children.size() - 1) * listInset;
@@ -639,20 +612,10 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     private double extendedHeight(Layout layout, int cardinality) {
-        double cellInset = Math.max(layout.getNestedKeyListCellInsets()
-                                          .getTop()
-                                    + layout.getNestedKeyListCellInsets()
-                                            .getBottom(),
-                                    layout.getNestedListCellInsets()
-                                          .getTop() + layout.getNestedListCellInsets()
-                                                            .getBottom());
-        double listInset = Math.max(layout.getNestedListInsets()
-                                          .getTop()
-                                    + layout.getNestedListInsets()
-                                            .getBottom(),
-                                    layout.getNestedKeyListInsets()
-                                          .getTop() + layout.getNestedKeyListInsets()
-                                                            .getBottom());
+        double cellInset = Math.max(layout.getNestedKeyListCellVerticalInset(),
+                                    layout.getNestedListCellVerticalInset());
+        double listInset = Math.max(layout.getNestedListVerticalInset(),
+                                    layout.getNestedKeyListVerticalInset());
         double extendedHeight = Layout.snap(cardinality
                                             * (elementHeight + cellInset))
                                 + listInset;
@@ -720,24 +683,13 @@ public class Relation extends SchemaNode implements Cloneable {
                                        .add(child.buildColumn()));
         table.setPrefWidth(justifiedWidth);
         double tableLabelHeight = layout.measureHeader(table);
-        double cellInset = Math.max(layout.getTableCellInsets()
-                                          .getTop()
-                                    + layout.getTableCellInsets()
-                                            .getBottom(),
-                                    layout.getTableKeyCellInsets()
-                                          .getTop() + layout.getTableKeyCellInsets()
-                                                            .getBottom());
-        double rowInset = layout.getTableRowInsets()
-                                .getTop()
-                          + layout.getTableRowInsets()
-                                  .getBottom();
+        double cellInset = Math.max(layout.getTableCellVerticalInset(),
+                                    layout.getTableKeyCellVerticalInset());
+        double rowInset = layout.getTableRowVerticalInset();
         rowHeight = layoutRow(averageCardinality, layout) + cellInset
                     + rowInset;
         contentHeight = (rowHeight * cardinality) + tableLabelHeight
-                        + layout.getTableInsets()
-                                .getTop()
-                        + layout.getTableInsets()
-                                .getBottom();
+                        + layout.getTableVerticalInset();
         return contentHeight;
     }
 
@@ -745,22 +697,10 @@ public class Relation extends SchemaNode implements Cloneable {
                                  Map<Primitive, Integer> leaves,
                                  NestingFunction nesting, Layout layout,
                                  boolean key, LayoutModel model) {
-        double nestedListInset = layout.getNestedListInsets()
-                                       .getTop()
-                                 + layout.getNestedListInsets()
-                                         .getBottom();
-        double keyListInset = layout.getNestedKeyListInsets()
-                                    .getTop()
-                              + layout.getNestedKeyListInsets()
-                                      .getBottom();
-        double nestedCellInset = layout.getNestedListCellInsets()
-                                       .getTop()
-                                 + layout.getNestedListCellInsets()
-                                         .getBottom();
-        double keyCellInset = layout.getNestedKeyListCellInsets()
-                                    .getTop()
-                              + layout.getNestedKeyListCellInsets()
-                                      .getBottom();
+        double nestedListInset = layout.getNestedListVerticalInset();
+        double keyListInset = layout.getNestedKeyListVerticalInset();
+        double nestedCellInset = layout.getNestedListCellVerticalInset();
+        double keyCellInset = layout.getNestedKeyListCellVerticalInset();
         double listInset = key ? keyListInset : nestedListInset;
         double cellInset = key ? keyCellInset : nestedCellInset;
         double cellHeight = elementHeight + cellInset;

@@ -332,64 +332,116 @@ public class Layout {
                                      .getLineHeight();
     }
 
-    public Insets getLabelInsets() {
-        return labelInsets;
+    public double getLabelHorizontalInset() {
+        return labelInsets.getLeft() + labelInsets.getRight();
     }
 
     public double getLabelLineHeight() {
         return labelLineHeight;
     }
 
+    public double getLabelVerticalInset() {
+        return labelInsets.getTop() + labelInsets.getBottom();
+    }
+
     public LayoutModel getModel() {
         return model;
     }
 
-    public Insets getNestedKeyListCellInsets() {
-        return nestedKeyListCellInsets;
+    public double getNestedKeyListCellHorizontalInset() {
+        return nestedKeyListCellInsets.getLeft()
+               + nestedKeyListCellInsets.getRight();
     }
 
-    public Insets getNestedKeyListInsets() {
-        return nestedKeyListInsets;
+    public double getNestedKeyListCellVerticalInset() {
+        return nestedKeyListCellInsets.getTop()
+               + nestedKeyListCellInsets.getBottom();
     }
 
-    public Insets getNestedListCellInsets() {
-        return nestedListCellInsets;
+    public double getNestedKeyListHorizontalInset() {
+        return nestedKeyListInsets.getLeft() + nestedKeyListInsets.getRight();
     }
 
-    public Insets getNestedListInsets() {
-        return nestedListInsets;
+    public double getNestedKeyListVerticalInset() {
+        return nestedKeyListInsets.getTop() + nestedKeyListInsets.getBottom();
     }
 
-    public Insets getOutlineListCellInsets() {
-        return outlineListCellInsets;
+    public double getNestedListCellHorizontalInset() {
+        return nestedListCellInsets.getLeft() + nestedListCellInsets.getRight();
     }
 
-    public Insets getOutlineListInsets() {
-        return outlineListInsets;
+    public double getNestedListCellVerticalInset() {
+        return nestedListCellInsets.getTop() + nestedListCellInsets.getBottom();
     }
 
-    public Insets getTableCellInsets() {
-        return tableCellInsets;
+    public double getNestedListHorizontalInset() {
+        return nestedListInsets.getLeft() + nestedListInsets.getRight();
     }
 
-    public Insets getTableInsets() {
-        return tableInsets;
+    public double getNestedListVerticalInset() {
+        return nestedListInsets.getTop() + nestedListInsets.getBottom();
     }
 
-    public Insets getTableKeyCellInsets() {
-        return tableKeyCellInsets;
+    public double getOutlineListCellHorizontalInset() {
+        return outlineListCellInsets.getLeft()
+               + outlineListCellInsets.getRight();
     }
 
-    public Insets getTableRowInsets() {
-        return tableRowInsets;
+    public double getOutlineListCellVerticalInset() {
+        return outlineListCellInsets.getTop()
+               + outlineListCellInsets.getBottom();
     }
 
-    public Insets getValueInsets() {
-        return valueInsets;
+    public double getOutlineListHorizontalInset() {
+        return outlineListInsets.getLeft() + outlineListInsets.getRight();
+    }
+
+    public double getOutlineListVerticalInset() {
+        return outlineListInsets.getTop() + outlineListInsets.getBottom();
+    }
+
+    public double getTableCellHorizontalInset() {
+        return tableCellInsets.getLeft() + tableCellInsets.getRight();
+    }
+
+    public double getTableCellVerticalInset() {
+        return tableCellInsets.getTop() + tableCellInsets.getBottom();
+    }
+
+    public double getTableHorizontalInset() {
+        return tableInsets.getLeft() + tableInsets.getRight();
+    }
+
+    public double getTableKeyCellHorizontalInset() {
+        return tableKeyCellInsets.getLeft() + tableKeyCellInsets.getRight();
+    }
+
+    public double getTableKeyCellVerticalInset() {
+        return tableKeyCellInsets.getTop() + tableKeyCellInsets.getBottom();
+    }
+
+    public double getTableRowHorizontalInset() {
+        return tableRowInsets.getLeft() + tableRowInsets.getRight();
+    }
+
+    public double getTableRowVerticalInset() {
+        return tableRowInsets.getTop() + tableRowInsets.getBottom();
+    }
+
+    public double getTableVerticalInset() {
+        return tableInsets.getTop() + tableInsets.getBottom();
+    }
+
+    public double getValueHorizontalInset() {
+        return valueInsets.getLeft() + valueInsets.getRight();
     }
 
     public double getValueLineHeight() {
         return valueLineHeight;
+    }
+
+    public double getValueVerticalInset() {
+        return valueInsets.getTop() + valueInsets.getBottom();
     }
 
     public double labelWidth(String label) {

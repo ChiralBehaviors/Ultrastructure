@@ -429,14 +429,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                             .getAsDouble());
         elementHeight = height + cellInsets;
         contentHeight = Layout.snap(cardinality * elementHeight) + listInsets;
-        double labeledHeight = Layout.snap(contentHeight + labelHeight(layout));
-
-        System.out.println(String.format("Layout %s: (%s:%s -> %s) x %s + %s-> %s : %s \n %s",
-                                         label, height, cellInsets,
-                                         elementHeight, cardinality, listInsets,
-                                         contentHeight, labeledHeight,
-                                         childHeights));
-        return labeledHeight;
+        return Layout.snap(contentHeight + labelHeight(layout));
     }
 
     @Override
@@ -771,14 +764,13 @@ public class Relation extends SchemaNode implements Cloneable {
         double listInset = key ? keyListInset : nestedListInset;
         double cellInset = key ? keyCellInset : nestedCellInset;
         double cellHeight = elementHeight + cellInset;
-        double calculatedHeight = cellHeight * cardinality;
+        double calculatedHeight = (cellHeight * cardinality) + listInset;
         return (p, row, primitive) -> {
             return nesting.apply((parentId, rendered) -> {
                 String id = parentId.call();
                 Integer primitiveColumn = leaves.get(primitive);
 
-                double deficit = Math.max(0, rendered - listInset
-                                             - calculatedHeight);
+                double deficit = Math.max(0, rendered - calculatedHeight);
                 double childDeficit = Math.max(0, deficit / cardinality);
                 double extended = Layout.snap(cellHeight + childDeficit);
 
@@ -786,6 +778,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                                  leaves.size());
                 model.apply(split, Relation.this, child);
                 split.setFixedCellSize(extended);
+                split.setMinHeight(rendered);
                 split.setPrefHeight(rendered);
                 split.setMaxHeight(rendered);
                 split.setCellFactory(c -> {
@@ -870,6 +863,7 @@ public class Relation extends SchemaNode implements Cloneable {
             VBox                                              cell     = new VBox();
             Map<SchemaNode, Pair<Consumer<JsonNode>, Parent>> controls = new HashMap<>();
             {
+                setAlignment(Pos.CENTER);
                 getStyleClass().add(AUTO_LAYOUT_OUTLINE_LIST_CELL);
                 cell.setMinWidth(0);
                 cell.setPrefWidth(1);

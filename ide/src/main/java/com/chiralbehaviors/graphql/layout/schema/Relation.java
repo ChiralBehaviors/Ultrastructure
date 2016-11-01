@@ -467,12 +467,10 @@ public class Relation extends SchemaNode implements Cloneable {
             }
             sum += data.size() == 0 ? 1 : Math.round(cardSum / data.size());
             tableColumnWidth += child.measure(aggregate, layout, key);
-            tableColumnWidth += key
-                                && !child.isRelation() ? layout.getTableKeyCellHorizontalInset()
-                                                       : layout.getTableCellHorizontalInset();
             key = false;
         }
-        tableColumnWidth += (children.size() - 1) * listInset;
+        tableColumnWidth += keyInset;
+        tableColumnWidth += Math.max(0, children.size() - 2) * listInset;
 
         tableColumnWidth += children.get(0)
                                     .isRelation() ? keyInset : 0; // Primitives are displayed in a relation without a list

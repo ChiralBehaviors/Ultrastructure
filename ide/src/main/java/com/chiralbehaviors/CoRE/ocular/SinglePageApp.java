@@ -210,9 +210,9 @@ public class SinglePageApp extends Application implements LayoutModel {
 
     private AutoLayoutView layout(PageContext pageContext) throws QueryException {
         AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot(), this);
-        //        layout.getStylesheets()
-        //              .add(getClass().getResource("/nested.css")
-        //                             .toExternalForm());
+        layout.getStylesheets()
+              .add(getClass().getResource("/non-nested.css")
+                             .toExternalForm());
         ObjectNode data = pageContext.evaluate(endpoint);
         layout.setData(data);
         layout.measure(data);

@@ -159,7 +159,9 @@ public class Primitive extends SchemaNode {
         }
 
         nestingInset = layout.getValueHorizontalInset();
-        justifiedWidth = columnWidth + nestingInset;
+        justifiedWidth = columnWidth + nestingInset
+                         + (key ? layout.getTableKeyCellHorizontalInset()
+                                : layout.getTableCellHorizontalInset());
         return justifiedWidth;
     }
 

@@ -56,7 +56,7 @@ public class AutoLayoutExplorer extends Application {
         AutoLayoutController controller = new AutoLayoutController(queryState);
         controller.getLayout()
                   .getStylesheets()
-                  .add(getClass().getResource("/nested.css")
+                  .add(getClass().getResource("/non-nested.css")
                                  .toExternalForm());
         primaryStage.setScene(new Scene(controller.getRoot(), 800, 800));
         primaryStage.show();

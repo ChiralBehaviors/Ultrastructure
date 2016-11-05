@@ -33,86 +33,17 @@ import com.sun.javafx.scene.control.skin.VirtualScrollBar;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableRow;
 
 public class NestedTableRow<T> extends TableRow<T> {
 
-    public static class Nested {
-        public final Control control;
-        public final double  height;
-
-        public Nested(Control control, double height) {
-            this.control = control;
-            this.height = height;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Nested [height=%s, control=%s]", height,
-                                 control);
-        }
-    }
-
-    public static class Nesting {
-        private final Nested[] nested;
-        private final int      cardinality;
-
-        public Nesting(int count, int cardinality) {
-            nested = new Nested[count];
-            this.cardinality = cardinality;
-        }
-
-        public boolean layout(String id, int column, Nested child) {
-            //            if (nested[column] != null
-            //                && nested[column].control != child.control) {
-            //                System.out.println(String.format("%s[%s] already exists", id,
-            //                                                 column));
-            //            }
-            nested[column] = child;
-            for (Nested n : nested) {
-                if (n == null) {
-                    return false;
-                }
-            }
-            layout();
-            return true;
-        }
-
-        private void layout() {
-            List<Nested> link = Arrays.asList(nested);
-            double max = link.stream()
-                             .mapToDouble(p -> p.height)
-                             .max()
-                             .orElse(-1);
-            link.forEach(p1 -> {
-                double height = cardinality * max;
-                if (p1.control instanceof ListView) {
-                    ((ListView<?>) p1.control).setFixedCellSize(max);
-                }
-                p1.control.setPrefHeight(height);
-            });
-        }
-    }
-
-    private final Map<String, Nesting>              layouts = new HashMap<>(3);
     private final Map<String, ListView<JsonNode>[]> links   = new HashMap<>(3);
 
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
-    }
-
-    public void layout(String id, Integer column, Control child,
-                       int cardinality, double height, int count) {
-        Nesting nesting = layouts.computeIfAbsent(id,
-                                                  k -> new Nesting(count,
-                                                                   cardinality));
-        if (nesting.layout(id, column, new Nested(child, height))) {
-            layouts.remove(id);
-        }
     }
 
     public void link(String id, Integer column, ListView<JsonNode> child,

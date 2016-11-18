@@ -66,7 +66,6 @@ public class Layout {
 
     private Insets            listCellInsets  = ZERO_INSETS;
     private Insets            listInsets      = ZERO_INSETS;
-
     private final LayoutModel model;
     private List<String>      styleSheets;
     private Insets            tableCellInsets = ZERO_INSETS;
@@ -220,6 +219,14 @@ public class Layout {
         return listInsets.getLeft() + listInsets.getRight();
     }
 
+    public double getNestedLeftInset() {
+        return listInsets.getLeft() + listCellInsets.getLeft();
+    }
+
+    public double getNestedRightInset() {
+        return listInsets.getRight() + listCellInsets.getRight();
+    }
+
     public double getListVerticalInset() {
         return listInsets.getTop() + listInsets.getBottom();
     }
@@ -297,5 +304,5 @@ public class Layout {
                              model, listCellInsets, listInsets, styleSheets,
                              tableCellInsets, tableInsets, tableRowInsets,
                              textFont, textInsets, textLineHeight);
-    } 
+    }
 }

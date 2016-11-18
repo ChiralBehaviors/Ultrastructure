@@ -37,9 +37,7 @@ import com.chiralbehaviors.CoRE.ocular.Page.Route;
 import com.chiralbehaviors.CoRE.ocular.PageContext.QueryException;
 import com.chiralbehaviors.graphql.layout.AutoLayoutView;
 import com.chiralbehaviors.graphql.layout.LayoutModel;
-import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
-import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -48,6 +46,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableRow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -98,34 +97,7 @@ public class SinglePageApp extends Application implements LayoutModel {
     }
 
     @Override
-    public void apply(ListView<JsonNode> list, Relation relation,
-                      SchemaNode child) {
-        list.setOnMouseClicked(event -> {
-            Route route = history.peek()
-                                 .getRoute(relation);
-            if (route == null) {
-                return;
-            }
-            if (!list.getItems()
-                     .isEmpty()
-                && event.getButton() == MouseButton.PRIMARY
-                && event.getClickCount() == 2) {
-                JsonNode item = list.getSelectionModel()
-                                    .getSelectedItem();
-                if (item == null) {
-                    return;
-                }
-                try {
-                    push(extract(route, item));
-                } catch (QueryException e) {
-                    log.error("Unable to push page: %s", route.getPath(), e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void apply(NestedTableRow<JsonNode> row, Relation relation) {
+    public void apply(TableRow<JsonNode> row, Relation relation) {
         row.setOnMouseClicked(event -> {
             Route route = history.peek()
                                  .getRoute(relation);

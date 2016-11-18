@@ -43,6 +43,15 @@ import javafx.util.Pair;
  *
  */
 public class Primitive extends SchemaNode {
+    private static void bind(Control control, TableColumn<JsonNode, ?> column,
+                             double indent) {
+        column.widthProperty()
+              .addListener((o, prev, cur) -> {
+                  control.setPrefWidth(cur.doubleValue() - indent);
+              });
+        control.setPrefWidth(column.getWidth() - indent);
+    }
+
     private double  columnWidth       = 0;
     private double  maxWidth          = 0;
     private double  valueDefaultWidth = 0;
@@ -77,11 +86,19 @@ public class Primitive extends SchemaNode {
     Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
                                                                  Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
                                                                  int cardinality,
-                                                                 Layout layout) {
+                                                                 Layout layout,
+                                                                 int nestingLevel,
+                                                                 INDENT indent) {
+        double inset = indent == INDENT.LEFT ? nestingLevel
+                                               * layout.getNestedLeftInset()
+                                             : indent == INDENT.RIGHT ? nestingLevel
+                                                                        * layout.getNestedRightInset()
+                                                                      : 0;
+
         return height -> {
             TextArea control = buildControl(1, layout);
             control.setPrefHeight(height);
-            bind(control, columnMap.get(this));
+            bind(control, columnMap.get(this), inset);
             layout.getModel()
                   .apply(control, Primitive.this);
             return new Pair<Consumer<JsonNode>, Node>(node -> setItems(control,

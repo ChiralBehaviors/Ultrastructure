@@ -20,10 +20,8 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.chiralbehaviors.graphql.layout.schema.Primitive;
 import com.chiralbehaviors.graphql.layout.schema.Relation;
-import com.chiralbehaviors.graphql.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.scene.control.ListCell;
@@ -43,14 +41,7 @@ public interface LayoutModel {
     }
 
     default void apply(ListView<JsonNode> list, Relation relation) {
-    }
-
-    default void apply(ListView<JsonNode> list, Relation relation,
-                       SchemaNode child) {
-    }
-
-    default void apply(NestedTableRow<JsonNode> row, Relation relation) {
-    }
+    } 
 
     default void apply(TableRow<JsonNode> row, Relation relation) {
     }

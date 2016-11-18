@@ -51,6 +51,10 @@ import javafx.util.Pair;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 abstract public class SchemaNode {
+    protected static enum INDENT {
+        LEFT, NONE, RIGHT;
+    }
+
     public static final String AUTO_LAYOUT_LABEL              = "auto-layout-label";
     public static final String AUTO_LAYOUT_NEST_KEY_LIST      = "auto-layout-nest-key-list";
     public static final String AUTO_LAYOUT_NEST_KEY_LIST_CELL = "auto-layout-nest-key-list-cell";
@@ -183,22 +187,6 @@ abstract public class SchemaNode {
         }
     }
 
-    static void bind(Control control, TableColumn<JsonNode, ?> column) {
-        column.widthProperty()
-              .addListener((o, prev, cur) -> {
-                  control.setMinWidth(cur.doubleValue());
-                  control.setPrefWidth(cur.doubleValue());
-                  control.setMaxWidth(cur.doubleValue());
-              });
-        double width = column.getWidth();
-        control.setMinWidth(width);
-        control.setPrefWidth(width);
-        control.setMaxWidth(width);
-        control.setPrefHeight(24);
-        control.setMaxHeight(24);
-        control.setMinHeight(24);
-    }
-
     final String field;
     double       justifiedWidth = 0;
 
@@ -252,7 +240,9 @@ abstract public class SchemaNode {
     abstract Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
                                                                           Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
                                                                           int cardinality,
-                                                                          Layout layout);
+                                                                          Layout layout,
+                                                                          int nestingLevel,
+                                                                          INDENT indent);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {

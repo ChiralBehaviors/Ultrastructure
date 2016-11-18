@@ -567,8 +567,6 @@ public class Relation extends SchemaNode implements Cloneable {
             Pair<Consumer<JsonNode>, Node> relationRow = topLevel.apply(height);
             RelationTableRow row = new RelationTableRow(relationRow.getKey(),
                                                         relationRow.getValue());
-            row.setMinHeight(rowHeight);
-            row.setPrefHeight(rowHeight);
             layout.getModel()
                   .apply(row, Relation.this);
             return row;

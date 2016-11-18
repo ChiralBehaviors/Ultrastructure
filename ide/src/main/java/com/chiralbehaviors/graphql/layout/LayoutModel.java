@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 
@@ -49,6 +50,9 @@ public interface LayoutModel {
     }
 
     default void apply(NestedTableRow<JsonNode> row, Relation relation) {
+    }
+
+    default void apply(TableRow<JsonNode> row, Relation relation) {
     }
 
     default void apply(TableView<JsonNode> table, Relation relation) {

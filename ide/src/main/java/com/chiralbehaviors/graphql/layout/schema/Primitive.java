@@ -22,21 +22,17 @@ package com.chiralbehaviors.graphql.layout.schema;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.chiralbehaviors.graphql.layout.Layout;
-import com.chiralbehaviors.graphql.layout.controls.NestedColumnView;
-import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import javafx.beans.binding.ObjectBinding;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
@@ -49,7 +45,6 @@ import javafx.util.Pair;
 public class Primitive extends SchemaNode {
     private double  columnWidth       = 0;
     private double  maxWidth          = 0;
-    private double  nestingInset      = 0;
     private double  valueDefaultWidth = 0;
     private double  valueHeight       = 0;
     private boolean variableLength    = false;
@@ -61,7 +56,7 @@ public class Primitive extends SchemaNode {
     @Override
     public String toString() {
         return String.format("Primitive [%s:%.2f(%.2f)]", label, justifiedWidth,
-                             getTableColumnWidth());
+                             columnWidth);
     }
 
     @Override
@@ -70,23 +65,29 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                     NestingFunction nesting,
-                                                     Layout layout,
-                                                     boolean key) {
-        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.getStyleClass()
-              .add(AUTO_LAYOUT_TABLE_COLUMN);
-
-        column.setCellValueFactory(cellData -> new ObjectBinding<JsonNode>() {
-            @Override
-            protected JsonNode computeValue() {
-                return cellData.getValue();
-            }
-        });
-
-        column.setCellFactory(c -> createCell(nesting, layout, key));
+    TableColumn<JsonNode, JsonNode> buildColumn() {
+        TableColumn<JsonNode, JsonNode> column = super.buildColumn();
+        column.setMinWidth(0);
+        column.setPrefWidth(columnWidth);
+        column.setUserData(this);
         return column;
+    }
+
+    @Override
+    Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
+                                                                 Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
+                                                                 int cardinality,
+                                                                 Layout layout) {
+        return height -> {
+            TextArea control = buildControl(1, layout);
+            control.setPrefHeight(height);
+            bind(control, columnMap.get(this));
+            layout.getModel()
+                  .apply(control, Primitive.this);
+            return new Pair<Consumer<JsonNode>, Node>(node -> setItems(control,
+                                                                       extractFrom(node)),
+                                                      control);
+        };
     }
 
     @Override
@@ -102,8 +103,8 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double getTableColumnWidth() {
-        return columnWidth + nestingInset;
+    double getTableColumnWidth(Layout layout) {
+        return columnWidth + layout.getTextHorizontalInset();
     }
 
     @Override
@@ -145,7 +146,7 @@ public class Primitive extends SchemaNode {
             List<JsonNode> rows = asList(prim);
             double width = 0;
             for (JsonNode row : rows) {
-                width += layout.valueWidth(toString(row));
+                width += layout.textWidth(toString(row));
                 maxWidth = Math.max(maxWidth, width);
             }
             sum += rows.isEmpty() ? 1 : width / rows.size();
@@ -158,10 +159,8 @@ public class Primitive extends SchemaNode {
             variableLength = true;
         }
 
-        nestingInset = layout.getValueHorizontalInset();
-        justifiedWidth = columnWidth + nestingInset
-                         + (key ? layout.getTableKeyCellHorizontalInset()
-                                : layout.getTableCellHorizontalInset());
+        justifiedWidth = columnWidth + layout.getTextHorizontalInset();
+        ;
         return justifiedWidth;
     }
 
@@ -207,77 +206,10 @@ public class Primitive extends SchemaNode {
         return text;
     }
 
-    private TableCell<JsonNode, JsonNode> createCell(NestingFunction nesting,
-                                                     Layout layout,
-                                                     boolean key) {
-        return new TableCell<JsonNode, JsonNode>() {
-            NestedColumnView view;
-            {
-                setAlignment(Pos.CENTER);
-                if (key) {
-                    getStyleClass().add(AUTO_LAYOUT_TABLE_KEY_CELL);
-                } else {
-                    getStyleClass().add(AUTO_LAYOUT_TABLE_CELL);
-                }
-                emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
-                    if (isEmpty) {
-                        setGraphic(null);
-                    } else {
-                        setGraphic(view);
-                    }
-                });
-                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                setAlignment(Pos.CENTER);
-            }
-
-            @Override
-            public void updateIndex(int i) {
-                int prev = getIndex();
-                if (prev != i) {
-                    if (i < 0) {
-                        setGraphic(null);
-                        view = null;
-                    } else {
-                        @SuppressWarnings("unchecked")
-                        NestedTableRow<JsonNode> row = (NestedTableRow<JsonNode>) getTableRow();
-                        if (row != null) {
-                            view = (NestedColumnView) nesting.apply((label,
-                                                                     height) -> {
-                                TextArea control = buildControl(1, layout);
-                                control.setMinHeight(height);
-                                control.setPrefHeight(height);
-                                control.setMaxHeight(height);
-                                layout.getModel()
-                                      .apply(control, Primitive.this);
-                                return control;
-                            }, row, Primitive.this);
-                        }
-                    }
-                }
-                super.updateIndex(i);
-            }
-
-            @Override
-            protected void updateItem(JsonNode item, boolean empty) {
-                if (item == getItem()) {
-                    return;
-                }
-                super.updateItem(item, empty);
-                super.setText(null);
-                if (empty || item == null) {
-                    return;
-                }
-                if (view != null) {
-                    view.setItem(item);
-                }
-            }
-        };
-    }
-
     private double getValueHeight(Layout layout) {
         double rows = Math.ceil(maxWidth / justifiedWidth) + 1;
-        return Math.max(43, Layout.snap(layout.getValueLineHeight() * rows)
-                            + layout.getValueVerticalInset());
+        return Math.max(43, Layout.snap(layout.getTextLineHeight() * rows)
+                            + layout.getTextVerticalInset());
     }
 
     private String toString(JsonNode value) {

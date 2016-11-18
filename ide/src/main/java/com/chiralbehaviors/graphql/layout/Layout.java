@@ -20,18 +20,9 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_LABEL;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_KEY_LIST;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_KEY_LIST_CELL;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_LIST;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_NEST_LIST_CELL;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_OUTLINE_LIST;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_OUTLINE_LIST_CELL;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_CELL;
 import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_COLUMN;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_KEY_CELL;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_VALUE;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -73,24 +64,17 @@ public class Layout {
         return Math.ceil(value);
     }
 
-    private Font         labelFont               = Font.getDefault();
-    private Insets       labelInsets             = ZERO_INSETS;
-    private double       labelLineHeight         = 0;
-    private LayoutModel  model;
-    private Insets       nestedKeyListCellInsets = ZERO_INSETS;
-    private Insets       nestedKeyListInsets     = ZERO_INSETS;
-    private Insets       nestedListCellInsets    = ZERO_INSETS;
-    private Insets       nestedListInsets        = ZERO_INSETS;
-    private Insets       outlineListCellInsets   = ZERO_INSETS;
-    private Insets       outlineListInsets       = ZERO_INSETS;
-    private List<String> styleSheets;
-    private Insets       tableCellInsets         = ZERO_INSETS;
-    private Insets       tableInsets             = ZERO_INSETS;
-    private Insets       tableKeyCellInsets      = ZERO_INSETS;
-    private Insets       tableRowInsets;
-    private Font         valueFont               = Font.getDefault();
-    private Insets       valueInsets             = ZERO_INSETS;
-    private double       valueLineHeight         = 0;
+    private Insets            listCellInsets  = ZERO_INSETS;
+    private Insets            listInsets      = ZERO_INSETS;
+
+    private final LayoutModel model;
+    private List<String>      styleSheets;
+    private Insets            tableCellInsets = ZERO_INSETS;
+    private Insets            tableInsets     = ZERO_INSETS;
+    private Insets            tableRowInsets;
+    private Font              textFont        = Font.getDefault();
+    private Insets            textInsets      = ZERO_INSETS;
+    private double            textLineHeight  = 0;
 
     public Layout(List<String> styleSheets) {
         this(styleSheets, new LayoutModel() {
@@ -100,17 +84,10 @@ public class Layout {
     public Layout(List<String> styleSheets, LayoutModel model) {
         this.model = model;
         this.styleSheets = styleSheets;
-        TextArea valueText = new TextArea("Lorem Ipsum");
+        TextArea text = new TextArea("Lorem Ipsum");
         TextArea labelText = new TextArea("Lorem Ipsum");
 
-        valueText.getStyleClass()
-                 .add(AUTO_LAYOUT_VALUE);
-        valueText.getStyleClass()
-                 .add(AUTO_LAYOUT_LABEL);
-
         ListView<String> outlineList = new ListView<>();
-        outlineList.getStyleClass()
-                   .add(AUTO_LAYOUT_OUTLINE_LIST);
 
         ListCell<String> outlineListCell = new ListCell<String>() {
             @Override
@@ -119,37 +96,7 @@ public class Layout {
                 setText(item);
             };
         };
-        outlineListCell.getStyleClass()
-                       .add(AUTO_LAYOUT_OUTLINE_LIST_CELL);
         outlineList.setCellFactory(s -> outlineListCell);
-
-        ListCell<String> nestedKeyListCell = new ListCell<String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(item);
-            };
-        };
-        nestedKeyListCell.getStyleClass()
-                         .add(AUTO_LAYOUT_NEST_KEY_LIST_CELL);
-        ListView<String> nestedKeyList = new ListView<>();
-        nestedKeyList.getStyleClass()
-                     .add(AUTO_LAYOUT_NEST_KEY_LIST);
-        nestedKeyList.setCellFactory(s -> nestedKeyListCell);
-
-        ListCell<String> nestedListCell = new ListCell<String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(item);
-            };
-        };
-        nestedListCell.getStyleClass()
-                      .add(AUTO_LAYOUT_NEST_LIST_CELL);
-        ListView<String> nestedList = new ListView<>();
-        nestedList.getStyleClass()
-                  .add(AUTO_LAYOUT_NEST_LIST);
-        nestedList.setCellFactory(s -> nestedListCell);
 
         TableCell<String, String> tableCell = new TableCell<String, String>() {
             @Override
@@ -160,16 +107,6 @@ public class Layout {
         };
         tableCell.getStyleClass()
                  .add(AUTO_LAYOUT_TABLE_CELL);
-
-        TableCell<String, String> tableKeyCell = new TableCell<String, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(item);
-            }
-        };
-        tableKeyCell.getStyleClass()
-                    .add(AUTO_LAYOUT_TABLE_KEY_CELL);
 
         TableView<String> table = new TableView<>();
         table.getStyleClass()
@@ -184,27 +121,19 @@ public class Layout {
               .add(AUTO_LAYOUT_TABLE_COLUMN);
         column.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
 
-        TableColumn<String, String> keyColumn = new TableColumn<>("");
-        keyColumn.setCellFactory(c -> tableKeyCell);
-        keyColumn.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
-        keyColumn.getStyleClass()
-                 .add(AUTO_LAYOUT_TABLE_COLUMN);
         table.getColumns()
              .add(column);
-        table.getColumns()
-             .add(keyColumn);
 
         VBox root = new VBox();
         root.getChildren()
-            .addAll(table, outlineList, nestedKeyList, nestedList, valueText,
-                    labelText);
+            .addAll(table, outlineList, text, labelText);
         Scene scene = new Scene(root, 800, 600);
         if (styleSheets != null) {
             scene.getStylesheets()
                  .addAll(styleSheets);
         }
-        valueText.applyCss();
-        valueText.layout();
+        text.applyCss();
+        text.layout();
 
         labelText.applyCss();
         labelText.layout();
@@ -234,69 +163,22 @@ public class Layout {
         outlineListCell.applyCss();
         outlineListCell.layout();
 
-        listItems = nestedKeyList.getItems();
-        listItems.add("Lorem ipsum");
-        nestedKeyList.setItems(null);
-        nestedKeyList.setItems(listItems);
-        nestedKeyList.applyCss();
-        nestedKeyList.layout();
-        nestedKeyList.refresh();
+        textFont = text.getFont();
 
-        nestedKeyListCell.applyCss();
-        nestedKeyListCell.layout();
+        listCellInsets = new Insets(outlineListCell.snappedTopInset(),
+                                    outlineListCell.snappedRightInset(),
+                                    outlineListCell.snappedBottomInset(),
+                                    outlineListCell.snappedLeftInset());
 
-        listItems = nestedList.getItems();
-        listItems.add("Lorem ipsum");
-        nestedList.setItems(null);
-        nestedList.setItems(listItems);
-        nestedList.applyCss();
-        nestedList.layout();
-        nestedList.refresh();
-        nestedListCell.applyCss();
-        nestedListCell.layout();
-
-        valueFont = valueText.getFont();
-
-        labelFont = valueFont;
-
-        nestedListCellInsets = new Insets(nestedListCell.snappedTopInset(),
-                                          nestedListCell.snappedRightInset(),
-                                          nestedListCell.snappedBottomInset(),
-                                          nestedListCell.snappedLeftInset());
-
-        nestedListInsets = new Insets(nestedList.snappedTopInset(),
-                                      nestedList.snappedRightInset(),
-                                      nestedList.snappedBottomInset(),
-                                      nestedList.snappedLeftInset());
-
-        nestedKeyListCellInsets = new Insets(nestedKeyListCell.snappedTopInset(),
-                                             nestedKeyListCell.snappedRightInset(),
-                                             nestedKeyListCell.snappedBottomInset(),
-                                             nestedKeyListCell.snappedLeftInset());
-
-        nestedKeyListInsets = new Insets(nestedKeyList.snappedTopInset(),
-                                         nestedKeyList.snappedRightInset(),
-                                         nestedKeyList.snappedBottomInset(),
-                                         nestedKeyList.snappedLeftInset());
-
-        outlineListCellInsets = new Insets(outlineListCell.snappedTopInset(),
-                                           outlineListCell.snappedRightInset(),
-                                           outlineListCell.snappedBottomInset(),
-                                           outlineListCell.snappedLeftInset());
-
-        outlineListInsets = new Insets(outlineList.snappedTopInset(),
-                                       outlineList.snappedRightInset(),
-                                       outlineList.snappedBottomInset(),
-                                       outlineList.snappedLeftInset());
+        listInsets = new Insets(outlineList.snappedTopInset(),
+                                outlineList.snappedRightInset(),
+                                outlineList.snappedBottomInset(),
+                                outlineList.snappedLeftInset());
 
         tableCellInsets = new Insets(tableCell.snappedTopInset(),
                                      tableCell.snappedRightInset(),
                                      tableCell.snappedBottomInset(),
                                      tableCell.snappedLeftInset());
-        tableKeyCellInsets = new Insets(tableKeyCell.snappedTopInset(),
-                                        tableKeyCell.snappedRightInset(),
-                                        tableKeyCell.snappedBottomInset(),
-                                        tableKeyCell.snappedLeftInset());
 
         tableInsets = new Insets(table.snappedTopInset(),
                                  table.snappedRightInset(),
@@ -316,88 +198,34 @@ public class Layout {
         contentField.setAccessible(true);
         Region content;
         try {
-            content = (Region) contentField.get(valueText.getSkin());
+            content = (Region) contentField.get(text.getSkin());
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
-        valueInsets = new Insets(content.snappedTopInset(),
-                                 content.snappedRightInset(),
-                                 content.snappedBottomInset(),
-                                 content.snappedLeftInset());
-
-        labelInsets = valueInsets;
-        valueLineHeight = FONT_LOADER.getFontMetrics(valueFont)
-                                     .getLineHeight();
-        labelLineHeight = FONT_LOADER.getFontMetrics(labelFont)
-                                     .getLineHeight();
+        textInsets = new Insets(content.snappedTopInset(),
+                                content.snappedRightInset(),
+                                content.snappedBottomInset(),
+                                content.snappedLeftInset());
     }
 
-    public double getLabelHorizontalInset() {
-        return labelInsets.getLeft() + labelInsets.getRight();
+    public double getListCellHorizontalInset() {
+        return listCellInsets.getLeft() + listCellInsets.getRight();
     }
 
-    public double getLabelLineHeight() {
-        return labelLineHeight;
+    public double getListCellVerticalInset() {
+        return listCellInsets.getTop() + listCellInsets.getBottom();
     }
 
-    public double getLabelVerticalInset() {
-        return labelInsets.getTop() + labelInsets.getBottom();
+    public double getListHorizontalInset() {
+        return listInsets.getLeft() + listInsets.getRight();
+    }
+
+    public double getListVerticalInset() {
+        return listInsets.getTop() + listInsets.getBottom();
     }
 
     public LayoutModel getModel() {
         return model;
-    }
-
-    public double getNestedKeyListCellHorizontalInset() {
-        return nestedKeyListCellInsets.getLeft()
-               + nestedKeyListCellInsets.getRight();
-    }
-
-    public double getNestedKeyListCellVerticalInset() {
-        return nestedKeyListCellInsets.getTop()
-               + nestedKeyListCellInsets.getBottom();
-    }
-
-    public double getNestedKeyListHorizontalInset() {
-        return nestedKeyListInsets.getLeft() + nestedKeyListInsets.getRight();
-    }
-
-    public double getNestedKeyListVerticalInset() {
-        return nestedKeyListInsets.getTop() + nestedKeyListInsets.getBottom();
-    }
-
-    public double getNestedListCellHorizontalInset() {
-        return nestedListCellInsets.getLeft() + nestedListCellInsets.getRight();
-    }
-
-    public double getNestedListCellVerticalInset() {
-        return nestedListCellInsets.getTop() + nestedListCellInsets.getBottom();
-    }
-
-    public double getNestedListHorizontalInset() {
-        return nestedListInsets.getLeft() + nestedListInsets.getRight();
-    }
-
-    public double getNestedListVerticalInset() {
-        return nestedListInsets.getTop() + nestedListInsets.getBottom();
-    }
-
-    public double getOutlineListCellHorizontalInset() {
-        return outlineListCellInsets.getLeft()
-               + outlineListCellInsets.getRight();
-    }
-
-    public double getOutlineListCellVerticalInset() {
-        return outlineListCellInsets.getTop()
-               + outlineListCellInsets.getBottom();
-    }
-
-    public double getOutlineListHorizontalInset() {
-        return outlineListInsets.getLeft() + outlineListInsets.getRight();
-    }
-
-    public double getOutlineListVerticalInset() {
-        return outlineListInsets.getTop() + outlineListInsets.getBottom();
     }
 
     public double getTableCellHorizontalInset() {
@@ -412,14 +240,6 @@ public class Layout {
         return tableInsets.getLeft() + tableInsets.getRight();
     }
 
-    public double getTableKeyCellHorizontalInset() {
-        return tableKeyCellInsets.getLeft() + tableKeyCellInsets.getRight();
-    }
-
-    public double getTableKeyCellVerticalInset() {
-        return tableKeyCellInsets.getTop() + tableKeyCellInsets.getBottom();
-    }
-
     public double getTableRowHorizontalInset() {
         return tableRowInsets.getLeft() + tableRowInsets.getRight();
     }
@@ -432,21 +252,16 @@ public class Layout {
         return tableInsets.getTop() + tableInsets.getBottom();
     }
 
-    public double getValueHorizontalInset() {
-        return valueInsets.getLeft() + valueInsets.getRight();
+    public double getTextHorizontalInset() {
+        return textInsets.getLeft() + textInsets.getRight();
     }
 
-    public double getValueLineHeight() {
-        return valueLineHeight;
+    public double getTextLineHeight() {
+        return textLineHeight;
     }
 
-    public double getValueVerticalInset() {
-        return valueInsets.getTop() + valueInsets.getBottom();
-    }
-
-    public double labelWidth(String label) {
-        return FONT_LOADER.computeStringWidth(String.format("W%sW\n", label),
-                                              labelFont);
+    public double getTextVerticalInset() {
+        return textInsets.getTop() + textInsets.getBottom();
     }
 
     public double measureHeader(TableView<?> table) {
@@ -467,29 +282,20 @@ public class Layout {
         return headerRow.getHeight();
     }
 
+    public double textDoubleSpaceWidth() {
+        return FONT_LOADER.computeStringWidth("WW", textFont);
+    }
+
+    public double textWidth(String text) {
+        return FONT_LOADER.computeStringWidth(String.format("W%sW\n", text),
+                                              textFont);
+    }
+
     @Override
     public String toString() {
-        return "Layout [labelFont=" + labelFont + "\n labelInsets="
-               + labelInsets + "\n labelLineHeight=" + labelLineHeight
-               + "\n model=" + model + "\n nestedKeyListCellInsets="
-               + nestedKeyListCellInsets + "\n nestedKeyListInsets="
-               + nestedKeyListInsets + "\n nestedListCellInsets="
-               + nestedListCellInsets + "\n nestedListInsets="
-               + nestedListInsets + "\n outlineListCellInsets="
-               + outlineListCellInsets + "\n outlineListInsets="
-               + outlineListInsets + "\n styleSheets=" + styleSheets
-               + "\n tableCellInsets=" + tableCellInsets + "\n tableInsets="
-               + tableInsets + "\n tableKeyCellInsets=" + tableKeyCellInsets
-               + "\n valueFont=" + valueFont + "\n valueInsets=" + valueInsets
-               + "\n valueLineHeight=" + valueLineHeight + "]";
-    }
-
-    public double valueDoubleSpaceWidth() {
-        return FONT_LOADER.computeStringWidth("WW", valueFont);
-    }
-
-    public double valueWidth(String value) {
-        return FONT_LOADER.computeStringWidth(String.format("W%sW\n", value),
-                                              valueFont);
-    }
+        return String.format("Layout [model=%s\n listCellInsets=%s\n listInsets=%s\n styleSheets=%s\n tableCellInsets=%s\n tableInsets=%s\n tableRowInsets=%s\n textFont=%s\n textInsets=%s\n textLineHeight=%s]",
+                             model, listCellInsets, listInsets, styleSheets,
+                             tableCellInsets, tableInsets, tableRowInsets,
+                             textFont, textInsets, textLineHeight);
+    } 
 }

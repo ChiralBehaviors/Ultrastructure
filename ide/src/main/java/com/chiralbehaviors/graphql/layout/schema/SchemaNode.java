@@ -23,6 +23,7 @@ package com.chiralbehaviors.graphql.layout.schema;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.javafx.collections.ObservableListWrapper;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -151,8 +153,8 @@ abstract public class SchemaNode {
     }
 
     public static double labelHeight(Layout layout) {
-        return Math.max(43, Layout.snap(layout.getValueLineHeight() * 2)
-                            + layout.getValueVerticalInset());
+        return Math.max(43, Layout.snap(layout.getTextLineHeight() * 2)
+                            + layout.getTextVerticalInset());
     }
 
     public static void setItemsOf(Control control, JsonNode data) {
@@ -181,8 +183,25 @@ abstract public class SchemaNode {
         }
     }
 
+    static void bind(Control control, TableColumn<JsonNode, ?> column) {
+        column.widthProperty()
+              .addListener((o, prev, cur) -> {
+                  control.setMinWidth(cur.doubleValue());
+                  control.setPrefWidth(cur.doubleValue());
+                  control.setMaxWidth(cur.doubleValue());
+              });
+        double width = column.getWidth();
+        control.setMinWidth(width);
+        control.setPrefWidth(width);
+        control.setMaxWidth(width);
+        control.setPrefHeight(24);
+        control.setMaxHeight(24);
+        control.setMinHeight(24);
+    }
+
     final String field;
     double       justifiedWidth = 0;
+
     String       label;
 
     public SchemaNode(String field) {
@@ -230,10 +249,10 @@ abstract public class SchemaNode {
         return column;
     }
 
-    abstract TableColumn<JsonNode, JsonNode> buildTableColumn(int cardinality,
-                                                              NestingFunction nesting,
-                                                              Layout layout,
-                                                              boolean key);
+    abstract Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
+                                                                          Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
+                                                                          int cardinality,
+                                                                          Layout layout);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -249,10 +268,10 @@ abstract public class SchemaNode {
     }
 
     double getLabelWidth(Layout layout) {
-        return layout.labelWidth(label);
+        return layout.textWidth(label);
     }
 
-    abstract double getTableColumnWidth();
+    abstract double getTableColumnWidth(Layout layout);
 
     abstract boolean isJusifiable();
 

@@ -303,7 +303,7 @@ public class Relation extends SchemaNode implements Cloneable {
             row.setPrefHeight(rendered);
             row.setCellFactory(c -> {
                 ListCell<JsonNode> cell = rowCell(fields, extended, layout);
-//                cell.setPrefHeight(extended);
+                cell.setPrefHeight(extended);
                 layout.getModel()
                       .apply(cell, Relation.this);
                 return cell;
@@ -576,7 +576,7 @@ public class Relation extends SchemaNode implements Cloneable {
 
         layout.getModel()
               .apply(table, this);
-        table.setFixedCellSize(elementHeight);
+        table.setFixedCellSize(height);
         table.setPrefHeight(contentHeight);
         if (cardinality > 1) {
             table.setMinHeight(contentHeight);
@@ -684,7 +684,7 @@ public class Relation extends SchemaNode implements Cloneable {
                                        .add(child.buildColumn()));
         table.setPrefWidth(justifiedWidth);
         rowHeight = layoutRow(averageCardinality, layout)
-                    + layout.getTableCellVerticalInset()
+                    + layout.getListVerticalInset()
                     + layout.getTableRowVerticalInset();
         contentHeight = (rowHeight * cardinality) + layout.measureHeader(table)
                         + layout.getTableVerticalInset();

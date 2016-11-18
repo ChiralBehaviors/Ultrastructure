@@ -284,7 +284,8 @@ public class Relation extends SchemaNode implements Cloneable {
                                     averageCardinality, layout, level, i);
         }
 
-        int nestingLevel = level+ 1;
+        int nestingLevel = level + 1;
+
         List<Function<Double, Pair<Consumer<JsonNode>, Node>>> fields = new ArrayList<>();
         for (SchemaNode child : children) {
             INDENT indent = INDENT.NONE;
@@ -300,13 +301,14 @@ public class Relation extends SchemaNode implements Cloneable {
         double cellHeight = elementHeight + nestedCellInset;
         double calculatedHeight = (cellHeight * cardinality)
                                   + layout.getListVerticalInset();
-
         return rendered -> {
             double deficit = Math.max(0, rendered - calculatedHeight);
             double childDeficit = Math.max(0, deficit / cardinality);
             double extended = Layout.snap(cellHeight + childDeficit);
 
             ListView<JsonNode> row = new ListView<JsonNode>();
+            row.setMinWidth(0);
+            row.setPrefWidth(1);
             row.setFixedCellSize(extended);
             row.setMinHeight(rendered);
             row.setPrefHeight(rendered);

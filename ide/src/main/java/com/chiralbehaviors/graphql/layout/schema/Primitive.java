@@ -43,14 +43,6 @@ import javafx.util.Pair;
  *
  */
 public class Primitive extends SchemaNode {
-    private static void bind(Control control, TableColumn<JsonNode, ?> column,
-                             double indent) {
-        column.widthProperty()
-              .addListener((o, prev, cur) -> {
-                  control.setPrefWidth(cur.doubleValue() - indent);
-              });
-        control.setPrefWidth(column.getWidth() - indent);
-    }
 
     private double  columnWidth       = 0;
     private double  maxWidth          = 0;

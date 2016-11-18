@@ -115,6 +115,16 @@ abstract public class SchemaNode {
         return node.asText();
     }
 
+    public static void bind(Control control, TableColumn<JsonNode, ?> column,
+                            double inset) {
+        column.widthProperty()
+              .addListener((o, prev, cur) -> {
+                  control.setMinWidth(cur.doubleValue() - inset);
+                  control.setPrefWidth(cur.doubleValue() - inset);
+              });
+        control.setPrefWidth(column.getWidth() - inset);
+    }
+
     public static ArrayNode extractField(JsonNode node, String field) {
         if (node == null) {
             return JsonNodeFactory.instance.arrayNode();

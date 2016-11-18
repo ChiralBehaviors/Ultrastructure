@@ -39,14 +39,13 @@ import javafx.scene.layout.AnchorPane;
  *
  */
 public class AutoLayoutView extends Control {
-    private static final String                  HIDE_SCROLLBAR_CSS = "hide-scrollbar.css";
-    private static final Logger                  log                = LoggerFactory.getLogger(AutoLayoutView.class);
+    private static final Logger                  log         = LoggerFactory.getLogger(AutoLayoutView.class);
 
-    private SimpleObjectProperty<JsonNode>       data               = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<JsonNode>       data        = new SimpleObjectProperty<>();
     private Control                              layout;
-    private double                               layoutWidth        = 0.0;
+    private double                               layoutWidth = 0.0;
     private LayoutModel                          model;
-    private final SimpleObjectProperty<Relation> root               = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<Relation> root        = new SimpleObjectProperty<>();
     private Layout                               style;
 
     public AutoLayoutView() {
@@ -87,12 +86,6 @@ public class AutoLayoutView extends Control {
 
     public SchemaNode getRoot() {
         return root.get();
-    }
-
-    @Override
-    public String getUserAgentStylesheet() {
-        return getClass().getResource(HIDE_SCROLLBAR_CSS)
-                         .toExternalForm();
     }
 
     public void measure(JsonNode data) {

@@ -326,15 +326,6 @@ public class Relation extends SchemaNode implements Cloneable {
     }
 
     @Override
-    List<Primitive> gatherLeaves() {
-        List<Primitive> leaves = new ArrayList<>();
-        for (SchemaNode child : children) {
-            leaves.addAll(child.gatherLeaves());
-        }
-        return leaves;
-    }
-
-    @Override
     Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {
         if (isFold()) {
             return fold.getFoldExtractor(extract(extractor));
@@ -502,8 +493,6 @@ public class Relation extends SchemaNode implements Cloneable {
                                    : buildOutline(n -> n, cardinality, layout);
         Parent element;
         TextArea labelText = new TextArea(label);
-        labelText.getStyleClass()
-                 .add(outlineLabelStyleClass());
         labelText.setWrapText(true);
         labelText.setPrefColumnCount(1);
         labelText.setMinWidth(labelWidth);

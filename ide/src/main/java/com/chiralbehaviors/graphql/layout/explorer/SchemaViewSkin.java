@@ -18,25 +18,13 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.graphql.layout.schema;
+package com.chiralbehaviors.graphql.layout.explorer;
 
-import java.util.function.BiFunction;
+import javafx.scene.control.SkinBase;
 
-import org.glassfish.jersey.internal.util.Producer;
+public class SchemaViewSkin extends SkinBase<SchemaView> {
 
-import com.chiralbehaviors.graphql.layout.controls.NestedTableRow;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import javafx.scene.control.Control;
-
-/**
- * 
- * @author hhildebrand
- *
- */
-@FunctionalInterface
-public interface NestingFunction {
-    Control apply(BiFunction<Producer<String>, Double, Control> inner,
-                  NestedTableRow<JsonNode> row, Primitive primitive);
-
+    protected SchemaViewSkin(SchemaView control) {
+        super(control);
+    }
 }

@@ -246,8 +246,6 @@ abstract public class SchemaNode {
         };
     }
 
-    abstract List<Primitive> gatherLeaves();
-
     Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {
         return extract(extractor);
     }
@@ -278,8 +276,4 @@ abstract public class SchemaNode {
                                                              Function<JsonNode, JsonNode> extractor,
                                                              int cardinality,
                                                              Layout layout);
-
-    String outlineLabelStyleClass() {
-        return String.format("%s-outline-label", field);
-    }
 }

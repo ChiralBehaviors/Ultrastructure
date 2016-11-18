@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -100,11 +99,6 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    List<Primitive> gatherLeaves() {
-        return Collections.singletonList(this);
-    }
-
-    @Override
     double getTableColumnWidth(Layout layout) {
         return columnWidth + layout.getTextHorizontalInset();
     }
@@ -173,8 +167,6 @@ public class Primitive extends SchemaNode {
                                                     Layout layout) {
         HBox box = new HBox();
         TextArea labelText = new TextArea(label);
-        labelText.getStyleClass()
-                 .add(outlineLabelStyleClass());
         labelText.setMinWidth(labelWidth);
         labelText.setPrefWidth(labelWidth);
         labelText.setMaxWidth(labelWidth);
@@ -199,8 +191,6 @@ public class Primitive extends SchemaNode {
 
     private TextArea buildControl(int cardinality, Layout layout) {
         TextArea text = new TextArea();
-        text.getStyleClass()
-            .add(valueClass());
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
@@ -235,9 +225,5 @@ public class Primitive extends SchemaNode {
         } else {
             return value.asText();
         }
-    }
-
-    private String valueClass() {
-        return String.format("%s-value", field);
     }
 }

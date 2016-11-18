@@ -55,19 +55,6 @@ abstract public class SchemaNode {
         LEFT, NONE, RIGHT;
     }
 
-    public static final String AUTO_LAYOUT_LABEL              = "auto-layout-label";
-    public static final String AUTO_LAYOUT_NEST_KEY_LIST      = "auto-layout-nest-key-list";
-    public static final String AUTO_LAYOUT_NEST_KEY_LIST_CELL = "auto-layout-nest-key-list-cell";
-    public static final String AUTO_LAYOUT_NEST_LIST          = "auto-layout-nest-list";
-    public static final String AUTO_LAYOUT_NEST_LIST_CELL     = "auto-layout-nest-list-cell";
-    public static final String AUTO_LAYOUT_OUTLINE_LIST       = "auto-layout-outline-list";
-    public static final String AUTO_LAYOUT_OUTLINE_LIST_CELL  = "auto-layout-outline-list-cell";
-    public static final String AUTO_LAYOUT_TABLE              = "auto-layout-table";
-    public static final String AUTO_LAYOUT_TABLE_CELL         = "auto-layout-table-cell";
-    public static final String AUTO_LAYOUT_TABLE_COLUMN       = "auto-layout-table-column";
-    public static final String AUTO_LAYOUT_TABLE_KEY_CELL     = "auto-layout-table-key-cell";
-    public static final String AUTO_LAYOUT_VALUE              = "auto-layout-value";
-    public static final String NO_SCROLL_LIST                 = "no-scroll-list";
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
@@ -239,8 +226,6 @@ abstract public class SchemaNode {
 
     TableColumn<JsonNode, JsonNode> buildColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.getStyleClass()
-              .add(AUTO_LAYOUT_TABLE_COLUMN);
         column.setPrefWidth(justifiedWidth);
         column.setMinWidth(justifiedWidth);
         column.setMaxWidth(justifiedWidth);

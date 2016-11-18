@@ -613,8 +613,6 @@ public class Relation extends SchemaNode implements Cloneable {
         list.setPrefHeight(contentHeight + layout.getListVerticalInset());
         list.setFixedCellSize(elementHeight
                               + layout.getListCellVerticalInset());
-        list.getStyleClass()
-            .add(AUTO_LAYOUT_OUTLINE_LIST);
         list.setCellFactory(c -> {
             ListCell<JsonNode> cell = outlineListCell(outlineLabelWidth,
                                                       extractor, layout);
@@ -736,7 +734,6 @@ public class Relation extends SchemaNode implements Cloneable {
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 setAlignment(Pos.CENTER);
                 setAlignment(Pos.CENTER);
-                getStyleClass().add(AUTO_LAYOUT_OUTLINE_LIST_CELL);
             }
 
             @Override
@@ -829,8 +826,6 @@ public class Relation extends SchemaNode implements Cloneable {
 
     private TableView<JsonNode> tableBase() {
         TableView<JsonNode> table = new TableView<>();
-        table.getStyleClass()
-             .add(AUTO_LAYOUT_TABLE);
         table.setPlaceholder(new Text());
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPrefWidth(justifiedWidth);

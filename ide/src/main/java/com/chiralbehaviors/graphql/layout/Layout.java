@@ -20,10 +20,6 @@
 
 package com.chiralbehaviors.graphql.layout;
 
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_CELL;
-import static com.chiralbehaviors.graphql.layout.schema.SchemaNode.AUTO_LAYOUT_TABLE_COLUMN;
-
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -104,20 +100,14 @@ public class Layout {
                 setText(item);
             }
         };
-        tableCell.getStyleClass()
-                 .add(AUTO_LAYOUT_TABLE_CELL);
 
         TableView<String> table = new TableView<>();
-        table.getStyleClass()
-             .add(AUTO_LAYOUT_TABLE);
 
         TableRow<String> tableRow = new TableRow<>();
         table.setRowFactory(v -> tableRow);
 
         TableColumn<String, String> column = new TableColumn<>("");
         column.setCellFactory(c -> tableCell);
-        column.getStyleClass()
-              .add(AUTO_LAYOUT_TABLE_COLUMN);
         column.setCellValueFactory(s -> new SimpleStringProperty(s.getValue()));
 
         table.getColumns()

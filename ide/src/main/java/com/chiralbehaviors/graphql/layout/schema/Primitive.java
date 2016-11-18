@@ -104,13 +104,6 @@ public class Primitive extends SchemaNode {
         return Collections.singletonList(this);
     }
 
-    TableColumn<JsonNode, JsonNode> getColumn() {
-        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.getStyleClass()
-              .add(AUTO_LAYOUT_TABLE_COLUMN);
-        return column;
-    }
-
     @Override
     double getTableColumnWidth(Layout layout) {
         return columnWidth + layout.getTextHorizontalInset();

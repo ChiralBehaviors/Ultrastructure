@@ -42,11 +42,12 @@ import javafx.util.Pair;
  *
  */
 public class Primitive extends SchemaNode {
-
+    
     private double  columnWidth       = 0;
     private double  maxWidth          = 0;
     private double  valueDefaultWidth = 0;
     private double  valueHeight       = 0;
+
     private boolean variableLength    = false;
 
     public Primitive(String label) {

@@ -209,20 +209,24 @@ public class Layout {
         return listInsets.getLeft() + listInsets.getRight();
     }
 
-    public double getNestedLeftInset() {
-        return listInsets.getLeft() + listCellInsets.getLeft();
-    }
-
-    public double getNestedRightInset() {
-        return listInsets.getRight() + listCellInsets.getRight();
-    }
-
     public double getListVerticalInset() {
         return listInsets.getTop() + listInsets.getBottom();
     }
 
     public LayoutModel getModel() {
         return model;
+    }
+
+    public double getNestedInset() {
+        return getNestedLeftInset() + getNestedRightInset();
+    }
+
+    public double getNestedLeftInset() {
+        return listInsets.getLeft() + listCellInsets.getLeft();
+    }
+
+    public double getNestedRightInset() {
+        return listInsets.getRight() + listCellInsets.getRight();
     }
 
     public double getTableCellHorizontalInset() {

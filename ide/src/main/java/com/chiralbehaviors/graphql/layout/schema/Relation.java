@@ -288,39 +288,40 @@ public class Relation extends SchemaNode implements Cloneable {
 
         List<Function<Double, Pair<Consumer<JsonNode>, Node>>> fields = new ArrayList<>();
         for (SchemaNode child : children) {
-            INDENT indent = INDENT.NONE;
-            if (child.equals(children.get(0))) {
-                indent = INDENT.LEFT;
-            } else if (child.equals(children.get(children.size() - 1))) {
-                indent = INDENT.RIGHT;
-            }
             fields.add(child.buildColumn(n -> n, columnMap, averageCardinality,
-                                         layout, nestingLevel, indent));
+                                         layout, nestingLevel, indent(child)));
         }
-        double nestedCellInset = layout.getListCellVerticalInset();
-        double cellHeight = elementHeight + nestedCellInset;
+
+        double cellHeight = elementHeight + layout.getListCellVerticalInset();
         double calculatedHeight = (cellHeight * cardinality)
                                   + layout.getListVerticalInset();
+
+        Function<JsonNode, JsonNode> extract = level == 0 ? extractor
+                                                          : extract(extractor);
+        double inset = (level + 1) * layout.getNestedInset();
         return rendered -> {
             double deficit = Math.max(0, rendered - calculatedHeight);
             double childDeficit = Math.max(0, deficit / cardinality);
             double extended = Layout.snap(cellHeight + childDeficit);
 
             ListView<JsonNode> row = new ListView<JsonNode>();
-            row.setMinWidth(0);
-            row.setPrefWidth(1);
+            if (level > 0) {
+                row.setPrefWidth(justifiedWidth - inset);
+            }
             row.setFixedCellSize(extended);
             row.setMinHeight(rendered);
             row.setPrefHeight(rendered);
             row.setCellFactory(c -> {
-                ListCell<JsonNode> cell = rowCell(fields, extended, layout);
+                ListCell<JsonNode> cell = rowCell(fields,
+                                                  extended - layout.getListCellVerticalInset(),
+                                                  layout);
                 cell.setPrefHeight(extended);
                 layout.getModel()
                       .apply(cell, Relation.this);
                 return cell;
             });
             return new Pair<Consumer<JsonNode>, Node>(node -> {
-                setItems(row, extractor.apply(node));
+                setItems(row, extract.apply(node));
             }, row);
         };
     }
@@ -636,6 +637,16 @@ public class Relation extends SchemaNode implements Cloneable {
         return flattened;
     }
 
+    private INDENT indent(SchemaNode child) {
+        INDENT indent = INDENT.NONE;
+        if (child.equals(children.get(0))) {
+            indent = INDENT.LEFT;
+        } else if (child.equals(children.get(children.size() - 1))) {
+            indent = INDENT.RIGHT;
+        }
+        return indent;
+    }
+
     private void justifyOutline(double width, Layout layout) {
         if (isJusifiable()) {
             double outlineLabelWidth = children.stream()
@@ -771,13 +782,6 @@ public class Relation extends SchemaNode implements Cloneable {
             private Consumer<JsonNode> master;
             private HBox               row;
             {
-                emptyProperty().addListener((obs, wasEmpty, isEmpty) -> {
-                    if (isEmpty) {
-                        setGraphic(null);
-                    } else {
-                        setGraphic(row);
-                    }
-                });
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 setAlignment(Pos.CENTER);
             }
@@ -788,7 +792,11 @@ public class Relation extends SchemaNode implements Cloneable {
                     return;
                 }
                 super.updateItem(item, empty);
-                if (empty || item == null) {
+                if (empty) {
+                    return;
+                }
+                if (item == null) {
+                    setGraphic(null);
                     return;
                 }
                 if (row == null) {
@@ -796,6 +804,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 }
                 setGraphic(row);
                 master.accept(item);
+                row.requestLayout();
             }
 
             private void buildRow() {
@@ -808,7 +817,9 @@ public class Relation extends SchemaNode implements Cloneable {
                        .add(pair.getValue());
                     consumers.add(pair.getKey());
                 });
-                master = node -> consumers.forEach(c -> c.accept(node));
+                master = node -> consumers.forEach(c -> {
+                    c.accept(node);
+                });
             }
         };
     }

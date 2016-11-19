@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.sun.javafx.collections.ObservableListWrapper;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -51,10 +50,10 @@ import javafx.util.Pair;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE)
 abstract public class SchemaNode {
+
     protected static enum INDENT {
         LEFT, NONE, RIGHT;
     }
-
 
     public static ArrayNode asArray(JsonNode node) {
         if (node == null) {
@@ -100,16 +99,6 @@ abstract public class SchemaNode {
             return builder.toString();
         }
         return node.asText();
-    }
-
-    public static void bind(Control control, TableColumn<JsonNode, ?> column,
-                            double inset) {
-        column.widthProperty()
-              .addListener((o, prev, cur) -> {
-                  control.setMinWidth(cur.doubleValue() - inset);
-                  control.setPrefWidth(cur.doubleValue() - inset);
-              });
-        control.setPrefWidth(column.getWidth() - inset);
     }
 
     public static ArrayNode extractField(JsonNode node, String field) {
@@ -163,15 +152,16 @@ abstract public class SchemaNode {
             data = JsonNodeFactory.instance.arrayNode();
         }
         List<JsonNode> dataList = asList(data);
-        ObservableListWrapper<JsonNode> observedData = new ObservableListWrapper<>(dataList);
         if (control instanceof ListView) {
             @SuppressWarnings("unchecked")
             ListView<JsonNode> listView = (ListView<JsonNode>) control;
-            listView.setItems(observedData);
+            listView.getItems()
+                    .setAll(dataList);
         } else if (control instanceof TableView) {
             @SuppressWarnings("unchecked")
             TableView<JsonNode> tableView = (TableView<JsonNode>) control;
-            tableView.setItems(observedData);
+            tableView.getItems()
+                     .setAll(dataList);
         } else if (control instanceof Label) {
             Label label = (Label) control;
             label.setText(asText(data));
@@ -186,7 +176,6 @@ abstract public class SchemaNode {
 
     final String field;
     double       justifiedWidth = 0;
-
     String       label;
 
     public SchemaNode(String field) {
@@ -223,6 +212,16 @@ abstract public class SchemaNode {
     }
 
     abstract public String toString(int indent);
+
+    void bind(Control control, TableColumn<JsonNode, ?> column, double inset) {
+        column.prefWidthProperty()
+              .addListener((o, prev, cur) -> {
+                  double width = cur.doubleValue() - inset;
+                  control.setMinWidth(width);
+                  control.setPrefWidth(width);
+              });
+        control.setPrefWidth(column.getWidth() - inset);
+    }
 
     TableColumn<JsonNode, JsonNode> buildColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);

@@ -44,7 +44,6 @@ import graphql.language.Selection;
 import graphql.parser.Parser;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
@@ -266,19 +265,18 @@ public class Relation extends SchemaNode implements Cloneable {
             return fold.buildColumn();
         }
         TableColumn<JsonNode, JsonNode> column = super.buildColumn();
-        column.setUserData(this);
         ObservableList<TableColumn<JsonNode, ?>> columns = column.getColumns();
         children.forEach(child -> columns.add(child.buildColumn()));
         return column;
     }
 
     @Override
-    Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
-                                                                 Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
-                                                                 int cardinality,
-                                                                 Layout layout,
-                                                                 int level,
-                                                                 INDENT i) {
+    Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(Function<JsonNode, JsonNode> extractor,
+                                                                    Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
+                                                                    int cardinality,
+                                                                    Layout layout,
+                                                                    int level,
+                                                                    INDENT i) {
         if (isFold()) {
             return fold.buildColumn(extract(extractor), columnMap,
                                     averageCardinality, layout, level, i);
@@ -286,10 +284,12 @@ public class Relation extends SchemaNode implements Cloneable {
 
         int nestingLevel = level + 1;
 
-        List<Function<Double, Pair<Consumer<JsonNode>, Node>>> fields = new ArrayList<>();
+        List<Function<Double, Pair<Consumer<JsonNode>, Control>>> fields = new ArrayList<>();
         for (SchemaNode child : children) {
             fields.add(child.buildColumn(n -> n, columnMap, averageCardinality,
-                                         layout, nestingLevel, indent(child)));
+                                         layout,
+                                         child.isRelation() ? 0 : nestingLevel,
+                                         indent(child)));
         }
 
         double cellHeight = elementHeight + layout.getListCellVerticalInset();
@@ -298,16 +298,13 @@ public class Relation extends SchemaNode implements Cloneable {
 
         Function<JsonNode, JsonNode> extract = level == 0 ? extractor
                                                           : extract(extractor);
-        double inset = (level + 1) * layout.getNestedInset();
         return rendered -> {
             double deficit = Math.max(0, rendered - calculatedHeight);
             double childDeficit = Math.max(0, deficit / cardinality);
             double extended = Layout.snap(cellHeight + childDeficit);
 
             ListView<JsonNode> row = new ListView<JsonNode>();
-            if (level > 0) {
-                row.setPrefWidth(justifiedWidth - inset);
-            }
+
             row.setFixedCellSize(extended);
             row.setMinHeight(rendered);
             row.setPrefHeight(rendered);
@@ -320,7 +317,7 @@ public class Relation extends SchemaNode implements Cloneable {
                       .apply(cell, Relation.this);
                 return cell;
             });
-            return new Pair<Consumer<JsonNode>, Node>(node -> {
+            return new Pair<>(node -> {
                 setItems(row, extract.apply(node));
             }, row);
         };
@@ -558,17 +555,17 @@ public class Relation extends SchemaNode implements Cloneable {
             columns = leaves;
         }
 
-        Function<Double, Pair<Consumer<JsonNode>, Node>> topLevel = buildColumn(n -> n,
-                                                                                columnMap,
-                                                                                1,
-                                                                                layout,
-                                                                                0,
-                                                                                INDENT.NONE);
+        Function<Double, Pair<Consumer<JsonNode>, Control>> topLevel = buildColumn(n -> n,
+                                                                                   columnMap,
+                                                                                   1,
+                                                                                   layout,
+                                                                                   0,
+                                                                                   INDENT.NONE);
 
         double height = extendedHeight(layout, 1);
 
         table.setRowFactory(tableView -> {
-            Pair<Consumer<JsonNode>, Node> relationRow = topLevel.apply(height);
+            Pair<Consumer<JsonNode>, Control> relationRow = topLevel.apply(height);
             RelationTableRow row = new RelationTableRow(relationRow.getKey(),
                                                         relationRow.getValue());
             layout.getModel()
@@ -775,7 +772,7 @@ public class Relation extends SchemaNode implements Cloneable {
         };
     }
 
-    private ListCell<JsonNode> rowCell(List<Function<Double, Pair<Consumer<JsonNode>, Node>>> fields,
+    private ListCell<JsonNode> rowCell(List<Function<Double, Pair<Consumer<JsonNode>, Control>>> fields,
                                        double resolvedHeight, Layout layout) {
 
         return new ListCell<JsonNode>() {
@@ -812,7 +809,7 @@ public class Relation extends SchemaNode implements Cloneable {
                 row.setPrefHeight(resolvedHeight);
                 List<Consumer<JsonNode>> consumers = new ArrayList<>();
                 fields.forEach(p -> {
-                    Pair<Consumer<JsonNode>, Node> pair = p.apply(resolvedHeight);
+                    Pair<Consumer<JsonNode>, Control> pair = p.apply(resolvedHeight);
                     row.getChildren()
                        .add(pair.getValue());
                     consumers.add(pair.getKey());

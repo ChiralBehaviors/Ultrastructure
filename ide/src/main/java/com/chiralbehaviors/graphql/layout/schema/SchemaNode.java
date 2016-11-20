@@ -34,12 +34,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.util.Pair;
@@ -214,8 +214,13 @@ abstract public class SchemaNode {
     abstract public String toString(int indent);
 
     void bind(Control control, TableColumn<JsonNode, ?> column, double inset) {
-        column.prefWidthProperty()
+        column.widthProperty()
               .addListener((o, prev, cur) -> {
+                  SchemaNode.this.toString();
+                  TableColumnBase<JsonNode, ?> parentColumn = column.getParentColumn();
+                  if (parentColumn != null) {
+                      parentColumn.toString();
+                  }
                   double width = cur.doubleValue() - inset;
                   control.setMinWidth(width);
                   control.setPrefWidth(width);
@@ -225,13 +230,11 @@ abstract public class SchemaNode {
 
     TableColumn<JsonNode, JsonNode> buildColumn() {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.setPrefWidth(justifiedWidth);
-        column.setMinWidth(justifiedWidth);
-        column.setMaxWidth(justifiedWidth);
+        column.setUserData(this);
         return column;
     }
 
-    abstract Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
+    abstract Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(Function<JsonNode, JsonNode> extractor,
                                                                           Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
                                                                           int cardinality,
                                                                           Layout layout,

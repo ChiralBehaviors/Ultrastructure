@@ -29,7 +29,6 @@ import com.chiralbehaviors.graphql.layout.Layout;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableColumn;
@@ -42,7 +41,7 @@ import javafx.util.Pair;
  *
  */
 public class Primitive extends SchemaNode {
-    
+
     private double  columnWidth       = 0;
     private double  maxWidth          = 0;
     private double  valueDefaultWidth = 0;
@@ -70,17 +69,16 @@ public class Primitive extends SchemaNode {
         TableColumn<JsonNode, JsonNode> column = super.buildColumn();
         column.setMinWidth(0);
         column.setPrefWidth(columnWidth);
-        column.setUserData(this);
         return column;
     }
 
     @Override
-    Function<Double, Pair<Consumer<JsonNode>, Node>> buildColumn(Function<JsonNode, JsonNode> extractor,
-                                                                 Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
-                                                                 int cardinality,
-                                                                 Layout layout,
-                                                                 int nestingLevel,
-                                                                 INDENT indent) {
+    Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(Function<JsonNode, JsonNode> extractor,
+                                                                    Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
+                                                                    int cardinality,
+                                                                    Layout layout,
+                                                                    int nestingLevel,
+                                                                    INDENT indent) {
         double inset = indent == INDENT.LEFT ? nestingLevel
                                                * layout.getNestedLeftInset()
                                              : indent == INDENT.RIGHT ? nestingLevel
@@ -93,9 +91,8 @@ public class Primitive extends SchemaNode {
             bind(control, columnMap.get(this), inset);
             layout.getModel()
                   .apply(control, Primitive.this);
-            return new Pair<Consumer<JsonNode>, Node>(node -> setItems(control,
-                                                                       extractFrom(node)),
-                                                      control);
+            return new Pair<>(node -> setItems(control, extractFrom(node)),
+                              control);
         };
     }
 

@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TableRow;
 
@@ -35,9 +35,10 @@ import javafx.scene.control.TableRow;
 public class RelationTableRow extends TableRow<JsonNode> {
     public final Consumer<JsonNode> manager;
 
-    public RelationTableRow(Consumer<JsonNode> manager, Node row) {
+    public RelationTableRow(Consumer<JsonNode> manager, Control row) {
         this.manager = manager;
         getChildren().setAll(row);
+        row.setPrefWidth(getWidth());
     }
 
     @Override

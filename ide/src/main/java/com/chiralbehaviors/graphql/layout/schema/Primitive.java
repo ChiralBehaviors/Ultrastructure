@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -65,17 +66,15 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildColumn() {
-        TableColumn<JsonNode, JsonNode> column = super.buildColumn();
-        column.setMinWidth(0);
-        column.setPrefWidth(columnWidth);
+    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout) {
+        TableColumn<JsonNode, JsonNode> column = super.buildColumn(layout);
+        column.setMaxWidth(justifiedWidth);
         return column;
     }
-
     @Override
-    Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(Function<JsonNode, JsonNode> extractor,
+    Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(int cardinality,
+                                                                    Function<JsonNode, JsonNode> extractor,
                                                                     Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
-                                                                    int cardinality,
                                                                     Layout layout,
                                                                     int nestingLevel,
                                                                     INDENT indent) {
@@ -95,16 +94,14 @@ public class Primitive extends SchemaNode {
                               control);
         };
     }
+    @Override
+    List<Primitive> gatherLeaves() {
+        return Collections.singletonList(this);
+    }
 
     @Override
     double getTableColumnWidth(Layout layout) {
         return columnWidth + layout.getTextHorizontalInset();
-    }
-
-    @Override
-    boolean isJusifiable() {
-        return true;
-        //        return variableLength || justifiedWidth < maxWidth;
     }
 
     @Override
@@ -154,7 +151,6 @@ public class Primitive extends SchemaNode {
         }
 
         justifiedWidth = columnWidth + layout.getTextHorizontalInset();
-        ;
         return justifiedWidth;
     }
 
@@ -187,6 +183,16 @@ public class Primitive extends SchemaNode {
         }, box);
     }
 
+    private void bind(Control control, TableColumn<JsonNode, ?> column, double inset) {
+        column.widthProperty()
+              .addListener((o, prev, cur) -> {
+                  double width = cur.doubleValue() - inset;
+                  control.setMinWidth(width);
+                  control.setPrefWidth(width);
+              });
+        control.setPrefWidth(column.getWidth() - inset);
+    }
+
     private TextArea buildControl(int cardinality, Layout layout) {
         TextArea text = new TextArea();
         text.setWrapText(true);
@@ -201,6 +207,7 @@ public class Primitive extends SchemaNode {
         return Math.max(43, Layout.snap(layout.getTextLineHeight() * rows)
                             + layout.getTextVerticalInset());
     }
+
 
     private String toString(JsonNode value) {
         if (value == null) {

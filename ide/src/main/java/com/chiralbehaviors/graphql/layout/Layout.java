@@ -288,8 +288,9 @@ public class Layout {
     }
 
     public double textWidth(String text) {
-        return FONT_LOADER.computeStringWidth(String.format("W%sW\n", text),
-                                              textFont);
+        return snap(FONT_LOADER.computeStringWidth(String.format("W%sW\n",
+                                                                 text),
+                                                   textFont));
     }
 
     @Override

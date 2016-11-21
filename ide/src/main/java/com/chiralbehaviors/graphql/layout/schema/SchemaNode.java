@@ -213,33 +213,18 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    void bind(Control control, TableColumn<JsonNode, ?> column, double inset) {
-        column.widthProperty()
-              .addListener((o, prev, cur) -> {
-                  SchemaNode.this.toString();
-                  TableColumnBase<JsonNode, ?> parentColumn = column.getParentColumn();
-                  if (parentColumn != null) {
-                      parentColumn.toString();
-                  }
-                  double width = cur.doubleValue() - inset;
-                  control.setMinWidth(width);
-                  control.setPrefWidth(width);
-              });
-        control.setPrefWidth(column.getWidth() - inset);
-    }
-
-    TableColumn<JsonNode, JsonNode> buildColumn() {
+    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setUserData(this);
         return column;
     }
 
-    abstract Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(Function<JsonNode, JsonNode> extractor,
-                                                                          Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
-                                                                          int cardinality,
-                                                                          Layout layout,
-                                                                          int nestingLevel,
-                                                                          INDENT indent);
+    abstract Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(int cardinality,
+                                                                             Function<JsonNode, JsonNode> extractor,
+                                                                             Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
+                                                                             Layout layout,
+                                                                             int nestingLevel,
+                                                                             INDENT indent);
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -248,17 +233,13 @@ abstract public class SchemaNode {
         };
     }
 
-    Function<JsonNode, JsonNode> getFoldExtractor(Function<JsonNode, JsonNode> extractor) {
-        return extract(extractor);
-    }
+    abstract List<Primitive> gatherLeaves();
 
     double getLabelWidth(Layout layout) {
         return layout.textWidth(label);
     }
 
     abstract double getTableColumnWidth(Layout layout);
-
-    abstract boolean isJusifiable();
 
     boolean isUseTable() {
         return false;
@@ -278,4 +259,20 @@ abstract public class SchemaNode {
                                                              Function<JsonNode, JsonNode> extractor,
                                                              int cardinality,
                                                              Layout layout);
+
+    void resize(TableColumnBase<JsonNode, ?> parentColumn) {
+        double _minWidth = 0.0f;
+        double _prefWidth = 0.0f;
+        double _maxWidth = 0.0f;
+
+        for (TableColumnBase<JsonNode, ?> col : parentColumn.getColumns()) {
+            _minWidth += col.getMinWidth();
+            _prefWidth += col.getPrefWidth();
+            _maxWidth += col.getMaxWidth();
+        }
+
+        parentColumn.setMinWidth(_minWidth);
+        parentColumn.setPrefWidth(_prefWidth);
+        parentColumn.setMaxWidth(_maxWidth);
+    }
 }

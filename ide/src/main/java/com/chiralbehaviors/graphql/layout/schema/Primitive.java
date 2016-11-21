@@ -68,7 +68,7 @@ public class Primitive extends SchemaNode {
     @Override
     TableColumn<JsonNode, JsonNode> buildColumn(Layout layout) {
         TableColumn<JsonNode, JsonNode> column = super.buildColumn(layout);
-        column.setMaxWidth(justifiedWidth);
+        column.setPrefWidth(justifiedWidth);
         return column;
     }
     @Override

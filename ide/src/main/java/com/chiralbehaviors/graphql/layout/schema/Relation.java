@@ -818,6 +818,7 @@ public class Relation extends SchemaNode implements Cloneable {
         TableView<JsonNode> table = new TableView<>();
         table.setPlaceholder(new Text());
         table.setPrefWidth(justifiedWidth);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         return table;
     }
 }

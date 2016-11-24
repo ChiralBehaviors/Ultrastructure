@@ -38,7 +38,6 @@ public class RelationTableRow extends TableRow<JsonNode> {
     public RelationTableRow(Consumer<JsonNode> manager, Control row) {
         this.manager = manager;
         getChildren().setAll(row);
-        row.setPrefWidth(getWidth());
     }
 
     @Override

@@ -52,7 +52,16 @@ import javafx.util.Pair;
 abstract public class SchemaNode {
 
     protected static enum INDENT {
-        LEFT, NONE, RIGHT;
+        LEFT, NONE, RIGHT {
+            @Override
+            public boolean isRight() {
+                return true;
+            }
+        };
+
+        public boolean isRight() {
+            return false;
+        }
     }
 
     public static ArrayNode asArray(JsonNode node) {
@@ -213,18 +222,18 @@ abstract public class SchemaNode {
 
     abstract public String toString(int indent);
 
-    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout) {
-        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
-        column.setUserData(this);
-        return column;
-    }
-
     abstract Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(int cardinality,
                                                                              Function<JsonNode, JsonNode> extractor,
                                                                              Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
                                                                              Layout layout,
-                                                                             int nestingLevel,
+                                                                             double inset,
                                                                              INDENT indent);
+
+    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double indent) {
+        TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
+        column.setUserData(this);
+        return column;
+    }
 
     Function<JsonNode, JsonNode> extract(Function<JsonNode, JsonNode> extractor) {
         return n -> {
@@ -253,7 +262,7 @@ abstract public class SchemaNode {
 
     abstract double layoutRow(int cardinality, Layout layout);
 
-    abstract double measure(ArrayNode data, Layout layout, boolean key);
+    abstract double measure(ArrayNode data, Layout layout, double indent);
 
     abstract Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
                                                              Function<JsonNode, JsonNode> extractor,

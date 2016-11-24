@@ -66,24 +66,12 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout) {
-        TableColumn<JsonNode, JsonNode> column = super.buildColumn(layout);
-        column.setPrefWidth(justifiedWidth);
-        return column;
-    }
-    @Override
     Function<Double, Pair<Consumer<JsonNode>, Control>> buildColumn(int cardinality,
                                                                     Function<JsonNode, JsonNode> extractor,
                                                                     Map<SchemaNode, TableColumn<JsonNode, ?>> columnMap,
                                                                     Layout layout,
-                                                                    int nestingLevel,
+                                                                    double inset,
                                                                     INDENT indent) {
-        double inset = indent == INDENT.LEFT ? nestingLevel
-                                               * layout.getNestedLeftInset()
-                                             : indent == INDENT.RIGHT ? nestingLevel
-                                                                        * layout.getNestedRightInset()
-                                                                      : 0;
-
         return height -> {
             TextArea control = buildControl(1, layout);
             control.setPrefHeight(height);
@@ -94,6 +82,15 @@ public class Primitive extends SchemaNode {
                               control);
         };
     }
+
+    @Override
+    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double indent) {
+        TableColumn<JsonNode, JsonNode> column = super.buildColumn(layout,
+                                                                   indent);
+        column.setPrefWidth(justifiedWidth + indent);
+        return column;
+    }
+
     @Override
     List<Primitive> gatherLeaves() {
         return Collections.singletonList(this);
@@ -128,7 +125,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double measure(ArrayNode data, Layout layout, boolean key) {
+    double measure(ArrayNode data, Layout layout, double indent) {
         double labelWidth = getLabelWidth(layout);
         double sum = 0;
         maxWidth = 0;
@@ -183,7 +180,8 @@ public class Primitive extends SchemaNode {
         }, box);
     }
 
-    private void bind(Control control, TableColumn<JsonNode, ?> column, double inset) {
+    private void bind(Control control, TableColumn<JsonNode, ?> column,
+                      double inset) {
         column.widthProperty()
               .addListener((o, prev, cur) -> {
                   double width = cur.doubleValue() - inset;
@@ -207,7 +205,6 @@ public class Primitive extends SchemaNode {
         return Math.max(43, Layout.snap(layout.getTextLineHeight() * rows)
                             + layout.getTextVerticalInset());
     }
-
 
     private String toString(JsonNode value) {
         if (value == null) {

@@ -47,6 +47,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
+@SuppressWarnings("restriction")
 public class AutoLayoutController {
     public class ActiveState extends QueryState {
         public ActiveState() {

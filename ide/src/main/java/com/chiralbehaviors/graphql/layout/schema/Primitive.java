@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.graphql.layout.schema;
 
+import static com.chiralbehaviors.graphql.layout.Layout.snap;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,7 @@ public class Primitive extends SchemaNode {
                                                                     Layout layout,
                                                                     double inset,
                                                                     INDENT indent) {
+        System.out.println(String.format("construct %s: %s", this, inset));
         return height -> {
             TextArea control = buildControl(1, layout);
             control.setPrefHeight(height);
@@ -85,6 +88,7 @@ public class Primitive extends SchemaNode {
 
     @Override
     TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double indent) {
+        System.out.println(String.format("build %s: %s", this, indent));
         TableColumn<JsonNode, JsonNode> column = super.buildColumn(layout,
                                                                    indent);
         column.setPrefWidth(justifiedWidth + indent);
@@ -125,7 +129,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double measure(ArrayNode data, Layout layout, double indent) {
+    double measure(ArrayNode data, Layout layout) {
         double labelWidth = getLabelWidth(layout);
         double sum = 0;
         maxWidth = 0;
@@ -141,8 +145,8 @@ public class Primitive extends SchemaNode {
         }
         double averageWidth = data.size() == 0 ? 0 : (sum / data.size());
 
-        columnWidth = Math.max(labelWidth,
-                               Math.max(valueDefaultWidth, averageWidth));
+        columnWidth = snap(Math.max(labelWidth,
+                                    Math.max(valueDefaultWidth, averageWidth)));
         if (maxWidth > averageWidth) {
             variableLength = true;
         }

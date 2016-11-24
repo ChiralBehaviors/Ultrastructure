@@ -45,6 +45,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
+@SuppressWarnings("restriction")
 public class Layout {
     private static FontLoader FONT_LOADER = Toolkit.getToolkit()
                                                    .getFontLoader();

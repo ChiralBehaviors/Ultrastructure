@@ -74,7 +74,6 @@ public class Primitive extends SchemaNode {
                                                                     Layout layout,
                                                                     double inset,
                                                                     INDENT indent) {
-        System.out.println(String.format("construct %s: %s", this, inset));
         return height -> {
             TextArea control = buildControl(1, layout);
             control.setPrefHeight(height);
@@ -87,11 +86,12 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double indent) {
-        System.out.println(String.format("build %s: %s", this, indent));
+    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double inset,
+                                                INDENT indent) {
         TableColumn<JsonNode, JsonNode> column = super.buildColumn(layout,
+                                                                   inset,
                                                                    indent);
-        column.setPrefWidth(justifiedWidth + indent);
+        column.setPrefWidth(justifiedWidth + inset);
         return column;
     }
 
@@ -129,7 +129,7 @@ public class Primitive extends SchemaNode {
     }
 
     @Override
-    double measure(ArrayNode data, Layout layout) {
+    double measure(ArrayNode data, Layout layout, INDENT indent) {
         double labelWidth = getLabelWidth(layout);
         double sum = 0;
         maxWidth = 0;
@@ -147,6 +147,7 @@ public class Primitive extends SchemaNode {
 
         columnWidth = snap(Math.max(labelWidth,
                                     Math.max(valueDefaultWidth, averageWidth)));
+        columnWidth += indent == INDENT.RIGHT ? 26 : 0;
         if (maxWidth > averageWidth) {
             variableLength = true;
         }
@@ -189,7 +190,7 @@ public class Primitive extends SchemaNode {
         column.widthProperty()
               .addListener((o, prev, cur) -> {
                   double width = cur.doubleValue() - inset;
-                  control.setMinWidth(width);
+//                  control.setMinWidth(width);
                   control.setPrefWidth(width);
               });
         control.setPrefWidth(column.getWidth() - inset);
@@ -200,7 +201,6 @@ public class Primitive extends SchemaNode {
         text.setWrapText(true);
         text.setMinWidth(0);
         text.setPrefWidth(1);
-        //        text.setPrefHeight(getValueHeight(layout));
         return text;
     }
 

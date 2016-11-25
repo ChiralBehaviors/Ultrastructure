@@ -229,7 +229,7 @@ abstract public class SchemaNode {
                                                                              double inset,
                                                                              INDENT indent);
 
-    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double indent) {
+    TableColumn<JsonNode, JsonNode> buildColumn(Layout layout, double inset, INDENT indent) {
         TableColumn<JsonNode, JsonNode> column = new TableColumn<>(label);
         column.setUserData(this);
         return column;
@@ -262,7 +262,7 @@ abstract public class SchemaNode {
 
     abstract double layoutRow(int cardinality, Layout layout);
 
-    abstract double measure(ArrayNode data, Layout layout);
+    abstract double measure(ArrayNode data, Layout layout, INDENT indent);
 
     abstract Pair<Consumer<JsonNode>, Parent> outlineElement(double labelWidth,
                                                              Function<JsonNode, JsonNode> extractor,

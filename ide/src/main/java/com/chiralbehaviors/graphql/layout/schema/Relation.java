@@ -403,9 +403,6 @@ public class Relation extends SchemaNode implements Cloneable {
             && children.get(children.size() - 1) instanceof Relation) {
             fold = ((Relation) children.get(children.size() - 1));
         }
-        if (isFold()) {
-            return fold.measure(flatten(data), layout, indent);
-        }
         if (data.isNull() || children.size() == 0) {
             return 0;
         }
@@ -431,7 +428,8 @@ public class Relation extends SchemaNode implements Cloneable {
         }
         averageCardinality = (int) Math.ceil(sum / children.size());
         tableColumnWidth = snap(Math.max(labelWidth, tableColumnWidth));
-        return getTableColumnWidth(layout);
+        return isFold() ? fold.getTableColumnWidth(layout)
+                        : getTableColumnWidth(layout);
     }
 
     @Override
@@ -577,7 +575,7 @@ public class Relation extends SchemaNode implements Cloneable {
             columns = leaves;
         }
 
-        Function<Double, Pair<Consumer<JsonNode>, Control>> topLevel = buildColumn(1,
+        Function<Double, Pair<Consumer<JsonNode>, Control>> topLevel = buildColumn(cardinality,
                                                                                    n -> n,
                                                                                    columnMap,
                                                                                    layout,

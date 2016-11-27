@@ -153,8 +153,6 @@ public class Layout {
         outlineListCell.applyCss();
         outlineListCell.layout();
 
-        textFont = text.getFont();
-
         listCellInsets = new Insets(outlineListCell.snappedTopInset(),
                                     outlineListCell.snappedRightInset(),
                                     outlineListCell.snappedBottomInset(),
@@ -179,6 +177,10 @@ public class Layout {
                                     tableRow.snappedRightInset(),
                                     tableRow.snappedBottomInset(),
                                     tableRow.snappedLeftInset());
+
+        textFont = text.getFont();
+        textLineHeight = FONT_LOADER.getFontMetrics(textFont)
+                                    .getLineHeight();
         Field contentField;
         try {
             contentField = TextAreaSkin.class.getDeclaredField("contentView");

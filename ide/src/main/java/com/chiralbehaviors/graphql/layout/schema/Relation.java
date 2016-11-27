@@ -517,19 +517,12 @@ public class Relation extends SchemaNode implements Cloneable {
             row.setMinWidth(0);
             row.setPrefWidth(1);
             row.setFixedCellSize(extended);
-            row.setMinHeight(rendered);
             row.setPrefHeight(rendered);
             row.setCellFactory(control -> {
                 ListCell<JsonNode> cell = rowCell(fields,
                                                   extended - layout.getListCellVerticalInset(),
                                                   layout);
                 cell.setPrefHeight(extended);
-                cell.prefWidthProperty()
-                    .addListener((o, p, c) -> {
-                        row.setPrefWidth(c.doubleValue()
-                                         + layout.getListCellHorizontalInset()
-                                         + layout.getListHorizontalInset());
-                    });
                 layout.getModel()
                       .apply(cell, Relation.this);
                 return cell;

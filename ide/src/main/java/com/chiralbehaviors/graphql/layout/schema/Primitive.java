@@ -206,8 +206,8 @@ public class Primitive extends SchemaNode {
 
     private double getValueHeight(Layout layout) {
         double rows = Math.ceil(maxWidth / justifiedWidth) + 1;
-        return Math.max(43, Layout.snap(layout.getTextLineHeight() * rows)
-                            + layout.getTextVerticalInset());
+        return Layout.snap(layout.getTextLineHeight() * rows)
+                            + layout.getTextVerticalInset();
     }
 
     private String toString(JsonNode value) {

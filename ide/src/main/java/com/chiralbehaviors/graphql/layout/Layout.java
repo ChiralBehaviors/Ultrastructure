@@ -26,6 +26,7 @@ import java.util.List;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import com.sun.javafx.scene.control.skin.TextAreaSkin;
+import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 
@@ -44,12 +45,16 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextBoundsType;
 
 @SuppressWarnings("restriction")
 public class Layout {
-    private static FontLoader FONT_LOADER = Toolkit.getToolkit()
-                                                   .getFontLoader();
-    private static Insets     ZERO_INSETS = new Insets(0);
+    private static final FontLoader FONT_LOADER = Toolkit.getToolkit()
+                                                         .getFontLoader();
+    private static final TextLayout LAYOUT      = Toolkit.getToolkit()
+                                                         .getTextLayoutFactory()
+                                                         .createLayout();
+    private static final Insets     ZERO_INSETS = new Insets(0);
 
     public static Insets add(Insets a, Insets b) {
         return new Insets(a.getTop() + b.getTop(), a.getRight() + b.getRight(),
@@ -75,6 +80,22 @@ public class Layout {
     public Layout(List<String> styleSheets) {
         this(styleSheets, new LayoutModel() {
         });
+    }
+
+    @SuppressWarnings("deprecation")
+    static double getLineHeight(Font font, TextBoundsType boundsType) {
+        LAYOUT.setContent("", font.impl_getNativeFont());
+        LAYOUT.setWrapWidth(0);
+        LAYOUT.setLineSpacing(0);
+        if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {
+            LAYOUT.setBoundsType(TextLayout.BOUNDS_CENTER);
+        } else {
+            LAYOUT.setBoundsType(0);
+        }
+
+        // RT-37092: Use the line bounds specifically, to include font leading.
+        return LAYOUT.getLines()[0].getBounds()
+                                   .getHeight();
     }
 
     public Layout(List<String> styleSheets, LayoutModel model) {
@@ -179,8 +200,9 @@ public class Layout {
                                     tableRow.snappedLeftInset());
 
         textFont = text.getFont();
-        textLineHeight = FONT_LOADER.getFontMetrics(textFont)
-                                    .getLineHeight();
+        textLineHeight = snap(getLineHeight(textFont,
+                                            TextBoundsType.LOGICAL_VERTICAL_CENTER))
+                         + 1;
         Field contentField;
         try {
             contentField = TextAreaSkin.class.getDeclaredField("contentView");

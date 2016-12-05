@@ -81,7 +81,7 @@
 		<module>navi</module>
 		<module>test-plugin</module>
 		<module>acm-95-ontology</module>
-		<module>ide</module>
+		
 	</modules>
 
 	<dependencyManagement>

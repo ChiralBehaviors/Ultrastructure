@@ -29,12 +29,18 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Queries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
+import graphql.schema.DataFetchingEnvironment;
+
 /**
  * @author hhildebrand
  *
  */
 public class WorkspaceContext extends PhantasmCRUD implements Queries,
         Mutations, MetaQueries, MetaMutations, CoreUserAdmin {
+
+    public static Product getWorkspace(DataFetchingEnvironment env) {
+        return ((WorkspaceContext) env.getContext()).getWorkspace();
+    }
 
     private final Product workspace;
 

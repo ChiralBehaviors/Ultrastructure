@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
+
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -50,7 +52,7 @@ public interface AttributeAuthorizationMutations {
         Model model = WorkspaceSchema.ctx(env);
         ExistentialAttributeAuthorizationRecord record = model.records()
                                                               .newExistentialAttributeAuthorization();
-        if (!model.checkCreate(record)) {
+        if (!model.checkCreateMeta(getWorkspace(env))) {
             return null;
         }
         state.update(record);

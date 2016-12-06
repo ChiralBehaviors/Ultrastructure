@@ -49,19 +49,16 @@ public class JobChronology {
     }
 
     @GraphQLField
-
     public Agency getAssignTo(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getAssignTo()));
     }
 
     @GraphQLField
-
     public Location getDeliverFrom(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverFrom()));
     }
 
     @GraphQLField
-
     public Location getDeliverTo(DataFetchingEnvironment env) {
         return new Location(resolve(env, record.getDeliverTo()));
     }
@@ -73,7 +70,6 @@ public class JobChronology {
     }
 
     @GraphQLField
-
     public Job getJob(DataFetchingEnvironment env) {
         return new Job(Job.fetch(env, record.getJob()));
     }
@@ -96,7 +92,6 @@ public class JobChronology {
     }
 
     @GraphQLField
-
     public Unit getQuantityUnit(DataFetchingEnvironment env) {
         return new Unit(resolve(env, record.getQuantityUnit()));
     }
@@ -113,13 +108,11 @@ public class JobChronology {
     }
 
     @GraphQLField
-
     public Product getService(DataFetchingEnvironment env) {
         return new Product(resolve(env, record.getService()));
     }
 
     @GraphQLField
-
     public StatusCode getStatus(DataFetchingEnvironment env) {
         return new StatusCode(resolve(env, record.getStatus()));
     }
@@ -131,7 +124,6 @@ public class JobChronology {
     }
 
     @GraphQLField
-
     public Agency getUpdatedBy(DataFetchingEnvironment env) {
         return new Agency(resolve(env, record.getUpdatedBy()));
     }

@@ -105,12 +105,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private static final Logger log                = LoggerFactory.getLogger(FacetFields.class);
     private static final String REMOVE_MUTATION    = "remove%s";
     private static final String REMOVE_TEMPLATE    = "remove%s";
-    private static final String SET_DESCRIPTION    = "setDescription";
     @SuppressWarnings("unused")
     private static final String SET_INDEX_TEMPLATE = "set%sIndex";
     @SuppressWarnings("unused")
     private static final String SET_KEY_TEMPLATE   = "set%sKey";
-    private static final String SET_NAME           = "setName";
     private static final String SET_TEMPLATE       = "set%s";
     private static final String STATE              = "state";
     private static final String UPDATE_MUTATION    = "update%s";
@@ -481,10 +479,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                      .description(String.format("the id of the updated %s",
                                                                                 WorkspacePresentation.toTypeName(facet.getName())))
                                                      .build());
-        updateTemplate.put(SET_DESCRIPTION,
-                           (crud,
-                            update) -> crud.setDescription((ExistentialRuleform) update.get(AT_RULEFORM),
-                                                           (String) update.get(SET_DESCRIPTION)));
     }
 
     private void clear() {
@@ -512,11 +506,9 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                        Map<String, Object> createState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
                                        ExistentialRuleform constructed = crud.createInstance(facet,
-                                                                                             (String) createState.get(SET_NAME),
-                                                                                             (String) createState.get(SET_DESCRIPTION),
+                                                                                             null,
+                                                                                             null,
                                                                                              instance -> {
-                                                                                                 createState.remove(SET_NAME);
-                                                                                                 createState.remove(SET_DESCRIPTION);
                                                                                                  update(instance,
                                                                                                         createState,
                                                                                                         crud,
@@ -554,11 +546,9 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                        return createStates.stream()
                                                           .map(createState -> {
                                                               ExistentialRuleform constructed = crud.createInstance(facet,
-                                                                                                                    (String) createState.get(SET_NAME),
-                                                                                                                    (String) createState.get(SET_DESCRIPTION),
+                                                                                                                    null,
+                                                                                                                    null,
                                                                                                                     instance -> {
-                                                                                                                        createState.remove(SET_NAME);
-                                                                                                                        createState.remove(SET_DESCRIPTION);
                                                                                                                         update(instance,
                                                                                                                                createState,
                                                                                                                                crud,

@@ -92,8 +92,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                  () -> execute(schema,
                                                "query m($id: String!) { coreUser(id: $id) {login } }",
                                                variables));
-        assertEquals(principal.getPrincipal()
-                              .getName(),
+        assertEquals(username,
                      result.get("coreUser")
                            .get("login")
                            .asText());

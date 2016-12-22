@@ -1,0 +1,31 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/ide" 
+           version: 1
+           "UaaS IDE" "A declarative application framework for Ultrastructure"
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+}
+attributes {
+    route = "Route" "The named route" text;
+    extract = "Extract" "The xpath extractions from data"  keyed: true text;
+    query = "Query" "GraphQL query" text;
+    title = "Title" "Page title" text;
+    endpoint = "Endpoint" "URL endpoint" text;
+	root = "Root" "Root page" text;
+}
+products {
+    Page = "Page" "A single page in an application";
+    Application = "Application" "A single page application";
+    facets {
+        IsA.Application {aliases URI discount properties}
+            constraints {
+                n hasPage: IsA.Page { route, extract }
+            }
+    	IsA.Page {extract
+    		constraints{
+    			n pageOf: IsA.Application
+    		}
+    }
+}
+relationships {
+    hasPage = "Has Page" "A has page B" | pageOf = "Page Of" "A is a page of B";
+}

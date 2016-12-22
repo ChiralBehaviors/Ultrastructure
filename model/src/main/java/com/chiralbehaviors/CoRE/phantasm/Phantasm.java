@@ -28,11 +28,5 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
  */
 public interface Phantasm {
 
-    String getDescription();
-
-    String getName();
-
-    String getNotes();
-
     ExistentialRuleform getRuleform();
 }

@@ -9,6 +9,9 @@
     <logger name="com.chiralbehaviors.CoRE">
         <level value="${core.log.level}" />
     </logger>
+    <logger name = "org.reflections">
+        <level value="ERROR" />
+    </logger>
     <logger name="org.jooq">
         <level value="WARN" />
     </logger> 

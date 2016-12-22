@@ -60,17 +60,14 @@ public interface ExistentialRuleform extends Phantasm {
 
     UUID getAuthority();
 
-    @Override
     String getDescription();
 
     ExistentialDomain getDomain();
 
     UUID getId();
 
-    @Override
     String getName();
 
-    @Override
     String getNotes();
 
     @Override

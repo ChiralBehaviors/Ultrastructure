@@ -58,21 +58,6 @@ public class PhantasmTwo extends PhantasmCRUD
         return model.cast(getRuleform(), toPhantasm);
     }
 
-    @Override
-    public String getDescription() {
-        return ruleform.getDescription();
-    }
-
-    @Override
-    public String getName() {
-        return ruleform.getName();
-    }
-
-    @Override
-    public String getNotes() {
-        return ruleform.getNotes();
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getRuleform()
      */

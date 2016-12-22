@@ -99,12 +99,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private static final String AT_RULEFORM        = "@ruleform";
     private static final String CREATE_MUTATION    = "create%s";
     private static final String CREATE_TYPE        = "%sCreate";
-    private static final String DESCRIPTION        = "description";
     private static final String ID                 = "id";
     private static final String IDS                = "ids";
     private static final String IMMEDIATE_TEMPLATE = "immediate%s";
     private static final Logger log                = LoggerFactory.getLogger(FacetFields.class);
-    private static final String NAME               = "name";
     private static final String REMOVE_MUTATION    = "remove%s";
     private static final String REMOVE_TEMPLATE    = "remove%s";
     private static final String SET_DESCRIPTION    = "setDescription";
@@ -472,14 +470,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                               .name(ID)
                                               .description("The id of the facet instance")
                                               .build());
-        typeBuilder.field(newFieldDefinition().type(GraphQLString)
-                                              .name(NAME)
-                                              .description("The name of the facet instance")
-                                              .build());
-        typeBuilder.field(newFieldDefinition().type(GraphQLString)
-                                              .name(DESCRIPTION)
-                                              .description("The description of the facet instance")
-                                              .build());
         typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference("Existential"))
                                               .name(_EXT)
                                               .description("Cast the instance as an Existential")
@@ -491,27 +481,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                      .description(String.format("the id of the updated %s",
                                                                                 WorkspacePresentation.toTypeName(facet.getName())))
                                                      .build());
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(SET_NAME)
-                                                     .description(String.format("the name to update on %s",
-                                                                                WorkspacePresentation.toTypeName(facet.getName())))
-                                                     .build());
-        createTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
-                                                     .name(SET_NAME)
-                                                     .description(String.format("the name to update on %s",
-                                                                                WorkspacePresentation.toTypeName(facet.getName())))
-                                                     .build());
-        updateTemplate.put(SET_NAME,
-                           (crud,
-                            update) -> crud.setName((ExistentialRuleform) update.get(AT_RULEFORM),
-                                                    (String) update.get(SET_NAME)));
-        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
-                                                             .name(SET_DESCRIPTION)
-                                                             .description(String.format("the description to update on %s",
-                                                                                        WorkspacePresentation.toTypeName(facet.getName())))
-                                                             .build();
-        updateTypeBuilder.field(field);
-        createTypeBuilder.field(field);
         updateTemplate.put(SET_DESCRIPTION,
                            (crud,
                             update) -> crud.setDescription((ExistentialRuleform) update.get(AT_RULEFORM),

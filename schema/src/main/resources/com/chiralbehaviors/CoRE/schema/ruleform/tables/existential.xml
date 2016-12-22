@@ -13,9 +13,7 @@
             <column name="domain" type="existential_domain">
                 <constraints nullable="false" />
             </column>
-            <column name="name" type="TEXT">
-                <constraints nullable="false" />
-            </column>
+            <column name="name" type="TEXT"/>
             <column name="description" type="TEXT" />
             <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">

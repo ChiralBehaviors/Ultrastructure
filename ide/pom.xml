@@ -23,6 +23,11 @@
 			<groupId>com.hellblazer</groupId>
 			<artifactId>utils</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>animations</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -54,6 +59,82 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			 
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-test-sources/phantasm</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>phantasm-plugin</artifactId>
+				<version>${project.version}</version>
+				<executions>
+					<execution>
+						<id>app-phantasms</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<generator>
+								<resource>${basedir}/src/main/resources/single-page.wsp</resource>
+								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
+								<packageName>com.chiralbehaviors.CoRE.singlePgApp</packageName>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.chiralbehaviors.CoRE
+										</groupId>
+										<artifactId>
+											phantasm-plugin
+										</artifactId>
+										<versionRange>
+											[2.0.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

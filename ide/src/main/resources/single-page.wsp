@@ -1,10 +1,11 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/ide" 
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page" 
            version: 1
-           "UaaS IDE" "A declarative application framework for Ultrastructure"
+           "UaaS SP" "A declarative single page application framework for Ultrastructure"
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }
 attributes {
+    relation = "Relation" "The name of a relation" text;
     route = "Route" "The named route" text;
     extract = "Extract" "The xpath extractions from data"  keyed: true text;
     query = "Query" "GraphQL query" text;
@@ -15,17 +16,21 @@ attributes {
 products {
     Page = "Page" "A single page in an application";
     Application = "Application" "A single page application";
+    PageRoute = "PageRoute" "A routing from one page to another";
     facets {
-        IsA.Application {aliases URI discount properties}
+        IsA.Application { endpoint root }
             constraints {
-                n hasPage: IsA.Page { route, extract }
+                n hasPage: IsA.Page { route }
             }
-    	IsA.Page {extract
-    		constraints{
+    	IsA.Page { query }
+    		constraints { 
     			n pageOf: IsA.Application
+                n hasRoute: IsA.PageRoute named route { relation }
     		}
+    	IsA.PageRoute { extract route }
     }
 }
 relationships {
     hasPage = "Has Page" "A has page B" | pageOf = "Page Of" "A is a page of B";
+    hasRoute = "Has Route" "A has route B" | routeOf = "Route Of" "A is a route of B";
 }

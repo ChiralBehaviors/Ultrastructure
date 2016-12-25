@@ -41,6 +41,7 @@
 		<postgresql.driver.version>9.4.1208</postgresql.driver.version>
 		<jackson.version>2.6.7 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
+		<jooq.version>3.9.0</jooq.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -106,7 +107,7 @@
 			<dependency>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq</artifactId>
-				<version>3.8.1</version>
+				<version>${jooq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -572,6 +573,11 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.jooq</groupId>
+					<artifactId>jooq-codegen-maven</artifactId>
+					<version>${jooq.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>phantasm-plugin</artifactId>

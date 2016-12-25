@@ -231,8 +231,8 @@ public class PhantasmCRUD {
     }
 
     public Object getAttributeValue(Aspect facet, ExistentialRuleform rf,
-                                    UUID child,
-                                    NetworkAttributeAuthorization stateAuth) {
+                                    NetworkAttributeAuthorization stateAuth,
+                                    ExistentialRuleform child) {
         if (rf == null || child == null) {
             return null;
         }
@@ -245,8 +245,7 @@ public class PhantasmCRUD {
                                              .getImmediateChildLink(rf,
                                                                     stateAuth.getNetworkAuth()
                                                                              .getRelationship(),
-                                                                    model.records()
-                                                                         .resolve(child));
+                                                                    child);
         if (authorizedAttribute.getIndexed()) {
             return getIndexedAttributeValue(edge, authorizedAttribute);
         } else if (authorizedAttribute.getKeyed()) {
@@ -509,8 +508,8 @@ public class PhantasmCRUD {
 
     public ExistentialRuleform setAttributeValue(Aspect facet,
                                                  ExistentialRuleform instance,
-                                                 UUID child,
                                                  NetworkAttributeAuthorization stateAuth,
+                                                 ExistentialRuleform child,
                                                  Object value) {
         if (instance == null) {
             return null;
@@ -523,8 +522,7 @@ public class PhantasmCRUD {
         pm.setValue(pm.getAttributeValue(pm.getImmediateLink(instance,
                                                              stateAuth.getNetworkAuth()
                                                                       .getRelationship(),
-                                                             model.records()
-                                                                  .resolve(child)),
+                                                             child),
                                          stateAuth.getAttribute()),
                     value);
         return instance;

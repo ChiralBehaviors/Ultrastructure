@@ -56,11 +56,11 @@ public interface PhantasmModel {
                                              FacetRecord aspect,
                                              FacetRecord... aspects);
 
-    ExistentialAttributeRecord create(ExistentialRuleform ruleform,
-                                      Attribute attribute);
-
     ExistentialNetworkAttributeRecord create(ExistentialNetworkRecord edge,
                                              Attribute attribute);
+
+    ExistentialAttributeRecord create(ExistentialRuleform ruleform,
+                                      Attribute attribute);
 
     List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
                                                              Object query);

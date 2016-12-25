@@ -253,8 +253,7 @@ public class PhantasmTraversal {
          * @param edgeName
          *            - the normalized edge name
          */
-        void visit(Aspect facet,
-                   NetworkAttributeAuthorization auth,
+        void visit(Aspect facet, NetworkAttributeAuthorization auth,
                    String edgeName);
 
         /**

@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
@@ -39,7 +40,7 @@ public class Phantasmagoria implements PhantasmVisitor {
 
     public final Map<String, AttributeAuthorization>        attributes          = new HashMap<>();
     public final Map<String, NetworkAuthorization>          childAuthorizations = new HashMap<>();
-    public final Map<String, NetworkAttributeAuthorization> edgeAuthorizations  = new HashMap<>();
+    public final Map<String, NetworkAttributeAuthorization> edgeAttributes      = new HashMap<>();
     public final Aspect                                     facet;
 
     public Phantasmagoria(Aspect facet) {
@@ -59,7 +60,11 @@ public class Phantasmagoria implements PhantasmVisitor {
     @Override
     public void visit(Aspect facet, NetworkAttributeAuthorization auth,
                       String fieldName) {
-        edgeAuthorizations.put(fieldName, auth);
+        String attributeFieldName = String.format("%sOf%s",
+                                                  WorkspacePresentation.toFieldName(auth.getAttribute()
+                                                                                        .getName()),
+                                                  fieldName);
+        edgeAttributes.put(attributeFieldName, auth);
     }
 
     @Override

@@ -147,11 +147,6 @@ public class PhantasmTwo extends PhantasmCRUD
                              ruleform.getName());
     }
 
-    /**
-     * @param returnPhantasm
-     * @param ruleform2
-     * @return
-     */
     public <T extends ExistentialRuleform, R extends Phantasm> R wrap(Class<R> phantasm,
                                                                       T ruleform) {
         return model.wrap(phantasm, ruleform);

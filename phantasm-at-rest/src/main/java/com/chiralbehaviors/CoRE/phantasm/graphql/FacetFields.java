@@ -332,10 +332,13 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                               .dataFetcher(env -> {
                                                   ExistentialRuleform rf = (ExistentialRuleform) env.getSource();
                                                   UUID child = UUID.fromString(env.getArgument(CHILD));
-                                                  Object value = ctx(env).getAttributeValue(facet,
-                                                                                            rf,
-                                                                                            child,
-                                                                                            auth);
+                                                  PhantasmCRUD ctx = ctx(env);
+                                                  Object value = ctx.getAttributeValue(facet,
+                                                                                       rf,
+                                                                                       auth,
+                                                                                       ctx.getModel()
+                                                                                          .records()
+                                                                                          .resolve(child));
                                                   return resolve(attribute,
                                                                  value);
                                               })
@@ -361,8 +364,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (ExistentialRuleform) update.get(AT_RULEFORM),
-                                                                  UUID.fromString((String) update.get(CHILD)),
                                                                   auth,
+                                                                  crud.getModel()
+                                                                      .records()
+                                                                      .resolve(UUID.fromString((String) update.get(CHILD))),
                                                                   (Map<String, Object>) update.get(setter)));
             builder.type(GraphQLString);
 
@@ -381,8 +386,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (ExistentialRuleform) update.get(AT_RULEFORM),
-                                                                  UUID.fromString((String) update.get(CHILD)),
                                                                   auth,
+                                                                  crud.getModel()
+                                                                      .records()
+                                                                      .resolve(UUID.fromString((String) update.get(CHILD))),
                                                                   converter.apply(update.get(setter))));
             builder.type(GraphQLString);
         }

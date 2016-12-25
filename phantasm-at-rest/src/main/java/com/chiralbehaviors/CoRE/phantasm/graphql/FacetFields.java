@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -69,6 +70,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
@@ -97,6 +99,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     private static final String ADD_TEMPLATE       = "add%s";
     private static final String APPLY_MUTATION     = "apply%s";
     private static final String AT_RULEFORM        = "@ruleform";
+    private static final String CHILD              = "child";
     private static final String CREATE_MUTATION    = "create%s";
     private static final String CREATE_TYPE        = "%sCreate";
     private static final String ID                 = "id";
@@ -261,25 +264,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                   Object value = ctx(env).getAttributeValue(facet,
                                                                                             ((ExistentialRuleform) env.getSource()),
                                                                                             auth);
-                                                  if (value == null) {
-                                                      return null;
-                                                  }
-                                                  switch (attribute.getValueType()) {
-                                                      case Numeric:
-                                                          // GraphQL does not have a NUMERIC return type, so convert to float - ugly
-                                                          return ((BigDecimal) value).floatValue();
-                                                      case Timestamp:
-                                                      case JSON:
-                                                          // GraphQL does not have a generic map or timestamp return type, so stringify it.
-                                                          try {
-                                                              return new ObjectMapper().writeValueAsString(value);
-                                                          } catch (Exception e) {
-                                                              throw new IllegalStateException("Unable to write json value",
-                                                                                              e);
-                                                          }
-                                                      default:
-                                                          return value;
-                                                  }
+                                                  return resolve(attribute,
+                                                                 value);
                                               })
                                               .build());
 
@@ -287,15 +273,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         graphql.schema.GraphQLInputObjectField.Builder builder = newInputObjectField().name(setter)
                                                                                       .description(auth.getNotes());
 
-        Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
-            try {
-                return new ObjectMapper().readValue((String) object, Map.class);
-            } catch (IOException e) {
-                throw new IllegalStateException(String.format("Cannot deserialize %s",
-                                                              object),
-                                                e);
-            }
-        } : object -> object;
         if (auth.getAttribute()
                 .getIndexed()) {
             updateTemplate.put(setter,
@@ -316,10 +293,95 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
             builder.type(GraphQLString);
 
         } else {
+            Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
+                try {
+                    return new ObjectMapper().readValue((String) object,
+                                                        Map.class);
+                } catch (IOException e) {
+                    throw new IllegalStateException(String.format("Cannot deserialize %s",
+                                                                  object),
+                                                    e);
+                }
+            } : object -> object;
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  auth,
+                                                                  converter.apply(update.get(setter))));
+            builder.type(GraphQLString);
+        }
+        GraphQLInputObjectField field = builder.build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void visit(Aspect facet, NetworkAttributeAuthorization auth,
+                      String edgeName) {
+        Attribute attribute = auth.getAttribute();
+        String fieldName = String.format("%sOf%s",
+                                         WorkspacePresentation.toFieldName(auth.getAttribute()
+                                                                               .getName()),
+                                         edgeName);
+        GraphQLOutputType type = typeOf(attribute);
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(fieldName)
+                                              .description(attribute.getDescription())
+                                              .dataFetcher(env -> {
+                                                  ExistentialRuleform rf = (ExistentialRuleform) env.getSource();
+                                                  UUID child = UUID.fromString(env.getArgument(CHILD));
+                                                  Object value = ctx(env).getAttributeValue(facet,
+                                                                                            rf,
+                                                                                            child,
+                                                                                            auth);
+                                                  return resolve(attribute,
+                                                                 value);
+                                              })
+                                              .build());
+
+        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
+        graphql.schema.GraphQLInputObjectField.Builder builder = newInputObjectField().name(setter)
+                                                                                      .description(auth.getNotes());
+
+        if (auth.getAttribute()
+                .getIndexed()) {
+            updateTemplate.put(setter,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  UUID.fromString((String) update.get(CHILD)),
+                                                                  auth,
+                                                                  (List<Object>) update.get(setter)));
+            builder.type(new GraphQLList(GraphQLString));
+        } else if (auth.getAttribute()
+                       .getKeyed()) {
+            updateTemplate.put(setter,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  UUID.fromString((String) update.get(CHILD)),
+                                                                  auth,
+                                                                  (Map<String, Object>) update.get(setter)));
+            builder.type(GraphQLString);
+
+        } else {
+            Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
+                try {
+                    return new ObjectMapper().readValue((String) object,
+                                                        Map.class);
+                } catch (IOException e) {
+                    throw new IllegalStateException(String.format("Cannot deserialize %s",
+                                                                  object),
+                                                    e);
+                }
+            } : object -> object;
+            updateTemplate.put(setter,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  UUID.fromString((String) update.get(CHILD)),
                                                                   auth,
                                                                   converter.apply(update.get(setter))));
             builder.type(GraphQLString);
@@ -647,6 +709,28 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                            (ExistentialRuleform) update.get(AT_RULEFORM),
                                                            auth,
                                                            crud.lookup((List<String>) update.get(removeChildren))));
+    }
+
+    private Object resolve(Attribute attribute, Object value) {
+        if (value == null) {
+            return null;
+        }
+        switch (attribute.getValueType()) {
+            case Numeric:
+                // GraphQL does not have a NUMERIC return type, so convert to float - ugly
+                return ((BigDecimal) value).floatValue();
+            case Timestamp:
+            case JSON:
+                // GraphQL does not have a generic map or timestamp return type, so stringify it.
+                try {
+                    return new ObjectMapper().writeValueAsString(value);
+                } catch (Exception e) {
+                    throw new IllegalStateException("Unable to write json value",
+                                                    e);
+                }
+            default:
+                return value;
+        }
     }
 
     @SuppressWarnings("unchecked")

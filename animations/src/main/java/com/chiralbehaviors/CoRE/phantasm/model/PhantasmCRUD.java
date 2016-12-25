@@ -38,10 +38,14 @@ import org.jooq.UpdatableRecord;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 
 /**
@@ -220,6 +224,37 @@ public class PhantasmCRUD {
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
                                                          .getAttributeValue(instance,
                                                                             authorizedAttribute);
+        return attributeValue != null ? model.getPhantasmModel()
+                                             .getValue(attributeValue)
+                                      : model.getPhantasmModel()
+                                             .getValue(stateAuth.getAuth());
+    }
+
+    public Object getAttributeValue(Aspect facet, ExistentialRuleform rf,
+                                    UUID child,
+                                    NetworkAttributeAuthorization stateAuth) {
+        if (rf == null || child == null) {
+            return null;
+        }
+        if (!model.checkRead(facet.getFacet())
+            || !model.checkRead(stateAuth.getAuth())) {
+            return null;
+        }
+        Attribute authorizedAttribute = stateAuth.getAttribute();
+        ExistentialNetworkRecord edge = model.getPhantasmModel()
+                                             .getImmediateChildLink(rf,
+                                                                    stateAuth.getNetworkAuth()
+                                                                             .getRelationship(),
+                                                                    model.records()
+                                                                         .resolve(child));
+        if (authorizedAttribute.getIndexed()) {
+            return getIndexedAttributeValue(edge, authorizedAttribute);
+        } else if (authorizedAttribute.getKeyed()) {
+            return getMappedAttributeValue(edge, authorizedAttribute);
+        }
+        ExistentialNetworkAttributeRecord attributeValue = model.getPhantasmModel()
+                                                                .getAttributeValue(edge,
+                                                                                   authorizedAttribute);
         return attributeValue != null ? model.getPhantasmModel()
                                              .getValue(attributeValue)
                                       : model.getPhantasmModel()
@@ -474,6 +509,29 @@ public class PhantasmCRUD {
 
     public ExistentialRuleform setAttributeValue(Aspect facet,
                                                  ExistentialRuleform instance,
+                                                 UUID child,
+                                                 NetworkAttributeAuthorization stateAuth,
+                                                 Object value) {
+        if (instance == null) {
+            return null;
+        }
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(stateAuth.getAuth())) {
+            return instance;
+        }
+        PhantasmModel pm = model.getPhantasmModel();
+        pm.setValue(pm.getAttributeValue(pm.getImmediateLink(instance,
+                                                             stateAuth.getNetworkAuth()
+                                                                      .getRelationship(),
+                                                             model.records()
+                                                                  .resolve(child)),
+                                         stateAuth.getAttribute()),
+                    value);
+        return instance;
+    }
+
+    public ExistentialRuleform setAttributeValue(Aspect facet,
+                                                 ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  Object[] value) {
         if (!model.checkUpdate(facet.getFacet())
@@ -481,6 +539,27 @@ public class PhantasmCRUD {
             return instance;
         }
         setAttributeArray(instance, stateAuth.getAttribute(), value);
+        return instance;
+    }
+
+    public ExistentialRuleform setAttributeValue(Aspect facet,
+                                                 ExistentialRuleform instance,
+                                                 UUID child,
+                                                 NetworkAttributeAuthorization stateAuth,
+                                                 List<Object> value) {
+        setAttributeArray(instance, child, stateAuth, value.toArray());
+        return instance;
+    }
+
+    public ExistentialRuleform setAttributeValue(Aspect facet,
+                                                 ExistentialRuleform instance,
+                                                 NetworkAttributeAuthorization stateAuth,
+                                                 Map<String, Object> value) {
+        if (!model.checkUpdate(facet.getFacet())
+            || !model.checkUpdate(stateAuth.getAuth())) {
+            return instance;
+        }
+        setAttributeMap(instance, stateAuth.getAttribute(), value);
         return instance;
     }
 
@@ -585,6 +664,22 @@ public class PhantasmCRUD {
                     .fetchOne();
     }
 
+    private Object[] getIndexedAttributeValue(ExistentialNetworkRecord edge,
+                                              Attribute authorizedAttribute) {
+
+        ExistentialNetworkAttributeRecord[] attributeValues = getValueArray(edge,
+                                                                            authorizedAttribute);
+
+        Object[] values = (Object[]) Array.newInstance(model.getPhantasmModel()
+                                                            .valueClass(authorizedAttribute),
+                                                       attributeValues.length);
+        for (ExistentialNetworkAttributeRecord value : attributeValues) {
+            values[value.getSequenceNumber()] = model.getPhantasmModel()
+                                                     .getValue(value);
+        }
+        return values;
+    }
+
     private Object[] getIndexedAttributeValue(ExistentialRuleform instance,
                                               Attribute authorizedAttribute) {
 
@@ -601,6 +696,17 @@ public class PhantasmCRUD {
         return values;
     }
 
+    private Map<String, Object> getMappedAttributeValue(ExistentialNetworkRecord edge,
+                                                        Attribute authorizedAttribute) {
+        Map<String, Object> map = new HashMap<>();
+        for (Map.Entry<String, ExistentialNetworkAttributeRecord> entry : getValueMap(edge,
+                                                                                      authorizedAttribute).entrySet()) {
+            map.put(entry.getKey(), model.getPhantasmModel()
+                                         .getValue(entry.getValue()));
+        }
+        return map;
+    }
+
     private Map<String, Object> getMappedAttributeValue(ExistentialRuleform instance,
                                                         Attribute authorizedAttribute) {
         Map<String, Object> map = new HashMap<>();
@@ -610,6 +716,22 @@ public class PhantasmCRUD {
                                          .getValue(entry.getValue()));
         }
         return map;
+    }
+
+    private ExistentialNetworkAttributeRecord[] getValueArray(ExistentialNetworkRecord edge,
+                                                              Attribute attribute) {
+        List<? extends ExistentialNetworkAttributeRecord> values = model.getPhantasmModel()
+                                                                        .getAttributeValues(edge,
+                                                                                            attribute);
+        int max = 0;
+        for (ExistentialNetworkAttributeRecord value : values) {
+            max = Math.max(max, value.getSequenceNumber() + 1);
+        }
+        ExistentialNetworkAttributeRecord[] returnValue = new ExistentialNetworkAttributeRecord[max];
+        for (ExistentialNetworkAttributeRecord form : values) {
+            returnValue[form.getSequenceNumber()] = form;
+        }
+        return returnValue;
     }
 
     private ExistentialAttributeRecord[] getValueArray(ExistentialRuleform instance,
@@ -628,6 +750,33 @@ public class PhantasmCRUD {
         return returnValue;
     }
 
+    private ExistentialNetworkAttributeRecord[] getNetworkValueArray(ExistentialNetworkRecord edge,
+                                                                     Attribute attribute) {
+        List<? extends ExistentialNetworkAttributeRecord> values = model.getPhantasmModel()
+                                                                        .getAttributeValues(edge,
+                                                                                            attribute);
+        int max = 0;
+        for (ExistentialNetworkAttributeRecord value : values) {
+            max = Math.max(max, value.getSequenceNumber() + 1);
+        }
+        ExistentialNetworkAttributeRecord[] returnValue = new ExistentialNetworkAttributeRecord[max];
+        for (ExistentialNetworkAttributeRecord form : values) {
+            returnValue[form.getSequenceNumber()] = form;
+        }
+        return returnValue;
+    }
+
+    private Map<String, ExistentialNetworkAttributeRecord> getValueMap(ExistentialNetworkRecord edge,
+                                                                       Attribute attribute) {
+        Map<String, ExistentialNetworkAttributeRecord> map = new HashMap<>();
+        for (ExistentialNetworkAttributeRecord value : model.getPhantasmModel()
+                                                            .getAttributeValues(edge,
+                                                                                attribute)) {
+            map.put(value.getKey(), value);
+        }
+        return map;
+    }
+
     private Map<String, ExistentialAttributeRecord> getValueMap(ExistentialRuleform instance,
                                                                 Attribute attribute) {
         Map<String, ExistentialAttributeRecord> map = new HashMap<>();
@@ -644,6 +793,15 @@ public class PhantasmCRUD {
                                                          int i) {
         ExistentialAttributeRecord value = model.getPhantasmModel()
                                                 .create(instance, attribute);
+        value.setSequenceNumber(i);
+        return value;
+    }
+
+    private ExistentialNetworkAttributeRecord newAttributeValue(ExistentialNetworkRecord edge,
+                                                                Attribute attribute,
+                                                                int i) {
+        ExistentialNetworkAttributeRecord value = model.getPhantasmModel()
+                                                       .create(edge, attribute);
         value.setSequenceNumber(i);
         return value;
     }
@@ -686,6 +844,51 @@ public class PhantasmCRUD {
         }
     }
 
+    private void setAttributeArray(ExistentialRuleform instance, UUID child,
+                                   NetworkAttributeAuthorization auth,
+                                   Object[] values) {
+        ExistentialNetworkRecord edge = model.getPhantasmModel()
+                                             .getImmediateChildLink(instance,
+                                                                    auth.getNetworkAuth()
+                                                                        .getRelationship(),
+                                                                    model.records()
+                                                                         .resolve(child));
+        Attribute authorizedAttribute = auth.getAttribute();
+        ExistentialNetworkAttributeRecord[] old = getNetworkValueArray(edge,
+                                                                       authorizedAttribute);
+        if (values == null) {
+            if (old != null) {
+                for (ExistentialNetworkAttributeRecord value : old) {
+                    value.delete();
+                }
+            }
+        } else if (old == null) {
+            for (int i = 0; i < values.length; i++) {
+                setValue(edge, authorizedAttribute, i, null, values[i]);
+            }
+        } else if (old.length == values.length) {
+            for (int i = 0; i < values.length; i++) {
+                setValue(edge, authorizedAttribute, i, old[i], values[i]);
+            }
+        } else if (old.length < values.length) {
+            int i;
+            for (i = 0; i < old.length; i++) {
+                setValue(edge, authorizedAttribute, i, old[i], values[i]);
+            }
+            for (; i < values.length; i++) {
+                setValue(edge, authorizedAttribute, i, null, values[i]);
+            }
+        } else if (old.length > values.length) {
+            int i;
+            for (i = 0; i < values.length; i++) {
+                setValue(edge, authorizedAttribute, i, old[i], values[i]);
+            }
+            for (; i < old.length; i++) {
+                old[i].delete();
+            }
+        }
+    }
+
     private void setAttributeMap(ExistentialRuleform instance,
                                  Attribute authorizedAttribute,
                                  Map<String, Object> values) {
@@ -717,6 +920,17 @@ public class PhantasmCRUD {
                           Object newValue) {
         if (existing == null) {
             existing = newAttributeValue(instance, attribute, i);
+            existing.insert();
+        }
+        model.getPhantasmModel()
+             .setValue(existing, newValue);
+    }
+
+    private void setValue(ExistentialNetworkRecord edge, Attribute attribute,
+                          int i, ExistentialNetworkAttributeRecord existing,
+                          Object newValue) {
+        if (existing == null) {
+            existing = newAttributeValue(edge, attribute, i);
             existing.insert();
         }
         model.getPhantasmModel()

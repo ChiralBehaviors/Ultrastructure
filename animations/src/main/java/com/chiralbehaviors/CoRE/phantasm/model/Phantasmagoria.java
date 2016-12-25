@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor;
 
@@ -36,9 +37,10 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor
  */
 public class Phantasmagoria implements PhantasmVisitor {
 
-    public final Map<String, AttributeAuthorization> attributes          = new HashMap<>();
-    public final Map<String, NetworkAuthorization>   childAuthorizations = new HashMap<>();
-    public final Aspect                              facet;
+    public final Map<String, AttributeAuthorization>        attributes          = new HashMap<>();
+    public final Map<String, NetworkAuthorization>          childAuthorizations = new HashMap<>();
+    public final Map<String, NetworkAttributeAuthorization> edgeAuthorizations  = new HashMap<>();
+    public final Aspect                                     facet;
 
     public Phantasmagoria(Aspect facet) {
         this.facet = facet;
@@ -52,6 +54,12 @@ public class Phantasmagoria implements PhantasmVisitor {
     public void visit(Aspect facet, AttributeAuthorization auth,
                       String fieldName) {
         attributes.put(fieldName, auth);
+    }
+
+    @Override
+    public void visit(Aspect facet, NetworkAttributeAuthorization auth,
+                      String fieldName) {
+        edgeAuthorizations.put(fieldName, auth);
     }
 
     @Override

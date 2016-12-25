@@ -25,12 +25,12 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -102,6 +102,13 @@ public class PhantasmModelImpl implements PhantasmModel {
         @SuppressWarnings("unchecked")
         T cazt = (T) instance;
         return cazt;
+    }
+
+    @Override
+    public ExistentialNetworkAttributeRecord create(ExistentialNetworkRecord edge,
+                                                    Attribute attribute) {
+        return model.records()
+                    .newExistentialNetworkAttribute(edge, attribute);
     }
 
     @Override
@@ -225,6 +232,17 @@ public class PhantasmModelImpl implements PhantasmModel {
             return null;
         }
         return getAttributeValue(edge, attribute);
+    }
+
+    @Override
+    public List<ExistentialNetworkAttributeRecord> getAttributeValues(ExistentialNetworkRecord edge,
+                                                                      Attribute attribute) {
+        return create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE)
+                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE.EDGE.eq(edge.getId()))
+                     .and(EXISTENTIAL_NETWORK_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                     .orderBy(EXISTENTIAL_NETWORK_ATTRIBUTE.SEQUENCE_NUMBER)
+                     .fetch()
+                     .into(ExistentialNetworkAttributeRecord.class);
     }
 
     @Override
@@ -419,21 +437,11 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialNetworkRecord> getInterconnections(Collection<ExistentialRuleform> parents,
-                                                              Collection<Relationship> relationships,
-                                                              Collection<ExistentialRuleform> children) {
-        //        if (parents == null || parents.size() == 0 || relationships == null
-        //            || relationships.size() == 0 || children == null
-        //            || children.size() == 0) {
-        //            return null;
-        //        }
-        //        TypedQuery<RelationshipNetwork> query = em.createNamedQuery(RelationshipNetwork.GET_NETWORKS,
-        //                                                                    RelationshipNetwork.class);
-        //        query.setParameter("parents", parents);
-        //        query.setParameter("relationships", relationships);
-        //        query.setParameter("children", children);
-        //        return query.getResultList();
-        return null;
+    public List<ExistentialNetworkAttributeAuthorizationRecord> getNetworkAttributeAuthorizations(ExistentialNetworkAuthorizationRecord auth) {
+        return create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
+                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.eq(auth.getId()))
+                     .fetch()
+                     .into(ExistentialNetworkAttributeAuthorizationRecord.class);
     }
 
     @Override
@@ -517,6 +525,56 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public Object getValue(ExistentialAttributeRecord attributeValue) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                return attributeValue.getBinaryValue();
+            case Boolean:
+                return attributeValue.getBooleanValue();
+            case Integer:
+                return attributeValue.getIntegerValue();
+            case Numeric:
+                return attributeValue.getNumericValue();
+            case Text:
+                return attributeValue.getTextValue();
+            case Timestamp:
+                return attributeValue.getTimestampValue();
+            case JSON:
+                return attributeValue.getJsonValue();
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
+    @Override
+    public Object getValue(ExistentialNetworkAttributeAuthorizationRecord attributeValue) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                return attributeValue.getBinaryValue();
+            case Boolean:
+                return attributeValue.getBooleanValue();
+            case Integer:
+                return attributeValue.getIntegerValue();
+            case Numeric:
+                return attributeValue.getNumericValue();
+            case Text:
+                return attributeValue.getTextValue();
+            case Timestamp:
+                return attributeValue.getTimestampValue();
+            case JSON:
+                return attributeValue.getJsonValue();
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
+    @Override
+    public Object getValue(ExistentialNetworkAttributeRecord attributeValue) {
         Attribute attribute = model.records()
                                    .resolve(attributeValue.getAttribute());
         switch (attribute.getValueType()) {

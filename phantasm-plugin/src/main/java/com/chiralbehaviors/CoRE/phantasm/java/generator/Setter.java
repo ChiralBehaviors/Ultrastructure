@@ -25,8 +25,9 @@ package com.chiralbehaviors.CoRE.phantasm.java.generator;
  *
  */
 public class Setter {
-    private final String     fieldName;
+    private final String     childParameterName;
     private final String     childType;
+    private final String     fieldName;
     private final ScopedName key;
     private final String     methodName;
     private final String     parameterName;
@@ -41,28 +42,41 @@ public class Setter {
                              + (name.length() == 1 ? "" : name.substring(1));
         this.fieldName = PhantasmGenerator.toFieldName(name);
         this.childType = null;
+        this.childParameterName = null;
     }
 
     public Setter(ScopedName key, String methodName, String parameterType,
                   String parameterName, String childType, String baseName) {
+        this(key, methodName, parameterType, parameterName, childType, baseName,
+             null);
+    }
+
+    public Setter(ScopedName key, String methodName, String parameterType,
+                  String parameterName, String childType, String baseName,
+                  String childParameterName) {
         this.key = key;
         this.methodName = methodName;
         this.parameterType = parameterType;
         this.parameterName = parameterName;
         this.childType = childType;
         this.fieldName = PhantasmGenerator.toFieldName(baseName);
+        this.childParameterName = childParameterName;
     }
 
     public ScopedName getAttribute() {
         return key;
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public String getChildParameterName() {
+        return childParameterName;
     }
 
     public String getChildType() {
         return childType;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public String getMethodName() {

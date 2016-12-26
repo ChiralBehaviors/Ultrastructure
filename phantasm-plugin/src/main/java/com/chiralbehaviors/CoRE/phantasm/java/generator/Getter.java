@@ -25,47 +25,59 @@ package com.chiralbehaviors.CoRE.phantasm.java.generator;
  *
  */
 public class Getter {
+    private final String     childParameterName;
     private final String     childType;
+    private final String     fieldName;
     private final ScopedName key;
     private final String     methodName;
     private final String     returnType;
-    private final String     fieldName;
 
     public Getter(ScopedName key, MappedAttribute mappedAttribute) {
         this(key, String.format("get%s", mappedAttribute.getName()),
-             mappedAttribute.getType(), null, mappedAttribute.getName());
+             mappedAttribute.getType(), null, mappedAttribute.getName(), null);
     }
 
     public Getter(ScopedName key, String methodName, String returnType,
                   String childType, String fieldName) {
+        this(key, methodName, returnType, childType, fieldName, null);
+    }
+
+    public Getter(ScopedName key, String methodName, String returnType,
+                  String childType, String fieldName,
+                  String childParameterName) {
         this.key = key;
         this.methodName = methodName;
         this.returnType = returnType;
         this.childType = childType;
         this.fieldName = PhantasmGenerator.toFieldName(fieldName);
+        this.childParameterName = childParameterName;
     }
 
     public ScopedName getAttribute() {
         return key;
     }
 
+    public String getChildParameterName() {
+        return childParameterName;
+    }
+
     public String getChildType() {
         return childType;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public String getMethodName() {
         return methodName;
     }
 
-    public String getReturnType() {
-        return returnType;
-    }
-
     public ScopedName getRelationship() {
         return key;
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public String getReturnType() {
+        return returnType;
     }
 }

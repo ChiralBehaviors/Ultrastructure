@@ -346,8 +346,8 @@ public class PhantasmDefinition extends Phantasmagoria {
     }
 
     private void processPrimitiveGetter(EdgeState annotation, Method method) {
-        if (method.getParameterCount() != 0) {
-            throw new IllegalStateException(String.format("getter method has arguments %s",
+        if (method.getParameterCount() != 1) {
+            throw new IllegalStateException(String.format("getter method has > 1 argument %s",
                                                           method.toGenericString()));
         }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
@@ -383,6 +383,10 @@ public class PhantasmDefinition extends Phantasmagoria {
 
     @SuppressWarnings("unchecked")
     private void processPrimitiveSetter(EdgeState annotation, Method method) {
+        if (method.getParameterCount() != 2) {
+            throw new IllegalStateException(String.format("getter method does not have 2 arguments %s",
+                                                          method.toGenericString()));
+        }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             NetworkAttributeAuthorization auth = edgeAttributes.get(annotation.fieldName());

@@ -41,6 +41,7 @@
 		<postgresql.driver.version>9.4.1208</postgresql.driver.version>
 		<jackson.version>2.6.7 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
+		<jooq.version>3.9.0</jooq.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -81,11 +82,17 @@
 		<module>navi</module>
 		<module>test-plugin</module>
 		<module>acm-95-ontology</module>
-		
+
+		<module>ide</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.chiralbehaviors.layout</groupId>
+				<artifactId>kramer-ql</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>com.bendb.dropwizard</groupId>
 				<artifactId>dropwizard-jooq</artifactId>
@@ -100,7 +107,7 @@
 			<dependency>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq</artifactId>
-				<version>3.8.1</version>
+				<version>${jooq.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -289,8 +296,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.antlr</groupId>
-				<artifactId>stringtemplate</artifactId>
-				<version>4.0.2</version>
+				<artifactId>ST4</artifactId>
+				<version>4.0.8</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -377,12 +384,12 @@
 			<dependency>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-runtime</artifactId>
-				<version>4.5.3</version>
+				<version>4.6</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java</artifactId>
-				<version>2.0.0</version>
+				<version>2.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>graphql-java-annotations</groupId>
@@ -430,17 +437,6 @@
 				<version>1.9.5</version>
 			</dependency>
 			<dependency>
-				<groupId>org.antlr</groupId>
-				<artifactId>antlr-runtime</artifactId>
-				<version>3.5.2</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.antlr</groupId>
-						<artifactId>stringtemplate</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
 				<groupId>com.github.dirkraft.dropwizard</groupId>
 				<artifactId>dropwizard-file-assets</artifactId>
 				<version>0.0.1</version>
@@ -451,9 +447,44 @@
 				<version>1.0.0</version>
 			</dependency>
 			<dependency>
-				<groupId>org.controlsfx</groupId>
-				<artifactId>controlsfx</artifactId>
-				<version>8.40.12</version>
+				<groupId>com.chiralbehaviors.layout</groupId>
+				<artifactId>toy-app</artifactId>
+				<classifier>phat</classifier>
+				<version>0.0.1-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.core</groupId>
+						<artifactId>jackson-annotations</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.chiralbehaviors.layout</groupId>
+						<artifactId>kramer-ql</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.glassfish.jersey.media</groupId>
+						<artifactId>jersey-media-json-jackson</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.dataformat</groupId>
+						<artifactId>jackson-dataformat-yaml</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>logback-classic</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.glassfish.jersey.core</groupId>
+						<artifactId>jersey-client</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.hellblazer</groupId>
+						<artifactId>utils</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.jaxrs</groupId>
+						<artifactId>jackson-jaxrs-json-provider</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -480,11 +511,6 @@
 	</repositories>
 
 	<pluginRepositories>
-		<pluginRepository>
-			<id>reflections-repo</id>
-			<name>Reflections Maven2 Repository</name>
-			<url>http://reflections.googlecode.com/svn/repo</url>
-		</pluginRepository>
 		<pluginRepository>
 			<id>maven-repository.dev.java.net</id>
 			<name>Java.net Maven 2 Repository</name>
@@ -548,6 +574,11 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>org.jooq</groupId>
+					<artifactId>jooq-codegen-maven</artifactId>
+					<version>${jooq.version}</version>
+				</plugin>
+				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>phantasm-plugin</artifactId>
 					<version>${project.version}</version>
@@ -560,7 +591,7 @@
 				<plugin>
 					<groupId>org.antlr</groupId>
 					<artifactId>antlr4-maven-plugin</artifactId>
-					<version>4.5.3</version>
+					<version>4.6</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -678,7 +709,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.10</version>
+					<version>3.0.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -697,6 +728,11 @@
 							</goals>
 						</execution>
 					</executions>
+				</plugin>
+				<plugin>
+					<groupId>com.zenjava</groupId>
+					<artifactId>javafx-maven-plugin</artifactId>
+					<version>8.6.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

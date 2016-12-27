@@ -14,6 +14,17 @@ primitiveSetter(setter) ::= <<
 
 >>
 
+edgePrimitiveGetter(getter) ::= <<
+    @EdgeState(fieldName="<getter.fieldName>", attribute=<key(getter.attribute)>)
+    <getter.returnType> <getter.methodName>(<getter.childType> <getter.childParameterName>);
+
+>>
+
+edgePrimitiveSetter(setter) ::= <<
+    @EdgeState(fieldName="<setter.fieldName>", attribute=<key(setter.attribute)>)
+    void <setter.methodName>(<setter.childType> <setter.childParameterName>, <setter.parameterType> <setter.parameterName>);
+
+>>
 inferredRelationshipGetter(getter) ::= <<
     @Inferred
     @Edge(fieldName="<getter.fieldName>",
@@ -60,6 +71,8 @@ import com.chiralbehaviors.CoRE.domain.Unit;
         workspace = <facet.uri>)
 public interface <facet.className> extends ScopedPhantasm {
 
+<facet.edgePrimitiveGetters: {getter| <edgePrimitiveGetter(getter)><\n>}>
+<facet.edgePrimitiveSetters: {setter| <edgePrimitiveSetter(setter)><\n>}>
 <facet.primitiveGetters: {getter| <primitiveGetter(getter)><\n>}>
 <facet.primitiveSetters: {setter| <primitiveSetter(setter)><\n>}>
 <facet.relationshipGetters: {getter| <relationshipGetter(getter)><\n>}>

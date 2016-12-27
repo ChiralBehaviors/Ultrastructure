@@ -153,7 +153,6 @@
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.7.3</version>
                 <executions>
                     <execution>
                         <goals>

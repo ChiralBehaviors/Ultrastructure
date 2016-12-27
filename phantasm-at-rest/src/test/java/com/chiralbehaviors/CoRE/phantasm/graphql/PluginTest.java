@@ -139,6 +139,8 @@ public class PluginTest extends AbstractModelTest {
         String apple = "Connie";
         Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
                                         apple, "Her Dobbsness");
+        thing2.setName(apple);
+        thing2.setDescription("Her Dobbsness");
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);

@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +55,9 @@ public interface PhantasmModel {
                                              String name, String description,
                                              FacetRecord aspect,
                                              FacetRecord... aspects);
+
+    ExistentialNetworkAttributeRecord create(ExistentialNetworkRecord edge,
+                                             Attribute attribute);
 
     ExistentialAttributeRecord create(ExistentialRuleform ruleform,
                                       Attribute attribute);
@@ -98,6 +100,9 @@ public interface PhantasmModel {
                                                         Relationship r,
                                                         ExistentialRuleform child,
                                                         Attribute attribute);
+
+    List<ExistentialNetworkAttributeRecord> getAttributeValues(ExistentialNetworkRecord edge,
+                                                               Attribute attribute);
 
     /**
      * Answer the list of attribute values of the attribute on the ruleform
@@ -222,9 +227,12 @@ public interface PhantasmModel {
                                               Relationship relationship,
                                               ExistentialRuleform child);
 
-    List<ExistentialNetworkRecord> getInterconnections(Collection<ExistentialRuleform> parents,
-                                                       Collection<Relationship> relationships,
-                                                       Collection<ExistentialRuleform> children);
+    /**
+     * 
+     * @param auth
+     * @return
+     */
+    List<ExistentialNetworkAttributeAuthorizationRecord> getNetworkAttributeAuthorizations(ExistentialNetworkAuthorizationRecord auth);
 
     /**
      *
@@ -252,6 +260,10 @@ public interface PhantasmModel {
     Object getValue(ExistentialAttributeAuthorizationRecord attributeValue);
 
     Object getValue(ExistentialAttributeRecord attributeValue);
+
+    Object getValue(ExistentialNetworkAttributeAuthorizationRecord attributeValue);
+
+    Object getValue(ExistentialNetworkAttributeRecord attributeValue);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect

@@ -7,7 +7,7 @@
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,15 +18,26 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm;
+package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * 
  * @author hhildebrand
  *
  */
-public interface Phantasm {
+@Documented
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface EdgeState {
 
-    ExistentialRuleform getRuleform();
+    Key attribute();
+
+    String fieldName();
 }

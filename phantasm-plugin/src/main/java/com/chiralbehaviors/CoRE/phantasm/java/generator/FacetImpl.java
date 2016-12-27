@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -47,6 +47,8 @@ public class FacetImpl implements Facet {
 
     private final String       className;
     private final FacetContext context;
+    private final List<Getter> edgePrimitiveGetters        = new ArrayList<>();
+    private final List<Setter> edgePrimitiveSetters        = new ArrayList<>();
     private final Set<String>  imports                     = new HashSet<>();
     private final List<Getter> inferredRelationshipGetters = new ArrayList<>();
     private final String       packageName;
@@ -83,6 +85,14 @@ public class FacetImpl implements Facet {
     @Override
     public String getClassName() {
         return className;
+    }
+
+    public List<Getter> getEdgePrimitiveGetters() {
+        return edgePrimitiveGetters;
+    }
+
+    public List<Setter> getEdgePrimitiveSetters() {
+        return edgePrimitiveSetters;
     }
 
     @Override
@@ -145,7 +155,7 @@ public class FacetImpl implements Facet {
                         WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
         resolveAttributes(mapped);
-        resolveRelationships(presentation, facets);
+        resolveRelationships(presentation, facets, mapped);
     }
 
     @Override
@@ -153,8 +163,9 @@ public class FacetImpl implements Facet {
         return String.format("FacetImpl [%s]", getClassName());
     }
 
-    private void resolve(ConstraintContext constraint,
-                         Map<FacetKey, Facet> facets) {
+    private void resolveConstraint(ConstraintContext constraint,
+                                   Map<FacetKey, Facet> facets,
+                                   Map<ScopedName, MappedAttribute> mapped) {
         Facet type = null;
         if (constraint.anyType == null) {
             FacetKey facetKey = new FacetKey(constraint.authorizedRelationship,
@@ -221,6 +232,7 @@ public class FacetImpl implements Facet {
             default:
                 break;
         }
+        resolveAttributes(constraint, mapped, className, parameterName);
     }
 
     /**
@@ -249,6 +261,38 @@ public class FacetImpl implements Facet {
                 throw new IllegalArgumentException(String.format("%s is not a valid *Any",
                                                                  anyType.getText()));
         }
+    }
+
+    private void resolveAttributes(ConstraintContext constraint,
+                                   Map<ScopedName, MappedAttribute> mapped,
+                                   String childType,
+                                   String childParameterName) {
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
+        if (classifiedAttributes == null) {
+            return;
+        }
+        classifiedAttributes.forEach(attr -> {
+            ScopedName key = new ScopedName(attr.key);
+            MappedAttribute attribute = mapped.get(key);
+            if (attribute == null) {
+                throw new IllegalStateException(String.format("attribute not found: %s",
+                                                              key));
+            }
+            String fieldName = String.format("%sOf%s", attribute.getName(),
+                                             childType);
+            edgePrimitiveGetters.add(new Getter(key,
+                                                String.format("get%s",
+                                                              fieldName),
+                                                attribute.getType(), childType,
+                                                fieldName, childParameterName));
+            edgePrimitiveSetters.add(new Setter(key,
+                                                String.format("set%s",
+                                                              fieldName),
+                                                attribute.getType(),
+                                                attribute.getName(), childType,
+                                                fieldName, childParameterName));
+            imports.addAll(attribute.getImports());
+        });
     }
 
     private void resolveAttributes(Map<ScopedName, MappedAttribute> mapped) {
@@ -323,14 +367,15 @@ public class FacetImpl implements Facet {
     }
 
     private void resolveRelationships(WorkspacePresentation presentation,
-                                      Map<FacetKey, Facet> facets) {
+                                      Map<FacetKey, Facet> facets,
+                                      Map<ScopedName, MappedAttribute> mapped) {
         NetworkConstraintsContext networkConstraints = context.networkConstraints();
         if (networkConstraints == null) {
             return;
         }
         networkConstraints.constraint()
                           .forEach(constraint -> {
-                              resolve(constraint, facets);
+                              resolveConstraint(constraint, facets, mapped);
                           });
     }
 }

@@ -262,6 +262,14 @@ public class ModelImpl implements Model {
         return checkPermission(target, createPerm);
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#checkMetaCreate(org.jooq.UpdatableRecord)
+     */
+    @Override
+    public boolean checkCreateMeta(UpdatableRecord<?> target) {
+        return checkPermission(target, createMetaPerm);
+    }
+
     @Override
     public boolean checkDelete(UpdatableRecord<?> target) {
         return checkPermission(target, deletePerm);
@@ -280,14 +288,6 @@ public class ModelImpl implements Model {
     @Override
     public boolean checkLoginTo(UpdatableRecord<?> target) {
         return checkPermission(target, loginToPerm);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#checkMetaCreate(org.jooq.UpdatableRecord)
-     */
-    @Override
-    public boolean checkCreateMeta(UpdatableRecord<?> target) {
-        return checkPermission(target, createMetaPerm);
     }
 
     @Override

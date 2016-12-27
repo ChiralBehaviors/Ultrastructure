@@ -5,6 +5,8 @@ imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }
 attributes {
+    name = "Name" "A name" text;
+    description = "Description" "A description" text;
     aliases = "Aliases" "Alias Smith and Jones" indexed: true text;
     discount = "Percentage" "The cut off the top" numeric;
     URI = "URI" "the Universal Resource Indicator" text;
@@ -29,7 +31,7 @@ attributes {
 locations {
     MavenArtifact = "MavenArtifact" "A maven artifact";
     facets {
-        IsA.MavenArtifact { artifactId classifier groupId type version }
+        IsA.MavenArtifact {name description artifactId classifier groupId type version }
     }
 }
 products {
@@ -42,30 +44,30 @@ products {
         this.HasMember.Thing1
     }
     facets {
-    	IsA.MasterThing 
+    	IsA.MasterThing {name description}
     		constraints{
     			n derivedFrom: IsA.Thing1
     		}
-        IsA.Thing1 {aliases URI discount properties}
+        IsA.Thing1 {name description aliases URI discount properties}
             constraints {
                 one thing1Of: IsA.Thing2 named thing2 { aliases }
                 one derivedFrom: IsA.MavenArtifact named by relationship { aliases }
                 one kernel::HasMember: *Product 
             }
-        IsA.Thing2 {aliases URI properties}
+        IsA.Thing2 {name description aliases URI properties}
             constraints {
                 one inThing1: IsA.Thing1
                 n derivedFrom: IsA.MavenArtifact named by relationship
                 n thing2Of get: inferred: IsA.Thing3
                 n derivedFrom: IsA.MasterThing
             }
-        IsA.Thing3 {aliases URI properties}
+        IsA.Thing3 {name description aliases URI properties}
             constraints {
                 one inThing1: *Product named superFly
                 n derivedFrom: IsA.MavenArtifact named by relationship
                 n thing2Of get: inferred: IsA.Thing2
             }
-        IsA.OtherThing 
+        IsA.OtherThing {name description}
         	constraints {
         		n AThingOfItsOwn: IsA.OtherThing
         }

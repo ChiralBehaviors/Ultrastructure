@@ -27,6 +27,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -446,7 +447,7 @@ public class RbacTest extends AbstractModelTest {
                                         "tasty", "chips");
         assertNotNull(thing1);
         assertNotNull(thing1.getRuleform());
-        assertEquals(thing1.getRuleform()
+        assertNotEquals(thing1.getRuleform()
                            .getName(),
                      thing1.getName());
         assertNull(thing1.getThing2());

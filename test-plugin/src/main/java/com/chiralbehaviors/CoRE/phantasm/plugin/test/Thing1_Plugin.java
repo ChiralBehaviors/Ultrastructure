@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.plugin.test;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
@@ -45,9 +44,7 @@ public class Thing1_Plugin {
                             Thing1 instance) {
         crud.getModel(); // ensure it isn't null;
         env.getArguments(); // not null;
-        ExistentialRuleform ruleform = instance.getRuleform();
-        ruleform.setDescription(passThrough.get());
-        ruleform.update();
+        instance.setDescription(passThrough.get());
     }
 
     @GraphQLField

@@ -77,7 +77,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         Map<String, Object> variables = new HashMap<>();
         ObjectNode result = model.executeAs(principal,
                                             () -> execute(schema,
-                                                          "{ currentUser { id name } }",
+                                                          "{ currentUser { id login } }",
                                                           variables));
         String id = result.get("currentUser")
                           .get("id")
@@ -90,12 +90,11 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         variables.put("id", id);
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: String!) { coreUser(id: $id) {name } }",
+                                               "query m($id: String!) { coreUser(id: $id) {login } }",
                                                variables));
-        assertEquals(principal.getPrincipal()
-                              .getName(),
+        assertEquals(username,
                      result.get("coreUser")
-                           .get("name")
+                           .get("login")
                            .asText());
 
         variables.put("id", model.getKernel()

@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -85,14 +86,14 @@ public class PhantasmTraversal {
             return facet;
         }
 
+        public String getName() {
+            return facet.getName();
+        }
+
         @Override
         public String toString() {
             return String.format("Aspect[%s:%s]", classifier.getName(),
                                  classification.getName());
-        }
-
-        public String getName() {
-            return facet.getName();
         }
     }
 
@@ -100,10 +101,6 @@ public class PhantasmTraversal {
         private final Attribute                               attribute;
         private final ExistentialAttributeAuthorizationRecord auth;
 
-        /**
-         * @param dslContext
-         * @param auth2
-         */
         public AttributeAuthorization(DSLContext create,
                                       ExistentialAttributeAuthorizationRecord auth) {
             this(auth,
@@ -125,13 +122,56 @@ public class PhantasmTraversal {
             return auth;
         }
 
+        public String getNotes() {
+            return auth.getNotes();
+        }
+
         @Override
         public String toString() {
             return String.format("Attribute auth[%s]", attribute.getName());
         }
+    }
+
+    public static class NetworkAttributeAuthorization {
+        private final Attribute                                      attribute;
+        private final ExistentialNetworkAttributeAuthorizationRecord auth;
+        private final NetworkAuthorization                           networkAuth;
+
+        public NetworkAttributeAuthorization(DSLContext create,
+                                             ExistentialNetworkAttributeAuthorizationRecord auth,
+                                             NetworkAuthorization networkAuth) {
+            this(auth, networkAuth,
+                 (Attribute) resolveExistential(create,
+                                                auth.getAuthorizedAttribute()));
+        }
+
+        public NetworkAttributeAuthorization(ExistentialNetworkAttributeAuthorizationRecord auth,
+                                             NetworkAuthorization networkAuth,
+                                             Attribute attribute) {
+            this.auth = auth;
+            this.networkAuth = networkAuth;
+            this.attribute = attribute;
+        }
+
+        public Attribute getAttribute() {
+            return attribute;
+        }
+
+        public ExistentialNetworkAttributeAuthorizationRecord getAuth() {
+            return auth;
+        }
+
+        public NetworkAuthorization getNetworkAuth() {
+            return networkAuth;
+        }
 
         public String getNotes() {
             return auth.getNotes();
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Attribute auth[%s]", attribute.getName());
         }
     }
 
@@ -172,6 +212,10 @@ public class PhantasmTraversal {
             return child.getDomain();
         }
 
+        public String getNotes() {
+            return auth.getNotes();
+        }
+
         public FacetRecord getParent() {
             return parent;
         }
@@ -184,10 +228,6 @@ public class PhantasmTraversal {
         public String toString() {
             return String.format("Network Auth[%s->%s]", relationship.getName(),
                                  child);
-        }
-
-        public String getNotes() {
-            return auth.getNotes();
         }
     }
 
@@ -204,6 +244,17 @@ public class PhantasmTraversal {
          *            - the normalized field name
          */
         void visit(Aspect facet, AttributeAuthorization auth, String fieldName);
+
+        /**
+         * Visit the attribute auth on the network edge
+         * 
+         * @param facet
+         * @param auth
+         * @param edgeName
+         *            - the normalized edge name
+         */
+        void visit(Aspect facet, NetworkAttributeAuthorization auth,
+                   String edgeName);
 
         /**
          * Visit the multiple child authorization
@@ -292,23 +343,33 @@ public class PhantasmTraversal {
     private void traverseNetworkAuths(Aspect facet, PhantasmVisitor visitor) {
 
         DSLContext create = model.create();
-        for (ExistentialNetworkAuthorizationRecord auth : model.getPhantasmModel()
-                                                               .getNetworkAuthorizations(facet.facet,
-                                                                                         false)) {
-            Aspect child = new Aspect(create, auth.getChild());
-            String fieldName = WorkspacePresentation.toFieldName(auth.getName());
-            if (auth.getCardinality() == Cardinality.N) {
-                visitor.visitChildren(facet,
-                                      new NetworkAuthorization(create, auth,
-                                                               child),
-                                      English.plural(fieldName), child,
-                                      fieldName);
-            } else {
-                visitor.visitSingular(facet,
-                                      new NetworkAuthorization(create, auth,
-                                                               child),
-                                      fieldName, child);
-            }
-        }
+        model.getPhantasmModel()
+             .getNetworkAuthorizations(facet.facet, false)
+             .forEach(auth -> {
+                 Aspect child = new Aspect(create, auth.getChild());
+                 String fieldName = WorkspacePresentation.toFieldName(auth.getName());
+                 NetworkAuthorization networkAuth = new NetworkAuthorization(create,
+                                                                             auth,
+                                                                             child);
+
+                 String edgeName = fieldName;
+                 if (auth.getCardinality() == Cardinality.N) {
+                     edgeName = English.plural(fieldName);
+                     visitor.visitChildren(facet, networkAuth, edgeName, child,
+                                           fieldName);
+                 } else {
+                     visitor.visitSingular(facet, networkAuth, fieldName,
+                                           child);
+                 }
+
+                 model.getPhantasmModel()
+                      .getNetworkAttributeAuthorizations(auth)
+                      .forEach(na -> {
+                          visitor.visit(facet,
+                                        new NetworkAttributeAuthorization(create,
+                                                                          na, networkAuth),
+                                        fieldName);
+                      });
+             });
     }
 }

@@ -354,8 +354,7 @@ public class Phantasmagoria {
                       });
 
                  if (auth.getCardinality() == Cardinality.N) {
-                     childAuthorizations.put(networkAuth.plural(),
-                                             networkAuth);
+                     childAuthorizations.put(networkAuth.plural(), networkAuth);
                  } else {
                      singularAuthorizations.put(networkAuth.getFieldName(),
                                                 networkAuth);

@@ -99,12 +99,10 @@ public class PhantasmDefinition extends Phantasmagoria {
     protected final Map<Method, StateFunction> methods = new HashMap<>();
     private final Facet                        facetAnnotation;
     private final Class<? extends Phantasm>    phantasm;
-
     private final UUID                         workspace;
 
     public PhantasmDefinition(Class<? extends Phantasm> phantasm, Model model) {
         super(facetFrom(phantasm, model));
-
         traverse(model);
         this.phantasm = phantasm;
         facetAnnotation = phantasm.getAnnotation(Facet.class);

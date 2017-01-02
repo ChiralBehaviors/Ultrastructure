@@ -36,8 +36,8 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Mutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Queries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorization;
 
 import graphql.ExceptionWhileDataFetching;
 import graphql.ExecutionResult;

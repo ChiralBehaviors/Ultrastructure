@@ -7,7 +7,7 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="${core.log.level}" />
+        <level value="TRACE" />
     </logger>
     <logger name = "org.reflections">
         <level value="ERROR" />
@@ -16,7 +16,7 @@
         <level value="WARN" />
     </logger> 
     <root>
-        <level value="WARN" />
+        <level value="TRACE" />
         <appender-ref ref="C" />
     </root>
 </configuration>

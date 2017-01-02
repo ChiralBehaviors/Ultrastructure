@@ -185,7 +185,8 @@ public class WorkspaceSchema {
                 if (resolved.containsKey(facet)) {
                     continue;
                 }
-                FacetFields type = new FacetFields(facet);
+                FacetFields type = new FacetFields(new Aspect(model.create(),
+                                                              facet));
                 resolved.put(facet, type);
                 List<Class<?>> facetPlugins = plugins.stream()
                                                      .filter(plugin -> pluginFor(plugin,
@@ -252,7 +253,7 @@ public class WorkspaceSchema {
                                                 .build());
     }
 
-    private void addPhantasmCast(graphql.schema.GraphQLInterfaceType.Builder builder,
+    private void addPhantasmCast(GraphQLInterfaceType.Builder builder,
                                  Entry<FacetRecord, FacetFields> entry) {
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
                                             .name(String.format("as%s",
@@ -267,7 +268,7 @@ public class WorkspaceSchema {
     }
 
     private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
-        graphql.schema.GraphQLInterfaceType.Builder builder = graphql.schema.GraphQLInterfaceType.newInterface();
+        GraphQLInterfaceType.Builder builder = GraphQLInterfaceType.newInterface();
         builder.name("Existential");
         builder.description("The Existential interface type");
         builder.field(GraphQLFieldDefinition.newFieldDefinition()

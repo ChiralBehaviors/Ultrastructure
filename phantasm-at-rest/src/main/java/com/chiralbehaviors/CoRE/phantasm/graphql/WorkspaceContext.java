@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.MetaQueries;
@@ -62,25 +61,25 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
             extends GraphQLFieldDefinition.Builder {
         private NetworkAuthorization auth;
 
+        public EdgeFieldBuilder auth(NetworkAuthorization auth) {
+            this.auth = auth;
+            return this;
+        }
+
         @Override
         public GraphQLFieldDefinition build() {
             return new GraphQLFieldEdgeDefinition(super.build(), auth);
         }
-
-        public EdgeFieldBuilder setAuth(NetworkAuthorization auth) {
-            this.auth = auth;
-            return this;
-        }
     }
 
     public static class Traversal {
+        public final NetworkAuthorization auth;
         public final ExistentialRuleform parent;
-        public final Relationship        relationship;
 
         public Traversal(ExistentialRuleform parent,
-                         Relationship relationship) {
+                         NetworkAuthorization auth) {
             this.parent = parent;
-            this.relationship = relationship;
+            this.auth = auth;
         }
     }
 
@@ -133,8 +132,7 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
                 if (fieldDef instanceof GraphQLFieldEdgeDefinition) {
                     pop = true;
                     path.push(new Traversal((ExistentialRuleform) source,
-                                            ((GraphQLFieldEdgeDefinition) fieldDef).getAuth()
-                                                                                   .getRelationship()));
+                                            ((GraphQLFieldEdgeDefinition) fieldDef).getAuth()));
                 }
             } catch (Exception e) {
                 log.warn("Exception while fetching data", e);

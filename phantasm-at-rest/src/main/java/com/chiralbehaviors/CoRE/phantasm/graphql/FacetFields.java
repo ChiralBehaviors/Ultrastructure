@@ -405,31 +405,50 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         String childFacetName = child.getName();
         GraphQLOutputType type = referenceToType(childFacetName);
         type = new GraphQLList(type);
-        typeBuilder.field(newFieldDefinition().type(type)
-                                              .name(fieldName)
-                                              .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                       ((ExistentialRuleform) env.getSource()),
-                                                                                       auth)
-                                                                          .stream()
-                                                                          .collect(Collectors.toList()))
-                                              .description(auth.getNotes())
-                                              .build());
-        typeBuilder.field(newFieldDefinition().type(type)
-                                              .name(String.format(IMMEDIATE_TEMPLATE,
-                                                                  capitalized(fieldName)))
-                                              .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
-                                                                                                ((ExistentialRuleform) env.getSource()),
-                                                                                                auth)
-                                                                          .stream()
-                                                                          .collect(Collectors.toList()))
-                                              .description(auth.getNotes())
-                                              .build());
+        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+                                          .auth(auth)
+                                          .type(type)
+                                          .name(fieldName)
+                                          .dataFetcher(env -> ctx(env).getChildren(facet,
+                                                                                   ((ExistentialRuleform) env.getSource()),
+                                                                                   auth)
+                                                                      .stream()
+                                                                      .collect(Collectors.toList()))
+                                          .description(auth.getNotes())
+                                          .build());
+        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+                                          .auth(auth)
+                                          .type(type)
+                                          .name(String.format(IMMEDIATE_TEMPLATE,
+                                                              capitalized(fieldName)))
+                                          .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
+                                                                                            ((ExistentialRuleform) env.getSource()),
+                                                                                            auth)
+                                                                      .stream()
+                                                                      .collect(Collectors.toList()))
+                                          .description(auth.getNotes())
+                                          .build());
         setChildren(facet, auth, fieldName);
         addChild(facet, auth, singularFieldName);
         addChildren(facet, auth, fieldName);
         removeChild(facet, auth, singularFieldName);
         removeChildren(facet, auth, fieldName);
         references.add(child.getFacet());
+    }
+
+    @SuppressWarnings("unused")
+    private void getEdge(Aspect facet, NetworkAuthorization auth,
+                         String fieldName) {
+        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+                                          .type(type)
+                                          .name("_edge")
+                                          .dataFetcher(env -> ctx(env).getChildren(facet,
+                                                                                   ((ExistentialRuleform) env.getSource()),
+                                                                                   auth)
+                                                                      .stream()
+                                                                      .collect(Collectors.toList()))
+                                          .description(auth.getNotes())
+                                          .build());
     }
 
     @Override

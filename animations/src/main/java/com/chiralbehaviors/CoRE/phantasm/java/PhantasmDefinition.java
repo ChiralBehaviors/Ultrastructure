@@ -43,11 +43,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.EdgeState;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Inferred;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 
 /**
@@ -110,7 +105,7 @@ public class PhantasmDefinition extends Phantasmagoria {
     public PhantasmDefinition(Class<? extends Phantasm> phantasm, Model model) {
         super(facetFrom(phantasm, model));
 
-        traverse(new PhantasmTraversal(model));
+        traverse(model);
         this.phantasm = phantasm;
         facetAnnotation = phantasm.getAnnotation(Facet.class);
         workspace = WorkspaceAccessor.uuidOf(facetAnnotation.workspace());
@@ -196,7 +191,7 @@ public class PhantasmDefinition extends Phantasmagoria {
                              Class<ExistentialRuleform> rulformClass) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAuthorization auth = childAuthorizations.get(fieldName);
+            NetworkAuthorization auth = singularAuthorizations.get(fieldName);
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
@@ -500,7 +495,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+            NetworkAuthorization auth = singularAuthorizations.get(edge.fieldName());
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               edge.fieldName(),
@@ -528,7 +523,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         } else {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = singularAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),

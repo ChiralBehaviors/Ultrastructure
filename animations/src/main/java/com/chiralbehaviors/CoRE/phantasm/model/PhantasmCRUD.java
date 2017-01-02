@@ -43,10 +43,10 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorization;
 
 /**
  * CRUD for Phantasms. This class is the animation procedure that maintains and

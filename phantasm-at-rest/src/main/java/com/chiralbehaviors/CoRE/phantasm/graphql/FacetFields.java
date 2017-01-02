@@ -72,6 +72,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,6 +86,7 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLTypeReference;
+import graphql.schema.GraphQLUnionType;
 
 /**
  * Cannonical tranform of Phantasm metadata into GraphQL metadata. Provides
@@ -93,8 +95,10 @@ import graphql.schema.GraphQLTypeReference;
  * @author hhildebrand
  *
  */
-public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
+public class FacetFields extends Phantasmagoria {
 
+    private static final String _EDGE              = "_edge";
+    private static final String EXISTENTIAL        = "Existential";
     private static final String _EXT               = "_ext";
     private static final String ADD_TEMPLATE       = "add%s";
     private static final String APPLY_MUTATION     = "apply%s";
@@ -145,8 +149,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
-    public static PhantasmCRUD ctx(DataFetchingEnvironment env) {
-        return (PhantasmCRUD) env.getContext();
+    public static WorkspaceContext ctx(DataFetchingEnvironment env) {
+        return (WorkspaceContext) env.getContext();
     }
 
     public static Deque<FacetRecord> initialState(WorkspaceAccessor workspace,
@@ -190,6 +194,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     }
 
     private graphql.schema.GraphQLInputObjectType.Builder                  createTypeBuilder;
+    private EdgeTypeResolver                                               edgeTypeResolver;
+    private GraphQLUnionType.Builder                                       edgeUnion;
     private List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> initializers   = new ArrayList<>();
     private String                                                         name;
     private Set<FacetRecord>                                               references     = new HashSet<>();
@@ -237,7 +243,11 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
 
     public Set<FacetRecord> resolve(FacetRecord facet, List<Class<?>> plugins,
                                     Model model,
-                                    WorkspaceTypeFunction typeFunction) {
+                                    WorkspaceTypeFunction typeFunction,
+                                    GraphQLUnionType.Builder union,
+                                    EdgeTypeResolver tr) {
+        edgeTypeResolver = tr;
+        edgeUnion = union;
         build(facet);
         Aspect aspect = new Aspect(model.create(), facet);
         new PhantasmTraversal(model).traverse(aspect, this);
@@ -326,6 +336,9 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                                                .getName()),
                                          edgeName);
         GraphQLOutputType type = typeOf(attribute);
+
+        typeBuilder = newObject().name(fieldName)
+                                 .description("");
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(attribute.getDescription())
@@ -343,59 +356,6 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                                  value);
                                               })
                                               .build());
-
-        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        graphql.schema.GraphQLInputObjectField.Builder builder = newInputObjectField().name(setter)
-                                                                                      .description(auth.getNotes());
-
-        if (auth.getAttribute()
-                .getIndexed()) {
-            updateTemplate.put(setter,
-                               (crud,
-                                update) -> crud.setAttributeValue(facet,
-                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
-                                                                  UUID.fromString((String) update.get(CHILD)),
-                                                                  auth,
-                                                                  (List<Object>) update.get(setter)));
-            builder.type(new GraphQLList(GraphQLString));
-        } else if (auth.getAttribute()
-                       .getKeyed()) {
-            updateTemplate.put(setter,
-                               (crud,
-                                update) -> crud.setAttributeValue(facet,
-                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
-                                                                  auth,
-                                                                  crud.getModel()
-                                                                      .records()
-                                                                      .resolve(UUID.fromString((String) update.get(CHILD))),
-                                                                  (Map<String, Object>) update.get(setter)));
-            builder.type(GraphQLString);
-
-        } else {
-            Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
-                try {
-                    return new ObjectMapper().readValue((String) object,
-                                                        Map.class);
-                } catch (IOException e) {
-                    throw new IllegalStateException(String.format("Cannot deserialize %s",
-                                                                  object),
-                                                    e);
-                }
-            } : object -> object;
-            updateTemplate.put(setter,
-                               (crud,
-                                update) -> crud.setAttributeValue(facet,
-                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
-                                                                  auth,
-                                                                  crud.getModel()
-                                                                      .records()
-                                                                      .resolve(UUID.fromString((String) update.get(CHILD))),
-                                                                  converter.apply(update.get(setter))));
-            builder.type(GraphQLString);
-        }
-        GraphQLInputObjectField field = builder.build();
-        updateTypeBuilder.field(field);
-        createTypeBuilder.field(field);
     }
 
     @Override
@@ -404,6 +364,7 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                               String singularFieldName) {
         String childFacetName = child.getName();
         GraphQLOutputType type = referenceToType(childFacetName);
+        buildEdgeType(singularFieldName, auth);
         type = new GraphQLList(type);
         typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
                                           .auth(auth)
@@ -436,32 +397,21 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         references.add(child.getFacet());
     }
 
-    @SuppressWarnings("unused")
-    private void getEdge(Aspect facet, NetworkAuthorization auth,
-                         String fieldName) {
-        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
-                                          .type(type)
-                                          .name("_edge")
-                                          .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                   ((ExistentialRuleform) env.getSource()),
-                                                                                   auth)
-                                                                      .stream()
-                                                                      .collect(Collectors.toList()))
-                                          .description(auth.getNotes())
-                                          .build());
-    }
-
     @Override
     public void visitSingular(Aspect facet, NetworkAuthorization auth,
                               String fieldName, Aspect child) {
+
+        buildEdgeType(fieldName, auth);
         GraphQLOutputType type = referenceToType(child.getName());
-        typeBuilder.field(newFieldDefinition().type(type)
-                                              .name(fieldName)
-                                              .dataFetcher(env -> ctx(env).getSingularChild(facet,
-                                                                                            ((ExistentialRuleform) env.getSource()),
-                                                                                            auth))
-                                              .description(auth.getNotes())
-                                              .build());
+        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+                                          .auth(auth)
+                                          .type(type)
+                                          .name(fieldName)
+                                          .dataFetcher(env -> ctx(env).getSingularChild(facet,
+                                                                                        ((ExistentialRuleform) env.getSource()),
+                                                                                        auth))
+                                          .description(auth.getNotes())
+                                          .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
                                                              .name(setter)
@@ -552,11 +502,16 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
     }
 
     private void build(FacetRecord facet) {
+        typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference(WorkspaceSchema.EDGE))
+                                              .name(_EDGE)
+                                              .description("The currently traversed edge to this instance")
+                                              .dataFetcher(env -> ctx(env).getCurrentEdge())
+                                              .build());
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
                                               .description("The id of the facet instance")
                                               .build());
-        typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference("Existential"))
+        typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference(EXISTENTIAL))
                                               .name(_EXT)
                                               .description("Cast the instance as an Existential")
                                               .dataFetcher(env -> Existential.wrap((ExistentialRecord) env.getSource()))
@@ -569,6 +524,10 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                      .build());
     }
 
+    private void buildEdgeType(String fieldName, NetworkAuthorization auth) {
+
+    }
+
     private void clear() {
         references = null;
         typeBuilder = null;
@@ -576,6 +535,8 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
         createTypeBuilder = null;
         updateTemplate = null;
         initializers = null;
+        edgeTypeResolver = null;
+        edgeUnion = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -654,6 +615,21 @@ public class FacetFields implements PhantasmTraversal.PhantasmVisitor {
                                                           .collect(Collectors.toList());
                                    })
                                    .build();
+    }
+
+    @SuppressWarnings("unused")
+    private void getEdge(Aspect facet, NetworkAuthorization auth,
+                         String fieldName) {
+        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+                                          .type(type)
+                                          .name(_EDGE)
+                                          .dataFetcher(env -> ctx(env).getChildren(facet,
+                                                                                   ((ExistentialRuleform) env.getSource()),
+                                                                                   auth)
+                                                                      .stream()
+                                                                      .collect(Collectors.toList()))
+                                          .description(auth.getNotes())
+                                          .build());
     }
 
     private GraphQLFieldDefinition instance(Aspect facet,

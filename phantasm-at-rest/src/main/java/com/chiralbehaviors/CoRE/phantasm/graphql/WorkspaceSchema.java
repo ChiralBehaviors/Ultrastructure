@@ -100,7 +100,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
@@ -109,6 +109,7 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeReference;
+import graphql.schema.GraphQLUnionType;
 
 /**
  * @author hhildebrand
@@ -142,6 +143,8 @@ public class WorkspaceSchema {
             JobQueries, JobChronologyQueries {
     }
 
+    public static final String EDGE = "_Edge";
+
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
@@ -173,6 +176,10 @@ public class WorkspaceSchema {
                                         .getScoped((Product) ws.getRuleform());
             Deque<FacetRecord> unresolved = FacetFields.initialState(scope.getWorkspace(),
                                                                      model);
+            GraphQLUnionType.Builder edgeUnion = GraphQLUnionType.newUnionType();
+            edgeUnion.name(EDGE);
+            EdgeTypeResolver edgeTypeResolver = new EdgeTypeResolver();
+            edgeUnion.typeResolver(edgeTypeResolver);
             while (!unresolved.isEmpty()) {
                 FacetRecord facet = unresolved.pop();
                 if (resolved.containsKey(facet)) {
@@ -187,7 +194,8 @@ public class WorkspaceSchema {
                                                                                  scope,
                                                                                  model))
                                                      .collect(Collectors.toList());
-                type.resolve(facet, facetPlugins, model, typeFunction)
+                type.resolve(facet, facetPlugins, model, typeFunction,
+                             edgeUnion, edgeTypeResolver)
                     .stream()
                     .filter(auth -> !resolved.containsKey(auth))
                     .forEach(auth -> unresolved.add(auth));

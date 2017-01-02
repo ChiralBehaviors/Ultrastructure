@@ -118,9 +118,11 @@ public class PluginTest extends AbstractModelTest {
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
                                                            model, reflections);
 
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              request.getVariables());
+        ExecutionResult execute = new WorkspaceContext(model,
+                                                       scope.getWorkspace()
+                                                            .getDefiningProduct()).execute(schema,
+                                                                                           request.getQuery(),
+                                                                                           request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),

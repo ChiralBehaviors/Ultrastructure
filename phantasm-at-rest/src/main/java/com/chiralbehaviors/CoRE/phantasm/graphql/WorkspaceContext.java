@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -165,6 +166,10 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
     public WorkspaceContext(Model model, Product workspace) {
         super(model);
         this.workspace = workspace;
+    }
+
+    public ExecutionResult execute(GraphQLSchema schema, String query) {
+        return execute(schema, query, Collections.emptyMap());
     }
 
     public ExecutionResult execute(GraphQLSchema schema, String query,

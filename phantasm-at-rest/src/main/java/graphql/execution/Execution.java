@@ -54,10 +54,6 @@ public class Execution {
         Map<String, List<Field>> fields = new LinkedHashMap<String, List<Field>>();
         fieldCollector.collectFields(executionContext, operationRootType, operationDefinition.getSelectionSet(), new ArrayList<String>(), fields);
 
-        if (operationDefinition.getOperation() == OperationDefinition.Operation.MUTATION) {
-            return new SimpleExecutionStrategy().execute(executionContext, operationRootType, root, fields);
-        } else {
-            return strategy.execute(executionContext, operationRootType, root, fields);
-        }
+        return strategy.execute(executionContext, operationRootType, root, fields, operationDefinition.getOperation()); 
     }
 }

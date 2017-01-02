@@ -46,6 +46,7 @@ import graphql.execution.ExecutionContext;
 import graphql.execution.ExecutionStrategy;
 import graphql.execution.SimpleExecutionStrategy;
 import graphql.language.Field;
+import graphql.language.OperationDefinition.Operation;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
@@ -74,7 +75,7 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
 
     public static class Traversal {
         public final NetworkAuthorization auth;
-        public final ExistentialRuleform parent;
+        public final ExistentialRuleform  parent;
 
         public Traversal(ExistentialRuleform parent,
                          NetworkAuthorization auth) {
@@ -102,6 +103,16 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
     }
 
     private class SimpleTraversalStrategy extends SimpleExecutionStrategy {
+
+        @Override
+        public ExecutionResult execute(ExecutionContext executionContext,
+                                       GraphQLObjectType operationRootType,
+                                       Object root,
+                                       Map<String, List<Field>> fields,
+                                       Operation operation) {
+            return super.execute(executionContext, operationRootType, root,
+                                 fields);
+        }
 
         @Override
         protected ExecutionResult resolveField(ExecutionContext executionContext,

@@ -1,17 +1,35 @@
 package graphql.execution;
 
+import static graphql.introspection.Introspection.SchemaMetaFieldDef;
+import static graphql.introspection.Introspection.TypeMetaFieldDef;
+import static graphql.introspection.Introspection.TypeNameMetaFieldDef;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import graphql.ExceptionWhileDataFetching;
 import graphql.ExecutionResult;
 import graphql.ExecutionResultImpl;
 import graphql.GraphQLException;
 import graphql.language.Field;
-import graphql.schema.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-
-import static graphql.introspection.Introspection.*;
+import graphql.language.OperationDefinition.Operation;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLEnumType;
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInterfaceType;
+import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNonNull;
+import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLScalarType;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
+import graphql.schema.GraphQLUnionType;
 
 public abstract class ExecutionStrategy {
     private static final Logger log = LoggerFactory.getLogger(ExecutionStrategy.class);
@@ -88,6 +106,7 @@ public abstract class ExecutionStrategy {
         return executionContext.getExecutionStrategy().execute(executionContext, resolvedType, result, subFields);
     }
 
+    @SuppressWarnings("unchecked")
     private ExecutionResult completeValueForList(ExecutionContext executionContext, GraphQLList fieldType, List<Field> fields, Object result) {
         if (result.getClass().isArray()) {
             result = Arrays.asList((Object[]) result);
@@ -153,6 +172,18 @@ public abstract class ExecutionStrategy {
             throw new GraphQLException("unknown field " + field.getName());
         }
         return fieldDefinition;
+    }
+
+    public ExecutionResult execute(ExecutionContext executionContext,
+                                   GraphQLObjectType operationRootType,
+                                   Object root, Map<String, List<Field>> fields,
+                                   Operation operation) {
+        switch(operation) {
+            case QUERY:
+                return execute(executionContext, operationRootType, root, fields);
+            default:
+                return new SimpleExecutionStrategy().execute(executionContext, operationRootType, root, fields);
+        }
     }
 
 

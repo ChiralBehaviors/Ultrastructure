@@ -37,9 +37,9 @@
 	<properties>
 		<db.context>local</db.context>
 
-		<dropwizard.version>0.9.3</dropwizard.version>
+		<dropwizard.version>1.0.5</dropwizard.version>
 		<postgresql.driver.version>9.4.1208</postgresql.driver.version>
-		<jackson.version>2.6.7 </jackson.version>
+		<jackson.version>2.7.8 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
 		<jooq.version>3.9.0</jooq.version>
 
@@ -327,7 +327,7 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.1.2</version>
+				<version>1.1.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
@@ -384,7 +384,7 @@
 			<dependency>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-runtime</artifactId>
-				<version>4.6</version>
+				<version>4.5.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
@@ -591,7 +591,7 @@
 				<plugin>
 					<groupId>org.antlr</groupId>
 					<artifactId>antlr4-maven-plugin</artifactId>
-					<version>4.6</version>
+					<version>4.5.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

@@ -114,7 +114,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     private void configureAuth(PhantasmConfiguration configuration,
                                Environment environment) {
         switch (configuration.getAuth()) {
-            case NULL: {
+            case NULL_AUTH: {
                 log.warn("Setting authentication to NULL");
                 NullAuthFilter<AuthorizedPrincipal> filter;
                 NullAuthenticator authenticator = new NullAuthenticator();
@@ -155,6 +155,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
                 AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
+                authenticator.register(environment);
                 environment.jersey()
                            .register(new AuthDynamicFeature(new Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
                                                                                               .setAuthorizer(new PermitAllAuthorizer<>())

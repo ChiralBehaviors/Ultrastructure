@@ -20,9 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.config;
 
-import com.google.common.collect.ImmutableList;
-
-import io.dropwizard.jetty.RequestLogFactory;
 import io.dropwizard.server.SimpleServerFactory;
 
 /**
@@ -39,10 +36,5 @@ public class SinglePortServerFactory extends SimpleServerFactory {
         setConnector(new ConnectorFactoryFromEnvironment());
         setJerseyRootPath(ROOT_PATH);
         setAdminContextPath(ADMIN_CONTEXT_PATH);
-        setRequestLogFactory(new RequestLogFactory() {
-            {
-                setAppenders(ImmutableList.of());
-            }
-        });
     }
 }

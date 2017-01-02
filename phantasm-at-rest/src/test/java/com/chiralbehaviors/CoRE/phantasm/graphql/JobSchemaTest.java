@@ -39,7 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
-import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 
 /**
@@ -194,11 +193,9 @@ public class JobSchemaTest extends AbstractModelTest {
 
     private ObjectNode execute(GraphQLSchema schema, String query,
                                Map<String, Object> variables) {
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new WorkspaceContext(model,
-                                                                                   model.getKernel()
-                                                                                        .getKernelWorkspace()),
-                                                              variables);
+        WorkspaceContext context = new WorkspaceContext(model, model.getKernel()
+                                                                    .getKernelWorkspace());
+        ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()

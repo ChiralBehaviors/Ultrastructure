@@ -24,10 +24,17 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.eclipse.jetty.server.HttpChannel;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
+
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.ServiceLocatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +44,10 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
+import io.dropwizard.setup.Environment;
 
 /**
  * @author hhildebrand
@@ -48,6 +55,16 @@ import io.dropwizard.auth.Authenticator;
  */
 public class AgencyBearerTokenAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
+    private class AuthenticatorFeature implements Feature {
+
+        @Override
+        public boolean configure(FeatureContext ctx) {
+            ServiceLocator locator = ServiceLocatorProvider.getServiceLocator(ctx);
+            locator.inject(AgencyBearerTokenAuthenticator.this);
+            return true;
+        }
+    }
+
     public static final int           ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
     private static final long         DWELL                        = (long) (Math.random()
                                                                              * 1000);
@@ -58,9 +75,9 @@ public class AgencyBearerTokenAuthenticator
         try {
             Thread.sleep(DWELL);
         } catch (InterruptedException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     public static boolean validate(Credential credential,
@@ -150,7 +167,10 @@ public class AgencyBearerTokenAuthenticator
                                                            credential.roles);
     }
 
-    private Model model;
+    private Model              model;
+
+    @Context
+    private HttpServletRequest request;
 
     public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
         UUID uuid;
@@ -181,11 +201,13 @@ public class AgencyBearerTokenAuthenticator
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(String token) throws AuthenticationException {
-        // For some reason I can't inject the request via @Context nor in the filters either.  Hence this hack
-        return authenticate(new RequestCredentials(HttpChannel.getCurrentHttpChannel()
-                                                              .getRequest()
-                                                              .getRemoteAddr(),
+        return authenticate(new RequestCredentials(request.getRemoteAddr(),
                                                    token));
+    }
+
+    public void register(Environment environment) {
+        environment.jersey()
+                   .register(new AuthenticatorFeature());
     }
 
     public void setModel(Model model) {

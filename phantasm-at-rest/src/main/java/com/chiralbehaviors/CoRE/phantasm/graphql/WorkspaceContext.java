@@ -197,11 +197,11 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
         return path.isEmpty() ? null : path.peek();
     }
 
-    public ExecutionStrategy getStrategy() {
-        return new SimpleTraversalStrategy();
-    }
-
     public Product getWorkspace() {
         return workspace;
+    }
+
+    protected ExecutionStrategy getStrategy() {
+        return new SimpleTraversalStrategy();
     }
 }

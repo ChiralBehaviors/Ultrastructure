@@ -42,6 +42,7 @@
 		<jackson.version>2.7.8 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
 		<jooq.version>3.9.0</jooq.version>
+		<liquibase.version>3.5.3</liquibase.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -379,7 +380,7 @@
 			<dependency>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
-				<version>3.5.0</version>
+				<version>${liquibase.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.antlr</groupId>
@@ -625,7 +626,7 @@
 				<plugin>
 					<groupId>org.liquibase</groupId>
 					<artifactId>liquibase-maven-plugin</artifactId>
-					<version>3.5.0</version>
+					<version>${liquibase.version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.postgresql</groupId>

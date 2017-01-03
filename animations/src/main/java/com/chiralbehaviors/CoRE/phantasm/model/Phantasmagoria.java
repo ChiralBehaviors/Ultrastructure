@@ -344,7 +344,7 @@ public class Phantasmagoria {
                                                           WorkspacePresentation.toFieldName(model.records()
                                                                                                  .resolve(na.getAuthorizedAttribute())
                                                                                                  .getName()),
-                                                          fieldName);
+                                                          capitalized(fieldName));
                           NetworkAttributeAuthorization attrAuth = new NetworkAttributeAuthorization(edgeName,
                                                                                                      create,
                                                                                                      na,
@@ -360,5 +360,11 @@ public class Phantasmagoria {
                                                 networkAuth);
                  }
              });
+    }
+
+    public static String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
     }
 }

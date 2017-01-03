@@ -66,6 +66,10 @@ public class PhantasmDefinition extends Phantasmagoria {
         UUID uuid = WorkspaceAccessor.uuidOf(facet.workspace());
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(uuid);
+        if (scope == null) {
+            throw new IllegalStateException(String.format("Workspace defining product: %s not found",
+                                                          uuid));
+        }
         Relationship classifier = (Relationship) scope.lookup(facet.classifier());
         if (classifier == null) {
             throw new IllegalStateException(String.format("%s not found in workspace %s | %s",
@@ -388,21 +392,23 @@ public class PhantasmDefinition extends Phantasmagoria {
                                                               annotation.fieldName(),
                                                               phantasm.getSimpleName()));
             }
-            if (arguments[0] instanceof List) {
+            if (arguments[1] instanceof List) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
                                                ((Phantasm) arguments[0]).getRuleform(),
-                                               arguments[1]);
-            } else if (arguments[0] instanceof Object[]) {
+                                               (List<Object>) arguments[1]);
+            } else if (arguments[1] instanceof Object[]) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
                                                ((Phantasm) arguments[0]).getRuleform(),
                                                (Object[]) arguments[1]);
-            } else if (arguments[0] instanceof Map) {
+            } else if (arguments[1] instanceof Map) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               (Map<String, Object>) arguments[0]);
+                                               ((Phantasm) arguments[0]).getRuleform(),
+                                               (Map<String, Object>) arguments[1]);
             }
-            return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                           ((Phantasm) arguments[0]).getRuleform(),
-                                           arguments[1]);
+            return state.setAttributeObjectValue(facet, state.getRuleform(),
+                                                 auth,
+                                                 ((Phantasm) arguments[0]).getRuleform(),
+                                                 arguments[1]);
         });
     }
 

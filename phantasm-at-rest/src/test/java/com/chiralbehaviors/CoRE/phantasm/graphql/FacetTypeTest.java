@@ -46,6 +46,8 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;
@@ -193,11 +195,11 @@ public class FacetTypeTest extends AbstractModelTest {
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
-                          .isEmpty());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
+                          .isEmpty()); 
+        JsonNode result = new ObjectMapper().convertValue(execute.getData(), JsonNode.class);
 
         assertNotNull(result);
+        System.out.println(result);
     }
 
     @Test

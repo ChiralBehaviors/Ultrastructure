@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.Traversal;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorization;
 
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.TypeResolver;
@@ -25,5 +25,10 @@ public class EdgeTypeResolver implements TypeResolver {
         }
         Traversal edge = (Traversal) object;
         return edges.get(edge.auth);
+    }
+
+    public void register(NetworkAuthorization auth,
+                         GraphQLObjectType edgeType) {
+        edges.put(auth, edgeType);
     }
 }

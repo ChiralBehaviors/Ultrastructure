@@ -220,8 +220,14 @@ public class FacetFields extends Phantasmagoria {
         mutation.field(createInstance());
         mutation.field(createInstances());
         mutation.field(apply());
-        mutation.field(update());
-        mutation.field(updateInstances());
+        GraphQLFieldDefinition update = update();
+        if (update != null) {
+            mutation.field(update);
+        }
+        update = updateInstances();
+        if (update != null) {
+            mutation.field(update);
+        }
         mutation.field(remove());
         clear();
         return type;
@@ -364,17 +370,18 @@ public class FacetFields extends Phantasmagoria {
     private void buildEdge(NetworkAuthorization auth,
                            EdgeTypeResolver edgeTypeResolver,
                            GraphQLUnionType.Builder union) {
-        Builder edgeTypeBuilder = newObject().name(String.format("_%s%s", name,
+        String facetName = WorkspacePresentation.toFieldName(name);
+        Builder edgeTypeBuilder = newObject().name(String.format("_%s_%s",
+                                                                 facetName,
                                                                  auth.getFieldName()))
-                                             .description("");
+                                             .description(String.format("The edge \"%s\" from facet \"%s\"",
+                                                                        auth.getFieldName(),
+                                                                        facetName));
         auth.getAttributes()
             .forEach(attr -> {
                 Attribute attribute = attr.getAttribute();
-                String fieldName = String.format("%sOf%s",
-                                                 WorkspacePresentation.toFieldName(attr.getAttribute()
-                                                                                       .getName()),
-                                                 attr.getNetworkAuth()
-                                                     .getFieldName());
+                String fieldName = WorkspacePresentation.toFieldName(attr.getAttribute()
+                                                                         .getName());
                 GraphQLOutputType type = typeOf(attribute);
                 edgeTypeBuilder.field(newFieldDefinition().type(type)
                                                           .name(fieldName)
@@ -657,13 +664,18 @@ public class FacetFields extends Phantasmagoria {
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition update() {
         Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> detachedUpdateTemplate = updateTemplate;
+        GraphQLInputObjectType updateType = updateTypeBuilder.build();
+        if (updateType.getFields()
+                      .isEmpty()) {
+            return null;
+        }
         return newFieldDefinition().name(String.format(UPDATE_MUTATION, name))
                                    .type(referenceToType(facet))
                                    .description(String.format("Update the instance of %s",
                                                               name))
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply")
-                                                          .type(new GraphQLNonNull(updateTypeBuilder.build()))
+                                                          .type(new GraphQLNonNull(updateType))
                                                           .build())
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
@@ -690,33 +702,38 @@ public class FacetFields extends Phantasmagoria {
 
     }
 
-    @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition updateInstances() {
+        GraphQLInputObjectType updateType = updateTypeBuilder.build();
+        if (updateType.getFields()
+                      .isEmpty()) {
+            return null;
+        }
         Map<String, BiConsumer<PhantasmCRUD, Map<String, Object>>> detachedUpdateTemplate = updateTemplate;
-        return newFieldDefinition().name(String.format(UPDATE_MUTATION,
-                                                       English.plural(name)))
-                                   .type(referenceToType(facet))
-                                   .description(String.format("Update the instances of %s",
-                                                              name))
-                                   .argument(newArgument().name(STATE)
-                                                          .description("the update state to apply")
-                                                          .type(new GraphQLNonNull(new GraphQLList(updateTypeBuilder.build())))
-                                                          .build())
-                                   .dataFetcher(env -> {
-                                       List<Map<String, Object>> updateStates = (List<Map<String, Object>>) env.getArgument(STATE);
-                                       PhantasmCRUD crud = ctx(env);
-                                       return updateStates.stream()
-                                                          .map(updateState -> {
-                                                              ExistentialRuleform ruleform = ((ExistentialRuleform) crud.lookup((String) updateState.get(ID)));
-                                                              update(ruleform,
-                                                                     updateState,
-                                                                     crud,
-                                                                     detachedUpdateTemplate);
-                                                              return ruleform;
-                                                          })
-                                                          .collect(Collectors.toList());
-                                   })
-                                   .build();
+        graphql.schema.GraphQLFieldDefinition.Builder field = newFieldDefinition().name(String.format(UPDATE_MUTATION,
+                                                                                                      English.plural(name)))
+                                                                                  .type(referenceToType(facet))
+                                                                                  .description(String.format("Update the instances of %s",
+                                                                                                             name));
+
+        return field.argument(newArgument().name(STATE)
+                                           .description("the update state to apply")
+                                           .type(new GraphQLNonNull(new GraphQLList(updateType)))
+                                           .build())
+                    .dataFetcher(env -> {
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Object>> updateStates = (List<Map<String, Object>>) env.getArgument(STATE);
+                        PhantasmCRUD crud = ctx(env);
+                        return updateStates.stream()
+                                           .map(updateState -> {
+                                               ExistentialRuleform ruleform = ((ExistentialRuleform) crud.lookup((String) updateState.get(ID)));
+                                               update(ruleform, updateState,
+                                                      crud,
+                                                      detachedUpdateTemplate);
+                                               return ruleform;
+                                           })
+                                           .collect(Collectors.toList());
+                    })
+                    .build();
     }
 
     @SuppressWarnings("unchecked")

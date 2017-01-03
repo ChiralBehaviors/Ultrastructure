@@ -100,7 +100,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
@@ -108,7 +108,9 @@ import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
+import graphql.schema.GraphQLUnionType;
 
 /**
  * @author hhildebrand
@@ -142,6 +144,8 @@ public class WorkspaceSchema {
             JobQueries, JobChronologyQueries {
     }
 
+    public static final String EDGE = "_Edge";
+
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
@@ -162,23 +166,29 @@ public class WorkspaceSchema {
                                Reflections reflections) throws NoSuchMethodException,
                                                         InstantiationException,
                                                         IllegalAccessException {
+        Set<GraphQLType> dictionary = new HashSet<>();
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace root = model.wrap(Workspace.class, definingProduct);
         Set<Class<?>> plugins = reflections.getTypesAnnotatedWith(Plugin.class);
         Set<Workspace> aggregate = new HashSet<>();
         gatherImports(root, aggregate);
+        GraphQLUnionType.Builder edgeUnionBuilder = GraphQLUnionType.newUnionType();
+        edgeUnionBuilder.name(EDGE);
         aggregate.forEach(ws -> {
             WorkspaceScope scope = model.getWorkspaceModel()
                                         .getScoped((Product) ws.getRuleform());
             Deque<FacetRecord> unresolved = FacetFields.initialState(scope.getWorkspace(),
                                                                      model);
+            EdgeTypeResolver edgeTypeResolver = new EdgeTypeResolver();
+            edgeUnionBuilder.typeResolver(edgeTypeResolver);
             while (!unresolved.isEmpty()) {
                 FacetRecord facet = unresolved.pop();
                 if (resolved.containsKey(facet)) {
                     continue;
                 }
-                FacetFields type = new FacetFields(facet);
+                FacetFields type = new FacetFields(new Aspect(model.create(),
+                                                              facet));
                 resolved.put(facet, type);
                 List<Class<?>> facetPlugins = plugins.stream()
                                                      .filter(plugin -> pluginFor(plugin,
@@ -187,7 +197,8 @@ public class WorkspaceSchema {
                                                                                  scope,
                                                                                  model))
                                                      .collect(Collectors.toList());
-                type.resolve(facet, facetPlugins, model, typeFunction)
+                type.resolve(facet, facetPlugins, model, typeFunction,
+                             edgeUnionBuilder, edgeTypeResolver)
                     .stream()
                     .filter(auth -> !resolved.containsKey(auth))
                     .forEach(auth -> unresolved.add(auth));
@@ -201,13 +212,21 @@ public class WorkspaceSchema {
         GraphQLSchema schema;
         resolved.entrySet()
                 .stream()
-                .forEach(e -> e.getValue()
-                               .build(new Aspect(model.create(), e.getKey()),
-                                      topLevelQuery, topLevelMutation));
+                .forEach(e -> dictionary.add(e.getValue()
+                                              .build(new Aspect(model.create(),
+                                                                e.getKey()),
+                                                     topLevelQuery,
+                                                     topLevelMutation)));
+
+        GraphQLUnionType edgeUnion = edgeUnionBuilder.build();
+        if (!edgeUnion.getTypes()
+                      .isEmpty()) {
+            dictionary.add(edgeUnion);
+        }
         schema = GraphQLSchema.newSchema()
                               .query(topLevelQuery.build())
                               .mutation(topLevelMutation.build())
-                              .build();
+                              .build(dictionary);
         return schema;
     }
 
@@ -244,7 +263,7 @@ public class WorkspaceSchema {
                                                 .build());
     }
 
-    private void addPhantasmCast(graphql.schema.GraphQLInterfaceType.Builder builder,
+    private void addPhantasmCast(GraphQLInterfaceType.Builder builder,
                                  Entry<FacetRecord, FacetFields> entry) {
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
                                             .name(String.format("as%s",
@@ -259,7 +278,7 @@ public class WorkspaceSchema {
     }
 
     private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
-        graphql.schema.GraphQLInterfaceType.Builder builder = graphql.schema.GraphQLInterfaceType.newInterface();
+        GraphQLInterfaceType.Builder builder = GraphQLInterfaceType.newInterface();
         builder.name("Existential");
         builder.description("The Existential interface type");
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
@@ -361,11 +380,10 @@ public class WorkspaceSchema {
         typeFunction.register(Location.class, (u, t) -> locationType);
 
         GraphQLObjectType productType = phantasm(resolved,
-                                                 objectBuilder(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class,
+                                                 objectBuilder(Existential.Product.class,
                                                                typeFunction,
                                                                typeFunction));
-        typeFunction.register(com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product.class,
-                              (u, t) -> productType);
+        typeFunction.register(Existential.Product.class, (u, t) -> productType);
 
         GraphQLObjectType relationshipType = phantasm(resolved,
                                                       objectBuilder(Relationship.class,

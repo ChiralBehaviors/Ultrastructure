@@ -42,14 +42,14 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
-import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 
 /**
@@ -101,9 +101,11 @@ public class FacetTypeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
                                                 variables);
 
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              request.getVariables());
+        ExecutionResult execute = new WorkspaceContext(model,
+                                                       scope.getWorkspace()
+                                                            .getDefiningProduct()).execute(schema,
+                                                                                           request.getQuery(),
+                                                                                           request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -132,9 +134,10 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("uri", newUri);
         request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
-        execute = new GraphQL(schema).execute(request.getQuery(),
-                                              new PhantasmCRUD(model),
-                                              request.getVariables());
+        execute = new WorkspaceContext(model, scope.getWorkspace()
+                                                   .getDefiningProduct()).execute(schema,
+                                                                                  request.getQuery(),
+                                                                                  request.getVariables());
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -159,12 +162,16 @@ public class FacetTypeTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
         variables.put("name", "hello");
-        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { createThing2(state: {setName: $name, addDerivedFrom: $artifact, setThing1: $thing1}) { id name } }",
+        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { \n"
+                                   + "createThing2(state: {setName: $name, \n"
+                                   + "addDerivedFrom: $artifact, \n"
+                                   + "setThing1: $thing1}) { id name } }",
                                    variables);
 
-        execute = new GraphQL(schema).execute(request.getQuery(),
-                                              new PhantasmCRUD(model),
-                                              request.getVariables());
+        execute = new WorkspaceContext(model, scope.getWorkspace()
+                                                   .getDefiningProduct()).execute(schema,
+                                                                                  request.getQuery(),
+                                                                                  request.getVariables());
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -181,14 +188,15 @@ public class FacetTypeTest extends AbstractModelTest {
                                                                  .getWorkspace(),
                                                            model);
         String query = getIntrospectionQuery();
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model));
+        ExecutionResult execute = new WorkspaceContext(model, thing1.getScope()
+                                                                    .getWorkspace()
+                                                                    .getDefiningProduct()).execute(schema,
+                                                                                                   query);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
-                          .isEmpty());
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) execute.getData();
+                          .isEmpty()); 
+        JsonNode result = new ObjectMapper().convertValue(execute.getData(), JsonNode.class);
 
         assertNotNull(result);
     }
@@ -247,9 +255,11 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("uri", newUri);
         QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              request.getVariables());
+        ExecutionResult execute = new WorkspaceContext(model,
+                                                       scope.getWorkspace()
+                                                            .getDefiningProduct()).execute(schema,
+                                                                                           request.getQuery(),
+                                                                                           request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -312,10 +322,12 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("id", thing1.getRuleform()
                                   .getId()
                                   .toString());
-        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
-
-                                                              new PhantasmCRUD(model),
-                                                              variables);
+        String query = "query it($id: String!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}";
+        ExecutionResult execute = new WorkspaceContext(model, thing1.getScope()
+                                                                    .getWorkspace()
+                                                                    .getDefiningProduct()).execute(schema,
+                                                                                                   query,
+                                                                                                   variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -352,9 +364,13 @@ public class FacetTypeTest extends AbstractModelTest {
         assertNotNull(thing3DerivedFroms);
         assertEquals(2, thing3DerivedFroms.size());
 
-        result = (Map<String, Object>) new GraphQL(schema).execute("{ thing1s {id name URI}}",
-                                                                   new PhantasmCRUD(model))
-                                                          .getData();
+        String q = "{ thing1s {id name URI}}";
+        result = (Map<String, Object>) new WorkspaceContext(model,
+                                                            thing1.getScope()
+                                                                  .getWorkspace()
+                                                                  .getDefiningProduct()).execute(schema,
+                                                                                                 q)
+                                                                                        .getData();
         List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("thing1s");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);
@@ -408,9 +424,11 @@ public class FacetTypeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              request.getVariables());
+        ExecutionResult execute = new WorkspaceContext(model,
+                                                       scope.getWorkspace()
+                                                            .getDefiningProduct()).execute(schema,
+                                                                                           request.getQuery(),
+                                                                                           request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -452,9 +470,11 @@ public class FacetTypeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);
 
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              request.getVariables());
+        ExecutionResult execute = new WorkspaceContext(model,
+                                                       scope.getWorkspace()
+                                                            .getDefiningProduct()).execute(schema,
+                                                                                           request.getQuery(),
+                                                                                           request.getVariables());
 
         assertEquals(execute.getErrors()
                             .toString(),

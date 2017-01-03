@@ -63,7 +63,7 @@ public class PhantasmConfiguration extends Configuration
 
     public static enum AuthType {
         @JsonProperty BASIC_DIGEST, @JsonProperty BEARER_TOKEN,
-        @JsonProperty NULL;
+        @JsonProperty NULL_AUTH;
     }
 
     private static final String               DEFAULT_ASSETS_NAME       = "assets";
@@ -76,7 +76,7 @@ public class PhantasmConfiguration extends Configuration
     private List<Asset>                       assets                    = new ArrayList<>();
     @NotNull
     private AssetsConfiguration               assetsConfiguration       = new AssetsConfiguration();
-    @NotNull
+    // @NotNull
     private AuthType                          auth                      = AuthType.BEARER_TOKEN;
 
     @NotNull
@@ -109,7 +109,6 @@ public class PhantasmConfiguration extends Configuration
 
     {
         setServerFactory(new SinglePortServerFactory());
-        setLoggingFactory(new ConsoleOnlyLoggingFactory());
         setDatabase(new DataSourceFactoryFromEnv());
     }
 

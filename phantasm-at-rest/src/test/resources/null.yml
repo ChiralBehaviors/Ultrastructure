@@ -1,4 +1,4 @@
-auth: NULL 
+auth: NULL_AUTH
 
 logging:
   level: WARN

@@ -72,7 +72,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
-import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import io.dropwizard.auth.Auth;
 
@@ -403,9 +402,9 @@ public class WorkspaceResource extends TransactionalResource {
                 return null;
             }
             Map<String, Object> variables = getVariables(request);
-            ExecutionResult result = new GraphQL(metaSchema).execute((String) request.get(QUERY),
-                                                                     crud,
-                                                                     variables);
+            ExecutionResult result = crud.execute(metaSchema,
+                                                  (String) request.get(QUERY),
+                                                  variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
@@ -470,8 +469,7 @@ public class WorkspaceResource extends TransactionalResource {
     private ExecutionResult execute(GraphQLSchema schema, WorkspaceContext crud,
                                     String query,
                                     Map<String, Object> variables) {
-        ExecutionResult result = new GraphQL(schema).execute(query, crud,
-                                                             variables);
+        ExecutionResult result = crud.execute(schema, query, variables);
         if (result.getErrors()
                   .isEmpty()) {
             return result;

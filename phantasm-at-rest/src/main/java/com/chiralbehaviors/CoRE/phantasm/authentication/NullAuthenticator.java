@@ -21,10 +21,10 @@
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;

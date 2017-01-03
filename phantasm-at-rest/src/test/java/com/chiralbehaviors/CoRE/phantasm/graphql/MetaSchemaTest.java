@@ -42,7 +42,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
-import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.schema.GraphQLSchema;
 
@@ -830,10 +829,8 @@ public class MetaSchemaTest extends AbstractModelTest {
     private ObjectNode execute(GraphQLSchema schema, String query,
                                Map<String, Object> variables) throws IllegalArgumentException,
                                                               Exception {
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new WorkspaceContext(model,
-                                                                                   definingProduct),
-                                                              variables);
+        WorkspaceContext context = new WorkspaceContext(model, definingProduct);
+        ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(format(execute.getErrors()), execute.getErrors()
                                                        .isEmpty());
         ObjectNode result = new ObjectMapper().valueToTree(execute.getData());

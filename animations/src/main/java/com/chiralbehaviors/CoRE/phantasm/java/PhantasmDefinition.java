@@ -43,11 +43,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.EdgeState;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Inferred;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 
 /**
@@ -71,6 +66,10 @@ public class PhantasmDefinition extends Phantasmagoria {
         UUID uuid = WorkspaceAccessor.uuidOf(facet.workspace());
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(uuid);
+        if (scope == null) {
+            throw new IllegalStateException(String.format("Workspace defining product: %s not found",
+                                                          uuid));
+        }
         Relationship classifier = (Relationship) scope.lookup(facet.classifier());
         if (classifier == null) {
             throw new IllegalStateException(String.format("%s not found in workspace %s | %s",
@@ -104,13 +103,11 @@ public class PhantasmDefinition extends Phantasmagoria {
     protected final Map<Method, StateFunction> methods = new HashMap<>();
     private final Facet                        facetAnnotation;
     private final Class<? extends Phantasm>    phantasm;
-
     private final UUID                         workspace;
 
     public PhantasmDefinition(Class<? extends Phantasm> phantasm, Model model) {
         super(facetFrom(phantasm, model));
-
-        traverse(new PhantasmTraversal(model));
+        traverse(model);
         this.phantasm = phantasm;
         facetAnnotation = phantasm.getAnnotation(Facet.class);
         workspace = WorkspaceAccessor.uuidOf(facetAnnotation.workspace());
@@ -196,7 +193,7 @@ public class PhantasmDefinition extends Phantasmagoria {
                              Class<ExistentialRuleform> rulformClass) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAuthorization auth = childAuthorizations.get(fieldName);
+            NetworkAuthorization auth = singularAuthorizations.get(fieldName);
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
@@ -395,21 +392,23 @@ public class PhantasmDefinition extends Phantasmagoria {
                                                               annotation.fieldName(),
                                                               phantasm.getSimpleName()));
             }
-            if (arguments[0] instanceof List) {
+            if (arguments[1] instanceof List) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
                                                ((Phantasm) arguments[0]).getRuleform(),
-                                               arguments[1]);
-            } else if (arguments[0] instanceof Object[]) {
+                                               (List<Object>) arguments[1]);
+            } else if (arguments[1] instanceof Object[]) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
                                                ((Phantasm) arguments[0]).getRuleform(),
                                                (Object[]) arguments[1]);
-            } else if (arguments[0] instanceof Map) {
+            } else if (arguments[1] instanceof Map) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               (Map<String, Object>) arguments[0]);
+                                               ((Phantasm) arguments[0]).getRuleform(),
+                                               (Map<String, Object>) arguments[1]);
             }
-            return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                           ((Phantasm) arguments[0]).getRuleform(),
-                                           arguments[1]);
+            return state.setAttributeObjectValue(facet, state.getRuleform(),
+                                                 auth,
+                                                 ((Phantasm) arguments[0]).getRuleform(),
+                                                 arguments[1]);
         });
     }
 
@@ -500,7 +499,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+            NetworkAuthorization auth = singularAuthorizations.get(edge.fieldName());
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               edge.fieldName(),
@@ -528,7 +527,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         } else {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = singularAuthorizations.get(edge.fieldName());
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),

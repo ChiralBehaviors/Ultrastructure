@@ -22,13 +22,12 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Optional;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
-
-import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthFilter;
 import io.dropwizard.auth.AuthenticationException;

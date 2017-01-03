@@ -23,21 +23,16 @@ are running on a Mac, try the [Postgres.app](http://postgresapp.com/) as it's bu
 
 Note that the build assumes that the postgres database is available on localhost:5432.  The build also assumes that the super 
 user and database _postgres_ is set up with the default password (_postgres_).  If you have changed 
-any of these values, please override the _"dba.db.*"_ properties in the top level pom.xml (see [~/.m2/settings.xml](https://maven.apache.org/settings.html)).
+any of these values, please override the _"dba.db.*"_ properties in the top level pom.xml (see [~/.m2/settings.xml](https://maven.apache.org/settings.html)).  Or you can override these properties using "-Ddba.db.*=xxx" when you invoke maven.
 
-  _If you have installed Postgres using the Heroku [Postgres.app](http://postgresapp.com/)_ please note 
-that the default port is _5433_, so you'll have to be sure to set the _dba.db.port_
- value in your ~/.m2/settings.xml or edit the top level pom.xml (as it defines this value to be 5432).  You'll be wondering
- why you cannot connect if you don't.
+  _If your installed Postgres is not using the default port - 5432_ - you will have to be sure to set the _dba.db.port_ value in your ~/.m2/settings.xml or override this at maven invocation with "-Ddba.db.port=5433".  You'll be wondering why you cannot connect if you don't.
 
 You can build the project:
 
     $ cd <project root>
     $ mvn clean install
 
-The default build does not perform any DB activity, nor tests.  To run tests, you need to activate the profile “database.active”:
-
-    $ mvn -P database.active clean install
+The default build will perform DB activity in the tests as they exercise live sql state.
 
 If you want to rebuild the database:
 
@@ -47,7 +42,7 @@ You can use pgadmin3 to view "readable" schema views to browse the data.
 
 Note that the build will create the CoRE database.  The schemas are maintained via liquibase (www.liquibase.org)
 and will directly manipulate the database, upgrading and downgrading as necessary. 
-See [AbstractModelTest](https://github.com/ChiralBehaviors/Ultrastructure/blob/master/animations/src/test/java/com/chiralbehaviors/CoRE/meta/models/AbstractModelTest.java) for how to subclass  for easy testing (i.e. you merely subclass it and write your tests using the inherited model/em state)
+See [AbstractModelTest](animations/src/test/java/com/chiralbehaviors/CoRE/meta/models/AbstractModelTest.java) for how to subclass  for easy testing (i.e. you merely subclass it and write your tests using the inherited model/DSL state)
 
 To drop the database and start from scratch, simply add "-Ddrop" to the full build, or to just drop:
 
@@ -59,6 +54,6 @@ To create the database from scratch:
   $ cd drop-database  
   $ mvn install -P sudo-drop-me  
   
-Then open PGAdmin and make sure that all your databases are belong to us.  I mean, dropped.  Don't drop postgres, or you'll be very sorry and have to return to go, and not collect 200 dollars.
-Also, too, drop your login role other than your postgres or whatever you're using as your master superuser role
+Then open PGAdmin3 and make sure that all your databases are belong to us.  I mean, dropped.  Don't drop postgres, or you'll be very sorry and have to return to go, and not collect 200 dollars.
+Also, too, drop your login role other than your postgres or whatever you're using as your master superuser role.
 

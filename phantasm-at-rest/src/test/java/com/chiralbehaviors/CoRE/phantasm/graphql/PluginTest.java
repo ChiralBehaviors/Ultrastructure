@@ -45,12 +45,10 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 
 import graphql.ExecutionResult;
-import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 
 /**
@@ -118,9 +116,11 @@ public class PluginTest extends AbstractModelTest {
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
                                                            model, reflections);
 
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(model),
-                                                              request.getVariables());
+        ExecutionResult execute = new WorkspaceContext(model,
+                                                       scope.getWorkspace()
+                                                            .getDefiningProduct()).execute(schema,
+                                                                                           request.getQuery(),
+                                                                                           request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -148,9 +148,10 @@ public class PluginTest extends AbstractModelTest {
         request = new QueryRequest("query it($id: String!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
 
-        execute = new GraphQL(schema).execute(request.getQuery(),
-                                              new PhantasmCRUD(model),
-                                              request.getVariables());
+        execute = new WorkspaceContext(model, scope.getWorkspace()
+                                                   .getDefiningProduct()).execute(schema,
+                                                                                  request.getQuery(),
+                                                                                  request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),

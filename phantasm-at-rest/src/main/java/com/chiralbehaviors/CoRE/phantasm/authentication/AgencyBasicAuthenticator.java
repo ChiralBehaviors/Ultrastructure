@@ -17,6 +17,7 @@
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.bcrypt.BCrypt;
-import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -76,9 +76,9 @@ public class AgencyBasicAuthenticator
         try {
             Thread.sleep(DWELL);
         } catch (InterruptedException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials,

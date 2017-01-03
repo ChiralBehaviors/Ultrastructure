@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.RbacTest;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 
 /**
  * @author hhildebrand

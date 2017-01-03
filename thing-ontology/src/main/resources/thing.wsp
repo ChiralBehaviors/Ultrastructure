@@ -46,7 +46,7 @@ products {
     facets {
     	IsA.MasterThing {name description}
     		constraints{
-    			n derivedFrom: IsA.Thing1
+    			n derivedFrom: IsA.Thing1 { classifier }
     		}
         IsA.Thing1 {name description aliases URI discount properties}
             constraints {
@@ -59,7 +59,7 @@ products {
                 one inThing1: IsA.Thing1
                 n derivedFrom: IsA.MavenArtifact named by relationship
                 n thing2Of get: inferred: IsA.Thing3
-                n derivedFrom: IsA.MasterThing
+                n derivedFrom: IsA.MasterThing { properties }
             }
         IsA.Thing3 {name description aliases URI properties}
             constraints {

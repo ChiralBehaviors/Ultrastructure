@@ -541,6 +541,7 @@ public class PhantasmCRUD {
             attributeValue = model.records()
                                   .newExistentialNetworkAttribute(immediateLink,
                                                                   stateAuth.getAttribute());
+            attributeValue.insert();
         }
         pm.setValue(attributeValue, value);
         return instance;

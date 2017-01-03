@@ -343,6 +343,7 @@ public interface RecordsFactory {
         ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
         record.setAttribute(attribute.getId());
         record.setEdge(edge.getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -382,6 +383,7 @@ public interface RecordsFactory {
         FacetRecord record = newFacet();
         record.setClassifier(classifier.getId());
         record.setClassification(classification.getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 

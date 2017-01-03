@@ -199,7 +199,6 @@ public class FacetTypeTest extends AbstractModelTest {
         JsonNode result = new ObjectMapper().convertValue(execute.getData(), JsonNode.class);
 
         assertNotNull(result);
-        System.out.println(result);
     }
 
     @Test

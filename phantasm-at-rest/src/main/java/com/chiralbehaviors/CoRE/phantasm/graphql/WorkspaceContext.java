@@ -116,15 +116,6 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
         }
 
         @Override
-        public ExecutionResult execute(ExecutionContext executionContext,
-                                       GraphQLObjectType parentType,
-                                       Object source,
-                                       Map<String, List<Field>> fields) {
-            // TODO Auto-generated method stub
-            return super.execute(executionContext, parentType, source, fields);
-        }
-
-        @Override
         protected ExecutionResult completeValue(ExecutionContext executionContext,
                                                 GraphQLType fieldType,
                                                 List<Field> fields,

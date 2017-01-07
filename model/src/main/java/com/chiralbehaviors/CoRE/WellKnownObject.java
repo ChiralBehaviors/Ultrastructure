@@ -1734,7 +1734,8 @@ public interface WellKnownObject {
     String IS_LOCATION_OF            = "is-location-of";
     String IS_VALIDATED_BY           = "is-validated-by";
     String JSONLD_TYPE               = "@type";
-    String KERNEL_IRI                = "urn:uuid:00000000-0000-0004-0000-000000000003";
+    String KERNEL_IRI                = String.format("urn:uuid:%s",
+                                                     KERNEL_UUID());
     String KERNEL_WORKSPACE          = "kernelWorkspace";
     String LESS_THAN                 = "<";
     String LESS_THAN_OR_EQUALS       = "<=";
@@ -1768,6 +1769,10 @@ public interface WellKnownObject {
     String VERSION_OF                = "version-of";
     String WORKSPACE                 = "Workspace";
     String WORKSPACE_OF              = "workspace-of";
+
+    static UUID KERNEL_UUID() {
+        return UUID.fromString("00000000-0000-0004-0000-000000000003");
+    }
 
     /**
      * @return the descriptions of the wko

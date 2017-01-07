@@ -380,9 +380,8 @@ public class FacetFields extends Phantasmagoria {
                                                           .name(fieldName)
                                                           .description(attribute.getDescription())
                                                           .dataFetcher(env -> {
-                                                              ExistentialRuleform child = (ExistentialRuleform) env.getSource();
                                                               WorkspaceContext ctx = ctx(env);
-                                                              Traversal edge = ctx.getCurrentEdge();
+                                                              Traversal edge = (Traversal) env.getSource();
                                                               if (edge == null
                                                                   || !edge.auth.equals(auth)) {
                                                                   return null;
@@ -390,7 +389,7 @@ public class FacetFields extends Phantasmagoria {
                                                               Object value = ctx.getAttributeValue(facet,
                                                                                                    edge.parent,
                                                                                                    attr,
-                                                                                                   child);
+                                                                                                   edge.child);
                                                               return resolve(attribute,
                                                                              value);
                                                           })

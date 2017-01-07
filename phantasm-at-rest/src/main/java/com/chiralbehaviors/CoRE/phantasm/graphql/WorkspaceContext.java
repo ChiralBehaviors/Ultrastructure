@@ -51,6 +51,7 @@ import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 
 /**
  * @author hhildebrand
@@ -75,6 +76,7 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
 
     public static class Traversal {
         public final NetworkAuthorization auth;
+        public ExistentialRuleform        child;
         public final ExistentialRuleform  parent;
 
         public Traversal(ExistentialRuleform parent,
@@ -110,8 +112,31 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
                                        Object root,
                                        Map<String, List<Field>> fields,
                                        Operation operation) {
-            return super.execute(executionContext, operationRootType, root,
-                                 fields);
+            return execute(executionContext, operationRootType, root, fields);
+        }
+
+        @Override
+        public ExecutionResult execute(ExecutionContext executionContext,
+                                       GraphQLObjectType parentType,
+                                       Object source,
+                                       Map<String, List<Field>> fields) {
+            // TODO Auto-generated method stub
+            return super.execute(executionContext, parentType, source, fields);
+        }
+
+        @Override
+        protected ExecutionResult completeValue(ExecutionContext executionContext,
+                                                GraphQLType fieldType,
+                                                List<Field> fields,
+                                                Object result) {
+            if (!path.isEmpty() && fieldType instanceof GraphQLObjectType) {
+                Traversal edge = path.peek();
+                if (edge != null) {
+                    edge.child = (ExistentialRuleform) result;
+                }
+            }
+            return super.completeValue(executionContext, fieldType, fields,
+                                       result);
         }
 
         @Override
@@ -138,24 +163,26 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
             Object resolvedValue = null;
             boolean pop = false;
             try {
-                resolvedValue = fieldDef.getDataFetcher()
-                                        .get(environment);
-                if (fieldDef instanceof GraphQLFieldEdgeDefinition) {
-                    pop = true;
-                    path.push(new Traversal((ExistentialRuleform) source,
-                                            ((GraphQLFieldEdgeDefinition) fieldDef).getAuth()));
+                try {
+                    resolvedValue = fieldDef.getDataFetcher()
+                                            .get(environment);
+                    if (fieldDef instanceof GraphQLFieldEdgeDefinition) {
+                        path.push(new Traversal((ExistentialRuleform) source,
+                                                ((GraphQLFieldEdgeDefinition) fieldDef).getAuth()));
+                        pop = true;
+                    }
+                } catch (Exception e) {
+                    log.warn("Exception while fetching data", e);
+                    executionContext.addError(new ExceptionWhileDataFetching(e));
                 }
-            } catch (Exception e) {
-                log.warn("Exception while fetching data", e);
-                executionContext.addError(new ExceptionWhileDataFetching(e));
+
+                return completeValue(executionContext, fieldDef.getType(),
+                                     fields, resolvedValue);
             } finally {
                 if (pop) {
                     path.pop();
                 }
             }
-
-            return completeValue(executionContext, fieldDef.getType(), fields,
-                                 resolvedValue);
         }
     }
 

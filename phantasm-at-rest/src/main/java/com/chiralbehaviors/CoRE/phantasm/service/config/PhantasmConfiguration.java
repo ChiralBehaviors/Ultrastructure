@@ -112,6 +112,13 @@ public class PhantasmConfiguration extends Configuration
     @NotNull
     private List<String>                      workspaces                = Collections.emptyList();
 
+    @NotNull
+    private List<String>                      snapshots                 = Collections.emptyList();
+
+    public List<String> getSnapshots() {
+        return snapshots;
+    }
+
     {
         setServerFactory(new SinglePortServerFactory());
         setDatabase(new DataSourceFactoryFromEnv());

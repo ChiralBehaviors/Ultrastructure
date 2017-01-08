@@ -28,6 +28,7 @@ import javax.servlet.FilterRegistration;
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,8 +117,18 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                                        e);
                          }
                      });
-        configuration.getWorkspaces();
-
+        environment.lifecycle()
+                   .manage(new AbstractLifeCycle() {
+                       @Override
+                       protected void doStart() throws Exception {
+                           try (DSLContext create = configuration.create()) {
+                               LoadWorkspaceCommand.loadWorkspaces(configuration.getWorkspaces(),
+                                                                   create);
+                               LoadSnapshotCommand.loadSnapshots(configuration.getSnapshots(),
+                                                                 create);
+                           }
+                       }
+                   });
     }
 
     private void configureAuth(PhantasmConfiguration configuration,

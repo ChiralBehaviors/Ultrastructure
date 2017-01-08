@@ -28,8 +28,6 @@ import org.jooq.impl.DSL;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,27 +45,24 @@ import net.sourceforge.argparse4j.inf.Subparser;
 public class LoadSnapshotCommand extends Command {
 
     public static void loadSnapshots(List<String> list,
-                                     CoreDbConfiguration config) throws Exception {
-        DSLContext create = DSL.using(config.getCoreConnection());
-        try (Model model = new ModelImpl(create)) {
-            create.transaction(c -> {
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.registerModule(new CoREModule());
+                                     DSLContext create) throws Exception {
+        create.transaction(c -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new CoREModule());
 
-                list.forEach(file -> {
-                    try (InputStream is = Utils.resolveResource(LoadSnapshotCommand.class,
-                                                                file)) {
-                        StateSnapshot snapshot = objectMapper.readValue(is,
-                                                                        StateSnapshot.class);
-                        snapshot.load(model.create());
-                    } catch (Exception e) {
-                        LoggerFactory.getLogger(LoadSnapshotCommand.class)
-                                     .error(String.format("unable to load snaphot: %s",
-                                                          file, e));
-                    }
-                });
+            list.forEach(file -> {
+                try (InputStream is = Utils.resolveResource(LoadSnapshotCommand.class,
+                                                            file)) {
+                    StateSnapshot snapshot = objectMapper.readValue(is,
+                                                                    StateSnapshot.class);
+                    snapshot.load(DSL.using(c));
+                } catch (Exception e) {
+                    LoggerFactory.getLogger(LoadSnapshotCommand.class)
+                                 .error(String.format("unable to load snaphot: %s",
+                                                      file, e));
+                }
             });
-        }
+        });
     }
 
     public LoadSnapshotCommand() {
@@ -87,7 +82,7 @@ public class LoadSnapshotCommand extends Command {
         CoreDbConfiguration config = new CoreDbConfiguration();
         config.initializeFromEnvironment();
         List<String> list = namespace.getList("files");
-        loadSnapshots(list, config);
+        loadSnapshots(list, DSL.using(config.getCoreConnection()));
     }
 
 }

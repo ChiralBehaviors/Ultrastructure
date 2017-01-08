@@ -20,15 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
@@ -45,11 +42,9 @@ import net.sourceforge.argparse4j.inf.Subparser;
 public class LoadWorkspaceCommand extends Command {
 
     public static void loadWorkspaces(List<String> list,
-                                      CoreDbConfiguration config) throws SQLException {
-        DSLContext create = DSL.using(config.getCoreConnection());
-        try (Model model = new ModelImpl(create)) {
-            create.transaction(c -> {
-                WorkspaceSnapshot.load(model.create(), list.stream()
+                                      DSLContext create) throws Exception {
+        create.transaction(c -> WorkspaceSnapshot.load(DSL.using(c),
+                                                       list.stream()
                                                            .map(file -> {
                                                                try {
                                                                    return Utils.resolveResourceURL(LoadWorkspaceCommand.class,
@@ -60,9 +55,7 @@ public class LoadWorkspaceCommand extends Command {
                                                                                                       e);
                                                                }
                                                            })
-                                                           .collect(Collectors.toList()));
-            });
-        }
+                                                           .collect(Collectors.toList())));
     }
 
     public LoadWorkspaceCommand() {
@@ -82,7 +75,6 @@ public class LoadWorkspaceCommand extends Command {
         CoreDbConfiguration config = new CoreDbConfiguration();
         config.initializeFromEnvironment();
         List<String> list = namespace.getList("files");
-        loadWorkspaces(list, config);
+        loadWorkspaces(list, DSL.using(config.getCoreConnection()));
     }
-
 }

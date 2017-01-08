@@ -44,8 +44,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
 public class ManifestCommand extends Command {
 
     public static void manifest(List<String> list,
-                                CoreDbConfiguration config) throws Exception {
-        DSLContext create = DSL.using(config.getCoreConnection());
+                                DSLContext create) throws Exception {
         try (Model model = new ModelImpl(create)) {
             create.transaction(c -> {
                 WorkspaceImporter.manifest(list.stream()
@@ -83,7 +82,8 @@ public class ManifestCommand extends Command {
                     Namespace namespace) throws Exception {
         CoreDbConfiguration config = new CoreDbConfiguration();
         config.initializeFromEnvironment();
-        manifest(namespace.getList("files"), config);
+        manifest(namespace.getList("files"),
+                 DSL.using(config.getCoreConnection()));
     }
 
 }

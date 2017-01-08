@@ -65,6 +65,5 @@ public class EdgeTest extends AbstractModelTest {
                                      .get("_edge")
                                      .get("namespace")
                                      .asText());
-        model.create().configuration().connectionProvider().acquire().commit();
     }
 }

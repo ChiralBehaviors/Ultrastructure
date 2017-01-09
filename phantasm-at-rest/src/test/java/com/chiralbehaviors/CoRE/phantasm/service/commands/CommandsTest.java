@@ -18,19 +18,22 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.service.command;
+package com.chiralbehaviors.CoRE.phantasm.service.commands;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.RollbackCommand;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
+
+import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * @author hhildebrand
@@ -78,8 +81,16 @@ public class CommandsTest {
         }
 
         new BootstrapCommand().run(null, null);
+        Namespace namespace = mock(Namespace.class);
+//        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.wsp"));
+//        new ManifestCommand().run(null, namespace);
         new ClearCommand().run(null, null);
         new BootstrapCommand().run(null, null);
-        new RollbackCommand().run(null, null);
+        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.2.json"));
+        new LoadWorkspaceCommand().run(null, namespace);
+        when(namespace.getString("file")).thenReturn("target/test-snap.json");
+        new SnapshotCommand().run(null, namespace);
+        when(namespace.getList("files")).thenReturn(Collections.singletonList("target/test-snap.json"));
+        new LoadSnapshotCommand().run(null, namespace);
     }
 }

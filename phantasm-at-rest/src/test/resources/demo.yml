@@ -28,4 +28,12 @@ assets:
     uri: /api/meta/
     path: /workspace-explorer/meta
     index: index.html
+    
+clear: true
+
+workspaces:
+  - /some_more_things_wsp.json
+
+snapshots:
+  - /some_more_things.json
         

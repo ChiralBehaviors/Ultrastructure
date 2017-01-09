@@ -34,6 +34,12 @@ import org.postgresql.Driver;
  */
 public class CoreDbConfiguration {
 
+    public static final String        CORE         = "core";
+    public static final String        DATABASE_URL = "DATABASE_URL";
+    public static String              JDBC_URL     = "jdbc:postgresql://%s:%s/%s";
+    public static final String        LOCAL        = "local";
+    public static CoreDbConfiguration TEST_ENV_CONFIGURATION;
+
     static {
         try {
             Driver.register();
@@ -44,48 +50,44 @@ public class CoreDbConfiguration {
         }
     }
 
-    public static final String        DATABASE_URL = "DATABASE_URL";
-    public static String              JDBC_URL     = "jdbc:postgresql://%s:%s/%s";
-    public static CoreDbConfiguration TEST_ENV_CONFIGURATION;
-
     /**
      * The comma seperated list of contexts to use for loading ("local" or
      * "aws")
      * 
      * @parameter
      */
-    public String                     contexts     = "local";
+    public String contexts = LOCAL;
 
     /**
      * the name the core database
      * 
      * @parameter
      */
-    public String                     coreDb       = "core";
+    public String coreDb   = CORE;
     /**
      * the password of the core user
      * 
      * @parameter
      */
-    public String                     corePassword;
+    public String corePassword;
     /**
      * the port of the core database
      * 
      * @parameter
      */
-    public int                        corePort;
+    public int    corePort;
     /**
      * the server host of the core database
      * 
      * @parameter
      */
-    public String                     coreServer;
+    public String coreServer;
     /**
      * the core user name
      * 
      * @parameter
      */
-    public String                     coreUsername;
+    public String coreUsername;
 
     /**
      * 

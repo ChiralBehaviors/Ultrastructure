@@ -28,6 +28,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.bcrypt.BCrypt;
 
@@ -39,8 +40,8 @@ import io.dropwizard.auth.basic.BasicCredentials;
  * @author hhildebrand
  *
  */
-public class AgencyBasicAuthenticator
-        implements Authenticator<BasicCredentials, AuthorizedPrincipal> {
+public class AgencyBasicAuthenticator implements ModelAuthenticator,
+        Authenticator<BasicCredentials, AuthorizedPrincipal> {
     private static final long   DWELL = (long) (Math.random() * 1000);
     private final static Logger log   = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 

@@ -51,8 +51,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
 
-    private static final String TARGET_TEST_CLASSES = "target/test-classes";
-
     @Test
     public void testDeltaGeneration() throws Exception {
         // This is a test where we have to have the kernel state committed, 

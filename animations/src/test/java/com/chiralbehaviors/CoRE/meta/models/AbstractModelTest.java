@@ -43,12 +43,16 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
-    public static final String ACM_95_WSP     = "/acm-95.1.wsp";
-    public static final String THING_1_2_JSON = "/thing.1.2.json";
-    public static final String THING_1_JSON   = "/thing.1.json";
-    public static final String THING_2_JSON   = "/thing.2.json";
-    public static final String THINGS_JSON    = "/things.json";
-    public static final String THING_URI      = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
+
+    public static final String ACM_95_WSP                = "/acm-95.1.wsp";
+    public static final String SOME_MORE_THINGS_JSON     = "/some_more_things.json";
+    public static final String SOME_MORE_THINGS_WSP_JSON = "/some_more_things_wsp.json";
+    public static final String TARGET_TEST_CLASSES       = "target/test-classes";
+    public static final String THING_1_2_JSON            = "/thing.1.2.json";
+    public static final String THING_1_JSON              = "/thing.1.json";
+    public static final String THING_2_JSON              = "/thing.2.json";
+    public static final String THING_URI                 = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
+    public static final String THINGS_JSON               = "/things.json";
 
     public static Connection newConnection() throws IOException, SQLException {
         Properties properties = new Properties();

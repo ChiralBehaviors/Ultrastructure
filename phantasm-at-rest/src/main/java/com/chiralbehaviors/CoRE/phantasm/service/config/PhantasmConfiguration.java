@@ -62,8 +62,10 @@ public class PhantasmConfiguration extends Configuration
     }
 
     public static enum AuthType {
-        @JsonProperty BASIC_DIGEST, @JsonProperty BEARER_TOKEN,
-        @JsonProperty NULL_AUTH;
+        @JsonProperty
+        BASIC_DIGEST, @JsonProperty
+        BEARER_TOKEN, @JsonProperty
+        NULL_AUTH;
     }
 
     private static final String               DEFAULT_ASSETS_NAME       = "assets";
@@ -76,11 +78,13 @@ public class PhantasmConfiguration extends Configuration
     private List<Asset>                       assets                    = new ArrayList<>();
     @NotNull
     private AssetsConfiguration               assetsConfiguration       = new AssetsConfiguration();
-    // @NotNull
+    @NotNull
     private AuthType                          auth                      = AuthType.BEARER_TOKEN;
 
     @NotNull
     private CacheBuilderSpec                  authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
+
+    private boolean                           clear                     = false;
 
     @NotNull
     private CORSConfiguration                 CORS                      = new CORSConfiguration();
@@ -105,7 +109,12 @@ public class PhantasmConfiguration extends Configuration
                                                                             }
                                                                         };
 
+    @NotNull
+    private List<String>                      snapshots                 = Collections.emptyList();
     private boolean                           useCORS                   = false;
+
+    @NotNull
+    private List<String>                      workspaces                = Collections.emptyList();
 
     {
         setServerFactory(new SinglePortServerFactory());
@@ -153,6 +162,18 @@ public class PhantasmConfiguration extends Configuration
 
     public org.jooq.Configuration getJooqConfiguration() {
         return jooqBundle.getConfiguration();
+    }
+
+    public List<String> getSnapshots() {
+        return snapshots;
+    }
+
+    public List<String> getWorkspaces() {
+        return workspaces;
+    }
+
+    public boolean isClear() {
+        return clear;
     }
 
     public boolean isUseCORS() {

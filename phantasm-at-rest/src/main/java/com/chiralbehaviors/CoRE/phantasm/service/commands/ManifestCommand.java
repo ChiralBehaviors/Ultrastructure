@@ -43,26 +43,25 @@ import net.sourceforge.argparse4j.inf.Subparser;
  */
 public class ManifestCommand extends Command {
 
+    @SuppressWarnings("resource")
     public static void manifest(List<String> list,
                                 DSLContext create) throws Exception {
-        try (Model model = new ModelImpl(create)) {
-            create.transaction(c -> {
-                WorkspaceImporter.manifest(list.stream()
-                                               .map(file -> {
-                                                   try {
-                                                       return Utils.resolveResourceURL(ManifestCommand.class,
-                                                                                       file);
-                                                   } catch (Exception e) {
-                                                       throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                        file),
-                                                                                          e);
-                                                   }
-                                               })
-                                               .collect(Collectors.toList()),
-                                           model);
-            });
-        }
-        ;
+        create.transaction(c -> {
+            Model model = new ModelImpl(create);
+            WorkspaceImporter.manifest(list.stream()
+                                           .map(file -> {
+                                               try {
+                                                   return Utils.resolveResourceURL(ManifestCommand.class,
+                                                                                   file);
+                                               } catch (Exception e) {
+                                                   throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
+                                                                                                    file),
+                                                                                      e);
+                                               }
+                                           })
+                                           .collect(Collectors.toList()),
+                                       model);
+        });
     }
 
     public ManifestCommand() {

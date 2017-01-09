@@ -84,6 +84,8 @@ public class PhantasmConfiguration extends Configuration
     @NotNull
     private CacheBuilderSpec                  authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
+    private boolean                           clear                     = false;
+
     @NotNull
     private CORSConfiguration                 CORS                      = new CORSConfiguration();
 
@@ -107,17 +109,12 @@ public class PhantasmConfiguration extends Configuration
                                                                             }
                                                                         };
 
+    @NotNull
+    private List<String>                      snapshots                 = Collections.emptyList();
     private boolean                           useCORS                   = false;
 
     @NotNull
     private List<String>                      workspaces                = Collections.emptyList();
-
-    @NotNull
-    private List<String>                      snapshots                 = Collections.emptyList();
-
-    public List<String> getSnapshots() {
-        return snapshots;
-    }
 
     {
         setServerFactory(new SinglePortServerFactory());
@@ -167,8 +164,16 @@ public class PhantasmConfiguration extends Configuration
         return jooqBundle.getConfiguration();
     }
 
+    public List<String> getSnapshots() {
+        return snapshots;
+    }
+
     public List<String> getWorkspaces() {
         return workspaces;
+    }
+
+    public boolean isClear() {
+        return clear;
     }
 
     public boolean isUseCORS() {

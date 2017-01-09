@@ -29,10 +29,14 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
+import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
@@ -50,6 +54,7 @@ import com.chiralbehaviors.CoRE.phantasm.service.commands.SnapshotCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
@@ -66,10 +71,14 @@ import io.dropwizard.setup.Environment;
  *
  */
 public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
+    public interface ModelAuthenticator {
+        public void setModel(Model model);
+    }
 
     public final static Logger log = LoggerFactory.getLogger(PhantasmBundle.class);
 
     private Environment        environment;
+    private ModelAuthenticator authenticator;
 
     public int getPort() {
         return ((AbstractNetworkConnector) environment.getApplicationContext()
@@ -121,12 +130,32 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                    .manage(new AbstractLifeCycle() {
                        @Override
                        protected void doStart() throws Exception {
+                           if (configuration.isClear()) {
+                               log.info("Reinitializing database state");
+                               try (DSLContext create = configuration.create()) {
+                                   create.transaction(config -> RecordsFactory.clear(DSL.using(config)));
+                               }
+                           }
                            try (DSLContext create = configuration.create()) {
+                               if (configuration.isClear()) {
+                                   create.transaction(config -> {
+                                       log.info("Loading kernel");
+                                       DSLContext txnlCreate = DSL.using(config);
+                                       KernelUtil.loadKernel(txnlCreate);
+                                       log.info("Initializing instance");
+                                       KernelUtil.initializeInstance(new ModelImpl(txnlCreate),
+                                                                     CoreDbConfiguration.CORE,
+                                                                     "CoRE instance");
+                                   });
+                               }
+                               log.info("Loading workspace state");
                                LoadWorkspaceCommand.loadWorkspaces(configuration.getWorkspaces(),
                                                                    create);
+                               log.info("Loading snapshot state");
                                LoadSnapshotCommand.loadSnapshots(configuration.getSnapshots(),
                                                                  create);
                            }
+                           authenticator.setModel(new ModelImpl(configuration.create()));
                        }
                    });
     }
@@ -137,57 +166,39 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             case NULL_AUTH: {
                 log.warn("Setting authentication to NULL");
                 NullAuthFilter<AuthorizedPrincipal> filter;
-                NullAuthenticator authenticator = new NullAuthenticator();
-                filter = new NullAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
+                NullAuthenticator auth = new NullAuthenticator();
+                filter = new NullAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(auth)
                                                                           .setAuthorizer(new PermitAllAuthorizer<>())
                                                                           .setPrefix("Null")
                                                                           .buildAuthFilter();
                 environment.jersey()
                            .register(new AuthDynamicFeature(filter));
-                environment.lifecycle()
-                           .manage(new AbstractLifeCycle() {
-                               @Override
-                               protected void doStart() throws Exception {
-                                   authenticator.setModel(new ModelImpl(configuration.create()));
-                               }
-                           });
+                authenticator = auth;
                 break;
             }
             case BASIC_DIGEST: {
                 log.warn("Setting authentication to US basic authentication");
-                AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator();
+                AgencyBasicAuthenticator auth = new AgencyBasicAuthenticator();
                 BasicCredentialAuthFilter<AuthorizedPrincipal> filter;
-                filter = new BasicCredentialAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
+                filter = new BasicCredentialAuthFilter.Builder<AuthorizedPrincipal>().setAuthenticator(auth)
                                                                                      .setAuthorizer(new PermitAllAuthorizer<>())
                                                                                      .setPrefix("Basic")
                                                                                      .buildAuthFilter();
                 environment.jersey()
                            .register(new AuthDynamicFeature(filter));
-                environment.lifecycle()
-                           .manage(new AbstractLifeCycle() {
-                               @Override
-                               protected void doStart() throws Exception {
-                                   authenticator.setModel(new ModelImpl(configuration.create()));
-                               }
-                           });
+                authenticator = auth;
                 break;
             }
             case BEARER_TOKEN: {
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
-                AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
-                authenticator.register(environment);
+                AgencyBearerTokenAuthenticator auth = new AgencyBearerTokenAuthenticator();
+                auth.register(environment);
                 environment.jersey()
-                           .register(new AuthDynamicFeature(new Builder<AuthorizedPrincipal>().setAuthenticator(authenticator)
+                           .register(new AuthDynamicFeature(new Builder<AuthorizedPrincipal>().setAuthenticator(auth)
                                                                                               .setAuthorizer(new PermitAllAuthorizer<>())
                                                                                               .setPrefix("Bearer")
                                                                                               .buildAuthFilter()));
-                environment.lifecycle()
-                           .manage(new AbstractLifeCycle() {
-                               @Override
-                               protected void doStart() throws Exception {
-                                   authenticator.setModel(new ModelImpl(configuration.create()));
-                               }
-                           });
+                authenticator = auth;
                 break;
             }
         }

@@ -175,13 +175,13 @@ public class WorkspaceSchema {
         gatherImports(root, aggregate);
         GraphQLUnionType.Builder edgeUnionBuilder = GraphQLUnionType.newUnionType();
         edgeUnionBuilder.name(EDGE);
+        EdgeTypeResolver edgeTypeResolver = new EdgeTypeResolver();
+        edgeUnionBuilder.typeResolver(edgeTypeResolver);
         aggregate.forEach(ws -> {
             WorkspaceScope scope = model.getWorkspaceModel()
                                         .getScoped((Product) ws.getRuleform());
             Deque<FacetRecord> unresolved = FacetFields.initialState(scope.getWorkspace(),
                                                                      model);
-            EdgeTypeResolver edgeTypeResolver = new EdgeTypeResolver();
-            edgeUnionBuilder.typeResolver(edgeTypeResolver);
             while (!unresolved.isEmpty()) {
                 FacetRecord facet = unresolved.pop();
                 if (resolved.containsKey(facet)) {

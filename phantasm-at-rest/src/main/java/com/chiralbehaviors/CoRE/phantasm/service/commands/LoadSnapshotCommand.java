@@ -59,7 +59,8 @@ public class LoadSnapshotCommand extends Command {
                 } catch (Exception e) {
                     LoggerFactory.getLogger(LoadSnapshotCommand.class)
                                  .error(String.format("unable to load snaphot: %s",
-                                                      file, e));
+                                                      file),
+                                        e);
                 }
             });
         });

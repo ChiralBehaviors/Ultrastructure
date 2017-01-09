@@ -82,11 +82,11 @@ public class CommandsTest {
 
         new BootstrapCommand().run(null, null);
         Namespace namespace = mock(Namespace.class);
-        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.wsp"));
-        new ManifestCommand().run(null, namespace);
+//        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.wsp"));
+//        new ManifestCommand().run(null, namespace);
         new ClearCommand().run(null, null);
         new BootstrapCommand().run(null, null);
-        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.1.json"));
+        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.2.json"));
         new LoadWorkspaceCommand().run(null, namespace);
         when(namespace.getString("file")).thenReturn("target/test-snap.json");
         new SnapshotCommand().run(null, namespace);

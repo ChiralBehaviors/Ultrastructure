@@ -55,6 +55,7 @@ public class LoadWorkspaceCommand extends Command {
                                                                                                       e);
                                                                }
                                                            })
+                                                           .filter(n -> n != null)
                                                            .collect(Collectors.toList())));
     }
 

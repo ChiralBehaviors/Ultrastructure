@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,8 +54,8 @@ import io.dropwizard.setup.Environment;
  * @author hhildebrand
  *
  */
-public class AgencyBearerTokenAuthenticator
-        implements Authenticator<String, AuthorizedPrincipal> {
+public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
+        Authenticator<String, AuthorizedPrincipal> {
     private class AuthenticatorFeature implements Feature {
 
         @Override

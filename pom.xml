@@ -41,7 +41,7 @@
 		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
 		<jackson.version>2.7.8 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
-		<jooq.version>3.9.0</jooq.version>
+		<jooq.version>3.9.1</jooq.version>
 		<liquibase.version>3.5.3</liquibase.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

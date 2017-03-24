@@ -1,0 +1,13 @@
+auth: NULL_AUTH
+
+
+database:
+    driverClass: org.postgresql.Driver
+    maxSize: 20
+        
+logging:
+    level: INFO
+    loggers: 
+        "org.glassfish": ERROR
+        graphql: WARN
+        

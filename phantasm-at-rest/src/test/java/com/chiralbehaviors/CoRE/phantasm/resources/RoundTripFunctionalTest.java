@@ -111,7 +111,7 @@ public class RoundTripFunctionalTest {
              .commit();
     }
 
-    protected PhantasmApplication application = new PhantasmApplication();
+    protected PhantasmApplication<?> application = new PhantasmApplication<>();
 
     @After
     public void after() {

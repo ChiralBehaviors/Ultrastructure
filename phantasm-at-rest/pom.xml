@@ -26,10 +26,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.bazaarvoice.dropwizard</groupId>
-			<artifactId>dropwizard-configurable-assets-bundle</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-annotation</artifactId>
 		</dependency>

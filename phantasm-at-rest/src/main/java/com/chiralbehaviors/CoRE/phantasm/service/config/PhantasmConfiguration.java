@@ -23,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import com.bazaarvoice.dropwizard.assets.AssetsConfiguration;
 import com.bendb.dropwizard.jooq.JooqBundle;
 import com.bendb.dropwizard.jooq.JooqFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,8 +44,6 @@ public class PhantasmConfiguration extends Configuration {
         NULL_AUTH;
     }
 
-    @NotNull
-    private AssetsConfiguration               assetsConfiguration       = new AssetsConfiguration();
     @NotNull
     private AuthType                          auth                      = AuthType.BEARER_TOKEN;
 
@@ -138,10 +135,6 @@ public class PhantasmConfiguration extends Configuration {
 
     public boolean isUseCORS() {
         return useCORS;
-    }
-
-    public void setAssetsConfiguration(AssetsConfiguration assetsConfiguration) {
-        this.assetsConfiguration = assetsConfiguration;
     }
 
     public void setAuth(AuthType auth) {

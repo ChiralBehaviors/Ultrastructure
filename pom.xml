@@ -169,26 +169,7 @@
 				<groupId>io.dropwizard</groupId>
 				<artifactId>dropwizard-metrics</artifactId>
 				<version>${dropwizard.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.bazaarvoice.dropwizard</groupId>
-				<artifactId>dropwizard-configurable-assets-bundle</artifactId>
-				<version>0.2.2</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.google.guava</groupId>
-						<artifactId>guava</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>io.dropwizard</groupId>
-						<artifactId>dropwizard-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>io.dropwizard</groupId>
-						<artifactId>dropwizard-servlets</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+			</dependency> 
 			<dependency>
 				<groupId>javax.ws.rs</groupId>
 				<artifactId>javax.ws.rs-api</artifactId>
@@ -435,11 +416,6 @@
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
 				<version>1.9.5</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.dirkraft.dropwizard</groupId>
-				<artifactId>dropwizard-file-assets</artifactId>
-				<version>0.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.loginbox.heroku</groupId>

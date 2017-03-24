@@ -70,6 +70,7 @@ import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hellblazer.utils.Utils;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;
@@ -284,6 +285,32 @@ public class WorkspaceResource extends TransactionalResource {
         }, create);
     }
 
+    @Path("{workspace}")
+    @GET
+    @Produces({ MediaType.TEXT_HTML })
+    public String workspaceGraphIql(@Auth AuthorizedPrincipal principal,
+                                    @PathParam("workspace") String workspace) {
+        try {
+            return Utils.getDocument(getClass().getResourceAsStream("/workspace-explorer/index.html"));
+        } catch (IOException e) {
+            log.error("unable to serve graphIql", e);
+            throw new WebApplicationException(500);
+        }
+    }
+
+    @Path("{workspace}/meta")
+    @GET
+    @Produces({ MediaType.TEXT_HTML })
+    public String workspaceMetaGraphIql(@Auth AuthorizedPrincipal principal,
+                                        @PathParam("workspace") String workspace) {
+        try {
+            return Utils.getDocument(getClass().getResourceAsStream("/workspace-explorer/index.html"));
+        } catch (IOException e) {
+            log.error("unable to serve graphIql", e);
+            throw new WebApplicationException(500);
+        }
+    }
+
     @Timed
     @Path("{workspace}")
     @POST
@@ -300,7 +327,12 @@ public class WorkspaceResource extends TransactionalResource {
                                               Status.BAD_REQUEST);
         }
         return mutate(principal, model -> {
-            UUID uuid = WorkspaceAccessor.uuidOf(workspace);
+            UUID uuid;
+            try {
+                uuid = UUID.fromString(workspace);
+            } catch (IllegalArgumentException e) {
+                uuid = WorkspaceAccessor.uuidOf(workspace);
+            }
 
             GraphQLSchema schema = cache.computeIfAbsent(uuid, id -> {
                 WorkspaceScope scoped;
@@ -386,7 +418,12 @@ public class WorkspaceResource extends TransactionalResource {
                                               Status.BAD_REQUEST);
         }
         return mutate(principal, model -> {
-            UUID uuid = WorkspaceAccessor.uuidOf(workspace);
+            UUID uuid;
+            try {
+                uuid = UUID.fromString(workspace);
+            } catch (IllegalArgumentException e) {
+                uuid = WorkspaceAccessor.uuidOf(workspace);
+            }
 
             Product definingProduct = model.records()
                                            .resolve(uuid);

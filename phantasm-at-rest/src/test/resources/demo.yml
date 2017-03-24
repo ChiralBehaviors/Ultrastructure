@@ -14,20 +14,6 @@ logging:
         "org.hibernate": ERROR
         "org.glassfish": ERROR
         graphql: WARN
-        
-assetsConfiguration:
-  overrides:
-    /: target/classes/workspace-explorer
-
-assets:
-  - name: ide
-    uri: /api/ide
-    path: /workspace-explorer
-    index: index.html
-  - name: meta
-    uri: /api/meta/
-    path: /workspace-explorer/meta
-    index: index.html
     
 clear: true
 

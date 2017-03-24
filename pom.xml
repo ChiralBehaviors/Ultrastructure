@@ -38,7 +38,7 @@
 		<db.context>local</db.context>
 
 		<dropwizard.version>1.0.5</dropwizard.version>
-		<postgresql.driver.version>9.4.1208</postgresql.driver.version>
+		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
 		<jackson.version>2.7.8 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
 		<jooq.version>3.9.0</jooq.version>
@@ -80,10 +80,9 @@
 		<module>thing-ontology</module>
 		<module>workspace-plugin</module>
 		<module>schema</module>
-		<module>navi</module>
 		<module>test-plugin</module>
 		<module>acm-95-ontology</module>
-
+		<module>handi-navi</module>
 		<module>ide</module>
 	</modules>
 

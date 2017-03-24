@@ -95,15 +95,10 @@ body {
 							}).join('&');
 			history.replaceState(null, null, newSearch);
 		}
-        var workspaceUri = getQueryStringValue('workspace');
-        if (workspaceUri) {
-            workspace = encodeURIComponent(workspaceUri);
-        } else {
-            workspace = encodeURIComponent('urn:uuid:00000000-0000-0004-0000-000000000003');
-        }
+		
 		// Defines a GraphQL fetcher using the fetch API.
 		function graphQLFetcher(graphQLParams) {
-			return fetch(window.location.origin + '/api/workspace/' + workspace, {
+			return fetch(window.location, {
 				method : 'post',
 				headers : {
 					'Accept' : 'application/json',

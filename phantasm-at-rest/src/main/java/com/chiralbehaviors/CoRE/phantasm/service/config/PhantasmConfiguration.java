@@ -15,7 +15,6 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.service.config;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration;
 import com.bazaarvoice.dropwizard.assets.AssetsConfiguration;
 import com.bendb.dropwizard.jooq.JooqBundle;
 import com.bendb.dropwizard.jooq.JooqFactory;
@@ -38,28 +36,7 @@ import io.dropwizard.db.DataSourceFactory;
  * @author hhildebrand
  *
  */
-public class PhantasmConfiguration extends Configuration
-        implements AssetsBundleConfiguration {
-
-    public static class Asset {
-
-        @NotNull
-        public String index = DEFAULT_INDEX_FILE;
-
-        @NotNull
-        public String name  = DEFAULT_ASSETS_NAME;
-
-        @NotNull
-        public String path  = DEFAULT_PATH;
-
-        public String uri;
-
-        @Override
-        public String toString() {
-            return String.format("Asset [name=%s, uri=%s, path=%s, index=%s]",
-                                 name, uri, path, index);
-        }
-    }
+public class PhantasmConfiguration extends Configuration {
 
     public static enum AuthType {
         @JsonProperty
@@ -68,14 +45,6 @@ public class PhantasmConfiguration extends Configuration
         NULL_AUTH;
     }
 
-    private static final String               DEFAULT_ASSETS_NAME       = "assets";
-
-    private static final String               DEFAULT_INDEX_FILE        = "index.htm";
-
-    private static final String               DEFAULT_PATH              = "/assets";
-
-    @NotNull
-    private List<Asset>                       assets                    = new ArrayList<>();
     @NotNull
     private AssetsConfiguration               assetsConfiguration       = new AssetsConfiguration();
     @NotNull
@@ -125,15 +94,6 @@ public class PhantasmConfiguration extends Configuration
         return DSL.using(jooqBundle.getConfiguration());
     }
 
-    public List<Asset> getAssets() {
-        return assets;
-    }
-
-    @Override
-    public AssetsConfiguration getAssetsConfiguration() {
-        return assetsConfiguration;
-    }
-
     public AuthType getAuth() {
         return auth;
     }
@@ -178,10 +138,6 @@ public class PhantasmConfiguration extends Configuration
 
     public boolean isUseCORS() {
         return useCORS;
-    }
-
-    public void setAssets(List<Asset> assets) {
-        this.assets = assets;
     }
 
     public void setAssetsConfiguration(AssetsConfiguration assetsConfiguration) {

@@ -37,11 +37,11 @@ import io.dropwizard.setup.Environment;
  * @author hhildebrand
  *
  */
-public class PhantasmApplication<T extends PhantasmConfiguration>
+public class NAVI<T extends PhantasmConfiguration>
         extends Application<T> {
 
     public static void main(String[] argv) throws Exception {
-        new PhantasmApplication<>().run(argv);
+        new NAVI<>().run(argv);
     }
 
     private Server                            jettyServer;

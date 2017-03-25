@@ -61,7 +61,7 @@ import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
+import com.chiralbehaviors.CoRE.phantasm.service.NAVI;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.io.BaseEncoding;
 
@@ -111,7 +111,7 @@ public class RoundTripFunctionalTest {
              .commit();
     }
 
-    protected PhantasmApplication<?> application = new PhantasmApplication<>();
+    protected NAVI<?> application = new NAVI<>();
 
     @After
     public void after() {

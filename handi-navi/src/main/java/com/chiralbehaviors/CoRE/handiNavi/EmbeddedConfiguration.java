@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-import org.postgresql.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +35,9 @@ import ru.yandex.qatools.embed.postgresql.ext.CachedArtifactStoreBuilder;
 
 public class EmbeddedConfiguration extends PhantasmConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedConfiguration.class);
-
-    static {
-        try {
-            Driver.register();
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
-        } catch (Throwable e) {
-
-        }
-    }
+    private static final String UAAS_POSTGRES = ".uaas/postgres";
+    private static final String UAAS_STATE = ".uaas/state";
+    private static final Logger log           = LoggerFactory.getLogger(EmbeddedConfiguration.class);
 
     private static int findFreePort() {
         ServerSocket socket = null;
@@ -98,7 +89,7 @@ public class EmbeddedConfiguration extends PhantasmConfiguration {
         }
         final Command cmd = Command.Postgres;
         // the cached directory should contain pgsql folder
-        final FixedPath cachedDir = new FixedPath(".uaas/postgres");
+        final FixedPath cachedDir = new FixedPath(UAAS_POSTGRES);
         ArtifactStoreBuilder download = new CachedArtifactStoreBuilder().defaults(cmd)
                                                                         .tempDir(cachedDir)
                                                                         .download(new DownloadConfigBuilder().defaultsForCommand(cmd)
@@ -115,7 +106,7 @@ public class EmbeddedConfiguration extends PhantasmConfiguration {
         final PostgresConfig config = new PostgresConfig(PRODUCTION,
                                                          new Net("localhost",
                                                                  findFreePort()),
-                                                         new Storage("core"),
+                                                         new Storage("core", UAAS_STATE),
                                                          new Timeout(),
                                                          new Credentials(username,
                                                                          password));

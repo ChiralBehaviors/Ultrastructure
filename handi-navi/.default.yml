@@ -10,4 +10,3 @@ logging:
     loggers: 
         "org.glassfish": ERROR
         graphql: WARN
-        

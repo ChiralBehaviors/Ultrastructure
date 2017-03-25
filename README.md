@@ -4,7 +4,7 @@ Ultrastructure
 An implementation of Ultrastructure 
 
 
-See the [Ultrastrsucture Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) for moar information
+See the [Ultrastructure Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) for moar information
 
 ==============
 

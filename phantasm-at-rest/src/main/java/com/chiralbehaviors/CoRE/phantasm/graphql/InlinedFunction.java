@@ -45,18 +45,18 @@ class InlinedFunction implements DataFetcher {
     @SuppressWarnings("rawtypes")
     private final Class                                               phantasm;
     private final int                                                 phantasmIndex;
-    private final Object                                              standIn;
+    private final Object                                              plugin;
 
     public InlinedFunction(Method method,
                            Map<Integer, Function<Map<String, Object>, Object>> inputTxfms,
-                           Class<?> phantasm, Object instance) {
+                           Class<?> phantasm, Object plugin) {
         this.method = method;
         List<Class<?>> parameterTypes = Arrays.asList(method.getParameters())
                                               .stream()
                                               .map(Parameter::getType)
                                               .collect(Collectors.toList());
         this.inputTxfms = inputTxfms;
-        standIn = instance;
+        this.plugin = plugin;
         this.phantasm = phantasm;
         envIndex = parameterTypes.indexOf(DataFetchingEnvironment.class);
         phantasmIndex = parameterTypes.indexOf(phantasm);
@@ -104,7 +104,7 @@ class InlinedFunction implements DataFetcher {
             }
         }
         try {
-            Object result = method.invoke(standIn, argv);
+            Object result = method.invoke(plugin, argv);
             return result != null && method.getReturnType()
                                            .isAnnotationPresent(Facet.class) ? ((Phantasm) result).getRuleform()
                                                                              : result;

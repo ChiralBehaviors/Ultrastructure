@@ -33,7 +33,6 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -112,20 +111,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         environment.jersey()
                    .register(new WorkspaceResource(FacetFields.configureExecutionScope(configuration.getExecutionScope())));
 
-        configuration.getAssets()
-                     .forEach(asset -> {
-                         try {
-                             log.info("Configuring {}", asset);
-                             new ConfiguredAssetsBundle(asset.path, asset.uri,
-                                                        asset.index,
-                                                        asset.name).run(configuration,
-                                                                        environment);
-                         } catch (Exception e) {
-                             log.error(String.format("Cannot configure asset: %s",
-                                                     asset),
-                                       e);
-                         }
-                     });
         environment.lifecycle()
                    .manage(new AbstractLifeCycle() {
                        @Override

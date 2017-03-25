@@ -37,10 +37,11 @@ import io.dropwizard.setup.Environment;
  * @author hhildebrand
  *
  */
-public class PhantasmApplication extends Application<PhantasmConfiguration> {
+public class PhantasmApplication<T extends PhantasmConfiguration>
+        extends Application<T> {
 
     public static void main(String[] argv) throws Exception {
-        new PhantasmApplication().run(argv);
+        new PhantasmApplication<>().run(argv);
     }
 
     private Server                            jettyServer;
@@ -52,7 +53,7 @@ public class PhantasmApplication extends Application<PhantasmConfiguration> {
     }
 
     @Override
-    public void initialize(Bootstrap<PhantasmConfiguration> bootstrap) {
+    public void initialize(Bootstrap<T> bootstrap) {
         service = new PhantasmBundle();
         bootstrap.addBundle(service);
         jooqBundle = new JooqBundle<PhantasmConfiguration>() {

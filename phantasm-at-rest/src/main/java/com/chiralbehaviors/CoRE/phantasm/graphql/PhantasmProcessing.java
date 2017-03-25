@@ -564,28 +564,24 @@ public class PhantasmProcessing {
                                                           .isAnnotationPresent(Facet.class))
                                            .filter(p -> !p.getType()
                                                           .isAnnotationPresent(Facet.class))
-                                           .map(new Function<Parameter, GraphQLArgument>() {
-                                               @Override
-                                               public GraphQLArgument apply(Parameter parameter) {
-                                                   Class<?> t = parameter.getType();
-                                                   graphql.schema.GraphQLType graphQLType = typeFunction.apply(t,
-                                                                                                               parameter.getAnnotatedType());
-                                                   if (graphQLType instanceof GraphQLObjectType) {
-                                                       GraphQLObjectType objectType = (GraphQLObjectType) graphQLType;
-                                                       GraphQLInputObjectType inputObject = inputObject(objectType);
-                                                       graphQLType = inputObject;
-                                                       inputTxfms.put(i.get(),
-                                                                      inputTxfm(t,
-                                                                                objectType));
-                                                   }
-                                                   try {
-                                                       return argument(parameter,
-                                                                       graphQLType);
-                                                   } catch (
-                                                           IllegalAccessException
-                                                           | InstantiationException e) {
-                                                       throw new IllegalStateException(e);
-                                                   }
+                                           .map(parameter -> {
+                                               Class<?> t = parameter.getType();
+                                               graphql.schema.GraphQLType graphQLType = typeFunction.apply(t,
+                                                                                                           parameter.getAnnotatedType());
+                                               if (graphQLType instanceof GraphQLObjectType) {
+                                                   GraphQLObjectType objectType = (GraphQLObjectType) graphQLType;
+                                                   GraphQLInputObjectType inputObject = inputObject(objectType);
+                                                   graphQLType = inputObject;
+                                                   inputTxfms.put(i.get(),
+                                                                  inputTxfm(t,
+                                                                            objectType));
+                                               }
+                                               try {
+                                                   return argument(parameter,
+                                                                   graphQLType);
+                                               } catch (IllegalAccessException
+                                                       | InstantiationException e) {
+                                                   throw new IllegalStateException(e);
                                                }
                                            })
                                            .collect(Collectors.toList());

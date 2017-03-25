@@ -9,6 +9,11 @@
 	<artifactId>phantasm-at-rest</artifactId>
 	<name>Phantasm At REST</name>
 	<description>A rest API for the Ultrastructure Phantasms</description>
+
+	<properties>
+		<main.class>com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication</main.class>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>graphql-java-annotations</groupId>
@@ -19,10 +24,6 @@
 					<artifactId>antlr4</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.bazaarvoice.dropwizard</groupId>
-			<artifactId>dropwizard-configurable-assets-bundle</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
@@ -182,6 +183,14 @@
 					</classpathDependencyExcludes>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>phat</shadedClassifierName>
+                </configuration>
+            </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

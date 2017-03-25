@@ -1,15 +1,14 @@
 Ultrastructure
 ==============
 
-An implementation of Ultrastructure using PostgreSQL.
+An implementation of Ultrastructure 
+
+
+See the [Ultrastrsucture Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) for moar information
 
 ==============
 
 [![Build Status](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/badge/icon)](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/)[![Coverage Status](https://coveralls.io/repos/github/ChiralBehaviors/Ultrastructure/badge.svg)](https://coveralls.io/github/ChiralBehaviors/Ultrastructure)
-
-- [Ultrastrsucture Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) - for moar information
-
-- [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) - an example of a non trivial Ultrastructure application.
 
 The license for this project is the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.en.html)
 

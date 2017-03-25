@@ -4,7 +4,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
+import com.chiralbehaviors.CoRE.phantasm.service.NAVI;
 import com.hellblazer.utils.Utils;
 
 import io.dropwizard.setup.Bootstrap;
@@ -15,7 +15,7 @@ import io.dropwizard.setup.Bootstrap;
  * @author hhildebrand
  * 
  */
-public class HandiNAVI extends PhantasmApplication<EmbeddedConfiguration> {
+public class HandiNAVI extends NAVI<EmbeddedConfiguration> {
 
     private static final String DEFAULT_YML         = "/default.yml";
     private static final String DEFAULT_YML_RUNTIME = ".default.yml";

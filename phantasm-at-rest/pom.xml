@@ -11,7 +11,7 @@
 	<description>A rest API for the Ultrastructure Phantasms</description>
 
 	<properties>
-		<main.class>com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication</main.class>
+		<main.class>com.chiralbehaviors.CoRE.phantasm.service.NAVI</main.class>
 	</properties>
 	
 	<dependencies>

@@ -84,6 +84,7 @@
 		<module>acm-95-ontology</module>
 		<module>handi-navi</module>
 		<module>ide</module>
+		<module>postgresql-testing</module>
 	</modules>
 
 	<dependencyManagement>

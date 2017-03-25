@@ -193,7 +193,7 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>navi</artifactId>
+				<artifactId>handi-navi</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

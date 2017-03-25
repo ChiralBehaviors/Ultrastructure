@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>phantasm-at-rest</artifactId>
 	<name>Phantasm At REST</name>
-	<description>A rest API for the Ultrastructure Phantasms</description>
+	<description>Ultrastructure as a Service</description>
 
 	<properties>
 		<main.class>com.chiralbehaviors.CoRE.phantasm.service.NAVI</main.class>

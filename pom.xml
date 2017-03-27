@@ -194,6 +194,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>ide</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>handi-navi</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -709,7 +714,7 @@
 				<plugin>
 					<groupId>com.zenjava</groupId>
 					<artifactId>javafx-maven-plugin</artifactId>
-					<version>8.6.0</version>
+					<version>8.8.3</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -725,7 +730,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.7.7.201606060606</version>
+						<version>0.7.9</version>
 						<configuration>
 							<excludes>
 								<exclude>graphql/annotations/**/*</exclude>

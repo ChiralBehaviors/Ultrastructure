@@ -55,9 +55,11 @@ import ru.yandex.qatools.embed.postgresql.ext.CachedArtifactStoreBuilder;
 
 public class EmbeddedConfiguration extends PhantasmConfiguration {
 
-    private static final String UAAS_POSTGRES = ".uaas/postgres";
-    private static final String UAAS_STATE = ".uaas/state";
+    public static final String  NAVI_PASSWORD = "navi.password";
     private static final Logger log           = LoggerFactory.getLogger(EmbeddedConfiguration.class);
+    private static final String NAVI          = "navi";
+    private static final String UAAS_POSTGRES = ".uaas/postgres";
+    private static final String UAAS_STATE    = ".uaas/state";
 
     private static int findFreePort() {
         ServerSocket socket = null;
@@ -99,14 +101,7 @@ public class EmbeddedConfiguration extends PhantasmConfiguration {
     String initializePostgresql() throws SQLException, IOException,
                                   URISyntaxException {
 
-        String username = System.getenv("UAAS_USERNAME");
-        String password = System.getenv("UAAS_PASSWORD");
-        if (username == null) {
-            username = "core";
-        }
-        if (password == null) {
-            password = "core";
-        }
+        String password = System.getProperty(NAVI_PASSWORD, "changeMe"); // TODO no default
         final Command cmd = Command.Postgres;
         // the cached directory should contain pgsql folder
         final FixedPath cachedDir = new FixedPath(UAAS_POSTGRES);
@@ -126,9 +121,10 @@ public class EmbeddedConfiguration extends PhantasmConfiguration {
         final PostgresConfig config = new PostgresConfig(PRODUCTION,
                                                          new Net("localhost",
                                                                  findFreePort()),
-                                                         new Storage("core", UAAS_STATE),
+                                                         new Storage(NAVI,
+                                                                     UAAS_STATE),
                                                          new Timeout(),
-                                                         new Credentials(username,
+                                                         new Credentials(NAVI,
                                                                          password));
         // pass info regarding encoding, locale, collate, ctype, instead of setting global environment settings
         config.getAdditionalInitDbParams()
@@ -138,7 +134,8 @@ public class EmbeddedConfiguration extends PhantasmConfiguration {
         PostgresExecutable exec = runtime.prepare(config);
         PostgresProcess process = exec.start();
         Runtime.getRuntime()
-               .addShutdownHook(new Thread(() -> process.stop(), username));
+               .addShutdownHook(new Thread(() -> process.stop(),
+                                           "Local NAVI shutdown"));
 
         String uri = String.format("jdbc:postgresql://%s:%s/%s?user=%s&password=%s",
                                    config.net()

@@ -21,7 +21,11 @@
 package com.chiralbehaviors.CoRE.handiNavi;
 
 import java.awt.FlowLayout;
+import java.net.URL;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -45,14 +49,14 @@ import javafx.stage.Stage;
  * @author halhildebrand
  *
  */
-public class HandiNaviApp extends JFrame {
+public class HandiNavi extends JFrame {
     private static final long serialVersionUID = 4110897631836483138L;
 
     public static void main(String[] args) {
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         SwingUtilities.invokeLater(() -> {
-            HandiNaviApp app = new HandiNaviApp();
+            HandiNavi app = new HandiNavi();
             app.setBounds(10, 10, 1024, 768);
             app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             app.setVisible(true);
@@ -68,20 +72,26 @@ public class HandiNaviApp extends JFrame {
     }
 
     @FXML
-    MenuBar menubar;
+    MenuBar                     menubar;
 
     @FXML
-    VBox    vbox;
+    VBox                        vbox;
 
-    public HandiNaviApp() {
+    private final AtomicBoolean naviRunning = new AtomicBoolean();
+
+    public HandiNavi() {
 
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         JMenuBar menubar = new JMenuBar();
 
-        JMenu fileMenu = new JMenu("File");
-        JMenu editMenu = new JMenu("Edit");
+        JMenu localNavi = new JMenu("Local Navi");
         JMenu helpMenu = new JMenu("Help");
+
+        JMenuItem loginItem = new JMenuItem("Login");
+        loginItem.addActionListener((evt) -> {
+            Platform.runLater(() -> login());
+        });
 
         JMenuItem closeItem = new JMenuItem("Close");
         closeItem.addActionListener((evt) -> {
@@ -89,13 +99,18 @@ public class HandiNaviApp extends JFrame {
             System.exit(0);
         });
 
-        fileMenu.add(closeItem);
+        localNavi.add(loginItem);
+        localNavi.add(closeItem);
 
-        menubar.add(fileMenu);
-        menubar.add(editMenu);
+        menubar.add(localNavi);
         menubar.add(helpMenu);
 
         this.setJMenuBar(menubar);
+        URL iconURL = getClass().getResource("handiNAVI.png");
+        // iconURL is null when not found
+        ImageIcon icon = new ImageIcon(iconURL);
+        this.setIconImage(icon.getImage());
+        this.setName("HandiNAVI");
         try {
             createMainFXWindow();
         } catch (Exception e) {
@@ -121,14 +136,32 @@ public class HandiNaviApp extends JFrame {
     }
 
     private JFXPanel createMainFXWindow() throws Exception {
-        JFXPanel jfxPanel = new JFXPanel(); //  initializes the toolkit
+        JFXPanel jfxPanel = new JFXPanel();
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass()
-                                                   .getResource("HandiNaviIde.fxml"));
+                                                   .getResource("HandiNavi.fxml"));
         fxmlLoader.setController(this);
         fxmlLoader.load();
         Parent p = fxmlLoader.getRoot();
         Scene scene = new Scene(p);
         jfxPanel.setScene(scene);
         return jfxPanel;
+    }
+
+    private void login() {
+        if (!naviRunning.compareAndSet(false, true)) {
+            return;
+        }
+        PasswordDialog pd = new PasswordDialog();
+        Optional<String> result = pd.showAndWait();
+        if (!result.isPresent()) {
+            naviRunning.set(false);
+        }
+        System.setProperty(EmbeddedConfiguration.NAVI_PASSWORD, result.get());
+        try {
+            LocalNAVI.main(new String[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+            close();
+        }
     }
 }

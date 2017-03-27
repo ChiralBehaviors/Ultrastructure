@@ -35,20 +35,20 @@ import io.dropwizard.setup.Bootstrap;
  * @author hhildebrand
  * 
  */
-public class HandiNAVI extends NAVI<EmbeddedConfiguration> {
+public class LocalNAVI extends NAVI<EmbeddedConfiguration> {
 
     private static final String DEFAULT_YML         = "/default.yml";
     private static final String DEFAULT_YML_RUNTIME = ".default.yml";
 
     public static void main(String[] argv) throws Exception {
         if (argv.length == 0) {
-            try (InputStream is = HandiNAVI.class.getResourceAsStream(DEFAULT_YML);
+            try (InputStream is = LocalNAVI.class.getResourceAsStream(DEFAULT_YML);
                     OutputStream os = new FileOutputStream(DEFAULT_YML_RUNTIME)) {
                 Utils.copy(is, os);
             }
             argv = new String[] { "server", DEFAULT_YML_RUNTIME };
         }
-        new HandiNAVI().run(argv);
+        new LocalNAVI().run(argv);
     }
 
     @Override

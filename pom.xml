@@ -90,6 +90,11 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>org.controlsfx</groupId>
+				<artifactId>controlsfx</artifactId>
+				<version>8.40.12</version>
+			</dependency>
+			<dependency>
 				<groupId>com.chiralbehaviors.layout</groupId>
 				<artifactId>kramer-ql</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
@@ -170,7 +175,7 @@
 				<groupId>io.dropwizard</groupId>
 				<artifactId>dropwizard-metrics</artifactId>
 				<version>${dropwizard.version}</version>
-			</dependency> 
+			</dependency>
 			<dependency>
 				<groupId>javax.ws.rs</groupId>
 				<artifactId>javax.ws.rs-api</artifactId>

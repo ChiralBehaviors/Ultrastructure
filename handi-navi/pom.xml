@@ -43,4 +43,35 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>package-osx</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>sh.tak.appbundler</groupId>
+						<artifactId>appbundle-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>${main.class}</mainClass>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>bundle</goal>
+								</goals>
+								<configuration>
+									<bundleName>HandiNAVI</bundleName>
+									<generateDiskImageFile>true</generateDiskImageFile>
+									<diskImageInternetEnable>true</diskImageInternetEnable>
+									<iconFile>src/main/resources/com/chiralbehaviors/CoRE/handiNavi/handiNAVI.icns</iconFile>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

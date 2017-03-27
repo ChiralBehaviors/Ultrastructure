@@ -49,14 +49,14 @@ import javafx.stage.Stage;
  * @author halhildebrand
  *
  */
-public class HandiNavi extends JFrame {
+public class HandiNAVI extends JFrame {
     private static final long serialVersionUID = 4110897631836483138L;
 
     public static void main(String[] args) {
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         SwingUtilities.invokeLater(() -> {
-            HandiNavi app = new HandiNavi();
+            HandiNAVI app = new HandiNAVI();
             app.setBounds(10, 10, 1024, 768);
             app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             app.setVisible(true);
@@ -79,7 +79,7 @@ public class HandiNavi extends JFrame {
 
     private final AtomicBoolean naviRunning = new AtomicBoolean();
 
-    public HandiNavi() {
+    public HandiNAVI() {
 
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
@@ -106,7 +106,7 @@ public class HandiNavi extends JFrame {
         menubar.add(helpMenu);
 
         this.setJMenuBar(menubar);
-        URL iconURL = getClass().getResource("handiNAVI.png");
+        URL iconURL = getClass().getResource("handiNAVI.ico");
         // iconURL is null when not found
         ImageIcon icon = new ImageIcon(iconURL);
         this.setIconImage(icon.getImage());

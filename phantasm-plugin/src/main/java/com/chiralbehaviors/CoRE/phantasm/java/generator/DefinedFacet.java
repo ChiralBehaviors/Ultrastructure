@@ -43,7 +43,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.NetworkConstraints
  * @author hhildebrand
  *
  */
-public class FacetImpl implements Facet {
+public class DefinedFacet implements Facet {
 
     private final String       className;
     private final FacetContext context;
@@ -58,7 +58,7 @@ public class FacetImpl implements Facet {
     private final List<Setter> relationshipSetters         = new ArrayList<>();
     private final String       uri;
 
-    public FacetImpl(String packageName, FacetContext context, String uri) {
+    public DefinedFacet(String packageName, FacetContext context, String uri) {
         this.packageName = packageName;
         this.context = context;
         this.uri = uri;

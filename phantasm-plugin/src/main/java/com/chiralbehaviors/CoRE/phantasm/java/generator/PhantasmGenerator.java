@@ -115,49 +115,49 @@ public class PhantasmGenerator {
         wsp.getAgencyFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getAttributeFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getIntervalFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getLocationFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getProductFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getRelationshipFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getStatusCodeFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         wsp.getUnitFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          (Facet) new FacetImpl(configuration.packageName,
+                          (Facet) new DefinedFacet(configuration.packageName,
                                                 facet, uri));
            });
         resolve(wsp);

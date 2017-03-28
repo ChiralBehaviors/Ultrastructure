@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
-import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
@@ -29,7 +28,7 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  * @author hhildebrand
  *
  */
-@Facet(classifier = @Key(name = "AnyRelationship"), classification = @Key(name = "AnyStatusCode"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = StatusCode.class)
+@Facet(classifier = @Key(name = "AnyRelationship"), classification = @Key(name = "AnyStatusCode"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
 public interface AnyStatusCode extends Phantasm {
 
 }

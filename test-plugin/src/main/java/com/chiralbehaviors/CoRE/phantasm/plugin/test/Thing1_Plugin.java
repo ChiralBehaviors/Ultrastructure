@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.plugin.test.product.Thing1;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;

@@ -1,6 +1,11 @@
 package graphql.execution;
 
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import graphql.ExecutionResult;
 import graphql.GraphQLException;
 import graphql.language.Document;
@@ -8,11 +13,6 @@ import graphql.language.Field;
 import graphql.language.OperationDefinition;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Execution {
 

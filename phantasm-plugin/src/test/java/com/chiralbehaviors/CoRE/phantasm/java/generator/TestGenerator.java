@@ -48,7 +48,6 @@ public class TestGenerator {
         FileOutputStream fos = new FileOutputStream(configuration.resource);
         Utils.copy(getClass().getResourceAsStream(THING_WSP), fos);
         fos.close();
-        configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
         new Generator(configuration).execute();
@@ -58,7 +57,6 @@ public class TestGenerator {
     public void testResource() throws IOException {
         Configuration configuration = new Configuration();
         configuration.resource = THING_WSP;
-        configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
         PhantasmGenerator generator = new PhantasmGenerator(configuration);

@@ -124,7 +124,6 @@
 								<resource>${basedir}/src/main/resources/kernel.3.wsp</resource>
 								<outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.kernel.phantasm</packageName>
-								<appendTypeToPackage>true</appendTypeToPackage>
 							</generator>
 						</configuration>
 					</execution>
@@ -139,7 +138,6 @@
 								<resource>${basedir}/src/test/resources/humblr.wsp</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.kernel.phantasm.test</packageName>
-								<appendTypeToPackage>true</appendTypeToPackage>
 							</generator>
 						</configuration>
 					</execution>
@@ -154,7 +152,6 @@
 								<resource>/thing.wsp</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.phantasm.test</packageName>
-								<appendTypeToPackage>true</appendTypeToPackage>
 							</generator>
 						</configuration>
 					</execution>

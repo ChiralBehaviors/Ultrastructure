@@ -45,8 +45,8 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.plugin.test.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.plugin.test.Thing2;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;

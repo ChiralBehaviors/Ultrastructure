@@ -34,7 +34,6 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -60,9 +59,10 @@ public class PhantasmGenerator {
         return Introspector.decapitalize(name.replaceAll("\\s", ""));
     }
 
-    private final Configuration configuration;
+    private final Configuration        configuration;
 
-    private final Map<FacetKey, Facet> facets = new HashMap<>();
+    private final Map<FacetKey, Facet> facets  = new HashMap<>();
+    private final Map<FacetKey, Facet> imports = new HashMap<>();
 
     public PhantasmGenerator(Configuration configuration) {
         this.configuration = configuration;
@@ -77,15 +77,6 @@ public class PhantasmGenerator {
             template.add(FACET, facet);
             generate(template, file);
         }
-    }
-
-    private Facet constructFacet(FacetContext facet, String ruleformType,
-                                 String uri) {
-        String packageName = configuration.appendTypeToPackage ? String.format("%s.%s",
-                                                                               configuration.packageName,
-                                                                               ruleformType.toLowerCase())
-                                                               : configuration.packageName;
-        return new FacetImpl(packageName, ruleformType, facet, uri);
     }
 
     private void generate(ST template, File file) {
@@ -119,48 +110,80 @@ public class PhantasmGenerator {
         WorkspacePresentation wsp = new WorkspacePresentation(Utils.resolveResource(getClass(),
                                                                                     configuration.resource));
 
+        importFacets(wsp);
         String uri = wsp.getWorkspaceDefinition().uri.getText();
         wsp.getAgencyFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Agency", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getAttributeFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Attribute", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getIntervalFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Interval", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getLocationFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Location", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getProductFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Product", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getRelationshipFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Relationship", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getStatusCodeFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "StatusCode", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         wsp.getUnitFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),
-                          constructFacet(facet, "Unit", uri));
+                          (Facet) new FacetImpl(configuration.packageName,
+                                                facet, uri));
            });
         resolve(wsp);
+    }
+
+    private void importFacets(WorkspacePresentation wsp) {
+        wsp.getImports()
+           .forEach(imp -> {
+               String namespace = imp.namespace.getText();
+               if (imp.importedFacets() != null) {
+                   imp.importedFacets()
+                      .facetImport()
+                      .forEach(facet -> {
+                          String packageName = configuration.namespacePackages.get(namespace);
+                          FacetKey key = new FacetKey(facet.classifier,
+                                                      facet.classification);
+                          if (packageName == null) {
+                              throw new IllegalStateException(String.format("No package translation for namespace: %s [%s]",
+                                                                            namespace,
+                                                                            key));
+                          }
+                          facets.put(key, new ImportedFacet(packageName, facet,
+                                                            imp.uri.getText()));
+                      });
+               }
+           });
     }
 
     private File getOutputFile(Facet facet) {
@@ -184,7 +207,20 @@ public class PhantasmGenerator {
     private void resolve(WorkspacePresentation presentation) {
         Map<ScopedName, MappedAttribute> mapped = mapAttributes(presentation);
         for (Facet facet : facets.values()) {
-            facet.resolve(facets, presentation, mapped);
+            facet.resolve(this, presentation, mapped);
         }
+    }
+
+    public Facet resolve(FacetKey facetKey) {
+        Facet facet = facets.get(facetKey);
+        if (facet != null) {
+            return facet;
+        }
+
+        facet = imports.get(facetKey);
+        if (facet != null) {
+            return facet;
+        }
+        return null;
     }
 }

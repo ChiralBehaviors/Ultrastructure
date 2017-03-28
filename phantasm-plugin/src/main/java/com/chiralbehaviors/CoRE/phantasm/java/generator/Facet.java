@@ -60,9 +60,7 @@ public interface Facet {
 
     String getUri();
 
-    String getRuleformType();
-
-    void resolve(Map<FacetKey, Facet> facets,
+    void resolve(PhantasmGenerator generator,
                  WorkspacePresentation presentation,
                  Map<ScopedName, MappedAttribute> mapped);
 

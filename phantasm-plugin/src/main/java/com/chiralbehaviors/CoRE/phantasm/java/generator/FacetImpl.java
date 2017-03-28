@@ -56,14 +56,12 @@ public class FacetImpl implements Facet {
     private final List<Setter> primitiveSetters            = new ArrayList<>();
     private final List<Getter> relationshipGetters         = new ArrayList<>();
     private final List<Setter> relationshipSetters         = new ArrayList<>();
-    private final String       ruleformType;
     private final String       uri;
 
-    public FacetImpl(String packageName, String ruleformType,
-                     FacetContext context, String uri) {
+    public FacetImpl(String packageName, FacetContext context,
+                     String uri) {
         this.packageName = packageName;
         this.context = context;
-        this.ruleformType = ruleformType;
         this.uri = uri;
         className = context.name != null ? toTypeName(stripQuotes(context.name.getText()))
                                          : context.classification.member.getText();
@@ -137,25 +135,17 @@ public class FacetImpl implements Facet {
         return relationshipSetters;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.java.generator.Facet#getRuleformClass()
-     */
-    @Override
-    public String getRuleformType() {
-        return ruleformType;
-    }
-
     @Override
     public String getUri() {
         return uri;
     }
 
     @Override
-    public void resolve(Map<FacetKey, Facet> facets,
+    public void resolve(PhantasmGenerator generator,
                         WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
         resolveAttributes(mapped);
-        resolveRelationships(presentation, facets, mapped);
+        resolveRelationships(presentation, generator, mapped);
     }
 
     @Override
@@ -164,13 +154,13 @@ public class FacetImpl implements Facet {
     }
 
     private void resolveConstraint(ConstraintContext constraint,
-                                   Map<FacetKey, Facet> facets,
+                                   PhantasmGenerator generator,
                                    Map<ScopedName, MappedAttribute> mapped) {
         Facet type = null;
         if (constraint.anyType == null) {
             FacetKey facetKey = new FacetKey(constraint.authorizedRelationship,
                                              constraint.authorizedParent);
-            type = facets.get(facetKey);
+            type = generator.resolve(facetKey);
             if (type == null) {
                 throw new IllegalStateException(String.format("%s refers to non existent facet: %s",
                                                               getClassName(),
@@ -367,7 +357,7 @@ public class FacetImpl implements Facet {
     }
 
     private void resolveRelationships(WorkspacePresentation presentation,
-                                      Map<FacetKey, Facet> facets,
+                                      PhantasmGenerator generator,
                                       Map<ScopedName, MappedAttribute> mapped) {
         NetworkConstraintsContext networkConstraints = context.networkConstraints();
         if (networkConstraints == null) {
@@ -375,7 +365,7 @@ public class FacetImpl implements Facet {
         }
         networkConstraints.constraint()
                           .forEach(constraint -> {
-                              resolveConstraint(constraint, facets, mapped);
+                              resolveConstraint(constraint, generator, mapped);
                           });
     }
 }

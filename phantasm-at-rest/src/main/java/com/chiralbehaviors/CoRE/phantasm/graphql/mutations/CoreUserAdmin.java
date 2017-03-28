@@ -24,7 +24,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ctx;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 

@@ -56,11 +56,11 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
-import com.chiralbehaviors.CoRE.phantasm.test.product.OtherThing;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.test.OtherThing;
+import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.Thing3;
 
 /**
  * @author hhildebrand

@@ -60,7 +60,6 @@
                                 <resource>/thing.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
                                 <packageName>com.chiralbehaviors.CoRE.phantasm.plugin.test</packageName>
-                                <appendTypeToPackage>true</appendTypeToPackage>
                             </generator>
                         </configuration>
                     </execution>

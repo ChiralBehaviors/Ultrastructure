@@ -339,11 +339,15 @@ public class Phantasmagoria {
                  model.getPhantasmModel()
                       .getNetworkAttributeAuthorizations(auth)
                       .forEach(na -> {
-
-                          String edgeName = String.format("%sOf%s",
+                          String n = networkAuth.getFieldName();
+                          String constraintName = Character.toUpperCase(n.charAt(0))
+                                                  + (n.length() == 1 ? ""
+                                                                     : n.substring(1));
+                          String edgeName = String.format("%sOf%s%s",
                                                           WorkspacePresentation.toFieldName(model.records()
                                                                                                  .resolve(na.getAuthorizedAttribute())
                                                                                                  .getName()),
+                                                          constraintName,
                                                           capitalized(fieldName));
                           NetworkAttributeAuthorization attrAuth = new NetworkAttributeAuthorization(edgeName,
                                                                                                      create,

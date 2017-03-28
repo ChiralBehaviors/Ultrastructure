@@ -42,10 +42,10 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.plugin.test.MavenArtifact;
-import com.chiralbehaviors.CoRE.phantasm.plugin.test.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.plugin.test.Thing2;
-import com.chiralbehaviors.CoRE.phantasm.plugin.test.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing3;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

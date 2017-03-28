@@ -2,7 +2,9 @@ workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phant
            version: 1
            "Phantasm Demo" "First demo of Phantasm"
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel {
+    	IsA.Workspace
+     }
 }
 attributes {
     name = "Name" "A name" text;
@@ -70,6 +72,7 @@ products {
         IsA.OtherThing {name description}
         	constraints {
         		n AThingOfItsOwn: IsA.OtherThing
+        		one derivedFrom: IsA.Workspace named by relationship
         }
     }
 }

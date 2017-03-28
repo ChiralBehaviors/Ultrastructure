@@ -50,12 +50,14 @@ public class TestGenerator {
         fos.close();
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
+        configuration.namespacePackages.put("kernel", "com.chiralbehaviors.CoRE.kernel.phantasm");
         new Generator(configuration).execute();
     }
 
     @Test
     public void testResource() throws IOException {
         Configuration configuration = new Configuration();
+        configuration.namespacePackages.put("kernel", "com.chiralbehaviors.CoRE.kernel.phantasm");
         configuration.resource = THING_WSP;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;

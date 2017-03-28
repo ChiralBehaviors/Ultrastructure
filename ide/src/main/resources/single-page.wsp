@@ -28,10 +28,10 @@ products {
     		constraints { 
     			n pageOf: IsA.Application
     			one frame: IsA.Workspace
-                n create: IsA.PageRoute { relation }
-                n retrieve: IsA.PageRoute { relation }
-                n update: IsA.PageRoute { relation }
-                n delete: IsA.PageRoute { relation }
+                n create: IsA.PageRoute named by relationship { relation }
+                n retrieve: IsA.PageRoute named by relationship{ relation }
+                n update: IsA.PageRoute named by relationship { relation }
+                n delete: IsA.PageRoute named by relationship { relation }
     		}
     	IsA.PageRoute { extract route }
     }

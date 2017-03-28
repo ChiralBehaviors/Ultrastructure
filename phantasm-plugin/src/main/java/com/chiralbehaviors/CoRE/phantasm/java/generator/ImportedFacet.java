@@ -39,7 +39,7 @@ public class ImportedFacet implements Facet {
 
     @Override
     public String getImport() {
-        return null;
+        return String.format("%s.%s", packageName, getClassName());
     }
 
     @Override

@@ -55,9 +55,9 @@ public class NetAttrTest extends AbstractModelTest {
         thing1.setDerivedFrom(artifact);
 
         thing1.setThing2(thing2);
-        thing1.setAliasesOfThing2(thing2, new String[] { "foo" });
+        thing1.setAliasesOfThing2Thing2(thing2, new String[] { "foo" });
 
-        String[] aliases = thing1.getAliasesOfThing2(thing2);
+        String[] aliases = thing1.getAliasesOfThing2Thing2(thing2);
         assertNotNull(aliases);
         assertEquals("foo", aliases[0]);
 
@@ -68,17 +68,17 @@ public class NetAttrTest extends AbstractModelTest {
         master.setDescription("blaster");
 
         master.addThing1(thing1);
-        master.setClassifierOfThing1(thing1, "Hello");
+        master.setClassifierOfThing1Thing1(thing1, "Hello");
 
-        String classifier = master.getClassifierOfThing1(thing1);
+        String classifier = master.getClassifierOfThing1Thing1(thing1);
         assertEquals("Hello", classifier);
 
         thing2.addMasterThing(master);
         Map<String, String> properties = new HashMap<>();
         properties.put("hello", "world");
-        thing2.setPropertiesOfMasterThing(master, properties);
+        thing2.setPropertiesOfMasterThingMasterThing(master, properties);
 
-        properties = thing2.getPropertiesOfMasterThing(master);
+        properties = thing2.getPropertiesOfMasterThingMasterThing(master);
         assertNotNull(properties);
         assertEquals("world", properties.get("hello"));
 

@@ -179,8 +179,9 @@ public class PhantasmGenerator {
                                                                             namespace,
                                                                             key));
                           }
-                          facets.put(key, new ImportedFacet(packageName, facet,
-                                                            imp.uri.getText()));
+                          imports.put(key,
+                                      new ImportedFacet(packageName, facet,
+                                                        imp.uri.getText()));
                       });
                }
            });

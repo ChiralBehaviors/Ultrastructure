@@ -58,8 +58,7 @@ public class FacetImpl implements Facet {
     private final List<Setter> relationshipSetters         = new ArrayList<>();
     private final String       uri;
 
-    public FacetImpl(String packageName, FacetContext context,
-                     String uri) {
+    public FacetImpl(String packageName, FacetContext context, String uri) {
         this.packageName = packageName;
         this.context = context;
         this.uri = uri;
@@ -261,6 +260,9 @@ public class FacetImpl implements Facet {
         if (classifiedAttributes == null) {
             return;
         }
+        String n = WorkspacePresentation.networkAuthNameOf(constraint);
+        String constraintName = Character.toUpperCase(n.charAt(0))
+                                + (n.length() == 1 ? "" : n.substring(1));
         classifiedAttributes.forEach(attr -> {
             ScopedName key = new ScopedName(attr.key);
             MappedAttribute attribute = mapped.get(key);
@@ -268,8 +270,8 @@ public class FacetImpl implements Facet {
                 throw new IllegalStateException(String.format("attribute not found: %s",
                                                               key));
             }
-            String fieldName = String.format("%sOf%s", attribute.getName(),
-                                             childType);
+            String fieldName = String.format("%sOf%s%s", attribute.getName(),
+                                             constraintName, childType);
             edgePrimitiveGetters.add(new Getter(key,
                                                 String.format("get%s",
                                                               fieldName),

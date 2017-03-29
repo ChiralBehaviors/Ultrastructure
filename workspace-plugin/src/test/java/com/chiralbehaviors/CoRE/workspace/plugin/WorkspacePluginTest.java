@@ -42,7 +42,7 @@ import com.hellblazer.utils.Utils;
  * @author hhildebrand
  *
  */
-public class WorspacePluginTest extends AbstractModelTest {
+public class WorkspacePluginTest extends AbstractModelTest {
 
     @Test
     public void testDslLoad() throws Exception {

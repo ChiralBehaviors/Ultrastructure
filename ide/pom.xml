@@ -18,6 +18,12 @@
 		<dependency>
 			<groupId>com.chiralbehaviors.layout</groupId>
 			<artifactId>kramer-ql</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.antlr</groupId>
+					<artifactId>antlr4</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

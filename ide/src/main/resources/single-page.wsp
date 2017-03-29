@@ -26,7 +26,7 @@ products {
             }
     	IsA.Page { query title }
     		constraints { 
-    			n pageOf: IsA.Application
+    			one pageOf: IsA.Application
     			one frame: IsA.Workspace
                 n create: IsA.PageRoute named by relationship { relation }
                 n retrieve: IsA.PageRoute named by relationship{ relation }

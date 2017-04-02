@@ -13,7 +13,7 @@ public class PasswordDialog extends Dialog<String> {
     private PasswordField passwordField;
 
     public PasswordDialog() {
-        setTitle("Password");
+        setTitle("HandiNAVI Login");
         setHeaderText("Enter your password.");
 
         ButtonType passwordButtonType = new ButtonType("Login",

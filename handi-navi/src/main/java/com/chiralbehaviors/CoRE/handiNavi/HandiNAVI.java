@@ -32,6 +32,19 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadSnapshotCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadWorkspaceCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -50,7 +63,8 @@ import javafx.stage.Stage;
  *
  */
 public class HandiNAVI extends JFrame {
-    private static final long serialVersionUID = 4110897631836483138L;
+    private static final Logger log              = LoggerFactory.getLogger(HandiNAVI.class);
+    private static final long   serialVersionUID = 1L;
 
     public static void main(String[] args) {
 
@@ -77,6 +91,8 @@ public class HandiNAVI extends JFrame {
     @FXML
     VBox                        vbox;
 
+    private LocalNAVI           navi;
+
     private final AtomicBoolean naviRunning = new AtomicBoolean();
 
     public HandiNAVI() {
@@ -99,7 +115,13 @@ public class HandiNAVI extends JFrame {
             System.exit(0);
         });
 
+        JMenuItem resetItem = new JMenuItem("Reset Instance");
+        resetItem.addActionListener((evt) -> {
+            Platform.runLater(() -> resetInstance());
+        });
+
         localNavi.add(loginItem);
+        localNavi.add(resetItem);
         localNavi.add(closeItem);
 
         menubar.add(localNavi);
@@ -157,11 +179,49 @@ public class HandiNAVI extends JFrame {
             naviRunning.set(false);
         }
         System.setProperty(EmbeddedConfiguration.NAVI_PASSWORD, result.get());
-        try {
-            LocalNAVI.main(new String[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-            close();
+        Platform.runLater(() -> {
+            try {
+                navi = LocalNAVI.runLocal(new String[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+                close();
+            }
+        });
+    }
+
+    private void reset() {
+        PhantasmConfiguration configuration = navi.getConfiguration();
+        log.info("Reinitializing database state");
+        try (DSLContext create = configuration.create()) {
+            create.transaction(config -> RecordsFactory.clear(DSL.using(config)));
         }
+        try (DSLContext create = configuration.create()) {
+            create.transaction(config -> {
+                log.info("Loading kernel");
+                DSLContext txnlCreate = DSL.using(config);
+                KernelUtil.loadKernel(txnlCreate);
+                log.info("Initializing instance");
+                KernelUtil.initializeInstance(new ModelImpl(txnlCreate),
+                                              CoreDbConfiguration.CORE,
+                                              "CoRE instance");
+            });
+            log.info("Loading workspace state: {}",
+                     configuration.getWorkspaces());
+            LoadWorkspaceCommand.loadWorkspaces(configuration.getWorkspaces(),
+                                                create);
+            log.info("Loading snapshot state: {}",
+                     configuration.getSnapshots());
+            LoadSnapshotCommand.loadSnapshots(configuration.getSnapshots(),
+                                              create);
+        } catch (Exception e) {
+            log.error("Unable to reinitalize instanvce", e);
+        }
+    }
+
+    private void resetInstance() {
+        if (!naviRunning.get()) {
+            return;
+        }
+        Platform.runLater(() -> reset());
     }
 }

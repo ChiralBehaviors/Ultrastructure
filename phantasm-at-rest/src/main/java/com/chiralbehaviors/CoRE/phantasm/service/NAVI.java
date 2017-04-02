@@ -37,16 +37,20 @@ import io.dropwizard.setup.Environment;
  * @author hhildebrand
  *
  */
-public class NAVI<T extends PhantasmConfiguration>
-        extends Application<T> {
+public class NAVI<T extends PhantasmConfiguration> extends Application<T> {
 
     public static void main(String[] argv) throws Exception {
         new NAVI<>().run(argv);
     }
 
+    private PhantasmConfiguration             configuration;
     private Server                            jettyServer;
     private JooqBundle<PhantasmConfiguration> jooqBundle;
     private PhantasmBundle                    service;
+
+    public PhantasmConfiguration getConfiguration() {
+        return configuration;
+    }
 
     public int getPort() {
         return service.getPort();
@@ -74,8 +78,9 @@ public class NAVI<T extends PhantasmConfiguration>
      * @see io.dropwizard.AbstractService#initialize(io.dropwizard.config.Configuration, io.dropwizard.config.Environment)
      */
     @Override
-    public void run(PhantasmConfiguration configuration,
+    public void run(PhantasmConfiguration config,
                     Environment environment) throws Exception {
+        configuration = config;
         configuration.setJooqBundle(jooqBundle);
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);

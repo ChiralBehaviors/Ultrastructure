@@ -14,7 +14,7 @@ attributes {
     query = "Query" "GraphQL query" text;
     title = "Title" "Title text" text;
 	root = "Root" "Root page" text;
-	frameBy = "Workspace frame xpath extraction" "The xpath expression to exctract workspace frame from the relation" text;
+	frameBy = "Frame By" "The xpath expression to exctract workspace frame from the relation" text;
 }
 products {
     Page = "Page" "A single page in an application";

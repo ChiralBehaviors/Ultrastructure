@@ -10,3 +10,6 @@ logging:
     loggers: 
         "org.glassfish": ERROR
         graphql: WARN
+
+workspaces:
+  - /single-page.1.json

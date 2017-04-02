@@ -1,0 +1,24 @@
+{
+  applications {
+    root
+    pages {
+      _edge {
+        ... on _application_page {
+          route
+        }
+      }
+      title
+      query
+      navigates {
+        _edge {
+          ... on _page_navigate {
+            relation
+          }
+        }
+        extract
+        frameBy
+        route
+      }
+    }
+  }
+}

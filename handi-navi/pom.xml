@@ -28,6 +28,10 @@
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>universal</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

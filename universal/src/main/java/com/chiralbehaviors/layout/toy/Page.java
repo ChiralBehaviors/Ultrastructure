@@ -23,7 +23,6 @@ package com.chiralbehaviors.layout.toy;
 import java.util.Map;
 
 import com.chiralbehaviors.layout.schema.Relation;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
@@ -32,9 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Page {
     public static class Route {
-        @JsonProperty
         private String              path;
-        @JsonProperty
         private Map<String, String> extract;
 
         public String getPath() {
@@ -46,19 +43,22 @@ public class Page {
         }
     }
 
-    @JsonProperty
-    private String             query;
-    @JsonProperty
-    private Map<String, Route> routing;
-    @JsonProperty
-    private String             title;
+    private final String             query;
+    private final Map<String, Route> routes;
+    private final String             title;
+
+    public Page(String title, String query, Map<String, Route> routes) {
+        this.title = title;
+        this.query = query;
+        this.routes = routes;
+    }
 
     public String getQuery() {
         return query;
     }
 
     public Route getRoute(Relation relation) {
-        return routing.get(relation.getField());
+        return routes.get(relation.getField());
     }
 
     public String getTitle() {

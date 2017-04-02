@@ -37,16 +37,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author halhildebrand
  *
  */
-public class PageContext {
+public class Context {
     private final Page          page;
     private final Relation      root;
     private Map<String, Object> variables;
 
-    public PageContext(Page page) {
+    public Context(Page page) {
         this(page, Collections.emptyMap());
     }
 
-    public PageContext(Page page, Map<String, Object> variables) {
+    public Context(Page page, Map<String, Object> variables) {
         this.page = page;
         this.variables = variables;
         this.root = GraphQlUtil.buildSchema(page.getQuery());

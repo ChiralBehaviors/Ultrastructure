@@ -6,12 +6,14 @@
 		<artifactId>CoRE.app</artifactId>
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>ide</artifactId>
-	<name>UaaS IDE</name>
-	<description>A universal JavaFX IDE and runtime UI for UaaS</description>
+	<artifactId>universal</artifactId>
+	<name>UaaS Univervsal UI Runtime</name>
+	<description>A universal JavaFXruntime UI for UaaS</description>
 
 	<properties>
-		<main.class>com.chiralbehaviors.layout.toy.SinglePageApp</main.class>
+		<main.class>com.chiralbehaviors.layout.toy.Universal</main.class>
+		<db>test</db>
+		<user>testme</user>
 	</properties>
 
 	<dependencies>
@@ -72,7 +74,7 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>${basedir}/src/main/resources/single-page.wsp</resource>
+								<resource>${basedir}/src/main/resources/single-page.1.wsp</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.singlePgApp</packageName>
 								<namespacePackages>
@@ -122,6 +124,28 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.chiralbehaviors.CoRE
+										</groupId>
+										<artifactId>
+											workspace-plugin
+										</artifactId>
+										<versionRange>
+											[${ultrastructure.version},)
+										</versionRange>
+										<goals>
+											<goal>load-dsl</goal>
+											<goal>
+												generate-snapshot
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -129,4 +153,90 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<profiles>
+		<profile>
+			<id>generate</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>loader-plugin</artifactId>
+						<configuration>
+							<loader>
+								<contexts>${db.context}</contexts>
+								<dbaServer>${dba.db.server}</dbaServer>
+								<dbaPort>${dba.db.port}</dbaPort>
+								<dbaUsername>${dba.db.login}</dbaUsername>
+								<dbaPassword>${dba.db.password}</dbaPassword>
+
+								<coreServer>${db.server}</coreServer>
+								<corePort>${db.port}</corePort>
+								<corePassword>${db.password}</corePassword>
+								<coreDb>${db}</coreDb>
+								<coreUsername>testme</coreUsername>
+
+								<dropDatabase>true</dropDatabase>
+							</loader>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<goals>
+									<goal>load</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.chiralbehaviors.CoRE</groupId>
+						<artifactId>workspace-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>load-dsl</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>load-dsl</goal>
+								</goals>
+								<configuration>
+									<database>
+										<coreServer>${db.server}</coreServer>
+										<corePort>${db.port}</corePort>
+										<coreDb>${db}</coreDb>
+										<coreUsername>${user}</coreUsername>
+										<corePassword>${db.password}</corePassword>
+									</database>
+									<resources>
+										<resource>${project.build.directory}/classes/single-page.1.wsp</resource>
+									</resources>
+								</configuration>
+							</execution>
+							<execution>
+								<id>generate-snapshots</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>generate-snapshot</goal>
+								</goals>
+								<configuration>
+									<database>
+										<coreServer>${db.server}</coreServer>
+										<corePort>${db.port}</corePort>
+										<coreUsername>${user}</coreUsername>
+										<coreDb>${db}</coreDb>
+										<corePassword>${db.password}</corePassword>
+									</database>
+									<exports>
+										<export>
+											<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page</iri>
+											<output>src/main/resources/single-page.1.json</output>
+										</export>
+									</exports>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 </project>

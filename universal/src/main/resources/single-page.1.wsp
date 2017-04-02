@@ -1,0 +1,56 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page" 
+           version: 1
+           "UaaS SP" "A declarative single page application framework for Ultrastructure"
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel {
+    		IsA.Workspace
+    }
+}
+attributes {
+    label = "Label" "The labe of something" text;
+    relation = "Relation" "The name of a relation" text;
+    route = "Route" "The named route" text;
+    extract = "Extract" "The xpath extractions from data"  keyed: true text;
+    query = "Query" "GraphQL query" text;
+    title = "Title" "Title text" text;
+	root = "Root" "Root page" text;
+	frameBy = "Workspace frame xpath extraction" "The xpath expression to exctract workspace frame from the relation" text;
+}
+products {
+    Page = "Page" "A single page in an application";
+    Application = "Application" "A single page application";
+    Route = "Route" "A routing from one page to another";
+    Action = "Action" "An action on an instance of a relation";
+
+    facets {
+        IsA.Application { root }
+        constraints {
+            one frame: IsA.Workspace
+            n hasPage: IsA.Page { route }
+        }
+
+		IsA.Page { query title }
+            constraints {
+                one pageOf: IsA.Application
+                one frame: IsA.Workspace
+
+                n create: IsA.Action named by relationship { relation }
+                n update: IsA.Action named by relationship { relation }
+                n delete: IsA.Action named by relationship { relation }
+                n navigate: IsA.Route named by relationship { relation }
+        }
+
+        IsA.Route { frameBy extract route }
+
+        IsA.Action { frameBy extract query }
+    }
+}
+relationships {
+    hasPage = "Has Page" "A has page B" | pageOf = "Page Of" "A is a page of B";
+    hasRoute = "Has Route" "A has route B" | routeOf = "Route Of" "A is a route of B";
+    frame = "A is framed by the workspace B" | frameOf = "A is the workspace frame of page B";
+    create = "A creates an instance of the relation using action B" | createRouteOf = "A is an action used to create a new instance of a relation of page B";
+    delete = "A deletes the relation using the action B" | deleteActionOf = "A is an action used to delete a relation of page B";
+    update = "A updates relation using route B" | updateActionOf = "A is a route used to update a relation of page B";
+    navigate = "A navigates the relation using route B" | navigationOf = "A is a route used to navigate a relation of page B";
+}

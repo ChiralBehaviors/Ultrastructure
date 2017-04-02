@@ -62,19 +62,25 @@ import javafx.stage.Stage;
  * @author hhildebrand
  *
  */
-public class SinglePageApp extends Application implements LayoutModel {
-    private static final Logger log = LoggerFactory.getLogger(SinglePageApp.class);
+public class Universal extends Application implements LayoutModel {
+
+    private static final String ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
+    private static final Logger log                                      = LoggerFactory.getLogger(Universal.class);
+
+    static {
+        System.setProperty(ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY, "true");
+    }
 
     public static void main(String[] args) {
         launch(args);
     }
 
     private AnchorPane               anchor;
-    private GraphqlApplication       application;
-    private final Stack<PageContext> back    = new Stack<>();
+    private Spa                application;
+    private final Stack<Context> back    = new Stack<>();
     private Button                   backButton;
     private WebTarget                endpoint;
-    private final Stack<PageContext> forward = new Stack<>();
+    private final Stack<Context> forward = new Stack<>();
     private Button                   forwardButton;
     private AutoLayoutView           layout;
     private Stage                    primaryStage;
@@ -139,11 +145,11 @@ public class SinglePageApp extends Application implements LayoutModel {
         Map<String, String> parameters = getParameters().getNamed();
         application = new ObjectMapper(new YAMLFactory()).readValue(Utils.resolveResource(getClass(),
                                                                                           parameters.get("app")),
-                                                                    GraphqlApplication.class);
+                                                                    Spa.class);
         endpoint = ClientBuilder.newClient()
                                 .target(application.getEndpoint()
                                                    .toURI());
-        push(new PageContext(application.getRoot()));
+        push(new Context(application.getRoot()));
         primaryStage.show();
     }
 
@@ -171,7 +177,7 @@ public class SinglePageApp extends Application implements LayoutModel {
 
     private void displayCurrentPage() {
         updateLocationBar();
-        PageContext pageContext = back.peek();
+        Context pageContext = back.peek();
         primaryStage.setTitle(pageContext.getPage()
                                          .getTitle());
         try {
@@ -184,7 +190,7 @@ public class SinglePageApp extends Application implements LayoutModel {
               .setAll(layout);
     }
 
-    private PageContext extract(Route route, JsonNode item) {
+    private Context extract(Route route, JsonNode item) {
         Map<String, Object> variables = new HashMap<>();
         route.getExtract()
              .entrySet()
@@ -194,7 +200,7 @@ public class SinglePageApp extends Application implements LayoutModel {
              });
 
         Page target = application.route(route.getPath());
-        return new PageContext(target, variables);
+        return new Context(target, variables);
     }
 
     private void forward() {
@@ -202,7 +208,7 @@ public class SinglePageApp extends Application implements LayoutModel {
         displayCurrentPage();
     }
 
-    private AutoLayoutView layout(PageContext pageContext) throws QueryException {
+    private AutoLayoutView layout(Context pageContext) throws QueryException {
         AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot(), this);
         layout.getStylesheets()
               .add(getClass().getResource("/non-nested.css")
@@ -234,7 +240,7 @@ public class SinglePageApp extends Application implements LayoutModel {
         return hbox;
     }
 
-    private void push(PageContext pageContext) throws QueryException {
+    private void push(Context pageContext) throws QueryException {
         back.push(pageContext);
         forward.clear();
         displayCurrentPage();

@@ -21,22 +21,25 @@
 package com.chiralbehaviors.layout.toy;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
  * @author hhildebrand
  *
  */
-public class GraphqlApplication {
-    @JsonProperty
-    private URL               endpoint;
-    @JsonProperty
-    private String            root;
-    @JsonProperty
-    private Map<String, Page> routes;
+public class Spa {
+    private final URL               endpoint;
+    private final String            root;
+    private final Map<String, Page> routes;
+
+    public Spa(URL endpoint, String root, Map<String, Page> routes) {
+        this.endpoint = endpoint;
+        this.root = root;
+        this.routes = new HashMap<>();
+        this.routes.putAll(routes);
+    }
 
     public URL getEndpoint() {
         return endpoint;

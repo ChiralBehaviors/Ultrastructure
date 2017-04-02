@@ -1,4 +1,4 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page" 
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page"
            version: 1
            "UaaS SP" "A declarative single page application framework for Ultrastructure"
 imports {
@@ -7,6 +7,8 @@ imports {
     }
 }
 attributes {
+    name = "Name" "The name of something" text;
+    description = "Description" "The description" text;
     label = "Label" "The labe of something" text;
     relation = "Relation" "The name of a relation" text;
     route = "Route" "The named route" text;
@@ -23,13 +25,13 @@ products {
     Action = "Action" "An action on an instance of a relation";
 
     facets {
-        IsA.Application { root }
-        constraints {
-            one frame: IsA.Workspace
-            n hasPage: IsA.Page { route }
-        }
+        IsA.Application { name description root }
+            constraints {
+                one frame: IsA.Workspace
+                n hasPage: IsA.Page { route }
+            }
 
-		IsA.Page { query title }
+		IsA.Page { name description query title }
             constraints {
                 one pageOf: IsA.Application
                 one frame: IsA.Workspace
@@ -38,7 +40,7 @@ products {
                 n update: IsA.Action named by relationship { relation }
                 n delete: IsA.Action named by relationship { relation }
                 n navigate: IsA.Route named by relationship { relation }
-        }
+            }
 
         IsA.Route { frameBy extract route }
 

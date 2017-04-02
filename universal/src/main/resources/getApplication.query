@@ -1,7 +1,13 @@
 query getApplication($id: String!) {
   application(id: $id) {
+    id
+    name
+    description
     root
     pages {
+      id
+      name
+      description
       _edge {
         ... on _application_page {
           route

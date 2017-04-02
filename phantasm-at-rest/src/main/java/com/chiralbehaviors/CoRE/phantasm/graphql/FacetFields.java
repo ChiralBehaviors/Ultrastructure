@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import static graphql.Scalars.GraphQLBoolean;
+import static graphql.Scalars.*;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
@@ -32,7 +32,6 @@ import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.beans.Introspector;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -57,7 +55,6 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -651,7 +648,7 @@ public class FacetFields extends Phantasmagoria {
                 type = GraphQLString;
                 break;
             case JSON:
-                type = GraphQLString;
+                type = WorkspaceSchema.GraphQLJson;
         }
         return attribute.getIndexed() ? new GraphQLList(type) : type;
     }
@@ -770,25 +767,40 @@ public class FacetFields extends Phantasmagoria {
                                                                   auth,
                                                                   (Map<String, Object>) update.get(setter)));
             builder.type(GraphQLString);
-
         } else {
-            Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
-                try {
-                    return new ObjectMapper().readValue((String) object,
-                                                        Map.class);
-                } catch (IOException e) {
-                    throw new IllegalStateException(String.format("Cannot deserialize %s",
-                                                                  object),
-                                                    e);
-                }
-            } : object -> object;
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (ExistentialRuleform) update.get(AT_RULEFORM),
                                                                   auth,
-                                                                  converter.apply(update.get(setter))));
-            builder.type(GraphQLString);
+                                                                  update.get(setter)));
+            switch (auth.getAttribute()
+                        .getValueType()) {
+                case Binary:
+                    builder.type(GraphQLString);
+                    break;
+                case Boolean:
+                    builder.type(GraphQLBoolean);
+                    break;
+                case Integer:
+                    builder.type(GraphQLInt);
+                    break;
+                case JSON:
+                    builder.type(WorkspaceSchema.GraphQLJson);
+                    break;
+                case Numeric:
+                    builder.type(GraphQLBigDecimal);
+                    break;
+                case Text:
+                    builder.type(GraphQLString);
+                    break;
+                case Timestamp:
+                    builder.type(GraphQLLong);
+                    break;
+                default:
+                    break;
+
+            }
         }
         GraphQLInputObjectField field = builder.build();
         updateTypeBuilder.field(field);

@@ -95,7 +95,8 @@ public class MappedAttribute {
                 imports.add("java.sql.Timestamp");
                 return "Timestamp";
             case "json":
-                return "Object";
+                imports.add("com.fasterxml.jackson.databind.JsonNode");
+                return "JsonNode";
             default:
                 throw new IllegalArgumentException();
         }

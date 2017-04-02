@@ -98,7 +98,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
                                                 variables);
 
         ExecutionResult execute = new WorkspaceContext(model,

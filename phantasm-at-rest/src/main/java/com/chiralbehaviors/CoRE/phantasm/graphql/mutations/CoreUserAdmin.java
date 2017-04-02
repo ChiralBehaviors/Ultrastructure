@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -50,7 +51,7 @@ public interface CoreUserAdmin {
         AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
                                                 oldPassword);
         // force reauthentication
-        currentUser.setAccessToken(new Object[0]);
+        currentUser.setAccessToken(new JsonNode[0]);
         return currentUser;
     }
 }

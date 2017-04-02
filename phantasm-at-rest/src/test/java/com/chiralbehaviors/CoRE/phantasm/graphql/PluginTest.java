@@ -104,7 +104,7 @@ public class PluginTest extends AbstractModelTest {
         variables.put("name", "hello");
         String hello = "goodbye";
         variables.put("description", hello);
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String) { "
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String) { "
                                                 + "createThing1("
                                                 + "  state: { "
                                                 + "     setName: $name, "

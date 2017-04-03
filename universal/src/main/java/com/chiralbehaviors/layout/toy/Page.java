@@ -31,26 +31,50 @@ import com.chiralbehaviors.layout.schema.Relation;
  */
 public class Page {
     public static class Route {
-        private String              path;
-        private Map<String, String> extract;
+        private final Map<String, String> extract;
+        private final String              frameBy;
+        private final String              path;
 
-        public String getPath() {
-            return path;
+        public Route(String path, String frameBy, Map<String, String> extract) {
+            this.path = path;
+            this.frameBy = frameBy;
+            this.extract = extract;
         }
 
         public Map<String, String> getExtract() {
             return extract;
         }
+
+        public String getFrameBy() {
+            return frameBy;
+        }
+
+        public String getPath() {
+            return path;
+        }
     }
 
+    private final String             description;
+    private final String             name;
     private final String             query;
     private final Map<String, Route> routes;
     private final String             title;
 
-    public Page(String title, String query, Map<String, Route> routes) {
+    public Page(String name, String description, String title, String query,
+                Map<String, Route> routes) {
+        this.name = name;
+        this.description = description;
         this.title = title;
         this.query = query;
         this.routes = routes;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getQuery() {

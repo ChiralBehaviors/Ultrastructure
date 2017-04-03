@@ -16,7 +16,7 @@
   },
   "records" : [ "java.util.ArrayList", [ {
     "@type" : "ExistentialRecord",
-    "id" : "36f9e09f-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2552014d-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Product",
     "name" : "Page",
     "description" : "A single page in an application",
@@ -30,7 +30,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36facb02-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255312c0-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Product",
     "name" : "Application",
     "description" : "A single page application",
@@ -44,7 +44,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36fb8e55-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2553d613-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Product",
     "name" : "Route",
     "description" : "A routing from one page to another",
@@ -58,7 +58,21 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36fc2a98-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25547256-17ff-11e7-9868-e32fd3f1785a",
+    "domain" : "Product",
+    "name" : "Launch",
+    "description" : "An application launch from a page in another application",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  }, {
+    "@type" : "ExistentialRecord",
+    "id" : "25550e99-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Product",
     "name" : "Action",
     "description" : "An action on an instance of a relation",
@@ -72,14 +86,14 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36fcc6db-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2555d1ec-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "Has Page",
     "description" : "A has page B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "36fcedec-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "2555d1ed-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -87,14 +101,14 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36fcedec-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2555d1ed-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "Page Of",
     "description" : "A is a page of B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "36fcc6db-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "2555d1ec-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -102,14 +116,14 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36fdff61-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25570a72-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "Has Route",
     "description" : "A has route B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "36fe2672-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "25570a73-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -117,14 +131,14 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36fe2672-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25570a73-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "Route Of",
     "description" : "A is a route of B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "36fdff61-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "25570a72-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -132,13 +146,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36ff37e7-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25581be8-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A is framed by the workspace B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "36ff5ef8-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "25581be9-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -146,13 +160,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "36ff5ef8-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25581be9-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A is the workspace frame of page B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "36ff37e7-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "25581be8-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -160,13 +174,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3700706d-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25592d5e-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A creates an instance of the relation using action B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "3700706e-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "25592d5f-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -174,13 +188,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3700706e-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25592d5f-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A is an action used to create a new instance of a relation of page B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "3700706d-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "25592d5e-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -188,13 +202,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37015ad3-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255a3ed4-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A deletes the relation using the action B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "37015ad4-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "255a3ed5-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -202,13 +216,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37015ad4-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255a3ed5-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A is an action used to delete a relation of page B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "37015ad3-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "255a3ed4-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -216,13 +230,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37026c49-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255b293a-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A updates relation using route B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "37026c4a-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "255b293b-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -230,13 +244,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37026c4a-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255b293b-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A is a route used to update a relation of page B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "37026c49-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "255b293a-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -244,13 +258,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3703a4cf-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255c13a0-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A navigates the relation using route B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "3703a4d0-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "255c13a1-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -258,13 +272,13 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3703a4d0-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255c13a1-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Relationship",
     "name" : "A is a route used to navigate a relation of page B",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "inverse" : "3703a4cf-17e3-11e7-b00a-27d99e1177ec",
+    "inverse" : "255c13a0-17ff-11e7-9868-e32fd3f1785a",
     "valueType" : "Text",
     "keyed" : false,
     "indexed" : false,
@@ -272,7 +286,35 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3704b645-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255cd6f6-17ff-11e7-9868-e32fd3f1785a",
+    "domain" : "Relationship",
+    "name" : "A launches the application using the application launch defined by B",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "inverse" : "255cd6f7-17ff-11e7-9868-e32fd3f1785a",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  }, {
+    "@type" : "ExistentialRecord",
+    "id" : "255cd6f7-17ff-11e7-9868-e32fd3f1785a",
+    "domain" : "Relationship",
+    "name" : "A is a launch used to launch an application from a relation of page B",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "inverse" : "255cd6f6-17ff-11e7-9868-e32fd3f1785a",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  }, {
+    "@type" : "ExistentialRecord",
+    "id" : "255d9a4c-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Name",
     "description" : "The name of something",
@@ -286,7 +328,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37052b78-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255e0f7f-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Description",
     "description" : "The description",
@@ -300,7 +342,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3705799b-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255e5da2-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Label",
     "description" : "The labe of something",
@@ -314,7 +356,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3705eece-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Relation",
     "description" : "The name of a relation",
@@ -328,7 +370,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37066401-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255f4808-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Route",
     "description" : "The named route",
@@ -342,7 +384,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3706d934-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255f962b-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Extract",
     "description" : "The xpath extractions from data",
@@ -356,7 +398,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "37077577-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2560326e-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Query",
     "description" : "GraphQL query",
@@ -370,7 +412,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "370886ea-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2560a7a1-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Title",
     "description" : "Title text",
@@ -384,7 +426,7 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3708d50d-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25611cd4-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Root",
     "description" : "Root page",
@@ -398,10 +440,24 @@
     "propagateChildren" : true
   }, {
     "@type" : "ExistentialRecord",
-    "id" : "3709bf70-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25619207-17ff-11e7-9868-e32fd3f1785a",
     "domain" : "Attribute",
     "name" : "Frame By",
-    "description" : "The xpath expression to exctract workspace frame from the relation",
+    "description" : "The xpath expression to extract the workspace frame id from the relation",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  }, {
+    "@type" : "ExistentialRecord",
+    "id" : "25622e4a-17ff-11e7-9868-e32fd3f1785a",
+    "domain" : "Attribute",
+    "name" : "Launch By",
+    "description" : "The xpath expression to extract application id from the relation",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
@@ -413,135 +469,153 @@
   }, {
     "@type" : "ExistentialAttributeRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "36f5e8fb-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "254dbb89-17ff-11e7-9868-e32fd3f1785a",
     "existential" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
     "attribute" : "2ebcb6ef-576d-11e6-af6e-8b9b08aeeb36",
     "textValue" : "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 4,
-    "updated" : "2017-04-02T20:30:30.528+0000",
+    "updated" : "2017-04-02T23:50:26.813+0000",
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "370f8bd7-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3704b645-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256821c2-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255d9a4c-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "37102818-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "37052b78-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256896f3-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255e0f7f-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "37109d49-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3708d50d-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25690c24-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "25611cd4-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "37146ddd-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3704b645-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256c8e98-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255d9a4c-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3714e30e-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "37052b78-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256d03c9-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255e0f7f-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3715583f-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "37077577-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256d78fa-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "2560326e-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3715f480-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "370886ea-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256dc71b-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "2560a7a1-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371c5d2b-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370d41e5-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3709bf70-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "257652a8-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "256589af-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "25619207-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371c843c-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370d41e5-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3706d934-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2576a0c9-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "256589af-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255f962b-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371cf96d-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370d41e5-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "37066401-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2576eeea-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "256589af-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255f4808-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371dbcbe-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3709bf70-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2577b23b-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25667410-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "25619207-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371e0adf-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3706d934-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2578005c-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25667410-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255f962b-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371e5800-17e3-11e7-b00a-27d99e1177ec",
-    "facet" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "37077577-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2578758d-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25667410-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "2560326e-17ff-11e7-9868-e32fd3f1785a",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeAuthorizationRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "257938de-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25673761-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "25619207-17ff-11e7-9868-e32fd3f1785a",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeAuthorizationRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "257986ff-17ff-11e7-9868-e32fd3f1785a",
+    "facet" : "25673761-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "25622e4a-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "36f39f09-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "254b7197-17ff-11e7-9868-e32fd3f1785a",
     "parent" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
     "relationship" : "00000000-0000-0005-0000-000000000013",
     "child" : "00000000-0000-0004-0000-000000000006",
@@ -550,7 +624,7 @@
   }, {
     "@type" : "ExistentialNetworkRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "36f3c61a-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "254b98a8-17ff-11e7-9868-e32fd3f1785a",
     "parent" : "00000000-0000-0004-0000-000000000006",
     "relationship" : "00000000-0000-0005-0000-000000000012",
     "child" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
@@ -559,7 +633,7 @@
   }, {
     "@type" : "ExistentialNetworkRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "36f80bdc-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2550057a-17ff-11e7-9868-e32fd3f1785a",
     "parent" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
     "relationship" : "00000000-0000-0005-0000-000000000011",
     "child" : "00000000-0000-0004-0000-000000000003",
@@ -568,7 +642,7 @@
   }, {
     "@type" : "ExistentialNetworkRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "36f832ed-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25502c8b-17ff-11e7-9868-e32fd3f1785a",
     "parent" : "00000000-0000-0004-0000-000000000003",
     "relationship" : "00000000-0000-0005-0000-000000000010",
     "child" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
@@ -577,67 +651,76 @@
   }, {
     "@type" : "ExistentialNetworkAttributeRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "36f8a81e-17e3-11e7-b00a-27d99e1177ec",
-    "edge" : "36f80bdc-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2550a1bc-17ff-11e7-9868-e32fd3f1785a",
+    "edge" : "2550057a-17ff-11e7-9868-e32fd3f1785a",
     "attribute" : "2ebbcc89-576d-11e6-af6e-8b9b08aeeb36",
     "textValue" : "kernel",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 3,
     "sequenceNumber" : 1,
-    "updated" : "2017-04-02T20:30:30.539+0000",
+    "updated" : "2017-04-02T23:50:26.826+0000",
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "37135c6c-17e3-11e7-b00a-27d99e1177ec",
-    "networkAuthorization" : "3712720b-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "37066401-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256ba437-17ff-11e7-9868-e32fd3f1785a",
+    "networkAuthorization" : "256ab9d6-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255f4808-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "37186584-17e3-11e7-b00a-27d99e1177ec",
-    "networkAuthorization" : "3717c943-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3705eece-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2570ad4f-17ff-11e7-9868-e32fd3f1785a",
+    "networkAuthorization" : "256fe9fe-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371976f6-17e3-11e7-b00a-27d99e1177ec",
-    "networkAuthorization" : "3718b3a5-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3705eece-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2571e5d1-17ff-11e7-9868-e32fd3f1785a",
+    "networkAuthorization" : "25712280-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371a8868-17e3-11e7-b00a-27d99e1177ec",
-    "networkAuthorization" : "3719ec27-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3705eece-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2572f743-17ff-11e7-9868-e32fd3f1785a",
+    "networkAuthorization" : "257233f2-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkAttributeAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371b99da-17e3-11e7-b00a-27d99e1177ec",
-    "networkAuthorization" : "371ad689-17e3-11e7-b00a-27d99e1177ec",
-    "authorizedAttribute" : "3705eece-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25742fc5-17ff-11e7-9868-e32fd3f1785a",
+    "networkAuthorization" : "25736c74-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialNetworkAttributeAuthorizationRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "25756847-17ff-11e7-9868-e32fd3f1785a",
+    "networkAuthorization" : "2574a4f6-17ff-11e7-9868-e32fd3f1785a",
+    "authorizedAttribute" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2,
     "jsonValue" : null
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3711398a-17e3-11e7-b00a-27d99e1177ec",
-    "name" : "Workspace",
-    "parent" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "36ff37e7-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25695a45-17ff-11e7-9868-e32fd3f1785a",
+    "name" : "frame",
+    "parent" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "25581be8-17ff-11e7-9868-e32fd3f1785a",
     "child" : "2ec5dec9-576d-11e6-af6e-8b9b08aeeb36",
     "cardinality" : "_1",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
@@ -645,32 +728,32 @@
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3712720b-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256ab9d6-17ff-11e7-9868-e32fd3f1785a",
     "name" : "Page",
-    "parent" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "36fcc6db-17e3-11e7-b00a-27d99e1177ec",
-    "child" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
+    "parent" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "2555d1ec-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
     "cardinality" : "N",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371642a1-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256e153c-17ff-11e7-9868-e32fd3f1785a",
     "name" : "Application",
-    "parent" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "36fcedec-17e3-11e7-b00a-27d99e1177ec",
-    "child" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "2555d1ed-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
     "cardinality" : "_1",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371705f2-17e3-11e7-b00a-27d99e1177ec",
-    "name" : "Workspace",
-    "parent" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "36ff37e7-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256eff9d-17ff-11e7-9868-e32fd3f1785a",
+    "name" : "frame",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "25581be8-17ff-11e7-9868-e32fd3f1785a",
     "child" : "2ec5dec9-576d-11e6-af6e-8b9b08aeeb36",
     "cardinality" : "_1",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
@@ -678,87 +761,129 @@
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3717c943-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256fe9fe-17ff-11e7-9868-e32fd3f1785a",
     "name" : "create",
-    "parent" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "3700706d-17e3-11e7-b00a-27d99e1177ec",
-    "child" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "25592d5e-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "25667410-17ff-11e7-9868-e32fd3f1785a",
     "cardinality" : "N",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3718b3a5-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25712280-17ff-11e7-9868-e32fd3f1785a",
     "name" : "update",
-    "parent" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "37026c49-17e3-11e7-b00a-27d99e1177ec",
-    "child" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "255b293a-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "25667410-17ff-11e7-9868-e32fd3f1785a",
     "cardinality" : "N",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "3719ec27-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "257233f2-17ff-11e7-9868-e32fd3f1785a",
     "name" : "delete",
-    "parent" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "37015ad3-17e3-11e7-b00a-27d99e1177ec",
-    "child" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "255a3ed4-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "25667410-17ff-11e7-9868-e32fd3f1785a",
     "cardinality" : "N",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "ExistentialNetworkAuthorizationRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "371ad689-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25736c74-17ff-11e7-9868-e32fd3f1785a",
     "name" : "navigate",
-    "parent" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
-    "relationship" : "3703a4cf-17e3-11e7-b00a-27d99e1177ec",
-    "child" : "370d41e5-17e3-11e7-b00a-27d99e1177ec",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "255c13a0-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "256589af-17ff-11e7-9868-e32fd3f1785a",
     "cardinality" : "N",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkAuthorizationRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "2574a4f6-17ff-11e7-9868-e32fd3f1785a",
+    "name" : "launch",
+    "parent" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "255cd6f6-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "25673761-17ff-11e7-9868-e32fd3f1785a",
+    "cardinality" : "N",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkAuthorizationRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "2579fc30-17ff-11e7-9868-e32fd3f1785a",
+    "name" : "frame",
+    "parent" : "25673761-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "25581be8-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "2ec5dec9-576d-11e6-af6e-8b9b08aeeb36",
+    "cardinality" : "_1",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkAuthorizationRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "257ae691-17ff-11e7-9868-e32fd3f1785a",
+    "name" : "Immediate",
+    "parent" : "25673761-17ff-11e7-9868-e32fd3f1785a",
+    "relationship" : "255cd6f6-17ff-11e7-9868-e32fd3f1785a",
+    "child" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
+    "cardinality" : "_1",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "FacetRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "370b1f03-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25633fbd-17ff-11e7-9868-e32fd3f1785a",
     "name" : "Application",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "classification" : "36facb02-17e3-11e7-b00a-27d99e1177ec",
+    "classification" : "255312c0-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "FacetRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "370c0964-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2564512e-17ff-11e7-9868-e32fd3f1785a",
     "name" : "Page",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "classification" : "36f9e09f-17e3-11e7-b00a-27d99e1177ec",
+    "classification" : "2552014d-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "FacetRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "370d41e5-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "256589af-17ff-11e7-9868-e32fd3f1785a",
     "name" : "Route",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "classification" : "36fb8e55-17e3-11e7-b00a-27d99e1177ec",
+    "classification" : "2553d613-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "FacetRecord",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
-    "id" : "370e7a66-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25667410-17ff-11e7-9868-e32fd3f1785a",
     "name" : "Action",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "classification" : "36fc2a98-17e3-11e7-b00a-27d99e1177ec",
+    "classification" : "25550e99-17ff-11e7-9868-e32fd3f1785a",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "FacetRecord",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "id" : "25673761-17ff-11e7-9868-e32fd3f1785a",
+    "name" : "Launch",
+    "classifier" : "00000000-0000-0005-0000-000000000013",
+    "classification" : "25547256-17ff-11e7-9868-e32fd3f1785a",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 2
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fa55d1-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36f9e09f-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25529d8f-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "2552014d-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -766,8 +891,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fb1924-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36facb02-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255360e2-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255312c0-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -775,8 +900,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fbdc77-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36fb8e55-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25542435-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "2553d613-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -784,8 +909,17 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fc78ba-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36fc2a98-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2554c078-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25547256-17ff-11e7-9868-e32fd3f1785a",
+    "type" : "Existential",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "key" : "Launch",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
+  }, {
+    "@type" : "WorkspaceLabelRecord",
+    "id" : "25555cbb-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25550e99-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -793,8 +927,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fd631e-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36fcc6db-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2556471f-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "2555d1ec-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -802,8 +936,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fdb140-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36fcedec-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2556bc51-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "2555d1ed-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -811,8 +945,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fe7494-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36fdff61-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25577fa5-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25570a72-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -820,8 +954,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36fee9c6-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36fe2672-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2557cdc7-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25570a73-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -829,8 +963,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "36ffad1a-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36ff37e7-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2558911b-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25581be8-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -838,8 +972,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3700224c-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "36ff5ef8-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2558df3d-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25581be9-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -847,8 +981,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3700be90-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3700706d-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2559a291-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25592d5e-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -856,17 +990,17 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37010cb2-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3700706e-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2559f0b3-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25592d5f-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
-    "key" : "createRouteOf",
+    "key" : "createActionOf",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3701d006-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37015ad3-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255ab407-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255a3ed4-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -874,8 +1008,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37021e28-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37015ad4-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255b0229-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255a3ed5-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -883,8 +1017,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3702ba6c-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37026c49-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255b9e6d-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255b293a-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -892,8 +1026,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "370356ae-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37026c4a-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255bec8f-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255b293b-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -901,8 +1035,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3703f2f2-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3703a4cf-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255c3ab3-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255c13a0-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -910,8 +1044,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37044114-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3703a4d0-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255cafe5-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255c13a1-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -919,8 +1053,26 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37050467-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3704b645-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255d2519-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255cd6f6-17ff-11e7-9868-e32fd3f1785a",
+    "type" : "Existential",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "key" : "launch",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
+  }, {
+    "@type" : "WorkspaceLabelRecord",
+    "id" : "255d4c2b-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255cd6f7-17ff-11e7-9868-e32fd3f1785a",
+    "type" : "Existential",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "key" : "launchOf",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
+  }, {
+    "@type" : "WorkspaceLabelRecord",
+    "id" : "255dc15e-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255d9a4c-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -928,8 +1080,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3705528a-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37052b78-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255e3691-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255e0f7f-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -937,8 +1089,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3705c7bd-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3705799b-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255eabc4-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255e5da2-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -946,8 +1098,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37063cf0-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3705eece-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255f20f7-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255ed2d5-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -955,8 +1107,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3706b223-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37066401-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255f6f1a-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255f4808-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -964,8 +1116,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37070046-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3706d934-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "255fe44d-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "255f962b-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -973,8 +1125,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "370838c9-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "37077577-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25605980-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "2560326e-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -982,8 +1134,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3708adfc-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "370886ea-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2560ceb3-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "2560a7a1-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -991,8 +1143,8 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "37094a3f-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3708d50d-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "25616af6-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25611cd4-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
@@ -1000,12 +1152,21 @@
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   }, {
     "@type" : "WorkspaceLabelRecord",
-    "id" : "3709e682-17e3-11e7-b00a-27d99e1177ec",
-    "reference" : "3709bf70-17e3-11e7-b00a-27d99e1177ec",
+    "id" : "2561e029-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25619207-17ff-11e7-9868-e32fd3f1785a",
     "type" : "Existential",
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "version" : 1,
     "key" : "frameBy",
+    "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
+  }, {
+    "@type" : "WorkspaceLabelRecord",
+    "id" : "2562555c-17ff-11e7-9868-e32fd3f1785a",
+    "reference" : "25622e4a-17ff-11e7-9868-e32fd3f1785a",
+    "type" : "Existential",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "key" : "launchBy",
     "workspace" : "a4d8bf63-f589-56a3-bebc-c3236a271237"
   } ] ]
 }

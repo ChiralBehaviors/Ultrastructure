@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.layout.toy;
 
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,19 +28,31 @@ import java.util.Map;
  *
  */
 public class Spa {
-    private final URL               endpoint;
+    private final String            description;
+    private final String            frame;
+    private final String            name;
     private final String            root;
     private final Map<String, Page> routes;
 
-    public Spa(URL endpoint, String root, Map<String, Page> routes) {
-        this.endpoint = endpoint;
+    public Spa(String name, String description, String frame, String root,
+               Map<String, Page> routes) {
+        this.name = name;
+        this.description = description;
+        this.frame = frame;
         this.root = root;
-        this.routes = new HashMap<>();
-        this.routes.putAll(routes);
+        this.routes = routes;
     }
 
-    public URL getEndpoint() {
-        return endpoint;
+    public String getDescription() {
+        return description;
+    }
+
+    public String getFrame() {
+        return frame;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Page getRoot() {

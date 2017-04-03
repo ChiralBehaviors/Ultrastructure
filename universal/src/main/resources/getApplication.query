@@ -1,6 +1,5 @@
 query getApplication($id: String!) {
   application(id: $id) {
-    id
     name
     description
     root
@@ -16,6 +15,7 @@ query getApplication($id: String!) {
       title
       query
       navigates {
+        id
         _edge {
           ... on _page_navigate {
             relation
@@ -24,6 +24,20 @@ query getApplication($id: String!) {
         extract
         frameBy
         route
+      }
+      launches {
+        id
+        _edge {
+          ... on _page_launch {
+            relation
+          }
+        }
+        frameBy
+        launchBy
+        immediate {
+          id
+          name
+        }
       }
     }
   }

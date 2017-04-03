@@ -21,6 +21,7 @@
 package com.chiralbehaviors.layout.toy;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +65,7 @@ import javafx.stage.Stage;
  */
 public class Universal extends Application implements LayoutModel {
 
+    public static final String  UNIVERSAL_ENDPOINT                       = "universal.endpoint";
     private static final String ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
     private static final Logger log                                      = LoggerFactory.getLogger(Universal.class);
 
@@ -75,16 +77,16 @@ public class Universal extends Application implements LayoutModel {
         launch(args);
     }
 
-    private AnchorPane               anchor;
-    private Spa                application;
+    private AnchorPane           anchor;
+    private Spa                  application;
     private final Stack<Context> back    = new Stack<>();
-    private Button                   backButton;
-    private WebTarget                endpoint;
+    private Button               backButton;
+    private WebTarget            endpoint;
     private final Stack<Context> forward = new Stack<>();
-    private Button                   forwardButton;
-    private AutoLayoutView           layout;
-    private Stage                    primaryStage;
-    private Button                   reloadButton;
+    private Button               forwardButton;
+    private AutoLayoutView       layout;
+    private Stage                primaryStage;
+    private Button               reloadButton;
 
     @Override
     public void apply(ListView<JsonNode> list, Relation relation) {
@@ -147,8 +149,7 @@ public class Universal extends Application implements LayoutModel {
                                                                                           parameters.get("app")),
                                                                     Spa.class);
         endpoint = ClientBuilder.newClient()
-                                .target(application.getEndpoint()
-                                                   .toURI());
+                                .target(endpointUri(parameters.get("endpoint")));
         push(new Context(application.getRoot()));
         primaryStage.show();
     }
@@ -158,6 +159,7 @@ public class Universal extends Application implements LayoutModel {
         JsonNode current = node;
         while (tokens.hasMoreTokens()) {
             node = current.get(tokens.nextToken());
+            current = node;
         }
         return node;
     }
@@ -188,6 +190,17 @@ public class Universal extends Application implements LayoutModel {
         }
         anchor.getChildren()
               .setAll(layout);
+    }
+
+    private URI endpointUri(String endpoint) throws URISyntaxException {
+        if (endpoint != null) {
+            return new URI(endpoint);
+        }
+        if (System.getProperty(UNIVERSAL_ENDPOINT) == null) {
+            log.error("No universal endpoint defined");
+            throw new IllegalStateException("No universal endpoint defined");
+        }
+        return new URI(System.getProperty(UNIVERSAL_ENDPOINT));
     }
 
     private Context extract(Route route, JsonNode item) {

@@ -64,6 +64,7 @@
 						<phase>generate-test-sources</phase>
 						<goals>
 							<goal>add-source</goal>
+                            <goal>add-test-source</goal>
 						</goals>
 						<configuration>
 							<sources>
@@ -79,7 +80,7 @@
 				<executions>
 					<execution>
 						<id>app-phantasms</id>
-						<phase>generate-test-sources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -135,28 +136,6 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.chiralbehaviors.CoRE
-										</groupId>
-										<artifactId>
-											workspace-plugin
-										</artifactId>
-										<versionRange>
-											[${ultrastructure.version},)
-										</versionRange>
-										<goals>
-											<goal>load-dsl</goal>
-											<goal>
-												generate-snapshot
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -164,90 +143,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<profiles>
-		<profile>
-			<id>generate</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>${project.groupId}</groupId>
-						<artifactId>loader-plugin</artifactId>
-						<configuration>
-							<loader>
-								<contexts>${db.context}</contexts>
-								<dbaServer>${dba.db.server}</dbaServer>
-								<dbaPort>${dba.db.port}</dbaPort>
-								<dbaUsername>${dba.db.login}</dbaUsername>
-								<dbaPassword>${dba.db.password}</dbaPassword>
-
-								<coreServer>${db.server}</coreServer>
-								<corePort>${db.port}</corePort>
-								<corePassword>${db.password}</corePassword>
-								<coreDb>${db}</coreDb>
-								<coreUsername>testme</coreUsername>
-
-								<dropDatabase>true</dropDatabase>
-							</loader>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>compile</phase>
-								<goals>
-									<goal>load</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>com.chiralbehaviors.CoRE</groupId>
-						<artifactId>workspace-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>load-dsl</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>load-dsl</goal>
-								</goals>
-								<configuration>
-									<database>
-										<coreServer>${db.server}</coreServer>
-										<corePort>${db.port}</corePort>
-										<coreDb>${db}</coreDb>
-										<coreUsername>${user}</coreUsername>
-										<corePassword>${db.password}</corePassword>
-									</database>
-									<resources>
-										<resource>${project.build.directory}/classes/single-page.1.wsp</resource>
-									</resources>
-								</configuration>
-							</execution>
-							<execution>
-								<id>generate-snapshots</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>generate-snapshot</goal>
-								</goals>
-								<configuration>
-									<database>
-										<coreServer>${db.server}</coreServer>
-										<corePort>${db.port}</corePort>
-										<coreUsername>${user}</coreUsername>
-										<coreDb>${db}</coreDb>
-										<corePassword>${db.password}</corePassword>
-									</database>
-									<exports>
-										<export>
-											<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page</iri>
-											<output>src/main/resources/single-page.1.json</output>
-										</export>
-									</exports>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-	</profiles>
 </project>

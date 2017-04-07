@@ -1,5 +1,5 @@
 query getApplication($id: String!) {
-  application(id: $id) {
+  singlePageApplication(id: $id) {
     name
     description
     root
@@ -8,7 +8,7 @@ query getApplication($id: String!) {
       name
       description
       _edge {
-        ... on _application_page {
+        ... on _singlePageApplication_page {
           route
         }
       }

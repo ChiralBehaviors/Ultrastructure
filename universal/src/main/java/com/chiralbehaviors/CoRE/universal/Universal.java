@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.layout.toy;
+package com.chiralbehaviors.CoRE.universal;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,11 +34,11 @@ import javax.ws.rs.client.WebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.universal.Page.Route;
 import com.chiralbehaviors.layout.AutoLayoutView;
 import com.chiralbehaviors.layout.Layout.LayoutModel;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.schema.Relation;
-import com.chiralbehaviors.layout.toy.Page.Route;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

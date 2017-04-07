@@ -21,13 +21,26 @@ attributes {
 }
 products {
     Page = "Page" "A single page in an application";
-    Application = "Application" "A single page application";
+    SinglePageApp = "Single Page Application" "A single page application";
     Route = "Route" "A routing from one page to another";
     Launch = "Launch" "An application launch from a page in another application";
     Action = "Action" "An action on an instance of a relation";
+    
+    AppLauncher = "Application Launcher" "A well known application for launching applications";
+    AllApplications = "All applications" "Page with all applications";
+    LaunchApplication = "Launch Application" "Launch the selected application";
+    
+    edges {
+        AppLauncher.IsA.SinglePageApp
+        AllApplications.IsA.Page
+        AllApplications.pageOf.AppLauncher
+        
+        LaunchApplication.IsA.Launch
+        LaunchApplication.launchOf.AllApplications
+    }
 
     facets {
-        IsA.Application { name description root }
+        IsA.SinglePageApp { name description root }
             constraints {
                 one frame: IsA.Workspace named by relationship 
                 n hasPage: IsA.Page { route }
@@ -35,7 +48,7 @@ products {
 
 		IsA.Page { name description query title }
             constraints {
-                one pageOf: IsA.Application
+                one pageOf: IsA.SinglePageApp
                 one frame: IsA.Workspace named by relationship 
 
                 n create: IsA.Action named by relationship { relation }
@@ -51,8 +64,9 @@ products {
 
         IsA.Launch { frameBy launchBy }
             constraints {
+                one launchOf: IsA.Page
                 one frame: IsA.Workspace named by relationship
-                one launch: IsA.Application named Immediate
+                one launch: IsA.SinglePageApp named Immediate
             }
     }
 }

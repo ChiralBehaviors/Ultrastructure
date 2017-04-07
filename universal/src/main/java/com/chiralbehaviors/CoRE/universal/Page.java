@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.layout.toy;
+package com.chiralbehaviors.CoRE.universal;
 
 import java.util.Map;
 

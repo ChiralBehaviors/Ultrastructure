@@ -21,8 +21,10 @@
 package com.chiralbehaviors.CoRE.universal;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -69,11 +71,12 @@ import javafx.stage.Stage;
 public class Universal extends Application implements LayoutModel {
     public static final String              GET_APPLICATION_QUERY;
     public static final String              GET_APPLICATION_QUERY_RESOURCE           = "getApplication.query";
-    public static final String              GET_APPLICATIONS_QUERY_RESOURCE           = "getApplications.query";
+    public static final String              GET_APPLICATIONS_QUERY_RESOURCE          = "getApplications.query";
     public static final String              SINGLE_PAGE_APPLICATION                  = "singlePageApplication";
-    public static final String              SINGLE_PAGE_APPLICATIONS                  = "singlePageApplications";
+    public static final String              SINGLE_PAGE_APPLICATIONS                 = "singlePageApplications";
     public static final String              SINGLE_PAGE_URI                          = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page";
     public static final UUID                SINGLE_PAGE_UUID;
+    public static final String              UNIVERSAL_APP_ID                         = "universal.app.id";
     public static final String              UNIVERSAL_ENDPOINT                       = "universal.endpoint";
 
     private static final String             ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
@@ -91,13 +94,13 @@ public class Universal extends Application implements LayoutModel {
         }
         SINGLE_PAGE_UUID = uuidOf(SINGLE_PAGE_URI);
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }
 
     public static String textOrNull(JsonNode node) {
-        return node == null? null : node.asText();
+        return node == null ? null : node.asText();
     }
 
     public static UUID uuidOf(String url) {
@@ -121,49 +124,26 @@ public class Universal extends Application implements LayoutModel {
     @Override
     public void apply(ListView<JsonNode> list, Relation relation) {
         list.setOnMouseClicked(event -> {
-            Route route = back.peek()
-                              .getNavigation(relation);
-            if (route == null) {
+            if (list.getItems()
+                    .isEmpty()
+                || event.getButton() != MouseButton.PRIMARY
+                || event.getClickCount() < 2) {
                 return;
             }
-            if (!list.getItems()
-                     .isEmpty()
-                && event.getButton() == MouseButton.PRIMARY
-                && event.getClickCount() >= 2) {
-                JsonNode item = list.getSelectionModel()
-                                    .getSelectedItem();
-                if (item == null) {
-                    return;
-                }
-                try {
-                    push(extract(route, item));
-                } catch (QueryException e) {
-                    log.error("Unable to push page: %s", route.getPath(), e);
-                }
-            }
+            doubleClick(list.getSelectionModel()
+                            .getSelectedItem(),
+                        relation);
         });
     }
 
     @Override
     public void apply(TableRow<JsonNode> row, Relation relation) {
         row.setOnMouseClicked(event -> {
-            Context current = back.peek();
-            Route route = current.getNavigation(relation);
-            if (route == null) {
+            if (row.isEmpty() || event.getButton() != MouseButton.PRIMARY
+                || event.getClickCount() < 2) {
                 return;
             }
-            if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY
-                && event.getClickCount() == 2) {
-                JsonNode item = row.getItem();
-                if (item == null) {
-                    return;
-                }
-                try {
-                    push(extract(route, item));
-                } catch (QueryException e) {
-                    log.error("Unable to push page: %s", route.getPath(), e);
-                }
-            }
+            doubleClick(row.getItem(), relation);
         });
     }
 
@@ -174,12 +154,33 @@ public class Universal extends Application implements LayoutModel {
         anchor = new AnchorPane();
         VBox vbox = new VBox(locationBar(), anchor);
         primaryStage.setScene(new Scene(vbox, 800, 600));
-        Map<String, String> parameters = getParameters().getNamed();
         endpoint = ClientBuilder.newClient()
-                                .target(endpointUri(parameters.get("endpoint")));
-        application = resolve(parameters.get("app"));
+                                .target(endpointUri());
+        application = initialSpa();
         push(new Context(application.getRoot()));
         primaryStage.show();
+    }
+
+    private String appLauncherId() {
+        String encodedWsp;
+        try {
+            encodedWsp = URLEncoder.encode(SINGLE_PAGE_UUID.toString(),
+                                           "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+        WebTarget webTarget = endpoint.path(encodedWsp);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", "AppLauncher");
+        try {
+            return GraphQlUtil.evaluate(webTarget,
+                                        new QueryRequest("query q($name: String!) { lookup(name: $name) }",
+                                                         variables))
+                              .get("lookup")
+                              .asText();
+        } catch (QueryException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private JsonNode apply(JsonNode node, String path) {
@@ -220,15 +221,36 @@ public class Universal extends Application implements LayoutModel {
               .setAll(layout);
     }
 
-    private URI endpointUri(String endpoint) throws URISyntaxException {
+    private void doubleClick(JsonNode item, Relation relation) {
+        Route route = back.peek()
+                          .getNavigation(relation);
+        if (route == null) {
+            return;
+        }
+        if (item == null) {
+            return;
+        }
+        try {
+            push(extract(route, item));
+        } catch (QueryException e) {
+            log.error("Unable to push page: %s", route.getPath(), e);
+        }
+    }
+
+    private URI endpointUri() throws URISyntaxException {
+
+        String endpoint = System.getProperty(UNIVERSAL_ENDPOINT);
         if (endpoint != null) {
             return new URI(endpoint);
         }
-        if (System.getProperty(UNIVERSAL_ENDPOINT) == null) {
+
+        endpoint = getParameters().getNamed()
+                                  .get("endpoint");
+        if (endpoint == null) {
             log.error("No universal endpoint defined");
             throw new IllegalStateException("No universal endpoint defined");
         }
-        return new URI(System.getProperty(UNIVERSAL_ENDPOINT));
+        return new URI(endpoint);
     }
 
     private Context extract(Route route, JsonNode item) {
@@ -247,6 +269,22 @@ public class Universal extends Application implements LayoutModel {
     private void forward() {
         back.push(forward.pop());
         displayCurrentPage();
+    }
+
+    private Spa initialSpa() {
+
+        String id = System.getProperty(UNIVERSAL_APP_ID);
+        if (id != null) {
+            return resolve(id);
+        }
+
+        id = getParameters().getNamed()
+                            .get("app");
+        if (id == null) {
+            log.info("No application id defined, using default app launcher");
+            return resolve(appLauncherId());
+        }
+        return resolve(id);
     }
 
     private AutoLayoutView layout(Context pageContext) throws QueryException {

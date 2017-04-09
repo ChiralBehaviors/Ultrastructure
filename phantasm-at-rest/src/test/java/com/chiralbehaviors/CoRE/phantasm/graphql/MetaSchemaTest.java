@@ -721,6 +721,21 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
+        variables.clear();
+        variables.put("name", "ExemptAgency");
+        data = execute(schema,
+                       "query q($name: String!) { lookup(name: $name) }",
+                       variables);
+        assertNotNull(data);
+        assertNotNull(data.get("lookup"));
+
+        variables.put("namespace", "kernel");
+        variables.put("name", "IsA");
+        data = execute(schema,
+                       "query q($namespace: String, $name: String!) { lookup(namespace: $namespace, name: $name) }",
+                       variables);
+        assertNotNull(data);
+        assertNotNull(data.get("lookup"));
     }
 
     @Test

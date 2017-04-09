@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
+
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,12 +42,8 @@ public class Route {
     private final String              path;
 
     public Route(ObjectNode route) {
-        this(route.get("frame")
-                  .asText(),
-             route.get("path")
-                  .asText(),
-             extract(route.get("extract")
-                          .asText()));
+        this(textOrNull(route.get("frame")), textOrNull(route.get("path")),
+             extract(textOrNull(route.get("extract"))));
     }
 
     public Route(String path, String frameBy, Map<String, String> extract) {

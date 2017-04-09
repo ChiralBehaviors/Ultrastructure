@@ -241,9 +241,4 @@ public class RoundTripFunctionalTest {
         Map response = invocationBuilder.post(Entity.json(request), Map.class);
         assertNotNull(response);
     }
-
-    @After
-    public void shutdown() {
-        application.stop();
-    }
 }

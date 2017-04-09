@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,12 +58,8 @@ public class Action {
     private final String              query;
 
     public Action(ObjectNode action) {
-        this(action.get("frameBy")
-                   .asText(),
-             action.get("query")
-                   .asText(),
-             extract(action.get("extract")
-                           .asText()));
+        this(textOrNull(action.get("frameBy")), textOrNull(action.get("query")),
+             extract(textOrNull(action.get("extract"))));
     }
 
     public Action(String query, String frameBy, Map<String, String> extract) {

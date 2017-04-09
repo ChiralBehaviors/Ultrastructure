@@ -72,7 +72,7 @@ public class Initialization extends AbstractModelTest {
 
         allApplications.setName("All applications");
         allApplications.setDescription("Page with all applications");
-        allApplications.setTitle("Appplications");
+        allApplications.setTitle("Applications");
         allApplications.setRelationOfLaunchLaunch(launchApp,
                                                   "singlePageApplications");
 

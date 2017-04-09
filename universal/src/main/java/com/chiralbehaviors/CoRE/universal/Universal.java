@@ -67,32 +67,37 @@ import javafx.stage.Stage;
  *
  */
 public class Universal extends Application implements LayoutModel {
+    public static final String              GET_APPLICATION_QUERY;
+    public static final String              GET_APPLICATION_QUERY_RESOURCE           = "getApplication.query";
+    public static final String              GET_APPLICATIONS_QUERY_RESOURCE           = "getApplications.query";
+    public static final String              SINGLE_PAGE_APPLICATION                  = "singlePageApplication";
+    public static final String              SINGLE_PAGE_APPLICATIONS                  = "singlePageApplications";
     public static final String              SINGLE_PAGE_URI                          = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page";
-    public static final UUID                SINGLE_PAGE_UUID                         = uuidOf(SINGLE_PAGE_URI);
+    public static final UUID                SINGLE_PAGE_UUID;
     public static final String              UNIVERSAL_ENDPOINT                       = "universal.endpoint";
-    private static final String             ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
 
-    private static final String             GET_APPLICATION_QUERY;
-    private static final String             GET_APPLICATION_QUERY_RESOURCE           = "getApplication.query";
+    private static final String             ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
     private static final Logger             log                                      = LoggerFactory.getLogger(Universal.class);
-    /**
-     * 
-     */
-    private static final String             SINGLE_PAGE_APPLICATION                  = "singlePageApplication";
-    private static final StringArgGenerator URL_UUID_GENERATOR                       = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
+    private static final StringArgGenerator URL_UUID_GENERATOR;
     private static final String             URN_UUID                                 = "urn:uuid:";
 
     static {
+        URL_UUID_GENERATOR = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
         System.setProperty(ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY, "true");
         try {
             GET_APPLICATION_QUERY = Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATION_QUERY_RESOURCE));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+        SINGLE_PAGE_UUID = uuidOf(SINGLE_PAGE_URI);
     }
-
+    
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static String textOrNull(JsonNode node) {
+        return node == null? null : node.asText();
     }
 
     public static UUID uuidOf(String url) {

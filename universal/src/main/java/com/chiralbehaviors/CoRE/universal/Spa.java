@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,14 +50,8 @@ public class Spa {
     }
 
     public Spa(ObjectNode app) {
-        this(app.get("name")
-                .asText(),
-             app.get("description")
-                .asText(),
-             app.get("frame")
-                .asText(),
-             app.get("root")
-                .asText(),
+        this(textOrNull(app.get("name")), textOrNull(app.get("description")),
+             textOrNull(app.get("frame")), textOrNull(app.get("root")),
              routes((ArrayNode) app.get("pages")));
     }
 

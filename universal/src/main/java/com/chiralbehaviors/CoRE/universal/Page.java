@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +37,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Page {
     private static Map<String, Action> actions(ArrayNode array) {
         Map<String, Action> actions = new HashMap<>();
+        if (array == null) {
+            return actions;
+        }
         array.forEach(p -> {
             actions.put(p.get("_edge")
-                         .get("route")
+                         .get("relation")
                          .asText(),
                         new Action((ObjectNode) p));
         });
@@ -46,9 +51,12 @@ public class Page {
 
     private static Map<String, Launch> launches(ArrayNode array) {
         Map<String, Launch> launches = new HashMap<>();
+        if (array == null) {
+            return launches;
+        }
         array.forEach(p -> {
             launches.put(p.get("_edge")
-                          .get("route")
+                          .get("relation")
                           .asText(),
                          new Launch((ObjectNode) p));
         });
@@ -57,9 +65,12 @@ public class Page {
 
     private static Map<String, Route> navigations(ArrayNode array) {
         Map<String, Route> navigations = new HashMap<>();
+        if (array == null) {
+            return navigations;
+        }
         array.forEach(p -> {
             navigations.put(p.get("_edge")
-                             .get("route")
+                             .get("relation")
                              .asText(),
                             new Route((ObjectNode) p));
         });
@@ -77,14 +88,8 @@ public class Page {
     private final Map<String, Action> updates;
 
     public Page(ObjectNode page) {
-        this(page.get("name")
-                 .asText(),
-             page.get("description")
-                 .asText(),
-             page.get("title")
-                 .asText(),
-             page.get("query")
-                 .asText(),
+        this(textOrNull(page.get("name")), textOrNull(page.get("description")),
+             textOrNull(page.get("title")), textOrNull(page.get("query")),
              actions((ArrayNode) page.get("creates")),
              actions((ArrayNode) page.get("updates")),
              actions((ArrayNode) page.get("deletes")),

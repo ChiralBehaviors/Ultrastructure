@@ -20,46 +20,26 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author halhildebrand
  *
  */
-public class Launch {
-    private final String frame;
-    private final String frameBy;
-    private final String immediate;
-    private final String launchBy;
-
-    public Launch(ObjectNode launch) {
-        this(textOrNull(launch.get("frame")), textOrNull(launch.get("frameBy")),
-             textOrNull(launch.get("immediate")),
-             textOrNull(launch.get("launchBy")));
-    }
-
-    public Launch(String launchBy, String frameBy, String frame,
-                  String immediate) {
-        this.frameBy = frameBy;
-        this.launchBy = launchBy;
-        this.frame = frame;
-        this.immediate = immediate;
-    }
-
-    public String getFrame() {
-        return frame;
-    }
-
-    public String getFrameBy() {
-        return frameBy;
-    }
-
-    public String getImmediate() {
-        return immediate;
-    }
-
-    public String getLaunchBy() {
-        return launchBy;
+public class SpaTest {
+    @Test
+    public void testSpa() throws Exception {
+        ObjectNode node = (ObjectNode) new ObjectMapper().readTree(getClass().getResourceAsStream("/test-app.json"));
+        Spa spa = new Spa(node);
+        Page page = spa.getRoot();
+        assertNotNull(page);
+        assertEquals("Applications", page.getTitle());
+        assertEquals("All applications", page.getName());
+        assertEquals("Page with all applications", page.getDescription());
     }
 }

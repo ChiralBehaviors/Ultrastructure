@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.kernel.phantasm.test.agency.Person;
-import com.chiralbehaviors.CoRE.kernel.phantasm.test.agency.User;
-import com.chiralbehaviors.CoRE.kernel.phantasm.test.product.Channel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.test.product.Post;
+import com.chiralbehaviors.CoRE.kernel.phantasm.test.Channel;
+import com.chiralbehaviors.CoRE.kernel.phantasm.test.Person;
+import com.chiralbehaviors.CoRE.kernel.phantasm.test.Post;
+import com.chiralbehaviors.CoRE.kernel.phantasm.test.User;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 

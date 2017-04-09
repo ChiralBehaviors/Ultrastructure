@@ -59,7 +59,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -73,6 +73,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
 import graphql.ExecutionResult;
+import graphql.GraphQLException;
 import graphql.schema.GraphQLSchema;
 import io.dropwizard.auth.Auth;
 
@@ -395,6 +396,10 @@ public class WorkspaceResource extends TransactionalResource {
             try {
                 return execute(schema, crud, (String) request.get(QUERY),
                                variables);
+            } catch (GraphQLException e) {
+                throw new WebApplicationException(String.format("Error executing: %s",
+                                                                e.getMessage()),
+                                                  Status.BAD_REQUEST);
             } finally {
                 Thread.currentThread()
                       .setContextClassLoader(prev);

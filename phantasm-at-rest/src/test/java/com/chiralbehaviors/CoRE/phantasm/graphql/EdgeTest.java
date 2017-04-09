@@ -1,5 +1,9 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +11,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;

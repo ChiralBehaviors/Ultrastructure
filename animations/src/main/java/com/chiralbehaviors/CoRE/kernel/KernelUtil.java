@@ -32,8 +32,8 @@ import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.ThisCoreInstance;
+import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
+import com.chiralbehaviors.CoRE.kernel.phantasm.ThisCoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 

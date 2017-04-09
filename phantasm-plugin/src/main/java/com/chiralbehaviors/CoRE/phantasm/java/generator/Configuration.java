@@ -21,14 +21,16 @@
 package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author hhildebrand
  *
  */
 public class Configuration {
-    public boolean appendTypeToPackage = false;
-    public File    outputDirectory;
-    public String  packageName;
-    public String  resource;
+    public Map<String, String> namespacePackages   = new HashMap<>();
+    public File                outputDirectory;
+    public String              packageName;
+    public String              resource;
 }

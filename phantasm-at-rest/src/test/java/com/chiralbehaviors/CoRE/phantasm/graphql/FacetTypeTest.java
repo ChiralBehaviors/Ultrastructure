@@ -42,10 +42,10 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing3;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -98,7 +98,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
                                                 variables);
 
         ExecutionResult execute = new WorkspaceContext(model,

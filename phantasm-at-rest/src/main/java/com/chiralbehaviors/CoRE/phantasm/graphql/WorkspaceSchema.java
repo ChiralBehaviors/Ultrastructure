@@ -43,7 +43,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
-import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -77,6 +77,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ProtocolQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SiblingSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.StatusCodeSequencingQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
@@ -101,12 +102,23 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import graphql.language.ArrayValue;
+import graphql.language.BooleanValue;
+import graphql.language.FloatValue;
+import graphql.language.IntValue;
+import graphql.language.ObjectField;
+import graphql.language.ObjectValue;
+import graphql.language.StringValue;
+import graphql.schema.Coercing;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
@@ -117,7 +129,6 @@ import graphql.schema.GraphQLUnionType;
  *
  */
 public class WorkspaceSchema {
-
     public interface MetaMutations extends ExistentialMutations, FacetMutations,
             AttributeAuthorizationMutations, NetworkAuthorizationMutations,
             ChildSequencingMutations, ParentSequencingMutations,
@@ -127,13 +138,13 @@ public class WorkspaceSchema {
             NetworkAttributeAuthorizationMutations, JobMutations {
     }
 
-    public interface MetaQueries extends ExistentialQueries, FacetQueries,
-            AttributeAuthorizationQueries, NetworkAuthorizationQueries,
-            ChildSequencingQueries, ParentSequencingQueries,
-            SelfSequencingQueries, SiblingSequencingQueries, ProtocolQueries,
-            MetaProtocolQueries, StatusCodeSequencingQueries,
-            NetworkAttributeAuthorizationQueries, JobQueries,
-            JobChronologyQueries {
+    public interface MetaQueries extends WorkspaceQueries, ExistentialQueries,
+            FacetQueries, AttributeAuthorizationQueries,
+            NetworkAuthorizationQueries, ChildSequencingQueries,
+            ParentSequencingQueries, SelfSequencingQueries,
+            SiblingSequencingQueries, ProtocolQueries, MetaProtocolQueries,
+            StatusCodeSequencingQueries, NetworkAttributeAuthorizationQueries,
+            JobQueries, JobChronologyQueries {
     }
 
     public interface Mutations
@@ -144,10 +155,84 @@ public class WorkspaceSchema {
             JobQueries, JobChronologyQueries {
     }
 
-    public static final String EDGE = "_Edge";
+    public static final String      EDGE        = "_Edge";
+
+    public static GraphQLScalarType GraphQLJson = new GraphQLScalarType("JSON",
+                                                                        "Built-in JSON",
+                                                                        jsonCoercing());
 
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
+    }
+
+    private static Coercing jsonCoercing() {
+        return new Coercing() {
+            @Override
+            public Object parseLiteral(Object input) {
+                if (input instanceof StringValue) {
+                    return ((StringValue) input).getValue();
+                }
+                if (input instanceof BooleanValue) {
+                    return ((BooleanValue) input).isValue();
+                }
+                if (input instanceof IntValue) {
+                    return ((IntValue) input).getValue();
+                }
+                if (input instanceof FloatValue) {
+                    return ((FloatValue) input).getValue();
+                }
+                if (input instanceof ObjectValue) {
+                    ObjectValue objValue = (ObjectValue) input;
+                    ObjectNode value = JsonNodeFactory.instance.objectNode();
+                    objValue.getObjectFields()
+                            .forEach(f -> {
+                                set(value, f, input);
+                            });
+                    return value;
+                }
+                if (input instanceof ArrayValue) {
+                    return ((ArrayValue) input).getValues()
+                                               .stream()
+                                               .map(v -> parseLiteral(v));
+                }
+                return null;
+            }
+
+            private void set(ObjectNode object, ObjectField field,
+                             Object value) {
+                Object literal = parseLiteral(field.getValue());
+                if (literal instanceof String) {
+                    object.put(field.getName(), (String) literal);
+                } else if (literal instanceof Float) {
+                    object.put(field.getName(), (Float) literal);
+                } else if (literal instanceof Integer) {
+                    object.put(field.getName(), (Integer) literal);
+                } else if (literal instanceof Boolean) {
+                    object.put(field.getName(), (Boolean) literal);
+                } else if (literal instanceof ObjectNode) {
+                    object.set(field.getName(), (ObjectNode) literal);
+                } else {
+                    throw new IllegalArgumentException(String.format("%s is an invalid JSON type",
+                                                                     value));
+                }
+            }
+
+            @Override
+            public Object parseValue(Object input) {
+                return serialize(input);
+            }
+
+            @Override
+            public Object serialize(Object input) {
+                if (input instanceof String) {
+                    return Integer.parseInt((String) input);
+                } else if (input instanceof Integer) {
+                    return input;
+                } else {
+                    return null;
+                }
+            }
+        };
     }
 
     private final WorkspaceTypeFunction typeFunction = new WorkspaceTypeFunction();

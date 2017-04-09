@@ -33,7 +33,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
+import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;

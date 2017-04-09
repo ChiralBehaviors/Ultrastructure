@@ -47,6 +47,4 @@ public @interface Facet {
     Key classifier();
 
     String workspace();
-
-    Class<?> ruleformClass();
 }

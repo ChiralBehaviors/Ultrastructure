@@ -1,0 +1,7 @@
+{
+  singlePageApplications {
+    id
+    name
+    description
+  }
+}

@@ -10,3 +10,6 @@ logging:
     loggers: 
         "org.glassfish": ERROR
         graphql: WARN
+
+workspaces:
+  - /com/chiralbehaviors/CoRE/universal/single-page.1.json

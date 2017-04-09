@@ -73,7 +73,20 @@ imported:
 importedWorkspace: 
     uri =  QuotedText 
     'as '
-    namespace = ObjectName;
+    namespace = ObjectName
+    importedFacets?
+    ;
+   
+importedFacets: 
+	LB
+	facetImport+
+	RB
+	;
+    
+facetImport: 
+    classifier = qualifiedName
+    '.'
+    classification = qualifiedName;
     
 statusCodeSequencingSet:
     service = qualifiedName

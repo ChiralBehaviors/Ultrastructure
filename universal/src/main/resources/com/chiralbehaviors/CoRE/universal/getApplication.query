@@ -1,0 +1,78 @@
+query getApplication($id: String!) {
+  singlePageApplication(id: $id) {
+    id
+    name
+    description
+    root
+    pages {
+      id
+      name
+      description
+      _edge {
+        ... on _singlePageApplication_page {
+          route
+        }
+      }
+      title
+      query
+      creates {
+        id
+        _edge {
+          ... on _page_create {
+            relation
+          }
+        }
+        frameBy
+        extract
+        query
+      }
+      updates {
+        id
+        _edge {
+          ... on _page_create {
+            relation
+          }
+        }
+        frameBy
+        extract
+        query
+      }
+      deletes {
+        id
+        _edge {
+          ... on _page_create {
+            relation
+          }
+        }
+        frameBy
+        extract
+        query
+      }
+      navigates {
+        id
+        _edge {
+          ... on _page_navigate {
+            relation
+          }
+        }
+        extract
+        frameBy
+        route
+      }
+      launches {
+        id
+        _edge {
+          ... on _page_launch {
+            relation
+          }
+        }
+        frameBy
+        launchBy
+        immediate {
+          id
+          name
+        }
+      }
+    }
+  }
+}

@@ -46,7 +46,6 @@ import graphql.execution.ExecutionContext;
 import graphql.execution.ExecutionStrategy;
 import graphql.execution.SimpleExecutionStrategy;
 import graphql.language.Field;
-import graphql.language.OperationDefinition.Operation;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
@@ -105,15 +104,6 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
     }
 
     private class SimpleTraversalStrategy extends SimpleExecutionStrategy {
-
-        @Override
-        public ExecutionResult execute(ExecutionContext executionContext,
-                                       GraphQLObjectType operationRootType,
-                                       Object root,
-                                       Map<String, List<Field>> fields,
-                                       Operation operation) {
-            return execute(executionContext, operationRootType, root, fields);
-        }
 
         @Override
         protected ExecutionResult completeValue(ExecutionContext executionContext,

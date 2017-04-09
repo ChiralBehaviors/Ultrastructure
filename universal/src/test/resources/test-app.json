@@ -1,0 +1,73 @@
+{
+	"id": "cc2e3838-1c72-11e7-b9f2-31cf61e9d1f6",
+	"name": "Application Browser",
+	"description": "Initial application browser and launcher",
+	"root": "launch",
+	"pages": [
+		{
+			"id": "cc2ed47b-1c72-11e7-b9f2-31cf61e9d1f6",
+			"name": "All applications",
+			"description": "Page with all applications",
+			"_edge": {
+				"route": "launch"
+			},
+			"title": "Applications",
+			"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}",
+			"creates": [
+				{
+					"id": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"_edge": {
+						"relation": "singlePageApplications"
+					},
+					"frameBy": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"extract": "{\"foo\": \"bar\"}",
+					"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}"
+				}
+			],
+			"updates": [
+				{
+					"id": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"_edge": {
+						"relation": "singlePageApplications"
+					},
+					"frameBy": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"extract": "{\"foo\": \"bar\"}",
+					"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}"
+				}
+			],
+			"deletes": [
+				{
+					"id": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"_edge": {
+						"relation": "singlePageApplications"
+					},
+					"frameBy": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"extract": "{\"foo\": \"bar\"}",
+					"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}"
+				}
+			],
+			"navigates": [
+				{
+					"id": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"_edge": {
+						"relation": "singlePageApplications"
+					},
+					"frameBy": "workspace",
+					"extract": "{\"foo\": \"bar\"}",
+					"route": "foo"
+				}
+			],
+			"launches": [
+				{
+					"id": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+					"_edge": {
+						"relation": "singlePageApplications"
+					},
+					"frameBy": "id",
+					"launchBy": "id",
+					"immediate": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6"
+				}
+			]
+		}
+	]
+}

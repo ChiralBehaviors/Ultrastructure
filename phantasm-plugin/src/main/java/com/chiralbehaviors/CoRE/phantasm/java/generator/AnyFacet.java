@@ -85,14 +85,6 @@ public class AnyFacet implements Facet {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.java.generator.Facet#getRuleformClass()
-     */
-    @Override
-    public String getRuleformType() {
-        return ruleform.getSimpleName();
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.phantasm.java.generator.Facet#getWorkspace()
      */
     @Override
@@ -100,11 +92,8 @@ public class AnyFacet implements Facet {
         return WellKnownObject.KERNEL_IRI;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.generator.Facet#resolve(java.util.Map, com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation, java.util.Map)
-     */
     @Override
-    public void resolve(Map<FacetKey, Facet> facets,
+    public void resolve(PhantasmGenerator generator,
                         WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
         throw new UnsupportedOperationException("Should never be called");

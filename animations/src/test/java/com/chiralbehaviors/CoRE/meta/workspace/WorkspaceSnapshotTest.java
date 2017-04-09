@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

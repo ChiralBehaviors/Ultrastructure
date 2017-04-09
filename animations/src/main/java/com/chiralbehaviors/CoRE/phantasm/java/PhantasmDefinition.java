@@ -189,8 +189,7 @@ public class PhantasmDefinition extends Phantasmagoria {
     }
 
     private void getInferred(Class<Phantasm> phantasm, Method method,
-                             String fieldName,
-                             Class<ExistentialRuleform> rulformClass) {
+                             String fieldName) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             NetworkAuthorization auth = singularAuthorizations.get(fieldName);
@@ -519,11 +518,8 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
 
         Class<Phantasm> phantasmReturned = (Class<Phantasm>) edge.wrappedChildType();
-        Class<ExistentialRuleform> ruleformClass = (Class<ExistentialRuleform>) phantasmReturned.getAnnotation(Facet.class)
-                                                                                                .ruleformClass();
         if (method.getAnnotation(Inferred.class) != null) {
-            getInferred(phantasmReturned, method, edge.fieldName(),
-                        ruleformClass);
+            getInferred(phantasmReturned, method, edge.fieldName());
         } else {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {

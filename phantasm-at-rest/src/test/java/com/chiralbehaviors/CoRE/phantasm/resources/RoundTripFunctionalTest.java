@@ -53,8 +53,8 @@ import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.Role;
+import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -240,10 +240,5 @@ public class RoundTripFunctionalTest {
         @SuppressWarnings("rawtypes")
         Map response = invocationBuilder.post(Entity.json(request), Map.class);
         assertNotNull(response);
-    }
-
-    @After
-    public void shutdown() {
-        application.stop();
     }
 }

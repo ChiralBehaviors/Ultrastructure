@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;

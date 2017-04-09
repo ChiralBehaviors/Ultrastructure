@@ -45,8 +45,8 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;
@@ -104,7 +104,7 @@ public class PluginTest extends AbstractModelTest {
         variables.put("name", "hello");
         String hello = "goodbye";
         variables.put("description", hello);
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String) { "
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String) { "
                                                 + "createThing1("
                                                 + "  state: { "
                                                 + "     setName: $name, "

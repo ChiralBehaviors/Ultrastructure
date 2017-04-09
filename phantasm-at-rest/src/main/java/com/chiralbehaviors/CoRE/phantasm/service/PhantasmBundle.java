@@ -133,10 +133,12 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                                                                      "CoRE instance");
                                    });
                                }
-                               log.info("Loading workspace state");
+                               log.info("Loading workspace state: {}",
+                                        configuration.getWorkspaces());
                                LoadWorkspaceCommand.loadWorkspaces(configuration.getWorkspaces(),
                                                                    create);
-                               log.info("Loading snapshot state");
+                               log.info("Loading snapshot state: {}",
+                                        configuration.getSnapshots());
                                LoadSnapshotCommand.loadSnapshots(configuration.getSnapshots(),
                                                                  create);
                            }

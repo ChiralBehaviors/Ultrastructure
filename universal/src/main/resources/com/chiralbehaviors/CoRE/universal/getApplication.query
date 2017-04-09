@@ -1,5 +1,6 @@
 query getApplication($id: String!) {
   singlePageApplication(id: $id) {
+    id
     name
     description
     root
@@ -14,6 +15,39 @@ query getApplication($id: String!) {
       }
       title
       query
+      creates {
+        id
+        _edge {
+          ... on _page_create {
+            relation
+          }
+        }
+        frameBy
+        extract
+        query
+      }
+      updates {
+        id
+        _edge {
+          ... on _page_create {
+            relation
+          }
+        }
+        frameBy
+        extract
+        query
+      }
+      deletes {
+        id
+        _edge {
+          ... on _page_create {
+            relation
+          }
+        }
+        frameBy
+        extract
+        query
+      }
       navigates {
         id
         _edge {

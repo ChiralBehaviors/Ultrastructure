@@ -32,6 +32,7 @@ products {
     
     edges {
         AppLauncher.IsA.SinglePageApp
+        
         AllApplications.IsA.Page
         AllApplications.pageOf.AppLauncher
         

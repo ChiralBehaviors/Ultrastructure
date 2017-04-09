@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.singlePgApp.Launch;
 import com.chiralbehaviors.CoRE.singlePgApp.Page;
 import com.chiralbehaviors.CoRE.singlePgApp.SinglePageApp;
+import com.chiralbehaviors.CoRE.universal.Universal;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
 
@@ -45,16 +46,16 @@ import com.hellblazer.utils.Utils;
  */
 public class Initialization extends AbstractModelTest {
     private static final String SRC_MAIN_RESOURCES     = "src/main/resources";
-    private static final String LAUNCH                 = "launch"; 
-    private static final String GET_APPLICATIONS_QUERY = "/getApplications.query";
-    private static final String SINGLE_PAGE_1_JSON     = "/single-page.1.json";
-    private static final String SINGLE_PAGE_1_WSP      = "/single-page.1.wsp";
+    private static final String LAUNCH                 = "launch";
+    private static final String GET_APPLICATIONS_QUERY = "getApplications.query";
+    private static final String SINGLE_PAGE_1_JSON     = "single-page.1.json";
+    private static final String SINGLE_PAGE_1_WSP      = "single-page.1.wsp";
     private static final String APP_LAUNCHER           = "AppLauncher";
 
     @Test
     public void initializeApplicationBrowser() throws Exception {
 
-        WorkspaceScope spa = WorkspaceImporter.manifest(getClass().getResourceAsStream(SINGLE_PAGE_1_WSP),
+        WorkspaceScope spa = WorkspaceImporter.manifest(Universal.class.getResourceAsStream(SINGLE_PAGE_1_WSP),
                                                         model)
                                               .getWorkspace()
                                               .getScope();
@@ -62,7 +63,7 @@ public class Initialization extends AbstractModelTest {
                                            spa.lookup(APP_LAUNCHER));
         Page allApplications = model.wrap(Page.class,
                                           spa.lookup("AllApplications"));
-        allApplications.setQuery(Utils.getDocument(getClass().getResourceAsStream(GET_APPLICATIONS_QUERY)));
+        allApplications.setQuery(Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATIONS_QUERY)));
 
         Launch launchApp = model.wrap(Launch.class,
                                       spa.lookup("LaunchApplication"));
@@ -95,7 +96,11 @@ public class Initialization extends AbstractModelTest {
                              .getRecords()
                              .size());
 
-        try (FileOutputStream os = new FileOutputStream(new File(SRC_MAIN_RESOURCES,
+        File universalDir = new File(SRC_MAIN_RESOURCES,
+                                     Universal.class.getPackage()
+                                                    .getName()
+                                                    .replace('.', '/'));
+        try (FileOutputStream os = new FileOutputStream(new File(universalDir,
                                                                  SINGLE_PAGE_1_JSON))) {
             spa.getWorkspace()
                .getSnapshot()

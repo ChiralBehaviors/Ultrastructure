@@ -20,7 +20,11 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
@@ -41,6 +45,29 @@ public class Spa {
         this.frame = frame;
         this.root = root;
         this.routes = routes;
+    }
+
+    public Spa(ObjectNode app) {
+        this(app.get("name")
+                .asText(),
+             app.get("description")
+                .asText(),
+             app.get("frame")
+                .asText(),
+             app.get("root")
+                .asText(),
+             routes((ArrayNode) app.get("pages")));
+    }
+
+    public static Map<String, Page> routes(ArrayNode pages) {
+        Map<String, Page> routes = new HashMap<>();
+        pages.forEach(p -> {
+            routes.put(p.get("_edge")
+                        .get("route")
+                        .asText(),
+                       new Page((ObjectNode) p));
+        });
+        return routes;
     }
 
     public String getDescription() {

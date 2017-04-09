@@ -12,4 +12,4 @@ logging:
         graphql: WARN
 
 workspaces:
-  - /single-page.1.json
+  - /com/chiralbehaviors/CoRE/universal/single-page.1.json

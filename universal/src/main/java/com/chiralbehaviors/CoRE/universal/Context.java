@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.ws.rs.client.WebTarget;
 
-import com.chiralbehaviors.CoRE.universal.Page.Route;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryRequest;
@@ -67,7 +66,7 @@ public class Context {
         return root;
     }
 
-    public Route getRoute(Relation relation) {
-        return page.getRoute(relation);
+    public Route getNavigation(Relation relation) {
+        return page.getNavigation(relation);
     }
 }

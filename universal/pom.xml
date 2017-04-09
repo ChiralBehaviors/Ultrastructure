@@ -51,6 +51,10 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.uuid</groupId>
+			<artifactId>java-uuid-generator</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -64,7 +68,7 @@
 						<phase>generate-test-sources</phase>
 						<goals>
 							<goal>add-source</goal>
-                            <goal>add-test-source</goal>
+							<goal>add-test-source</goal>
 						</goals>
 						<configuration>
 							<sources>
@@ -86,7 +90,7 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>${basedir}/src/main/resources/single-page.1.wsp</resource>
+								<resource>${basedir}/src/main/resources/com/chiralbehaviors/CoRE/universal/single-page.1.wsp</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.singlePgApp</packageName>
 								<namespacePackages>

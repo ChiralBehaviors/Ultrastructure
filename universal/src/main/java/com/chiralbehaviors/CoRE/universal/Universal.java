@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -34,15 +35,17 @@ import javax.ws.rs.client.WebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.universal.Page.Route;
 import com.chiralbehaviors.layout.AutoLayoutView;
 import com.chiralbehaviors.layout.Layout.LayoutModel;
+import com.chiralbehaviors.layout.graphql.GraphQlUtil;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
+import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryRequest;
 import com.chiralbehaviors.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.StringArgGenerator;
+import com.fasterxml.uuid.impl.NameBasedGenerator;
 import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
@@ -64,17 +67,39 @@ import javafx.stage.Stage;
  *
  */
 public class Universal extends Application implements LayoutModel {
+    public static final String              SINGLE_PAGE_URI                          = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page";
+    public static final UUID                SINGLE_PAGE_UUID                         = uuidOf(SINGLE_PAGE_URI);
+    public static final String              UNIVERSAL_ENDPOINT                       = "universal.endpoint";
+    private static final String             ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
 
-    public static final String  UNIVERSAL_ENDPOINT                       = "universal.endpoint";
-    private static final String ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
-    private static final Logger log                                      = LoggerFactory.getLogger(Universal.class);
+    private static final String             GET_APPLICATION_QUERY;
+    private static final String             GET_APPLICATION_QUERY_RESOURCE           = "getApplication.query";
+    private static final Logger             log                                      = LoggerFactory.getLogger(Universal.class);
+    /**
+     * 
+     */
+    private static final String             SINGLE_PAGE_APPLICATION                  = "singlePageApplication";
+    private static final StringArgGenerator URL_UUID_GENERATOR                       = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
+    private static final String             URN_UUID                                 = "urn:uuid:";
 
     static {
         System.setProperty(ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY, "true");
+        try {
+            GET_APPLICATION_QUERY = Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATION_QUERY_RESOURCE));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static UUID uuidOf(String url) {
+        if (url.startsWith(URN_UUID)) {
+            return UUID.fromString(url.substring(URN_UUID.length()));
+        }
+        return URL_UUID_GENERATOR.generate(url);
     }
 
     private AnchorPane           anchor;
@@ -92,7 +117,7 @@ public class Universal extends Application implements LayoutModel {
     public void apply(ListView<JsonNode> list, Relation relation) {
         list.setOnMouseClicked(event -> {
             Route route = back.peek()
-                              .getRoute(relation);
+                              .getNavigation(relation);
             if (route == null) {
                 return;
             }
@@ -117,8 +142,8 @@ public class Universal extends Application implements LayoutModel {
     @Override
     public void apply(TableRow<JsonNode> row, Relation relation) {
         row.setOnMouseClicked(event -> {
-            Route route = back.peek()
-                              .getRoute(relation);
+            Context current = back.peek();
+            Route route = current.getNavigation(relation);
             if (route == null) {
                 return;
             }
@@ -145,11 +170,9 @@ public class Universal extends Application implements LayoutModel {
         VBox vbox = new VBox(locationBar(), anchor);
         primaryStage.setScene(new Scene(vbox, 800, 600));
         Map<String, String> parameters = getParameters().getNamed();
-        application = new ObjectMapper(new YAMLFactory()).readValue(Utils.resolveResource(getClass(),
-                                                                                          parameters.get("app")),
-                                                                    Spa.class);
         endpoint = ClientBuilder.newClient()
                                 .target(endpointUri(parameters.get("endpoint")));
+        application = resolve(parameters.get("app"));
         push(new Context(application.getRoot()));
         primaryStage.show();
     }
@@ -224,7 +247,7 @@ public class Universal extends Application implements LayoutModel {
     private AutoLayoutView layout(Context pageContext) throws QueryException {
         AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot(), this);
         layout.getStylesheets()
-              .add(getClass().getResource("/non-nested.css")
+              .add(getClass().getResource("non-nested.css")
                              .toExternalForm());
         ObjectNode data = pageContext.evaluate(endpoint);
         layout.setData(data);
@@ -239,9 +262,9 @@ public class Universal extends Application implements LayoutModel {
     private HBox locationBar() {
         HBox hbox = new HBox();
 
-        backButton = button("/back.png");
-        forwardButton = button("/forward.png");
-        reloadButton = button("/reload.png");
+        backButton = button("back.png");
+        forwardButton = button("forward.png");
+        reloadButton = button("reload.png");
 
         backButton.setOnAction(e -> back());
         forwardButton.setOnAction(e -> forward());
@@ -261,6 +284,24 @@ public class Universal extends Application implements LayoutModel {
 
     private void reload() {
         displayCurrentPage();
+    }
+
+    private Spa resolve(String application) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", application);
+        ObjectNode app;
+        try {
+            app = (ObjectNode) GraphQlUtil.evaluate(endpoint,
+                                                    new QueryRequest(GET_APPLICATION_QUERY,
+                                                                     variables))
+                                          .get(SINGLE_PAGE_APPLICATION);
+        } catch (QueryException e) {
+            String msg = String.format("cannot resolve application: %s",
+                                       application);
+            log.error(msg, e);
+            throw new IllegalStateException(msg, e);
+        }
+        return new Spa(app);
     }
 
     private void updateLocationBar() {

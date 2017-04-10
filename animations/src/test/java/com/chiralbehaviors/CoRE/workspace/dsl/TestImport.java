@@ -95,4 +95,19 @@ public class TestImport extends AbstractModelTest {
         assertNotNull(workspace.getScope()
                                .lookup("kernel", "IsA"));
     }
+
+    @Test
+    public void testImport() throws Exception {
+        Product definingProduct;
+        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/import-test.wsp"),
+                                                                model);
+        definingProduct = importer.getWorkspace()
+                                  .getDefiningProduct();
+
+        EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
+                                                                  model);
+        assertNotNull(workspace);
+        assertNotNull(workspace.getScope()
+                               .lookup("kernel", "IsA"));
+    }
 }

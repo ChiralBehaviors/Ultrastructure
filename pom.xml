@@ -739,14 +739,12 @@
 						<configuration>
 							<excludes>
 								<exclude>graphql/annotations/**/*</exclude>
-								<exclude>com/chiralbehaviors/CoRE/ocular/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/**/*</exclude>
 								<exclude>**/HelpMojo.*</exclude>
-								<exclude>com/chiralbehaviors/CoRE/utils/English.*</exclude>
-								<exclude>com/chiralbehaviors/CoRE/utils/TwoFormInflector.*</exclude>
-								<exclude>de/cau/cs/kieler/kiml/graphviz/layouter/EclipseRuntimeDetector.*</exclude>
-								<exclude>org/eclipse/jface/util/PropertyChangeEvent.*</exclude>
+								<exclude>**/Universal.*</exclude>
+								<exclude>**/English.*</exclude>
+								<exclude>**/TwoFormInflector.*</exclude>
 							</excludes>
 						</configuration>
 						<executions>

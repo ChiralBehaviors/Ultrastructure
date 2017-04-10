@@ -169,7 +169,8 @@ public class Universal extends Application implements LayoutModel {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
-        WebTarget webTarget = endpoint.path(encodedWsp);
+        WebTarget webTarget = endpoint.path(encodedWsp)
+                                      .path("meta");
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "AppLauncher");
         try {

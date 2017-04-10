@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -215,11 +216,11 @@ public class WorkspaceImporter {
             Attribute authorizedAttribute = model.records()
                                                  .resolve(resolve(attribute.key));
             auth.setAuthorizedAttribute(authorizedAttribute.getId());
+            auth.insert();
             if (attribute.defaultValue != null) {
                 setValueFromString(authorizedAttribute, auth,
                                    WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            auth.insert();
             workspace.add(auth);
 
         });
@@ -248,11 +249,11 @@ public class WorkspaceImporter {
                                                  .resolve(resolve(attribute.key));
             attrAuth.setAuthorizedAttribute(authorizedAttribute.getId());
             attrAuth.setNetworkAuthorization(authorization.getId());
+            attrAuth.insert();
             if (attribute.defaultValue != null) {
                 setValueFromString(authorizedAttribute, attrAuth,
                                    WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            attrAuth.insert();
             workspace.add(attrAuth);
         });
     }
@@ -837,7 +838,9 @@ public class WorkspaceImporter {
                      .setValue(auth, value);
                 return;
             case Timestamp:
-                throw new UnsupportedOperationException("Timestamps are a PITA");
+                model.getPhantasmModel()
+                     .setValue(auth, new Timestamp(Long.parseLong(value)));
+                return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               authorizedAttribute.getValueType()));
@@ -911,7 +914,9 @@ public class WorkspaceImporter {
                      .setValue(auth, value);
                 return;
             case Timestamp:
-                throw new UnsupportedOperationException("Timestamps are a PITA");
+                model.getPhantasmModel()
+                     .setValue(auth, new Timestamp(Long.parseLong(value)));
+                return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               authorizedAttribute.getValueType()));

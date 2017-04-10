@@ -93,6 +93,11 @@ public class Universal extends Application implements LayoutModel {
             throw new IllegalStateException(e);
         }
         SINGLE_PAGE_UUID = uuidOf(SINGLE_PAGE_URI);
+        try {
+            SPA_WSP = URLEncoder.encode(SINGLE_PAGE_UUID.toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public static void main(String[] args) {
@@ -120,6 +125,7 @@ public class Universal extends Application implements LayoutModel {
     private AutoLayoutView       layout;
     private Stage                primaryStage;
     private Button               reloadButton;
+    private static String        SPA_WSP;
 
     @Override
     public void apply(ListView<JsonNode> list, Relation relation) {
@@ -162,14 +168,8 @@ public class Universal extends Application implements LayoutModel {
     }
 
     private String appLauncherId() {
-        String encodedWsp;
-        try {
-            encodedWsp = URLEncoder.encode(SINGLE_PAGE_UUID.toString(),
-                                           "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e);
-        }
-        WebTarget webTarget = endpoint.path(encodedWsp);
+        WebTarget webTarget = endpoint.path(SPA_WSP)
+                                      .path("meta");
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "AppLauncher");
         try {
@@ -290,7 +290,7 @@ public class Universal extends Application implements LayoutModel {
     private AutoLayoutView layout(Context pageContext) throws QueryException {
         AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot(), this);
         layout.getStylesheets()
-              .add(getClass().getResource("non-nested.css")
+              .add(getClass().getResource("/non-nested.css")
                              .toExternalForm());
         ObjectNode data = pageContext.evaluate(endpoint);
         layout.setData(data);
@@ -330,11 +330,12 @@ public class Universal extends Application implements LayoutModel {
     }
 
     private Spa resolve(String application) {
+        WebTarget webTarget = endpoint.path(SPA_WSP);
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", application);
         ObjectNode app;
         try {
-            app = (ObjectNode) GraphQlUtil.evaluate(endpoint,
+            app = (ObjectNode) GraphQlUtil.evaluate(webTarget,
                                                     new QueryRequest(GET_APPLICATION_QUERY,
                                                                      variables))
                                           .get(SINGLE_PAGE_APPLICATION);

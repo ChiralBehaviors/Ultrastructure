@@ -8,6 +8,7 @@ imports {
 
 attributes {
     Text = "text" "text attribute" text;
+    Bool = "bool" "boolean attribute" bool;
     Int = "int" "integer attribute" int;
     Numeric = "numeric" "numeric attribute" numeric;
     Timestamp = "timestamp" "timestamp attribute" timestamp;
@@ -15,6 +16,14 @@ attributes {
     Bar = "bar" "Bar attribute" text;
     
     facets {
-        IsA.Bar 
+        IsA.Bar { Text default: "foo" Bool default: "true"
+                  Int default: "1" Numeric default: "1"
+                  Timestamp default: "0" }
+            constraints {
+                one IsA: IsA.Bar {Text default: "foo" Bool default: "true"
+                        Int default: "1" Numeric default: "1"
+                        Timestamp default: "0"
+                }
+            }
     }
 }

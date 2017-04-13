@@ -29,7 +29,7 @@ import com.chiralbehaviors.layout.graphql.GraphQlUtil;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryRequest;
 import com.chiralbehaviors.layout.schema.Relation;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * 
@@ -37,25 +37,36 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Context {
+    private final String        frame;
     private final Page          page;
     private final Relation      root;
     private Map<String, Object> variables;
 
-    public Context(Page page) {
-        this(page, Collections.emptyMap());
+    public Context(String workspace, Page page) {
+        this(workspace, page, Collections.emptyMap());
     }
 
-    public Context(Page page, Map<String, Object> variables) {
+    public Context(String frame, Page page, Map<String, Object> variables) {
+        assert frame != null;
+        this.frame = frame;
         this.page = page;
         this.variables = variables;
         this.root = GraphQlUtil.buildSchema(page.getQuery());
     }
 
-    public ObjectNode evaluate(WebTarget endpoint) throws QueryException {
-        return (ObjectNode) GraphQlUtil.evaluate(endpoint,
-                                                 new QueryRequest(page.getQuery(),
-                                                                  variables))
-                                       .get(root.getField());
+    public JsonNode evaluate(WebTarget endpoint) throws QueryException {
+        return GraphQlUtil.evaluate(endpoint.path(frame),
+                                    new QueryRequest(page.getQuery(),
+                                                     variables))
+                          .get(root.getField());
+    }
+
+    public String getFrame() {
+        return frame;
+    }
+
+    public Route getNavigation(Relation relation) {
+        return page.getNavigation(relation);
     }
 
     public Page getPage() {
@@ -64,9 +75,5 @@ public class Context {
 
     public Relation getRoot() {
         return root;
-    }
-
-    public Route getNavigation(Relation relation) {
-        return page.getNavigation(relation);
     }
 }

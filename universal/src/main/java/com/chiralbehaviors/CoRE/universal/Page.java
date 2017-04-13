@@ -80,6 +80,7 @@ public class Page {
     private final Map<String, Action> creates;
     private final Map<String, Action> deletes;
     private final String              description;
+    private final String              frame;
     private final Map<String, Launch> launches;
     private final String              name;
     private final Map<String, Route>  navigations;
@@ -89,7 +90,8 @@ public class Page {
 
     public Page(ObjectNode page) {
         this(textOrNull(page.get("name")), textOrNull(page.get("description")),
-             textOrNull(page.get("title")), textOrNull(page.get("query")),
+             textOrNull(page.get("title")), textOrNull(page.get("frame")),
+             textOrNull(page.get("query")),
              actions((ArrayNode) page.get("creates")),
              actions((ArrayNode) page.get("updates")),
              actions((ArrayNode) page.get("deletes")),
@@ -97,13 +99,14 @@ public class Page {
              launches((ArrayNode) page.get("launches")));
     }
 
-    public Page(String name, String description, String title, String query,
-                Map<String, Action> creates, Map<String, Action> updates,
-                Map<String, Action> deletes, Map<String, Route> navigations,
-                Map<String, Launch> launches) {
+    public Page(String name, String description, String title, String frame,
+                String query, Map<String, Action> creates,
+                Map<String, Action> updates, Map<String, Action> deletes,
+                Map<String, Route> navigations, Map<String, Launch> launches) {
         this.name = name;
         this.description = description;
         this.title = title;
+        this.frame = frame;
         this.query = query;
         this.navigations = navigations;
         this.creates = creates;
@@ -122,6 +125,10 @@ public class Page {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getFrame() {
+        return frame;
     }
 
     public Map<String, Launch> getLaunches() {

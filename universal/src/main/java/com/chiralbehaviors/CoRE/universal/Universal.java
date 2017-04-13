@@ -163,8 +163,29 @@ public class Universal extends Application implements LayoutModel {
         endpoint = ClientBuilder.newClient()
                                 .target(endpointUri());
         application = initialSpa();
-        push(new Context(application.getRoot()));
+        String initialFrame = initialFrame();
+        push(new Context(initialFrame, application.getRoot()));
         primaryStage.show();
+    }
+
+    private String initialFrame() {
+
+        String id = System.getProperty("initial.frame");
+        if (id != null) {
+            return id;
+        }
+
+        id = getParameters().getNamed()
+                            .get("frame");
+        if (id != null) {
+            return id;
+        }
+        id = application.getFrame();
+        if (id != null) {
+            return id;
+        }
+        log.info("No frame defined, using single page app workspace frame");
+        return SPA_WSP;
     }
 
     private String appLauncherId() {
@@ -222,16 +243,16 @@ public class Universal extends Application implements LayoutModel {
     }
 
     private void doubleClick(JsonNode item, Relation relation) {
-        Route route = back.peek()
-                          .getNavigation(relation);
-        if (route == null) {
-            return;
-        }
+        Context current = back.peek();
+        Route route = current.getNavigation(relation);
         if (item == null) {
             return;
         }
+        if (route == null) {
+            return;
+        }
         try {
-            push(extract(route, item));
+            push(extract(current.getFrame(), route, item));
         } catch (QueryException e) {
             log.error("Unable to push page: %s", route.getPath(), e);
         }
@@ -253,7 +274,7 @@ public class Universal extends Application implements LayoutModel {
         return new URI(endpoint);
     }
 
-    private Context extract(Route route, JsonNode item) {
+    private Context extract(String workspace, Route route, JsonNode item) {
         Map<String, Object> variables = new HashMap<>();
         route.getExtract()
              .entrySet()
@@ -263,7 +284,18 @@ public class Universal extends Application implements LayoutModel {
              });
 
         Page target = application.route(route.getPath());
-        return new Context(target, variables);
+        String frame = workspace;
+        if (target.getFrame() != null) {
+            frame = target.getFrame();
+        } else if (route.getFrameBy() != null) {
+            JsonNode routedFrame = apply(item, route.getFrameBy());
+            if (routedFrame == null) {
+                log.warn("Invalid routing frame by {} route: {}",
+                         route.getFrameBy(), route.getPath());
+            }
+            frame = routedFrame.asText();
+        }
+        return new Context(frame, target, variables);
     }
 
     private void forward() {
@@ -292,9 +324,9 @@ public class Universal extends Application implements LayoutModel {
         layout.getStylesheets()
               .add(getClass().getResource("/non-nested.css")
                              .toExternalForm());
-        ObjectNode data = pageContext.evaluate(endpoint);
-        layout.setData(data);
-        layout.measure(data);
+        JsonNode evaluated = pageContext.evaluate(endpoint); 
+        layout.setData(evaluated);
+        layout.measure(evaluated);
         AnchorPane.setTopAnchor(layout, 0.0);
         AnchorPane.setLeftAnchor(layout, 0.0);
         AnchorPane.setBottomAnchor(layout, 0.0);

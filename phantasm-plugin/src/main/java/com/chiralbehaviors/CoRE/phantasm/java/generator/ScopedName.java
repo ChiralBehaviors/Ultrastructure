@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.QualifiedNameContext;
 
 /**
  * @author hhildebrand

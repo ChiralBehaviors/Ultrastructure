@@ -3,7 +3,7 @@ package com.chiralbehaviors.CoRE.phantasm.java.generator;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetImportContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.FacetImportContext;
 
 public class ImportedFacet implements Facet {
 

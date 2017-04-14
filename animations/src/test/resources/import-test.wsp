@@ -6,6 +6,43 @@ imports {
     'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel
 }
 
+agencies { 
+    Barrista = 'bar' 'Bar ' ;
+    Bazzista = 'baz' 'Baz ' 
+        attribute values {
+            Text: 'foo bar' 
+            Bool: 'false'
+            Int: '10'
+            Numeric: '1000'
+            Timestamp: '500'
+            Json: '{ "foo bar": "baz" }'
+        };
+        
+    edges {
+        Bazzista.IsA.Barrista
+            attribute values {
+                Text: 'foo bar' 
+                Bool: 'false'
+                Int: '10'
+                Numeric: '1000'
+                Timestamp: '500'
+                Json: '{ "foo bar": "baz" }'
+            }
+    }
+    
+    facets {
+        IsA.Barrista { Text default: 'foo' Bool default: 'true'
+                  Int default: '1' Numeric default: '1'
+                  Timestamp default: '0' Json default: '{ "foo": "bar" }' }
+            constraints {
+                one IsA: IsA.Bar {Text default: 'foo' Bool default: 'true'
+                        Int default: '1' Numeric default: '1'
+                        Timestamp default: '0'
+                }
+            }
+    }
+}
+
 attributes {
     Text = 'text' 'text attribute' text;
     Bool = 'bool' 'boolean attribute' bool;

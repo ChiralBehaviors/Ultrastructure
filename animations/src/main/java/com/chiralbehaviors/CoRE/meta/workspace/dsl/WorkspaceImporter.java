@@ -409,24 +409,7 @@ public class WorkspaceImporter {
             attr.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           attr);
-            for (AttributeValueContext av : ruleform.attributeValue()) {
-                ExistentialAttributeRecord ama = model.records()
-                                                      .newExistentialAttribute();
-                ama.setExistential(attr.getId());
-                Attribute authorizedAttribute = model.records()
-                                                     .resolve(resolve(av.attribute));
-                ama.setAttribute(authorizedAttribute.getId());
-                ama.setUpdatedBy(model.getCurrentPrincipal()
-                                      .getPrincipal()
-                                      .getId());
-                if (av.sequenceNumber != null) {
-                    ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-                }
-                ama.insert();
-                setValueFromString(authorizedAttribute, ama,
-                                   WorkspacePresentation.stripQuotes(av.value.getText()));
-                workspace.add(ama);
-            }
+            setAttributes(ruleform.attributeValue(), attr.getId());
         }
     }
 
@@ -542,7 +525,7 @@ public class WorkspaceImporter {
             if (facet != null) {
                 model.getPhantasmModel()
                      .initialize(parent, facet, workspace);
-                setAttributes(edge, child.getId());
+                setAttributes(edge.attributeValue(), child.getId());
             } else {
                 Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link = model.getPhantasmModel()
                                                                                       .link(parent,
@@ -552,13 +535,14 @@ public class WorkspaceImporter {
                 workspace.add(link.b);
 
                 UUID id = link.a.getId();
-                setAttributes(edge, id);
+                setAttributes(edge.attributeValue(), id);
             }
         }
     }
 
-    private void setAttributes(EdgeContext edge, UUID id) {
-        for (AttributeValueContext av : edge.attributeValue()) {
+    private void setAttributes(List<AttributeValueContext> attributes,
+                               UUID id) {
+        for (AttributeValueContext av : attributes) {
             ExistentialNetworkAttributeRecord edgeAttribute = model.records()
                                                                    .newExistentialNetworkAttribute();
             edgeAttribute.setEdge(id);

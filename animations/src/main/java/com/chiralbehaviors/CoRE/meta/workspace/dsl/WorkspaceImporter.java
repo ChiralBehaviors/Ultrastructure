@@ -534,14 +534,35 @@ public class WorkspaceImporter {
                 workspace.add(link.a);
                 workspace.add(link.b);
 
-                UUID id = link.a.getId();
-                setAttributes(edge.attributeValue(), id);
+                setNetworkAttributes(edge.attributeValue(), link.a.getId());
             }
         }
     }
 
     private void setAttributes(List<AttributeValueContext> attributes,
                                UUID id) {
+        for (AttributeValueContext av : attributes) {
+            ExistentialAttributeRecord edgeAttribute = model.records()
+                                                            .newExistentialAttribute();
+            edgeAttribute.setExistential(id);
+            Attribute attr = model.records()
+                                  .resolve(resolve(av.attribute));
+            edgeAttribute.setAttribute(attr.getId());
+            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
+                                            .getPrincipal()
+                                            .getId());
+            if (av.sequenceNumber != null) {
+                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+            }
+            edgeAttribute.insert();
+            setValueFromString(attr, edgeAttribute,
+                               WorkspacePresentation.stripQuotes(av.value.getText()));
+            workspace.add(edgeAttribute);
+        }
+    }
+
+    private void setNetworkAttributes(List<AttributeValueContext> attributes,
+                                      UUID id) {
         for (AttributeValueContext av : attributes) {
             ExistentialNetworkAttributeRecord edgeAttribute = model.records()
                                                                    .newExistentialNetworkAttribute();

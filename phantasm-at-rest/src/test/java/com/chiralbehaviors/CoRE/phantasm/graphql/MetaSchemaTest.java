@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,11 +32,15 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -736,6 +741,66 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
         assertNotNull(data.get("lookup"));
+
+        data = execute(schema,
+                       "{ attributeValues { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("attributeValues")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { attributeValues(ids:$ids) { id existential {id} jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("attributeValues")).get(0));
+        data = execute(schema,
+                       "query q($id: String!) { attributeValue(id: $id) { id  } }",
+                       variables);
+        assertNotNull(data);
+
+        WorkspaceScope scope = importer.getWorkspace()
+                                       .getScope();
+        ExistentialNetworkRecord edge = model.getPhantasmModel()
+                                             .getImmediateLink(scope.lookup("Shipper"),
+                                                               scope.lookup("IsA"),
+                                                               scope.lookup("Company"));
+        Attribute attribute = scope.lookup("TaxRate");
+        ExistentialNetworkAttributeRecord ena = model.records()
+                                                     .newExistentialNetworkAttribute(edge,
+                                                                                     attribute);
+        ena.insert();
+        model.getPhantasmModel()
+             .setValue(ena, BigDecimal.valueOf(1));
+        ena.update();
+        data = execute(schema,
+                       "{ networkAttributeValues { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("networkAttributeValues")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { networkAttributeValues(ids:$ids) { id edge {id} jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id",
+                      ids(data.withArray("networkAttributeValues")).get(0));
+        data = execute(schema,
+                       "query q($id: String!) { networkAttributeValue(id: $id) { id  } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ networks { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("networks")));
+        data = execute(schema,
+                       "query q($ids: [String]!) { networks(ids:$ids) { id parent {id} relationship {id} child {id} premise1 {id} premise2 {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("networks")).get(0));
+        data = execute(schema,
+                       "query q($id: String!) { network(id: $id) { id  } }",
+                       variables);
+        assertNotNull(data);
     }
 
     @Test

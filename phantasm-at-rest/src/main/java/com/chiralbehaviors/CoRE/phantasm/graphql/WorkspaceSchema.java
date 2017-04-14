@@ -49,6 +49,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeValueMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
@@ -56,13 +57,16 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.MetaProtocolMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAttributeAuthorizationMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAttributeValueMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAuthorizationMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ParentSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ProtocolMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SelfSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.StatusCodeSequencingMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeValueQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
@@ -71,7 +75,9 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.MetaProtocolQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAttributeAuthorizationQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAttributeValueQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAuthorizationQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ParentSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ProtocolQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
@@ -135,7 +141,9 @@ public class WorkspaceSchema {
             SelfSequencingMutations, SiblingSequencingMutations,
             ProtocolMutations, MetaProtocolMutations,
             StatusCodeSequencingMutations,
-            NetworkAttributeAuthorizationMutations, JobMutations {
+            NetworkAttributeAuthorizationMutations, JobMutations,
+            AttributeValueMutations, NetworkAttributeValueMutations,
+            NetworkMutations {
     }
 
     public interface MetaQueries extends WorkspaceQueries, ExistentialQueries,
@@ -144,7 +152,8 @@ public class WorkspaceSchema {
             ParentSequencingQueries, SelfSequencingQueries,
             SiblingSequencingQueries, ProtocolQueries, MetaProtocolQueries,
             StatusCodeSequencingQueries, NetworkAttributeAuthorizationQueries,
-            JobQueries, JobChronologyQueries {
+            JobQueries, JobChronologyQueries, AttributeValueQueries,
+            NetworkAttributeValueQueries, NetworkQueries {
     }
 
     public interface Mutations

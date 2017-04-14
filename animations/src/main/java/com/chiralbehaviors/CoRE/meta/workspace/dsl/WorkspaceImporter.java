@@ -419,7 +419,9 @@ public class WorkspaceImporter {
                 ama.setUpdatedBy(model.getCurrentPrincipal()
                                       .getPrincipal()
                                       .getId());
-                ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                if (av.sequenceNumber != null) {
+                    ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                }
                 ama.insert();
                 setValueFromString(authorizedAttribute, ama,
                                    WorkspacePresentation.stripQuotes(av.value.getText()));
@@ -920,11 +922,21 @@ public class WorkspaceImporter {
                      .setValue(attributeValue, value);
                 return;
             case JSON:
-                model.getPhantasmModel()
-                     .setValue(attributeValue, value);
+                try {
+                    model.getPhantasmModel()
+                         .setValue(attributeValue, new ObjectMapper().reader()
+                                                                     .readTree(value));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
+                                                                     value),
+                                                       e);
+                }
                 return;
             case Timestamp:
-                throw new UnsupportedOperationException("Timestamps are a PITA");
+                model.getPhantasmModel()
+                     .setValue(attributeValue,
+                               new Timestamp(Long.parseLong(value)));
+                return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               authorizedAttribute.getValueType()));

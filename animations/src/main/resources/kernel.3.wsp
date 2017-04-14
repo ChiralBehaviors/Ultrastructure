@@ -1,14 +1,14 @@
-workspace: "urn:uuid:00000000-0000-0004-0000-000000000003"  
+workspace: 'urn:uuid:00000000-0000-0004-0000-000000000003'  
            version: 3
-           "Ultrastructure Kernel Workspace" 
-           "The Kernel Ontology for Ultrastructure [Ain Soph Ur]"
+           'Ultrastructure Kernel Workspace' 
+           'The Kernel Ontology for Ultrastructure [Ain Soph Ur]'
 
 
 agencies {
-    CoreUser = "Core User" "Ultrastructure CoRE API user";
-    SuperUser = "Ultrastructure Super User" "Ye Root";
-    UnauthenticatedAgency = "Unauthenticated" "The unauthenticaed agency";
-    LoginRole = "Login Role" "The Login role";
+    CoreUser = 'Core User' 'Ultrastructure CoRE API user';
+    SuperUser = 'Ultrastructure Super User' 'Ye Root';
+    UnauthenticatedAgency = 'Unauthenticated' 'The unauthenticaed agency';
+    LoginRole = 'Login Role' 'The Login role';
     edges {
         SuperUser.IsA.CoreUser
         UnauthenticatedAgency.IsA.CoreUser
@@ -32,22 +32,22 @@ agencies {
                 n ClassifiedBy: IsA.Classification named inherit
                 n ClassificationOf: IsA.Classification named member
             }
-        InstanceOf.Core named: "Core Instance"
+        InstanceOf.Core named: 'Core Instance'
             constraints {
                 n MayLoginBy: IsA.CoreUser named login
             }
-        SingletonOf.Core named: "This Core Instance"
+        SingletonOf.Core named: 'This Core Instance'
     }
 }      
 
 attributes {
-    Namespace = "Namespace" "The namespace of an import" text;
-    LookupOrder = "Lookup Order" "The lookup order for an import" int;
-    IRI = "IRI" "The Attribute that contains an International Resource Indicator" text;
-    Login = "Login" "The Attribute that contains the login name of the agency" text;
-    PasswordRounds = "Password Rounds" "The number of rounds to hash the password" int;
-    PasswordHash = "Password Hash" "The hash the password" text;
-    AccessToken = "Access Token" "The access bearer token" indexed: true json;
+    Namespace = 'Namespace' 'The namespace of an import' text;
+    LookupOrder = 'Lookup Order' 'The lookup order for an import' int;
+    IRI = 'IRI' 'The Attribute that contains an International Resource Indicator' text;
+    Login = 'Login' 'The Attribute that contains the login name of the agency' text;
+    PasswordRounds = 'Password Rounds' 'The number of rounds to hash the password' int;
+    PasswordHash = 'Password Hash' 'The hash the password' text;
+    AccessToken = 'Access Token' 'The access bearer token' indexed: true json;
 }
 
 products { 
@@ -64,28 +64,28 @@ products {
 }
 
 relationships {
-    RoleOf = "Role Of" "A is a role of B" | HasRole = "Has Role" "A has role B";
-    ClassifiedBy = "Classified By" "A is classified by B" | ClassificationOf = "Classification Of" "A is a classification of B";
-    InstanceOf = "Instance Of" "A is an instance of B" | HasInstance = "Has Instance" "A has instance B";
-    SingletonOf = "Singleton Of" "A is the singleton instance of B" | HasSingleton = "Has Singleton" "A has singleton instance B";
+    RoleOf = 'Role Of' 'A is a role of B' | HasRole = 'Has Role' 'A has role B';
+    ClassifiedBy = 'Classified By' 'A is classified by B' | ClassificationOf = 'Classification Of' 'A is a classification of B';
+    InstanceOf = 'Instance Of' 'A is an instance of B' | HasInstance = 'Has Instance' 'A has instance B';
+    SingletonOf = 'Singleton Of' 'A is the singleton instance of B' | HasSingleton = 'Has Singleton' 'A has singleton instance B';
     
-    Permission = "Permission" "The defining permission classification";
-    CREATE_META = "Create Meta" "A may create meta data in B" | MayBeCreatedMetaBy = "May Be Created By" "A allows meta creation by B";
-    CREATE = "Create" "The create permission" | MayBeCreatedBy = "May Be Created By" "May Be Created By";
-    READ = "Read" "The read permission" | MayBeReadBy = "May Be Read By" "The inverse read permission";
-    UPDATE = "Update" "The update permission" | MayBeUpdatedBy = "May Be Updated By" "The inverse update permission";
-    DELETE = "Delete" "The delete permission" | MayBeDeletedBy = "May Be Deleted By" "The inverse delete permission";
-    APPLY = "Apply" "The apply permission" | MayBeAppliedBy = "May Be Applied By" "The inverse apply permission";
-    REMOVE = "Remove" "The remove permission" | MayBeRemovedBy = "May Be Removed By" "The inverse remove permission";
-    INVOKE = "Invoke" "The invoke permission" | MayBeInvokedBy = "May Be Invoked By" "The inverse invoke permission";
-    EXECUTE_QUERY = "Execute Query" "The execute query permission" | QueryExecutedBy = "Query may be executed By" "The inverse execute query permission"; 
-    LOGIN_TO = "Login" "The login permission" | MayLoginBy = "Login may be done By" "The inverse login permission";
-    UPDATE_AUTHORITY = "Update Authority" "The update authority permission" 
-                       | MayUpdateAuthorityBy = "May Be Update Authority By" "The inverse update authority permission";
+    Permission = 'Permission' 'The defining permission classification';
+    CREATE_META = 'Create Meta' 'A may create meta data in B' | MayBeCreatedMetaBy = 'May Be Created By' 'A allows meta creation by B';
+    CREATE = 'Create' 'The create permission' | MayBeCreatedBy = 'May Be Created By' 'May Be Created By';
+    READ = 'Read' 'The read permission' | MayBeReadBy = 'May Be Read By' 'The inverse read permission';
+    UPDATE = 'Update' 'The update permission' | MayBeUpdatedBy = 'May Be Updated By' 'The inverse update permission';
+    DELETE = 'Delete' 'The delete permission' | MayBeDeletedBy = 'May Be Deleted By' 'The inverse delete permission';
+    APPLY = 'Apply' 'The apply permission' | MayBeAppliedBy = 'May Be Applied By' 'The inverse apply permission';
+    REMOVE = 'Remove' 'The remove permission' | MayBeRemovedBy = 'May Be Removed By' 'The inverse remove permission';
+    INVOKE = 'Invoke' 'The invoke permission' | MayBeInvokedBy = 'May Be Invoked By' 'The inverse invoke permission';
+    EXECUTE_QUERY = 'Execute Query' 'The execute query permission' | QueryExecutedBy = 'Query may be executed By' 'The inverse execute query permission'; 
+    LOGIN_TO = 'Login' 'The login permission' | MayLoginBy = 'Login may be done By' 'The inverse login permission';
+    UPDATE_AUTHORITY = 'Update Authority' 'The update authority permission' 
+                       | MayUpdateAuthorityBy = 'May Be Update Authority By' 'The inverse update authority permission';
     
-    DefaultRole = "Default Role" "A has default role B" | DefaultRoleOf = "Default Role Of" "A is the default role of B";
-    DefaultClassification = "Default Classification" "A has default classification B" 
-                            | DefaultClassificationOf = "Default Classification Of" "A is the default classification of B";
+    DefaultRole = 'Default Role' 'A has default role B' | DefaultRoleOf = 'Default Role Of' 'A is the default role of B';
+    DefaultClassification = 'Default Classification' 'A has default classification B' 
+                            | DefaultClassificationOf = 'Default Classification Of' 'A is the default classification of B';
     
     edges {
         APPLY.IsA.Permission

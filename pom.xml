@@ -37,6 +37,7 @@
 	<properties>
 		<db.context>local</db.context>
 
+        <antlr.version>4.7</antlr.version>
 		<dropwizard.version>1.0.5</dropwizard.version>
 		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
 		<jackson.version>2.7.8 </jackson.version>
@@ -381,7 +382,7 @@
 			<dependency>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-runtime</artifactId>
-				<version>4.5.2</version>
+				<version>${antlr.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
@@ -583,7 +584,7 @@
 				<plugin>
 					<groupId>org.antlr</groupId>
 					<artifactId>antlr4-maven-plugin</artifactId>
-					<version>4.5.2</version>
+					<version>${antlr.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

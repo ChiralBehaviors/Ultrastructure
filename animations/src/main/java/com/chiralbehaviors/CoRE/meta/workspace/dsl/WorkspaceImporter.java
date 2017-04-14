@@ -43,6 +43,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorization
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -77,6 +78,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingCont
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -370,6 +372,24 @@ public class WorkspaceImporter {
             record.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           record);
+            for (AttributeValueContext av : ruleform.attributeValue()) {
+                ExistentialAttributeRecord attribute = model.records()
+                                                            .newExistentialAttribute();
+                attribute.setExistential(record.getId());
+                Attribute authorizedAttribute = model.records()
+                                                     .resolve(resolve(av.attribute));
+                attribute.setAttribute(authorizedAttribute.getId());
+                attribute.setUpdatedBy(model.getCurrentPrincipal()
+                                            .getPrincipal()
+                                            .getId());
+                if (av.sequenceNumber != null) {
+                    attribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                }
+                attribute.insert();
+                setValueFromString(authorizedAttribute, attribute,
+                                   WorkspacePresentation.stripQuotes(av.value.getText()));
+                workspace.add(attribute);
+            }
         }
     }
 
@@ -399,7 +419,9 @@ public class WorkspaceImporter {
                 ama.setUpdatedBy(model.getCurrentPrincipal()
                                       .getPrincipal()
                                       .getId());
-                ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                if (av.sequenceNumber != null) {
+                    ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                }
                 ama.insert();
                 setValueFromString(authorizedAttribute, ama,
                                    WorkspacePresentation.stripQuotes(av.value.getText()));
@@ -421,24 +443,25 @@ public class WorkspaceImporter {
     }
 
     private void loadEdges() {
-        loadNetworks(wsp.getAgencyNetworks());
-        loadNetworks(wsp.getAttributeNetworks());
-        loadNetworks(wsp.getIntervalNetworks());
-        loadNetworks(wsp.getLocationNetworks());
-        loadNetworks(wsp.getProductNetworks());
-        loadNetworks(wsp.getRelationshipNetworks());
-        loadNetworks(wsp.getStatusCodeNetworks());
-        loadNetworks(wsp.getUnitNetworks());
+        loadNetwork(wsp.getAgencyNetworks());
+        loadNetwork(wsp.getAttributeNetworks());
+        loadNetwork(wsp.getIntervalNetworks());
+        loadNetwork(wsp.getLocationNetworks());
+        loadNetwork(wsp.getProductNetworks());
+        loadNetwork(wsp.getRelationshipNetworks());
+        loadNetwork(wsp.getStatusCodeNetworks());
+        loadNetwork(wsp.getUnitNetworks());
     }
 
     private void loadExistentials() {
+        loadAttributes();
+        loadRelationships();
         load(ExistentialDomain.Agency, wsp.getAgencies());
         load(ExistentialDomain.Location, wsp.getLocations());
         load(ExistentialDomain.Product, wsp.getProducts());
         load(ExistentialDomain.Interval, wsp.getIntervals());
         load(ExistentialDomain.Unit, wsp.getUnits());
-        loadRelationships();
-        loadAttributes();
+
         loadStatusCodes();
         loadStatusCodeSequencings();
     }
@@ -506,7 +529,7 @@ public class WorkspaceImporter {
         }
     }
 
-    private void loadNetworks(List<EdgeContext> edges) {
+    private void loadNetwork(List<EdgeContext> edges) {
         for (EdgeContext edge : edges) {
             ExistentialRuleform parent = model.records()
                                               .resolve(resolve(edge.parent));
@@ -526,6 +549,25 @@ public class WorkspaceImporter {
                                                                                             child);
                 workspace.add(link.a);
                 workspace.add(link.b);
+
+                for (AttributeValueContext av : edge.attributeValue()) {
+                    ExistentialNetworkAttributeRecord edgeAttribute = model.records()
+                                                                           .newExistentialNetworkAttribute();
+                    edgeAttribute.setEdge(link.a.getId());
+                    Attribute attr = model.records()
+                                          .resolve(resolve(av.attribute));
+                    edgeAttribute.setAttribute(attr.getId());
+                    edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
+                                                    .getPrincipal()
+                                                    .getId());
+                    if (av.sequenceNumber != null) {
+                        edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                    }
+                    edgeAttribute.insert();
+                    setValueFromString(attr, edgeAttribute,
+                                       WorkspacePresentation.stripQuotes(av.value.getText()));
+                    workspace.add(edgeAttribute);
+                }
             }
         }
     }
@@ -834,8 +876,15 @@ public class WorkspaceImporter {
                      .setValue(auth, value);
                 return;
             case JSON:
-                model.getPhantasmModel()
-                     .setValue(auth, value);
+                try {
+                    model.getPhantasmModel()
+                         .setValue(auth, new ObjectMapper().reader()
+                                                           .readTree(value));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
+                                                                     value),
+                                                       e);
+                }
                 return;
             case Timestamp:
                 model.getPhantasmModel()
@@ -873,11 +922,21 @@ public class WorkspaceImporter {
                      .setValue(attributeValue, value);
                 return;
             case JSON:
-                model.getPhantasmModel()
-                     .setValue(attributeValue, value);
+                try {
+                    model.getPhantasmModel()
+                         .setValue(attributeValue, new ObjectMapper().reader()
+                                                                     .readTree(value));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
+                                                                     value),
+                                                       e);
+                }
                 return;
             case Timestamp:
-                throw new UnsupportedOperationException("Timestamps are a PITA");
+                model.getPhantasmModel()
+                     .setValue(attributeValue,
+                               new Timestamp(Long.parseLong(value)));
+                return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               authorizedAttribute.getValueType()));
@@ -886,6 +945,45 @@ public class WorkspaceImporter {
 
     private void setValueFromString(Attribute authorizedAttribute,
                                     ExistentialNetworkAttributeAuthorizationRecord auth,
+                                    String value) {
+
+        switch (authorizedAttribute.getValueType()) {
+            case Binary:
+                model.getPhantasmModel()
+                     .setValue(auth, value.getBytes());
+                return;
+            case Boolean:
+                model.getPhantasmModel()
+                     .setValue(auth, Boolean.valueOf(value));
+                return;
+            case Integer:
+                model.getPhantasmModel()
+                     .setValue(auth, Integer.parseInt(value));
+                return;
+            case Numeric:
+                model.getPhantasmModel()
+                     .setValue(auth, BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case Text:
+                model.getPhantasmModel()
+                     .setValue(auth, value);
+                return;
+            case JSON:
+                model.getPhantasmModel()
+                     .setValue(auth, value);
+                return;
+            case Timestamp:
+                model.getPhantasmModel()
+                     .setValue(auth, new Timestamp(Long.parseLong(value)));
+                return;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              authorizedAttribute.getValueType()));
+        }
+    }
+
+    private void setValueFromString(Attribute authorizedAttribute,
+                                    ExistentialNetworkAttributeRecord auth,
                                     String value) {
 
         switch (authorizedAttribute.getValueType()) {

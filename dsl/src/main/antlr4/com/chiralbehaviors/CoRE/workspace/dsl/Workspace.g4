@@ -132,7 +132,8 @@ edge:
    '.' 
    relationship=qualifiedName 
    '.' 
-   child=qualifiedName;
+   child=qualifiedName
+    ('attribute values' LB (attributeValue)+ RB)?;
    
 parentSequencings:
     'parent' LB (parentSequencing)* RB;
@@ -245,7 +246,7 @@ constraint:
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
-QuotedText: '"' (' ' | '!' |'#'.. '~')+ '"'; 
+QuotedText: '\'' (' ' | '!'.. '&' | '(' .. '~' )+ '\''; 
 Boolean: ('true'|'false');
 Number: ('0'..'9')+; 
  

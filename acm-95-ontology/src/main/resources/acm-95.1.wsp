@@ -1,29 +1,29 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/acm-95"
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/acm-95'
            version: 1 
-           "Northwind" 
-           "Ultrastructure ontology for ACM '95 Ultrastructure order processing example"
+           'Northwind' 
+           'Ultrastructure ontology for ACM 95 Ultrastructure order processing example'
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel
 }
 
 agencies {
-    ExemptAgency = "Exempt" "Exempt from sales tax";
-    NonExemptAgency = "Non Exempt" "Non tax exempt";
-    ExternalCust = "External Customer" "External (paying) customer";
-    InternalCust = "Internal Customer" "Internal (non paying) customer";
-    ComputeResource = "Compute Resource" "Compute system resource for doing computing";
-    Department = "Department" "A group of employees organized by function";
+    ExemptAgency = 'Exempt' 'Exempt from sales tax';
+    NonExemptAgency = 'Non Exempt' 'Non tax exempt';
+    ExternalCust = 'External Customer' 'External (paying) customer';
+    InternalCust = 'Internal Customer' 'Internal (non paying) customer';
+    ComputeResource = 'Compute Resource' 'Compute system resource for doing computing';
+    Department = 'Department' 'A group of employees organized by function';
     
-    BillingComputer = "Billing CPU" "Billing computer";
-    CPU = "CPU" "General purpose computer";
-    CreditDept = "Credit Department" "The credit department";
-    Factory1Agency = "Factory 1" "Factory #1";
-    GeorgetownUniversity = "GU" "Georgetown University";
-    CafleurBon = "carfleurBon" "Carfleur Bon";
-    Manufacturer = "MNFR" "Manufacturer";
-    OrgA = "OrgA" "Organization A";
-    OrderFullfillment = "Order Fullfillment" "Order Fullfillment";
-    Northwind = "Northwind" "Northwind, inc"; 
+    BillingComputer = 'Billing CPU' 'Billing computer';
+    CPU = 'CPU' 'General purpose computer';
+    CreditDept = 'Credit Department' 'The credit department';
+    Factory1Agency = 'Factory 1' 'Factory #1';
+    GeorgetownUniversity = 'GU' 'Georgetown University';
+    CafleurBon = 'carfleurBon' 'Carfleur Bon';
+    Manufacturer = 'MNFR' 'Manufacturer';
+    OrgA = 'OrgA' 'Organization A';
+    OrderFullfillment = 'Order Fullfillment' 'Order Fullfillment';
+    Northwind = 'Northwind' 'Northwind, inc'; 
  
     
     edges { 
@@ -97,50 +97,50 @@ agencies {
 }
 
 attributes {
-    LastName = "Last Name" "the last name" text;
-    FirstName = "First Name" "the first name" text;
-    Title = "Title" "Official title" text;
-    TitleOfCourtesy = "Title Of Courtesy" "Informal title" text;
-    BirthDate = "Birthdate" "Birthdate" timestamp;
-    HireDate = "Hire Date" "Hire date" timestamp;
+    LastName = 'Last Name' 'the last name' text;
+    FirstName = 'First Name' 'the first name' text;
+    Title = 'Title' 'Official title' text;
+    TitleOfCourtesy = 'Title Of Courtesy' 'Informal title' text;
+    BirthDate = 'Birthdate' 'Birthdate' timestamp;
+    HireDate = 'Hire Date' 'Hire date' timestamp;
     
-    CompanyName = "Company Name" "The name of a company" text;
-    CustomerName = "Customer Name" "The name of a customer" text;
-    SupplierName = "Supplier Name" "The name of a supplier" text;
-    Name = "Name" "The name of something" text;
-    CountryCode = "Country Code" "The short code of a contry" text;
-    StateCode = "State Code" "The short code of a state or region" text;
+    CompanyName = 'Company Name' 'The name of a company' text;
+    CustomerName = 'Customer Name' 'The name of a customer' text;
+    SupplierName = 'Supplier Name' 'The name of a supplier' text;
+    Name = 'Name' 'The name of something' text;
+    CountryCode = 'Country Code' 'The short code of a contry' text;
+    StateCode = 'State Code' 'The short code of a state or region' text;
 
-    StreetNumber = "Street Number" "The number on a street" text;
-    PostalCode = "Postal Code" "The postal routing code" text;
+    StreetNumber = 'Street Number' 'The number on a street' text;
+    PostalCode = 'Postal Code' 'The postal routing code' text;
     
-    OrderDate = "Order Date" "Date of order" timestamp;
-    RequiredDate = "Required Date" "Date required" timestamp;
-    ShipDate = "Ship Date" "Date shipped" timestamp;
+    OrderDate = 'Order Date' 'Date of order' timestamp;
+    RequiredDate = 'Required Date' 'Date required' timestamp;
+    ShipDate = 'Ship Date' 'Date shipped' timestamp;
     
-    DiscountPercentage = "Discount" "discount percentage" numeric;
-    Quantity = "Quantity" "quantity" int; 
-    UnitPrice = "Unit Price"  "unit price" numeric; 
-    TaxRate = "Tax Rate" "tax rate" numeric;
+    DiscountPercentage = 'Discount' 'discount percentage' numeric;
+    Quantity = 'Quantity' 'quantity' int; 
+    UnitPrice = 'Unit Price'  'unit price' numeric; 
+    TaxRate = 'Tax Rate' 'tax rate' numeric;
     
-    Picture = "picture" "A digital picture" type: "@id" binary;
+    Picture = 'picture' 'A digital picture' type: '@id' binary;
 }
 
 locations {
 
-    DC = "DC" "District of Columbia";
-    EastCoast = "East Coast" "East Coast";
-    WestCoast = "West Coast" "The Left Coast";
-    France = "France" "The country of France";
-    Paris = "Paris" "The city Paris";
-    US = "United States" "US locations";
-    Euro = "Europe" "EU locations";
-    Rsb225 = "225RSB" "225 Reiss Science Bldg";
-    Bht37 = "37BHT" "37 Bret Harte Terrace";
-    Rc31 = "31rc" "31 Rue Cambon"; 
-    Factory1 = "Factory 1" "Factory #1";
-    Bin1 = "Bin 1";
-    Bin15 = "Bin 15"; 
+    DC = 'DC' 'District of Columbia';
+    EastCoast = 'East Coast' 'East Coast';
+    WestCoast = 'West Coast' 'The Left Coast';
+    France = 'France' 'The country of France';
+    Paris = 'Paris' 'The city Paris';
+    US = 'United States' 'US locations';
+    Euro = 'Europe' 'EU locations';
+    Rsb225 = '225RSB' '225 Reiss Science Bldg';
+    Bht37 = '37BHT' '37 Bret Harte Terrace';
+    Rc31 = '31rc' '31 Rue Cambon'; 
+    Factory1 = 'Factory 1' 'Factory #1';
+    Bin1 = 'Bin 1';
+    Bin15 = 'Bin 15'; 
 
     edges {
         US.IsA.Area
@@ -227,24 +227,24 @@ locations {
 }
 
 products {   
-    RoomTemp = "RoomTemp" "Room temperature products";
-    Frozen = "frozen" "Frozen Products";
-    ExemptProduct = "Exempt" "Tax exempt products";
-    NonExemptProduct = "NonExempt" "Non tax exempt products";
+    RoomTemp = 'RoomTemp' 'Room temperature products';
+    Frozen = 'frozen' 'Frozen Products';
+    ExemptProduct = 'Exempt' 'Tax exempt products';
+    NonExemptProduct = 'NonExempt' 'Non tax exempt products';
     
-    Deliver = "Deliver" "Deliver product";
-    Pick = "Pick" "Pick inventory";
-    Ship = "Ship" "Ship inventory";
-    CheckCredit = "CheckCredit" "Check customer in-house credit";
-    CheckLetterOfCredit = "CheckLetterOfCredit" "Check customer letter of credit";
-    Discount = "Discount" "Compute Fee Discount";
-    Fee = "Fee" "Compute Fee";
-    PrintCustomsDeclaration = "PrintCustomsDeclaration" "Print the customs declaration";
-    PrintPurchaseOrder = "PrintPurchaseOrder" "Print the purchase order";
-    SalesTax = "SalesTax" "Compute sales tax";
+    Deliver = 'Deliver' 'Deliver product';
+    Pick = 'Pick' 'Pick inventory';
+    Ship = 'Ship' 'Ship inventory';
+    CheckCredit = 'CheckCredit' 'Check customer in-house credit';
+    CheckLetterOfCredit = 'CheckLetterOfCredit' 'Check customer letter of credit';
+    Discount = 'Discount' 'Compute Fee Discount';
+    Fee = 'Fee' 'Compute Fee';
+    PrintCustomsDeclaration = 'PrintCustomsDeclaration' 'Print the customs declaration';
+    PrintPurchaseOrder = 'PrintPurchaseOrder' 'Print the purchase order';
+    SalesTax = 'SalesTax' 'Compute sales tax';
     
-    Abc486 = "Abc486" "Laptop computer";
-    ChemB = "ChemB" "Chemical B"; 
+    Abc486 = 'Abc486' 'Laptop computer';
+    ChemB = 'ChemB' 'Chemical B'; 
     
     edges { 
         Abc486.StorageType.RoomTemp
@@ -284,53 +284,53 @@ products {
 }
 
 relationships {
-    InArea = "Area" "A is a member of the economic community B" | AreaOf = "Area Of" "A is economic community of B";
-    InCountry = "Country" "A is located in the country B" | countryOf = "Country Of" "A is the country of B";
-    InRegion = "Region" "The general region of A is B" | RegionOf = "Region Of" "A is the general region of B";
-    HasTerritory = "Territory" "A has territory B" | TerritoryOf = "Territory Of" "A is a territory of B";
-    InState = "State" "A is located in the State B" | StateOf = "State Of" "A is the State of B";
-    InCity = "City" "A is located in the City B" | CityOf = "City Of" "A is the city of B";
-    AtAddress = "Address" "A is located at the address B" | AddressOf = "Address Of" "A is an address of B";
-    InStateOrProvince = "In State or Province" "A is located in the State or Province of B" | StateOrProvinceOf = "State or Province Of" "A is the State or Province of B";
-    OnStreet = "Street" "A is located on the Street B" | StreetOf = "Street Of" "A is the street of B";
+    InArea = 'Area' 'A is a member of the economic community B' | AreaOf = 'Area Of' 'A is economic community of B';
+    InCountry = 'Country' 'A is located in the country B' | countryOf = 'Country Of' 'A is the country of B';
+    InRegion = 'Region' 'The general region of A is B' | RegionOf = 'Region Of' 'A is the general region of B';
+    HasTerritory = 'Territory' 'A has territory B' | TerritoryOf = 'Territory Of' 'A is a territory of B';
+    InState = 'State' 'A is located in the State B' | StateOf = 'State Of' 'A is the State of B';
+    InCity = 'City' 'A is located in the City B' | CityOf = 'City Of' 'A is the city of B';
+    AtAddress = 'Address' 'A is located at the address B' | AddressOf = 'Address Of' 'A is an address of B';
+    InStateOrProvince = 'In State or Province' 'A is located in the State or Province of B' | StateOrProvinceOf = 'State or Province Of' 'A is the State or Province of B';
+    OnStreet = 'Street' 'A is located on the Street B' | StreetOf = 'Street Of' 'A is the street of B';
     
-    CustomerType = "Customer Type" "A has customer type of B" | CustomerTypeOf = "Customer Type Of" "A is the customer type of B";
-    SalesTaxStatus = "Sales Tax Status" "The sales tax status of A is B" | SalesTaxStatusOf = "Sales Tax Status Of" "A is the sales tax status of B";
+    CustomerType = 'Customer Type' 'A has customer type of B' | CustomerTypeOf = 'Customer Type Of' 'A is the customer type of B';
+    SalesTaxStatus = 'Sales Tax Status' 'The sales tax status of A is B' | SalesTaxStatusOf = 'Sales Tax Status Of' 'A is the sales tax status of B';
     
-    StorageType = "StorageType" "The type of storage required for A is B" | StorageTypeOf = "StorageType Of" "A is the storage type of B";
-    ShippingAddress = "Shipping Address" "the shipping address of A is B" | ShippingAddressOf ="Shipping Address Of" "A is the shipping address of B";
-    MailingAddress = "Mailing Address" "the mailing address of A is B" | MailingAddressOf ="Mailing Address Of" "A is the mailing address of B";
+    StorageType = 'StorageType' 'The type of storage required for A is B' | StorageTypeOf = 'StorageType Of' 'A is the storage type of B';
+    ShippingAddress = 'Shipping Address' 'the shipping address of A is B' | ShippingAddressOf ='Shipping Address Of' 'A is the shipping address of B';
+    MailingAddress = 'Mailing Address' 'the mailing address of A is B' | MailingAddressOf ='Mailing Address Of' 'A is the mailing address of B';
    
-    ReportsTo = "Reports To" "A reports to B" | HasReport = "Has Report" "A has report B";
-    EmployeeOf = "Employee Of" "A is an employee of B" | HasEmployee = "Has Employee" "A has employee B";
-    SupplierOf = "Supplier Of" "A is a supplier of B" | HasSupplier = "Has Supplier" "A has supplier B";
-    Ships = "Ships" "A ships B" | HasShipper = "Has Shipper" "A has shipper B";
-    ContactOf = "Contact Of" "A is the contact of B" | Contact = " the contact of A is B";
-    DepartmentOf = "Department Of" "A is an organizational department of B" | HasDepartment = "Has Department" "A has department B";
+    ReportsTo = 'Reports To' 'A reports to B' | HasReport = 'Has Report' 'A has report B';
+    EmployeeOf = 'Employee Of' 'A is an employee of B' | HasEmployee = 'Has Employee' 'A has employee B';
+    SupplierOf = 'Supplier Of' 'A is a supplier of B' | HasSupplier = 'Has Supplier' 'A has supplier B';
+    Ships = 'Ships' 'A ships B' | HasShipper = 'Has Shipper' 'A has shipper B';
+    ContactOf = 'Contact Of' 'A is the contact of B' | Contact = ' the contact of A is B';
+    DepartmentOf = 'Department Of' 'A is an organizational department of B' | HasDepartment = 'Has Department' 'A has department B';
     
-    ShippedBy = "Shipped By" "A was shipped by B" | Shipped = "Shipped" "A shipped B";
-    DeliveredTo = "Delivered To" "A was delivered to B" | Recieved = "Received" "A recieved B";
-    OrderedBy = "Ordered By" "A was ordered by B" | Ordered = "Ordered" "A ordered B";
+    ShippedBy = 'Shipped By' 'A was shipped by B' | Shipped = 'Shipped' 'A shipped B';
+    DeliveredTo = 'Delivered To' 'A was delivered to B' | Recieved = 'Received' 'A recieved B';
+    OrderedBy = 'Ordered By' 'A was ordered by B' | Ordered = 'Ordered' 'A ordered B';
     
-    ItemDetailOf = "Item Detail Of" "A is an item detail of B" | HasItemDetail = "Has Item Detail" "A has item detail B";
-    OrderedProductOf = "Ordered Product Of" "A is the ordered product of B" | ProductOrdered = "Product Ordered" "A is a product order of B";
-    IsCategorizedAs = "Is Categorized As" "A is categorized as B"  | CategoryOf = "A is a category of B";
-    StockedAt = "Stocked At" "A is stocked at B" | Stocks = "Stocks" "A is the location of stock B";
-    Sold = "Sold" "A sold B" | SoldBy = "Sold By" "A was sold by B";
+    ItemDetailOf = 'Item Detail Of' 'A is an item detail of B' | HasItemDetail = 'Has Item Detail' 'A has item detail B';
+    OrderedProductOf = 'Ordered Product Of' 'A is the ordered product of B' | ProductOrdered = 'Product Ordered' 'A is a product order of B';
+    IsCategorizedAs = 'Is Categorized As' 'A is categorized as B'  | CategoryOf = 'A is a category of B';
+    StockedAt = 'Stocked At' 'A is stocked at B' | Stocks = 'Stocks' 'A is the location of stock B';
+    Sold = 'Sold' 'A sold B' | SoldBy = 'Sold By' 'A was sold by B';
 }
 
 
 status codes {
-    Available = "Available"  "Job is Available for processing";
-    Active = "Active" "Working on it now";
-    WaitingOnCreditCheck = "Waiting on Credit Check" "Waiting on credit check to be Completed";
-    Completed = "Completed" "Completed job";
-    Failure = "Failure" "Something went pear shaped";
-    PickCompleted = "Pick Completed" "Pick product has been Completed";
-    WaitingOnPurchaseOrder = "Waiting on the purchace order" "Waiting for the purchase order to be complete";
-    WaitingOnPricing = "Waiting on pricing" "Waiting for pricing to be Completed";
-    WaitingOnFee = "Waiting on Fee calculation" "Waiting for Fee calculation to be Completed";
-    Abandoned = "Job abandoned"  "We were going to do it, something happened in earlier processing that will prevent US from proceeding";
+    Available = 'Available'  'Job is Available for processing';
+    Active = 'Active' 'Working on it now';
+    WaitingOnCreditCheck = 'Waiting on Credit Check' 'Waiting on credit check to be Completed';
+    Completed = 'Completed' 'Completed job';
+    Failure = 'Failure' 'Something went pear shaped';
+    PickCompleted = 'Pick Completed' 'Pick product has been Completed';
+    WaitingOnPurchaseOrder = 'Waiting on the purchace order' 'Waiting for the purchase order to be complete';
+    WaitingOnPricing = 'Waiting on pricing' 'Waiting for pricing to be Completed';
+    WaitingOnFee = 'Waiting on Fee calculation' 'Waiting for Fee calculation to be Completed';
+    Abandoned = 'Job abandoned'  'We were going to do it, something happened in earlier processing that will prevent us from proceeding';
 }
 
 status code sequencings {

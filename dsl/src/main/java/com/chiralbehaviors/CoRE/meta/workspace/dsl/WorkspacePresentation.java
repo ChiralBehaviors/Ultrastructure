@@ -32,27 +32,27 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingsContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingsContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceDefinitionContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceLexer;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.AttributeRuleformContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.AttributedExistentialRuleformContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.ChildSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.ChildSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.ConstraintContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.EdgeContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.FacetContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.ImportedWorkspaceContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.MetaProtocolContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.ParentSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.ProtocolContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.RelationshipPairContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.SelfSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.SelfSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.SiblingSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.SiblingSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.StatusCodeSequencingSetContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.WorkspaceContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.WorkspaceDefinitionContext;
 
 /**
  * @author hhildebrand

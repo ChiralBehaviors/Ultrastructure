@@ -28,6 +28,8 @@ import org.antlr.v4.runtime.Recognizer;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceLexer;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser;
 
 /**
  * @author hhildebrand

@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.Token;
 
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.grammar.WorkspaceParser.AttributeRuleformContext;
 
 /**
  * @author hhildebrand

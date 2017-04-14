@@ -1,43 +1,67 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page"
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page'
            version: 1
-           "UaaS SP" "A declarative single page application framework for Ultrastructure"
+           'UaaS SP' 'A declarative single page application framework for Ultrastructure'
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel {
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel {
     		IsA.Workspace
     }
 }
 attributes {
-    name = "Name" "The name of something" text;
-    description = "Description" "The description" text;
-    label = "Label" "The labe of something" text;
-    relation = "Relation" "The name of a relation" text;
-    route = "Route" "The named route" text;
-    extract = "Extract" "The xpath extractions from data" json;
-    query = "Query" "GraphQL query" text;
-    title = "Title" "Title text" text;
-	root = "Root" "Root page" text;
-	frameBy = "Frame By" "The xpath expression to extract the workspace frame id from the relation" text;
-    launchBy = "Launch By" "The xpath expression to extract application id from the relation" text;
+    name = 'Name' 'The name of something' text;
+    description = 'Description' 'The description' text;
+    label = 'Label' 'The labe of something' text;
+    relation = 'Relation' 'The name of a relation' text;
+    route = 'Route' 'The named route' text;
+    extract = 'Extract' 'The xpath extractions from data' json;
+    query = 'Query' 'GraphQL query' text;
+    title = 'Title' 'Title text' text;
+	root = 'Root' 'Root Route' text;
+	frameBy = 'Frame By' 'The xpath expression to extract the workspace frame id from the relation' text;
+    launchBy = 'Launch By' 'The xpath expression to extract application id from the relation' text;
 }
 products {
-    Page = "Page" "A single page in an application";
-    SinglePageApp = "Single Page Application" "A single page application";
-    Route = "Route" "A routing from one page to another";
-    Launch = "Launch" "An application launch from a page in another application";
-    Action = "Action" "An action on an instance of a relation";
+    Page = 'Page' 'A single page in an application';
+    SinglePageApp = 'Single Page Application' 'A single page application';
+    Route = 'Route' 'A routing from one page to another';
+    Launch = 'Launch' 'An application launch from a page in another application';
+    Action = 'Action' 'An action on an instance of a relation';
     
-    AppLauncher = "Application Launcher" "A well known application for launching applications";
-    AllApplications = "All applications" "Page with all applications";
-    LaunchApplication = "Launch Application" "Launch the selected application";
+    AppLauncher = 'Application Launcher' 'A well known application for launching applications'
+        attribute values {
+            name : 'Application Launcher'
+            description: 'A well known application for launching applications'
+            root: 'launch'
+        };
+        
+    AllApplications = 'All applications' 'Page with all applications'
+        attribute values {
+            name: 'All applications'
+            description: 'Page with all applications'
+            title: 'Applications'
+            query: '{ singlePageApplications { id name description } }'
+            
+        };
+    LaunchApplication = 'Launch Application' 'Launch the selected application'
+        attribute values {
+            name: 'Launch Application'
+            description: 'Launch the selected application'
+            launchBy: 'id'
+        };
     
     edges {
-        AppLauncher.IsA.SinglePageApp
-        
+        AppLauncher.IsA.SinglePageApp 
         AllApplications.IsA.Page
-        AllApplications.pageOf.AppLauncher
-        
         LaunchApplication.IsA.Launch
-        LaunchApplication.launchOf.AllApplications
+        
+        AppLauncher.hasPage.AllApplications
+            attribute values {
+                route: 'launch'
+            }
+        
+        AllApplications.launch.LaunchApplication
+            attribute values {
+                relation: 'singlePageApplications'
+            }
     }
 
     facets {
@@ -72,13 +96,13 @@ products {
     }
 }
 relationships {
-    hasPage = "Has Page" "A has page B" | pageOf = "Page Of" "A is a page of B";
-    hasRoute = "Has Route" "A has route B" | routeOf = "Route Of" "A is a route of B";
-    frame = "A is framed by the workspace B" | frameOf = "A is the workspace frame of page B";
-    create = "A creates an instance of the relation using action B" | createActionOf = "A is an action used to create a new instance of a relation of page B";
-    delete = "A deletes the relation using the action B" | deleteActionOf = "A is an action used to delete a relation of page B";
-    update = "A updates relation using route B" | updateActionOf = "A is a route used to update a relation of page B";
-    navigate = "A navigates the relation using route B" | navigationOf = "A is a route used to navigate a relation of page B";
-    launch = "A launches the application using the application launch defined by B" 
-                | launchOf = "A is a launch used to launch an application from a relation of page B";
+    hasPage = 'Has Page' 'A has page B' | pageOf = 'Page Of' 'A is a page of B';
+    hasRoute = 'Has Route' 'A has route B' | routeOf = 'Route Of' 'A is a route of B';
+    frame = 'A is framed by the workspace B' | frameOf = 'A is the workspace frame of page B';
+    create = 'A creates an instance of the relation using action B' | createActionOf = 'A is an action used to create a new instance of a relation of page B';
+    delete = 'A deletes the relation using the action B' | deleteActionOf = 'A is an action used to delete a relation of page B';
+    update = 'A updates relation using route B' | updateActionOf = 'A is a route used to update a relation of page B';
+    navigate = 'A navigates the relation using route B' | navigationOf = 'A is a route used to navigate a relation of page B';
+    launch = 'A launches the application using the application launch defined by B' 
+                | launchOf = 'A is a launch used to launch an application from a relation of page B';
 }

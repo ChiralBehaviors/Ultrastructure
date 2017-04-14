@@ -111,7 +111,7 @@ public class PhantasmGenerator {
                                                                                     configuration.resource));
 
         importFacets(wsp);
-        String uri = wsp.getWorkspaceDefinition().uri.getText();
+        String uri = wsp.getWorkspaceDefinition().uri.getText().replace("'", "\"");
         wsp.getAgencyFacets()
            .forEach(facet -> {
                facets.put(new FacetKey(facet),

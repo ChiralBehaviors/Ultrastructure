@@ -1,13 +1,13 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/humblr" 
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/humblr' 
            version: 1
-           "Humblr" 
-           "Ultrastructure sketch of Tumblr"
+           'Humblr' 
+           'Ultrastructure sketch of Tumblr'
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel
 }
 
 agencies {
-	Person = "Person" "Neither place nor thing";
+	Person = 'Person' 'Neither place nor thing';
     facets {
         IsA.User { Name }
             constraints {
@@ -24,15 +24,15 @@ agencies {
 }
 
 attributes {
-    Title = "Title" "The title" text;
-    URI = "URI" "URI" text;
-    Name = "Name" "name" text;
+    Title = 'Title' 'The title' text;
+    URI = 'URI' 'URI' text;
+    Name = 'Name' 'name' text;
 }
 
 products {
-    Channel = "Channel" "A feed owned by a user";
-    Post = "Post" "A single post on a feed";
-    Stream = "Stream" "A collection of posts constructed from channels followed by a user";
+    Channel = 'Channel' 'A feed owned by a user';
+    Post = 'Post' 'A single post on a feed';
+    Stream = 'Stream' 'A collection of posts constructed from channels followed by a user';
     facets {
         IsA.Post { Title URI }
             constraints {
@@ -53,10 +53,10 @@ products {
 }
 
 relationships {
-    Owns = "Owns" "A owns B" | OwnedBy = "Owned By" "A is owned by B";
-    HasFavorite = "HasFavorite" "A has favorite B" | IsFavoriteOf = "IsFavoriteOf" "B is a favorite of A";
-    Follows = "Follows" "A follows B" | HasFollower = "HasFollower" "B has a follower A";
-    IsRepostOf = "IsRepostOf" "A is a repost of B" | RepostedAs = "RepostedAs" "B is reposted as A";
+    Owns = 'Owns' 'A owns B' | OwnedBy = 'Owned By' 'A is owned by B';
+    HasFavorite = 'HasFavorite' 'A has favorite B' | IsFavoriteOf = 'IsFavoriteOf' 'B is a favorite of A';
+    Follows = 'Follows' 'A follows B' | HasFollower = 'HasFollower' 'B has a follower A';
+    IsRepostOf = 'IsRepostOf' 'A is a repost of B' | RepostedAs = 'RepostedAs' 'B is reposted as A';
     
 }
 

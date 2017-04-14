@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 public class TestParse {
     @Test
     public void testParse() throws Exception {
-        WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(getClass().getResourceAsStream("/thing.wsp")));
+        WorkspaceLexer l = new WorkspaceLexer(CharStreams.fromStream(getClass().getResourceAsStream("/thing.wsp")));
         WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
         p.addErrorListener(new BaseErrorListener() {
             @Override

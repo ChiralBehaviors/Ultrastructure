@@ -1,28 +1,28 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/functional/wsp-test" 
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/functional/wsp-test' 
            version: 1
-           "Workspace Import Test" 
-           "Test workspace to exercise import"
+           'Workspace Import Test' 
+           'Test workspace to exercise import'
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel
 }
 
 attributes {
-    Text = "text" "text attribute" text;
-    Bool = "bool" "boolean attribute" bool;
-    Int = "int" "integer attribute" int;
-    Numeric = "numeric" "numeric attribute" numeric;
-    Timestamp = "timestamp" "timestamp attribute" timestamp;
-    Json = "json" "json attribute" json;
-    Bar = "bar" "Bar attribute" text;
+    Text = 'text' 'text attribute' text;
+    Bool = 'bool' 'boolean attribute' bool;
+    Int = 'int' 'integer attribute' int;
+    Numeric = 'numeric' 'numeric attribute' numeric;
+    Timestamp = 'timestamp' 'timestamp attribute' timestamp;
+    Json = 'json' 'json attribute' json;
+    Bar = 'bar' 'Bar attribute' text;
     
     facets {
-        IsA.Bar { Text default: "foo" Bool default: "true"
-                  Int default: "1" Numeric default: "1"
-                  Timestamp default: "0" }
+        IsA.Bar { Text default: 'foo' Bool default: 'true'
+                  Int default: '1' Numeric default: '1'
+                  Timestamp default: '0' Json default: '{ "foo": "bar" }' }
             constraints {
-                one IsA: IsA.Bar {Text default: "foo" Bool default: "true"
-                        Int default: "1" Numeric default: "1"
-                        Timestamp default: "0"
+                one IsA: IsA.Bar {Text default: 'foo' Bool default: 'true'
+                        Int default: '1' Numeric default: '1'
+                        Timestamp default: '0'
                 }
             }
     }

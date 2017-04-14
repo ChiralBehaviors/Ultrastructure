@@ -24,20 +24,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.UUID;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.singlePgApp.Launch;
-import com.chiralbehaviors.CoRE.singlePgApp.Page;
-import com.chiralbehaviors.CoRE.singlePgApp.SinglePageApp;
 import com.chiralbehaviors.CoRE.universal.Universal;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
-import com.hellblazer.utils.Utils;
 
 /**
  * 
@@ -45,12 +38,9 @@ import com.hellblazer.utils.Utils;
  *
  */
 public class Initialization extends AbstractModelTest {
-    private static final String SRC_MAIN_RESOURCES     = "src/main/resources";
-    private static final String LAUNCH                 = "launch";
-    private static final String GET_APPLICATIONS_QUERY = "getApplications.query";
-    private static final String SINGLE_PAGE_1_JSON     = "single-page.1.json";
-    private static final String SINGLE_PAGE_1_WSP      = "single-page.1.wsp";
-    private static final String APP_LAUNCHER           = "AppLauncher";
+    private static final String SRC_MAIN_RESOURCES = "src/main/resources";
+    private static final String SINGLE_PAGE_1_JSON = "single-page.1.json";
+    private static final String SINGLE_PAGE_1_WSP  = "single-page.1.wsp";
 
     @Test
     public void initializeApplicationBrowser() throws Exception {
@@ -59,39 +49,6 @@ public class Initialization extends AbstractModelTest {
                                                         model)
                                               .getWorkspace()
                                               .getScope();
-        SinglePageApp browser = model.wrap(SinglePageApp.class,
-                                           spa.lookup(APP_LAUNCHER));
-        Page allApplications = model.wrap(Page.class,
-                                          spa.lookup("AllApplications"));
-        allApplications.setQuery(Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATIONS_QUERY)));
-
-        Launch launchApp = model.wrap(Launch.class,
-                                      spa.lookup("LaunchApplication"));
-
-        launchApp.setLaunchBy("id");
-
-        allApplications.setName("All applications");
-        allApplications.setDescription("Page with all applications");
-        allApplications.setTitle("Applications");
-        allApplications.setRelationOfLaunchLaunch(launchApp,
-                                                  "singlePageApplications");
-
-        browser.setName("Application Browser");
-        browser.setDescription("Initial application browser and launcher");
-        browser.setRouteOfPagePage(allApplications, LAUNCH);
-        browser.setRoot(LAUNCH);
-
-        WorkspaceSnapshot snap = model.snapshot();
-        UUID workspaceId = spa.getWorkspace()
-                              .getDefiningProduct()
-                              .getId();
-        snap.getRecords()
-            .forEach(r -> {
-                ((ExistentialNetworkAttributeRecord) r).setWorkspace(workspaceId);
-            });
-        snap.getRecords()
-            .forEach(r -> r.update());
-
         assertEquals(0, model.snapshot()
                              .getRecords()
                              .size());

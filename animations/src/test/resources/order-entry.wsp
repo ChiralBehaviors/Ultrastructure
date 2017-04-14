@@ -1,46 +1,46 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/order-entry/v1" 
-           "Order Entry" 
-           "Pricing example for CACM 1995 Ultrastructure article"
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/order-entry/v1' 
+           'Order Entry' 
+           'Pricing example for CACM 1995 Ultrastructure article'
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel
 }
 
 agencies {
-    billingComputer = "Billing CPU" "Billing computer";
-    cpu = "CPU" "General purpose computer";
-    creditDept = "Credit Department" "The credit department";
-    exempt = "Exempt" "Exempt from sales tax";
-    externalCust = "External Customer" "External (paying) customer";
-    factory1Agency = "Factory 1" "Factory #1";
-    georgeTownUniversity = "GU" "Georgetown University";
-    cafleurBon = "carfleurBon" "Carfleur Bon";
-    manufacturer = "MNFR" "Manufacturer";
-    nonExemptAgency = "Non Exempt" "Non tax exempt";
-    orgA = "OrgA" "Organization A";
-    orderFullfillment = "Order Fullfillment" "Order Fullfillment";
+    billingComputer = 'Billing CPU' 'Billing computer';
+    cpu = 'CPU' 'General purpose computer';
+    creditDept = 'Credit Department' 'The credit department';
+    exempt = 'Exempt' 'Exempt from sales tax';
+    externalCust = 'External Customer' 'External (paying) customer';
+    factory1Agency = 'Factory 1' 'Factory #1';
+    georgeTownUniversity = 'GU' 'Georgetown University';
+    cafleurBon = 'carfleurBon' 'Carfleur Bon';
+    manufacturer = 'MNFR' 'Manufacturer';
+    nonExemptAgency = 'Non Exempt' 'Non tax exempt';
+    orgA = 'OrgA' 'Organization A';
+    orderFullfillment = 'Order Fullfillment' 'Order Fullfillment';
 }
 attributes {
-        price = "price"  "price" int; 
-        taxRate = "tax rate" "tax rate" numeric;
-        discountRate = "discount" "discount" numeric;
+        price = 'price'  'price' int; 
+        taxRate = 'tax rate' 'tax rate' numeric;
+        discountRate = 'discount' 'discount' numeric;
 }
 intervals {
-    day = "Day" "A single day";
-    week = "Week" "A seven day week";
+    day = 'Day' 'A single day';
+    week = 'Week' 'A seven day week';
 }
 locations {
-    rsb225 = "225RSB" "225 Reiss Science Bldg";
-    bht37 = "37BHT" "37 Bret Harte Terrace";
-    rc31 = "31rc" "1 Rue Cambon";
-    dc = "DC" "District of Columbia";
-    eastCoast = "EAST_COAST" "East Coast";
-    france = "France" "The country of France";
-    paris = "Paris" "The city Paris";
-    us = "United States" "US locations";
-    euro = "Europe" "EU locations";
-    factory1 = "Factory 1" "Factory #1";
-    bin1 = "Bin 1";
-    bin15 = "Bin 15";
+    rsb225 = '225RSB' '225 Reiss Science Bldg';
+    bht37 = '37BHT' '37 Bret Harte Terrace';
+    rc31 = '31rc' '1 Rue Cambon';
+    dc = 'DC' 'District of Columbia';
+    eastCoast = 'EAST_COAST' 'East Coast';
+    france = 'France' 'The country of France';
+    paris = 'Paris' 'The city Paris';
+    us = 'United States' 'US locations';
+    euro = 'Europe' 'EU locations';
+    factory1 = 'Factory 1' 'Factory #1';
+    bin1 = 'Bin 1';
+    bin15 = 'Bin 15';
     edges {
         bin1.area.factory1
         bin15.area.factory1
@@ -54,22 +54,22 @@ locations {
     }
 }
 products {
-    pricedProduct = "Priced Product" "A product we sell";
-    abc486 = "abc486" "Laptop computer";
-    frozen = "frozen" "Frozen Products";
-    chemB = "ChemB" "Chemical B";
-    roomTemp = "RoomTemp" "Room temperature products";
-    nonExempt = "nonExempt" "Non tax exempt products";
-    deliver = "Deliver" "Deliver product";
-    pick = "Pick" "Pick inventory";
-    ship = "Ship" "Ship inventory";
-    checkCredit = "CheckCredit" "Check customer in-house credit";
-    checkLetterOfCredit = "CheckLetterOfCredit" "Check customer letter of credit";
-    discount = "Discount" "Compute fee discount";
-    fee = "Fee" "Compute fee";
-    printCustomsDeclaration = "PrintCustomsDeclaration" "Print the customs declaration";
-    printPurchaseOrder = "PrintPurchaseOrder" "Print the purchase order";
-    salesTax = "SalesTax" "Compute sales tax";
+    pricedProduct = 'Priced Product' 'A product we sell';
+    abc486 = 'abc486' 'Laptop computer';
+    frozen = 'frozen' 'Frozen Products';
+    chemB = 'ChemB' 'Chemical B';
+    roomTemp = 'RoomTemp' 'Room temperature products';
+    nonExempt = 'nonExempt' 'Non tax exempt products';
+    deliver = 'Deliver' 'Deliver product';
+    pick = 'Pick' 'Pick inventory';
+    ship = 'Ship' 'Ship inventory';
+    checkCredit = 'CheckCredit' 'Check customer in-house credit';
+    checkLetterOfCredit = 'CheckLetterOfCredit' 'Check customer letter of credit';
+    discount = 'Discount' 'Compute fee discount';
+    fee = 'Fee' 'Compute fee';
+    printCustomsDeclaration = 'PrintCustomsDeclaration' 'Print the customs declaration';
+    printPurchaseOrder = 'PrintPurchaseOrder' 'Print the purchase order';
+    salesTax = 'SalesTax' 'Compute sales tax';
     edges {
         abc486.storageType.roomTemp
         abc486.salesTaxStatus.nonExempt
@@ -80,26 +80,26 @@ products {
     }
 }
 relationships {
-    area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";
-    city = "City" "A is located in the City B" | cityOf = "City Of" "A is the city of B";
-    customerType = "Customer Type" "A has customer type of B" | customerTypeOf = "Customer Type Of" "A is the customer type of B";
-    region = "Region" "The general region of A is B" | regionOf = "Region Of" "A is the general region of B";
-    state = "State" "A is located in the state B" | stateOf = "State Of" "A is the state of B";
-    salesTaxStatus = "Sales Tax Status" "The sales tax status of A is B" | salesTaxStatusOf = "Sales Tax Status Of" "A is the sales tax status of B";
-    storageType = "StorageType" "The type of storage required for A is B" | storageTypeOf = "StorageType Of" "A is the storage type of B";
-    street = "Street" "A is located on the street B" | streetOf = "Street Of" "A is the street of B";
+    area = 'Area' 'A is a member of the economic community B' | areaOf = 'Area Of' 'A is economic community of B';
+    city = 'City' 'A is located in the City B' | cityOf = 'City Of' 'A is the city of B';
+    customerType = 'Customer Type' 'A has customer type of B' | customerTypeOf = 'Customer Type Of' 'A is the customer type of B';
+    region = 'Region' 'The general region of A is B' | regionOf = 'Region Of' 'A is the general region of B';
+    state = 'State' 'A is located in the state B' | stateOf = 'State Of' 'A is the state of B';
+    salesTaxStatus = 'Sales Tax Status' 'The sales tax status of A is B' | salesTaxStatusOf = 'Sales Tax Status Of' 'A is the sales tax status of B';
+    storageType = 'StorageType' 'The type of storage required for A is B' | storageTypeOf = 'StorageType Of' 'A is the storage type of B';
+    street = 'Street' 'A is located on the street B' | streetOf = 'Street Of' 'A is the street of B';
 }
 status codes {
-    available = "Available"  "Job is available for processing";
-    active = "Active" "Working on it now";
-    waitingOnCreditCheck = "Waiting on Credit Check" "Waiting on credit check to be completed";
-    completed = "Completed" "Completed job";
-    failure = "Failure" "Something went pear shaped";
-    pickCompleted = "Pick Completed" "Pick product has been completed";
-    waitingOnPurchaseOrder = "Waiting on the purchace order" "Waiting for the purchase order to be complete";
-    waitingOnPricing = "Waiting on pricing" "Waiting for pricing to be completed";
-    waitingOnFee = "Waiting on fee calculation" "Waiting for fee calculation to be completed";
-    abandoned = "Job abandoned"  "We were going to do it, something happened in earlier processing that will prevent us from proceeding";
+    available = 'Available'  'Job is available for processing';
+    active = 'Active' 'Working on it now';
+    waitingOnCreditCheck = 'Waiting on Credit Check' 'Waiting on credit check to be completed';
+    completed = 'Completed' 'Completed job';
+    failure = 'Failure' 'Something went pear shaped';
+    pickCompleted = 'Pick Completed' 'Pick product has been completed';
+    waitingOnPurchaseOrder = 'Waiting on the purchace order' 'Waiting for the purchase order to be complete';
+    waitingOnPricing = 'Waiting on pricing' 'Waiting for pricing to be completed';
+    waitingOnFee = 'Waiting on fee calculation' 'Waiting for fee calculation to be completed';
+    abandoned = 'Job abandoned'  'We were going to do it, something happened in earlier processing that will prevent us from proceeding';
 }
 status code sequencings {
     pick: {
@@ -148,9 +148,9 @@ status code sequencings {
         }
 }
 units {
-    dollar = "Dollar" "US Dollar" number;
-    cent = "Cent" "US Cent" number;
-    percentage = "Percentage" "Percentage" number min: 0 max: 100;
+    dollar = 'Dollar' 'US Dollar' number;
+    cent = 'Cent' 'US Cent' number;
+    percentage = 'Percentage' 'Percentage' number min: 0 max: 100;
 }
 sequencing auths {
     parent {

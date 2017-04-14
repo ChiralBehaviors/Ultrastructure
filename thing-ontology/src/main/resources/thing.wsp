@@ -1,47 +1,47 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm" 
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm' 
            version: 1
-           "Phantasm Demo" "First demo of Phantasm"
+           'Phantasm Demo' 'First demo of Phantasm'
 imports {
-    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel {
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel {
     	IsA.Workspace
      }
 }
 attributes {
-    name = "Name" "A name" text;
-    description = "Description" "A description" text;
-    aliases = "Aliases" "Alias Smith and Jones" indexed: true text;
-    discount = "Percentage" "The cut off the top" numeric;
-    URI = "URI" "the Universal Resource Indicator" text;
+    name = 'Name' 'A name' text;
+    description = 'Description' 'A description' text;
+    aliases = 'Aliases' 'Alias Smith and Jones' indexed: true text;
+    discount = 'Percentage' 'The cut off the top' numeric;
+    URI = 'URI' 'the Universal Resource Indicator' text;
     
-    artifactId = "Artifact ID" "artifact identifier" text;
-    classifier = "Classifier" "classifier" text;
-    groupId = "Group ID" "group identifier" text;
-    typeValues = "Type Values" "Valid values for the Type attribute" text;
-    properties = "Properties" "a property map" keyed: true text;
-    type = "Type" "type" text
+    artifactId = 'Artifact ID' 'artifact identifier' text;
+    classifier = 'Classifier' 'classifier' text;
+    groupId = 'Group ID' 'group identifier' text;
+    typeValues = 'Type Values' 'Valid values for the Type attribute' text;
+    properties = 'Properties' 'a property map' keyed: true text;
+    type = 'Type' 'type' text
         attribute values {
-            typeValues: "jar" 1
-            typeValues: "yml" 2
-            typeValues: "package" 3
+            typeValues: 'jar' 1
+            typeValues: 'yml' 2
+            typeValues: 'package' 3
         };
-    version = "Version" "version" text;
+    version = 'Version' 'version' text;
     edges {
         type.IsValidatedBy.typeValues
     }
     
 }
 locations {
-    MavenArtifact = "MavenArtifact" "A maven artifact";
+    MavenArtifact = 'MavenArtifact' 'A maven artifact';
     facets {
         IsA.MavenArtifact {name description artifactId classifier groupId type version }
     }
 }
 products {
-    Thing1 = "Thing1" "Thing 1";
-    Thing2 = "Thing2" "Thing 2";
-    Thing3 = "Thing3" "Thing 3";
-    OtherThing = "OtherThing" "Other Thing";
-    MasterThing = "MasterThing" "Master Thing";
+    Thing1 = 'Thing1' 'Thing 1';
+    Thing2 = 'Thing2' 'Thing 2';
+    Thing3 = 'Thing3' 'Thing 3';
+    OtherThing = 'OtherThing' 'Other Thing';
+    MasterThing = 'MasterThing' 'Master Thing';
     edges {
         this.HasMember.Thing1
     }
@@ -77,8 +77,8 @@ products {
     }
 }
 relationships {
-    derivedFrom = "Derived From" "A is derived from B" | antecedentOf = "Antecedent Of" "A is an antecedent of B";
-    inThing1 = "In Thing 1" "A is part of a thing1" | thing1Of = "Thing 1 Of" "A is the thing 1 of B";
-    inThing2 = "In Thing 2" "A is part of a thing1" | thing2Of = "Thing 2 Of" "A is the thing 2 of B";
-    AThingOfItsOwn = "A Thing Of Its Own" "A is A";
+    derivedFrom = 'Derived From' 'A is derived from B' | antecedentOf = 'Antecedent Of' 'A is an antecedent of B';
+    inThing1 = 'In Thing 1' 'A is part of a thing1' | thing1Of = 'Thing 1 Of' 'A is the thing 1 of B';
+    inThing2 = 'In Thing 2' 'A is part of a thing1' | thing2Of = 'Thing 2 Of' 'A is the thing 2 of B';
+    AThingOfItsOwn = 'A Thing Of Its Own' 'A is A';
 }

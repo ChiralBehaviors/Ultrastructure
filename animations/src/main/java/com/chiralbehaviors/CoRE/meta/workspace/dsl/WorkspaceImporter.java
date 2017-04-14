@@ -409,24 +409,7 @@ public class WorkspaceImporter {
             attr.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           attr);
-            for (AttributeValueContext av : ruleform.attributeValue()) {
-                ExistentialAttributeRecord ama = model.records()
-                                                      .newExistentialAttribute();
-                ama.setExistential(attr.getId());
-                Attribute authorizedAttribute = model.records()
-                                                     .resolve(resolve(av.attribute));
-                ama.setAttribute(authorizedAttribute.getId());
-                ama.setUpdatedBy(model.getCurrentPrincipal()
-                                      .getPrincipal()
-                                      .getId());
-                if (av.sequenceNumber != null) {
-                    ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-                }
-                ama.insert();
-                setValueFromString(authorizedAttribute, ama,
-                                   WorkspacePresentation.stripQuotes(av.value.getText()));
-                workspace.add(ama);
-            }
+            setAttributes(ruleform.attributeValue(), attr.getId());
         }
     }
 
@@ -542,6 +525,7 @@ public class WorkspaceImporter {
             if (facet != null) {
                 model.getPhantasmModel()
                      .initialize(parent, facet, workspace);
+                setAttributes(edge.attributeValue(), child.getId());
             } else {
                 Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link = model.getPhantasmModel()
                                                                                       .link(parent,
@@ -550,25 +534,52 @@ public class WorkspaceImporter {
                 workspace.add(link.a);
                 workspace.add(link.b);
 
-                for (AttributeValueContext av : edge.attributeValue()) {
-                    ExistentialNetworkAttributeRecord edgeAttribute = model.records()
-                                                                           .newExistentialNetworkAttribute();
-                    edgeAttribute.setEdge(link.a.getId());
-                    Attribute attr = model.records()
-                                          .resolve(resolve(av.attribute));
-                    edgeAttribute.setAttribute(attr.getId());
-                    edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
-                                                    .getPrincipal()
-                                                    .getId());
-                    if (av.sequenceNumber != null) {
-                        edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-                    }
-                    edgeAttribute.insert();
-                    setValueFromString(attr, edgeAttribute,
-                                       WorkspacePresentation.stripQuotes(av.value.getText()));
-                    workspace.add(edgeAttribute);
-                }
+                setNetworkAttributes(edge.attributeValue(), link.a.getId());
             }
+        }
+    }
+
+    private void setAttributes(List<AttributeValueContext> attributes,
+                               UUID id) {
+        for (AttributeValueContext av : attributes) {
+            ExistentialAttributeRecord edgeAttribute = model.records()
+                                                            .newExistentialAttribute();
+            edgeAttribute.setExistential(id);
+            Attribute attr = model.records()
+                                  .resolve(resolve(av.attribute));
+            edgeAttribute.setAttribute(attr.getId());
+            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
+                                            .getPrincipal()
+                                            .getId());
+            if (av.sequenceNumber != null) {
+                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+            }
+            edgeAttribute.insert();
+            setValueFromString(attr, edgeAttribute,
+                               WorkspacePresentation.stripQuotes(av.value.getText()));
+            workspace.add(edgeAttribute);
+        }
+    }
+
+    private void setNetworkAttributes(List<AttributeValueContext> attributes,
+                                      UUID id) {
+        for (AttributeValueContext av : attributes) {
+            ExistentialNetworkAttributeRecord edgeAttribute = model.records()
+                                                                   .newExistentialNetworkAttribute();
+            edgeAttribute.setEdge(id);
+            Attribute attr = model.records()
+                                  .resolve(resolve(av.attribute));
+            edgeAttribute.setAttribute(attr.getId());
+            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
+                                            .getPrincipal()
+                                            .getId());
+            if (av.sequenceNumber != null) {
+                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+            }
+            edgeAttribute.insert();
+            setValueFromString(attr, edgeAttribute,
+                               WorkspacePresentation.stripQuotes(av.value.getText()));
+            workspace.add(edgeAttribute);
         }
     }
 
@@ -969,8 +980,15 @@ public class WorkspaceImporter {
                      .setValue(auth, value);
                 return;
             case JSON:
-                model.getPhantasmModel()
-                     .setValue(auth, value);
+                try {
+                    model.getPhantasmModel()
+                         .setValue(auth, new ObjectMapper().reader()
+                                                           .readTree(value));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
+                                                                     value),
+                                                       e);
+                }
                 return;
             case Timestamp:
                 model.getPhantasmModel()
@@ -1008,8 +1026,15 @@ public class WorkspaceImporter {
                      .setValue(auth, value);
                 return;
             case JSON:
-                model.getPhantasmModel()
-                     .setValue(auth, value);
+                try {
+                    model.getPhantasmModel()
+                         .setValue(auth, new ObjectMapper().reader()
+                                                           .readTree(value));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
+                                                                     value),
+                                                       e);
+                }
                 return;
             case Timestamp:
                 model.getPhantasmModel()

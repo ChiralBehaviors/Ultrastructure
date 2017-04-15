@@ -52,6 +52,8 @@ public class NetworkAttributeValue {
         @GraphQLField
         public String  authority;
         @GraphQLField
+        public String  attribute;
+        @GraphQLField
         public String  edge;
         @GraphQLField
         public String  binaryValue;
@@ -107,6 +109,9 @@ public class NetworkAttributeValue {
             }
             if (notes != null) {
                 record.setNotes(notes);
+            }
+            if (attribute != null) {
+                record.setAttribute(UUID.fromString(attribute));
             }
         }
     }

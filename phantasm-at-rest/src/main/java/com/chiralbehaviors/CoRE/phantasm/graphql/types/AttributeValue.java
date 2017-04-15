@@ -51,6 +51,8 @@ public class AttributeValue {
 
     public static class AttributeValueState {
         @GraphQLField
+        public String attribute;
+        @GraphQLField
         public String  authority;
         @GraphQLField
         public String  binaryValue;
@@ -88,6 +90,10 @@ public class AttributeValue {
             if (integerValue != null) {
                 record.setIntegerValue(integerValue);
             }
+            if (attribute != null) {
+                record.setAttribute(UUID.fromString(attribute));
+            }
+
             if (jsonValue != null) {
                 try {
                     record.setJsonValue(new ObjectMapper().readTree(jsonValue));

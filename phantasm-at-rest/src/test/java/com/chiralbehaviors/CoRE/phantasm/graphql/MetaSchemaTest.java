@@ -932,4 +932,106 @@ public class MetaSchemaTest extends AbstractModelTest {
                                  .asText()));
         return ids;
     }
+
+    @Test
+    public void testAttributeValueMutations() throws IllegalArgumentException,
+                                              Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("existential", model.records()
+                                          .resolve(k.getCoreUser())
+                                          .getId()
+                                          .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: String $attr: String $existential: String) { createAttributeValue(state: {existential: $existential authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createAttributeValue")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: String! $auth: String!) { updateAttributeValue(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeAttributeValue(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testNetworkAttributeValueMutations() throws IllegalArgumentException,
+                                                     Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("edge", model.getPhantasmModel()
+                                   .getImmediateChildLink(k.getSuperUser(),
+                                                          k.getIsA(),
+                                                          k.getCoreUser())
+                                   .getId()
+                                   .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: String $attr: String $edge: String) { createNetworkAttributeValue(state: {edge: $edge authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createNetworkAttributeValue")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: String! $auth: String!) { updateNetworkAttributeValue(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeNetworkAttributeValue(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testNetworkMutations() throws IllegalArgumentException,
+                                       Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("parent", k.getSuperUser()
+                                 .getId()
+                                 .toString());
+        variables.put("relationship", k.getIsA()
+                                       .getId()
+                                       .toString());
+        variables.put("child", k.getUnauthenticatedAgency()
+                                .getId()
+                                .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($parent: String $relationship: String $child: String) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createNetwork")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: String! $auth: String!) { updateNetwork(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema, "mutation m($id: String!) { removeNetwork(id: $id) }",
+                variables);
+    }
 }

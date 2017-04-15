@@ -571,6 +571,11 @@
 					<artifactId>jooq-codegen-maven</artifactId>
 					<version>${jooq.version}</version>
 				</plugin>
+                <plugin>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>workspace-plugin</artifactId>
+                    <version>${project.version}</version>
+                </plugin>
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>phantasm-plugin</artifactId>

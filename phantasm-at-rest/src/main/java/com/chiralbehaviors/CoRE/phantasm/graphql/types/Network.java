@@ -116,7 +116,7 @@ public class Network {
                      .toString();
     }
 
-    @GraphQLField
+    //@GraphQLField
     public NetworkInference getInference(DataFetchingEnvironment env) {
         return new NetworkInference(WorkspaceSchema.ctx(env)
                                                    .records()

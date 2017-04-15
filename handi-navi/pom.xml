@@ -24,10 +24,10 @@
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>phantasm-at-rest</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>universal</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>universal</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
@@ -44,7 +44,155 @@
 					<shadedClassifierName>phat</shadedClassifierName>
 				</configuration>
 			</plugin>
+			<plugin>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>clear</goal>
+						</goals>
+						<configuration>
+							<loader>
+								<dbaServer>${dba.db.server}</dbaServer>
+								<dbaPort>${dba.db.port}</dbaPort>
+								<dbaUsername>${dba.db.login}</dbaUsername>
+								<dbaPassword>${dba.db.password}</dbaPassword>
+								
+                                <coreServer>${db.server}</coreServer>
+                                <corePort>${db.port}</corePort>
+                                <corePassword>${db.password}</corePassword>
+                                <coreDb>${db}</coreDb>
+                                <coreUsername>${db.login}</coreUsername>
+							</loader>
+						</configuration>
+					</execution>
+				</executions>
+				<groupId>com.chiralbehaviors.CoRE</groupId>
+				<artifactId>loader-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.chiralbehaviors.CoRE</groupId>
+				<artifactId>workspace-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>com.chiralbehaviors.CoRE</groupId>
+						<artifactId>acm-95-ontology</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.chiralbehaviors.CoRE</groupId>
+						<artifactId>thing-ontology</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>load-dsl</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>load-dsl</goal>
+						</goals>
+						<configuration>
+							<database>
+								<coreServer>${db.server}</coreServer>
+								<corePort>${db.port}</corePort>
+								<coreDb>${db}</coreDb>
+								<coreUsername>${db.user}</coreUsername>
+								<corePassword>${db.password}</corePassword>
+							</database>
+							<resources>
+								<resource>/acm-95.1.wsp</resource>
+								<resource>/thing.wsp</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-snapshots</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>generate-snapshot</goal>
+						</goals>
+						<configuration>
+							<database>
+								<coreServer>${db.server}</coreServer>
+								<corePort>${db.port}</corePort>
+								<coreUsername>${db.user}</coreUsername>
+								<coreDb>${db}</coreDb>
+								<corePassword>${db.password}</corePassword>
+							</database>
+							<exports>
+								<export>
+									<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/acm-95</iri>
+									<output>${project.build.directory}/classes/acm-95.1.json</output>
+								</export>
+								<export>
+									<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm</iri>
+									<output>${project.build.directory}/classes/thing.1.json</output>
+								</export>
+							</exports>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.chiralbehaviors.CoRE
+										</groupId>
+										<artifactId>
+											workspace-plugin
+										</artifactId>
+										<versionRange>
+											[2.0.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>load-dsl</goal>
+											<goal>
+												generate-snapshot
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.chiralbehaviors.CoRE
+										</groupId>
+										<artifactId>
+											loader-plugin
+										</artifactId>
+										<versionRange>
+											[2.0.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>clear</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>

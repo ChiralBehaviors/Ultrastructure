@@ -747,6 +747,7 @@
 								<exclude>graphql/annotations/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
+								<exclude>**/WorkspacePresentation*</exclude>
 								<exclude>**/HelpMojo*</exclude>
 								<exclude>**/Universal*</exclude>
 								<exclude>**/English*</exclude>

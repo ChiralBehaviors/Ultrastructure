@@ -57,7 +57,7 @@ query getApplication($id: String!) {
         }
         extract
         frameBy
-        route
+        path
       }
       launches {
         id

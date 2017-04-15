@@ -18,8 +18,11 @@ agencies {
             Timestamp: '500'
             Json: '{ "foo bar": "baz" }'
         };
+    BumaShav = 'bms' 'Bms ';
         
     edges {
+        BumaShav.IsA.Barrista
+        
         Bazzista.IsA.Barrista
             attribute values {
                 Text: 'foo bar' 
@@ -27,7 +30,9 @@ agencies {
                 Int: '10'
                 Numeric: '1000'
                 Timestamp: '500'
-                Json: '{ "foo bar": "baz" }'
+                Json: '{ 
+                        "foo bar": "baz" 
+                       }'
             }
         Barrista.IsA.Human
             attribute values {
@@ -36,7 +41,9 @@ agencies {
                 Int: '10'
                 Numeric: '1000'
                 Timestamp: '500'
-                Json: '{ "foo bar": "baz" }'
+                Json: '{ 
+                            "foo bar": "baz" 
+                       }'
             }
     }
     
@@ -47,13 +54,14 @@ agencies {
             constraints {
                 one IsA: IsA.Bar {Text default: 'foo' Bool default: 'true'
                         Int default: '1' Numeric default: '1'
-                        Timestamp default: '0'
+                        Timestamp default: '0' Json default: '{ "foo": "bar" }'
                 }
             }
     }
 }
 
 attributes {
+    Binary = 'binary' 'binary attribute' binary;
     Text = 'text' 'text attribute' text;
     Bool = 'bool' 'boolean attribute' bool;
     Int = 'int' 'integer attribute' int;
@@ -61,6 +69,7 @@ attributes {
     Timestamp = 'timestamp' 'timestamp attribute' timestamp;
     Json = 'json' 'json attribute' json;
     Bar = 'bar' 'Bar attribute' text;
+    Burtrud = 'b' 'b ur best' text;
     Baz = 'baz' 'Baz attribute' text
         attribute values {
             Text: 'foo bar' 
@@ -69,9 +78,12 @@ attributes {
             Numeric: '1000'
             Timestamp: '500'
             Json: '{ "foo bar": "baz" }'
+            Binary: ' '
         };
         
     edges {
+        Burtrud.IsA.Bar
+        
         Baz.IsA.Bar
             attribute values {
                 Text: 'foo bar' 
@@ -80,17 +92,21 @@ attributes {
                 Numeric: '1000'
                 Timestamp: '500'
                 Json: '{ "foo bar": "baz" }'
+                Binary: ' '
             }
     }
     
     facets {
         IsA.Bar { Text default: 'foo' Bool default: 'true'
                   Int default: '1' Numeric default: '1'
-                  Timestamp default: '0' Json default: '{ "foo": "bar" }' }
+                  Timestamp default: '0' Json default: '{ "foo": "bar" }'
+                  Binary default: ' '
+                }
             constraints {
                 one IsA: IsA.Bar {Text default: 'foo' Bool default: 'true'
                         Int default: '1' Numeric default: '1'
-                        Timestamp default: '0'
+                        Timestamp default: '0' Json default: '{ "foo": "bar" }'
+                        Binary default: ' '
                 }
             }
     }

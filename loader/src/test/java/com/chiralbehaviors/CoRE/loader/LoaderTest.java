@@ -52,6 +52,7 @@ public class LoaderTest {
             loader.execute();
             loader.execute();
             loader.clear();
+            loader.rollback();
         } finally {
             loader.dropDatabase();
         }

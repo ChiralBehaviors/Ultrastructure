@@ -21,15 +21,9 @@
 package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -37,29 +31,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Action {
-    private static Map<String, String> extract(String json) {
-        Map<String, String> extract = new HashMap<>();
-        ObjectNode node;
-        try {
-            node = (ObjectNode) new ObjectMapper().readTree(new ByteArrayInputStream(json.getBytes()));
-        } catch (IOException e) {
-            throw new IllegalStateException("", e);
-        }
-        for (Iterator<Entry<String, JsonNode>> fields = node.fields(); fields.hasNext();) {
-            Entry<String, JsonNode> field = fields.next();
-            extract.put(field.getKey(), field.getValue()
-                                             .asText());
-        }
-        return extract;
-    }
-
     private final Map<String, String> extract;
     private final String              frameBy;
     private final String              query;
 
     public Action(ObjectNode action) {
-        this(textOrNull(action.get("frameBy")), textOrNull(action.get("query")),
-             extract(textOrNull(action.get("extract"))));
+        this(textOrNull(action.get("query")), textOrNull(action.get("frameBy")),
+             Page.extract(textOrNull(action.get("extract"))));
     }
 
     public Action(String query, String frameBy, Map<String, String> extract) {

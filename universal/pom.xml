@@ -8,10 +8,10 @@
 	</parent>
 	<artifactId>universal</artifactId>
 	<name>UaaS Univervsal UI Runtime</name>
-	<description>A universal JavaFXruntime UI for UaaS</description>
+	<description>A universal Java/FX runtime UI for UaaS</description>
 
 	<properties>
-		<main.class>com.chiralbehaviors.layout.toy.Universal</main.class>
+		<main.class>com.chiralbehaviors.CoRE.universal.Universal</main.class>
 		<db>test</db>
 		<user>testme</user>
 	</properties>

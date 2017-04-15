@@ -12,6 +12,7 @@ attributes {
     label = 'Label' 'The labe of something' text;
     relation = 'Relation' 'The name of a relation' text;
     route = 'Route' 'The named route' text;
+    path = 'Path' 'The named path' text;
     extract = 'Extract' 'The xpath extractions from data' json;
     query = 'Query' 'GraphQL query' text;
     title = 'Title' 'Title text' text;
@@ -83,7 +84,7 @@ products {
                 n launch: IsA.Launch named by relationship { relation }
             }
 
-        IsA.Route { frameBy extract route }
+        IsA.Route { frameBy extract path }
 
         IsA.Action { frameBy extract query }
 

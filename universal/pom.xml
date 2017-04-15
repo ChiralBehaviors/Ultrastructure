@@ -120,8 +120,8 @@
 					<templates>
 						<template>
 							<directory>${project.basedir}/templates</directory>
-							<name>workspace-browser</name>
-							<target>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/workspace-browser.1.wsp</target>
+							<name>explorer</name>
+							<target>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/explorer.1.wsp</target>
 							<controller>
 								<className>com.chiralbehaviors.CoRE.universal.wsp.ResourceStringController</className>
 								<method>injection</method>

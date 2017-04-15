@@ -1,7 +1,7 @@
-workspace-browser(resources) ::= <<
-workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/workspace-browser'
+explorer(resources) ::= <<
+workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/workspace-explorer'
            version: 1
-           'UaaS Workspace Browser' 'A browser/ide for Ultrastructure workspaces'
+           'UaaS Workspace Explorer' 'A browser/ide for Ultrastructure workspaces'
 imports {
     'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel {
             IsA.Workspace
@@ -9,9 +9,9 @@ imports {
 }
 
 products {
-    WorkspaceBrowser = 'Workspace Browser' 'A browser/ide for Ultrastructure workspaces'
+    WorkspaceExplorer = 'Workspace Explorer' 'A browser/ide for Ultrastructure workspaces'
         attribute values {
-            name : 'Workspace Browser'
+            name : 'Workspace Explorer'
             description: 'A browser/ide for Ultrastructure workspaces'
             root: 'allWorkspaces'
         };

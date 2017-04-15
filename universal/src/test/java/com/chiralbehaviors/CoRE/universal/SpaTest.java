@@ -36,6 +36,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class SpaTest {
     @Test
+    public void testContext() throws Exception {
+        ObjectNode node = (ObjectNode) new ObjectMapper().readTree(getClass().getResourceAsStream("/test-app.json"));
+        Spa spa = new Spa(node);
+        Page page = spa.getRoot();
+        Context ctx = new Context("foo", page);
+        assertEquals("foo", ctx.getFrame());
+        assertEquals(page, ctx.getPage());
+        assertEquals("singlePageApplications", ctx.getRoot()
+                                                  .getField());
+        Relation relation = new Relation("singlePageApplications");
+        assertEquals(page.getNavigation(relation), ctx.getNavigation(relation));
+    }
+
+    @Test
     public void testSpa() throws Exception {
         ObjectNode node = (ObjectNode) new ObjectMapper().readTree(getClass().getResourceAsStream("/test-app.json"));
         Spa spa = new Spa(node);
@@ -68,7 +82,7 @@ public class SpaTest {
         assertEquals("cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
                      launch.getImmediate());
         assertEquals("id", launch.getLaunchBy());
-        
+
         Route route = page.getNavigation(relation);
         assertNotNull(route);
         assertEquals("workspace", route.getFrameBy());

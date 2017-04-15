@@ -18,8 +18,11 @@ agencies {
             Timestamp: '500'
             Json: '{ "foo bar": "baz" }'
         };
+    BumaShav = 'bms' 'Bms ';
         
     edges {
+        BumaShav.IsA.Barrista
+        
         Bazzista.IsA.Barrista
             attribute values {
                 Text: 'foo bar' 
@@ -66,6 +69,7 @@ attributes {
     Timestamp = 'timestamp' 'timestamp attribute' timestamp;
     Json = 'json' 'json attribute' json;
     Bar = 'bar' 'Bar attribute' text;
+    Burtrud = 'b' 'b ur best' text;
     Baz = 'baz' 'Baz attribute' text
         attribute values {
             Text: 'foo bar' 
@@ -78,6 +82,8 @@ attributes {
         };
         
     edges {
+        Burtrud.IsA.Bar
+        
         Baz.IsA.Bar
             attribute values {
                 Text: 'foo bar' 

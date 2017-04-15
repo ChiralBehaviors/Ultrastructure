@@ -34,9 +34,10 @@ public class Launch {
     private final String launchBy;
 
     public Launch(ObjectNode launch) {
-        this(textOrNull(launch.get("frame")), textOrNull(launch.get("frameBy")),
-             textOrNull(launch.get("immediate")),
-             textOrNull(launch.get("launchBy")));
+        this(textOrNull(launch.get("frameBy")),
+             textOrNull(launch.get("launchBy")),
+             textOrNull(launch.get("frame")),
+             textOrNull(launch.get("immediate")));
     }
 
     public Launch(String launchBy, String frameBy, String frame,

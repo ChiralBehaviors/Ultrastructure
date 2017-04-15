@@ -22,8 +22,11 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static org.junit.Assert.*;
 
+import java.util.Map;
+
 import org.junit.Test;
 
+import com.chiralbehaviors.layout.schema.Relation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -41,5 +44,37 @@ public class SpaTest {
         assertEquals("Applications", page.getTitle());
         assertEquals("All applications", page.getName());
         assertEquals("Page with all applications", page.getDescription());
+        assertNull(page.getFrame());
+        assertNotNull(page.getQuery());
+
+        Relation relation = new Relation("singlePageApplications");
+        Action create = page.getCreate(relation);
+        assertNotNull(create);
+        Map<String, String> extract = create.getExtract();
+        assertNotNull(extract);
+        assertEquals(1, extract.size());
+        assertEquals("bar", extract.get("foo"));
+        assertNotNull(create.getQuery());
+        assertEquals("cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+                     create.getFrameBy());
+
+        assertNotNull(page.getUpdate(relation));
+        assertNotNull(page.getDelete(relation));
+
+        Launch launch = page.getLaunch(relation);
+        assertNotNull(launch);
+        assertNull(launch.getFrame());
+        assertEquals("id", launch.getFrameBy());
+        assertEquals("cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
+                     launch.getImmediate());
+        assertEquals("id", launch.getLaunchBy());
+        
+        Route route = page.getNavigation(relation);
+        assertNotNull(route);
+        assertEquals("workspace", route.getFrameBy());
+        extract = route.getExtract();
+        assertNotNull(extract);
+        assertEquals("bar", extract.get("foo"));
+        assertEquals("foo", route.getPath());
     }
 }

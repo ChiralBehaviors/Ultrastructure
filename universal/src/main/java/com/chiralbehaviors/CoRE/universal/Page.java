@@ -22,10 +22,16 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.chiralbehaviors.layout.schema.Relation;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -95,7 +101,7 @@ public class Page {
              actions((ArrayNode) page.get("creates")),
              actions((ArrayNode) page.get("updates")),
              actions((ArrayNode) page.get("deletes")),
-             navigations((ArrayNode) page.get("navigations")),
+             navigations((ArrayNode) page.get("navigates")),
              launches((ArrayNode) page.get("launches")));
     }
 
@@ -119,7 +125,7 @@ public class Page {
         return creates.get(relation.getField());
     }
 
-    public Action getDeletes(Relation relation) {
+    public Action getDelete(Relation relation) {
         return deletes.get(relation.getField());
     }
 
@@ -131,8 +137,8 @@ public class Page {
         return frame;
     }
 
-    public Map<String, Launch> getLaunches() {
-        return launches;
+    public Launch getLaunch(Relation relation) {
+        return launches.get(relation.getField());
     }
 
     public String getName() {
@@ -153,5 +159,21 @@ public class Page {
 
     public Action getUpdate(Relation relation) {
         return updates.get(relation.getField());
+    }
+
+    public static Map<String, String> extract(String json) {
+        Map<String, String> extract = new HashMap<>();
+        ObjectNode node;
+        try {
+            node = (ObjectNode) new ObjectMapper().readTree(new ByteArrayInputStream(json.getBytes()));
+        } catch (IOException e) {
+            throw new IllegalStateException("", e);
+        }
+        for (Iterator<Entry<String, JsonNode>> fields = node.fields(); fields.hasNext();) {
+            Entry<String, JsonNode> field = fields.next();
+            extract.put(field.getKey(), field.getValue()
+                                             .asText());
+        }
+        return extract;
     }
 }

@@ -54,7 +54,7 @@
 					},
 					"frameBy": "workspace",
 					"extract": "{\"foo\": \"bar\"}",
-					"route": "foo"
+					"path": "foo"
 				}
 			],
 			"launches": [

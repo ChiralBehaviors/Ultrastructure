@@ -741,16 +741,16 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.7.6.201602180812</version>
+						<version>0.7.9</version>
 						<configuration>
 							<excludes>
 								<exclude>graphql/annotations/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
-								<exclude>**/HelpMojo.*</exclude>
-								<exclude>**/Universal.*</exclude>
-								<exclude>**/English.*</exclude>
-								<exclude>**/TwoFormInflector.*</exclude>
+								<exclude>**/HelpMojo*</exclude>
+								<exclude>**/Universal*</exclude>
+								<exclude>**/English*</exclude>
+								<exclude>**/TwoFormInflector*</exclude>
 							</excludes>
 						</configuration>
 						<executions>

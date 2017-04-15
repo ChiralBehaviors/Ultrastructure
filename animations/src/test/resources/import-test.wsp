@@ -27,7 +27,9 @@ agencies {
                 Int: '10'
                 Numeric: '1000'
                 Timestamp: '500'
-                Json: '{ "foo bar": "baz" }'
+                Json: '{ 
+                        "foo bar": "baz" 
+                       }'
             }
         Barrista.IsA.Human
             attribute values {
@@ -36,7 +38,9 @@ agencies {
                 Int: '10'
                 Numeric: '1000'
                 Timestamp: '500'
-                Json: '{ "foo bar": "baz" }'
+                Json: '{ 
+                            "foo bar": "baz" 
+                       }'
             }
     }
     
@@ -47,13 +51,14 @@ agencies {
             constraints {
                 one IsA: IsA.Bar {Text default: 'foo' Bool default: 'true'
                         Int default: '1' Numeric default: '1'
-                        Timestamp default: '0'
+                        Timestamp default: '0' Json default: '{ "foo": "bar" }'
                 }
             }
     }
 }
 
 attributes {
+    Binary = 'binary' 'binary attribute' binary;
     Text = 'text' 'text attribute' text;
     Bool = 'bool' 'boolean attribute' bool;
     Int = 'int' 'integer attribute' int;
@@ -69,6 +74,7 @@ attributes {
             Numeric: '1000'
             Timestamp: '500'
             Json: '{ "foo bar": "baz" }'
+            Binary: ' '
         };
         
     edges {
@@ -80,17 +86,21 @@ attributes {
                 Numeric: '1000'
                 Timestamp: '500'
                 Json: '{ "foo bar": "baz" }'
+                Binary: ' '
             }
     }
     
     facets {
         IsA.Bar { Text default: 'foo' Bool default: 'true'
                   Int default: '1' Numeric default: '1'
-                  Timestamp default: '0' Json default: '{ "foo": "bar" }' }
+                  Timestamp default: '0' Json default: '{ "foo": "bar" }'
+                  Binary default: ' '
+                }
             constraints {
                 one IsA: IsA.Bar {Text default: 'foo' Bool default: 'true'
                         Int default: '1' Numeric default: '1'
-                        Timestamp default: '0'
+                        Timestamp default: '0' Json default: '{ "foo": "bar" }'
+                        Binary default: ' '
                 }
             }
     }

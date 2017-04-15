@@ -246,7 +246,7 @@ constraint:
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
-QuotedText: '\'' (' ' | '!'.. '&' | '(' .. '~' )+ '\''; 
+QuotedText: '\'' (NL |' ' | '!'.. '&' | '(' .. '~' )+ '\''; 
 Boolean: ('true'|'false');
 Number: ('0'..'9')+; 
  

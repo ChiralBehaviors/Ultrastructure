@@ -3,9 +3,8 @@ workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/works
            version: 1
            'UaaS Workspace Explorer' 'A browser/ide for Ultrastructure workspaces'
 imports {
-    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel {
-            IsA.Workspace
-    }
+    'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel 
+    'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page' as spa
 }
 
 products {
@@ -13,10 +12,10 @@ products {
         attribute values {
             name : 'Workspace Explorer'
             description: 'A browser/ide for Ultrastructure workspaces'
-            root: 'allWorkspaces'
+            root: 'workspaces'
         };
         
-    AllWorkspacess = 'All workspaces' 'Page with all workspaces'
+    AllWorkspaces = 'All workspaces' 'Page with all workspaces'
         attribute values {
             name: 'All workspaces'
             description: 'Page with all workspaces'
@@ -24,70 +23,18 @@ products {
             query: '{ workspaces { id name description } }'
             
         };
-    LaunchApplication = 'Launch Application' 'Launch the selected application'
-        attribute values {
-            name: 'Launch Application'
-            description: 'Launch the selected application'
-            launchBy: 'id'
-        };
     
     edges {
-        AppLauncher.IsA.SinglePageApp 
-        AllApplications.IsA.Page
-        LaunchApplication.IsA.Launch
+        WorkspaceExplorer.IsA.SinglePageApp 
+        AllWorkspaces.IsA.Page 
         
-        AppLauncher.hasPage.AllApplications
-            attribute values {
-                route: 'launch'
-            }
+        AllWorkspaces.frame.KernelWorkspace
         
-        AllApplications.launch.LaunchApplication
+        WorkspaceExplorer.hasPage.AllWorkspaces
             attribute values {
-                relation: 'singlePageApplications'
+                route: 'workspaces'
             }
-    }
-
-    facets {
-        IsA.SinglePageApp { name description root }
-            constraints {
-                one frame: IsA.Workspace named by relationship 
-                n hasPage: IsA.Page { route }
-            }
-
-        IsA.Page { name description query title }
-            constraints {
-                one pageOf: IsA.SinglePageApp
-                one frame: IsA.Workspace named by relationship 
-
-                n create: IsA.Action named by relationship { relation }
-                n update: IsA.Action named by relationship { relation }
-                n delete: IsA.Action named by relationship { relation }
-                n navigate: IsA.Route named by relationship { relation }
-                n launch: IsA.Launch named by relationship { relation }
-            }
-
-        IsA.Route { frameBy extract path }
-
-        IsA.Action { frameBy extract query }
-
-        IsA.Launch { frameBy launchBy }
-            constraints {
-                one launchOf: IsA.Page
-                one frame: IsA.Workspace named by relationship
-                one launch: IsA.SinglePageApp named Immediate
-            }
-    }
-}
-relationships {
-    hasPage = 'Has Page' 'A has page B' | pageOf = 'Page Of' 'A is a page of B';
-    hasRoute = 'Has Route' 'A has route B' | routeOf = 'Route Of' 'A is a route of B';
-    frame = 'A is framed by the workspace B' | frameOf = 'A is the workspace frame of page B';
-    create = 'A creates an instance of the relation using action B' | createActionOf = 'A is an action used to create a new instance of a relation of page B';
-    delete = 'A deletes the relation using the action B' | deleteActionOf = 'A is an action used to delete a relation of page B';
-    update = 'A updates relation using route B' | updateActionOf = 'A is a route used to update a relation of page B';
-    navigate = 'A navigates the relation using route B' | navigationOf = 'A is a route used to navigate a relation of page B';
-    launch = 'A launches the application using the application launch defined by B' 
-                | launchOf = 'A is a launch used to launch an application from a relation of page B';
+    } 
 }
 >>
 

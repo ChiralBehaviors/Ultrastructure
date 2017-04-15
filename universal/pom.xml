@@ -223,9 +223,9 @@
 						</configuration>
 						<executions>
 							<execution>
-								<phase>compile</phase>
+								<phase>process-classes</phase>
 								<goals>
-									<goal>load</goal>
+									<goal>clear</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -236,7 +236,7 @@
 						<executions>
 							<execution>
 								<id>load-dsl</id>
-								<phase>compile</phase>
+								<phase>process-classes</phase>
 								<goals>
 									<goal>load-dsl</goal>
 								</goals>
@@ -249,13 +249,14 @@
 										<corePassword>${db.password}</corePassword>
 									</database>
 									<resources>
-										<resource>src/main/resources/com/chiralbehaviors/CoRE/universal/single-page.1.wsp</resource>
+										<resource>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/single-page.1.wsp</resource>
+										<resource>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/explorer.1.wsp</resource>
 									</resources>
 								</configuration>
 							</execution>
 							<execution>
 								<id>generate-snapshots</id>
-								<phase>compile</phase>
+								<phase>process-classes</phase>
 								<goals>
 									<goal>generate-snapshot</goal>
 								</goals>
@@ -270,7 +271,11 @@
 									<exports>
 										<export>
 											<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page</iri>
-											<output>src/main/resources/com/chiralbehaviors/CoRE/universal/single-page.1.json</output>
+											<output>src/main/resources//${com.chiralbehaviors.core.universal}/single-page.1.json</output>
+										</export>
+										<export>
+											<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/workspace-explorer</iri>
+											<output>src/main/resources/${com.chiralbehaviors.core.universal}/explorer.1.json</output>
 										</export>
 									</exports>
 								</configuration>

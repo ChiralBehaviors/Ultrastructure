@@ -1,0 +1,314 @@
+{
+  "definingProduct" : {
+    "@type" : "Product",
+    "id" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "domain" : "Product",
+    "name" : "UaaS Workspace Explorer",
+    "description" : "A browser/ide for Ultrastructure workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  },
+  "records" : [ "java.util.ArrayList", [ {
+    "@type" : "ExistentialRecord",
+    "id" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "domain" : "Product",
+    "name" : "Workspace Explorer",
+    "description" : "A browser/ide for Ultrastructure workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  }, {
+    "@type" : "ExistentialRecord",
+    "id" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "domain" : "Product",
+    "name" : "All workspaces",
+    "description" : "Page with all workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2,
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "valueType" : "Text",
+    "keyed" : false,
+    "indexed" : false,
+    "failParent" : true,
+    "propagateChildren" : true
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08001ba-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "attribute" : "2ebcb6ef-576d-11e6-af6e-8b9b08aeeb36",
+    "textValue" : "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/workspace-explorer",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 4,
+    "updated" : "2017-04-15T21:58:42.339+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08272c4-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b044f4de-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "Workspace Explorer",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.355+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b082e7f5-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b0460551-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "A browser/ide for Ultrastructure workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.358+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b0835d26-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b04b83a9-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.363+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b0846e9a-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b044f4de-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "All workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.369+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b0850adb-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b0460551-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "Page with all workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.373+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b085a71c-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b04ae766-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "Applications",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.381+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b086df9d-2226-11e7-9b90-af44c2f49f91",
+    "existential" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b04a4b23-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "{ workspaces { id name description } }",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "updated" : "2017-04-15T21:58:42.384+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b07f6578-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "relationship" : "00000000-0000-0005-0000-000000000013",
+    "child" : "00000000-0000-0004-0000-000000000006",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b07f8c89-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "00000000-0000-0004-0000-000000000006",
+    "relationship" : "00000000-0000-0005-0000-000000000012",
+    "child" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b0809dfb-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "relationship" : "00000000-0000-0005-0000-000000000011",
+    "child" : "00000000-0000-0004-0000-000000000003",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b0809dfc-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "00000000-0000-0004-0000-000000000003",
+    "relationship" : "00000000-0000-0005-0000-000000000010",
+    "child" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b081885e-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "relationship" : "00000000-0000-0005-0000-000000000011",
+    "child" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b081885f-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "a4d8bf63-f589-56a3-bebc-c3236a271237",
+    "relationship" : "00000000-0000-0005-0000-000000000010",
+    "child" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b088b45e-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "00000000-0000-0005-0000-000000000013",
+    "child" : "b054aba5-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b088db6f-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b054aba5-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "00000000-0000-0005-0000-000000000012",
+    "child" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08a6210-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "00000000-0000-0005-0000-000000000013",
+    "child" : "b0540f62-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08a6211-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b0540f62-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "00000000-0000-0005-0000-000000000012",
+    "child" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08bc1a2-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "b04f062e-2226-11e7-9b90-af44c2f49f91",
+    "child" : "00000000-0000-0004-0000-000000000003",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08bc1a3-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "00000000-0000-0004-0000-000000000003",
+    "relationship" : "b04f2d3f-2226-11e7-9b90-af44c2f49f91",
+    "child" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08c5de4-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "b04d0a52-2226-11e7-9b90-af44c2f49f91",
+    "child" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08c5de5-2226-11e7-9b90-af44c2f49f91",
+    "parent" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "relationship" : "b04d0a53-2226-11e7-9b90-af44c2f49f91",
+    "child" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 2
+  }, {
+    "@type" : "ExistentialNetworkAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b080c50d-2226-11e7-9b90-af44c2f49f91",
+    "edge" : "b0809dfb-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "2ebbcc89-576d-11e6-af6e-8b9b08aeeb36",
+    "textValue" : "kernel",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "sequenceNumber" : 1,
+    "updated" : "2017-04-15T21:58:42.343+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialNetworkAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b081af70-2226-11e7-9b90-af44c2f49f91",
+    "edge" : "b081885e-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "2ebbcc89-576d-11e6-af6e-8b9b08aeeb36",
+    "textValue" : "spa",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "sequenceNumber" : 1,
+    "updated" : "2017-04-15T21:58:42.349+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "ExistentialNetworkAttributeRecord",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902",
+    "id" : "b08c84f6-2226-11e7-9b90-af44c2f49f91",
+    "edge" : "b08c5de4-2226-11e7-9b90-af44c2f49f91",
+    "attribute" : "b048765a-2226-11e7-9b90-af44c2f49f91",
+    "textValue" : "workspaces",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 3,
+    "sequenceNumber" : 1,
+    "updated" : "2017-04-15T21:58:42.422+0000",
+    "jsonValue" : null
+  }, {
+    "@type" : "WorkspaceLabelRecord",
+    "id" : "b0824bb3-2226-11e7-9b90-af44c2f49f91",
+    "reference" : "b08224a1-2226-11e7-9b90-af44c2f49f91",
+    "type" : "Existential",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "key" : "WorkspaceExplorer",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902"
+  }, {
+    "@type" : "WorkspaceLabelRecord",
+    "id" : "b0846e99-2226-11e7-9b90-af44c2f49f91",
+    "reference" : "b0842077-2226-11e7-9b90-af44c2f49f91",
+    "type" : "Existential",
+    "updatedBy" : "00000000-0000-0000-0000-000000000004",
+    "version" : 1,
+    "key" : "AllWorkspaces",
+    "workspace" : "92dfa5ec-5129-597c-bbb8-1238ddb9b902"
+  } ] ]
+}

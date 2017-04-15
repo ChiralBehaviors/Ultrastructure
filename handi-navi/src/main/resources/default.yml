@@ -13,5 +13,6 @@ logging:
 
 workspaces:
   - /com/chiralbehaviors/CoRE/universal/single-page.1.json
+  - /com/chiralbehaviors/CoRE/universal/explorer.1.json
   - /acm-95.1.json
   - /thing.1.json

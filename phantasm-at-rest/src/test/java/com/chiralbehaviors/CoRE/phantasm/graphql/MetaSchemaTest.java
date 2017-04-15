@@ -1019,7 +1019,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                 .getId()
                                 .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($parent: String $relationship: String $child: String) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
+                                    "mutation m($parent: String $relationship: String $child: String $auth: String) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
                                     variables);
         variables.put("id", result.get("createNetwork")
                                   .get("id")

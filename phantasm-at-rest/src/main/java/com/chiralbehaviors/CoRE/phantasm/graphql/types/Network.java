@@ -59,11 +59,14 @@ public class Network {
             if (notes != null) {
                 record.setNotes(notes);
             }
-            if (child != null) {
-                record.setChild(UUID.fromString(child));
-            }
             if (parent != null) {
                 record.setParent(UUID.fromString(parent));
+            }
+            if (relationship != null) {
+                record.setRelationship(UUID.fromString(relationship));
+            }
+            if (child != null) {
+                record.setChild(UUID.fromString(child));
             }
         }
     }

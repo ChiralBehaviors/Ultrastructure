@@ -37,7 +37,7 @@
 	<properties>
 		<db.context>local</db.context>
 
-        <antlr.version>4.7</antlr.version>
+		<antlr.version>4.7</antlr.version>
 		<dropwizard.version>1.0.5</dropwizard.version>
 		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
 		<jackson.version>2.7.8 </jackson.version>
@@ -718,6 +718,13 @@
 								<exclude>**/Universal*</exclude>
 								<exclude>**/English*</exclude>
 								<exclude>**/TwoFormInflector*</exclude>
+								<excluded>**/json/RecordMixin*</excluded>
+								<excluded>**/json/IngoreStoredQueryOverload*</excluded>
+								<exclude>**/utils/CoreDbConfiguration*</exclude>
+								<excluded>**/utils/DbaConfiguration*</excluded>
+								<excluded>**/postgres/PostgresJSONJacksonJsonNodeBinding*</excluded>
+								<excluded>**/postgres/PostgresJSONJacksonJsonNodeConverter*</excluded>
+								<exclude>**/authentication/NullAuthFilter*</exclude>
 							</excludes>
 						</configuration>
 						<executions>

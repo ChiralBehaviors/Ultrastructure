@@ -439,46 +439,6 @@
 				<artifactId>dropwizard-heroku-db</artifactId>
 				<version>1.0.0</version>
 			</dependency>
-			<dependency>
-				<groupId>com.chiralbehaviors.layout</groupId>
-				<artifactId>toy-app</artifactId>
-				<classifier>phat</classifier>
-				<version>0.0.1-SNAPSHOT</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.fasterxml.jackson.core</groupId>
-						<artifactId>jackson-annotations</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.chiralbehaviors.layout</groupId>
-						<artifactId>kramer-ql</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.glassfish.jersey.media</groupId>
-						<artifactId>jersey-media-json-jackson</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.fasterxml.jackson.dataformat</groupId>
-						<artifactId>jackson-dataformat-yaml</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-classic</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.glassfish.jersey.core</groupId>
-						<artifactId>jersey-client</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.hellblazer</groupId>
-						<artifactId>utils</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.fasterxml.jackson.jaxrs</groupId>
-						<artifactId>jackson-jaxrs-json-provider</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -567,15 +527,20 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>com.webguys</groupId>
+					<artifactId>string-template-maven-plugin</artifactId>
+					<version>1.1</version>
+				</plugin>
+				<plugin>
 					<groupId>org.jooq</groupId>
 					<artifactId>jooq-codegen-maven</artifactId>
 					<version>${jooq.version}</version>
 				</plugin>
-                <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>workspace-plugin</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
+				<plugin>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>workspace-plugin</artifactId>
+					<version>${project.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>phantasm-plugin</artifactId>
@@ -748,6 +713,7 @@
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
 								<exclude>**/WorkspacePresentation*</exclude>
+								<exclude>**/ResourceStringController*</exclude>
 								<exclude>**/HelpMojo*</exclude>
 								<exclude>**/Universal*</exclude>
 								<exclude>**/English*</exclude>

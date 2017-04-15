@@ -12,8 +12,7 @@
 
 	<properties>
 		<main.class>com.chiralbehaviors.CoRE.universal.Universal</main.class>
-		<db>test</db>
-		<user>testme</user>
+		<com.chiralbehaviors.core.universal>com/chiralbehaviors/CoRE/universal</com.chiralbehaviors.core.universal>
 	</properties>
 
 	<dependencies>
@@ -114,6 +113,34 @@
 					<shadedClassifierName>phat</shadedClassifierName>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.webguys</groupId>
+				<artifactId>string-template-maven-plugin</artifactId>
+				<configuration>
+					<templates>
+						<template>
+							<directory>${project.basedir}/templates</directory>
+							<name>workspace-browser</name>
+							<target>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/workspace-browser.1.wsp</target>
+							<controller>
+								<className>com.chiralbehaviors.CoRE.universal.wsp.ResourceStringController</className>
+								<method>injection</method>
+								<properties>
+									<key>allWorkspaces.query</key>
+								</properties>
+							</controller>
+						</template>
+					</templates>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>render</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -139,6 +166,23 @@
 										</versionRange>
 										<goals>
 											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.webguys</groupId>
+										<artifactId>
+											string-template-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.1,)
+										</versionRange>
+										<goals>
+											<goal>render</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

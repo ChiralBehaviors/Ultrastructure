@@ -43,7 +43,7 @@ public class TestImport extends AbstractModelTest {
     public void testExampleWorkspace() throws Exception {
         Product definingProduct;
         try {
-            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResource("/thing.wsp"),
                                                                     model);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();

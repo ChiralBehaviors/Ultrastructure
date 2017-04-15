@@ -212,4 +212,5 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
     protected ExecutionStrategy getStrategy() {
         return new SimpleTraversalStrategy();
     }
+ 
 }

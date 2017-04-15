@@ -98,26 +98,31 @@ public class WorkspaceImporter {
 
     public static void manifest(List<URL> wsps, Model model) {
         wsps.forEach(url -> {
-            try (InputStream is = url.openStream()) {
-                try {
-                    manifest(is, model);
-                } catch (Exception e) {
-                    throw new IllegalStateException(String.format("Cannot load %s",
-                                                                  url),
-                                                    e);
-                }
-            } catch (IOException e) {
+            manifest(url, model);
+        });
+    }
+
+    public static WorkspaceImporter manifest(URL url, Model model) {
+        try (InputStream is = url.openStream()) {
+            try {
+                return manifest(is, model);
+            } catch (Exception e) {
                 throw new IllegalStateException(String.format("Cannot load %s",
                                                               url),
                                                 e);
             }
-        });
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Cannot load %s",
+                                                          url),
+                                            e);
+        }
     }
 
     private final Model                 model;
     private WorkspaceScope              scope;
     private UUID                        uuid;
     private EditableWorkspace           workspace;
+
     private String                      workspaceUri;
 
     private final WorkspacePresentation wsp;
@@ -539,50 +544,6 @@ public class WorkspaceImporter {
         }
     }
 
-    private void setAttributes(List<AttributeValueContext> attributes,
-                               UUID id) {
-        for (AttributeValueContext av : attributes) {
-            ExistentialAttributeRecord edgeAttribute = model.records()
-                                                            .newExistentialAttribute();
-            edgeAttribute.setExistential(id);
-            Attribute attr = model.records()
-                                  .resolve(resolve(av.attribute));
-            edgeAttribute.setAttribute(attr.getId());
-            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
-                                            .getPrincipal()
-                                            .getId());
-            if (av.sequenceNumber != null) {
-                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-            }
-            edgeAttribute.insert();
-            setValueFromString(attr, edgeAttribute,
-                               WorkspacePresentation.stripQuotes(av.value.getText()));
-            workspace.add(edgeAttribute);
-        }
-    }
-
-    private void setNetworkAttributes(List<AttributeValueContext> attributes,
-                                      UUID id) {
-        for (AttributeValueContext av : attributes) {
-            ExistentialNetworkAttributeRecord edgeAttribute = model.records()
-                                                                   .newExistentialNetworkAttribute();
-            edgeAttribute.setEdge(id);
-            Attribute attr = model.records()
-                                  .resolve(resolve(av.attribute));
-            edgeAttribute.setAttribute(attr.getId());
-            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
-                                            .getPrincipal()
-                                            .getId());
-            if (av.sequenceNumber != null) {
-                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-            }
-            edgeAttribute.insert();
-            setValueFromString(attr, edgeAttribute,
-                               WorkspacePresentation.stripQuotes(av.value.getText()));
-            workspace.add(edgeAttribute);
-        }
-    }
-
     private void loadParentSequencing() {
         for (ParentSequencingContext seq : wsp.getParentSequencings()) {
             ParentSequencingAuthorizationRecord auth = model.records()
@@ -859,6 +820,50 @@ public class WorkspaceImporter {
                                                              model.records()
                                                                   .resolve(resolveAnyEntity(constraint.anyType.getText()).getId()))
                                         .getId());
+        }
+    }
+
+    private void setAttributes(List<AttributeValueContext> attributes,
+                               UUID id) {
+        for (AttributeValueContext av : attributes) {
+            ExistentialAttributeRecord edgeAttribute = model.records()
+                                                            .newExistentialAttribute();
+            edgeAttribute.setExistential(id);
+            Attribute attr = model.records()
+                                  .resolve(resolve(av.attribute));
+            edgeAttribute.setAttribute(attr.getId());
+            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
+                                            .getPrincipal()
+                                            .getId());
+            if (av.sequenceNumber != null) {
+                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+            }
+            edgeAttribute.insert();
+            setValueFromString(attr, edgeAttribute,
+                               WorkspacePresentation.stripQuotes(av.value.getText()));
+            workspace.add(edgeAttribute);
+        }
+    }
+
+    private void setNetworkAttributes(List<AttributeValueContext> attributes,
+                                      UUID id) {
+        for (AttributeValueContext av : attributes) {
+            ExistentialNetworkAttributeRecord edgeAttribute = model.records()
+                                                                   .newExistentialNetworkAttribute();
+            edgeAttribute.setEdge(id);
+            Attribute attr = model.records()
+                                  .resolve(resolve(av.attribute));
+            edgeAttribute.setAttribute(attr.getId());
+            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
+                                            .getPrincipal()
+                                            .getId());
+            if (av.sequenceNumber != null) {
+                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+            }
+            edgeAttribute.insert();
+            setValueFromString(attr, edgeAttribute,
+                               WorkspacePresentation.stripQuotes(av.value.getText()));
+            workspace.add(edgeAttribute);
         }
     }
 

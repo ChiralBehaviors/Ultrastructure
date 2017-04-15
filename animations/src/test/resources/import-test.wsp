@@ -7,6 +7,7 @@ imports {
 }
 
 agencies { 
+    Human = 'Hu' 'Bean ' ;
     Barrista = 'bar' 'Bar ' ;
     Bazzista = 'baz' 'Baz ' 
         attribute values {
@@ -20,6 +21,15 @@ agencies {
         
     edges {
         Bazzista.IsA.Barrista
+            attribute values {
+                Text: 'foo bar' 
+                Bool: 'false'
+                Int: '10'
+                Numeric: '1000'
+                Timestamp: '500'
+                Json: '{ "foo bar": "baz" }'
+            }
+        Barrista.IsA.Human
             attribute values {
                 Text: 'foo bar' 
                 Bool: 'false'

@@ -1,6 +1,6 @@
 workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page'
            version: 1
-           'UaaS SP' 'A declarative single page application framework for Ultrastructure'
+           'UaaS SPA' 'A declarative single page application framework for Ultrastructure'
 imports {
     'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel {
     		IsA.Workspace

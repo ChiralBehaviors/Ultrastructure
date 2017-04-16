@@ -8,8 +8,9 @@ database:
 logging:
     level: INFO
     loggers: 
-        "org.glassfish": ERROR
+        org.glassfish: ERROR
         graphql: WARN
+        de.flapdoodle: WARN
 
 workspaces:
   - /com/chiralbehaviors/CoRE/universal/single-page.1.json

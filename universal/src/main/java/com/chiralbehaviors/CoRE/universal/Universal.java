@@ -51,6 +51,7 @@ import com.fasterxml.uuid.impl.NameBasedGenerator;
 import com.hellblazer.utils.Utils;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -81,6 +82,7 @@ public class Universal extends Application implements LayoutModel {
 
     private static final String             ALLOW_RESTRICTED_HEADERS_SYSTEM_PROPERTY = "sun.net.http.allowRestrictedHeaders";
     private static final Logger             log                                      = LoggerFactory.getLogger(Universal.class);
+    private static String                   SPA_WSP;
     private static final StringArgGenerator URL_UUID_GENERATOR;
     private static final String             URN_UUID                                 = "urn:uuid:";
 
@@ -122,10 +124,11 @@ public class Universal extends Application implements LayoutModel {
     private WebTarget            endpoint;
     private final Stack<Context> forward = new Stack<>();
     private Button               forwardButton;
+    private String               frame;
     private AutoLayoutView       layout;
     private Stage                primaryStage;
+
     private Button               reloadButton;
-    private static String        SPA_WSP;
 
     @Override
     public void apply(ListView<JsonNode> list, Relation relation) {
@@ -153,6 +156,14 @@ public class Universal extends Application implements LayoutModel {
         });
     }
 
+    public Spa getApplication() {
+        return application;
+    }
+
+    public String getFrame() {
+        return frame;
+    }
+
     @Override
     public void start(Stage primaryStage) throws IOException,
                                           URISyntaxException, QueryException {
@@ -160,32 +171,8 @@ public class Universal extends Application implements LayoutModel {
         anchor = new AnchorPane();
         VBox vbox = new VBox(locationBar(), anchor);
         primaryStage.setScene(new Scene(vbox, 800, 600));
-        endpoint = ClientBuilder.newClient()
-                                .target(endpointUri());
-        application = initialSpa();
-        String initialFrame = initialFrame();
-        push(new Context(initialFrame, application.getRoot()));
+        places();
         primaryStage.show();
-    }
-
-    private String initialFrame() {
-
-        String id = System.getProperty("initial.frame");
-        if (id != null) {
-            return id;
-        }
-
-        id = getParameters().getNamed()
-                            .get("frame");
-        if (id != null) {
-            return id;
-        }
-        id = application.getFrame();
-        if (id != null) {
-            return id;
-        }
-        log.info("No frame defined, using single page app workspace frame");
-        return SPA_WSP;
     }
 
     private String appLauncherId() {
@@ -202,6 +189,34 @@ public class Universal extends Application implements LayoutModel {
         } catch (QueryException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Universal applicationFrom(JsonNode item, Launch launch) {
+        String frame = back.peek()
+                           .getFrame();
+        if (launch.getFrame() != null) {
+            frame = launch.getFrame();
+        } else if (launch.getFrameBy() != null) {
+            JsonNode launchFrame = apply(item, launch.getFrameBy());
+            if (launchFrame == null) {
+                log.warn("Invalid routing frame by {} : {}",
+                         launch.getFrameBy(), item);
+            } else {
+                frame = launchFrame.asText();
+            }
+        }
+        String application = launch.getImmediate();
+        if (launch.getLaunchBy() != null) {
+            JsonNode applicationNode = apply(item, launch.getLaunchBy());
+            if (applicationNode != null) {
+                application = applicationNode.asText();
+            }
+        }
+        Universal unitard = new Universal();
+        unitard.setFrame(frame);
+        unitard.setApplication(resolve(application));
+        unitard.setEndpoint(endpoint);
+        return unitard;
     }
 
     private JsonNode apply(JsonNode node, String path) {
@@ -243,18 +258,33 @@ public class Universal extends Application implements LayoutModel {
     }
 
     private void doubleClick(JsonNode item, Relation relation) {
-        Context current = back.peek();
-        Route route = current.getNavigation(relation);
         if (item == null) {
             return;
         }
-        if (route == null) {
+        Context current = back.peek();
+
+        // favor routes over launch
+        Route route = current.getNavigation(relation);
+        if (route != null) {
+            try {
+                push(extract(current.getFrame(), route, item));
+            } catch (QueryException e) {
+                log.error("Unable to push page: %s", route.getPath(), e);
+            }
+        }
+
+        // try a launch if no routes
+        Launch launch = current.getLaunch(relation);
+        if (launch == null) {
             return;
         }
+
         try {
-            push(extract(current.getFrame(), route, item));
-        } catch (QueryException e) {
-            log.error("Unable to push page: %s", route.getPath(), e);
+            launch(item, launch);
+        } catch (Exception e) {
+            throw new IllegalStateException(String.format("Cannot launch %s",
+                                                          relation.getField()),
+                                            e);
         }
     }
 
@@ -303,15 +333,29 @@ public class Universal extends Application implements LayoutModel {
         displayCurrentPage();
     }
 
-    private Spa initialSpa() {
-
-        String id = System.getProperty(UNIVERSAL_APP_ID);
-        if (id != null) {
-            return resolve(id);
+    private String initialFrame() {
+        if (frame != null) {
+            return frame;
         }
+        String id = getParameters().getNamed()
+                                   .get("frame");
+        if (id != null) {
+            return id;
+        }
+        id = application.getFrame();
+        if (id != null) {
+            return id;
+        }
+        log.info("No frame defined, using single page app workspace frame");
+        return SPA_WSP;
+    }
 
-        id = getParameters().getNamed()
-                            .get("app");
+    private Spa initialSpa() {
+        if (application != null) {
+            return application;
+        }
+        String id = getParameters().getNamed()
+                                   .get("app");
         if (id == null) {
             log.info("No application id defined, using default app launcher");
             return resolve(appLauncherId());
@@ -319,12 +363,25 @@ public class Universal extends Application implements LayoutModel {
         return resolve(id);
     }
 
+    private void launch(JsonNode item, Launch launch) throws Exception {
+        Universal unitard = applicationFrom(item, launch);
+        Platform.runLater(() -> {
+            Stage stageLeft = new Stage();
+            Platform.setImplicitExit(false);
+            try {
+                unitard.start(stageLeft);
+            } catch (Exception e) {
+                log.error("Unable to launch: %s", launch, e);
+            }
+        });
+    }
+
     private AutoLayoutView layout(Context pageContext) throws QueryException {
         AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot(), this);
         layout.getStylesheets()
               .add(getClass().getResource("/non-nested.css")
                              .toExternalForm());
-        JsonNode evaluated = pageContext.evaluate(endpoint); 
+        JsonNode evaluated = pageContext.evaluate(endpoint);
         layout.setData(evaluated);
         layout.measure(evaluated);
         AnchorPane.setTopAnchor(layout, 0.0);
@@ -349,6 +406,16 @@ public class Universal extends Application implements LayoutModel {
             .addAll(backButton, forwardButton, reloadButton);
 
         return hbox;
+    }
+
+    private void places() throws URISyntaxException, QueryException {
+        if (endpoint == null) {
+            endpoint = ClientBuilder.newClient()
+                                    .target(endpointUri());
+        }
+        application = initialSpa();
+        frame = initialFrame();
+        push(new Context(frame, application.getRoot()));
     }
 
     private void push(Context pageContext) throws QueryException {
@@ -378,6 +445,18 @@ public class Universal extends Application implements LayoutModel {
             throw new IllegalStateException(msg, e);
         }
         return new Spa(app);
+    }
+
+    private void setApplication(Spa application) {
+        this.application = application;
+    }
+
+    private void setEndpoint(WebTarget endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    private void setFrame(String frame) {
+        this.frame = frame;
     }
 
     private void updateLocationBar() {

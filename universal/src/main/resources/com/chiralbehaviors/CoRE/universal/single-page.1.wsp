@@ -19,6 +19,7 @@ attributes {
 	root = 'Root' 'Root Route' text;
 	frameBy = 'Frame By' 'The xpath expression to extract the workspace frame id from the relation' text;
     launchBy = 'Launch By' 'The xpath expression to extract application id from the relation' text;
+    meta = 'Meta' 'If true, indicates the meta workspace frame' bool;
 }
 products {
     Page = 'Page' 'A single page in an application';

@@ -131,7 +131,8 @@
 								<className>com.chiralbehaviors.CoRE.universal.wsp.ResourceStringController</className>
 								<method>injection</method>
 								<properties>
-									<key>allWorkspaces.query</key>
+									<allWorkspaces>allWorkspaces.query</allWorkspaces>
+                                    <workspaceDetail>workspaceDetail.query</workspaceDetail>
 								</properties>
 							</controller>
 						</template>

@@ -10,7 +10,7 @@ imports {
 products {
     WorkspaceExplorer = 'Workspace Explorer' 'A browser/ide for Ultrastructure workspaces'
         attribute values {
-            name : 'Workspace Explorer'
+            name : 'Workspace Explorer' 
             description: 'A browser/ide for Ultrastructure workspaces'
             root: 'workspaces'
         };
@@ -19,20 +19,45 @@ products {
         attribute values {
             name: 'All workspaces'
             description: 'Page with all workspaces'
-            title: 'Applications'
-            query: '{ workspaces { id name description } }'
-            
+            title: 'Workspaces'
+            query: '{ workspaces { id _ext { name description } } }'
         };
+        
+    WorkspaceDetail = 'Workspace Detail' 'Detail for a single workspace'
+        attribute values {
+            name: 'Workspace Detail'
+            description: 'Detail for a single workspace'
+            title: 'Workspace'
+            query: '<resources.workspaceDetail>'
+        };
+        
+    GimmeWorkspace = 'workspace detail rout' 'Launch the selected application'
     
     edges {
         WorkspaceExplorer.IsA.SinglePageApp 
-        AllWorkspaces.IsA.Page 
+        AllWorkspaces.IsA.Page
+        WorkspaceDetail.IsA.Page
         
-        AllWorkspaces.frame.KernelWorkspace
+        GimmeWorkspace.IsA.Route
+            attribute values {
+                name: 'GimmeWorkspace'
+                description: 'Route to workspace detail'
+                route: 'workspace'
+            };
         
         WorkspaceExplorer.hasPage.AllWorkspaces
             attribute values {
                 route: 'workspaces'
+            }
+
+        WorkspaceExplorer.hasPage.WorkspaceDetail
+            attribute values {
+                route: 'workspace'
+            }
+
+        WorkspaceDetail.navigate.GimmeWorkspace
+            attribute values {
+                relation: 'workspaces'
             }
     } 
 }

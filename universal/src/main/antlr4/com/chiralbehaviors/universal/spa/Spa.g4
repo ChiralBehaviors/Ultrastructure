@@ -87,27 +87,27 @@
 
  action
  :
-     query frameBy? extract?
+     frameBy? extract? query 
  ;
 
  create
  :
-     'create:' action
+     'create' action
  ;
 
  update
  :
-     'update:' action
+     'update' action
  ;
 
  delete
  :
-     'delete:' action
+     'delete' action
  ;
 
  launch
  :
-     'launch:'
+     'launch'
      (
          frameBy
          | frame
@@ -118,14 +118,14 @@
      )
  ;
 
- navigate
- :
-     'navigate:' NAME frameBy extract
- ;
-
  launchBy
  :
      'by' Spath
+ ;
+
+ navigate
+ :
+     'navigate:' NAME frameBy? extract?
  ;
 
  operationDefinition

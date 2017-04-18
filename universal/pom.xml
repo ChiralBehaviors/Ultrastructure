@@ -16,6 +16,10 @@
 	</properties>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.layout</groupId>
 			<artifactId>kramer-ql</artifactId>
@@ -73,6 +77,35 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/target/generated-sources/antlr4</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
 						<id>add-test-source</id>
 						<phase>generate-test-sources</phase>
 						<goals>
@@ -118,35 +151,6 @@
 					<shadedClassifierName>phat</shadedClassifierName>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.webguys</groupId>
-				<artifactId>string-template-maven-plugin</artifactId>
-				<configuration>
-					<templates>
-						<template>
-							<directory>${project.basedir}/templates</directory>
-							<name>explorer</name>
-							<target>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/explorer.1.wsp</target>
-							<controller>
-								<className>com.chiralbehaviors.CoRE.universal.wsp.ResourceStringController</className>
-								<method>injection</method>
-								<properties>
-									<allWorkspaces>allWorkspaces.query</allWorkspaces>
-                                    <workspaceDetail>workspaceDetail.query</workspaceDetail>
-								</properties>
-							</controller>
-						</template>
-					</templates>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>render</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -172,23 +176,6 @@
 										</versionRange>
 										<goals>
 											<goal>generate</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.webguys</groupId>
-										<artifactId>
-											string-template-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.1,)
-										</versionRange>
-										<goals>
-											<goal>render</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

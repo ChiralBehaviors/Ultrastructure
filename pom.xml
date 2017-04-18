@@ -712,8 +712,8 @@
 								<exclude>graphql/annotations/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
+                                <exclude>com/chiralbehaviors/CoRE/universal/spa/**/*</exclude>
 								<exclude>**/WorkspacePresentation*</exclude>
-								<exclude>**/ResourceStringController*</exclude>
 								<exclude>**/HelpMojo*</exclude>
 								<exclude>**/Universal*</exclude>
 								<exclude>**/English*</exclude>

@@ -110,6 +110,12 @@ public class SpaImporter extends SpaBaseListener {
     @Override
     public void enterPage(PageContext ctx) {
         currentPage = new Page();
+        currentPage.setQuery(ctx.query()
+                                .Spath()
+                                .getText());
+        currentPage.setName(stripQuotes(ctx.name()
+                                           .StringValue()
+                                           .getText()));
         currentPage.setTitle(ctx.title()
                                 .getText());
         if (ctx.description() != null) {

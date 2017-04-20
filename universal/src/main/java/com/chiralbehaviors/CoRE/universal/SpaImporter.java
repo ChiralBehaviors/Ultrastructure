@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation.stripQuotes;
-
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.universal.spa.SpaBaseListener;
@@ -41,6 +39,10 @@ import com.chiralbehaviors.CoRE.universal.spa.SpaParser.UpdateContext;
  *
  */
 public class SpaImporter extends SpaBaseListener {
+    static String stripQuotes(String original) {
+        return original.substring(1, original.length() - 1);
+    }
+
     private String    currentField;
     private Page      currentPage;
     private final Spa spa = new Spa();

@@ -11,8 +11,13 @@ spa {
         
         foo { 
             create: by /bar {bar:/foo} query: /bar
-            navigate: foo {bar:/foo}
-            launch: 00000000-0000-0004-0000-000000000003
+            update: by /bar {bar:/foo} query: /bar
+            delete: by /bar {bar:/foo} query: /bar
+            navigate: foo by /bar {bar:/foo}
+            launch: frame: 00000000-0000-0004-0000-000000000003 /bar
+        }
+        bar { 
+            launch: by /bar 00000000-0000-0004-0000-000000000003
         }
     }
 }

@@ -76,12 +76,11 @@ public class SpaImporter extends SpaBaseListener {
             launch.setFrame(ctx.frame()
                                .getText());
         }
-        if (ctx.launchBy() == null) {
+        if (ctx.Spath() == null) {
             launch.setImmediate(ctx.UUID()
                                    .getText());
         } else {
-            launch.setLaunchBy(ctx.launchBy()
-                                  .Spath()
+            launch.setLaunchBy(ctx.Spath()
                                   .getText());
         }
     }

@@ -119,14 +119,9 @@
          | frame
      )?
      (
-         launchBy
+         Spath
          | UUID
      )
- ;
-
- launchBy
- :
-     'by' Spath
  ;
 
  navigate

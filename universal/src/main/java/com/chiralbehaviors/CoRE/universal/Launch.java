@@ -28,15 +28,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Launch {
-    private final String frame;
-    private final String frameBy;
-    private final String immediate;
-    private final String launchBy;
+    private String frame;
+    private String frameBy;
+    private String immediate;
+    private String launchBy;
+
+    public Launch() {
+    }
 
     public Launch(ObjectNode launch) {
         this(textOrNull(launch.get("launchBy")),
-             textOrNull(launch.get("frameBy")),
-             textOrNull(launch.get("frame")),
+             textOrNull(launch.get("frameBy")), textOrNull(launch.get("frame")),
              launch.get("immediate") == null ? null
                                              : textOrNull(launch.get("immediate")
                                                                 .get("id")));
@@ -64,5 +66,21 @@ public class Launch {
 
     public String getLaunchBy() {
         return launchBy;
+    }
+
+    public void setFrame(String frame) {
+        this.frame = frame;
+    }
+
+    public void setFrameBy(String frameBy) {
+        this.frameBy = frameBy;
+    }
+
+    public void setImmediate(String immediate) {
+        this.immediate = immediate;
+    }
+
+    public void setLaunchBy(String launchBy) {
+        this.launchBy = launchBy;
     }
 }

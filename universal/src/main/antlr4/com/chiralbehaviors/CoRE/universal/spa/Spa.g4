@@ -19,19 +19,23 @@
  */
  grammar Spa;
 
+ tokens {
+     HIDDEN
+ }
+
  spa
  :
-     'spa {' name description root frame? route+ '}'
+     'spa' '{' name description root frame? route+ '}' EOF
  ;
 
  name
  :
-     'name:' NAME
+     'name:' StringValue
  ;
 
  description
  :
-     'description:' QuotedText
+     'description:' StringValue
  ;
 
  root
@@ -53,11 +57,13 @@
  :
      name description? title frame? query
      (
-         '{'
-         (
-             NAME '{' create? update? delete? navigate? launch? '}'
-         )+ '}'
+         fieldAction+
      )?
+ ;
+
+ fieldAction
+ :
+     NAME '{' create? update? delete? navigate? launch? '}'
  ;
 
  extract
@@ -67,17 +73,17 @@
 
  extraction
  :
-     variable ':' Spath
+     NAME ':' Spath
  ;
 
  title
  :
-     QuotedText
+     'title: ' StringValue
  ;
 
  query
  :
-     '`' operationDefinition '`'
+     'query:' Spath
  ;
 
  frameBy
@@ -87,27 +93,27 @@
 
  action
  :
-     frameBy? extract? query 
+     frameBy? extract? query
  ;
 
  create
  :
-     'create' action
+     'create:' action
  ;
 
  update
  :
-     'update' action
+     'update:' action
  ;
 
  delete
  :
-     'delete' action
+     'delete:' action
  ;
 
  launch
  :
-     'launch'
+     'launch:'
      (
          frameBy
          | frame
@@ -128,184 +134,69 @@
      'navigate:' NAME frameBy? extract?
  ;
 
- operationDefinition
- :
-     selectionSet
-     | operationType NAME variableDefinitions? directives? selectionSet
- ;
-
- selectionSet
- :
-     '{' selection
-     (
-         ','? selection
-     )* '}'
- ;
-
- operationType
- :
-     'query'
-     | 'mutation'
- ;
-
- selection
- :
-     field
-     | fragmentSpread
-     | inlineFragment
- ;
-
- field
- :
-     fieldName arguments? directives? selectionSet?
- ;
-
- fieldName
- :
-     alias
-     | NAME
- ;
-
- alias
- :
-     NAME ':' NAME
- ;
-
- arguments
- :
-     '(' argument
-     (
-         ',' argument
-     )* ')'
- ;
-
- argument
- :
-     NAME ':' valueOrVariable
- ;
-
- fragmentSpread
- :
-     '...' fragmentName directives?
- ;
-
- inlineFragment
- :
-     '...' 'on' typeCondition directives? selectionSet
- ;
-
- fragmentDefinition
- :
-     'fragment' fragmentName 'on' typeCondition directives? selectionSet
- ;
-
- fragmentName
- :
-     NAME
- ;
-
- directives
- :
-     directive+
- ;
-
- directive
- :
-     '@' NAME ':' valueOrVariable
-     | '@' NAME
-     | '@' NAME '(' argument ')'
- ;
-
- typeCondition
- :
-     typeName
- ;
-
- variableDefinitions
- :
-     '(' variableDefinition
-     (
-         ',' variableDefinition
-     )* ')'
- ;
-
- variableDefinition
- :
-     variable ':' type defaultValue?
- ;
-
- variable
- :
-     '$' NAME
- ;
-
- defaultValue
- :
-     '=' value
- ;
-
- valueOrVariable
- :
-     value
-     | variable
- ;
-
- value
- :
-     STRING # stringValue
-     | NUMBER # numberValue
-     | BOOLEAN # booleanValue
-     | array # arrayValue
- ;
-
- type
- :
-     typeName nonNullType?
-     | listType nonNullType?
- ;
-
- typeName
- :
-     NAME
- ;
-
- listType
- :
-     '[' type ']'
- ;
-
- nonNullType
- :
-     '!'
- ;
-
- array
- :
-     '[' value
-     (
-         ',' value
-     )* ']'
-     | '[' ']'
- ;
-
  NAME
  :
      [_A-Za-z] [_0-9A-Za-z]*
  ;
 
- STRING
+ StringValue
  :
      '"'
      (
-         ESC
-         | ~["\\]
+         ~( ["\\\n\r\u2028\u2029] )
+         | EscapedChar
      )* '"'
  ;
 
- BOOLEAN
+ fragment
+ EscapedChar
  :
-     'true'
-     | 'false'
+     '\\'
+     (
+         ["\\/bfnrt]
+         | Unicode
+     )
+ ;
+
+ fragment
+ Unicode
+ :
+     'u' Hex Hex Hex Hex
+ ;
+
+ fragment
+ Hex
+ :
+     [0-9a-fA-F]
+ ;
+
+ // --------------- IGNORED ---------------
+
+ Ignored
+ :
+     (
+         Whitspace
+         | LineTerminator
+         | Comment
+     ) -> channel ( HIDDEN )
+ ;
+
+ fragment
+ Comment
+ :
+     '#' ~[\n\r\u2028\u2029]*
+ ;
+
+ fragment
+ LineTerminator
+ :
+     [\n\r\u2028\u2029]
+ ;
+
+ fragment
+ Whitspace
+ :
+     [\t\u000b\f\u0020\u00a0]
  ;
 
  Spath
@@ -313,17 +204,6 @@
      (
          '/' NAME
      )+
- ;
-
- QuotedText
- :
-     '"'
-     (
-         ' '
-         | '!'
-         | '#' .. '&'
-         | '(' .. '~'
-     )+ '"'
  ;
 
  UUID
@@ -338,61 +218,10 @@
 
  HEX4
  :
-     HEX HEX HEX HEX
+     Hex Hex Hex Hex
  ;
 
  HEX8
  :
      HEX4 HEX4
- ;
-
- fragment
- ESC
- :
-     '\\'
-     (
-         ["\\/bfnrt]
-         | UNICODE
-     )
- ;
-
- fragment
- UNICODE
- :
-     'u' HEX HEX HEX HEX
- ;
-
- fragment
- HEX
- :
-     [0-9a-fA-F]
- ;
-
- NUMBER
- :
-     '-'? INT '.' [0-9]+ EXP?
-     | '-'? INT EXP
-     | '-'? INT
- ;
-
- fragment
- INT
- :
-     '0'
-     | [1-9] [0-9]*
- ;
-
- // no leading zeros
-
- fragment
- EXP
- :
-     [Ee] [+\-]? INT
- ;
-
- // \- since - means "range" inside [...]
-
- WS
- :
-     [ \t\n\r]+ -> skip
  ;

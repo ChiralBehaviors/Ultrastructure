@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.universal;
 import static com.chiralbehaviors.CoRE.universal.Page.extract;
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,9 +35,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class Route {
 
-    private final Map<String, String> extract;
-    private final String              frameBy;
-    private final String              path;
+    private Map<String, String> extract;
+    private String              frameBy;
+    private String              path;
+
+    public Route() {
+        extract = new HashMap<>();
+    }
 
     public Route(ObjectNode route) {
         this(textOrNull(route.get("frameBy")), textOrNull(route.get("path")),
@@ -59,6 +64,18 @@ public class Route {
 
     public String getPath() {
         return path;
+    }
+
+    public void setExtract(Map<String, String> extract) {
+        this.extract = extract;
+    }
+
+    public void setFrameBy(String frameBy) {
+        this.frameBy = frameBy;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }

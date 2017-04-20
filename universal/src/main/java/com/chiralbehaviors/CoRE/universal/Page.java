@@ -41,6 +41,22 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Page {
+    public static Map<String, String> extract(String json) {
+        Map<String, String> extract = new HashMap<>();
+        ObjectNode node;
+        try {
+            node = (ObjectNode) new ObjectMapper().readTree(new ByteArrayInputStream(json.getBytes()));
+        } catch (IOException e) {
+            throw new IllegalStateException("", e);
+        }
+        for (Iterator<Entry<String, JsonNode>> fields = node.fields(); fields.hasNext();) {
+            Entry<String, JsonNode> field = fields.next();
+            extract.put(field.getKey(), field.getValue()
+                                             .asText());
+        }
+        return extract;
+    }
+
     private static Map<String, Action> actions(ArrayNode array) {
         Map<String, Action> actions = new HashMap<>();
         if (array == null) {
@@ -85,14 +101,22 @@ public class Page {
 
     private final Map<String, Action> creates;
     private final Map<String, Action> deletes;
-    private final String              description;
-    private final String              frame;
+    private String                    description;
+    private String                    frame;
     private final Map<String, Launch> launches;
-    private final String              name;
+    private String                    name;
     private final Map<String, Route>  navigations;
-    private final String              query;
-    private final String              title;
+    private String                    query;
+    private String                    title;
     private final Map<String, Action> updates;
+
+    public Page() {
+        creates = new HashMap<>();
+        deletes = new HashMap<>();
+        launches = new HashMap<>();
+        navigations = new HashMap<>();
+        updates = new HashMap<>();
+    }
 
     public Page(ObjectNode page) {
         this(textOrNull(page.get("name")), textOrNull(page.get("description")),
@@ -119,6 +143,14 @@ public class Page {
         this.updates = updates;
         this.deletes = deletes;
         this.launches = launches;
+    }
+
+    public void create(String field, Action action) {
+        creates.put(field, action);
+    }
+
+    public void delete(String field, Action action) {
+        deletes.put(field, action);
     }
 
     public Action getCreate(Relation relation) {
@@ -161,19 +193,27 @@ public class Page {
         return updates.get(relation.getField());
     }
 
-    public static Map<String, String> extract(String json) {
-        Map<String, String> extract = new HashMap<>();
-        ObjectNode node;
-        try {
-            node = (ObjectNode) new ObjectMapper().readTree(new ByteArrayInputStream(json.getBytes()));
-        } catch (IOException e) {
-            throw new IllegalStateException("", e);
-        }
-        for (Iterator<Entry<String, JsonNode>> fields = node.fields(); fields.hasNext();) {
-            Entry<String, JsonNode> field = fields.next();
-            extract.put(field.getKey(), field.getValue()
-                                             .asText());
-        }
-        return extract;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setFrame(String frame) {
+        this.frame = frame;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void update(String field, Action action) {
+        updates.put(field, action);
     }
 }

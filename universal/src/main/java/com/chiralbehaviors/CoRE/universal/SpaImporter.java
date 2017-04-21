@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.universal.spa.SpaBaseListener;
@@ -33,6 +35,7 @@ import com.chiralbehaviors.CoRE.universal.spa.SpaParser.PageContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.RouteContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.UpdateContext;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author halhildebrand
@@ -110,9 +113,9 @@ public class SpaImporter extends SpaBaseListener {
     @Override
     public void enterPage(PageContext ctx) {
         currentPage = new Page();
-        currentPage.setQuery(ctx.query()
-                                .Spath()
-                                .getText());
+        currentPage.setQuery(getResource(stripQuotes(ctx.query()
+                                                        .ResourcePath()
+                                                        .getText())));
         currentPage.setName(stripQuotes(ctx.name()
                                            .StringValue()
                                            .getText()));
@@ -175,6 +178,29 @@ public class SpaImporter extends SpaBaseListener {
                                                           v -> v.Spath()
                                                                 .getText())));
         }
+        action.setQuery(getResource(stripQuotes(ac.query()
+                                                  .ResourcePath()
+                                                  .getText())));
         return action;
+    }
+
+    private String getResource(String path) {
+        InputStream is = getClass().getResourceAsStream(path);
+        if (is == null) {
+            throw new IllegalStateException(String.format("Invalid resource: %s",
+                                                          path));
+        }
+        try {
+            return Utils.getDocument(is);
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Cannot read resource: %s",
+                                                          path),
+                                            e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+        }
     }
 }

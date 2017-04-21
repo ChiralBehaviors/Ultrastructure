@@ -83,7 +83,7 @@
 
  query
  :
-     'query:' Spath
+     'query:' ResourcePath
  ;
 
  frameBy
@@ -141,6 +141,15 @@
          ~( ["\\\n\r\u2028\u2029] )
          | EscapedChar
      )* '"'
+ ;
+
+ ResourcePath
+ :
+     '\''
+     (
+         ~( ["\\\n\r\u2028\u2029] )
+         | EscapedChar
+     )* '\''
  ;
 
  fragment

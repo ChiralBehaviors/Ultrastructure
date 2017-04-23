@@ -95,6 +95,40 @@ public class JooqSchemaTest extends AbstractModelTest {
         assertNotNull(data);
     }
 
+    @Test
+    public void testAttributeAuthorizationMutations() throws IllegalArgumentException,
+                                                      Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("facet", model.getPhantasmModel()
+                                    .getFacetDeclaration(k.getIsA(),
+                                                         k.getCoreUser())
+                                    .getId()
+                                    .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: ID $attr: ID $facet: ID) { createExistentialAttributeAuthorizationRecord(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"ab\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    variables);
+        variables.put("id",
+                      result.get("createExistentialAttributeAuthorizationRecord")
+                            .get("id")
+                            .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: ID! $auth: ID) { updateExistentialAttributeAuthorizationRecord(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: ID!) { deleteExistentialAttributeAuthorizationRecord(id: $id) }",
+                variables);
+    }
+
     private ObjectNode execute(GraphQLSchema schema, String query,
                                Map<String, Object> variables) throws IllegalArgumentException,
                                                               Exception {

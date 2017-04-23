@@ -648,7 +648,7 @@ public class FacetFields extends Phantasmagoria {
                 type = GraphQLString;
                 break;
             case JSON:
-                type = WorkspaceSchema.GraphQLJson;
+                type = WorkspsacScalarTypes.GraphQLJson;
         }
         return attribute.getIndexed() ? new GraphQLList(type) : type;
     }
@@ -786,7 +786,7 @@ public class FacetFields extends Phantasmagoria {
                     builder.type(GraphQLInt);
                     break;
                 case JSON:
-                    builder.type(WorkspaceSchema.GraphQLJson);
+                    builder.type(WorkspsacScalarTypes.GraphQLJson);
                     break;
                 case Numeric:
                     builder.type(GraphQLBigDecimal);

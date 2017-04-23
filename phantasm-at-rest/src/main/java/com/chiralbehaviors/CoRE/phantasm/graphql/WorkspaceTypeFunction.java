@@ -22,12 +22,17 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.iface;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessing.object;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLBinary;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLJson;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLTimestamp;
 import static graphql.schema.GraphQLEnumType.newEnum;
 
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +41,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.Scalars;
 import graphql.annotations.GraphQLDescription;
@@ -55,14 +62,6 @@ import graphql.schema.TypeResolver;
  */
 
 public class WorkspaceTypeFunction implements TypeFunction, TypeResolver {
-    private static class BooleanFunction implements TypeFunction {
-
-        @Override
-        public GraphQLType apply(Class<?> aClass, AnnotatedType annotatedType) {
-            return Scalars.GraphQLBoolean;
-        }
-    }
-
     private static class EnumFunction implements TypeFunction {
 
         @Override
@@ -106,22 +105,6 @@ public class WorkspaceTypeFunction implements TypeFunction, TypeResolver {
         }
     }
 
-    private static class FloatFunction implements TypeFunction {
-
-        @Override
-        public GraphQLType apply(Class<?> aClass, AnnotatedType annotatedType) {
-            return Scalars.GraphQLFloat;
-        }
-    }
-
-    private static class IntegerFunction implements TypeFunction {
-
-        @Override
-        public GraphQLType apply(Class<?> aClass, AnnotatedType annotatedType) {
-            return Scalars.GraphQLInt;
-        }
-    }
-
     private class ListFunction implements TypeFunction {
 
         @Override
@@ -139,14 +122,6 @@ public class WorkspaceTypeFunction implements TypeFunction, TypeResolver {
             }
             return new GraphQLList(WorkspaceTypeFunction.this.apply(klass,
                                                                     arg));
-        }
-    }
-
-    private static class LongFunction implements TypeFunction {
-
-        @Override
-        public GraphQLType apply(Class<?> aClass, AnnotatedType annotatedType) {
-            return Scalars.GraphQLLong;
         }
     }
 
@@ -221,28 +196,24 @@ public class WorkspaceTypeFunction implements TypeFunction, TypeResolver {
         }
     }
 
-    private static class StringFunction implements TypeFunction {
-
-        @Override
-        public GraphQLType apply(Class<?> aClass, AnnotatedType annotatedType) {
-            return Scalars.GraphQLString;
-        }
-    }
-
     private final Map<String, BiFunction<Class<?>, AnnotatedType, GraphQLType>> registry;
     private final Map<Class<?>, GraphQLType>                                    types = new HashMap<>();
 
     {
         registry = new HashMap<>();
-        register(String.class, new StringFunction());
-        register(Boolean.class, new BooleanFunction());
-        register(boolean.class, new BooleanFunction());
-        register(Float.class, new FloatFunction());
-        register(float.class, new FloatFunction());
-        register(Integer.class, new IntegerFunction());
-        register(int.class, new IntegerFunction());
-        register(Long.class, new LongFunction());
-        register(long.class, new LongFunction());
+        register(String.class, (u, t) -> Scalars.GraphQLString);
+        register(Boolean.class, (u, t) -> Scalars.GraphQLBoolean);
+        register(boolean.class, (u, t) -> Scalars.GraphQLBoolean);
+        register(Float.class, (u, t) -> Scalars.GraphQLFloat);
+        register(float.class, (u, t) -> Scalars.GraphQLFloat);
+        register(Integer.class, (u, t) -> Scalars.GraphQLInt);
+        register(int.class, (u, t) -> Scalars.GraphQLInt);
+        register(Long.class, (u, t) -> Scalars.GraphQLLong);
+        register(long.class, (u, t) -> Scalars.GraphQLLong);
+        register(BigDecimal.class, (u, t) -> Scalars.GraphQLBigDecimal);
+        register(JsonNode.class, (u, t) -> GraphQLJson);
+        register(Timestamp.class, (u, t) -> GraphQLTimestamp);
+        register(byte[].class, (u, t) -> GraphQLBinary);
         register(AbstractList.class, new ListFunction());
         register(List.class, new ListFunction());
         register(Stream.class, new StreamFunction());

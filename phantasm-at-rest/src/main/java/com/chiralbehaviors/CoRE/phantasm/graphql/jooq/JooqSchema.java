@@ -131,7 +131,7 @@ public class JooqSchema {
                                   Map<String, GraphQLType> types) {
         GraphQLInputObjectType.Builder updateBuilder = GraphQLInputObjectType.newInputObject()
                                                                              .name(String.format("create%sState",
-                                                                                                 record.getSimpleName()));
+                                                                                                 translated(record)));
 
         fields.stream()
               .filter(field -> !field.getName()
@@ -144,15 +144,26 @@ public class JooqSchema {
               });
         GraphQLInputObjectType update = updateBuilder.build();
         mutation.field(b -> b.name(String.format("create%s",
-                                                 record.getSimpleName()))
+                                                 translated(record)))
                              .type(type)
                              .argument(a -> a.name("state")
                                              .type(update)
                                              .description(String.format("Create state of the %s",
-                                                                        record.getSimpleName())))
+                                                                        translated(record))))
                              .dataFetcher(env -> {
                                  return create(record, types, env);
                              }));
+    }
+
+    private String translated(Class<?> record) {
+        String simpleName = record.getSimpleName()
+                                  .substring(0, record.getSimpleName()
+                                                      .lastIndexOf("Record"));
+        if (!simpleName.startsWith("Existential")) {
+            return simpleName;
+        }
+        return simpleName != "Existential" ? simpleName.substring("Existential".length())
+                                           : simpleName;
     }
 
     private void contributeDelete(Builder mutation, Class<?> record,
@@ -160,12 +171,12 @@ public class JooqSchema {
                                   List<PropertyDescriptor> fields,
                                   Map<String, GraphQLType> types) {
         mutation.field(b -> b.name(String.format("delete%s",
-                                                 record.getSimpleName()))
+                                                 translated(record)))
                              .type(GraphQLBoolean)
                              .argument(a -> a.name("id")
                                              .type(new GraphQLNonNull(GraphQLID))
                                              .description(String.format("ID of the %s",
-                                                                        record.getSimpleName())))
+                                                                        translated(record))))
                              .dataFetcher(env -> {
                                  return delete(record, types, env);
                              }));
@@ -185,23 +196,23 @@ public class JooqSchema {
     @SuppressWarnings("unchecked")
     private void contributeQueries(Builder query, Class<?> record,
                                    GraphQLObjectType type) {
-        query.field(b -> b.name(record.getSimpleName())
+        query.field(b -> b.name(translated(record))
                           .type(type)
                           .argument(a -> a.name("id")
                                           .type(new GraphQLNonNull(GraphQLID))
                                           .description(String.format("ID of the %s",
-                                                                     record.getSimpleName())))
+                                                                     translated(record))))
                           .dataFetcher(env -> {
                               UUID id = decode(GraphQLID,
                                                env.getArgument("id"));
                               return fetch(id, record, env);
                           }));
-        query.field(b -> b.name(String.format("%ss", record.getSimpleName()))
+        query.field(b -> b.name(String.format("%ss", translated(record)))
                           .type(new GraphQLList(type))
                           .argument(a -> a.name("ids")
                                           .type(new GraphQLList(GraphQLID))
                                           .description(String.format("IDs of the %s",
-                                                                     record.getSimpleName())))
+                                                                     translated(record))))
                           .dataFetcher(env -> {
                               List<String> ids = (List<String>) env.getArgument("ids");
                               if (ids == null) {
@@ -232,7 +243,7 @@ public class JooqSchema {
                                   Map<String, GraphQLType> types) {
         GraphQLInputObjectType.Builder updateBuilder = GraphQLInputObjectType.newInputObject()
                                                                              .name(String.format("update%sState",
-                                                                                                 record.getSimpleName()));
+                                                                                                 translated(record)));
 
         fields.forEach(field -> {
             updateBuilder.field(b -> {
@@ -242,12 +253,12 @@ public class JooqSchema {
         });
         GraphQLInputObjectType update = updateBuilder.build();
         mutation.field(b -> b.name(String.format("update%s",
-                                                 record.getSimpleName()))
+                                                 translated(record)))
                              .type(type)
                              .argument(a -> a.name("state")
                                              .type(update)
                                              .description(String.format("Update state of the %s",
-                                                                        record.getSimpleName())))
+                                                                        translated(record))))
                              .dataFetcher(env -> {
                                  return update(record, types, env);
                              }));

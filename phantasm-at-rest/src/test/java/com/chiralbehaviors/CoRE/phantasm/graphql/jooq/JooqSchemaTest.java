@@ -75,27 +75,6 @@ public class JooqSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testAttributeAuthQueries() throws Exception {
-        Map<String, Object> variables = new HashMap<>();
-        ObjectNode data = execute(schema,
-                                  "{ ExistentialAttributeAuthorizationRecords { id authority updatedBy } }",
-                                  variables);
-        assertNotNull(data);
-        variables.put("ids",
-                      ids(data.withArray("ExistentialAttributeAuthorizationRecords")));
-        data = execute(schema,
-                       "query q($ids: [ID]) { ExistentialAttributeAuthorizationRecords(ids:$ids) { id facet jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("id",
-                      ids(data.withArray("ExistentialAttributeAuthorizationRecords")).get(0));
-        data = execute(schema,
-                       "query q($id: ID!) { ExistentialAttributeAuthorizationRecord(id: $id) { id  } }",
-                       variables);
-        assertNotNull(data);
-    }
-
-    @Test
     public void testAttributeAuthorizationMutations() throws IllegalArgumentException,
                                                       Exception {
         Map<String, Object> variables = new HashMap<>();
@@ -111,21 +90,142 @@ public class JooqSchemaTest extends AbstractModelTest {
                                     .getId()
                                     .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $facet: ID) { createExistentialAttributeAuthorizationRecord(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"ab\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    "mutation m($auth: ID $attr: ID $facet: ID) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"ab\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
                                     variables);
-        variables.put("id",
-                      result.get("createExistentialAttributeAuthorizationRecord")
-                            .get("id")
-                            .asText());
+        variables.put("id", result.get("createAttributeAuthorization")
+                                  .get("id")
+                                  .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateExistentialAttributeAuthorizationRecord(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateAttributeAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
-                "mutation m($id: ID!) { deleteExistentialAttributeAuthorizationRecord(id: $id) }",
+                "mutation m($id: ID!) { deleteAttributeAuthorization(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testAttributeAuthQueries() throws Exception {
+        Map<String, Object> variables = new HashMap<>();
+        ObjectNode data = execute(schema,
+                                  "{ AttributeAuthorizations { id authority updatedBy } }",
+                                  variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("AttributeAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [ID]) { AttributeAuthorizations(ids:$ids) { id facet jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id",
+                      ids(data.withArray("AttributeAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { AttributeAuthorization(id: $id) { id  } }",
+                       variables);
+        assertNotNull(data);
+    }
+
+    @Test
+    public void testAttributeValueMutations() throws IllegalArgumentException,
+                                              Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("existential", model.records()
+                                          .resolve(k.getCoreUser())
+                                          .getId()
+                                          .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: ID $attr: ID $existential: ID) { createAttributeValue(state: {existential: $existential authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createAttributeValue")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: ID! $auth: ID!) { updateAttributeValue(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: ID!) { removeAttributeValue(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testNetworkAttributeValueMutations() throws IllegalArgumentException,
+                                                     Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("edge", model.getPhantasmModel()
+                                   .getImmediateChildLink(k.getSuperUser(),
+                                                          k.getIsA(),
+                                                          k.getCoreUser())
+                                   .getId()
+                                   .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: String $attr: String $edge: String) { createNetworkAttributeValue(state: {edge: $edge authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createNetworkAttributeValue")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: String! $auth: String!) { updateNetworkAttributeValue(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: String!) { removeNetworkAttributeValue(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testNetworkMutations() throws IllegalArgumentException,
+                                       Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        variables.put("parent", k.getSuperUser()
+                                 .getId()
+                                 .toString());
+        variables.put("relationship", k.getIsA()
+                                       .getId()
+                                       .toString());
+        variables.put("child", k.getUnauthenticatedAgency()
+                                .getId()
+                                .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($parent: String $relationship: String $child: String $auth: String) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createNetwork")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: String! $auth: String!) { updateNetwork(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema, "mutation m($id: String!) { removeNetwork(id: $id) }",
                 variables);
     }
 

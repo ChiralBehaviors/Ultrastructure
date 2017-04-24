@@ -46,9 +46,12 @@ import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 import org.jooq.exception.DataAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
@@ -71,6 +74,7 @@ import graphql.schema.GraphQLType;
  *
  */
 public class JooqSchema {
+    private static final Logger                log          = LoggerFactory.getLogger(JooqSchema.class);
     private static final Set<String>           IGNORE       = new HashSet<String>() {
                                                                 private static final long serialVersionUID = 1L;
 
@@ -143,16 +147,19 @@ public class JooqSchema {
                   });
               });
         GraphQLInputObjectType update = updateBuilder.build();
-        mutation.field(b -> b.name(String.format("create%s",
-                                                 translated(record)))
-                             .type(type)
-                             .argument(a -> a.name("state")
-                                             .type(update)
-                                             .description(String.format("Create state of the %s",
-                                                                        translated(record))))
-                             .dataFetcher(env -> {
-                                 return create(record, types, env);
-                             }));
+        mutation.field(b -> {
+            String fieldName = String.format("create%s", translated(record));
+            log.info("Contributing {} to query", fieldName);
+            return b.name(fieldName)
+                    .type(type)
+                    .argument(a -> a.name("state")
+                                    .type(update)
+                                    .description(String.format("Create state of the %s",
+                                                               translated(record))))
+                    .dataFetcher(env -> {
+                        return create(record, types, env);
+                    });
+        });
     }
 
     private String translated(Class<?> record) {
@@ -267,8 +274,21 @@ public class JooqSchema {
     @SuppressWarnings({ "unchecked" })
     private <T> T create(Class<?> record, Map<String, GraphQLType> types,
                          DataFetchingEnvironment env) {
-        DSLContext create = WorkspaceSchema.ctx(env)
+        Model ctx = WorkspaceSchema.ctx(env);
+        DSLContext create = ctx
                                            .create();
+        UpdatableRecord<?> instance = newInstance(record);
+        Table<?> table = instance.getTable();
+        instance = (UpdatableRecord<?>) create.newRecord(table);
+        initialize(instance, ctx.getCurrentPrincipal().getPrincipal().getId());
+        Map<String, Object> state = (Map<String, Object>) env.getArgument("state");
+        state.remove("id");
+        set(instance, types, state);
+        instance.insert();
+        return (T) instance;
+    }
+
+    private UpdatableRecord<?> newInstance(Class<?> record) {
         UpdatableRecord<?> instance;
         try {
             instance = (UpdatableRecord<?>) record.newInstance();
@@ -277,18 +297,18 @@ public class JooqSchema {
                                                           record.getCanonicalName()),
                                             e);
         }
-        Table<?> table = instance.getTable();
-        instance = (UpdatableRecord<?>) create.newRecord(table);
+        return instance;
+    }
+
+    private void initialize(UpdatableRecord<?> instance, UUID updatedBy) {
         try {
             PropertyUtils.setProperty(instance, "id",
                                       RecordsFactory.GENERATOR.generate());
+            PropertyUtils.setProperty(instance, "updatedBy", updatedBy);
         } catch (IllegalAccessException | InvocationTargetException
                 | NoSuchMethodException e) {
             throw new IllegalStateException();
         }
-        set(instance, types, env);
-        instance.insert();
-        return (T) instance;
     }
 
     @SuppressWarnings("unchecked")
@@ -407,28 +427,24 @@ public class JooqSchema {
         return builder.build();
     }
 
-    @SuppressWarnings("unchecked")
     private void set(UpdatableRecord<?> instance,
                      Map<String, GraphQLType> types,
-                     DataFetchingEnvironment env) {
-        ((Map<String, Object>) env.getArgument("state")).entrySet()
-                                                        .stream()
-                                                        .filter(entry -> !entry.getKey()
-                                                                               .equals("id"))
-                                                        .forEach(entry -> {
-                                                            try {
-                                                                PropertyUtils.setProperty(instance,
-                                                                                          entry.getKey(),
-                                                                                          decode(types.get(entry.getKey()),
-                                                                                                 entry.getValue()));
-                                                            } catch (
-                                                                    IllegalAccessException
-                                                                    | InvocationTargetException
-                                                                    | NoSuchMethodException e) {
-                                                                throw new IllegalArgumentException(String.format("Illegal property: %s",
-                                                                                                                 entry));
-                                                            }
-                                                        });
+                     Map<String, Object> state) {
+        state.entrySet()
+             .stream()
+             .filter(entry -> !entry.getKey()
+                                    .equals("id"))
+             .forEach(entry -> {
+                 try {
+                     PropertyUtils.setProperty(instance, entry.getKey(),
+                                               decode(types.get(entry.getKey()),
+                                                      entry.getValue()));
+                 } catch (IllegalAccessException | InvocationTargetException
+                         | NoSuchMethodException e) {
+                     throw new IllegalArgumentException(String.format("Illegal property: %s",
+                                                                      entry));
+                 }
+             });
     }
 
     private GraphQLType type(PropertyDescriptor field) {
@@ -437,13 +453,13 @@ public class JooqSchema {
                                   readMethod.getAnnotatedReturnType());
     }
 
+    @SuppressWarnings("unchecked")
     private Object update(Class<?> record, Map<String, GraphQLType> types,
                           DataFetchingEnvironment env) {
-        @SuppressWarnings("unchecked")
         UUID id = decode(GraphQLID,
                          ((Map<String, Object>) env.getArgument("state")).get("id"));
         UpdatableRecord<?> instance = fetch(id, record, env);
-        set(instance, types, env);
+        set(instance, types, (Map<String, Object>) env.getArgument("state"));
         instance.update();
         return instance;
     }

@@ -4,7 +4,11 @@ import static graphql.schema.GraphQLObjectType.newObject;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
@@ -90,7 +96,8 @@ public class JooqSchemaTest extends AbstractModelTest {
                                     .getId()
                                     .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $facet: ID) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr binaryValue: \"ab\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    "mutation m($auth: ID $attr: ID $facet: ID) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr }) {id} }",
+
                                     variables);
         variables.put("id", result.get("createAttributeAuthorization")
                                   .get("id")
@@ -128,8 +135,8 @@ public class JooqSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testAttributeValueMutations() throws IllegalArgumentException,
-                                              Exception {
+    public void testAttributeMutations() throws IllegalArgumentException,
+                                         Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("auth", k.getCore()
                                .getId()
@@ -142,26 +149,69 @@ public class JooqSchemaTest extends AbstractModelTest {
                                           .getId()
                                           .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $existential: ID) { createAttributeValue(state: {existential: $existential authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    "mutation m($auth: ID $attr: ID $existential: ID) { createAttribute(state: {existential: $existential authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
                                     variables);
-        variables.put("id", result.get("createAttributeValue")
+        variables.put("id", result.get("createAttribute")
                                   .get("id")
                                   .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID!) { updateAttributeValue(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateAttribute(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
-        execute(schema,
-                "mutation m($id: ID!) { removeAttributeValue(id: $id) }",
+        execute(schema, "mutation m($id: ID!) { deleteAttribute(id: $id) }",
                 variables);
     }
 
     @Test
-    public void testNetworkAttributeValueMutations() throws IllegalArgumentException,
-                                                     Exception {
+    public void testIntrospection() throws Exception {
+        ObjectNode result = execute(schema, getIntrospectionQuery(),
+                                    Collections.emptyMap());
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testNetworkAttributeAuthorizationMutations() throws IllegalArgumentException,
+                                                             Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("attr", k.getIRI()
+                               .getId()
+                               .toString());
+        FacetRecord isCoreUser = model.getPhantasmModel()
+                                      .getFacetDeclaration(k.getIsA(),
+                                                           k.getCoreUser());
+        ExistentialNetworkAuthorizationRecord netAuth = model.getPhantasmModel()
+                                                             .getNetworkAuthorizations(isCoreUser,
+                                                                                       false)
+                                                             .get(0);
+        variables.put("netAuth", netAuth.getId()
+                                        .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: ID $attr: ID $netAuth: ID) { createNetworkAttributeAuthorization(state: {networkAuthorization: $netAuth authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1  }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createNetworkAttributeAuthorization")
+                                  .get("id")
+                                  .asText());
+        variables.put("auth", model.getKernel()
+                                   .getCore()
+                                   .getId());
+        execute(schema,
+                "mutation m($id: ID! $auth: ID) { updateNetworkAttributeAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema,
+                "mutation m($id: ID!) { deleteNetworkAttributeAuthorization(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testNetworkAttributeMutations() throws IllegalArgumentException,
+                                                Exception {
         Map<String, Object> variables = new HashMap<>();
         variables.put("auth", k.getCore()
                                .getId()
@@ -176,20 +226,20 @@ public class JooqSchemaTest extends AbstractModelTest {
                                    .getId()
                                    .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: String $attr: String $edge: String) { createNetworkAttributeValue(state: {edge: $edge authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    "mutation m($auth: ID $attr: ID $edge: ID) { createNetworkAttribute(state: {edge: $edge authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
                                     variables);
-        variables.put("id", result.get("createNetworkAttributeValue")
+        variables.put("id", result.get("createNetworkAttribute")
                                   .get("id")
                                   .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: String! $auth: String!) { updateNetworkAttributeValue(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateNetworkAttribute(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
-                "mutation m($id: String!) { removeNetworkAttributeValue(id: $id) }",
+                "mutation m($id: ID!) { deleteNetworkAttribute(id: $id) }",
                 variables);
     }
 
@@ -213,7 +263,7 @@ public class JooqSchemaTest extends AbstractModelTest {
                                 .getId()
                                 .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($parent: String $relationship: String $child: String $auth: String) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
+                                    "mutation m($parent: ID $relationship: ID $child: ID $auth: ID) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
                                     variables);
         variables.put("id", result.get("createNetwork")
                                   .get("id")
@@ -222,10 +272,10 @@ public class JooqSchemaTest extends AbstractModelTest {
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: String! $auth: String!) { updateNetwork(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateNetwork(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeNetwork(id: $id) }",
+        execute(schema, "mutation m($id: ID!) { deleteNetwork(id: $id) }",
                 variables);
     }
 
@@ -247,6 +297,17 @@ public class JooqSchemaTest extends AbstractModelTest {
         list.forEach(e -> builder.append(e)
                                  .append('\n'));
         return builder.toString();
+    }
+
+    private String getIntrospectionQuery() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[16 * 4096];
+        try (InputStream in = getClass().getResourceAsStream("/introspection-query")) {
+            for (int read = in.read(buf); read != -1; read = in.read(buf)) {
+                baos.write(buf, 0, read);
+            }
+        }
+        return baos.toString();
     }
 
     private List<String> ids(ArrayNode in) {

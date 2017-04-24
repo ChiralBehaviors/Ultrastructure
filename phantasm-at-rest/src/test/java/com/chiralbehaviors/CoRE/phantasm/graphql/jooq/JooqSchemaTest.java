@@ -158,7 +158,7 @@ public class JooqSchemaTest extends AbstractModelTest {
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateAttribute(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateAttribute(state: {id: $id notes:\"foo\" authority: $auth}) {id binaryValue timestampValue } }",
                 variables);
 
         execute(schema, "mutation m($id: ID!) { deleteAttribute(id: $id) }",

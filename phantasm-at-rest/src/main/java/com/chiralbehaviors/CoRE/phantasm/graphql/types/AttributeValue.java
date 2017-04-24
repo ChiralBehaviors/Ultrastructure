@@ -73,6 +73,7 @@ public class AttributeValue {
         @GraphQLField
         public Long    timestampValue;
 
+        //TODO HPARRY put this in ExisAttRec or something
         public void update(ExistentialAttributeRecord record) {
             if (authority != null) {
                 record.setAuthority(UUID.fromString(authority));

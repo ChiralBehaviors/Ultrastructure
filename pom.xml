@@ -37,7 +37,7 @@
 	<properties>
 		<db.context>local</db.context>
 
-        <antlr.version>4.7</antlr.version>
+		<antlr.version>4.7</antlr.version>
 		<dropwizard.version>1.0.5</dropwizard.version>
 		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
 		<jackson.version>2.7.8 </jackson.version>
@@ -86,6 +86,7 @@
 		<module>handi-navi</module>
 		<module>universal</module>
 		<module>postgresql-testing</module>
+		<module>mind-palace</module>
 	</modules>
 
 	<dependencyManagement>
@@ -479,6 +480,11 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+			<dependency>
+				<groupId>org.processing</groupId>
+				<artifactId>core</artifactId>
+				<version>3.2.3</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -571,11 +577,11 @@
 					<artifactId>jooq-codegen-maven</artifactId>
 					<version>${jooq.version}</version>
 				</plugin>
-                <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>workspace-plugin</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
+				<plugin>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>workspace-plugin</artifactId>
+					<version>${project.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>phantasm-plugin</artifactId>

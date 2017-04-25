@@ -133,6 +133,9 @@ public class JooqSchema {
                                   GraphQLObjectType type,
                                   List<PropertyDescriptor> fields,
                                   Map<String, GraphQLType> types) {
+        System.out.println(String.format("%s : create%s",
+                                         record.getSimpleName(),
+                                         translated(record)));
         GraphQLInputObjectType.Builder updateBuilder = GraphQLInputObjectType.newInputObject()
                                                                              .name(String.format("create%sState",
                                                                                                  translated(record)));
@@ -169,8 +172,8 @@ public class JooqSchema {
         if (!simpleName.startsWith("Existential")) {
             return simpleName;
         }
-        return simpleName != "Existential" ? simpleName.substring("Existential".length())
-                                           : simpleName;
+        return simpleName.equals("Existential") ? simpleName
+                                                : simpleName.substring("Existential".length());
     }
 
     private void contributeDelete(Builder mutation, Class<?> record,
@@ -275,12 +278,13 @@ public class JooqSchema {
     private <T> T create(Class<?> record, Map<String, GraphQLType> types,
                          DataFetchingEnvironment env) {
         Model ctx = WorkspaceSchema.ctx(env);
-        DSLContext create = ctx
-                                           .create();
+        DSLContext create = ctx.create();
         UpdatableRecord<?> instance = newInstance(record);
         Table<?> table = instance.getTable();
         instance = (UpdatableRecord<?>) create.newRecord(table);
-        initialize(instance, ctx.getCurrentPrincipal().getPrincipal().getId());
+        initialize(instance, ctx.getCurrentPrincipal()
+                                .getPrincipal()
+                                .getId());
         Map<String, Object> state = (Map<String, Object>) env.getArgument("state");
         state.remove("id");
         set(instance, types, state);
@@ -420,7 +424,7 @@ public class JooqSchema {
     private GraphQLObjectType objectType(Class<?> clazz,
                                          List<PropertyDescriptor> fields) {
         GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
-        builder.name(clazz.getSimpleName());
+        builder.name(translated(clazz));
         fields.forEach(field -> {
             builder.field(f -> build(f, field));
         });

@@ -66,12 +66,11 @@ public class JooqSchemaTest extends AbstractModelTest {
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
-                                            .build();
+                                            .build(constructor.getTypes());
         return schema;
     }
 
     private Product definingProduct;
-
     private Kernel  k;
 
     @Before
@@ -118,12 +117,12 @@ public class JooqSchemaTest extends AbstractModelTest {
     public void testAttributeAuthQueries() throws Exception {
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ AttributeAuthorizations { id authority updatedBy } }",
+                                  "{ AttributeAuthorizations { id authority {id} updatedBy {id} } }",
                                   variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("AttributeAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [ID]) { AttributeAuthorizations(ids:$ids) { id facet jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy } }",
+                       "query q($ids: [ID]) { AttributeAuthorizations(ids:$ids) { id facet {id} jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id",

@@ -26,6 +26,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.Gra
 import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLID;
 
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +34,7 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,8 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceTypeFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Converter;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
@@ -68,35 +72,53 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLType;
+import graphql.schema.GraphQLTypeReference;
 
 /**
  * @author halhildebrand
  *
  */
 public class JooqSchema {
-    private static final Logger                log          = LoggerFactory.getLogger(JooqSchema.class);
-    private static final Set<String>           IGNORE       = new HashSet<String>() {
-                                                                private static final long serialVersionUID = 1L;
+    private final static Converter<String, String> converter = CaseFormat.LOWER_UNDERSCORE.converterTo(CaseFormat.UPPER_CAMEL);
+    private static final Set<String>               IGNORE    = new HashSet<String>() {
+                                                                 private static final long serialVersionUID = 1L;
 
-                                                                {
-                                                                    add("key");
-                                                                    add("table");
-                                                                    add("class");
-                                                                    add("value");
-                                                                }
+                                                                 {
+                                                                     add("key");
+                                                                     add("table");
+                                                                     add("class");
+                                                                     add("value");
+                                                                 }
 
-                                                            };
+                                                             };
+    private static final Logger                    log       = LoggerFactory.getLogger(JooqSchema.class);
+    private static final ObjectMapper              MAPPER    = new ObjectMapper();
+    private static final Map<Class<?>, Table<?>>   TABLES    = new HashMap<>();
 
-    private static final WorkspaceTypeFunction typeFunction = new WorkspaceTypeFunction() {
-                                                                {
+    static {
+        Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .forEach(table -> TABLES.put(table.getRecordType(),
+                                                      table));
+    }
+    private final WorkspaceTypeFunction typeFunction;
+    private final Set<GraphQLType>      types = new HashSet<>();;
 
-                                                                    register(UUID.class,
-                                                                             (u,
-                                                                              t) -> GraphQLID);
-                                                                    ;
-                                                                }
-                                                            };
-    private static final ObjectMapper          MAPPER       = new ObjectMapper();
+    public JooqSchema() {
+        this(new WorkspaceTypeFunction());
+    }
+
+    public JooqSchema(WorkspaceTypeFunction typeFunction) {
+        this.typeFunction = typeFunction;
+        this.typeFunction.register(UUID.class, (u, t) -> GraphQLID);
+        Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .forEach(table -> {
+                             GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
+                             typeFunction.register(table.getRecordType(),
+                                                   (u, t) -> type);
+                         });
+    }
 
     public void contributeTo(GraphQLObjectType.Builder query,
                              GraphQLObjectType.Builder mutation) {
@@ -107,8 +129,12 @@ public class JooqSchema {
                                                          mutation));
     }
 
-    private GraphQLFieldDefinition.Builder build(GraphQLFieldDefinition.Builder builder,
-                                                 PropertyDescriptor field) {
+    public Set<GraphQLType> getTypes() {
+        return types;
+    }
+
+    private GraphQLFieldDefinition.Builder buildPrimitive(GraphQLFieldDefinition.Builder builder,
+                                                          PropertyDescriptor field) {
         builder.name(field.getName())
                .type((GraphQLOutputType) type(field))
                .dataFetcher(env -> {
@@ -129,13 +155,39 @@ public class JooqSchema {
         return builder;
     }
 
+    private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
+                                                          PropertyDescriptor field,
+                                                          Class<?> reference) {
+        GraphQLOutputType type = (GraphQLOutputType) typeFunction.apply(reference,
+                                                                        null);
+        builder.name(field.getName())
+               .type(type)
+               .dataFetcher(env -> {
+                   Object record = env.getSource();
+                   UUID fk;
+                   try {
+                       fk = (UUID) field.getReadMethod()
+                                        .invoke(record);
+                   } catch (IllegalAccessException | IllegalArgumentException
+                           | InvocationTargetException e) {
+                       throw new IllegalStateException(String.format("unable to invoke %s",
+                                                                     field.getReadMethod()
+                                                                          .toGenericString()),
+                                                       e);
+                   }
+                   return fetch(fk, reference, env);
+               });
+        return builder;
+    }
+
+    private static String camel(String snake) {
+        return Introspector.decapitalize(converter.convert(snake));
+    }
+
     private void contributeCreate(Builder mutation, Class<?> record,
                                   GraphQLObjectType type,
                                   List<PropertyDescriptor> fields,
                                   Map<String, GraphQLType> types) {
-        System.out.println(String.format("%s : create%s",
-                                         record.getSimpleName(),
-                                         translated(record)));
         GraphQLInputObjectType.Builder updateBuilder = GraphQLInputObjectType.newInputObject()
                                                                              .name(String.format("create%sState",
                                                                                                  translated(record)));
@@ -163,17 +215,6 @@ public class JooqSchema {
                         return create(record, types, env);
                     });
         });
-    }
-
-    private String translated(Class<?> record) {
-        String simpleName = record.getSimpleName()
-                                  .substring(0, record.getSimpleName()
-                                                      .lastIndexOf("Record"));
-        if (!simpleName.startsWith("Existential")) {
-            return simpleName;
-        }
-        return simpleName.equals("Existential") ? simpleName
-                                                : simpleName.substring("Existential".length());
     }
 
     private void contributeDelete(Builder mutation, Class<?> record,
@@ -243,6 +284,7 @@ public class JooqSchema {
                                                 .filter(field -> !IGNORE.contains(field.getName()))
                                                 .collect(Collectors.toList());
         GraphQLObjectType type = objectType(record, fields);
+        types.add(type);
         contributeQueries(query, record, type);
         contributeMutations(mutation, record, type, fields);
     }
@@ -279,9 +321,8 @@ public class JooqSchema {
                          DataFetchingEnvironment env) {
         Model ctx = WorkspaceSchema.ctx(env);
         DSLContext create = ctx.create();
-        UpdatableRecord<?> instance = newInstance(record);
-        Table<?> table = instance.getTable();
-        instance = (UpdatableRecord<?>) create.newRecord(table);
+        Table<?> table = TABLES.get(record);
+        UpdatableRecord<?> instance = (UpdatableRecord<?>) create.newRecord(table);
         initialize(instance, ctx.getCurrentPrincipal()
                                 .getPrincipal()
                                 .getId());
@@ -290,29 +331,6 @@ public class JooqSchema {
         set(instance, types, state);
         instance.insert();
         return (T) instance;
-    }
-
-    private UpdatableRecord<?> newInstance(Class<?> record) {
-        UpdatableRecord<?> instance;
-        try {
-            instance = (UpdatableRecord<?>) record.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(String.format("Cannot create test instance on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
-        return instance;
-    }
-
-    private void initialize(UpdatableRecord<?> instance, UUID updatedBy) {
-        try {
-            PropertyUtils.setProperty(instance, "id",
-                                      RecordsFactory.GENERATOR.generate());
-            PropertyUtils.setProperty(instance, "updatedBy", updatedBy);
-        } catch (IllegalAccessException | InvocationTargetException
-                | NoSuchMethodException e) {
-            throw new IllegalStateException();
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -360,15 +378,7 @@ public class JooqSchema {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private <T> T fetch(UUID id, Class<?> record, DataFetchingEnvironment env) {
-        UpdatableRecord<?> instance;
-        try {
-            instance = (UpdatableRecord<?>) record.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(String.format("Cannot create test instance on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
-        Table<?> table = instance.getTable();
+        Table<?> table = TABLES.get(record);
         Field field;
         try {
             field = (Field) table.getClass()
@@ -390,15 +400,7 @@ public class JooqSchema {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private <T> T fetchAll(Class<?> record, DataFetchingEnvironment env) {
-        UpdatableRecord<?> instance;
-        try {
-            instance = (UpdatableRecord<?>) record.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(String.format("Cannot create test instance on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
-        Table<?> table = instance.getTable();
+        Table<?> table = TABLES.get(record);
         Field field;
         try {
             field = (Field) table.getClass()
@@ -421,12 +423,35 @@ public class JooqSchema {
                                   .collect(Collectors.toList());
     }
 
-    private GraphQLObjectType objectType(Class<?> clazz,
+    private void initialize(UpdatableRecord<?> instance, UUID updatedBy) {
+        try {
+            PropertyUtils.setProperty(instance, "id",
+                                      RecordsFactory.GENERATOR.generate());
+            PropertyUtils.setProperty(instance, "updatedBy", updatedBy);
+        } catch (IllegalAccessException | InvocationTargetException
+                | NoSuchMethodException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    private GraphQLObjectType objectType(Class<?> record,
                                          List<PropertyDescriptor> fields) {
+        Map<String, Class<?>> references = TABLES.get(record)
+                                                 .getReferences()
+                                                 .stream()
+                                                 .collect(Collectors.toMap(fk -> camel(fk.getFields()
+                                                                                         .get(0)
+                                                                                         .getName()),
+                                                                           fk -> fk.getKey()
+                                                                                   .getTable()
+                                                                                   .getRecordType()));
         GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
-        builder.name(translated(clazz));
+        builder.name(translated(record));
         fields.forEach(field -> {
-            builder.field(f -> build(f, field));
+            Class<?> reference = references.get(field.getName());
+            builder.field(f -> reference == null ? buildPrimitive(f, field)
+                                                 : buildReference(f, field,
+                                                                  reference));
         });
         return builder.build();
     }
@@ -449,6 +474,17 @@ public class JooqSchema {
                                                                       entry));
                  }
              });
+    }
+
+    private String translated(Class<?> record) {
+        String simpleName = record.getSimpleName()
+                                  .substring(0, record.getSimpleName()
+                                                      .lastIndexOf("Record"));
+        if (!simpleName.startsWith("Existential")) {
+            return simpleName;
+        }
+        return simpleName.equals("Existential") ? simpleName
+                                                : simpleName.substring("Existential".length());
     }
 
     private GraphQLType type(PropertyDescriptor field) {

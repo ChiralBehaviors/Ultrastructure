@@ -80,6 +80,9 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="job_chronology" constraintName="job_chronology_quantity_unit_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="job_chronology" constraintName="job_chronology_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addUniqueConstraint schemaName="ruleform" columnNames="job, sequence_number" constraintName="job_chronology_job_unique_constraint"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="job_chronology" />
         <createIndex schemaName="ruleform" indexName="job_chronology_updated_by_fkey_idx" tableName="job_chronology" unique="false">

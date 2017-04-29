@@ -17,10 +17,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetTypeTest;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -80,87 +81,39 @@ public class JooqSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testAttributeAuthorizationMutations() throws IllegalArgumentException,
-                                                      Exception {
+    public void testChildSequencingMutations() throws IllegalArgumentException,
+                                               Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("attr", k.getIRI()
-                               .getId()
-                               .toString());
-        variables.put("facet", model.getPhantasmModel()
-                                    .getFacetDeclaration(k.getIsA(),
-                                                         k.getCoreUser())
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("nextChild", k.getAnyProduct()
                                     .getId()
                                     .toString());
-        ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $facet: ID) { createAttributeAuthorization(state: {facet: $facet authority: $auth authorizedAttribute:$attr }) {id} }",
-
-                                    variables);
-        variables.put("id", result.get("createAttributeAuthorization")
-                                  .get("id")
-                                  .asText());
-        variables.put("auth", model.getKernel()
-                                   .getCore()
-                                   .getId());
-        execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateAttributeAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
-                variables);
-
-        execute(schema,
-                "mutation m($id: ID!) { deleteAttributeAuthorization(id: $id) }",
-                variables);
-    }
-
-    @Test
-    public void testAttributeAuthQueries() throws Exception {
-        Map<String, Object> variables = new HashMap<>();
-        ObjectNode data = execute(schema,
-                                  "{ AttributeAuthorizations { id authority {id} updatedBy {id} } }",
-                                  variables);
-        assertNotNull(data);
-        variables.put("ids", ids(data.withArray("AttributeAuthorizations")));
-        data = execute(schema,
-                       "query q($ids: [ID]) { AttributeAuthorizations(ids:$ids) { id facet {id} jsonValue binaryValue booleanValue integerValue notes numericValue textValue timestampValue updatedBy {id} } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("id",
-                      ids(data.withArray("AttributeAuthorizations")).get(0));
-        data = execute(schema,
-                       "query q($id: ID!) { AttributeAuthorization(id: $id) { id  } }",
-                       variables);
-        assertNotNull(data);
-    }
-
-    @Test
-    public void testAttributeMutations() throws IllegalArgumentException,
-                                         Exception {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("attr", k.getIRI()
-                               .getId()
-                               .toString());
-        variables.put("existential", model.records()
-                                          .resolve(k.getCoreUser())
+        variables.put("nextChildStatus", k.getAnyStatusCode()
                                           .getId()
                                           .toString());
+
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $existential: ID) { createAttribute(state: {existential: $existential authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    "mutation m($service: ID $statusCode: ID $nextChild: ID $nextChildStatus: ID) "
+                                            + "{ createChildSequencingAuthorization(state: {service: $service statusCode: $statusCode "
+                                            + "nextChild: $nextChild nextChildStatus: $nextChildStatus }) {id} }",
                                     variables);
-        variables.put("id", result.get("createAttribute")
+        variables.put("id", result.get("createChildSequencingAuthorization")
                                   .get("id")
                                   .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateAttribute(state: {id: $id notes:\"foo\" authority: $auth}) {id binaryValue timestampValue } }",
+                "mutation m($id: ID! $auth: ID) { updateChildSequencingAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: ID!) { deleteAttribute(id: $id) }",
+        execute(schema,
+                "mutation m($id: ID!) { deleteChildSequencingAuthorization(id: $id) }",
                 variables);
     }
 
@@ -172,109 +125,117 @@ public class JooqSchemaTest extends AbstractModelTest {
     }
 
     @Test
-    public void testNetworkAttributeAuthorizationMutations() throws IllegalArgumentException,
-                                                             Exception {
+    public void testMetaProtocolMutations() throws IllegalArgumentException,
+                                            Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("attr", k.getIRI()
-                               .getId()
-                               .toString());
-        FacetRecord isCoreUser = model.getPhantasmModel()
-                                      .getFacetDeclaration(k.getIsA(),
-                                                           k.getCoreUser());
-        ExistentialNetworkAuthorizationRecord netAuth = model.getPhantasmModel()
-                                                             .getNetworkAuthorizations(isCoreUser,
-                                                                                       false)
-                                                             .get(0);
-        variables.put("netAuth", netAuth.getId()
-                                        .toString());
+        variables.put("r", UuidUtil.encode(k.getAnyRelationship()
+                                            .getId()));
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $netAuth: ID) { createNetworkAttributeAuthorization(state: {networkAuthorization: $netAuth authority: $auth authorizedAttribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1  }) {id} }",
+                                    "mutation m($r: ID) { createMetaProtocol(state: {assignTo: $r deliverFrom: $r "
+                                            + "requester: $r service: $r serviceType: $r  status: $r "
+                                            + "product: $r deliverTo: $r  quantityUnit: $r "
+                                            + "}) {id} }",
                                     variables);
-        variables.put("id", result.get("createNetworkAttributeAuthorization")
+        variables.put("id", result.get("createMetaProtocol")
                                   .get("id")
                                   .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateNetworkAttributeAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateMetaProtocol(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
-        execute(schema,
-                "mutation m($id: ID!) { deleteNetworkAttributeAuthorization(id: $id) }",
+        execute(schema, "mutation m($id: ID!) { deleteMetaProtocol(id: $id) }",
                 variables);
     }
 
     @Test
-    public void testNetworkAttributeMutations() throws IllegalArgumentException,
+    public void testParentSequencingMutations() throws IllegalArgumentException,
                                                 Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("attr", k.getIRI()
-                               .getId()
-                               .toString());
-        variables.put("edge", model.getPhantasmModel()
-                                   .getImmediateChildLink(k.getSuperUser(),
-                                                          k.getIsA(),
-                                                          k.getCoreUser())
-                                   .getId()
-                                   .toString());
+        variables.put("service", k.getAnyProduct()
+                                  .getId()
+                                  .toString());
+        variables.put("statusCode", k.getAnyStatusCode()
+                                     .getId()
+                                     .toString());
+        variables.put("parent", k.getAnyProduct()
+                                 .getId()
+                                 .toString());
+        variables.put("parentStatus", k.getAnyStatusCode()
+                                       .getId()
+                                       .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($auth: ID $attr: ID $edge: ID) { createNetworkAttribute(state: {edge: $edge authority: $auth attribute:$attr binaryValue: \"\" booleanValue: true integerValue: 1 jsonValue:\"null\" numericValue: 1.0 textValue: \"foo\" timestampValue: 1 }) {id} }",
+                                    "mutation m($service: ID $statusCode: ID $parent: ID $parentStatus: ID) { "
+                                            + "createParentSequencingAuthorization(state: {service: $service "
+                                            + "statusCode: $statusCode parent: $parent parentStatusToSet: $parentStatus "
+                                            + "}) {id} }",
                                     variables);
-        variables.put("id", result.get("createNetworkAttribute")
+        variables.put("id", result.get("createParentSequencingAuthorization")
                                   .get("id")
                                   .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateNetworkAttribute(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateParentSequencingAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
         execute(schema,
-                "mutation m($id: ID!) { deleteNetworkAttribute(id: $id) }",
+                "mutation m($id: ID!) { deleteParentSequencingAuthorization(id: $id) }",
                 variables);
     }
 
     @Test
-    public void testNetworkMutations() throws IllegalArgumentException,
-                                       Exception {
+    public void testProtocolMutations() throws IllegalArgumentException,
+                                        Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("attr", k.getIRI()
-                               .getId()
-                               .toString());
-        variables.put("parent", k.getSuperUser()
-                                 .getId()
-                                 .toString());
-        variables.put("relationship", k.getIsA()
-                                       .getId()
-                                       .toString());
-        variables.put("child", k.getUnauthenticatedAgency()
-                                .getId()
-                                .toString());
+        variables.put("r", k.getAnyRelationship()
+                            .getId()
+                            .toString());
+        variables.put("a", k.getAnyAgency()
+                            .getId()
+                            .toString());
+        variables.put("l", k.getAnyLocation()
+                            .getId()
+                            .toString());
+        variables.put("p", k.getAnyProduct()
+                            .getId()
+                            .toString());
+        variables.put("s", k.getAnyStatusCode()
+                            .getId()
+                            .toString());
+        variables.put("u", k.getAnyUnit()
+                            .getId()
+                            .toString());
         ObjectNode result = execute(schema,
-                                    "mutation m($parent: ID $relationship: ID $child: ID $auth: ID) { createNetwork(state: {parent: $parent authority: $auth relationship: $relationship child: $child }) {id} }",
+                                    "mutation m($r: ID) "
+                                            + "{ createProtocol(state: {assignTo: $r deliverFrom: $r "
+                                            + "deliverTo: $r " + "product: $r "
+                                            + "requester: $r " + "service: $r "
+                                            + "status: $r "
+                                            + "quantityUnit: $r "
+                                            + "childAssignTo: $r "
+                                            + "childDeliverFrom: $r "
+                                            + "childDeliverTo: $r "
+                                            + "childProduct: $r "
+                                            + "childService: $r "
+                                            + "childStatus: $r "
+                                            + "childQuantityUnit: $r "
+                                            + "childrenRelationship: $r}) {id} }",
                                     variables);
-        variables.put("id", result.get("createNetwork")
+        variables.put("id", result.get("createProtocol")
                                   .get("id")
                                   .asText());
         variables.put("auth", model.getKernel()
                                    .getCore()
                                    .getId());
         execute(schema,
-                "mutation m($id: ID! $auth: ID) { updateNetwork(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                "mutation m($id: ID! $auth: ID) { updateProtocol(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: ID!) { deleteNetwork(id: $id) }",
+        execute(schema, "mutation m($id: ID!) { deleteProtocol(id: $id) }",
                 variables);
     }
 
@@ -314,5 +275,150 @@ public class JooqSchemaTest extends AbstractModelTest {
         in.forEach(o -> ids.add(o.get("id")
                                  .asText()));
         return ids;
+    }
+
+    @Test
+    public void testFacetMutations() throws IllegalArgumentException,
+                                     Exception {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("auth", k.getCore()
+                               .getId()
+                               .toString());
+        variables.put("classifier", k.getIsA()
+                                     .getId()
+                                     .toString());
+        variables.put("classification", k.getCore()
+                                         .getId()
+                                         .toString());
+        ObjectNode result = execute(schema,
+                                    "mutation m($auth: ID $classifier: ID $classification: ID) { "
+                                            + "createFacet(state: {authority: $auth classifier: $classifier name: \"foo\" "
+                                            + "classification: $classification }) {id} }",
+                                    variables);
+        variables.put("id", result.get("createFacet")
+                                  .get("id")
+                                  .asText());
+        execute(schema,
+                "mutation m($id: ID! $auth: ID) { updateFacet(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+                variables);
+
+        execute(schema, "mutation m($id: ID!) { deleteFacet(id: $id) }",
+                variables);
+    }
+
+    @Test
+    public void testQueries() throws Exception {
+        WorkspaceImporter importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                                                model);
+        definingProduct = importer.getWorkspace()
+                                  .getDefiningProduct();
+        Map<String, Object> variables = new HashMap<>();
+        ObjectNode data = execute(schema,
+                                  "{ Facets { id name  classifier {id} classification {id} authority { id } }}",
+                                  variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ ChildSequencingAuthorizations { id service {id} nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("ChildSequencingAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { ChildSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("ChildSequencingAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { ChildSequencingAuthorization(id: $id) { id } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ MetaProtocols { id  product {id} assignTo {id} deliverFrom{id} deliverTo{id} quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("MetaProtocols")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { MetaProtocols(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("MetaProtocols")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { MetaProtocol(id: $id) { id } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ ParentSequencingAuthorizations { id notes parent{id} parentStatusToSet{id} sequenceNumber statusCode{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("ParentSequencingAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { ParentSequencingAuthorizations(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("ParentSequencingAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { ParentSequencingAuthorization(id: $id) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ Protocols { id name notes assignTo {id} deliverFrom{id} deliverTo{id} "
+                               + "product {id} quantity quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version "
+                               + "childAssignTo {id} childDeliverFrom{id} childDeliverTo{id} childProduct {id} "
+                               + "childQuantity childQuantityUnit {id} childrenRelationship{id} childService{id} childStatus{id}  } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("Protocols")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { Protocols(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("Protocols")).get(0));
+        data = execute(schema, "query q($id: ID!) { Protocol(id: $id) { id } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ SelfSequencingAuthorizations { id notes sequenceNumber service{id} setIfActiveSiblings statusCode{id} statusToSet{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("SelfSequencingAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { SelfSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ SiblingSequencingAuthorizations { id nextSibling{id} nextSiblingStatus{id} notes sequenceNumber service{id} statusCode{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("SiblingSequencingAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { SiblingSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("SiblingSequencingAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { SiblingSequencingAuthorization(id: $id) { id } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ StatusCodeSequencings { id child{id} notes parent{id} service{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("StatusCodeSequencings")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { StatusCodeSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id",
+                      ids(data.withArray("StatusCodeSequencings")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { StatusCodeSequencing(id: $id) { id } }",
+                       variables);
+        assertNotNull(data);
     }
 }

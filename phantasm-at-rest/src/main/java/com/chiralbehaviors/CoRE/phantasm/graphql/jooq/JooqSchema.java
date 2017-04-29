@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.jooq;
 
+import static com.chiralbehaviors.CoRE.jooq.Ruleform.RULEFORM;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLBinary;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLJson;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLTimestamp;
@@ -92,17 +93,28 @@ public class JooqSchema {
 
                                                              };
     private static final Logger                    log       = LoggerFactory.getLogger(JooqSchema.class);
+    private static final List<Table<?>>            MANIFESTED;
     private static final ObjectMapper              MAPPER    = new ObjectMapper();
     private static final Map<Class<?>, Table<?>>   TABLES    = new HashMap<>();
-
     static {
-        Ruleform.RULEFORM.getTables()
-                         .stream()
-                         .forEach(table -> TABLES.put(table.getRecordType(),
-                                                      table));
+        MANIFESTED = Ruleform.RULEFORM.getTables();
+        MANIFESTED.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL_ATTRIBUTE,
+                                                         RULEFORM.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
+                                                         RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE,
+                                                         RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
+                                                         RULEFORM.EXISTENTIAL_NETWORK_AUTHORIZATION,
+                                                         RULEFORM.EXISTENTIAL_NETWORK,
+                                                         RULEFORM.WORKSPACE_LABEL }));
+        MANIFESTED.forEach(table -> TABLES.put(table.getRecordType(), table));
     }
-    private final WorkspaceTypeFunction typeFunction;
-    private final Set<GraphQLType>      types = new HashSet<>();;
+
+    private static String camel(String snake) {
+        return Introspector.decapitalize(converter.convert(snake));
+    }
+
+    private final WorkspaceTypeFunction typeFunction;;
+
+    private final Set<GraphQLType>      types = new HashSet<>();
 
     public JooqSchema() {
         this(new WorkspaceTypeFunction());
@@ -111,22 +123,19 @@ public class JooqSchema {
     public JooqSchema(WorkspaceTypeFunction typeFunction) {
         this.typeFunction = typeFunction;
         this.typeFunction.register(UUID.class, (u, t) -> GraphQLID);
-        Ruleform.RULEFORM.getTables()
-                         .stream()
-                         .forEach(table -> {
-                             GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
-                             typeFunction.register(table.getRecordType(),
-                                                   (u, t) -> type);
-                         });
+        MANIFESTED.stream()
+                  .forEach(table -> {
+                      GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
+                      typeFunction.register(table.getRecordType(),
+                                            (u, t) -> type);
+                  });
     }
 
     public void contributeTo(GraphQLObjectType.Builder query,
                              GraphQLObjectType.Builder mutation) {
-        Ruleform.RULEFORM.getTables()
-                         .stream()
-                         .map(table -> table.getRecordType())
-                         .forEach(record -> contributeTo(query, record,
-                                                         mutation));
+        MANIFESTED.stream()
+                  .map(table -> table.getRecordType())
+                  .forEach(record -> contributeTo(query, record, mutation));
     }
 
     public Set<GraphQLType> getTypes() {
@@ -178,10 +187,6 @@ public class JooqSchema {
                    return fetch(fk, reference, env);
                });
         return builder;
-    }
-
-    private static String camel(String snake) {
-        return Introspector.decapitalize(converter.convert(snake));
     }
 
     private void contributeCreate(Builder mutation, Class<?> record,

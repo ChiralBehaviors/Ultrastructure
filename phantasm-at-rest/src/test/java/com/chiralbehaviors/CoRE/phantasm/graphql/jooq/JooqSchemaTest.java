@@ -314,110 +314,110 @@ public class JooqSchemaTest extends AbstractModelTest {
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data = execute(schema,
-                                  "{ Facets { id name  classifier {id} classification {id} authority { id } }}",
+                                  "{ facets { id name  classifier {id} classification {id} authority { id } }}",
                                   variables);
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ ChildSequencingAuthorizations { id service {id} nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",
+                       "{ childSequencingAuthorizations { id service {id} nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
-        variables.put("ids", ids(data.withArray("ChildSequencingAuthorizations")));
+        variables.put("ids", ids(data.withArray("childSequencingAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [ID]!) { ChildSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       "query q($ids: [ID]!) { childSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
-        variables.put("id", ids(data.withArray("ChildSequencingAuthorizations")).get(0));
+        variables.put("id", ids(data.withArray("childSequencingAuthorizations")).get(0));
         data = execute(schema,
-                       "query q($id: ID!) { ChildSequencingAuthorization(id: $id) { id } }",
-                       variables);
-        assertNotNull(data);
-
-        data = execute(schema,
-                       "{ MetaProtocols { id  product {id} assignTo {id} deliverFrom{id} deliverTo{id} quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("ids", ids(data.withArray("MetaProtocols")));
-        data = execute(schema,
-                       "query q($ids: [ID]!) { MetaProtocols(ids:$ids) { id authority {id} updatedBy {id} } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("id", ids(data.withArray("MetaProtocols")).get(0));
-        data = execute(schema,
-                       "query q($id: ID!) { MetaProtocol(id: $id) { id } }",
+                       "query q($id: ID!) { childSequencingAuthorization(id: $id) { id } }",
                        variables);
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ ParentSequencingAuthorizations { id notes parent{id} parentStatusToSet{id} sequenceNumber statusCode{id} updatedBy{id} version } }",
+                       "{ metaProtocols { id  product {id} assignTo {id} deliverFrom{id} deliverTo{id} quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version } }",
                        variables);
         assertNotNull(data);
-        variables.put("ids", ids(data.withArray("ParentSequencingAuthorizations")));
+        variables.put("ids", ids(data.withArray("metaProtocols")));
         data = execute(schema,
-                       "query q($ids: [ID]!) { ParentSequencingAuthorizations(ids:$ids) { id } }",
+                       "query q($ids: [ID]!) { metaProtocols(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
-        variables.put("id", ids(data.withArray("ParentSequencingAuthorizations")).get(0));
+        variables.put("id", ids(data.withArray("metaProtocols")).get(0));
         data = execute(schema,
-                       "query q($id: ID!) { ParentSequencingAuthorization(id: $id) { id authority {id} updatedBy {id} } }",
+                       "query q($id: ID!) { metaProtocol(id: $id) { id } }",
                        variables);
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ Protocols { id name notes assignTo {id} deliverFrom{id} deliverTo{id} "
+                       "{ parentSequencingAuthorizations { id notes parent{id} parentStatusToSet{id} sequenceNumber statusCode{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("parentSequencingAuthorizations")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { parentSequencingAuthorizations(ids:$ids) { id } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("parentSequencingAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { parentSequencingAuthorization(id: $id) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ protocols { id name notes assignTo {id} deliverFrom{id} deliverTo{id} "
                                + "product {id} quantity quantityUnit {id} requester{id} service{id} status{id} updatedBy{id} version "
                                + "childAssignTo {id} childDeliverFrom{id} childDeliverTo{id} childProduct {id} "
                                + "childQuantity childQuantityUnit {id} childrenRelationship{id} childService{id} childStatus{id}  } }",
                        variables);
         assertNotNull(data);
-        variables.put("ids", ids(data.withArray("Protocols")));
+        variables.put("ids", ids(data.withArray("protocols")));
         data = execute(schema,
-                       "query q($ids: [ID]!) { Protocols(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       "query q($ids: [ID]!) { protocols(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
-        variables.put("id", ids(data.withArray("Protocols")).get(0));
-        data = execute(schema, "query q($id: ID!) { Protocol(id: $id) { id } }",
-                       variables);
-        assertNotNull(data);
-
-        data = execute(schema,
-                       "{ SelfSequencingAuthorizations { id notes sequenceNumber service{id} setIfActiveSiblings statusCode{id} statusToSet{id} updatedBy{id} version } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("ids", ids(data.withArray("SelfSequencingAuthorizations")));
-        data = execute(schema,
-                       "query q($ids: [ID]!) { SelfSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
+        variables.put("id", ids(data.withArray("protocols")).get(0));
+        data = execute(schema, "query q($id: ID!) { protocol(id: $id) { id } }",
                        variables);
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ SiblingSequencingAuthorizations { id nextSibling{id} nextSiblingStatus{id} notes sequenceNumber service{id} statusCode{id} updatedBy{id} version } }",
+                       "{ selfSequencingAuthorizations { id notes sequenceNumber service{id} setIfActiveSiblings statusCode{id} statusToSet{id} updatedBy{id} version } }",
                        variables);
         assertNotNull(data);
-        variables.put("ids", ids(data.withArray("SiblingSequencingAuthorizations")));
+        variables.put("ids", ids(data.withArray("selfSequencingAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [ID]!) { SiblingSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("id", ids(data.withArray("SiblingSequencingAuthorizations")).get(0));
-        data = execute(schema,
-                       "query q($id: ID!) { SiblingSequencingAuthorization(id: $id) { id } }",
+                       "query q($ids: [ID]!) { selfSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
 
         data = execute(schema,
-                       "{ StatusCodeSequencings { id child{id} notes parent{id} service{id} updatedBy{id} version } }",
+                       "{ siblingSequencingAuthorizations { id nextSibling{id} nextSiblingStatus{id} notes sequenceNumber service{id} statusCode{id} updatedBy{id} version } }",
                        variables);
         assertNotNull(data);
-        variables.put("ids", ids(data.withArray("StatusCodeSequencings")));
+        variables.put("ids", ids(data.withArray("siblingSequencingAuthorizations")));
         data = execute(schema,
-                       "query q($ids: [ID]!) { StatusCodeSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       "query q($ids: [ID]!) { siblingSequencingAuthorizations(ids:$ids) { id authority {id} updatedBy {id} } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("id", ids(data.withArray("siblingSequencingAuthorizations")).get(0));
+        data = execute(schema,
+                       "query q($id: ID!) { siblingSequencingAuthorization(id: $id) { id } }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute(schema,
+                       "{ statusCodeSequencings { id child{id} notes parent{id} service{id} updatedBy{id} version } }",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids", ids(data.withArray("statusCodeSequencings")));
+        data = execute(schema,
+                       "query q($ids: [ID]!) { statusCodeSequencings(ids:$ids) { id authority {id} updatedBy {id} } }",
                        variables);
         assertNotNull(data);
         variables.put("id",
-                      ids(data.withArray("StatusCodeSequencings")).get(0));
+                      ids(data.withArray("statusCodeSequencings")).get(0));
         data = execute(schema,
-                       "query q($id: ID!) { StatusCodeSequencing(id: $id) { id } }",
+                       "query q($id: ID!) { statusCodeSequencing(id: $id) { id } }",
                        variables);
         assertNotNull(data);
     }

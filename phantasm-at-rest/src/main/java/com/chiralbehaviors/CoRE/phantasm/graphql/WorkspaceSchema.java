@@ -48,41 +48,14 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeAuthorizationMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.AttributeValueMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ChildSequencingMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.jooq.JooqSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.MetaProtocolMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAttributeAuthorizationMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAttributeValueMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkAuthorizationMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.NetworkMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ParentSequencingMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ProtocolMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SelfSequencingMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.SiblingSequencingMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.StatusCodeSequencingMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeAuthorizationQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.AttributeValueQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ChildSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.MetaProtocolQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAttributeAuthorizationQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAttributeValueQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkAuthorizationQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.NetworkQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ParentSequencingQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ProtocolQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SelfSequencingQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.SiblingSequencingQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.StatusCodeSequencingQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
@@ -124,25 +97,10 @@ import graphql.schema.GraphQLUnionType;
  *
  */
 public class WorkspaceSchema {
-    public interface MetaMutations extends ExistentialMutations, FacetMutations,
-            AttributeAuthorizationMutations, NetworkAuthorizationMutations,
-            ChildSequencingMutations, ParentSequencingMutations,
-            SelfSequencingMutations, SiblingSequencingMutations,
-            ProtocolMutations, MetaProtocolMutations,
-            StatusCodeSequencingMutations,
-            NetworkAttributeAuthorizationMutations, JobMutations,
-            AttributeValueMutations, NetworkAttributeValueMutations,
-            NetworkMutations {
+    public interface MetaMutations extends ExistentialMutations {
     }
 
-    public interface MetaQueries extends WorkspaceQueries, ExistentialQueries,
-            FacetQueries, AttributeAuthorizationQueries,
-            NetworkAuthorizationQueries, ChildSequencingQueries,
-            ParentSequencingQueries, SelfSequencingQueries,
-            SiblingSequencingQueries, ProtocolQueries, MetaProtocolQueries,
-            StatusCodeSequencingQueries, NetworkAttributeAuthorizationQueries,
-            JobQueries, JobChronologyQueries, AttributeValueQueries,
-            NetworkAttributeValueQueries, NetworkQueries {
+    public interface MetaQueries extends WorkspaceQueries, ExistentialQueries {
     }
 
     public interface Mutations
@@ -241,11 +199,18 @@ public class WorkspaceSchema {
 
     public GraphQLSchema buildMeta() throws Exception {
         registerTypes(Collections.emptyMap());
+
+        GraphQLObjectType.Builder query = objectBuilder(MetaQueries.class,
+                                                        typeFunction,
+                                                        typeFunction);
+        GraphQLObjectType.Builder mutation = objectBuilder(MetaMutations.class,
+                                                           typeFunction,
+                                                           typeFunction);
+        JooqSchema jooqSchema = new JooqSchema();
+        jooqSchema.contributeTo(query, mutation);
         return GraphQLSchema.newSchema()
-                            .query(object(MetaQueries.class, typeFunction,
-                                          typeFunction))
-                            .mutation(object(MetaMutations.class, typeFunction,
-                                             typeFunction))
+                            .query(query.build())
+                            .mutation(mutation.build())
                             .build();
     }
 

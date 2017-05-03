@@ -252,7 +252,7 @@ public class JooqSchema {
     @SuppressWarnings("unchecked")
     private void contributeQueries(Builder query, Class<?> record,
                                    GraphQLObjectType type) {
-        query.field(b -> b.name(translated(record))
+        query.field(b -> b.name(Introspector.decapitalize(translated(record)))
                           .type(type)
                           .argument(a -> a.name("id")
                                           .type(new GraphQLNonNull(GraphQLID))
@@ -263,7 +263,8 @@ public class JooqSchema {
                                                env.getArgument("id"));
                               return fetch(id, record, env);
                           }));
-        query.field(b -> b.name(String.format("%ss", translated(record)))
+        query.field(b -> b.name(Introspector.decapitalize(String.format("%ss",
+                                                                        translated(record))))
                           .type(new GraphQLList(type))
                           .argument(a -> a.name("ids")
                                           .type(new GraphQLList(GraphQLID))

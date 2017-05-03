@@ -207,17 +207,17 @@ public class Job {
                      .toString();
     }
 
-    @GraphQLField
-
-    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env)
-                              .getJobModel()
-                              .getProtocols(record)
-                              .keySet()
-                              .stream()
-                              .map(r -> new Protocol(r))
-                              .collect(Collectors.toList());
-    }
+//    @GraphQLField
+//
+//    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
+//        return WorkspaceSchema.ctx(env)
+//                              .getJobModel()
+//                              .getProtocols(record)
+//                              .keySet()
+//                              .stream()
+//                              .map(r -> new Protocol(r))
+//                              .collect(Collectors.toList());
+//    }
 
     @GraphQLField
     public String getNotes() {

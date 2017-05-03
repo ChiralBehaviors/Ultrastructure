@@ -57,8 +57,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.ChildSequencing;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -67,17 +65,8 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.MetaProtocol;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.ParentSequencing;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Protocol;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.SelfSequencing;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.SiblingSequencing;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
@@ -377,74 +366,8 @@ public class WorkspaceSchema {
                                                             typeFunction));
         typeFunction.register(Unit.class, (u, t) -> unitType);
 
-        GraphQLObjectType facteType = object(Facet.class, typeFunction,
-                                             typeFunction);
-        typeFunction.register(Facet.class, (u, t) -> {
-            return facteType;
-        });
-
-        GraphQLObjectType attrAuthType = object(AttributeAuthorization.class,
-                                                typeFunction, typeFunction);
-        typeFunction.register(AttributeAuthorization.class, (u, t) -> {
-            return attrAuthType;
-        });
-
-        GraphQLObjectType csType = object(ChildSequencing.class, typeFunction,
-                                          typeFunction);
-        typeFunction.register(ChildSequencing.class, (u, t) -> {
-            return csType;
-        });
-
         GraphQLObjectType job = object(Job.class, typeFunction, typeFunction);
         typeFunction.register(Job.class, (u, t) -> job);
-
-        GraphQLObjectType metaType = object(MetaProtocol.class, typeFunction,
-                                            typeFunction);
-        typeFunction.register(MetaProtocol.class, (u, t) -> {
-            return metaType;
-        });
-
-        GraphQLObjectType netAuthType = object(NetworkAuthorization.class,
-                                               typeFunction, typeFunction);
-        typeFunction.register(NetworkAuthorization.class, (u, t) -> {
-            return netAuthType;
-        });
-
-        GraphQLObjectType psType = object(ParentSequencing.class, typeFunction,
-                                          typeFunction);
-        typeFunction.register(ParentSequencing.class, (u, t) -> {
-            return psType;
-        });
-
-        GraphQLObjectType protocolType = object(Protocol.class, typeFunction,
-                                                typeFunction);
-        typeFunction.register(Protocol.class, (u, t) -> {
-            return protocolType;
-        });
-
-        GraphQLObjectType ssType = object(SelfSequencing.class, typeFunction,
-                                          typeFunction);
-        typeFunction.register(SelfSequencing.class, (u, t) -> {
-            return ssType;
-        });
-
-        GraphQLObjectType sibSeqType = object(SiblingSequencing.class,
-                                              typeFunction, typeFunction);
-        typeFunction.register(SiblingSequencing.class, (u, t) -> {
-            return sibSeqType;
-        });
-
-        GraphQLObjectType scsType = object(StatusCodeSequencing.class,
-                                           typeFunction, typeFunction);
-        typeFunction.register(StatusCodeSequencing.class, (u, t) -> {
-            return scsType;
-        });
-
-        GraphQLObjectType netAttAuthType = object(NetworkAttributeAuthorization.class,
-                                                  typeFunction, typeFunction);
-        typeFunction.register(NetworkAttributeAuthorization.class, (u, t) -> {
-            return netAttAuthType;
-        });
 
         GraphQLObjectType chronType = object(JobChronology.class, typeFunction,
                                              typeFunction);

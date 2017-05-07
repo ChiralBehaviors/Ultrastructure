@@ -187,39 +187,39 @@ public class WorkspaceSchema {
     }
 
     private void addPhantasmCast(Builder typeBuilder,
-                                 Entry<FacetRecord, FacetFields> entry) {
+                                 Entry<FacetRecord, FacetFields> resolved) {
         typeBuilder.field(GraphQLFieldDefinition.newFieldDefinition()
                                                 .name(String.format("as%s",
-                                                                    WorkspacePresentation.toTypeName(entry.getKey()
-                                                                                                          .getName())))
+                                                                    WorkspacePresentation.toTypeName(resolved.getKey()
+                                                                                                             .getName())))
                                                 .description(String.format("Cast to the %s facet",
-                                                                           entry.getKey()
-                                                                                .getName()))
-                                                .type(new GraphQLTypeReference(entry.getValue()
-                                                                                    .getName()))
+                                                                           resolved.getKey()
+                                                                                   .getName()))
+                                                .type(new GraphQLTypeReference(resolved.getValue()
+                                                                                       .getName()))
                                                 .dataFetcher(env -> {
                                                     Existential existential = (Existential) env.getSource();
                                                     PhantasmCRUD crud = FacetFields.ctx(env);
                                                     crud.cast(existential.getRecord(),
                                                               new Aspect(crud.getModel()
                                                                              .create(),
-                                                                         entry.getKey()));
+                                                                         resolved.getKey()));
                                                     return existential;
                                                 })
                                                 .build());
     }
 
     private void addPhantasmCast(GraphQLInterfaceType.Builder builder,
-                                 Entry<FacetRecord, FacetFields> entry) {
+                                 Entry<FacetRecord, FacetFields> resolved) {
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
                                             .name(String.format("as%s",
-                                                                WorkspacePresentation.toTypeName(entry.getKey()
-                                                                                                      .getName())))
+                                                                WorkspacePresentation.toTypeName(resolved.getKey()
+                                                                                                         .getName())))
                                             .description(String.format("Cast to the %s facet",
-                                                                       entry.getKey()
-                                                                            .getName()))
-                                            .type(new GraphQLTypeReference(entry.getValue()
-                                                                                .getName()))
+                                                                       resolved.getKey()
+                                                                               .getName()))
+                                            .type(new GraphQLTypeReference(resolved.getValue()
+                                                                                   .getName()))
                                             .build());
     }
 
@@ -269,6 +269,8 @@ public class WorkspaceSchema {
                                                      GraphQLFloat));
         PhantasmProcessor.register(new ZtypeFunction(int.class, GraphQLInt));
         PhantasmProcessor.register(new ZtypeFunction(UUID.class, GraphQLID));
+        PhantasmProcessor.register(new ZtypeFunction(Existential.class,
+                                                     PhantasmProcessor.iface(Existential.class)));
 
         GraphQLObjectType unitType = phantasm(resolved,
                                               PhantasmProcessor.objectBuilder(Unit.class));

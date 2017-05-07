@@ -17,5 +17,24 @@
 			<groupId>org.processing</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.jrc03c</groupId>
+			<artifactId>queasycam</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>mind-palace-bedrock</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jogamp.jogl</groupId>
+			<artifactId>jogl-all-main</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jogamp.gluegen</groupId>
+			<artifactId>gluegen-rt-main</artifactId>
+		</dependency>
+
 	</dependencies>
+
 </project>

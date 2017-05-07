@@ -26,7 +26,6 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLDescription;
@@ -38,7 +37,6 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@GraphQLInterface
 public interface CoreUserAdmin {
     @GraphQLField
     @GraphQLDescription("Update the password of the Current User of the session")

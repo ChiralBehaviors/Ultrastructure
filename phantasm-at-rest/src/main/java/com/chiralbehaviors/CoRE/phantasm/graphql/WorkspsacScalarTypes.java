@@ -20,10 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -55,21 +59,21 @@ public interface WorkspsacScalarTypes {
                                                                       "Built-in Base 64 encoded BINARY",
                                                                       binaryCoercing());
 
-    static Coercing jsonCoercing() {
-        return new Coercing() {
+    static Coercing<JsonNode, Object> jsonCoercing() {
+        return new Coercing<JsonNode, Object>() {
             @Override
-            public Object parseLiteral(Object input) {
+            public JsonNode parseLiteral(Object input) {
                 if (input instanceof StringValue) {
-                    return ((StringValue) input).getValue();
+                    return JsonNodeFactory.instance.textNode(((StringValue) input).getValue());
                 }
                 if (input instanceof BooleanValue) {
-                    return ((BooleanValue) input).isValue();
+                    return JsonNodeFactory.instance.booleanNode(((BooleanValue) input).isValue());
                 }
                 if (input instanceof IntValue) {
-                    return ((IntValue) input).getValue();
+                    return JsonNodeFactory.instance.numberNode(((IntValue) input).getValue());
                 }
                 if (input instanceof FloatValue) {
-                    return ((FloatValue) input).getValue();
+                    return JsonNodeFactory.instance.numberNode(((FloatValue) input).getValue());
                 }
                 if (input instanceof ObjectValue) {
                     ObjectValue objValue = (ObjectValue) input;
@@ -81,16 +85,19 @@ public interface WorkspsacScalarTypes {
                     return value;
                 }
                 if (input instanceof ArrayValue) {
-                    return ((ArrayValue) input).getValues()
-                                               .stream()
-                                               .map(v -> parseLiteral(v));
+                    ArrayNode array = JsonNodeFactory.instance.arrayNode();
+                    ((ArrayValue) input).getValues()
+                                        .stream()
+                                        .map(v -> parseLiteral(v))
+                                        .forEach(v -> array.add(v));
+                    return array;
                 }
                 return null;
             }
 
             @Override
-            public Object parseValue(Object input) {
-                return serialize(input);
+            public JsonNode parseValue(Object input) {
+                return parseLiteral(input);
             }
 
             @Override
@@ -125,59 +132,62 @@ public interface WorkspsacScalarTypes {
         };
     }
 
-    static Coercing timestampCoercing() {
-        return new Coercing() {
+    SimpleDateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
+    static String toRFC3339(Date d) {
+        return rfc3339.format(d)
+                      .replaceAll("(\\d\\d)(\\d\\d)$", "$1:$2");
+    }
+
+    static Coercing<Timestamp, String> timestampCoercing() {
+        return new Coercing<Timestamp, String>() {
 
             @Override
             public Timestamp parseLiteral(Object input) {
                 if (input instanceof StringValue) {
-                    return new Timestamp(Long.parseUnsignedLong(((StringValue) input).getValue()));
-                } else if (input instanceof IntValue) {
-                    BigInteger value = ((IntValue) input).getValue();
-                    return new Timestamp(value.longValue());
+                    try {
+                        return new Timestamp(((Date) rfc3339.parseObject(((StringValue) input).getValue())).getTime());
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException(String.format("invalid date: %s",
+                                                                         input));
+                    }
                 }
                 return null;
             }
 
             @Override
             public Timestamp parseValue(Object input) {
-                return serialize(input);
+                return parseLiteral(input);
             }
 
             @Override
-            public Timestamp serialize(Object input) {
-                if (input instanceof String) {
-                    return new Timestamp(Long.parseLong((String) input));
-                } else if (input instanceof Number) {
-                    return new Timestamp(((Number) input).longValue());
-                }
-                return null;
+            public String serialize(Object input) {
+                Timestamp t = (Timestamp) input;
+                return rfc3339.format(t.getTime());
             }
         };
     }
 
-    static Coercing binaryCoercing() {
-        return new Coercing() {
+    static Coercing<byte[], String> binaryCoercing() {
+        return new Coercing<byte[], String>() {
+
+            @Override
+            public String serialize(Object input) {
+                return Base64.getEncoder()
+                             .withoutPadding()
+                             .encodeToString((byte[]) input);
+            }
+
+            @Override
+            public byte[] parseValue(Object input) {
+                return parseLiteral(input);
+            }
 
             @Override
             public byte[] parseLiteral(Object input) {
                 if (input instanceof StringValue) {
                     return Base64.getDecoder()
                                  .decode(((StringValue) input).getValue());
-                }
-                return null;
-            }
-
-            @Override
-            public byte[] parseValue(Object input) {
-                return serialize(input);
-            }
-
-            @Override
-            public byte[] serialize(Object input) {
-                if (input instanceof String) {
-                    return Base64.getDecoder()
-                                 .decode((String) input);
                 }
                 return null;
             }

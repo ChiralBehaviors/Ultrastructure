@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -45,8 +44,7 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */
-@GraphQLInterface
+ */ 
 @GraphQLDescription("Queries for the current user.  The current user is defined as the authenticated principal of the session.  "
                     + "The authenticated principal is the authenticated CoRE User and any asserted Roles that have been granted to that user")
 public interface CurrentUser {

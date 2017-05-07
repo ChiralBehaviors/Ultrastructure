@@ -55,10 +55,11 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
 import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceTypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
@@ -104,7 +105,9 @@ public class JooqSchema {
                                                          RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
                                                          RULEFORM.EXISTENTIAL_NETWORK_AUTHORIZATION,
                                                          RULEFORM.EXISTENTIAL_NETWORK,
-                                                         RULEFORM.WORKSPACE_LABEL }));
+                                                         RULEFORM.WORKSPACE_LABEL,
+                                                         RULEFORM.JOB,
+                                                         RULEFORM.JOB_CHRONOLOGY }));
         MANIFESTED.forEach(table -> TABLES.put(table.getRecordType(), table));
     }
 
@@ -112,22 +115,15 @@ public class JooqSchema {
         return Introspector.decapitalize(converter.convert(snake));
     }
 
-    private final WorkspaceTypeFunction typeFunction;;
-
-    private final Set<GraphQLType>      types = new HashSet<>();
+    private final Set<GraphQLType> types = new HashSet<>();
 
     public JooqSchema() {
-        this(new WorkspaceTypeFunction());
-    }
-
-    public JooqSchema(WorkspaceTypeFunction typeFunction) {
-        this.typeFunction = typeFunction;
-        this.typeFunction.register(UUID.class, (u, t) -> GraphQLID);
+        PhantasmProcessor.register(new ZtypeFunction(UUID.class, GraphQLID));
         MANIFESTED.stream()
                   .forEach(table -> {
                       GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
-                      typeFunction.register(table.getRecordType(),
-                                            (u, t) -> type);
+                      PhantasmProcessor.singleton.registerType(new ZtypeFunction(table.getRecordType(),
+                                                                                 type));
                   });
     }
 
@@ -167,8 +163,13 @@ public class JooqSchema {
     private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
                                                           PropertyDescriptor field,
                                                           Class<?> reference) {
-        GraphQLOutputType type = (GraphQLOutputType) typeFunction.apply(reference,
-                                                                        null);
+        GraphQLOutputType type;
+        try {
+            type = PhantasmProcessor.singleton.getObject(reference);
+        } catch (IllegalAccessException | InstantiationException
+                | NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
         builder.name(field.getName())
                .type(type)
                .dataFetcher(env -> {
@@ -495,8 +496,7 @@ public class JooqSchema {
 
     private GraphQLType type(PropertyDescriptor field) {
         Method readMethod = field.getReadMethod();
-        return typeFunction.apply(readMethod.getReturnType(),
-                                  readMethod.getAnnotatedReturnType());
+        return PhantasmProcessor.singleton.typeFor(readMethod.getReturnType());
     }
 
     @SuppressWarnings("unchecked")

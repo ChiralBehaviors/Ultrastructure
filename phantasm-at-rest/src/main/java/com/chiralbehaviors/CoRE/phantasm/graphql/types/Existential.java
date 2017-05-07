@@ -28,7 +28,6 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
@@ -39,8 +38,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@SuppressWarnings("unused")
-@GraphQLInterface
+@SuppressWarnings("unused") 
 public interface Existential {
 
     @GraphQLDescription("The Agency existential ruleform")

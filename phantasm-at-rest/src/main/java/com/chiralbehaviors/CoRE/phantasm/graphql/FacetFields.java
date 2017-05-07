@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
-import static graphql.Scalars.*;
+import static graphql.Scalars.GraphQLBigDecimal;
+import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
+import static graphql.Scalars.GraphQLLong;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
@@ -32,14 +34,15 @@ import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.beans.Introspector;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,9 +51,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -63,12 +63,15 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import graphql.annotations.GraphQLField;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
@@ -101,7 +104,6 @@ public class FacetFields extends Phantasmagoria {
     private static final String ID                 = "id";
     private static final String IDS                = "ids";
     private static final String IMMEDIATE_TEMPLATE = "immediate%s";
-    private static final Logger log                = LoggerFactory.getLogger(FacetFields.class);
     private static final String REMOVE_MUTATION    = "remove%s";
     private static final String REMOVE_TEMPLATE    = "remove%s";
     @SuppressWarnings("unused")
@@ -152,31 +154,6 @@ public class FacetFields extends Phantasmagoria {
         unresolved.addAll(model.getPhantasmModel()
                                .getFacets(definingProduct));
         return unresolved;
-    }
-
-    public static Object invoke(Method method, DataFetchingEnvironment env) {
-        try {
-            return method.invoke(null, env);
-        } catch (IllegalAccessException | IllegalArgumentException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e.getTargetException());
-        }
-    }
-
-    public static Object invoke(Method method, DataFetchingEnvironment env,
-                                Model model, Phantasm instance) {
-        try {
-            return method.invoke(null, env, model, instance);
-        } catch (InvocationTargetException e) {
-            log.error("error invoking {} plugin {}", instance.toString(),
-                      method.toGenericString(), e.getTargetException());
-            return null;
-        } catch (Throwable e) {
-            log.error("error invoking {} plugin {}", instance.toString(),
-                      method.toGenericString(), e);
-            return null;
-        }
     }
 
     private graphql.schema.GraphQLInputObjectType.Builder                  createTypeBuilder;
@@ -233,14 +210,13 @@ public class FacetFields extends Phantasmagoria {
 
     public Set<FacetRecord> resolve(FacetRecord facet, List<Class<?>> plugins,
                                     Model model,
-                                    WorkspaceTypeFunction typeFunction,
                                     GraphQLUnionType.Builder union,
                                     EdgeTypeResolver edgeTypeResolver) {
         traverse(model);
         buildEdges(edgeTypeResolver, union);
         build();
 
-        addPlugins(plugins, typeFunction);
+        addPlugins(plugins);
         return references;
     }
 
@@ -295,13 +271,9 @@ public class FacetFields extends Phantasmagoria {
                                                         crud.lookup((List<String>) update.get(addChildren))));
     }
 
-    private void addPlugins(List<Class<?>> plugins,
-                            WorkspaceTypeFunction typeFunction) {
+    private void addPlugins(List<Class<?>> plugins) {
         plugins.forEach(plugin -> {
-            initializers.addAll(PhantasmProcessing.processPlugin(plugin,
-                                                                 typeFunction,
-                                                                 typeFunction,
-                                                                 typeBuilder));
+            initializers.addAll(FacetFields.processPlugin(plugin, typeBuilder));
         });
     }
 
@@ -869,5 +841,82 @@ public class FacetFields extends Phantasmagoria {
         });
         references.add(auth.getChild()
                            .getFacet());
+    }
+
+    static Class<?> getDeclaringClass(Method method) {
+        Class<?> object = method.getDeclaringClass();
+        Class<?> declaringClass = object;
+        for (Class<?> iface : object.getInterfaces()) {
+            try {
+                iface.getMethod(method.getName(), method.getParameterTypes());
+                declaringClass = iface;
+            } catch (NoSuchMethodException e) {
+            }
+        }
+
+        try {
+            if (object.getSuperclass() != null) {
+                object.getSuperclass()
+                      .getMethod(method.getName(), method.getParameterTypes());
+                declaringClass = object.getSuperclass();
+            }
+        } catch (NoSuchMethodException e) {
+        }
+        return declaringClass;
+
+    }
+
+    public static List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> processPlugin(Class<?> plugin,
+                                                                                               GraphQLObjectType.Builder builder) {
+        Plugin annotation = plugin.getAnnotation(Plugin.class);
+        if (annotation == null) {
+            throw new IllegalArgumentException(String.format("Class not annotated with @Plugin: %s",
+                                                             plugin.getCanonicalName()));
+        }
+        List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> initializers = new ArrayList<>();
+        Class<? extends Phantasm> phantasm = annotation.value();
+        Object instance;
+        try {
+            instance = plugin.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException(String.format("Unable to instantiate: %s",
+                                                             plugin),
+                                               e);
+        }
+        for (Method method : plugin.getMethods()) {
+
+            Class<?> declaringClass = FacetFields.getDeclaringClass(method);
+
+            boolean valid;
+            try {
+                valid = !Modifier.isStatic(method.getModifiers())
+                        && (method.getAnnotation(GraphQLField.class) != null
+                            || declaringClass.getMethod(method.getName(),
+                                                        method.getParameterTypes())
+                                             .getAnnotation(GraphQLField.class) != null);
+            } catch (NoSuchMethodException | SecurityException e) {
+                throw new IllegalStateException(e);
+            }
+
+            if (valid) {
+                try {
+                    builder.field(PhantasmProcessor.field(method));
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+            } else if (method.getAnnotation(Initializer.class) != null) {
+                InlinedFunction initializer = new InlinedFunction(method,
+                                                                  Collections.emptyMap(),
+                                                                  phantasm,
+                                                                  instance);
+                initializers.add((env,
+                                  rf) -> initializer.get(env,
+                                                         WorkspaceSchema.ctx(env)
+                                                                        .wrap(phantasm,
+                                                                              rf),
+                                                         true));
+            }
+        }
+        return initializers;
     }
 }

@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 
 import graphql.annotations.GraphQLField;
@@ -36,8 +35,7 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */
-@GraphQLInterface
+ */ 
 public interface JobQueries {
 
     @GraphQLField

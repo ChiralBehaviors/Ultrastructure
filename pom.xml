@@ -387,12 +387,12 @@
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java</artifactId>
-				<version>2.3.0</version>
+				<version>2.4.0</version>
 			</dependency>
 			<dependency>
-				<groupId>graphql-java-annotations</groupId>
+				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-annotations</artifactId>
-				<version>0.8.1</version>
+				<version>0.13.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -712,7 +712,7 @@
 								<exclude>graphql/annotations/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
-                                <exclude>com/chiralbehaviors/CoRE/universal/spa/**/*</exclude>
+								<exclude>com/chiralbehaviors/CoRE/universal/spa/**/*</exclude>
 								<exclude>**/WorkspacePresentation*</exclude>
 								<exclude>**/HelpMojo*</exclude>
 								<exclude>**/Universal*</exclude>

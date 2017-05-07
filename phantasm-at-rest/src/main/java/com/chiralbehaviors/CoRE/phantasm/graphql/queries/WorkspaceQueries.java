@@ -27,7 +27,6 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
@@ -38,8 +37,7 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */
-@GraphQLInterface
+ */ 
 public interface WorkspaceQueries {
 
     @GraphQLField

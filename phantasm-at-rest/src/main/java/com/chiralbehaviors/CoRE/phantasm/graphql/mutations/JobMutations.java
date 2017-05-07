@@ -27,7 +27,6 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
@@ -41,7 +40,6 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@GraphQLInterface
 public interface JobMutations {
 
     @GraphQLField

@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -55,7 +54,6 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@GraphQLInterface
 public interface ExistentialQueries {
 
     static List<ExistentialRecord> resolved(DataFetchingEnvironment env,

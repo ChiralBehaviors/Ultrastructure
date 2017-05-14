@@ -99,7 +99,8 @@ public class JooqSchema {
     private static final Map<Class<?>, Table<?>>   TABLES    = new HashMap<>();
     static {
         MANIFESTED = Ruleform.RULEFORM.getTables();
-        MANIFESTED.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL_ATTRIBUTE,
+        MANIFESTED.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL,
+                                                         RULEFORM.EXISTENTIAL_ATTRIBUTE,
                                                          RULEFORM.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
                                                          RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE,
                                                          RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
@@ -163,12 +164,16 @@ public class JooqSchema {
     private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
                                                           PropertyDescriptor field,
                                                           Class<?> reference) {
-        GraphQLOutputType type;
-        try {
-            type = PhantasmProcessor.singleton.getObject(reference);
-        } catch (IllegalAccessException | InstantiationException
-                | NoSuchMethodException e) {
-            throw new IllegalStateException(e);
+        GraphQLOutputType type = (GraphQLOutputType) PhantasmProcessor.singleton.typeFor(reference);
+        if (type == null) {
+            try {
+                type = PhantasmProcessor.singleton.getObject(reference);
+                PhantasmProcessor.singleton.registerType(new ZtypeFunction(reference,
+                                                                           type));
+            } catch (IllegalAccessException | InstantiationException
+                    | NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
         }
         builder.name(field.getName())
                .type(type)

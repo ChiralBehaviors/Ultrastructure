@@ -20,9 +20,9 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetTypeTest;
 import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -242,7 +242,7 @@ public class JooqSchemaTest extends AbstractModelTest {
     private ObjectNode execute(GraphQLSchema schema, String query,
                                Map<String, Object> variables) throws IllegalArgumentException,
                                                               Exception {
-        WorkspaceContext context = new WorkspaceContext(model, definingProduct);
+        ExistentialContext context = new ExistentialContext(model, definingProduct);
         ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(format(execute.getErrors()), execute.getErrors()
                                                        .isEmpty());

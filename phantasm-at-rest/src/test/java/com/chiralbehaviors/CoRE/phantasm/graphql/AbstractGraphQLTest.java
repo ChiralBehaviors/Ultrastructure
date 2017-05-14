@@ -52,7 +52,7 @@ abstract public class AbstractGraphQLTest extends AbstractModelTest {
 
     protected ObjectNode execute(GraphQLSchema schema, String query,
                                  Map<String, Object> variables) {
-        WorkspaceContext context = new WorkspaceContext(model, definingProduct);
+        ExistentialContext context = new ExistentialContext(model, definingProduct);
         ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(format(execute.getErrors()), execute.getErrors()
                                                        .isEmpty());

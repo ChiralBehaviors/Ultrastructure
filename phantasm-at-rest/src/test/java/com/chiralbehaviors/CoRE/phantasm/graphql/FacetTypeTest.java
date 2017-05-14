@@ -101,7 +101,7 @@ public class FacetTypeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
                                                 variables);
 
-        ExecutionResult execute = new WorkspaceContext(model,
+        ExecutionResult execute = new ExistentialContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),
@@ -134,7 +134,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("uri", newUri);
         request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
-        execute = new WorkspaceContext(model, scope.getWorkspace()
+        execute = new ExistentialContext(model, scope.getWorkspace()
                                                    .getDefiningProduct()).execute(schema,
                                                                                   request.getQuery(),
                                                                                   request.getVariables());
@@ -168,7 +168,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                    + "setThing1: $thing1}) { id name } }",
                                    variables);
 
-        execute = new WorkspaceContext(model, scope.getWorkspace()
+        execute = new ExistentialContext(model, scope.getWorkspace()
                                                    .getDefiningProduct()).execute(schema,
                                                                                   request.getQuery(),
                                                                                   request.getVariables());
@@ -188,7 +188,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                                                  .getWorkspace(),
                                                            model);
         String query = getIntrospectionQuery();
-        ExecutionResult execute = new WorkspaceContext(model, thing1.getScope()
+        ExecutionResult execute = new ExistentialContext(model, thing1.getScope()
                                                                     .getWorkspace()
                                                                     .getDefiningProduct()).execute(schema,
                                                                                                    query);
@@ -255,7 +255,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("uri", newUri);
         QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
-        ExecutionResult execute = new WorkspaceContext(model,
+        ExecutionResult execute = new ExistentialContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),
@@ -323,7 +323,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                   .getId()
                                   .toString());
         String query = "query it($id: String!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}";
-        ExecutionResult execute = new WorkspaceContext(model, thing1.getScope()
+        ExecutionResult execute = new ExistentialContext(model, thing1.getScope()
                                                                     .getWorkspace()
                                                                     .getDefiningProduct()).execute(schema,
                                                                                                    query,
@@ -365,7 +365,7 @@ public class FacetTypeTest extends AbstractModelTest {
         assertEquals(2, thing3DerivedFroms.size());
 
         String q = "{ thing1s {id name URI}}";
-        result = (Map<String, Object>) new WorkspaceContext(model,
+        result = (Map<String, Object>) new ExistentialContext(model,
                                                             thing1.getScope()
                                                                   .getWorkspace()
                                                                   .getDefiningProduct()).execute(schema,
@@ -424,7 +424,7 @@ public class FacetTypeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
-        ExecutionResult execute = new WorkspaceContext(model,
+        ExecutionResult execute = new ExistentialContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),
@@ -470,7 +470,7 @@ public class FacetTypeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);
 
-        ExecutionResult execute = new WorkspaceContext(model,
+        ExecutionResult execute = new ExistentialContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),

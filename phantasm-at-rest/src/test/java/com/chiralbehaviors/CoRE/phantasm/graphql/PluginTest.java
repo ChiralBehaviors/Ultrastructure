@@ -116,7 +116,7 @@ public class PluginTest extends AbstractModelTest {
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
                                                            model, reflections);
 
-        ExecutionResult execute = new WorkspaceContext(model,
+        ExecutionResult execute = new ExistentialContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),
@@ -148,7 +148,7 @@ public class PluginTest extends AbstractModelTest {
         request = new QueryRequest("query it($id: String!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
 
-        execute = new WorkspaceContext(model, scope.getWorkspace()
+        execute = new ExistentialContext(model, scope.getWorkspace()
                                                    .getDefiningProduct()).execute(schema,
                                                                                   request.getQuery(),
                                                                                   request.getVariables());

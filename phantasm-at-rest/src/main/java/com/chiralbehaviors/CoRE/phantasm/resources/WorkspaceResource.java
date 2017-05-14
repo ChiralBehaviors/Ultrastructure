@@ -63,6 +63,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -374,7 +375,7 @@ public class WorkspaceResource extends TransactionalResource {
 
             Product definingProduct = model.records()
                                            .resolve(uuid);
-            WorkspaceContext crud = new WorkspaceContext(model,
+            ExistentialContext crud = new ExistentialContext(model,
                                                          definingProduct);
             if (!model.checkRead((UpdatableRecord<?>) definingProduct)
                 || !model.checkPermission((ExistentialRuleform) definingProduct,
@@ -432,7 +433,7 @@ public class WorkspaceResource extends TransactionalResource {
 
             Product definingProduct = model.records()
                                            .resolve(uuid);
-            WorkspaceContext crud = new WorkspaceContext(model,
+            ExistentialContext crud = new ExistentialContext(model,
                                                          definingProduct);
             if (!model.checkRead((UpdatableRecord<?>) definingProduct)
                 || !model.checkRead((UpdatableRecord<?>) definingProduct)) {

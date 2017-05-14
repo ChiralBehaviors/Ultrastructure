@@ -47,7 +47,6 @@ import graphql.execution.ExecutionStrategy;
 import graphql.execution.SimpleExecutionStrategy;
 import graphql.language.Field;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.DataFetchingEnvironmentImpl;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
@@ -57,7 +56,7 @@ import graphql.schema.GraphQLType;
  * @author hhildebrand
  *
  */
-public class WorkspaceContext extends PhantasmCRUD implements Queries,
+abstract public class WorkspaceContext extends PhantasmCRUD implements Queries,
         Mutations, MetaQueries, MetaMutations, CoreUserAdmin {
     public static class EdgeFieldBuilder
             extends GraphQLFieldDefinition.Builder {
@@ -134,7 +133,7 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
                                                                                   fields.get(0)
                                                                                         .getArguments(),
                                                                                   executionContext.getVariables());
-            DataFetchingEnvironment environment = new DataFetchingEnvironmentImpl(source,
+            DataFetchingEnvironment environment = new DataFetchingEnvironment(source,
                                                                                   argumentValues,
                                                                                   executionContext.getRoot(),
                                                                                   fields,
@@ -192,10 +191,9 @@ public class WorkspaceContext extends PhantasmCRUD implements Queries,
 
     public ExecutionResult execute(GraphQLSchema schema, String query,
                                    Map<String, Object> variables) {
-        ExecutionResult result = GraphQL.newGraphQL(schema)
-                                        .queryExecutionStrategy(getStrategy())
-                                        .build()
-                                        .execute(query, this, variables);
+        ExecutionResult result = new GraphQL(schema,
+                                             getStrategy()).execute(query, this,
+                                                                    variables);
         if (result.getErrors()
                   .isEmpty()) {
             return result;

@@ -59,8 +59,8 @@ public interface WorkspsacScalarTypes {
                                                                       "Built-in Base 64 encoded BINARY",
                                                                       binaryCoercing());
 
-    static Coercing<JsonNode, Object> jsonCoercing() {
-        return new Coercing<JsonNode, Object>() {
+    static Coercing jsonCoercing() {
+        return new Coercing() {
             @Override
             public JsonNode parseLiteral(Object input) {
                 if (input instanceof StringValue) {
@@ -139,8 +139,8 @@ public interface WorkspsacScalarTypes {
                       .replaceAll("(\\d\\d)(\\d\\d)$", "$1:$2");
     }
 
-    static Coercing<Timestamp, String> timestampCoercing() {
-        return new Coercing<Timestamp, String>() {
+    static Coercing timestampCoercing() {
+        return new Coercing() {
 
             @Override
             public Timestamp parseLiteral(Object input) {
@@ -168,8 +168,8 @@ public interface WorkspsacScalarTypes {
         };
     }
 
-    static Coercing<byte[], String> binaryCoercing() {
-        return new Coercing<byte[], String>() {
+    static Coercing binaryCoercing() {
+        return new Coercing() {
 
             @Override
             public String serialize(Object input) {

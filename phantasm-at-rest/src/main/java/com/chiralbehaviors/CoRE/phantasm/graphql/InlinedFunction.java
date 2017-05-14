@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
-class InlinedFunction implements DataFetcher<Object> {
+class InlinedFunction implements DataFetcher {
     private final int                                                 crudIndex;
     private final int                                                 envIndex;
     private final Map<Integer, Function<Map<String, Object>, Object>> inputTxfms;

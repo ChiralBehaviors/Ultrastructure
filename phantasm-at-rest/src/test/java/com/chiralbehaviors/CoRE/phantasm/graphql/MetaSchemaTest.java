@@ -64,111 +64,92 @@ public class MetaSchemaTest extends AbstractModelTest {
                                            Exception {
         Map<String, Object> variables = new HashMap<>();
 
-        ObjectNode result = execute(schema,
-                                    "mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        ObjectNode result = execute("mutation m { createAgency(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                                     variables);
         variables.put("id", result.get("createAgency")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\" authority: $id}) {id} }",
+        execute("mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\" authority: $id}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeAgency(id: $id) }",
+        execute("mutation m($id: String!) { removeAgency(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createAttribute")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateAttribute(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateAttribute(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeAttribute(id: $id) }",
+        execute("mutation m($id: String!) { removeAttribute(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createInterval")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateInterval(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateInterval(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeInterval(id: $id) }",
+        execute("mutation m($id: String!) { removeInterval(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createLocation")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateLocation(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateLocation(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeLocation(id: $id) }",
+        execute("mutation m($id: String!) { removeLocation(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createProduct")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateProduct(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateProduct(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeProduct(id: $id) }",
+        execute("mutation m($id: String!) { removeProduct(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createRelationship")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateRelationship(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateRelationship(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema,
-                "mutation m($id: String!) { removeRelationship(id: $id) }",
+        execute("mutation m($id: String!) { removeRelationship(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createStatusCode")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateStatusCode(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateStatusCode(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema,
-                "mutation m($id: String!) { removeStatusCode(id: $id) }",
+        execute("mutation m($id: String!) { removeStatusCode(id: $id) }",
                 variables);
 
-        result = execute(schema,
-                         "mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
+        result = execute("mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createUnit")
                                   .get("id")
                                   .asText());
-        execute(schema,
-                "mutation m($id: String!) { updateUnit(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: String!) { updateUnit(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute(schema, "mutation m($id: String!) { removeUnit(id: $id) }",
-                variables);
+        execute("mutation m($id: String!) { removeUnit(id: $id) }", variables);
     }
 
     @Test
@@ -180,116 +161,96 @@ public class MetaSchemaTest extends AbstractModelTest {
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data;
 
-        data = execute(schema,
-                       "{ agencies { id name description updatedBy {id} authority {id}} }",
+        data = execute("{ agencies { id name description updatedBy {id} authority {id}} }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("agencies")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { agencies(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { agencies(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("agencies")).get(0));
-        data = execute(schema,
-                       "query q($id: String!) { agency(id: $id) { id name description } }",
+        data = execute("query q($id: String!) { agency(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema,
-                       "{ attributes { id name description keyed indexed valueType } }",
+        data = execute("{ attributes { id name description keyed indexed valueType } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("attributes")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { attributes(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { attributes(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("attributes")).get(0));
-        data = execute(schema,
-                       "query q($id: String!) { attribute(id: $id) { id name description } }",
+        data = execute("query q($id: String!) { attribute(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ intervals { id name description }  }",
-                       variables);
+        data = execute("{ intervals { id name description }  }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("intervals")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { intervals(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { intervals(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ locations { id name description } }",
-                       variables);
+        data = execute("{ locations { id name description } }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("locations")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { locations(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { locations(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("locations")).get(0));
-        data = execute(schema,
-                       "query q($id: String!) { location(id: $id) { id name description } }",
+        data = execute("query q($id: String!) { location(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ products { id name description } }",
-                       variables);
+        data = execute("{ products { id name description } }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("products")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { products(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { products(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("products")).get(0));
-        data = execute(schema,
-                       "query q($id: String!) { product(id: $id) { id name description } }",
+        data = execute("query q($id: String!) { product(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema,
-                       "{ relationships { id name description inverse { id } } }",
+        data = execute("{ relationships { id name description inverse { id } } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("relationships")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { relationships(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { relationships(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("relationships")).get(0));
-        data = execute(schema,
-                       "query q($id: String!) { relationship(id: $id) { id name description } }",
+        data = execute("query q($id: String!) { relationship(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema,
-                       "{ statusCodes { id name description failParent propagateChildren } }",
+        data = execute("{ statusCodes { id name description failParent propagateChildren } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("statusCodes")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { statusCodes(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { statusCodes(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("statusCodes")).get(0));
-        data = execute(schema,
-                       "query q($id: String!) { statusCode(id: $id) { id name description } }",
+        data = execute("query q($id: String!) { statusCode(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
-        data = execute(schema, "{ units{ id name description } }", variables);
+        data = execute("{ units{ id name description } }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("units")));
-        data = execute(schema,
-                       "query q($ids: [String]!) { units(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [String]!) { units(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
     }
 
-    private ObjectNode execute(GraphQLSchema schema, String query,
+    private ObjectNode execute(String query,
                                Map<String, Object> variables) throws IllegalArgumentException,
                                                               Exception {
-        WorkspaceContext context = new WorkspaceContext(model, definingProduct);
+        ExistentialContext context = new ExistentialContext(model,
+                                                            definingProduct);
         ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(format(execute.getErrors()), execute.getErrors()
                                                        .isEmpty());

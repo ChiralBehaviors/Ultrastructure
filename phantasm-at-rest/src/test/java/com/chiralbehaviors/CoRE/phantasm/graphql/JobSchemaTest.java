@@ -193,7 +193,7 @@ public class JobSchemaTest extends AbstractModelTest {
 
     private ObjectNode execute(GraphQLSchema schema, String query,
                                Map<String, Object> variables) {
-        WorkspaceContext context = new WorkspaceContext(model, model.getKernel()
+        ExistentialContext context = new ExistentialContext(model, model.getKernel()
                                                                     .getKernelWorkspace());
         ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(execute.getErrors()

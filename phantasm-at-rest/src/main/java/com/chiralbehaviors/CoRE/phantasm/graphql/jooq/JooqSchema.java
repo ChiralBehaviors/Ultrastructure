@@ -60,6 +60,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
@@ -162,19 +163,8 @@ public class JooqSchema {
     }
 
     private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
-                                                          PropertyDescriptor field,
-                                                          Class<?> reference) {
-        GraphQLOutputType type = (GraphQLOutputType) PhantasmProcessor.singleton.typeFor(reference);
-        if (type == null) {
-            try {
-                type = PhantasmProcessor.singleton.getObject(reference);
-                PhantasmProcessor.singleton.registerType(new ZtypeFunction(reference,
-                                                                           type));
-            } catch (IllegalAccessException | InstantiationException
-                    | NoSuchMethodException e) {
-                throw new IllegalStateException(e);
-            }
-        }
+                                                          PropertyDescriptor field) {
+        GraphQLOutputType type = (GraphQLOutputType) PhantasmProcessor.singleton.typeFor(Existential.class);
         builder.name(field.getName())
                .type(type)
                .dataFetcher(env -> {
@@ -190,7 +180,7 @@ public class JooqSchema {
                                                                           .toGenericString()),
                                                        e);
                    }
-                   return fetch(fk, reference, env);
+                   return Existential.wrap(Existential.resolve(env, fk));
                });
         return builder;
     }
@@ -448,22 +438,20 @@ public class JooqSchema {
 
     private GraphQLObjectType objectType(Class<?> record,
                                          List<PropertyDescriptor> fields) {
-        Map<String, Class<?>> references = TABLES.get(record)
-                                                 .getReferences()
-                                                 .stream()
-                                                 .collect(Collectors.toMap(fk -> camel(fk.getFields()
-                                                                                         .get(0)
-                                                                                         .getName()),
-                                                                           fk -> fk.getKey()
-                                                                                   .getTable()
-                                                                                   .getRecordType()));
+        Set<String> references = TABLES.get(record)
+                                       .getReferences()
+                                       .stream()
+                                       .map(fk -> camel(fk.getFields()
+                                                          .get(0)
+                                                          .getName()))
+                                       .collect(Collectors.toSet());
         GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
         builder.name(translated(record));
         fields.forEach(field -> {
-            Class<?> reference = references.get(field.getName());
-            builder.field(f -> reference == null ? buildPrimitive(f, field)
-                                                 : buildReference(f, field,
-                                                                  reference));
+            builder.field(f -> references.contains(field.getName()) ? buildReference(f,
+                                                                                     field)
+                                                                    : buildPrimitive(f,
+                                                                                     field));
         });
         return builder.build();
     }

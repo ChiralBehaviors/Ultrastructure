@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
+import java.util.UUID;
+
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
@@ -46,102 +48,102 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */ 
+ */
 public interface ExistentialMutations {
 
     @GraphQLField
-     Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
-                                DataFetchingEnvironment env);
+    Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
+                        DataFetchingEnvironment env);
 
     @GraphQLField
-     Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
-                                      DataFetchingEnvironment env);
+    Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
+                              DataFetchingEnvironment env);
 
     @GraphQLField
-     Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
-                                    DataFetchingEnvironment env);
-
-    @GraphQLField
-     Location createLocation(@NotNull @GraphQLName("state") ExistentialState state,
-                                    DataFetchingEnvironment env);
-
-    @GraphQLField
-     Product createProduct(@NotNull @GraphQLName("state") ExistentialState state,
-                                  DataFetchingEnvironment env);
-
-    @GraphQLField
-     Relationship createRelationship(@NotNull @GraphQLName("state") RelationshipState state,
-                                            DataFetchingEnvironment env);
-
-    @GraphQLField
-     StatusCode createStatusCode(@NotNull @GraphQLName("state") StatusCodeState state,
-                                        DataFetchingEnvironment env);
-
-    @GraphQLField
-     Unit createUnit(@NotNull @GraphQLName("state") ExistentialState state,
+    Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
                             DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeAgency(@NotNull @GraphQLName("id") String id,
-                                 DataFetchingEnvironment env);
+    Location createLocation(@NotNull @GraphQLName("state") ExistentialState state,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeAttribute(@NotNull @GraphQLName("id") String id,
+    Product createProduct(@NotNull @GraphQLName("state") ExistentialState state,
+                          DataFetchingEnvironment env);
+
+    @GraphQLField
+    Relationship createRelationship(@NotNull @GraphQLName("state") RelationshipState state,
                                     DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeInterval(@NotNull @GraphQLName("id") String id,
-                                   DataFetchingEnvironment env);
+    StatusCode createStatusCode(@NotNull @GraphQLName("state") StatusCodeState state,
+                                DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeLocation(@NotNull @GraphQLName("id") String id,
-                                   DataFetchingEnvironment env);
+    Unit createUnit(@NotNull @GraphQLName("state") ExistentialState state,
+                    DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeProduct(@NotNull @GraphQLName("id") String id,
-                                  DataFetchingEnvironment env);
+    Boolean removeAgency(@NotNull @GraphQLName("id") UUID id,
+                         DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeRelationship(@NotNull @GraphQLName("id") String id,
-                                       DataFetchingEnvironment env);
+    Boolean removeAttribute(@NotNull @GraphQLName("id") UUID id,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeStatusCode(@NotNull @GraphQLName("id") String id,
-                                     DataFetchingEnvironment env);
+    Boolean removeInterval(@NotNull @GraphQLName("id") UUID id,
+                           DataFetchingEnvironment env);
 
     @GraphQLField
-     Boolean removeUnit(@NotNull @GraphQLName("id") String id,
+    Boolean removeLocation(@NotNull @GraphQLName("id") UUID id,
+                           DataFetchingEnvironment env);
+
+    @GraphQLField
+    Boolean removeProduct(@NotNull @GraphQLName("id") UUID id,
+                          DataFetchingEnvironment env);
+
+    @GraphQLField
+    Boolean removeRelationship(@NotNull @GraphQLName("id") UUID id,
                                DataFetchingEnvironment env);
 
     @GraphQLField
-     Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+    Boolean removeStatusCode(@NotNull @GraphQLName("id") UUID id,
+                             DataFetchingEnvironment env);
+
+    @GraphQLField
+    Boolean removeUnit(@NotNull @GraphQLName("id") UUID id,
+                       DataFetchingEnvironment env);
+
+    @GraphQLField
+    Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                        DataFetchingEnvironment env);
+
+    @GraphQLField
+    Attribute updateAttribute(@NotNull @GraphQLName("state") AttributeUpdateState state,
+                              DataFetchingEnvironment env);
+
+    @GraphQLField
+    Interval updateInterval(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                            DataFetchingEnvironment env);
+
+    @GraphQLField
+    Location updateLocation(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                            DataFetchingEnvironment env);
+
+    @GraphQLField
+    Product updateProduct(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                          DataFetchingEnvironment env);
+
+    @GraphQLField
+    Relationship updateRelationship(@NotNull @GraphQLName("state") RelationshipUpdateState state,
+                                    DataFetchingEnvironment env);
+
+    @GraphQLField
+    StatusCode updateStatusCode(@NotNull @GraphQLName("state") StatusCodeUpdateState state,
                                 DataFetchingEnvironment env);
 
     @GraphQLField
-     Attribute updateAttribute(@NotNull @GraphQLName("state") AttributeUpdateState state,
-                                      DataFetchingEnvironment env);
-
-    @GraphQLField
-     Interval updateInterval(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                    DataFetchingEnvironment env);
-
-    @GraphQLField
-     Location updateLocation(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                    DataFetchingEnvironment env);
-
-    @GraphQLField
-     Product updateProduct(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                  DataFetchingEnvironment env);
-
-    @GraphQLField
-     Relationship updateRelationship(@NotNull @GraphQLName("state") RelationshipUpdateState state,
-                                            DataFetchingEnvironment env);
-
-    @GraphQLField
-     StatusCode updateStatusCode(@NotNull @GraphQLName("state") StatusCodeUpdateState state,
-                                        DataFetchingEnvironment env);
-
-    @GraphQLField
-     Unit updateUnit(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                            DataFetchingEnvironment env);
+    Unit updateUnit(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                    DataFetchingEnvironment env);
 }

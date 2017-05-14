@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,66 +45,65 @@ import graphql.schema.DataFetchingEnvironment;
 public interface ExistentialQueries {
 
     @GraphQLField
-    List<Agency> agencies(@GraphQLName("ids") List<String> ids,
+    List<Agency> agencies(@GraphQLName("ids") List<UUID> ids,
                           DataFetchingEnvironment env);
 
     @GraphQLField
-    Agency agency(@NotNull @GraphQLName("id") String id,
+    Agency agency(@NotNull @GraphQLName("id") UUID id,
                   DataFetchingEnvironment env);
 
     @GraphQLField
-    Attribute attribute(@NotNull @GraphQLName("id") String id,
+    Attribute attribute(@NotNull @GraphQLName("id") UUID id,
                         DataFetchingEnvironment env);
 
     @GraphQLField
-    List<Attribute> attributes(@GraphQLName("ids") List<String> ids,
+    List<Attribute> attributes(@GraphQLName("ids") List<UUID> ids,
                                DataFetchingEnvironment env);
 
     @GraphQLField
-    Interval interval(@NotNull @GraphQLName("id") String id,
+    Interval interval(@NotNull @GraphQLName("id") UUID id,
                       DataFetchingEnvironment env);
 
     @GraphQLField
-    List<Interval> intervals(@GraphQLName("ids") List<String> ids,
+    List<Interval> intervals(@GraphQLName("ids") List<UUID> ids,
                              DataFetchingEnvironment env);
 
     @GraphQLField
-    Location location(@NotNull @GraphQLName("id") String id,
+    Location location(@NotNull @GraphQLName("id") UUID id,
                       DataFetchingEnvironment env);
 
     @GraphQLField
-    List<Location> locations(@GraphQLName("ids") List<String> ids,
+    List<Location> locations(@GraphQLName("ids") List<UUID> ids,
                              DataFetchingEnvironment env);
 
     @GraphQLField
-    Product product(@NotNull @GraphQLName("id") String id,
+    Product product(@NotNull @GraphQLName("id") UUID id,
                     DataFetchingEnvironment env);
 
     @GraphQLField
-    List<Product> products(@GraphQLName("ids") List<String> ids,
+    List<Product> products(@GraphQLName("ids") List<UUID> ids,
                            DataFetchingEnvironment env);
 
     @GraphQLField
-    Relationship relationship(@NotNull @GraphQLName("id") String id,
+    Relationship relationship(@NotNull @GraphQLName("id") UUID id,
                               DataFetchingEnvironment env);
 
     @GraphQLField
-    List<Relationship> relationships(@GraphQLName("ids") List<String> ids,
+    List<Relationship> relationships(@GraphQLName("ids") List<UUID> ids,
                                      DataFetchingEnvironment env);
 
     @GraphQLField
-    StatusCode statusCode(@NotNull @GraphQLName("id") String id,
+    StatusCode statusCode(@NotNull @GraphQLName("id") UUID id,
                           DataFetchingEnvironment env);
 
     @GraphQLField
-    List<StatusCode> statusCodes(@GraphQLName("ids") List<String> ids,
+    List<StatusCode> statusCodes(@GraphQLName("ids") List<UUID> ids,
                                  DataFetchingEnvironment env);
 
     @GraphQLField
-    Unit unit(@NotNull @GraphQLName("id") String id,
-              DataFetchingEnvironment env);
+    Unit unit(@NotNull @GraphQLName("id") UUID id, DataFetchingEnvironment env);
 
     @GraphQLField
-    List<Unit> units(@GraphQLName("ids") List<String> ids,
+    List<Unit> units(@GraphQLName("ids") List<UUID> ids,
                      DataFetchingEnvironment env);
 }

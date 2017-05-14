@@ -23,11 +23,15 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
@@ -38,7 +42,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@SuppressWarnings("unused") 
+@SuppressWarnings("unused")
 public interface Existential {
 
     @GraphQLDescription("The Agency existential ruleform")
@@ -75,19 +79,53 @@ public interface Existential {
     }
 
     public class AttributeState extends ExistentialState {
-        @GraphQLField
-        public Boolean indexed;
+        private static final String INDEXED    = "indexed";
+        private static final String KEYED      = "keyed";
+        private static final String VALUE_TYPE = "valueType";
+
+        public AttributeState(HashMap<String, Object> state) {
+            super(state);
+        }
 
         @GraphQLField
-        public Boolean keyed;
+        public Boolean getIndexed() {
+            return (Boolean) state.get(INDEXED);
+        }
 
         @GraphQLField
-        public String  valueType;
+        public Boolean getKeyed() {
+            return (Boolean) state.get(KEYED);
+        }
+
+        @GraphQLField
+        public ValueType getValueType() {
+            return (ValueType) state.get(VALUE_TYPE);
+        }
+
+        @Override
+        public void update(ExistentialRecord record) {
+            super.update(record);
+            if (state.containsKey(INDEXED)) {
+                record.setIndexed((Boolean) state.get(INDEXED));
+            }
+            if (state.containsKey(KEYED)) {
+                record.setKeyed((Boolean) state.get(KEYED));
+            }
+            if (state.containsKey(VALUE_TYPE)) {
+                record.setValueType((ValueType) state.get(VALUE_TYPE));
+            }
+        }
     }
 
     public class AttributeUpdateState extends AttributeState {
         @GraphQLField
-        public String id;
+        public UUID getId() {
+            return (UUID) state.get(ID);
+        }
+
+        public AttributeUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
     }
 
     public abstract class ExistentialCommon implements Existential {
@@ -121,9 +159,8 @@ public interface Existential {
         }
 
         @Override
-        public String getId() {
-            return record.getId()
-                         .toString();
+        public UUID getId() {
+            return record.getId();
         }
 
         @Override
@@ -145,31 +182,54 @@ public interface Existential {
     }
 
     public class ExistentialState {
-        @GraphQLField
-        public String authority;
+        static final String         ID        = "id";
+        private static final String AUTHORITY = "authority";
+        private static final String NAME      = "name";
+        private static final String NOTES     = "notes";
+        final Map<String, Object>   state;
+
+        public ExistentialState(HashMap<String, Object> state) {
+            this.state = state;
+        }
 
         @GraphQLField
-        public String name;
+        public String getAuthority() {
+            return (String) state.get(AUTHORITY);
+        }
 
         @GraphQLField
-        public String notes;
+        public String getName() {
+            return (String) state.get(NAME);
+        }
+
+        @GraphQLField
+        public String getNotes() {
+            return (String) state.get(NOTES);
+        }
 
         public void update(ExistentialRecord record) {
-            if (authority != null) {
-                record.setAuthority(UUID.fromString(authority));
+            if (state.containsKey(AUTHORITY)) {
+                record.setAuthority(UUID.fromString((String) state.get(AUTHORITY)));
             }
-            if (name != null) {
-                record.setName(name);
+            if (state.containsKey(NAME)) {
+                record.setName((String) state.get(NAME));
             }
-            if (notes != null) {
-                record.setNotes(notes);
+            if (state.containsKey(NOTES)) {
+                record.setNotes((String) state.get(NOTES));
             }
         }
     }
 
     public class ExistentialUpdateState extends ExistentialState {
+
+        public ExistentialUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
+
         @GraphQLField
-        public String id;
+        public UUID getId() {
+            return (UUID) state.get(ID);
+        }
     }
 
     @GraphQLDescription("The Interval existential ruleform")
@@ -210,13 +270,35 @@ public interface Existential {
     }
 
     public class RelationshipState extends ExistentialState {
+        private static final String INVERSE = "inverse";
+
+        public RelationshipState(HashMap<String, Object> state) {
+            super(state);
+        }
+
         @GraphQLField
-        public String inverse;
+        public UUID getInverse() {
+            return (UUID) state.get(INVERSE);
+        }
+
+        @Override
+        public void update(ExistentialRecord record) {
+            super.update(record);
+            if (state.containsKey(INVERSE)) {
+                record.setInverse((UUID) state.get(INVERSE));
+            }
+        }
     }
 
     public class RelationshipUpdateState extends RelationshipState {
+        public RelationshipUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
+
         @GraphQLField
-        public String id;
+        public UUID getId() {
+            return (UUID) state.get(ID);
+        }
     }
 
     @GraphQLDescription("The StatusCode existential ruleform")
@@ -238,16 +320,44 @@ public interface Existential {
     }
 
     public class StatusCodeState extends ExistentialState {
-        @GraphQLField
-        public Boolean failParent;
+        private static final String FAIL_PARENT        = "failParent";
+        private static final String PROPAGATE_CHILDREN = "propagateChildren";
+
+        public StatusCodeState(HashMap<String, Object> state) {
+            super(state);
+        }
 
         @GraphQLField
-        public Boolean propagateChildren;
+        public Boolean getFailParent() {
+            return (Boolean) state.get(FAIL_PARENT);
+        }
+
+        @GraphQLField
+        public Boolean getPropagateChildren() {
+            return (Boolean) state.get(PROPAGATE_CHILDREN);
+        }
+
+        @Override
+        public void update(ExistentialRecord record) {
+            super.update(record);
+            if (state.containsKey(FAIL_PARENT)) {
+                record.setFailParent((Boolean) state.get(FAIL_PARENT));
+            }
+            if (state.containsKey(PROPAGATE_CHILDREN)) {
+                record.setPropagateChildren((Boolean) state.get(PROPAGATE_CHILDREN));
+            }
+        }
     }
 
     public class StatusCodeUpdateState extends StatusCodeState {
         @GraphQLField
-        public String id;
+        public UUID getId() {
+            return (UUID) state.get(ID);
+        }
+
+        public StatusCodeUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
     }
 
     @GraphQLDescription("The Unit existential ruleform")
@@ -303,7 +413,7 @@ public interface Existential {
     ExistentialDomain getDomain();
 
     @GraphQLField
-    String getId();
+    UUID getId();
 
     @GraphQLField
     String getName();

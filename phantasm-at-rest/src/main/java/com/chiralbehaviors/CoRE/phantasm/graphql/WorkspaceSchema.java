@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLFloat;
-import static graphql.Scalars.GraphQLID;
 import static graphql.Scalars.GraphQLInt;
 
 import java.math.BigDecimal;
@@ -46,7 +46,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.phantasm.graphql.jooq.JooqSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
@@ -98,11 +97,11 @@ public class WorkspaceSchema {
             JobQueries, JobChronologyQueries {
     }
 
+    public static final String EDGE = "_Edge";
+
     public static Model ctx(DataFetchingEnvironment env) {
         return ((PhantasmCRUD) env.getContext()).getModel();
     }
-
-    public static final String EDGE = "_Edge";
 
     public WorkspaceSchema() {
     }
@@ -157,8 +156,10 @@ public class WorkspaceSchema {
             }
         });
         registerTypes(resolved);
-        Builder topLevelQuery = PhantasmProcessor.singleton.getObjectBuilder(Queries.class);
-        Builder topLevelMutation = PhantasmProcessor.singleton.getObjectBuilder(Mutations.class);
+        Builder topLevelQuery = PhantasmProcessor.getSingleton()
+                                                 .getObjectBuilder(Queries.class);
+        Builder topLevelMutation = PhantasmProcessor.getSingleton()
+                                                    .getObjectBuilder(Mutations.class);
         GraphQLSchema schema;
         resolved.entrySet()
                 .stream()
@@ -183,14 +184,90 @@ public class WorkspaceSchema {
     public GraphQLSchema buildMeta() throws Exception {
         registerTypes(Collections.emptyMap());
 
-        GraphQLObjectType.Builder query = PhantasmProcessor.singleton.getObjectBuilder(MetaQueries.class);
-        GraphQLObjectType.Builder mutation = PhantasmProcessor.singleton.getObjectBuilder(MetaMutations.class);
+        GraphQLObjectType.Builder query = PhantasmProcessor.getSingleton()
+                                                           .getObjectBuilder(MetaQueries.class);
+        GraphQLObjectType.Builder mutation = PhantasmProcessor.getSingleton()
+                                                              .getObjectBuilder(MetaMutations.class);
         JooqSchema jooqSchema = new JooqSchema();
         jooqSchema.contributeTo(query, mutation);
         return GraphQLSchema.newSchema()
                             .query(query.build())
                             .mutation(mutation.build())
-                            .build();
+                            .build(jooqSchema.getTypes());
+    }
+
+    public void registerTypes(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,
+                                                                      InstantiationException,
+                                                                      IllegalAccessException {
+
+        PhantasmProcessor.register(new ZtypeFunction(double.class,
+                                                     GraphQLFloat));
+        PhantasmProcessor.register(new ZtypeFunction(Double.class,
+                                                     GraphQLFloat));
+        PhantasmProcessor.register(new ZtypeFunction(BigDecimal.class,
+                                                     GraphQLFloat));
+        PhantasmProcessor.register(new ZtypeFunction(int.class, GraphQLInt));
+        PhantasmProcessor.register(new ZtypeFunction(UUID.class, GraphQLUuid));
+
+        GraphQLType existentialType = PhantasmProcessor.iface(Existential.class);
+        PhantasmProcessor.register(new ZtypeFunction(Existential.class,
+                                                     existentialType));
+        PhantasmProcessor.register(new ZtypeFunction(ExistentialRecord.class,
+                                                     existentialType));
+        GraphQLObjectType agencyType = phantasm(resolved,
+                                                PhantasmProcessor.getSingleton()
+                                                                 .getObjectBuilder(Agency.class));
+        PhantasmProcessor.register(new ZtypeFunction(Agency.class, agencyType));
+
+        GraphQLObjectType attrType = phantasm(resolved,
+                                              PhantasmProcessor.getSingleton()
+                                                               .getObjectBuilder(Attribute.class));
+        PhantasmProcessor.register(new ZtypeFunction(Attribute.class,
+                                                     attrType));
+
+        GraphQLObjectType intervalType = phantasm(resolved,
+                                                  PhantasmProcessor.getSingleton()
+                                                                   .getObjectBuilder(Interval.class));
+        PhantasmProcessor.register(new ZtypeFunction(Interval.class,
+                                                     intervalType));
+
+        GraphQLObjectType locationType = phantasm(resolved,
+                                                  PhantasmProcessor.getSingleton()
+                                                                   .getObjectBuilder(Location.class));
+        PhantasmProcessor.register(new ZtypeFunction(Location.class,
+                                                     locationType));
+
+        GraphQLObjectType productType = phantasm(resolved,
+                                                 PhantasmProcessor.getSingleton()
+                                                                  .getObjectBuilder(Existential.Product.class));
+        PhantasmProcessor.register(new ZtypeFunction(Existential.Product.class,
+                                                     productType));
+
+        GraphQLObjectType relationshipType = phantasm(resolved,
+                                                      PhantasmProcessor.getSingleton()
+                                                                       .getObjectBuilder(Relationship.class));
+        PhantasmProcessor.register(new ZtypeFunction(Relationship.class,
+                                                     relationshipType));
+
+        GraphQLObjectType statusCodeType = phantasm(resolved,
+                                                    PhantasmProcessor.getSingleton()
+                                                                     .getObjectBuilder(StatusCode.class));
+        PhantasmProcessor.register(new ZtypeFunction(StatusCode.class,
+                                                     statusCodeType));
+
+        GraphQLObjectType unitType = phantasm(resolved,
+                                              PhantasmProcessor.getSingleton()
+                                                               .getObjectBuilder(Unit.class));
+        PhantasmProcessor.register(new ZtypeFunction(Unit.class, unitType));
+
+        GraphQLObjectType jobType = PhantasmProcessor.getSingleton()
+                                                     .getObject(Job.class);
+        PhantasmProcessor.register(new ZtypeFunction(Job.class, jobType));
+
+        GraphQLObjectType chronType = PhantasmProcessor.getSingleton()
+                                                       .getObject(JobChronology.class);
+        PhantasmProcessor.register(new ZtypeFunction(JobChronology.class,
+                                                     chronType));
     }
 
     private void addPhantasmCast(Builder typeBuilder,
@@ -263,69 +340,5 @@ public class WorkspaceSchema {
 
         }
         return false;
-    }
-
-    public void registerTypes(Map<FacetRecord, FacetFields> resolved) throws NoSuchMethodException,
-                                                                      InstantiationException,
-                                                                      IllegalAccessException {
-
-        PhantasmProcessor.register(new ZtypeFunction(double.class,
-                                                     GraphQLFloat));
-        PhantasmProcessor.register(new ZtypeFunction(Double.class,
-                                                     GraphQLFloat));
-        PhantasmProcessor.register(new ZtypeFunction(BigDecimal.class,
-                                                     GraphQLFloat));
-        PhantasmProcessor.register(new ZtypeFunction(int.class, GraphQLInt));
-        PhantasmProcessor.register(new ZtypeFunction(UUID.class, GraphQLID));
-
-        GraphQLType existentialType = PhantasmProcessor.iface(Existential.class);
-        PhantasmProcessor.register(new ZtypeFunction(Existential.class,
-                                                     existentialType));
-        PhantasmProcessor.register(new ZtypeFunction(ExistentialRecord.class,
-                                                     existentialType));
-        GraphQLObjectType agencyType = phantasm(resolved,
-                                                PhantasmProcessor.singleton.getObjectBuilder(Agency.class));
-        PhantasmProcessor.register(new ZtypeFunction(Agency.class, agencyType));
-
-        GraphQLObjectType attrType = phantasm(resolved,
-                                              PhantasmProcessor.singleton.getObjectBuilder(Attribute.class));
-        PhantasmProcessor.register(new ZtypeFunction(Attribute.class,
-                                                     attrType));
-
-        GraphQLObjectType intervalType = phantasm(resolved,
-                                                  PhantasmProcessor.singleton.getObjectBuilder(Interval.class));
-        PhantasmProcessor.register(new ZtypeFunction(Interval.class,
-                                                     intervalType));
-
-        GraphQLObjectType locationType = phantasm(resolved,
-                                                  PhantasmProcessor.singleton.getObjectBuilder(Location.class));
-        PhantasmProcessor.register(new ZtypeFunction(Location.class,
-                                                     locationType));
-
-        GraphQLObjectType productType = phantasm(resolved,
-                                                 PhantasmProcessor.singleton.getObjectBuilder(Existential.Product.class));
-        PhantasmProcessor.register(new ZtypeFunction(Existential.Product.class,
-                                                     productType));
-
-        GraphQLObjectType relationshipType = phantasm(resolved,
-                                                      PhantasmProcessor.singleton.getObjectBuilder(Relationship.class));
-        PhantasmProcessor.register(new ZtypeFunction(Relationship.class,
-                                                     relationshipType));
-
-        GraphQLObjectType statusCodeType = phantasm(resolved,
-                                                    PhantasmProcessor.singleton.getObjectBuilder(StatusCode.class));
-        PhantasmProcessor.register(new ZtypeFunction(StatusCode.class,
-                                                     statusCodeType));
-
-        GraphQLObjectType unitType = phantasm(resolved,
-                                              PhantasmProcessor.singleton.getObjectBuilder(Unit.class));
-        PhantasmProcessor.register(new ZtypeFunction(Unit.class, unitType));
-
-        GraphQLObjectType jobType = PhantasmProcessor.singleton.getObject(Job.class);
-        PhantasmProcessor.register(new ZtypeFunction(Job.class, jobType));
-
-        GraphQLObjectType chronType = PhantasmProcessor.singleton.getObject(JobChronology.class);
-        PhantasmProcessor.register(new ZtypeFunction(JobChronology.class,
-                                                     chronType));
-    }
+    } 
 }

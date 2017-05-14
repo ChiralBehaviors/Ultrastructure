@@ -18,23 +18,17 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql.jooq;
+package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static com.chiralbehaviors.CoRE.jooq.Ruleform.RULEFORM;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLBinary;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLJson;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLTimestamp;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBoolean;
-import static graphql.Scalars.GraphQLID;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,13 +49,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
-import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
 
@@ -96,7 +84,6 @@ public class JooqSchema {
                                                              };
     private static final Logger                    log       = LoggerFactory.getLogger(JooqSchema.class);
     private static final List<Table<?>>            MANIFESTED;
-    private static final ObjectMapper              MAPPER    = new ObjectMapper();
     private static final Map<Class<?>, Table<?>>   TABLES    = new HashMap<>();
     static {
         MANIFESTED = Ruleform.RULEFORM.getTables();
@@ -120,12 +107,12 @@ public class JooqSchema {
     private final Set<GraphQLType> types = new HashSet<>();
 
     public JooqSchema() {
-        PhantasmProcessor.register(new ZtypeFunction(UUID.class, GraphQLID));
         MANIFESTED.stream()
                   .forEach(table -> {
                       GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
-                      PhantasmProcessor.singleton.registerType(new ZtypeFunction(table.getRecordType(),
-                                                                                 type));
+                      PhantasmProcessor.getSingleton()
+                                       .registerType(new ZtypeFunction(table.getRecordType(),
+                                                                       type));
                   });
     }
 
@@ -146,10 +133,9 @@ public class JooqSchema {
                .type((GraphQLOutputType) type(field))
                .dataFetcher(env -> {
                    Object record = env.getSource();
-                   Object result;
                    try {
-                       result = field.getReadMethod()
-                                     .invoke(record);
+                       return field.getReadMethod()
+                                   .invoke(record);
                    } catch (IllegalAccessException | IllegalArgumentException
                            | InvocationTargetException e) {
                        throw new IllegalStateException(String.format("unable to invoke %s",
@@ -157,14 +143,14 @@ public class JooqSchema {
                                                                           .toGenericString()),
                                                        e);
                    }
-                   return encode((GraphQLOutputType) type(field), result);
                });
         return builder;
     }
 
     private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
                                                           PropertyDescriptor field) {
-        GraphQLOutputType type = (GraphQLOutputType) PhantasmProcessor.singleton.typeFor(Existential.class);
+        GraphQLOutputType type = (GraphQLOutputType) PhantasmProcessor.getSingleton()
+                                                                      .typeFor(Existential.class);
         builder.name(field.getName())
                .type(type)
                .dataFetcher(env -> {
@@ -226,7 +212,7 @@ public class JooqSchema {
                                                  translated(record)))
                              .type(GraphQLBoolean)
                              .argument(a -> a.name("id")
-                                             .type(new GraphQLNonNull(GraphQLID))
+                                             .type(new GraphQLNonNull(GraphQLUuid))
                                              .description(String.format("ID of the %s",
                                                                         translated(record))))
                              .dataFetcher(env -> {
@@ -251,29 +237,27 @@ public class JooqSchema {
         query.field(b -> b.name(Introspector.decapitalize(translated(record)))
                           .type(type)
                           .argument(a -> a.name("id")
-                                          .type(new GraphQLNonNull(GraphQLID))
+                                          .type(new GraphQLNonNull(GraphQLUuid))
                                           .description(String.format("ID of the %s",
                                                                      translated(record))))
                           .dataFetcher(env -> {
-                              UUID id = decode(GraphQLID,
-                                               env.getArgument("id"));
+                              UUID id = env.getArgument("id");
                               return fetch(id, record, env);
                           }));
         query.field(b -> b.name(Introspector.decapitalize(String.format("%ss",
                                                                         translated(record))))
                           .type(new GraphQLList(type))
                           .argument(a -> a.name("ids")
-                                          .type(new GraphQLList(GraphQLID))
+                                          .type(new GraphQLList(GraphQLUuid))
                                           .description(String.format("IDs of the %s",
                                                                      translated(record))))
                           .dataFetcher(env -> {
-                              List<String> ids = (List<String>) env.getArgument("ids");
+                              List<UUID> ids = (List<UUID>) env.getArgument("ids");
                               if (ids == null) {
                                   return fetchAll(record, env);
                               }
 
                               return ids.stream()
-                                        .map(s -> (UUID) decode(GraphQLID, s))
                                         .map(id -> fetch(id, record, env))
                                         .collect(Collectors.toList());
                           }));
@@ -335,47 +319,11 @@ public class JooqSchema {
         return (T) instance;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T decode(GraphQLType type, Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (type.equals(GraphQLID)) {
-            return (T) UuidUtil.decode(((String) value));
-        }
-        if (type.equals(GraphQLJson)) {
-            try {
-                return (T) MAPPER.readTree((String) value);
-            } catch (IOException e) {
-                throw new IllegalArgumentException();
-            }
-        }
-        return (T) value;
-    }
-
     private Object delete(Class<?> record, Map<String, GraphQLType> types,
                           DataFetchingEnvironment env) {
-        UUID id = decode(GraphQLID, env.getArgument("id"));
-        UpdatableRecord<?> instance = fetch(id, record, env);
+        UpdatableRecord<?> instance = fetch(env.getArgument("id"), record, env);
         instance.delete();
         return true;
-    }
-
-    private Object encode(GraphQLOutputType type, Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (type.equals(GraphQLID)) {
-            return UuidUtil.encode(((UUID) value));
-        }
-        if (type.equals(GraphQLBinary)) {
-            return Base64.getEncoder()
-                         .encodeToString((byte[]) value);
-        }
-        if (type.equals(GraphQLTimestamp)) {
-            return ((Timestamp) value).getTime();
-        }
-        return value;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -466,8 +414,7 @@ public class JooqSchema {
              .forEach(entry -> {
                  try {
                      PropertyUtils.setProperty(instance, entry.getKey(),
-                                               decode(types.get(entry.getKey()),
-                                                      entry.getValue()));
+                                               entry.getValue());
                  } catch (IllegalAccessException | InvocationTargetException
                          | NoSuchMethodException e) {
                      throw new IllegalArgumentException(String.format("Illegal property: %s",
@@ -489,14 +436,14 @@ public class JooqSchema {
 
     private GraphQLType type(PropertyDescriptor field) {
         Method readMethod = field.getReadMethod();
-        return PhantasmProcessor.singleton.typeFor(readMethod.getReturnType());
+        return PhantasmProcessor.getSingleton()
+                                .typeFor(readMethod.getReturnType());
     }
 
     @SuppressWarnings("unchecked")
     private Object update(Class<?> record, Map<String, GraphQLType> types,
                           DataFetchingEnvironment env) {
-        UUID id = decode(GraphQLID,
-                         ((Map<String, Object>) env.getArgument("state")).get("id"));
+        UUID id = (UUID) ((Map<?, ?>) env.getArgument("state")).get("id");
         UpdatableRecord<?> instance = fetch(id, record, env);
         set(instance, types, (Map<String, Object>) env.getArgument("state"));
         instance.update();

@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -193,8 +194,8 @@ public interface Existential {
         }
 
         @GraphQLField
-        public String getAuthority() {
-            return (String) state.get(AUTHORITY);
+        public UUID getAuthority() {
+            return (UUID) state.get(AUTHORITY);
         }
 
         @GraphQLField
@@ -209,7 +210,7 @@ public interface Existential {
 
         public void update(ExistentialRecord record) {
             if (state.containsKey(AUTHORITY)) {
-                record.setAuthority(UUID.fromString((String) state.get(AUTHORITY)));
+                record.setAuthority((UUID) state.get(AUTHORITY));
             }
             if (state.containsKey(NAME)) {
                 record.setName((String) state.get(NAME));

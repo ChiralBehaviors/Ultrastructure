@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -47,6 +48,10 @@ import graphql.schema.GraphQLScalarType;
  */
 public interface WorkspsacScalarTypes {
 
+    static GraphQLScalarType GraphQLBinary    = new GraphQLScalarType("BINARY",
+                                                                      "Built-in Base 64 encoded BINARY",
+                                                                      binaryCoercing());
+
     static GraphQLScalarType GraphQLJson      = new GraphQLScalarType("JSON",
                                                                       "Built-in JSON",
                                                                       jsonCoercing());
@@ -54,10 +59,37 @@ public interface WorkspsacScalarTypes {
     static GraphQLScalarType GraphQLTimestamp = new GraphQLScalarType("TIMESTAMP",
                                                                       "Built-in TIMESTAMP",
                                                                       timestampCoercing());
+    static GraphQLScalarType GraphQLUuid      = new GraphQLScalarType("ID",
+                                                                      "Built-in ID",
+                                                                      uuidCoercing());
 
-    static GraphQLScalarType GraphQLBinary    = new GraphQLScalarType("BINARY",
-                                                                      "Built-in Base 64 encoded BINARY",
-                                                                      binaryCoercing());
+    SimpleDateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+ 
+    static Coercing binaryCoercing() {
+        return new Coercing() {
+
+            @Override
+            public byte[] parseLiteral(Object input) {
+                if (input instanceof StringValue) {
+                    return Base64.getDecoder()
+                                 .decode(((StringValue) input).getValue());
+                }
+                return null;
+            }
+
+            @Override
+            public byte[] parseValue(Object input) {
+                return parseLiteral(input);
+            }
+
+            @Override
+            public String serialize(Object input) {
+                return Base64.getEncoder()
+                             .withoutPadding()
+                             .encodeToString((byte[]) input);
+            }
+        };
+    }
 
     static Coercing jsonCoercing() {
         return new Coercing() {
@@ -132,13 +164,6 @@ public interface WorkspsacScalarTypes {
         };
     }
 
-    SimpleDateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-
-    static String toRFC3339(Date d) {
-        return rfc3339.format(d)
-                      .replaceAll("(\\d\\d)(\\d\\d)$", "$1:$2");
-    }
-
     static Coercing timestampCoercing() {
         return new Coercing() {
 
@@ -168,26 +193,33 @@ public interface WorkspsacScalarTypes {
         };
     }
 
-    static Coercing binaryCoercing() {
-        return new Coercing() {
+    static String toRFC3339(Date d) {
+        return rfc3339.format(d)
+                      .replaceAll("(\\d\\d)(\\d\\d)$", "$1:$2");
+    }
 
+    static Coercing uuidCoercing() {
+        return new Coercing() {
             @Override
-            public String serialize(Object input) {
-                return Base64.getEncoder()
-                             .withoutPadding()
-                             .encodeToString((byte[]) input);
+            public Object parseLiteral(Object input) {
+                if (input instanceof String) {
+                    return UuidUtil.decode((String) input);
+                }
+                if (input instanceof StringValue) {
+                    return UuidUtil.decode(((StringValue) input).getValue());
+                }
+                return null;
             }
 
             @Override
-            public byte[] parseValue(Object input) {
+            public Object parseValue(Object input) {
                 return parseLiteral(input);
             }
 
             @Override
-            public byte[] parseLiteral(Object input) {
-                if (input instanceof StringValue) {
-                    return Base64.getDecoder()
-                                 .decode(((StringValue) input).getValue());
+            public String serialize(Object input) {
+                if (input instanceof UUID) {
+                    return UuidUtil.encode((UUID) input);
                 }
                 return null;
             }

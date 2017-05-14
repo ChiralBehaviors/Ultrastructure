@@ -107,65 +107,60 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createAgency")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateAgency(state: {id: $id notes:\"foo\" authority: $id}) {id} }",
+        execute("mutation m($id: ID!) { updateAgency(state: {id: $id notes:\"foo\" authority: $id}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeAgency(id: $id) }",
-                variables);
+        execute("mutation m($id: ID!) { removeAgency(id: $id) }", variables);
 
         result = execute("mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createAttribute")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateAttribute(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateAttribute(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeAttribute(id: $id) }",
-                variables);
+        execute("mutation m($id: ID!) { removeAttribute(id: $id) }", variables);
 
         result = execute("mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createInterval")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateInterval(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateInterval(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeInterval(id: $id) }",
-                variables);
+        execute("mutation m($id: ID!) { removeInterval(id: $id) }", variables);
 
         result = execute("mutation m { createLocation(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createLocation")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateLocation(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateLocation(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeLocation(id: $id) }",
-                variables);
+        execute("mutation m($id: ID!) { removeLocation(id: $id) }", variables);
 
         result = execute("mutation m { createProduct(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createProduct")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateProduct(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateProduct(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeProduct(id: $id) }",
-                variables);
+        execute("mutation m($id: ID!) { removeProduct(id: $id) }", variables);
 
         result = execute("mutation m { createRelationship(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createRelationship")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateRelationship(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateRelationship(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeRelationship(id: $id) }",
+        execute("mutation m($id: ID!) { removeRelationship(id: $id) }",
                 variables);
 
         result = execute("mutation m { createStatusCode(state: {name:\"foo\" notes:\"bar\"}) {id} }",
@@ -173,10 +168,10 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createStatusCode")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateStatusCode(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateStatusCode(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeStatusCode(id: $id) }",
+        execute("mutation m($id: ID!) { removeStatusCode(id: $id) }",
                 variables);
 
         result = execute("mutation m { createUnit(state: {name:\"foo\" notes:\"bar\"}) {id} }",
@@ -184,10 +179,10 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createUnit")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: String!) { updateUnit(state: {id: $id notes:\"foo\"}) {id} }",
+        execute("mutation m($id: ID!) { updateUnit(state: {id: $id notes:\"foo\"}) {id} }",
                 variables);
 
-        execute("mutation m($id: String!) { removeUnit(id: $id) }", variables);
+        execute("mutation m($id: ID!) { removeUnit(id: $id) }", variables);
     }
 
     @Test
@@ -203,11 +198,11 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("agencies")));
-        data = execute("query q($ids: [String]!) { agencies(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { agencies(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("agencies")).get(0));
-        data = execute("query q($id: String!) { agency(id: $id) { id name description } }",
+        data = execute("query q($id: ID!) { agency(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
@@ -215,40 +210,40 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("attributes")));
-        data = execute("query q($ids: [String]!) { attributes(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { attributes(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("attributes")).get(0));
-        data = execute("query q($id: String!) { attribute(id: $id) { id name description } }",
+        data = execute("query q($id: ID!) { attribute(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
         data = execute("{ intervals { id name description }  }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("intervals")));
-        data = execute("query q($ids: [String]!) { intervals(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { intervals(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
 
         data = execute("{ locations { id name description } }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("locations")));
-        data = execute("query q($ids: [String]!) { locations(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { locations(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("locations")).get(0));
-        data = execute("query q($id: String!) { location(id: $id) { id name description } }",
+        data = execute("query q($id: ID!) { location(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
         data = execute("{ products { id name description } }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("products")));
-        data = execute("query q($ids: [String]!) { products(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { products(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("products")).get(0));
-        data = execute("query q($id: String!) { product(id: $id) { id name description } }",
+        data = execute("query q($id: ID!) { product(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
@@ -256,11 +251,11 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("relationships")));
-        data = execute("query q($ids: [String]!) { relationships(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { relationships(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("relationships")).get(0));
-        data = execute("query q($id: String!) { relationship(id: $id) { id name description } }",
+        data = execute("query q($id: ID!) { relationship(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
@@ -268,18 +263,18 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("statusCodes")));
-        data = execute("query q($ids: [String]!) { statusCodes(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { statusCodes(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
         variables.put("id", ids(data.withArray("statusCodes")).get(0));
-        data = execute("query q($id: String!) { statusCode(id: $id) { id name description } }",
+        data = execute("query q($id: ID!) { statusCode(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
         data = execute("{ units{ id name description } }", variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("units")));
-        data = execute("query q($ids: [String]!) { units(ids: $ids) { id name description } }",
+        data = execute("query q($ids: [ID]!) { units(ids: $ids) { id name description } }",
                        variables);
         assertNotNull(data);
     }

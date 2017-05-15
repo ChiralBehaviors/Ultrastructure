@@ -650,6 +650,9 @@ public class FacetFields extends Phantasmagoria {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
                                        ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((UUID) updateState.get(ID));
+                                       if (ruleform == null) {
+                                           return null;
+                                       }
                                        update(ruleform, updateState, crud,
                                               detachedUpdateTemplate);
                                        return ruleform;

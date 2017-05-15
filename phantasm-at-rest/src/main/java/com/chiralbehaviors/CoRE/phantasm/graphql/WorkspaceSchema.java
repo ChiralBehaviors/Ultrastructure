@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
-import static graphql.Scalars.GraphQLFloat;
+import static graphql.Scalars.*;
 import static graphql.Scalars.GraphQLInt;
 
 import java.math.BigDecimal;
@@ -268,6 +268,7 @@ public class WorkspaceSchema {
                                                        .getObject(JobChronology.class);
         PhantasmProcessor.register(new ZtypeFunction(JobChronology.class,
                                                      chronType));
+        existentialType(resolved);
     }
 
     private void addPhantasmCast(Builder typeBuilder,
@@ -293,7 +294,6 @@ public class WorkspaceSchema {
                                                 .build());
     }
 
-    @SuppressWarnings("unused")
     private void addPhantasmCast(GraphQLInterfaceType.Builder builder,
                                  Entry<FacetRecord, FacetFields> resolved) {
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
@@ -306,6 +306,37 @@ public class WorkspaceSchema {
                                             .type(new GraphQLTypeReference(resolved.getValue()
                                                                                    .getName()))
                                             .build());
+    }
+
+    private GraphQLInterfaceType existentialType(Map<FacetRecord, FacetFields> resolved) {
+        GraphQLInterfaceType.Builder builder = GraphQLInterfaceType.newInterface();
+        builder.name("Existential")
+               .description("The Existential interface type")
+               .field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("id")
+                                            .description("Existential id")
+                                            .type(GraphQLUuid)
+                                            .build())
+               .field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("name")
+                                            .description("Existential name")
+                                            .type(GraphQLString)
+                                            .build())
+               .field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("description")
+                                            .description("Existential description")
+                                            .type(GraphQLString)
+                                            .build())
+               .field(GraphQLFieldDefinition.newFieldDefinition()
+                                            .name("updatedBy")
+                                            .description("Agency that updated the Existential")
+                                            .type(new GraphQLTypeReference("Agency"))
+                                            .build())
+               .typeResolver(PhantasmProcessor.getSingleton());
+
+        resolved.entrySet()
+                .forEach(e -> addPhantasmCast(builder, e));
+        return builder.build();
     }
 
     private void gatherImports(Workspace workspace, Set<Workspace> traversed) {
@@ -340,5 +371,5 @@ public class WorkspaceSchema {
 
         }
         return false;
-    } 
+    }
 }

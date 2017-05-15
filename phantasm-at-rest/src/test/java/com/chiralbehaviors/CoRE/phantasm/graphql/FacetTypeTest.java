@@ -437,12 +437,10 @@ public class FacetTypeTest extends AbstractModelTest {
                                                            Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("thing3", thing3.getRuleform()
-                                      .getId()
-                                      .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                  .getId()));
+        variables.put("thing3", UuidUtil.encode(thing3.getRuleform()
+                                      .getId()));
 
         QueryRequest request = new QueryRequest("mutation m($id: ID!, $thing3: ID!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);

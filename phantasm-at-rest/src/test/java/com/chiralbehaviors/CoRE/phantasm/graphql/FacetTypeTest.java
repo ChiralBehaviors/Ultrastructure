@@ -315,9 +315,8 @@ public class FacetTypeTest extends AbstractModelTest {
                                                            model,
                                                            Collections.emptySet());
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                                  .getId()));
         String query = "query it($id: ID!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}";
         ExecutionResult execute = execute(thing1, schema, query);
         assertTrue(execute.getErrors()

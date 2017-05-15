@@ -94,9 +94,8 @@ public class FacetTypeTest extends AbstractModelTest {
                                                            Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("artifact", artifact1.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("artifact", UuidUtil.encode(artifact1.getRuleform()
+                                                           .getId()));
         variables.put("name", "hello");
         variables.put("description", "goodbye");
         QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: ID) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
@@ -120,16 +119,14 @@ public class FacetTypeTest extends AbstractModelTest {
         assertEquals(artifact1, thing1.getDerivedFrom());
 
         variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                                  .getId()));
+        variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
+                                                           .getId()));
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        request = new QueryRequest("mutation m($id: ID!, $name: ID!, $artifact: String, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
+        request = new QueryRequest("mutation m($id: ID!, $name: String!, $artifact: ID, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
         execute = execute(scope, schema, request);
         assertTrue(execute.getErrors()
@@ -149,14 +146,12 @@ public class FacetTypeTest extends AbstractModelTest {
         assertEquals(newUri, thing1.getURI());
 
         variables = new HashMap<>();
-        variables.put("thing1", thing1.getRuleform()
-                                      .getId()
-                                      .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("thing1", UuidUtil.encode(thing1.getRuleform()
+                                                      .getId()));
+        variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
+                                                           .getId()));
         variables.put("name", "hello");
-        request = new QueryRequest("mutation m($name: ID!, $artifact: String, $thing1: ID!) { \n"
+        request = new QueryRequest("mutation m($name: String!, $artifact: ID!, $thing1: ID!) { \n"
                                    + "createThing2(state: {setName: $name, \n"
                                    + "addDerivedFrom: $artifact, \n"
                                    + "setThing1: $thing1}) { id name } }",

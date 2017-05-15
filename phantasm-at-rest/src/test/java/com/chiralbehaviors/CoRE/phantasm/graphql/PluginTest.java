@@ -116,7 +116,7 @@ public class PluginTest extends AbstractModelTest {
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
                                                            model, reflections);
 
-        ExecutionResult execute = new ExistentialContext(model,
+        ExecutionResult execute = new WorkspaceContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),

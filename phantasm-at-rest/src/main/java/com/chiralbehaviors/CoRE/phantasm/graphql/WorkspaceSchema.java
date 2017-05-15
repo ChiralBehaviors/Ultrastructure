@@ -21,8 +21,9 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
-import static graphql.Scalars.*;
+import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
+import static graphql.Scalars.GraphQLString;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -53,7 +54,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -83,11 +83,6 @@ import graphql.schema.GraphQLUnionType;
  *
  */
 public class WorkspaceSchema {
-    public interface MetaMutations extends ExistentialMutations {
-    }
-
-    public interface MetaQueries extends ExistentialQueries, WorkspaceQueries {
-    }
 
     public interface Mutations
             extends ExistentialMutations, JobMutations, CoreUserAdmin {
@@ -185,9 +180,9 @@ public class WorkspaceSchema {
         registerTypes(Collections.emptyMap());
 
         GraphQLObjectType.Builder query = PhantasmProcessor.getSingleton()
-                                                           .getObjectBuilder(MetaQueries.class);
+                                                           .getObjectBuilder(MetaContext.MetaQueries.class);
         GraphQLObjectType.Builder mutation = PhantasmProcessor.getSingleton()
-                                                              .getObjectBuilder(MetaMutations.class);
+                                                              .getObjectBuilder(MetaContext.MetaMutations.class);
         JooqSchema jooqSchema = new JooqSchema();
         jooqSchema.contributeTo(query, mutation);
         return GraphQLSchema.newSchema()

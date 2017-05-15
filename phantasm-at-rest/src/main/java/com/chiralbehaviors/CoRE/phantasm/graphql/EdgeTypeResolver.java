@@ -3,7 +3,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.Traversal;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorization;
 
 import graphql.schema.GraphQLObjectType;

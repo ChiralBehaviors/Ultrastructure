@@ -366,7 +366,7 @@ public class JooqSchema {
         return (T) WorkspaceSchema.ctx(env)
                                   .create()
                                   .selectFrom(table)
-                                  .where(field.eq(WorkspaceContext.getWorkspace(env)
+                                  .where(field.eq(PhantasmContext.getWorkspace(env)
                                                                   .getId()))
                                   .fetch()
                                   .stream()

@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -35,22 +34,13 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */ 
+ */
 public interface JobQueries {
 
     @GraphQLField
-    default Job job(@NotNull @GraphQLName("id") String id,
-                    DataFetchingEnvironment env) {
-        return new Job(Job.fetch(env, UUID.fromString(id)));
-    }
+    Job job(@NotNull @GraphQLName("id") UUID id, DataFetchingEnvironment env);
 
     @GraphQLField
-    default List<Job> jobs(@NotNull @GraphQLName("ids") List<String> ids,
-                           DataFetchingEnvironment env) {
-        return ids.stream()
-                  .map(s -> UUID.fromString(s))
-                  .map(id -> Job.fetch(env, id))
-                  .map(r -> new Job(r))
-                  .collect(Collectors.toList());
-    }
+    List<Job> jobs(@NotNull @GraphQLName("ids") List<UUID> ids,
+                   DataFetchingEnvironment env);
 }

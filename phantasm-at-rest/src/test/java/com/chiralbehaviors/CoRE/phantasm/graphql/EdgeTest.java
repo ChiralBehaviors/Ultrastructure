@@ -49,7 +49,7 @@ public class EdgeTest extends AbstractModelTest {
         QueryRequest request = new QueryRequest("query ($id: String!) { workspace(id: $id) { imports { _edge { ... on _workspace_import { lookupOrder namespace } } } } }",
                                                 variables);
 
-        ExecutionResult execute = new ExistentialContext(model,
+        ExecutionResult execute = new WorkspaceContext(model,
                                                        scope.getWorkspace()
                                                             .getDefiningProduct()).execute(schema,
                                                                                            request.getQuery(),

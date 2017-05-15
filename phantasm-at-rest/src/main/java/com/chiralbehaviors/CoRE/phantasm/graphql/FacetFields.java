@@ -61,7 +61,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.Traversal;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
@@ -143,8 +143,8 @@ public class FacetFields extends Phantasmagoria {
         return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
-    public static WorkspaceContext ctx(DataFetchingEnvironment env) {
-        return (WorkspaceContext) env.getContext();
+    public static PhantasmContext ctx(DataFetchingEnvironment env) {
+        return (PhantasmContext) env.getContext();
     }
 
     public static Deque<FacetRecord> initialState(WorkspaceAccessor workspace,
@@ -349,7 +349,7 @@ public class FacetFields extends Phantasmagoria {
                                                           .name(fieldName)
                                                           .description(attribute.getDescription())
                                                           .dataFetcher(env -> {
-                                                              WorkspaceContext ctx = ctx(env);
+                                                              PhantasmContext ctx = ctx(env);
                                                               Traversal edge = (Traversal) env.getSource();
                                                               if (edge == null
                                                                   || !edge.auth.equals(auth)) {
@@ -782,7 +782,7 @@ public class FacetFields extends Phantasmagoria {
     private void visitChildren(NetworkAuthorization auth) {
         GraphQLOutputType type = referenceToType(auth.getChild());
         type = new GraphQLList(type);
-        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+        typeBuilder.field(PhantasmContext.newEdgeFieldDefinition()
                                           .auth(auth)
                                           .type(type)
                                           .name(auth.plural())
@@ -793,7 +793,7 @@ public class FacetFields extends Phantasmagoria {
                                                                       .collect(Collectors.toList()))
                                           .description(auth.getNotes())
                                           .build());
-        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+        typeBuilder.field(PhantasmContext.newEdgeFieldDefinition()
                                           .auth(auth)
                                           .type(type)
                                           .name(String.format(IMMEDIATE_TEMPLATE,
@@ -814,7 +814,7 @@ public class FacetFields extends Phantasmagoria {
 
     private void visitSingular(NetworkAuthorization auth) {
         GraphQLOutputType type = referenceToType(auth.getChild());
-        typeBuilder.field(WorkspaceContext.newEdgeFieldDefinition()
+        typeBuilder.field(PhantasmContext.newEdgeFieldDefinition()
                                           .auth(auth)
                                           .type(type)
                                           .name(auth.getFieldName())

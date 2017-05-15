@@ -33,6 +33,8 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
@@ -57,7 +59,8 @@ import graphql.schema.DataFetchingEnvironment;
  * @author halhildebrand
  *
  */
-public class ExistentialContext extends WorkspaceContext {
+public class ExistentialContext extends PhantasmContext
+        implements ExistentialQueries, ExistentialMutations {
     public ExistentialContext(Model model,
                               com.chiralbehaviors.CoRE.domain.Product workspace) {
         super(model, workspace);
@@ -300,8 +303,8 @@ public class ExistentialContext extends WorkspaceContext {
         Model model = WorkspaceSchema.ctx(env);
         return model.create()
                     .selectFrom(Tables.EXISTENTIAL)
-                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(WorkspaceContext.getWorkspace(env)
-                                                                           .getId()))
+                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
+                                                                          .getId()))
                     .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                     .fetch()
                     .into(ExistentialRecord.class)

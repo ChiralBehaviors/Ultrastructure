@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.getWorkspace;
 
 import javax.validation.constraints.NotNull;
 

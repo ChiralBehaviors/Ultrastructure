@@ -64,6 +64,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -375,7 +376,7 @@ public class WorkspaceResource extends TransactionalResource {
 
             Product definingProduct = model.records()
                                            .resolve(uuid);
-            ExistentialContext crud = new ExistentialContext(model,
+            WorkspaceContext crud = new WorkspaceContext(model,
                                                          definingProduct);
             if (!model.checkRead((UpdatableRecord<?>) definingProduct)
                 || !model.checkPermission((ExistentialRuleform) definingProduct,
@@ -434,7 +435,7 @@ public class WorkspaceResource extends TransactionalResource {
             Product definingProduct = model.records()
                                            .resolve(uuid);
             ExistentialContext crud = new ExistentialContext(model,
-                                                         definingProduct);
+                                                             definingProduct);
             if (!model.checkRead((UpdatableRecord<?>) definingProduct)
                 || !model.checkRead((UpdatableRecord<?>) definingProduct)) {
                 Agency p = model.getCurrentPrincipal()
@@ -509,7 +510,7 @@ public class WorkspaceResource extends TransactionalResource {
         }, create);
     }
 
-    private ExecutionResult execute(GraphQLSchema schema, WorkspaceContext crud,
+    private ExecutionResult execute(GraphQLSchema schema, PhantasmContext crud,
                                     String query,
                                     Map<String, Object> variables) {
         ExecutionResult result = crud.execute(schema, query, variables);

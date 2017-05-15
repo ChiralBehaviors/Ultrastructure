@@ -31,6 +31,7 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.*;
 
 import java.beans.Introspector;
 import java.io.File;
@@ -239,7 +240,7 @@ public class FacetFields extends Phantasmagoria {
     private void addChild(NetworkAuthorization auth) {
         String add = String.format(ADD_TEMPLATE,
                                    Phantasmagoria.capitalized(auth.getFieldName()));
-        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLUuid)
                                                              .name(add)
                                                              .description(auth.getNotes())
                                                              .build();
@@ -257,7 +258,7 @@ public class FacetFields extends Phantasmagoria {
     private void addChildren(NetworkAuthorization auth) {
         String addChildren = String.format(ADD_TEMPLATE,
                                            Phantasmagoria.capitalized(auth.plural()));
-        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
+        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLUuid))
                                                              .name(addChildren)
                                                              .description(auth.getNotes())
                                                              .build();
@@ -285,7 +286,7 @@ public class FacetFields extends Phantasmagoria {
                                    .type(referenceToType(facet))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
-                                                          .type(GraphQLString)
+                                                          .type(GraphQLUuid)
                                                           .build())
                                    .dataFetcher(env -> {
                                        ExistentialRuleform ruleform = ctx(env).lookup((String) env.getArgument(ID));
@@ -306,7 +307,7 @@ public class FacetFields extends Phantasmagoria {
                                               .description("The currently traversed edge to this instance")
                                               .dataFetcher(env -> ctx(env).getCurrentEdge())
                                               .build());
-        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+        typeBuilder.field(newFieldDefinition().type(GraphQLUuid)
                                               .name(ID)
                                               .description("The id of the facet instance")
                                               .build());
@@ -316,7 +317,7 @@ public class FacetFields extends Phantasmagoria {
                                               .dataFetcher(env -> Existential.wrap((ExistentialRecord) env.getSource()))
                                               .build());
 
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLUuid))
                                                      .name(ID)
                                                      .description(String.format("the id of the updated %s",
                                                                                 name))
@@ -486,7 +487,7 @@ public class FacetFields extends Phantasmagoria {
                                    .type(new GraphQLTypeReference(name))
                                    .argument(newArgument().name(ID)
                                                           .description("id of the facet")
-                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .type(new GraphQLNonNull(GraphQLUuid))
                                                           .build())
                                    .dataFetcher(env -> ctx(env).lookup((String) env.getArgument(ID)))
                                    .build();
@@ -498,7 +499,7 @@ public class FacetFields extends Phantasmagoria {
                                                               name))
                                    .argument(newArgument().name(IDS)
                                                           .description("list of ids of the instances to query")
-                                                          .type(new GraphQLList(GraphQLString))
+                                                          .type(new GraphQLList(GraphQLUuid))
                                                           .build())
                                    .type(new GraphQLList(referenceToType(facet)))
                                    .dataFetcher(context -> {
@@ -519,7 +520,7 @@ public class FacetFields extends Phantasmagoria {
                                                               name))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
-                                                          .type(GraphQLString)
+                                                          .type(GraphQLUuid)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).remove(facet,
                                                                        ctx(env).lookup((String) env.getArgument(ID)),
@@ -530,7 +531,7 @@ public class FacetFields extends Phantasmagoria {
     private void removeChild(NetworkAuthorization auth) {
         String remove = String.format(REMOVE_TEMPLATE,
                                       Phantasmagoria.capitalized(auth.getFieldName()));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLUuid)
                                                      .name(remove)
                                                      .description(auth.getNotes())
                                                      .build());
@@ -546,7 +547,7 @@ public class FacetFields extends Phantasmagoria {
     private void removeChildren(NetworkAuthorization auth) {
         String removeChildren = String.format(REMOVE_TEMPLATE,
                                               Phantasmagoria.capitalized(auth.plural()));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLUuid))
                                                      .name(removeChildren)
                                                      .description(auth.getNotes())
                                                      .build());
@@ -584,7 +585,7 @@ public class FacetFields extends Phantasmagoria {
     private void setChildren(NetworkAuthorization auth) {
         String setter = String.format(SET_TEMPLATE,
                                       Phantasmagoria.capitalized(auth.plural()));
-        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
+        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLUuid))
                                                              .name(setter)
                                                              .description(auth.getNotes())
                                                              .build();
@@ -825,7 +826,7 @@ public class FacetFields extends Phantasmagoria {
                                           .build());
         String setter = String.format(SET_TEMPLATE,
                                       Phantasmagoria.capitalized(auth.getFieldName()));
-        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLUuid)
                                                              .name(setter)
                                                              .description(auth.getNotes())
                                                              .build();

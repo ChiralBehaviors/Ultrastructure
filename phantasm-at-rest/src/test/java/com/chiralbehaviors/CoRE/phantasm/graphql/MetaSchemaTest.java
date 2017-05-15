@@ -521,8 +521,7 @@ public class MetaSchemaTest extends AbstractModelTest {
     private ObjectNode execute(String query,
                                Map<String, Object> variables) throws IllegalArgumentException,
                                                               Exception {
-        ExistentialContext context = new ExistentialContext(model,
-                                                            definingProduct);
+        MetaContext context = new MetaContext(model, definingProduct);
         ExecutionResult execute = context.execute(schema, query, variables);
         assertTrue(format(execute.getErrors()), execute.getErrors()
                                                        .isEmpty());

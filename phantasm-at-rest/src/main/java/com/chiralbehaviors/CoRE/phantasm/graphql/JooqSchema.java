@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
 
@@ -90,7 +89,7 @@ public class JooqSchema {
                                                       table));
     }
 
-    public static JooqSchema meta() {
+    public static JooqSchema meta(PhantasmProcessor processor) {
         List<Table<?>> manifested = Ruleform.RULEFORM.getTables();
         manifested.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL,
                                                          RULEFORM.EXISTENTIAL_ATTRIBUTE,
@@ -102,7 +101,7 @@ public class JooqSchema {
                                                          RULEFORM.WORKSPACE_LABEL,
                                                          RULEFORM.JOB,
                                                          RULEFORM.JOB_CHRONOLOGY }));
-        return new JooqSchema(manifested);
+        return new JooqSchema(manifested, processor);
     }
 
     private static String camel(String snake) {
@@ -112,22 +111,23 @@ public class JooqSchema {
     private final List<Table<?>>   manifested;
     private final Set<GraphQLType> types = new HashSet<>();
 
-    public JooqSchema(List<Table<?>> manifested) {
+    public JooqSchema(List<Table<?>> manifested, PhantasmProcessor processor) {
         this.manifested = manifested;
         manifested.stream()
                   .forEach(table -> {
                       GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
-                      PhantasmProcessor.getSingleton()
-                                       .registerType(new ZtypeFunction(table.getRecordType(),
-                                                                       type));
+                      processor.registerType(new ZtypeFunction(table.getRecordType(),
+                                                               type));
                   });
     }
 
     public void contributeTo(GraphQLObjectType.Builder query,
-                             GraphQLObjectType.Builder mutation) {
+                             GraphQLObjectType.Builder mutation,
+                             PhantasmProcessor processor) {
         manifested.stream()
                   .map(table -> table.getRecordType())
-                  .forEach(record -> contributeTo(query, record, mutation));
+                  .forEach(record -> contributeTo(query, record, mutation,
+                                                  processor));
     }
 
     public Set<GraphQLType> getTypes() {
@@ -135,9 +135,10 @@ public class JooqSchema {
     }
 
     private GraphQLFieldDefinition.Builder buildPrimitive(GraphQLFieldDefinition.Builder builder,
-                                                          PropertyDescriptor field) {
+                                                          PropertyDescriptor field,
+                                                          PhantasmProcessor processor) {
         builder.name(field.getName())
-               .type((GraphQLOutputType) type(field))
+               .type((GraphQLOutputType) type(field, processor))
                .dataFetcher(env -> {
                    Object record = env.getSource();
                    try {
@@ -155,9 +156,9 @@ public class JooqSchema {
     }
 
     private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
-                                                          PropertyDescriptor field) {
-        GraphQLOutputType type = (GraphQLOutputType) PhantasmProcessor.getSingleton()
-                                                                      .typeFor(Existential.class);
+                                                          PropertyDescriptor field,
+                                                          PhantasmProcessor processor) {
+        GraphQLOutputType type = (GraphQLOutputType) processor.typeFor(Existential.class);
         builder.name(field.getName())
                .type(type)
                .dataFetcher(env -> {
@@ -181,7 +182,8 @@ public class JooqSchema {
     private void contributeCreate(Builder mutation, Class<?> record,
                                   GraphQLObjectType type,
                                   List<PropertyDescriptor> fields,
-                                  Map<String, GraphQLType> types) {
+                                  Map<String, GraphQLType> types,
+                                  PhantasmProcessor processor) {
         GraphQLInputObjectType.Builder updateBuilder = GraphQLInputObjectType.newInputObject()
                                                                              .name(String.format("create%sState",
                                                                                                  translated(record)));
@@ -192,7 +194,7 @@ public class JooqSchema {
               .forEach(field -> {
                   updateBuilder.field(b -> {
                       return b.name(field.getName())
-                              .type((GraphQLInputType) type(field));
+                              .type((GraphQLInputType) type(field, processor));
                   });
               });
         GraphQLInputObjectType update = updateBuilder.build();
@@ -229,12 +231,14 @@ public class JooqSchema {
 
     private void contributeMutations(Builder mutation, Class<?> record,
                                      GraphQLObjectType type,
-                                     List<PropertyDescriptor> fields) {
+                                     List<PropertyDescriptor> fields,
+                                     PhantasmProcessor processor) {
         Map<String, GraphQLType> types = fields.stream()
                                                .collect(Collectors.toMap(field -> field.getName(),
-                                                                         field -> type(field)));
-        contributeCreate(mutation, record, type, fields, types);
-        contributeUpdate(mutation, record, type, fields, types);
+                                                                         field -> type(field,
+                                                                                       processor)));
+        contributeCreate(mutation, record, type, fields, types, processor);
+        contributeUpdate(mutation, record, type, fields, types, processor);
         contributeDelete(mutation, record, type, fields, types);
     }
 
@@ -270,22 +274,23 @@ public class JooqSchema {
                           }));
     }
 
-    private void contributeTo(Builder query, Class<?> record,
-                              Builder mutation) {
+    private void contributeTo(Builder query, Class<?> record, Builder mutation,
+                              PhantasmProcessor processor) {
         List<PropertyDescriptor> fields = Arrays.asList(PropertyUtils.getPropertyDescriptors(record))
                                                 .stream()
                                                 .filter(field -> !IGNORE.contains(field.getName()))
                                                 .collect(Collectors.toList());
-        GraphQLObjectType type = objectType(record, fields);
+        GraphQLObjectType type = objectType(record, fields, processor);
         types.add(type);
         contributeQueries(query, record, type);
-        contributeMutations(mutation, record, type, fields);
+        contributeMutations(mutation, record, type, fields, processor);
     }
 
     private void contributeUpdate(Builder mutation, Class<?> record,
                                   GraphQLObjectType type,
                                   List<PropertyDescriptor> fields,
-                                  Map<String, GraphQLType> types) {
+                                  Map<String, GraphQLType> types,
+                                  PhantasmProcessor processor) {
         GraphQLInputObjectType.Builder updateBuilder = GraphQLInputObjectType.newInputObject()
                                                                              .name(String.format("update%sState",
                                                                                                  translated(record)));
@@ -293,7 +298,7 @@ public class JooqSchema {
         fields.forEach(field -> {
             updateBuilder.field(b -> {
                 return b.name(field.getName())
-                        .type((GraphQLInputType) type(field));
+                        .type((GraphQLInputType) type(field, processor));
             });
         });
         GraphQLInputObjectType update = updateBuilder.build();
@@ -392,7 +397,8 @@ public class JooqSchema {
     }
 
     private GraphQLObjectType objectType(Class<?> record,
-                                         List<PropertyDescriptor> fields) {
+                                         List<PropertyDescriptor> fields,
+                                         PhantasmProcessor processor) {
         Set<String> references = TABLES.get(record)
                                        .getReferences()
                                        .stream()
@@ -404,9 +410,11 @@ public class JooqSchema {
         builder.name(translated(record));
         fields.forEach(field -> {
             builder.field(f -> references.contains(field.getName()) ? buildReference(f,
-                                                                                     field)
+                                                                                     field,
+                                                                                     processor)
                                                                     : buildPrimitive(f,
-                                                                                     field));
+                                                                                     field,
+                                                                                     processor));
         });
         return builder.build();
     }
@@ -441,10 +449,10 @@ public class JooqSchema {
                                                 : simpleName.substring("Existential".length());
     }
 
-    private GraphQLType type(PropertyDescriptor field) {
+    private GraphQLType type(PropertyDescriptor field,
+                             PhantasmProcessor processor) {
         Method readMethod = field.getReadMethod();
-        return PhantasmProcessor.getSingleton()
-                                .typeFor(readMethod.getReturnType());
+        return processor.typeFor(readMethod.getReturnType());
     }
 
     @SuppressWarnings("unchecked")

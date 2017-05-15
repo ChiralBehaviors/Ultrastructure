@@ -67,11 +67,9 @@ public class PhantasmCRUDTest extends AbstractModelTest {
                                                            e -> {
                                                            });
         assertNotNull(instance);
-        assertEquals(instance.getId(), crud.lookup(instance.getId()
-                                                           .toString())
+        assertEquals(instance.getId(), crud.lookup(instance.getId())
                                            .getId());
-        assertEquals(1, crud.lookup(Collections.singletonList(instance.getId()
-                                                                      .toString()))
+        assertEquals(1, crud.lookupList(Collections.singletonList(instance.getId()))
                             .size());
         crud.remove(aspect, instance, false);
         try {

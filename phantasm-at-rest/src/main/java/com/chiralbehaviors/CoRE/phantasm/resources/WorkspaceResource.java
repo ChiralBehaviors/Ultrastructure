@@ -63,7 +63,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.graphql.ExistentialContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
@@ -434,8 +434,7 @@ public class WorkspaceResource extends TransactionalResource {
 
             Product definingProduct = model.records()
                                            .resolve(uuid);
-            ExistentialContext crud = new ExistentialContext(model,
-                                                             definingProduct);
+            MetaContext crud = new MetaContext(model, definingProduct);
             if (!model.checkRead((UpdatableRecord<?>) definingProduct)
                 || !model.checkRead((UpdatableRecord<?>) definingProduct)) {
                 Agency p = model.getCurrentPrincipal()

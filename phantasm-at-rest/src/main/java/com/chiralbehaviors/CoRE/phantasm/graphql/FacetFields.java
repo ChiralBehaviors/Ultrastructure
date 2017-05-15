@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBigDecimal;
 import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLFloat;
@@ -31,7 +32,6 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.*;
 
 import java.beans.Introspector;
 import java.io.File;
@@ -50,6 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
@@ -210,14 +210,14 @@ public class FacetFields extends Phantasmagoria {
     }
 
     public Set<FacetRecord> resolve(FacetRecord facet, List<Class<?>> plugins,
-                                    Model model,
-                                    GraphQLUnionType.Builder union,
-                                    EdgeTypeResolver edgeTypeResolver) {
+                                    Model model, GraphQLUnionType.Builder union,
+                                    EdgeTypeResolver edgeTypeResolver,
+                                    PhantasmProcessor processor) {
         traverse(model);
         buildEdges(edgeTypeResolver, union);
         build();
 
-        addPlugins(plugins);
+        addPlugins(plugins, processor);
         return references;
     }
 
@@ -249,9 +249,9 @@ public class FacetFields extends Phantasmagoria {
         updateTemplate.put(add,
                            (crud,
                             update) -> crud.addChild(facet,
-                                                     (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                     ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                      auth,
-                                                     crud.lookup((String) update.get(add))));
+                                                     crud.lookup((UUID) update.get(add))));
     }
 
     @SuppressWarnings("unchecked")
@@ -267,14 +267,16 @@ public class FacetFields extends Phantasmagoria {
         updateTemplate.put(addChildren,
                            (crud,
                             update) -> crud.addChildren(facet,
-                                                        (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                        ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                         auth,
-                                                        crud.lookup((List<String>) update.get(addChildren))));
+                                                        crud.lookupList((List<UUID>) update.get(addChildren))));
     }
 
-    private void addPlugins(List<Class<?>> plugins) {
+    private void addPlugins(List<Class<?>> plugins,
+                            PhantasmProcessor processor) {
         plugins.forEach(plugin -> {
-            initializers.addAll(FacetFields.processPlugin(plugin, typeBuilder));
+            initializers.addAll(FacetFields.processPlugin(plugin, typeBuilder,
+                                                          processor));
         });
     }
 
@@ -289,7 +291,7 @@ public class FacetFields extends Phantasmagoria {
                                                           .type(GraphQLUuid)
                                                           .build())
                                    .dataFetcher(env -> {
-                                       ExistentialRuleform ruleform = ctx(env).lookup((String) env.getArgument(ID));
+                                       ExistentialRuleform ruleform = ctx(env).lookup(env.getArgument(ID));
                                        PhantasmCRUD crud = ctx(env);
                                        return crud.apply(facet, ruleform,
                                                          instance -> {
@@ -489,7 +491,7 @@ public class FacetFields extends Phantasmagoria {
                                                           .description("id of the facet")
                                                           .type(new GraphQLNonNull(GraphQLUuid))
                                                           .build())
-                                   .dataFetcher(env -> ctx(env).lookup((String) env.getArgument(ID)))
+                                   .dataFetcher(env -> ctx(env).lookup(env.getArgument(ID)))
                                    .build();
     }
 
@@ -504,8 +506,8 @@ public class FacetFields extends Phantasmagoria {
                                    .type(new GraphQLList(referenceToType(facet)))
                                    .dataFetcher(context -> {
                                        @SuppressWarnings("unchecked")
-                                       List<String> ids = (List<String>) context.getArgument(ID);
-                                       return (ids != null ? ctx(context).lookup(ids)
+                                       List<UUID> ids = (List<UUID>) context.getArgument(ID);
+                                       return (ids != null ? ctx(context).lookupList(ids)
                                                            : ctx(context).getInstances(facet)).stream()
                                                                                               .collect(Collectors.toList());
                                    })
@@ -523,7 +525,7 @@ public class FacetFields extends Phantasmagoria {
                                                           .type(GraphQLUuid)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).remove(facet,
-                                                                       ctx(env).lookup((String) env.getArgument(ID)),
+                                                                       ctx(env).lookup(env.getArgument(ID)),
                                                                        true))
                                    .build();
     }
@@ -538,9 +540,9 @@ public class FacetFields extends Phantasmagoria {
         updateTemplate.put(remove,
                            (crud,
                             update) -> crud.removeChild(facet,
-                                                        (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                        ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                         auth,
-                                                        crud.lookup((String) update.get(remove))));
+                                                        crud.lookup((UUID) update.get(remove))));
     }
 
     @SuppressWarnings("unchecked")
@@ -554,9 +556,9 @@ public class FacetFields extends Phantasmagoria {
         updateTemplate.put(removeChildren,
                            (crud,
                             update) -> crud.removeChildren(facet,
-                                                           (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                           ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                            auth,
-                                                           crud.lookup((List<String>) update.get(removeChildren))));
+                                                           crud.lookupList((List<UUID>) update.get(removeChildren))));
     }
 
     private Object resolve(Attribute attribute, Object value) {
@@ -594,9 +596,9 @@ public class FacetFields extends Phantasmagoria {
         updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setChildren(facet,
-                                                        (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                        ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                         auth,
-                                                        crud.lookup((List<String>) update.get(setter))));
+                                                        crud.lookupList((List<UUID>) update.get(setter))));
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
@@ -645,7 +647,7 @@ public class FacetFields extends Phantasmagoria {
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD crud = ctx(env);
-                                       ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((String) updateState.get(ID));
+                                       ExistentialRuleform ruleform = (ExistentialRuleform) crud.lookup((UUID) updateState.get(ID));
                                        update(ruleform, updateState, crud,
                                               detachedUpdateTemplate);
                                        return ruleform;
@@ -690,7 +692,7 @@ public class FacetFields extends Phantasmagoria {
                         PhantasmCRUD crud = ctx(env);
                         return updateStates.stream()
                                            .map(updateState -> {
-                                               ExistentialRuleform ruleform = ((ExistentialRuleform) crud.lookup((String) updateState.get(ID)));
+                                               ExistentialRuleform ruleform = ((ExistentialRuleform) crud.lookup((UUID) updateState.get(ID)));
                                                update(ruleform, updateState,
                                                       crud,
                                                       detachedUpdateTemplate);
@@ -710,7 +712,7 @@ public class FacetFields extends Phantasmagoria {
                                               .description(attribute.getDescription())
                                               .dataFetcher(env -> {
                                                   Object value = ctx(env).getAttributeValue(facet,
-                                                                                            ((ExistentialRuleform) env.getSource()),
+                                                                                            ((Phantasm) env.getSource()).getRuleform(),
                                                                                             auth);
                                                   return resolve(attribute,
                                                                  value);
@@ -727,7 +729,7 @@ public class FacetFields extends Phantasmagoria {
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
-                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                                   auth,
                                                                   (List<Object>) update.get(setter)));
             builder.type(new GraphQLList(GraphQLString));
@@ -736,7 +738,7 @@ public class FacetFields extends Phantasmagoria {
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
-                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                                   auth,
                                                                   (Map<String, Object>) update.get(setter)));
             builder.type(GraphQLString);
@@ -744,7 +746,7 @@ public class FacetFields extends Phantasmagoria {
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
-                                                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                                   auth,
                                                                   update.get(setter)));
             switch (auth.getAttribute()
@@ -784,28 +786,28 @@ public class FacetFields extends Phantasmagoria {
         GraphQLOutputType type = referenceToType(auth.getChild());
         type = new GraphQLList(type);
         typeBuilder.field(PhantasmContext.newEdgeFieldDefinition()
-                                          .auth(auth)
-                                          .type(type)
-                                          .name(auth.plural())
-                                          .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                   ((ExistentialRuleform) env.getSource()),
-                                                                                   auth)
-                                                                      .stream()
-                                                                      .collect(Collectors.toList()))
-                                          .description(auth.getNotes())
-                                          .build());
+                                         .auth(auth)
+                                         .type(type)
+                                         .name(auth.plural())
+                                         .dataFetcher(env -> ctx(env).getChildren(facet,
+                                                                                  ((Phantasm) env.getSource()).getRuleform(),
+                                                                                  auth)
+                                                                     .stream()
+                                                                     .collect(Collectors.toList()))
+                                         .description(auth.getNotes())
+                                         .build());
         typeBuilder.field(PhantasmContext.newEdgeFieldDefinition()
-                                          .auth(auth)
-                                          .type(type)
-                                          .name(String.format(IMMEDIATE_TEMPLATE,
-                                                              Phantasmagoria.capitalized(auth.plural())))
-                                          .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
-                                                                                            ((ExistentialRuleform) env.getSource()),
-                                                                                            auth)
-                                                                      .stream()
-                                                                      .collect(Collectors.toList()))
-                                          .description(auth.getNotes())
-                                          .build());
+                                         .auth(auth)
+                                         .type(type)
+                                         .name(String.format(IMMEDIATE_TEMPLATE,
+                                                             Phantasmagoria.capitalized(auth.plural())))
+                                         .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
+                                                                                           ((Phantasm) env.getSource()).getRuleform(),
+                                                                                           auth)
+                                                                     .stream()
+                                                                     .collect(Collectors.toList()))
+                                         .description(auth.getNotes())
+                                         .build());
         setChildren(auth);
         addChild(auth);
         addChildren(auth);
@@ -816,14 +818,14 @@ public class FacetFields extends Phantasmagoria {
     private void visitSingular(NetworkAuthorization auth) {
         GraphQLOutputType type = referenceToType(auth.getChild());
         typeBuilder.field(PhantasmContext.newEdgeFieldDefinition()
-                                          .auth(auth)
-                                          .type(type)
-                                          .name(auth.getFieldName())
-                                          .dataFetcher(env -> ctx(env).getSingularChild(facet,
-                                                                                        ((ExistentialRuleform) env.getSource()),
-                                                                                        auth))
-                                          .description(auth.getNotes())
-                                          .build());
+                                         .auth(auth)
+                                         .type(type)
+                                         .name(auth.getFieldName())
+                                         .dataFetcher(env -> ctx(env).getSingularChild(facet,
+                                                                                       ((Phantasm) env.getSource()).getRuleform(),
+                                                                                       auth))
+                                         .description(auth.getNotes())
+                                         .build());
         String setter = String.format(SET_TEMPLATE,
                                       Phantasmagoria.capitalized(auth.getFieldName()));
         GraphQLInputObjectField field = newInputObjectField().type(GraphQLUuid)
@@ -833,9 +835,9 @@ public class FacetFields extends Phantasmagoria {
         updateTypeBuilder.field(field);
         createTypeBuilder.field(field);
         updateTemplate.put(setter, (crud, update) -> {
-            String id = (String) update.get(setter);
+            UUID id = (UUID) update.get(setter);
             crud.setSingularChild(facet,
-                                  (ExistentialRuleform) update.get(AT_RULEFORM),
+                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                   auth,
                                   id == null ? null
                                              : (ExistentialRuleform) crud.lookup(id));
@@ -868,7 +870,8 @@ public class FacetFields extends Phantasmagoria {
     }
 
     public static List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> processPlugin(Class<?> plugin,
-                                                                                               GraphQLObjectType.Builder builder) {
+                                                                                               GraphQLObjectType.Builder builder,
+                                                                                               PhantasmProcessor processor) {
         Plugin annotation = plugin.getAnnotation(Plugin.class);
         if (annotation == null) {
             throw new IllegalArgumentException(String.format("Class not annotated with @Plugin: %s",
@@ -901,7 +904,7 @@ public class FacetFields extends Phantasmagoria {
 
             if (valid) {
                 try {
-                    builder.field(PhantasmProcessor.field(method));
+                    builder.field(processor.getField(method));
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }

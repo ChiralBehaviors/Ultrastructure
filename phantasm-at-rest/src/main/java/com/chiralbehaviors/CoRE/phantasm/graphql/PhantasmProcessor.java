@@ -35,22 +35,10 @@ import graphql.schema.TypeResolver;
  */
 public class PhantasmProcessor extends GraphQLAnnotations
         implements TypeResolver {
-    static {
-        instance = new PhantasmProcessor();
-    }
 
-    public static PhantasmProcessor getSingleton() {
-        return (PhantasmProcessor) instance;
-    }
-
-    public static GraphQLFieldDefinition field(Method method) throws InstantiationException,
-                                                              IllegalAccessException {
-        return getSingleton().getField(method);
-
-    }
-
-    public static void register(TypeFunction typeFunction) {
-        getSingleton().registerType(typeFunction);
+    public PhantasmProcessor() {
+        super();
+        instance = this; // stupid, but true
     }
 
     /* (non-Javadoc)
@@ -68,5 +56,11 @@ public class PhantasmProcessor extends GraphQLAnnotations
 
     public TypeFunction typeResolver() {
         return defaultTypeFunction;
+    }
+
+    @Override
+    public GraphQLFieldDefinition getField(Method method) throws InstantiationException,
+                                                          IllegalAccessException {
+        return super.getField(method);
     }
 }

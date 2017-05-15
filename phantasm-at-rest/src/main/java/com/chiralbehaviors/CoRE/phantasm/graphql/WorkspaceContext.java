@@ -67,7 +67,6 @@ public class WorkspaceContext extends ExistentialContext
         super(model, workspace);
     }
 
-
     @Override
     public Boolean authorized(UUID permission, UUID existential,
                               DataFetchingEnvironment env) {
@@ -82,11 +81,10 @@ public class WorkspaceContext extends ExistentialContext
 
     @Override
     public Boolean authorizedIfActive(UUID permission, UUID existential,
-                                      List<String> roleIds,
+                                      List<UUID> roleIds,
                                       DataFetchingEnvironment env) {
         Model model = ctx(env);
         List<Agency> roleAgencies = roleIds.stream()
-                                           .map(s -> UUID.fromString(s))
                                            .map(id -> model.records()
                                                            .resolve(id))
                                            .map(e -> (Agency) e)
@@ -113,11 +111,10 @@ public class WorkspaceContext extends ExistentialContext
     }
 
     @Override
-    public Boolean hasRole(@NotNull @GraphQLName("role") String roleId,
+    public Boolean hasRole(@NotNull @GraphQLName("role") UUID roleId,
                            DataFetchingEnvironment env) {
         Model model = ctx(env);
         Role role = Optional.of(roleId)
-                            .map(s -> UUID.fromString(s))
                             .map(id -> model.records()
                                             .resolve(id))
                             .map(e -> (Agency) e)
@@ -131,10 +128,9 @@ public class WorkspaceContext extends ExistentialContext
     }
 
     @Override
-    public Boolean hasRoles(List<String> roleIds, DataFetchingEnvironment env) {
+    public Boolean hasRoles(List<UUID> roleIds, DataFetchingEnvironment env) {
         Model model = ctx(env);
         List<Role> roles = roleIds.stream()
-                                  .map(s -> UUID.fromString(s))
                                   .map(id -> model.records()
                                                   .resolve(id))
                                   .map(e -> (Agency) e)
@@ -148,10 +144,9 @@ public class WorkspaceContext extends ExistentialContext
     }
 
     @Override
-    public Boolean inRoles(List<String> roleIds, DataFetchingEnvironment env) {
+    public Boolean inRoles(List<UUID> roleIds, DataFetchingEnvironment env) {
         Model model = ctx(env);
         List<Agency> roles = roleIds.stream()
-                                    .map(s -> UUID.fromString(s))
                                     .map(id -> model.records()
                                                     .resolve(id))
                                     .map(e -> (Agency) e)

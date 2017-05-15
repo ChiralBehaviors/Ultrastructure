@@ -49,7 +49,7 @@ public interface CurrentUser {
     @GraphQLDescription("Return true if the current user is authorized to exercise the permission on the entity, through the roles granted to the current user")
     Boolean authorizedIfActive(@NotNull @GraphQLName("permission") UUID permission,
                                @NotNull @GraphQLName("entity") UUID existential,
-                               @NotNull @GraphQLName("roles") List<String> roleIds,
+                               @NotNull @GraphQLName("roles") List<UUID> roleIds,
                                DataFetchingEnvironment env);
 
     @GraphQLField
@@ -58,16 +58,16 @@ public interface CurrentUser {
 
     @GraphQLField
     @GraphQLDescription("Return true if the current user has been granted the role")
-    Boolean hasRole(@NotNull @GraphQLName("role") String roleId,
+    Boolean hasRole(@NotNull @GraphQLName("role") UUID roleId,
                     DataFetchingEnvironment env);
 
     @GraphQLField
     @GraphQLDescription("Return true if the current user has all the roles")
-    Boolean hasRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
+    Boolean hasRoles(@NotNull @GraphQLName("roles") List<UUID> roleIds,
                      DataFetchingEnvironment env);
 
     @GraphQLField
     @GraphQLDescription("Return true if the current user has all the roles provided as actively asserted roles")
-    Boolean inRoles(@NotNull @GraphQLName("roles") List<String> roleIds,
+    Boolean inRoles(@NotNull @GraphQLName("roles") List<UUID> roleIds,
                     DataFetchingEnvironment env);
 }

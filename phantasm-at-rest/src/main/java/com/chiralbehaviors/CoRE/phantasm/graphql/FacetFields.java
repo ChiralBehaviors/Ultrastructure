@@ -312,6 +312,8 @@ public class FacetFields extends Phantasmagoria {
         typeBuilder.field(newFieldDefinition().type(GraphQLUuid)
                                               .name(ID)
                                               .description("The id of the facet instance")
+                                              .dataFetcher(env -> ((Phantasm) env.getSource()).getRuleform()
+                                                                                              .getId())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference(EXISTENTIAL))
                                               .name(_EXT)

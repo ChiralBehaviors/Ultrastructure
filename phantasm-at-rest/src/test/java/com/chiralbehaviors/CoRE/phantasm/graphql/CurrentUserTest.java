@@ -83,8 +83,8 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                           .get("id")
                           .asText();
         assertNotNull(id);
-        assertEquals(bob.getRuleform()
-                        .getId(),
+        assertEquals(UuidUtil.encode(bob.getRuleform()
+                                        .getId()),
                      id);
         variables.put("id", id);
         result = model.executeAs(principal,
@@ -95,9 +95,9 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                      .get("login")
                                      .asText());
 
-        variables.put("id", model.getKernel()
-                                 .getLoginRole()
-                                 .getId());
+        variables.put("id", UuidUtil.encode(model.getKernel()
+                                                 .getLoginRole()
+                                                 .getId()));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($id: ID!) { hasRole(role: $id) }",
@@ -105,8 +105,8 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertTrue(result.get("hasRole")
                          .asBoolean());
 
-        variables.put("id", myRole.getRuleform()
-                                  .getId());
+        variables.put("id", UuidUtil.encode(myRole.getRuleform()
+                                                  .getId()));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($id: ID!) { hasRole(role: $id) }",
@@ -114,8 +114,8 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertFalse(result.get("hasRole")
                           .asBoolean());
 
-        variables.put("roles", Collections.singletonList(myRole.getRuleform()
-                                                               .getId()));
+        variables.put("roles", Collections.singletonList(UuidUtil.encode(myRole.getRuleform()
+                                                               .getId())));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($roles: [ID]!) { hasRoles(roles: $roles) }",
@@ -125,8 +125,8 @@ public class CurrentUserTest extends AbstractGraphQLTest {
 
         bob.addRole(myRole);
 
-        variables.put("id", myRole.getRuleform()
-                                  .getId());
+        variables.put("id", UuidUtil.encode(myRole.getRuleform()
+                                                  .getId()));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($id: ID!) { hasRole(role: $id) }",
@@ -134,8 +134,8 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertTrue(result.get("hasRole")
                          .asBoolean());
 
-        variables.put("roles", Collections.singletonList(myRole.getRuleform()
-                                                               .getId()));
+        variables.put("roles", Collections.singletonList(UuidUtil.encode(myRole.getRuleform()
+                                                               .getId())));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($roles: [ID]!) { hasRoles(roles: $roles) }",
@@ -143,21 +143,19 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertTrue(result.get("hasRoles")
                          .asBoolean());
 
-        variables.put("perm", model.getKernel()
-                                   .getLOGIN_TO()
-                                   .getId()
-                                   .toString());
-        variables.put("e", model.getCoreInstance()
-                                .getRuleform()
-                                .getId()
-                                .toString());
-        variables.put("roles", Collections.singletonList(model.getKernel()
+        variables.put("perm", UuidUtil.encode(model.getKernel()
+                                                   .getLOGIN_TO()
+                                                   .getId()));
+        variables.put("e", UuidUtil.encode(model.getCoreInstance()
+                                                .getRuleform()
+                                                .getId()));
+        variables.put("roles", Collections.singletonList(UuidUtil.encode(model.getKernel()
                                                               .getLoginRole()
-                                                              .getId()));
+                                                              .getId())));
 
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($e: ID! $perm: String! $roles: [ID]!) { authorizedIfActive(permission: $perm entity: $e roles: $roles) }",
+                                               "query m($e: ID! $perm: ID! $roles: [ID]!) { authorizedIfActive(permission: $perm entity: $e roles: $roles) }",
                                                variables));
         assertTrue(result.get("authorizedIfActive")
                          .asBoolean());
@@ -168,7 +166,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
 
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($e: String! $perm: ID!) { authorized(permission: $perm entity: $e) }",
+                                               "query m($e: ID! $perm: ID!) { authorized(permission: $perm entity: $e) }",
                                                variables));
         assertTrue(result.get("authorized")
                          .asBoolean());
@@ -192,7 +190,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         variables.put("new", password + " or kill me");
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "mutation m($old: ID! $new: ID!) { updatePassword(oldPassword: $old newPassword: $new) {passwordHash}}",
+                                               "mutation m($old: String! $new: String!) { updatePassword(oldPassword: $old newPassword: $new) {passwordHash}}",
                                                variables));
         assertNotEquals(oldHash, result.get("updatePassword")
                                        .get("passwordHash")

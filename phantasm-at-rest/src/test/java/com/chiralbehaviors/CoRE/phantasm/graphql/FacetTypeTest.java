@@ -180,7 +180,8 @@ public class FacetTypeTest extends AbstractModelTest {
                                                            model,
                                                            Collections.emptySet());
         String query = getIntrospectionQuery();
-        ExecutionResult execute = execute(thing1, schema, query);
+        ExecutionResult execute = execute(thing1, schema, query,
+                                          Collections.emptyMap());
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -192,11 +193,13 @@ public class FacetTypeTest extends AbstractModelTest {
     }
 
     private ExecutionResult execute(Thing1 thing1, GraphQLSchema schema,
-                                    String query) {
+                                    String query,
+                                    Map<String, Object> variables) {
         return new WorkspaceContext(model, thing1.getScope()
                                                  .getWorkspace()
                                                  .getDefiningProduct()).execute(schema,
-                                                                                query);
+                                                                                query,
+                                                                                variables);
     }
 
     @Test
@@ -318,7 +321,7 @@ public class FacetTypeTest extends AbstractModelTest {
         variables.put("id", UuidUtil.encode(thing1.getRuleform()
                                                   .getId()));
         String query = "query it($id: ID!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}";
-        ExecutionResult execute = execute(thing1, schema, query);
+        ExecutionResult execute = execute(thing1, schema, query, variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -330,40 +333,37 @@ public class FacetTypeTest extends AbstractModelTest {
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing1.getRuleform()
+                                           .getId()),
                      thing1Result.get("id"));
 
         Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
         assertNotNull(thing2Result);
         assertEquals(thing2.getName(), thing2Result.get("name"));
-        assertEquals(thing2.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing2.getRuleform()
+                                           .getId()),
                      thing2Result.get("id"));
         List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
         assertNotNull(thing3s);
         assertEquals(1, thing3s.size());
         Map<String, Object> thing3Result = thing3s.get(0);
         assertEquals(thing3.getName(), thing3Result.get("name"));
-        assertEquals(thing3.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing3.getRuleform()
+                                           .getId()),
                      thing3Result.get("id"));
         List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
         assertNotNull(thing3DerivedFroms);
         assertEquals(2, thing3DerivedFroms.size());
 
         String q = "{ thing1s {id name URI}}";
-        result = (Map<String, Object>) execute(thing1, schema, q).getData();
+        result = (Map<String, Object>) execute(thing1, schema, q,
+                                               Collections.emptyMap()).getData();
         List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("thing1s");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);
         assertEquals(thing1.getName(), instance.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing1.getRuleform()
+                                           .getId()),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
     }

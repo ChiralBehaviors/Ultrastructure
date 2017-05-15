@@ -20,13 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ctx;
-
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -40,16 +36,7 @@ import graphql.schema.DataFetchingEnvironment;
 public interface CoreUserAdmin {
     @GraphQLField
     @GraphQLDescription("Update the password of the Current User of the session")
-    default CoreUser setUpdatePassword(@NotNull @GraphQLName("oldPassword") String oldPassword,
-                                       @NotNull @GraphQLName("newPassword") String newPassword,
-                                       DataFetchingEnvironment env) {
-        CoreUser currentUser = ctx(env).wrap(CoreUser.class,
-                                             ctx(env).getCurrentPrincipal()
-                                                     .getPrincipal());
-        AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
-                                                oldPassword);
-        // force reauthentication
-        currentUser.setAccessToken(new JsonNode[0]);
-        return currentUser;
-    }
+    CoreUser setUpdatePassword(@NotNull @GraphQLName("oldPassword") String oldPassword,
+                               @NotNull @GraphQLName("newPassword") String newPassword,
+                               DataFetchingEnvironment env);
 }

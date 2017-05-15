@@ -83,11 +83,16 @@ public class JooqSchema {
 
                                                              };
     private static final Logger                    log       = LoggerFactory.getLogger(JooqSchema.class);
-    private static final List<Table<?>>            MANIFESTED;
     private static final Map<Class<?>, Table<?>>   TABLES    = new HashMap<>();
     static {
-        MANIFESTED = Ruleform.RULEFORM.getTables();
-        MANIFESTED.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL,
+        Ruleform.RULEFORM.getTables()
+                         .forEach(table -> TABLES.put(table.getRecordType(),
+                                                      table));
+    }
+
+    public static JooqSchema meta() {
+        List<Table<?>> manifested = Ruleform.RULEFORM.getTables();
+        manifested.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL,
                                                          RULEFORM.EXISTENTIAL_ATTRIBUTE,
                                                          RULEFORM.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
                                                          RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE,
@@ -97,17 +102,19 @@ public class JooqSchema {
                                                          RULEFORM.WORKSPACE_LABEL,
                                                          RULEFORM.JOB,
                                                          RULEFORM.JOB_CHRONOLOGY }));
-        MANIFESTED.forEach(table -> TABLES.put(table.getRecordType(), table));
+        return new JooqSchema(manifested);
     }
 
     private static String camel(String snake) {
         return Introspector.decapitalize(converter.convert(snake));
     }
 
+    private final List<Table<?>>   manifested;
     private final Set<GraphQLType> types = new HashSet<>();
 
-    public JooqSchema() {
-        MANIFESTED.stream()
+    public JooqSchema(List<Table<?>> manifested) {
+        this.manifested = manifested;
+        manifested.stream()
                   .forEach(table -> {
                       GraphQLType type = new GraphQLTypeReference(translated(table.getRecordType()));
                       PhantasmProcessor.getSingleton()
@@ -118,7 +125,7 @@ public class JooqSchema {
 
     public void contributeTo(GraphQLObjectType.Builder query,
                              GraphQLObjectType.Builder mutation) {
-        MANIFESTED.stream()
+        manifested.stream()
                   .map(table -> table.getRecordType())
                   .forEach(record -> contributeTo(query, record, mutation));
     }
@@ -367,7 +374,7 @@ public class JooqSchema {
                                   .create()
                                   .selectFrom(table)
                                   .where(field.eq(PhantasmContext.getWorkspace(env)
-                                                                  .getId()))
+                                                                 .getId()))
                                   .fetch()
                                   .stream()
                                   .collect(Collectors.toList());

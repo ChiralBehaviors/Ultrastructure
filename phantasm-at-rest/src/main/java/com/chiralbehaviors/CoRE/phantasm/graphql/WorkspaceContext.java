@@ -36,10 +36,10 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Mutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Queries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLName;
 import graphql.schema.DataFetchingEnvironment;
@@ -50,22 +50,23 @@ import graphql.schema.DataFetchingEnvironment;
  */
 public class WorkspaceContext extends ExistentialContext
         implements Queries, Mutations {
+
+    public CoreUser setUpdatePassword(String oldPassword, String newPassword,
+                                      DataFetchingEnvironment env) {
+        CoreUser currentUser = ctx(env).wrap(CoreUser.class,
+                                             ctx(env).getCurrentPrincipal()
+                                                     .getPrincipal());
+        AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
+                                                oldPassword);
+        // force reauthentication
+        currentUser.setAccessToken(new JsonNode[0]);
+        return currentUser;
+    }
+
     public WorkspaceContext(Model model, Product workspace) {
         super(model, workspace);
     }
 
-    @Override
-    public Job job(UUID id, DataFetchingEnvironment env) {
-        return new Job(Job.fetch(env, id));
-    }
-
-    @Override
-    public List<Job> jobs(List<UUID> ids, DataFetchingEnvironment env) {
-        return ids.stream()
-                  .map(id -> Job.fetch(env, id))
-                  .map(r -> new Job(r))
-                  .collect(Collectors.toList());
-    }
 
     @Override
     public Boolean authorized(UUID permission, UUID existential,
@@ -158,16 +159,5 @@ public class WorkspaceContext extends ExistentialContext
         return model.getCurrentPrincipal()
                     .getAsserted()
                     .containsAll(roles);
-    }
-
-    public JobChronology jobChronology(UUID id, DataFetchingEnvironment env) {
-        return JobChronology.fetch(env, id);
-    }
-
-    public List<JobChronology> JobChronologies(List<UUID> ids,
-                                               DataFetchingEnvironment env) {
-        return ids.stream()
-                  .map(id -> JobChronology.fetch(env, id))
-                  .collect(Collectors.toList());
     }
 }

@@ -114,7 +114,8 @@ public class PluginTest extends AbstractModelTest {
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model, reflections);
+                                                           model,
+                                                           reflections.getTypesAnnotatedWith(Plugin.class));
 
         ExecutionResult execute = new WorkspaceContext(model,
                                                        scope.getWorkspace()
@@ -149,9 +150,9 @@ public class PluginTest extends AbstractModelTest {
                                    variables);
 
         execute = new ExistentialContext(model, scope.getWorkspace()
-                                                   .getDefiningProduct()).execute(schema,
-                                                                                  request.getQuery(),
-                                                                                  request.getVariables());
+                                                     .getDefiningProduct()).execute(schema,
+                                                                                    request.getQuery(),
+                                                                                    request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),

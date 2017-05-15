@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,8 @@ public class EdgeTest extends AbstractModelTest {
                                     .getScoped(WorkspaceAccessor.uuidOf(WellKnownObject.KERNEL_IRI));
 
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", WorkspaceAccessor.uuidOf(THING_URI)

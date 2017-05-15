@@ -67,6 +67,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -354,7 +355,8 @@ public class WorkspaceResource extends TransactionalResource {
                       .setContextClassLoader(executionScope);
                 try {
                     return new WorkspaceSchema().build(scoped.getWorkspace(),
-                                                       model, reflections);
+                                                       model,
+                                                       reflections.getTypesAnnotatedWith(Plugin.class));
                 } catch (Exception e) {
                     throw new IllegalStateException(String.format("Unable to buidl schema for %s",
                                                                   scoped.getWorkspace()

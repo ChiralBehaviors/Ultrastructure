@@ -37,8 +37,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.reflections.Reflections;
-
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -98,23 +96,15 @@ public class WorkspaceSchema {
     public WorkspaceSchema() {
     }
 
-    public GraphQLSchema build(WorkspaceAccessor accessor,
-                               Model model) throws NoSuchMethodException,
-                                            InstantiationException,
-                                            IllegalAccessException {
-        return build(accessor, model, new Reflections());
-    }
-
     public GraphQLSchema build(WorkspaceAccessor accessor, Model model,
-                               Reflections reflections) throws NoSuchMethodException,
-                                                        InstantiationException,
-                                                        IllegalAccessException {
+                               Set<Class<?>> plugins) throws NoSuchMethodException,
+                                                      InstantiationException,
+                                                      IllegalAccessException {
         PhantasmProcessor processor = new PhantasmProcessor();
         Set<GraphQLType> dictionary = new HashSet<>();
         Map<FacetRecord, FacetFields> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
         Workspace root = model.wrap(Workspace.class, definingProduct);
-        Set<Class<?>> plugins = reflections.getTypesAnnotatedWith(Plugin.class);
         Set<Workspace> aggregate = new HashSet<>();
         gatherImports(root, aggregate);
         GraphQLUnionType.Builder edgeUnionBuilder = GraphQLUnionType.newUnionType();

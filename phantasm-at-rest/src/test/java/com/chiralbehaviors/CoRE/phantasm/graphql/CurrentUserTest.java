@@ -57,7 +57,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         schema = new WorkspaceSchema().build(model.getWorkspaceModel()
                                                   .getScoped(WorkspaceAccessor.uuidOf(WellKnownObject.KERNEL_IRI))
                                                   .getWorkspace(),
-                                             model);
+                                             model, Collections.emptySet());
     }
 
     @Test
@@ -84,25 +84,23 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                           .asText();
         assertNotNull(id);
         assertEquals(bob.getRuleform()
-                        .getId()
-                        .toString(),
+                        .getId(),
                      id);
         variables.put("id", id);
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: String!) { coreUser(id: $id) {login } }",
+                                               "query m($id: ID!) { coreUser(id: $id) {login } }",
                                                variables));
-        assertEquals(username,
-                     result.get("coreUser")
-                           .get("login")
-                           .asText());
+        assertEquals(username, result.get("coreUser")
+                                     .get("login")
+                                     .asText());
 
         variables.put("id", model.getKernel()
                                  .getLoginRole()
                                  .getId());
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: String!) { hasRole(role: $id) }",
+                                               "query m($id: ID!) { hasRole(role: $id) }",
                                                variables));
         assertTrue(result.get("hasRole")
                          .asBoolean());
@@ -111,7 +109,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                   .getId());
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: String!) { hasRole(role: $id) }",
+                                               "query m($id: ID!) { hasRole(role: $id) }",
                                                variables));
         assertFalse(result.get("hasRole")
                           .asBoolean());
@@ -120,7 +118,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                                                .getId()));
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($roles: [String]!) { hasRoles(roles: $roles) }",
+                                               "query m($roles: [ID]!) { hasRoles(roles: $roles) }",
                                                variables));
         assertFalse(result.get("hasRoles")
                           .asBoolean());
@@ -131,7 +129,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                   .getId());
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: String!) { hasRole(role: $id) }",
+                                               "query m($id: ID!) { hasRole(role: $id) }",
                                                variables));
         assertTrue(result.get("hasRole")
                          .asBoolean());
@@ -140,7 +138,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                                                .getId()));
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($roles: [String]!) { hasRoles(roles: $roles) }",
+                                               "query m($roles: [ID]!) { hasRoles(roles: $roles) }",
                                                variables));
         assertTrue(result.get("hasRoles")
                          .asBoolean());
@@ -159,7 +157,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
 
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($e: String! $perm: String! $roles: [String]!) { authorizedIfActive(permission: $perm entity: $e roles: $roles) }",
+                                               "query m($e: ID! $perm: String! $roles: [ID]!) { authorizedIfActive(permission: $perm entity: $e roles: $roles) }",
                                                variables));
         assertTrue(result.get("authorizedIfActive")
                          .asBoolean());
@@ -170,14 +168,14 @@ public class CurrentUserTest extends AbstractGraphQLTest {
 
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($e: String! $perm: String!) { authorized(permission: $perm entity: $e) }",
+                                               "query m($e: String! $perm: ID!) { authorized(permission: $perm entity: $e) }",
                                                variables));
         assertTrue(result.get("authorized")
                          .asBoolean());
 
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($roles: [String]!) { inRoles(roles: $roles) }",
+                                               "query m($roles: [ID]!) { inRoles(roles: $roles) }",
                                                variables));
         assertTrue(result.get("inRoles")
                          .asBoolean());
@@ -194,7 +192,7 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         variables.put("new", password + " or kill me");
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "mutation m($old: String! $new: String!) { updatePassword(oldPassword: $old newPassword: $new) {passwordHash}}",
+                                               "mutation m($old: ID! $new: ID!) { updatePassword(oldPassword: $old newPassword: $new) {passwordHash}}",
                                                variables));
         assertNotEquals(oldHash, result.get("updatePassword")
                                        .get("passwordHash")

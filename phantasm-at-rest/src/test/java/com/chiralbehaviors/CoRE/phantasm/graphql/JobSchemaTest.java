@@ -62,7 +62,8 @@ public class JobSchemaTest extends AbstractModelTest {
     public void testEuOrder() throws Exception {
 
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
         Map<String, Object> variables = new HashMap<>();
 
         variables.put("service", scenario.getDeliver()

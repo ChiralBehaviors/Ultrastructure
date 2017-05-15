@@ -246,12 +246,10 @@ public class FacetTypeTest extends AbstractModelTest {
                                                            Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                                  .getId()));
+        variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
+                                                           .getId()));
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);

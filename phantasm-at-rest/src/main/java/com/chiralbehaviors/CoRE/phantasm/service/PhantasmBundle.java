@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthFilter;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.graphql.FacetFields;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.FacetFields;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;

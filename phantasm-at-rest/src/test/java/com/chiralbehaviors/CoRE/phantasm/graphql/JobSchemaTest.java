@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -35,6 +36,8 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.OrderProcessing;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -66,28 +69,23 @@ public class JobSchemaTest extends AbstractModelTest {
                                                            Collections.emptySet());
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put("service", scenario.getDeliver()
-                                         .getId()
-                                         .toString());
-        variables.put("assignTo", scenario.getOrderFullfillment()
-                                          .getId()
-                                          .toString());
-        variables.put("product", scenario.getAbc486()
-                                         .getId()
-                                         .toString());
-        variables.put("deliverTo", scenario.getRc31()
-                                           .getId()
-                                           .toString());
-        variables.put("deliverFrom", scenario.getFactory1()
-                                             .getId()
-                                             .toString());
-        variables.put("requester", scenario.getCafleurBon()
-                                           .getId()
-                                           .toString());
+        variables.put("service", UuidUtil.encode(scenario.getDeliver()
+                                                         .getId()));
+        variables.put("assignTo",
+                      UuidUtil.encode(scenario.getOrderFullfillment()
+                                              .getId()));
+        variables.put("product", UuidUtil.encode(scenario.getAbc486()
+                                                         .getId()));
+        variables.put("deliverTo", UuidUtil.encode(scenario.getRc31()
+                                                           .getId()));
+        variables.put("deliverFrom", UuidUtil.encode(scenario.getFactory1()
+                                                             .getId()));
+        variables.put("requester", UuidUtil.encode(scenario.getCafleurBon()
+                                                           .getId()));
 
         ObjectNode result = execute(schema,
-                                    "mutation m ($service: String, $assignTo: String, $product: String, $deliverTo: String, "
-                                            + "          $deliverFrom: String, $requester: String) { "
+                                    "mutation m ($service: ID, $assignTo: ID, $product: ID, $deliverTo: ID, "
+                                            + "          $deliverFrom: ID, $requester: ID) { "
                                             + "  createJob(state: { service: $service, assignTo: $assignTo, product: $product, "
                                             + "                     deliverTo: $deliverTo, deliverFrom: $deliverFrom, requester: $requester}) { "
                                             + "      id, status {id, name} parent {id} product {name} service {name} requester {name} assignTo {name} "
@@ -104,10 +102,9 @@ public class JobSchemaTest extends AbstractModelTest {
                              .asText();
         assertNotNull(order);
 
-        assertEquals(model.getKernel()
-                          .getUnset()
-                          .getId()
-                          .toString(),
+        assertEquals(UuidUtil.encode(model.getKernel()
+                                          .getUnset()
+                                          .getId()),
                      result.get("status")
                            .get("id")
                            .asText());
@@ -116,23 +113,23 @@ public class JobSchemaTest extends AbstractModelTest {
 
         variables = new HashMap<>();
         variables.put("id", order);
-        variables.put("status", scenario.getAvailable()
-                                        .getId()
-                                        .toString());
+        variables.put("status", UuidUtil.encode(scenario.getAvailable()
+                                                        .getId()));
         variables.put("notes", "transition during test");
 
         result = execute(schema,
-                         "mutation m ($id: String!, $status: String, $notes: String) { "
+                         "mutation m ($id: ID!, $status: ID, $notes: String) { "
                                  + "  updateJob(state: { id: $id, status: $status, notes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
                                  + "}",
                          variables);
 
+        assertFalse(result.get("updateJob")
+                          .isNull());
         result = (ObjectNode) result.get("updateJob");
         assertNotNull(result);
-        assertEquals(scenario.getAvailable()
-                             .getId()
-                             .toString(),
+        assertEquals(UuidUtil.encode(scenario.getAvailable()
+                                             .getId()),
                      result.get("status")
                            .get("id")
                            .asText());
@@ -141,13 +138,12 @@ public class JobSchemaTest extends AbstractModelTest {
 
         variables = new HashMap<>();
         variables.put("id", order);
-        variables.put("status", scenario.getActive()
-                                        .getId()
-                                        .toString());
+        variables.put("status", UuidUtil.encode(scenario.getActive()
+                                                        .getId()));
         variables.put("notes", "transition during test");
 
         result = execute(schema,
-                         "mutation m ($id: String!, $status: String, $notes: String) { "
+                         "mutation m ($id: ID!, $status: ID, $notes: String) { "
                                  + "  updateJob(state: { id: $id, status: $status, notes: $notes}) { "
                                  + "      id, status {id, name} " + "   } "
                                  + "}",
@@ -155,9 +151,8 @@ public class JobSchemaTest extends AbstractModelTest {
 
         result = (ObjectNode) result.get("updateJob");
         assertNotNull(result);
-        assertEquals(scenario.getActive()
-                             .getId()
-                             .toString(),
+        assertEquals(UuidUtil.encode(scenario.getActive()
+                                             .getId()),
                      result.get("status")
                            .get("id")
                            .asText());
@@ -166,7 +161,7 @@ public class JobSchemaTest extends AbstractModelTest {
         variables.put("id", order);
 
         result = execute(schema,
-                         "query m ($id: String!) { job(id: $id) { parent {id} allChildren {id } activeChildren {id } children {id } chronology {id} } }",
+                         "query m ($id: ID!) { job(id: $id) { parent {id} allChildren {id } activeChildren {id } children {id } chronology {id} } }",
                          variables);
 
         result = (ObjectNode) result.get("job");
@@ -180,14 +175,14 @@ public class JobSchemaTest extends AbstractModelTest {
                                   .get("id")
                                   .asText());
         result = execute(schema,
-                         "query m ($id: String!) { jobChronology(id: $id) { id, status {id} job {id} product {name} service {name} requester {name} assignTo {name} "
+                         "query m ($id: ID!) { jobChronology(id: $id) { id, status {id} job {id} product {name} service {name} requester {name} assignTo {name} "
                                  + "      deliverFrom {name} deliverTo{name} quantity quantityUnit {name} } }",
                          variables);
         assertNotNull(result);
 
         variables.put("ids", Collections.singletonList(variables.get("id")));
         result = execute(schema,
-                         "query m ($ids: [String]!) { jobChronologies(ids: $ids) { id } }",
+                         "query m ($ids: [ID]!) { jobChronologies(ids: $ids) { id } }",
                          variables);
         assertNotNull(result);
     }

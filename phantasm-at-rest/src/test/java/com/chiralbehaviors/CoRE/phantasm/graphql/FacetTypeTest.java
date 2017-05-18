@@ -42,6 +42,8 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
@@ -185,6 +187,8 @@ public class FacetTypeTest extends AbstractModelTest {
                                                           JsonNode.class);
 
         assertNotNull(result);
+        System.out.println();
+        System.out.println(result);
     }
 
     private ExecutionResult execute(Thing1 thing1, GraphQLSchema schema,

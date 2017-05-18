@@ -18,9 +18,9 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ctx;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.ctx;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +32,20 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Mutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.Queries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.Mutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.Queries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLName;
@@ -50,18 +57,6 @@ import graphql.schema.DataFetchingEnvironment;
  */
 public class WorkspaceContext extends ExistentialContext
         implements Queries, Mutations {
-
-    public CoreUser setUpdatePassword(String oldPassword, String newPassword,
-                                      DataFetchingEnvironment env) {
-        CoreUser currentUser = ctx(env).wrap(CoreUser.class,
-                                             ctx(env).getCurrentPrincipal()
-                                                     .getPrincipal());
-        AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
-                                                oldPassword);
-        // force reauthentication
-        currentUser.setAccessToken(new JsonNode[0]);
-        return currentUser;
-    }
 
     public WorkspaceContext(Model model, Product workspace) {
         super(model, workspace);
@@ -102,6 +97,17 @@ public class WorkspaceContext extends ExistentialContext
                                                                    .resolve(existential),
                                                 model.records()
                                                      .resolve(permission));
+    }
+
+    @Override
+    public Job createJob(JobState state, DataFetchingEnvironment env) {
+        Model model = WorkspaceSchema.ctx(env);
+        JobRecord record = model.getJobModel()
+                                .newInitializedJob(model.records()
+                                                        .resolve(state.getService()));
+        state.update(record);
+        record.update();
+        return new Job(record);
     }
 
     @Override
@@ -154,5 +160,66 @@ public class WorkspaceContext extends ExistentialContext
         return model.getCurrentPrincipal()
                     .getAsserted()
                     .containsAll(roles);
+    }
+
+    @Override
+    public Job job(UUID id, DataFetchingEnvironment env) {
+        return new Job(Job.fetch(env, id));
+    }
+
+    @Override
+    public List<JobChronology> JobChronologies(List<UUID> ids,
+                                               DataFetchingEnvironment env) {
+        return ids.stream()
+                  .map(id -> JobChronology.fetch(env, id))
+                  .collect(Collectors.toList());
+    }
+
+    @Override
+    public JobChronology jobChronology(UUID id, DataFetchingEnvironment env) {
+        return JobChronology.fetch(env, id);
+    }
+
+    @Override
+    public List<Job> jobs(List<UUID> ids, DataFetchingEnvironment env) {
+        return ids.stream()
+                  .map(id -> Job.fetch(env, id))
+                  .map(r -> new Job(r))
+                  .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean removeJob(UUID id, DataFetchingEnvironment env) {
+        Job.fetch(env, id)
+           .delete();
+        return true;
+    }
+
+    @Override
+    public CoreUser setUpdatePassword(String oldPassword, String newPassword,
+                                      DataFetchingEnvironment env) {
+        CoreUser currentUser = ctx(env).wrap(CoreUser.class,
+                                             ctx(env).getCurrentPrincipal()
+                                                     .getPrincipal());
+        AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
+                                                oldPassword);
+        // force reauthentication
+        currentUser.setAccessToken(new JsonNode[0]);
+        return currentUser;
+    }
+
+    @Override
+    public Job updateJob(JobUpdateState state, DataFetchingEnvironment env) {
+        JobRecord record = WorkspaceSchema.ctx(env)
+                                          .create()
+                                          .selectFrom(Tables.JOB)
+                                          .where(Tables.JOB.ID.eq(state.getId()))
+                                          .fetchOne();
+        if (record == null) {
+            return null;
+        }
+        state.update(record);
+        record.update();
+        return new Job(record);
     }
 }

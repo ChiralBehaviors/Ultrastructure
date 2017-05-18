@@ -18,10 +18,10 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.resolve;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.wrap;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.wrap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;

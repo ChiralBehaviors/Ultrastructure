@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBigDecimal;
@@ -63,7 +63,13 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
+import com.chiralbehaviors.CoRE.phantasm.graphql.InlinedFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;

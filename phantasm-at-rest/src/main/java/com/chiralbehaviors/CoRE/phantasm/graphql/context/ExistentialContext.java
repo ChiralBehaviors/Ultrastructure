@@ -18,10 +18,10 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.Existential.resolve;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema.ctx;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.ctx;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,24 +33,26 @@ import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.AttributeState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.AttributeUpdateState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ExistentialState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.ExistentialUpdateState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Interval;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Location;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Product;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.RelationshipState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.RelationshipUpdateState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCode;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCodeState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCodeUpdateState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Unit;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeUpdateState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialUpdateState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipUpdateState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeUpdateState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 
 import graphql.annotations.GraphQLName;
 import graphql.schema.DataFetchingEnvironment;

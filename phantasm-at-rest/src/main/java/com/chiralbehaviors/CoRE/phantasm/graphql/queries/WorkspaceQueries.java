@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;

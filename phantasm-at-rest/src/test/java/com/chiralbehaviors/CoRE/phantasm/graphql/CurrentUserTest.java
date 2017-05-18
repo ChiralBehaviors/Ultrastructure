@@ -40,6 +40,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

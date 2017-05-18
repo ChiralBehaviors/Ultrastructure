@@ -25,14 +25,14 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Interval;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Location;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Product;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCode;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Unit;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;

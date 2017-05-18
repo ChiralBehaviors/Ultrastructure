@@ -18,14 +18,16 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLTimestamp;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -51,21 +53,30 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Interval;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Location;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.StatusCode;
-import com.chiralbehaviors.CoRE.phantasm.graphql.Existential.Unit;
+import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCode;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Unit;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 
+import graphql.annotations.GraphQLAnnotations;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInterfaceType;
@@ -81,10 +92,12 @@ import graphql.schema.GraphQLUnionType;
  */
 public class WorkspaceSchema {
 
-    public interface Mutations extends ExistentialMutations, CoreUserAdmin {
+    public interface Mutations
+            extends ExistentialMutations, JobMutations, CoreUserAdmin {
     }
 
-    public interface Queries extends ExistentialQueries, CurrentUser {
+    public interface Queries extends ExistentialQueries, JobQueries,
+            JobChronologyQueries, CurrentUser {
     }
 
     public static final String EDGE = "_Edge";
@@ -209,8 +222,10 @@ public class WorkspaceSchema {
                                                  GraphQLFloat));
         processor.registerType(new ZtypeFunction(int.class, GraphQLInt));
         processor.registerType(new ZtypeFunction(UUID.class, GraphQLUuid));
+        processor.registerType(new ZtypeFunction(Timestamp.class,
+                                                 GraphQLTimestamp));
 
-        GraphQLType existentialType = PhantasmProcessor.iface(Existential.class);
+        GraphQLType existentialType = GraphQLAnnotations.iface(Existential.class);
         processor.registerType(new ZtypeFunction(Existential.class,
                                                  existentialType));
         processor.registerType(new ZtypeFunction(ExistentialRecord.class,

@@ -31,13 +31,14 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
-class InlinedFunction implements DataFetcher {
+public class InlinedFunction implements DataFetcher {
     private final int                                                 crudIndex;
     private final int                                                 envIndex;
     private final Map<Integer, Function<Map<String, Object>, Object>> inputTxfms;

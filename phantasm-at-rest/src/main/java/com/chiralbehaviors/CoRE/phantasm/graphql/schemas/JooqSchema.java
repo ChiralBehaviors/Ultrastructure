@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2017 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql;
+package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
 import static com.chiralbehaviors.CoRE.jooq.Ruleform.RULEFORM;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
@@ -49,6 +49,10 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
+import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
 
@@ -134,30 +138,10 @@ public class JooqSchema {
         return types;
     }
 
-    private GraphQLFieldDefinition.Builder buildPrimitive(GraphQLFieldDefinition.Builder builder,
-                                                          PropertyDescriptor field,
-                                                          PhantasmProcessor processor) {
-        builder.name(field.getName())
-               .type((GraphQLOutputType) type(field, processor))
-               .dataFetcher(env -> {
-                   Object record = env.getSource();
-                   try {
-                       return field.getReadMethod()
-                                   .invoke(record);
-                   } catch (IllegalAccessException | IllegalArgumentException
-                           | InvocationTargetException e) {
-                       throw new IllegalStateException(String.format("unable to invoke %s",
-                                                                     field.getReadMethod()
-                                                                          .toGenericString()),
-                                                       e);
-                   }
-               });
-        return builder;
-    }
-
-    private GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
-                                                          PropertyDescriptor field,
-                                                          PhantasmProcessor processor) {
+    protected GraphQLFieldDefinition.Builder buildReference(GraphQLFieldDefinition.Builder builder,
+                                                            PropertyDescriptor field,
+                                                            PhantasmProcessor processor,
+                                                            Class<?> reference) {
         GraphQLOutputType type = (GraphQLOutputType) processor.typeFor(Existential.class);
         builder.name(field.getName())
                .type(type)
@@ -175,6 +159,27 @@ public class JooqSchema {
                                                        e);
                    }
                    return Existential.wrap(Existential.resolve(env, fk));
+               });
+        return builder;
+    }
+
+    private GraphQLFieldDefinition.Builder buildPrimitive(GraphQLFieldDefinition.Builder builder,
+                                                          PropertyDescriptor field,
+                                                          PhantasmProcessor processor) {
+        builder.name(field.getName())
+               .type((GraphQLOutputType) type(field, processor))
+               .dataFetcher(env -> {
+                   Object record = env.getSource();
+                   try {
+                       return field.getReadMethod()
+                                   .invoke(record);
+                   } catch (IllegalAccessException | IllegalArgumentException
+                           | InvocationTargetException e) {
+                       throw new IllegalStateException(String.format("unable to invoke %s",
+                                                                     field.getReadMethod()
+                                                                          .toGenericString()),
+                                                       e);
+                   }
                });
         return builder;
     }
@@ -339,7 +344,8 @@ public class JooqSchema {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private <T> T fetch(UUID id, Class<?> record, DataFetchingEnvironment env) {
+    protected <T> T fetch(UUID id, Class<?> record,
+                          DataFetchingEnvironment env) {
         Table<?> table = TABLES.get(record);
         Field field;
         try {
@@ -399,22 +405,24 @@ public class JooqSchema {
     private GraphQLObjectType objectType(Class<?> record,
                                          List<PropertyDescriptor> fields,
                                          PhantasmProcessor processor) {
-        Set<String> references = TABLES.get(record)
-                                       .getReferences()
-                                       .stream()
-                                       .map(fk -> camel(fk.getFields()
-                                                          .get(0)
-                                                          .getName()))
-                                       .collect(Collectors.toSet());
+        Map<String, Class<?>> references = TABLES.get(record)
+                                                 .getReferences()
+                                                 .stream()
+                                                 .collect(Collectors.toMap(fk -> camel(fk.getFields()
+                                                                                         .get(0)
+                                                                                         .getName()),
+                                                                           fk -> fk.getTable()
+                                                                                   .getRecordType()));
         GraphQLObjectType.Builder builder = new GraphQLObjectType.Builder();
         builder.name(translated(record));
         fields.forEach(field -> {
-            builder.field(f -> references.contains(field.getName()) ? buildReference(f,
-                                                                                     field,
-                                                                                     processor)
-                                                                    : buildPrimitive(f,
-                                                                                     field,
-                                                                                     processor));
+            builder.field(f -> references.containsKey(field.getName()) ? buildReference(f,
+                                                                                        field,
+                                                                                        processor,
+                                                                                        references.get(field.getName()))
+                                                                       : buildPrimitive(f,
+                                                                                        field,
+                                                                                        processor));
         });
         return builder.build();
     }

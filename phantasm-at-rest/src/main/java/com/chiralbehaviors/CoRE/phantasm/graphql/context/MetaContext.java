@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
+import java.util.UUID;
+
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -48,8 +50,8 @@ public class MetaContext extends ExistentialContext
     }
 
     @Override
-    public String lookup(String namespace, String name,
-                         DataFetchingEnvironment env) {
+    public UUID lookup(String namespace, String name,
+                       DataFetchingEnvironment env) {
 
         Model model = WorkspaceSchema.ctx(env);
         Product wspProduct = getWorkspace(env);
@@ -59,9 +61,7 @@ public class MetaContext extends ExistentialContext
         WorkspaceScope scoped = model.getWorkspaceModel()
                                      .getScoped(wspProduct);
         return namespace == null ? scoped.lookupId(name)
-                                         .toString()
-                                 : scoped.lookupId(namespace, name)
-                                         .toString();
+                                 : scoped.lookupId(namespace, name);
     }
 
 }

@@ -3,9 +3,9 @@ auth: NULL_AUTH
 useCORS: true
 
 logging:
-  level: WARN
+  level: INFO
   loggers:
-    com.chiralbehaviors: ${core.log.level}
+    com.chiralbehaviors: DEBUG
     org.jooq: WARN
     org.glassfish: WARN
     graphql: WARN

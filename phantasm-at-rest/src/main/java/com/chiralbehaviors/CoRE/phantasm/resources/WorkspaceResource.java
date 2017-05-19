@@ -64,6 +64,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
@@ -331,12 +332,7 @@ public class WorkspaceResource extends TransactionalResource {
                                               Status.BAD_REQUEST);
         }
         return mutate(principal, model -> {
-            UUID uuid;
-            try {
-                uuid = UUID.fromString(workspace);
-            } catch (IllegalArgumentException e) {
-                uuid = WorkspaceAccessor.uuidOf(workspace);
-            }
+            UUID uuid = uuidFrom(workspace);
 
             GraphQLSchema schema = cache.computeIfAbsent(uuid, id -> {
                 WorkspaceScope scoped;
@@ -411,6 +407,19 @@ public class WorkspaceResource extends TransactionalResource {
         }, create);
     }
 
+    private UUID uuidFrom(String encoded) {
+        if (encoded.length() == 22) {
+            return UuidUtil.decode(encoded);
+        }
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(encoded);
+        } catch (IllegalArgumentException e) {
+            uuid = WorkspaceAccessor.uuidOf(encoded);
+        }
+        return uuid;
+    }
+
     @Timed
     @Path("{workspace}/meta")
     @POST
@@ -427,15 +436,16 @@ public class WorkspaceResource extends TransactionalResource {
                                               Status.BAD_REQUEST);
         }
         return mutate(principal, model -> {
-            UUID uuid;
-            try {
-                uuid = UUID.fromString(workspace);
-            } catch (IllegalArgumentException e) {
-                uuid = WorkspaceAccessor.uuidOf(workspace);
-            }
+            UUID uuid = uuidFrom(workspace);
 
             Product definingProduct = model.records()
                                            .resolve(uuid);
+            if (definingProduct == null) {
+                throw new WebApplicationException(String.format("Workspace not found [%s] %s",
+                                                                uuid,
+                                                                workspace),
+                                                  Status.NOT_FOUND);
+            }
             MetaContext crud = new MetaContext(model, definingProduct);
             if (!model.checkRead((UpdatableRecord<?>) definingProduct)
                 || !model.checkRead((UpdatableRecord<?>) definingProduct)) {

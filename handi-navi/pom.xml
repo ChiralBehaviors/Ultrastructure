@@ -16,9 +16,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>ru.yandex.qatools.embed</groupId>
-			<artifactId>postgresql-embedded</artifactId>
-			<version>1.22</version>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
@@ -31,6 +31,11 @@
 		<dependency>
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ru.yandex.qatools.embed</groupId>
+			<artifactId>postgresql-embedded</artifactId>
+			<version>1.22</version>
 		</dependency>
 	</dependencies>
 
@@ -57,12 +62,12 @@
 								<dbaPort>${dba.db.port}</dbaPort>
 								<dbaUsername>${dba.db.login}</dbaUsername>
 								<dbaPassword>${dba.db.password}</dbaPassword>
-								
-                                <coreServer>${db.server}</coreServer>
-                                <corePort>${db.port}</corePort>
-                                <corePassword>${db.password}</corePassword>
-                                <coreDb>${db}</coreDb>
-                                <coreUsername>${db.login}</coreUsername>
+
+								<coreServer>${db.server}</coreServer>
+								<corePort>${db.port}</corePort>
+								<corePassword>${db.password}</corePassword>
+								<coreDb>${db}</coreDb>
+								<coreUsername>${db.login}</coreUsername>
 							</loader>
 						</configuration>
 					</execution>

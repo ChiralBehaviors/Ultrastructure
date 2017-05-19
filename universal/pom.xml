@@ -39,27 +39,6 @@
 			<artifactId>utils</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>animations</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>phantasm-at-rest</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>animations</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.uuid</groupId>
 			<artifactId>java-uuid-generator</artifactId>
 		</dependency>
@@ -68,6 +47,27 @@
 			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>animations</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>phantasm-at-rest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>animations</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<build>

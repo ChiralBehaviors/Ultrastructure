@@ -715,15 +715,15 @@
 								<exclude>com/chiralbehaviors/CoRE/universal/spa/**/*</exclude>
 								<exclude>**/WorkspacePresentation*</exclude>
 								<exclude>**/HelpMojo*</exclude>
-								<exclude>**/Universal*</exclude>
+								<exclude>**/UniversalApplication*</exclude>
 								<exclude>**/English*</exclude>
 								<exclude>**/TwoFormInflector*</exclude>
-								<excluded>**/json/RecordMixin*</excluded>
-								<excluded>**/json/IngoreStoredQueryOverload*</excluded>
+								<exclude>**/json/RecordMixin*</exclude>
+								<exclude>**/json/IngoreStoredQueryOverload*</exclude>
 								<exclude>**/utils/CoreDbConfiguration*</exclude>
-								<excluded>**/utils/DbaConfiguration*</excluded>
-								<excluded>**/postgres/PostgresJSONJacksonJsonNodeBinding*</excluded>
-								<excluded>**/postgres/PostgresJSONJacksonJsonNodeConverter*</excluded>
+								<exclude>**/utils/DbaConfiguration*</exclude>
+								<exclude>**/postgres/PostgresJSONJacksonJsonNodeBinding*</exclude>
+								<exclude>**/postgres/PostgresJSONJacksonJsonNodeConverter*</exclude>
 								<exclude>**/authentication/NullAuthFilter*</exclude>
 							</excludes>
 						</configuration>

@@ -1,0 +1,18 @@
+{
+  workspaces {
+    IRI
+    imports {
+      _edge {
+        ... on _workspace_import {
+          lookupOrder
+          namespace
+        }
+      }
+      _ext {
+        id
+        name
+        description
+      }
+    }
+  }
+}

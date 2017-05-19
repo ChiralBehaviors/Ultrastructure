@@ -15,6 +15,11 @@
 	</properties>
 
 	<dependencies>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <scope>compile</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors</groupId>
 			<artifactId>jbcrypt</artifactId>
@@ -22,11 +27,7 @@
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>animations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>animations</artifactId>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
@@ -87,11 +88,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>loader</artifactId>
+        </dependency>
 
 		<!-- test dependencies -->
 		<dependency>
@@ -116,11 +116,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>loader</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>acm-95-ontology</artifactId>
 			<scope>test</scope>
@@ -129,10 +124,6 @@
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>thing-ontology</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>loader</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

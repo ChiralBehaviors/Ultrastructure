@@ -1,4 +1,4 @@
-query getApplication($id: String!) {
+query getApplication($id: ID!) {
   singlePageApplication(id: $id) {
     id
     name

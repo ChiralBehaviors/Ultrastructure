@@ -424,8 +424,15 @@ public class MetaSchemaTest extends AbstractModelTest {
         definingProduct = importer.getWorkspace()
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
-        ObjectNode data = execute("{ facets { id name  classifier {id} classification {id} authority { id } }}",
-                                  variables);
+        ObjectNode data;
+        
+        variables.put("name", "IsA");
+        data = execute("query q($name: String!) { lookup( name: $name) }",
+                       variables);
+        assertNotNull(data);
+
+        data = execute("{ facets { id name  classifier {id} classification {id} authority { id } }}",
+                       variables);
         assertNotNull(data);
 
         data = execute("{ childSequencingAuthorizations { id service {id} nextChild { id } nextChildStatus {id} notes sequenceNumber statusCode {id} updatedBy {id} } }",

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2017 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -22,9 +22,13 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+
+import graphql.schema.DataFetchingEnvironment;
 
 /**
  * @author halhildebrand
@@ -41,6 +45,23 @@ public class MetaContext extends ExistentialContext
 
     public MetaContext(Model model, Product workspace) {
         super(model, workspace);
+    }
+
+    @Override
+    public String lookup(String namespace, String name,
+                         DataFetchingEnvironment env) {
+
+        Model model = WorkspaceSchema.ctx(env);
+        Product wspProduct = getWorkspace(env);
+        if (!model.checkRead(wspProduct)) {
+            return null;
+        }
+        WorkspaceScope scoped = model.getWorkspaceModel()
+                                     .getScoped(wspProduct);
+        return namespace == null ? scoped.lookupId(name)
+                                         .toString()
+                                 : scoped.lookupId(namespace, name)
+                                         .toString();
     }
 
 }

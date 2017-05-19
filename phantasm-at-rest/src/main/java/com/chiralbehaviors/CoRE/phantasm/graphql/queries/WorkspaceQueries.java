@@ -20,14 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.getWorkspace;
-
 import javax.validation.constraints.NotNull;
-
-import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -37,25 +30,12 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */ 
+ */
 public interface WorkspaceQueries {
 
     @GraphQLField
     @GraphQLDescription("Lookup the ID of the item in the workspace by (potentially scoped) name")
-    default String lookup(@GraphQLDescription("The namespace within the workspace imports") @GraphQLName("namespace") String namespace,
-                          @GraphQLDescription("The name within the workspace") @NotNull @GraphQLName("name") String name,
-                          DataFetchingEnvironment env) {
-
-        Model model = WorkspaceSchema.ctx(env);
-        Product wspProduct = getWorkspace(env);
-        if (!model.checkRead(wspProduct)) {
-            return null;
-        }
-        WorkspaceScope scoped = model.getWorkspaceModel()
-                                     .getScoped(wspProduct);
-        return namespace == null ? scoped.lookupId(name)
-                                         .toString()
-                                 : scoped.lookupId(namespace, name)
-                                         .toString();
-    }
+    String lookup(@GraphQLDescription("The namespace within the workspace imports") @GraphQLName("namespace") String namespace,
+                  @GraphQLDescription("The name within the workspace") @NotNull @GraphQLName("name") String name,
+                  DataFetchingEnvironment env);
 }

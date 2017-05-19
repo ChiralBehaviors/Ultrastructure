@@ -122,11 +122,6 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>test-plugin</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>acm-95-ontology</artifactId>
 			<scope>test</scope>
 		</dependency>

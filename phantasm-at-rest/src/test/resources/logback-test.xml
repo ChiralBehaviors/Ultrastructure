@@ -7,7 +7,7 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="INFO" />
+        <level value="WARN" />
     </logger>
     <logger name = "org.reflections">
         <level value="ERROR" />

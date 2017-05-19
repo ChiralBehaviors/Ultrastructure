@@ -49,7 +49,7 @@ products {
     facets {
     	IsA.MasterThing {name description jsonBlob default: '{ "a" : "a" }'}
     		constraints{
-    			n derivedFrom: IsA.Thing1 { classifier }
+    			n derivedFrom: IsA.Thing1 { classifier jsonBlob }
     		}
         IsA.Thing1 {name description aliases URI discount properties}
             constraints {

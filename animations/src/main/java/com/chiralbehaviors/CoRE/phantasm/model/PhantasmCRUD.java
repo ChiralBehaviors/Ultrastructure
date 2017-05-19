@@ -59,6 +59,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorizati
  */
 public class PhantasmCRUD {
     protected final Model model;
+    public static final String _INSTANCE = "_instance";
 
     public PhantasmCRUD(Model model) {
         this.model = model;

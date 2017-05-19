@@ -187,8 +187,6 @@ public class FacetTypeTest extends AbstractModelTest {
                                                           JsonNode.class);
 
         assertNotNull(result);
-        System.out.println();
-        System.out.println(result);
     }
 
     private ExecutionResult execute(Thing1 thing1, GraphQLSchema schema,

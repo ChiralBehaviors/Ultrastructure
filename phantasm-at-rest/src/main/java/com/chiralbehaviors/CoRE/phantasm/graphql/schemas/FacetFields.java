@@ -43,7 +43,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,11 +63,11 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
-import com.chiralbehaviors.CoRE.phantasm.graphql.InlinedFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
+import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmInitializer;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes;
-import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
@@ -889,15 +888,6 @@ public class FacetFields extends Phantasmagoria {
                                                              plugin.getCanonicalName()));
         }
         List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> initializers = new ArrayList<>();
-        Class<? extends Phantasm> phantasm = annotation.value();
-        Object instance;
-        try {
-            instance = plugin.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException(String.format("Unable to instantiate: %s",
-                                                             plugin),
-                                               e);
-        }
         for (Method method : plugin.getMethods()) {
 
             Class<?> declaringClass = FacetFields.getDeclaringClass(method);
@@ -920,16 +910,9 @@ public class FacetFields extends Phantasmagoria {
                     throw new IllegalStateException(e);
                 }
             } else if (method.getAnnotation(Initializer.class) != null) {
-                InlinedFunction initializer = new InlinedFunction(method,
-                                                                  Collections.emptyMap(),
-                                                                  phantasm,
-                                                                  instance);
-                initializers.add((env,
-                                  rf) -> initializer.get(env,
-                                                         WorkspaceSchema.ctx(env)
-                                                                        .wrap(phantasm,
-                                                                              rf),
-                                                         true));
+                PhantasmInitializer initializer = new PhantasmInitializer(method,
+                                                                          plugin);
+                initializers.add((env, rf) -> initializer.get(env));
             }
         }
         return initializers;

@@ -47,7 +47,7 @@ products {
         this.HasMember.Thing1
     }
     facets {
-    	IsA.MasterThing {name description jsonBlob}
+    	IsA.MasterThing {name description jsonBlob default: '{ "a" : "a" }'}
     		constraints{
     			n derivedFrom: IsA.Thing1 { classifier }
     		}

@@ -19,6 +19,8 @@ import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
@@ -64,6 +66,17 @@ public class NetAttrTest extends AbstractModelTest {
         MasterThing master = model.construct(MasterThing.class,
                                              ExistentialDomain.Product,
                                              "Master", "blaster");
+        JsonNode json = master.getJsonBlob();
+        assertNotNull(json);
+        assertEquals("a", json.get("a").asText());
+        ((ObjectNode) json).put("a", "b");
+        master.setJsonBlob(json);
+        
+        json = master.getJsonBlob();
+        assertNotNull(json);
+        assertEquals("b", json.get("a").asText());
+        
+        
         master.setName("Master");
         master.setDescription("blaster");
 

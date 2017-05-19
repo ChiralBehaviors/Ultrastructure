@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -47,14 +46,12 @@ public class PhantasmInitializer {
                                                   environment.getParentType(),
                                                   environment.getGraphQLSchema());
         try {
-            Object result = method.invoke(null, environment);
-            return result != null && method.getReturnType()
-                                           .isAnnotationPresent(Facet.class) ? ((Phantasm) result).getRuleform()
-                                                                             : result;
+            method.invoke(null, environment);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e.getTargetException());
         }
+        return phantasm;
     }
 }

@@ -63,8 +63,8 @@ public interface WorkspsacScalarTypes {
                                                                       "Built-in ID",
                                                                       uuidCoercing());
 
-    SimpleDateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
- 
+    SimpleDateFormat         rfc3339          = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
     static Coercing binaryCoercing() {
         return new Coercing() {
 
@@ -134,13 +134,10 @@ public interface WorkspsacScalarTypes {
 
             @Override
             public Object serialize(Object input) {
-                if (input instanceof String) {
-                    return Integer.parseInt((String) input);
-                } else if (input instanceof Integer) {
+                if (input instanceof ObjectNode) {
                     return input;
-                } else {
-                    return null;
                 }
+                return null;
             }
 
             private void set(ObjectNode object, ObjectField field,

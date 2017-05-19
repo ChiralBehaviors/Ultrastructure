@@ -44,6 +44,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.MasterThing;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
@@ -350,12 +351,26 @@ public class FacetTypeTest extends AbstractModelTest {
         assertNotNull(thing3DerivedFroms);
         assertEquals(2, thing3DerivedFroms.size());
 
-        String q = "{ thing1s {id name URI}}";
+        MasterThing kingThing = model.construct(MasterThing.class,
+                                                ExistentialDomain.Product,
+                                                "test", "testy");
+        String q = "{ masterThings {id jsonBlob }}";
         result = (Map<String, Object>) execute(thing1, schema, q,
                                                Collections.emptyMap()).getData();
-        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("thing1s");
+        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("masterThings");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);
+        assertEquals(UuidUtil.encode(kingThing.getRuleform()
+                                              .getId()),
+                     instance.get("id"));
+        assertEquals(kingThing.getJsonBlob(), instance.get("jsonBlob"));
+
+        q = "{ thing1s {id name URI}}";
+        result = (Map<String, Object>) execute(thing1, schema, q,
+                                               Collections.emptyMap()).getData();
+        instances = (List<Map<String, Object>>) result.get("thing1s");
+        assertEquals(1, instances.size());
+        instance = instances.get(0);
         assertEquals(thing1.getName(), instance.get("name"));
         assertEquals(UuidUtil.encode(thing1.getRuleform()
                                            .getId()),
@@ -440,9 +455,9 @@ public class FacetTypeTest extends AbstractModelTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", UuidUtil.encode(thing1.getRuleform()
-                                  .getId()));
+                                                  .getId()));
         variables.put("thing3", UuidUtil.encode(thing3.getRuleform()
-                                      .getId()));
+                                                      .getId()));
 
         QueryRequest request = new QueryRequest("mutation m($id: ID!, $thing3: ID!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);

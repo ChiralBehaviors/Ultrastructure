@@ -129,6 +129,9 @@ public interface WorkspsacScalarTypes {
 
             @Override
             public JsonNode parseValue(Object input) {
+                if (input instanceof JsonNode) {
+                    return (JsonNode) input;
+                }
                 return parseLiteral(input);
             }
 

@@ -51,6 +51,8 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing3;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;
@@ -200,6 +202,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                                                                 variables);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testMutation() throws Exception {
         String[] newAliases = new String[] { "jones", "smith" };
@@ -260,20 +263,42 @@ public class FacetTypeTest extends AbstractModelTest {
                    execute.getErrors()
                           .isEmpty());
 
-        @SuppressWarnings("unchecked")
         Map<String, Object> result = (Map<String, Object>) execute.getData();
 
         thing1.getRuleform()
               .refresh();
 
         assertEquals("hello", thing1.getName());
-        @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("updateThing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
         assertEquals(newUri, thing1.getURI());
+
+        MasterThing kingThing = model.construct(MasterThing.class,
+                                                ExistentialDomain.Product,
+                                                "test", "testy");
+
+        variables.put("id", UuidUtil.encode(kingThing.getRuleform()
+                                                     .getId()));
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        variables.put("blob", node);
+
+        request = new QueryRequest("mutation m($id: ID!, $blob: JSON!) { updateMasterThing(state: { id: $id, setJsonBlob: $blob } ) { id }}",
+                                   variables);
+        execute = execute(scope, schema, request);
+
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+
+        result = (Map<String, Object>) execute.getData();
+
+        thing1.getRuleform()
+              .refresh();
+
     }
 
     @SuppressWarnings("unchecked")

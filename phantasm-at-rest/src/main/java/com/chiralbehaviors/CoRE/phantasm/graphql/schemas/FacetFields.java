@@ -888,13 +888,14 @@ public class FacetFields extends Phantasmagoria {
                                                              plugin.getCanonicalName()));
         }
         List<BiConsumer<DataFetchingEnvironment, ExistentialRuleform>> initializers = new ArrayList<>();
+        Class<? extends Phantasm> phantasm = annotation.value();
         for (Method method : plugin.getMethods()) {
 
             Class<?> declaringClass = FacetFields.getDeclaringClass(method);
 
             boolean valid;
             try {
-                valid = !Modifier.isStatic(method.getModifiers())
+                valid = Modifier.isStatic(method.getModifiers())
                         && (method.getAnnotation(GraphQLField.class) != null
                             || declaringClass.getMethod(method.getName(),
                                                         method.getParameterTypes())
@@ -905,16 +906,20 @@ public class FacetFields extends Phantasmagoria {
 
             if (valid) {
                 try {
-                    builder.field(processor.getField(method));
+                    builder.field(processor.getPluginField(method, phantasm));
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
             } else if (method.getAnnotation(Initializer.class) != null) {
-                PhantasmInitializer initializer = new PhantasmInitializer(method,
-                                                                          plugin);
-                initializers.add((env, rf) -> initializer.get(env));
+                PhantasmInitializer initializer = new PhantasmInitializer(method);
+                initializers.add((env,
+                                  rf) -> initializer.get(env,
+                                                         WorkspaceSchema.ctx(env)
+                                                                        .wrap(phantasm,
+                                                                              rf)));
             }
         }
         return initializers;
+
     }
 }

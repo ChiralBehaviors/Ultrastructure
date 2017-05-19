@@ -26,25 +26,28 @@ import java.lang.reflect.Method;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
-public class PhantasmInitializer implements DataFetcher {
+public class PhantasmInitializer {
     private final Method method;
-    private final Object plugin;
 
-    public PhantasmInitializer(Method method, Object plugin) {
+    public PhantasmInitializer(Method method) {
         this.method = method;
-        this.plugin = plugin;
     }
 
-    @Override
-    public Object get(DataFetchingEnvironment environment) {
+    public Object get(DataFetchingEnvironment environment, Phantasm phantasm) {
         if (environment.getSource() == null) {
             return null;
         }
+        environment = new DataFetchingEnvironment(phantasm,
+                                                  environment.getArguments(),
+                                                  environment.getContext(),
+                                                  environment.getFields(),
+                                                  environment.getFieldType(),
+                                                  environment.getParentType(),
+                                                  environment.getGraphQLSchema());
         try {
-            Object result = method.invoke(plugin, environment);
+            Object result = method.invoke(null, environment);
             return result != null && method.getReturnType()
                                            .isAnnotationPresent(Facet.class) ? ((Phantasm) result).getRuleform()
                                                                              : result;

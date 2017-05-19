@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
@@ -138,7 +137,7 @@ public class PluginTest extends AbstractModelTest {
         String thing1ID = (String) thing1Result.get("id");
         assertNotNull(thing1ID);
         Thing1 thing1 = model.wrap(Thing1.class, model.records()
-                                                      .resolve(UUID.fromString(thing1ID)));
+                                                      .resolve(UuidUtil.decode(thing1ID)));
         assertEquals(bob, thing1.getDescription());
 
         String apple = "Connie";
@@ -150,7 +149,7 @@ public class PluginTest extends AbstractModelTest {
         variables = new HashMap<>();
         variables.put("id", thing1ID);
         variables.put("test", "me");
-        request = new QueryRequest("query it($id: String!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
+        request = new QueryRequest("query it($id: ID!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
 
         execute = new ExistentialContext(model, scope.getWorkspace()

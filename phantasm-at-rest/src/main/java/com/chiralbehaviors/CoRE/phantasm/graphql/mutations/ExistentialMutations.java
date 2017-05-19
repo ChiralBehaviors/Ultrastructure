@@ -20,17 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
-
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
@@ -56,246 +49,101 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@GraphQLInterface
 public interface ExistentialMutations {
 
     @GraphQLField
-    default Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
-                                DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newAgency();
-        state.update(record);
-        record.insert();
-        return new Agency(record);
-    }
+    Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
+                        DataFetchingEnvironment env);
 
     @GraphQLField
-    default Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
-                                      DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newAttribute();
-        state.update(record);
-        record.insert();
-        return new Attribute(record);
-    }
+    Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
+                              DataFetchingEnvironment env);
 
     @GraphQLField
-    default Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
-                                    DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newInterval();
-        state.update(record);
-        record.insert();
-        return new Interval(record);
-    }
+    Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-    default Location createLocation(@NotNull @GraphQLName("state") ExistentialState state,
-                                    DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newLocation();
-        state.update(record);
-        record.insert();
-        return new Location(record);
-    }
+    Location createLocation(@NotNull @GraphQLName("state") ExistentialState state,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-    default Product createProduct(@NotNull @GraphQLName("state") ExistentialState state,
-                                  DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newProduct();
-        state.update(record);
-        record.insert();
-        return new Product(record);
-    }
+    Product createProduct(@NotNull @GraphQLName("state") ExistentialState state,
+                          DataFetchingEnvironment env);
 
     @GraphQLField
-    default Relationship createRelationship(@NotNull @GraphQLName("state") RelationshipState state,
-                                            DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newRelationship();
-        state.update(record);
-        record.insert();
-        return new Relationship(record);
-    }
+    Relationship createRelationship(@NotNull @GraphQLName("state") RelationshipState state,
+                                    DataFetchingEnvironment env);
 
     @GraphQLField
-    default StatusCode createStatusCode(@NotNull @GraphQLName("state") StatusCodeState state,
-                                        DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newStatusCode();
-        state.update(record);
-        record.insert();
-        return new StatusCode(record);
-    }
+    StatusCode createStatusCode(@NotNull @GraphQLName("state") StatusCodeState state,
+                                DataFetchingEnvironment env);
 
     @GraphQLField
-    default Unit createUnit(@NotNull @GraphQLName("state") ExistentialState state,
-                            DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newUnit();
-        state.update(record);
-        record.insert();
-        return new Unit(record);
-    }
+    Unit createUnit(@NotNull @GraphQLName("state") ExistentialState state,
+                    DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeAgency(@NotNull @GraphQLName("id") String id,
-                                 DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeAgency(@NotNull @GraphQLName("id") UUID id,
+                         DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeAttribute(@NotNull @GraphQLName("id") String id,
-                                    DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeAttribute(@NotNull @GraphQLName("id") UUID id,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeInterval(@NotNull @GraphQLName("id") String id,
-                                   DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeInterval(@NotNull @GraphQLName("id") UUID id,
+                           DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeLocation(@NotNull @GraphQLName("id") String id,
-                                   DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeLocation(@NotNull @GraphQLName("id") UUID id,
+                           DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeProduct(@NotNull @GraphQLName("id") String id,
-                                  DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeProduct(@NotNull @GraphQLName("id") UUID id,
+                          DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeRelationship(@NotNull @GraphQLName("id") String id,
-                                       DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeRelationship(@NotNull @GraphQLName("id") UUID id,
+                               DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeStatusCode(@NotNull @GraphQLName("id") String id,
-                                     DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeStatusCode(@NotNull @GraphQLName("id") UUID id,
+                             DataFetchingEnvironment env);
 
     @GraphQLField
-    default Boolean removeUnit(@NotNull @GraphQLName("id") String id,
-                               DataFetchingEnvironment env) {
-        resolve(env, UUID.fromString(id)).delete();
-        return true;
-    }
+    Boolean removeUnit(@NotNull @GraphQLName("id") UUID id,
+                       DataFetchingEnvironment env);
 
     @GraphQLField
-    default Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Agency(record);
-    }
+    Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                        DataFetchingEnvironment env);
 
     @GraphQLField
-    default Attribute updateAttribute(@NotNull @GraphQLName("state") AttributeUpdateState state,
-                                      DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Attribute(record);
-    }
+    Attribute updateAttribute(@NotNull @GraphQLName("state") AttributeUpdateState state,
+                              DataFetchingEnvironment env);
 
     @GraphQLField
-    default Interval updateInterval(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                    DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Interval(record);
-    }
+    Interval updateInterval(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-    default Location updateLocation(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                    DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Location(record);
-    }
+    Location updateLocation(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
-    default Product updateProduct(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                                  DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Product(record);
-    }
+    Product updateProduct(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                          DataFetchingEnvironment env);
 
     @GraphQLField
-    default Relationship updateRelationship(@NotNull @GraphQLName("state") RelationshipUpdateState state,
-                                            DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Relationship(record);
-    }
+    Relationship updateRelationship(@NotNull @GraphQLName("state") RelationshipUpdateState state,
+                                    DataFetchingEnvironment env);
 
     @GraphQLField
-    default StatusCode updateStatusCode(@NotNull @GraphQLName("state") StatusCodeUpdateState state,
-                                        DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new StatusCode(record);
-    }
+    StatusCode updateStatusCode(@NotNull @GraphQLName("state") StatusCodeUpdateState state,
+                                DataFetchingEnvironment env);
 
     @GraphQLField
-    default Unit updateUnit(@NotNull @GraphQLName("state") ExistentialUpdateState state,
-                            DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, UUID.fromString(state.id));
-        state.update(record);
-        record.update();
-        return new Unit(record);
-    }
+    Unit updateUnit(@NotNull @GraphQLName("state") ExistentialUpdateState state,
+                    DataFetchingEnvironment env);
 }

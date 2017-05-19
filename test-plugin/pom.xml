@@ -16,10 +16,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>graphql-java-annotations</groupId>
 			<artifactId>graphql-java-annotations</artifactId>
 		</dependency>
 	</dependencies>

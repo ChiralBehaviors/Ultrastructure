@@ -297,7 +297,7 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public boolean checkPermission(List<Agency> roles,
+    public boolean checkExistentialPermission(List<Agency> roles,
                                    ExistentialRuleform target,
                                    Relationship permission) {
         return checkPermission(roles, (UpdatableRecord<?>) target, permission);

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,12 +44,13 @@ public class EdgeTest extends AbstractModelTest {
                                     .getScoped(WorkspaceAccessor.uuidOf(WellKnownObject.KERNEL_IRI));
 
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", WorkspaceAccessor.uuidOf(THING_URI)
-                                             .toString());
-        QueryRequest request = new QueryRequest("query ($id: String!) { workspace(id: $id) { imports { _edge { ... on _workspace_import { lookupOrder namespace } } } } }",
+        variables.put("id",
+                      UuidUtil.encode(WorkspaceAccessor.uuidOf(THING_URI)));
+        QueryRequest request = new QueryRequest("query ($id: ID!) { workspace(id: $id) { imports { _edge { ... on _workspace_import { lookupOrder namespace } } } } }",
                                                 variables);
 
         ExecutionResult execute = new WorkspaceContext(model,

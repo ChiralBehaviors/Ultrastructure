@@ -34,27 +34,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Spa {
-    private final String            description;
-    private final String            frame;
-    private final String            name;
-    private final String            root;
-    private final Map<String, Page> routes;
-
-    public Spa(String name, String description, String frame, String root,
-               Map<String, Page> routes) {
-        this.name = name;
-        this.description = description;
-        this.frame = frame;
-        this.root = root;
-        this.routes = routes;
-    }
-
-    public Spa(ObjectNode app) {
-        this(textOrNull(app.get("name")), textOrNull(app.get("description")),
-             textOrNull(app.get("frame")), textOrNull(app.get("root")),
-             routes((ArrayNode) app.get("pages")));
-    }
-
     public static Map<String, Page> routes(ArrayNode pages) {
         Map<String, Page> routes = new HashMap<>();
         pages.forEach(p -> {
@@ -64,6 +43,31 @@ public class Spa {
                        new Page((ObjectNode) p));
         });
         return routes;
+    }
+
+    private String                  description;
+    private String                  frame;
+    private String                  name;
+    private String                  root;
+    private final Map<String, Page> routes;
+
+    public Spa() {
+        routes = new HashMap<>();
+    }
+
+    public Spa(ObjectNode app) {
+        this(textOrNull(app.get("name")), textOrNull(app.get("description")),
+             textOrNull(app.get("frame")), textOrNull(app.get("root")),
+             routes((ArrayNode) app.get("pages")));
+    }
+
+    public Spa(String name, String description, String frame, String root,
+               Map<String, Page> routes) {
+        this.name = name;
+        this.description = description;
+        this.frame = frame;
+        this.root = root;
+        this.routes = routes;
     }
 
     public String getDescription() {
@@ -84,5 +88,25 @@ public class Spa {
 
     public Page route(String path) {
         return routes.get(path);
+    }
+
+    public void route(String path, Page page) {
+        routes.put(path, page);
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setFrame(String frame) {
+        this.frame = frame;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
     }
 }

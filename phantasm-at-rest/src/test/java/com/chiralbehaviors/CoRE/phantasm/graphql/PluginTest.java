@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
@@ -44,6 +43,10 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.ExistentialContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.FacetFields;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
@@ -114,7 +117,8 @@ public class PluginTest extends AbstractModelTest {
         String bob = "Give me food or give me slack or kill me";
         passThrough.set(bob);
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model, reflections);
+                                                           model,
+                                                           reflections.getTypesAnnotatedWith(Plugin.class));
 
         ExecutionResult execute = new WorkspaceContext(model,
                                                        scope.getWorkspace()
@@ -133,7 +137,7 @@ public class PluginTest extends AbstractModelTest {
         String thing1ID = (String) thing1Result.get("id");
         assertNotNull(thing1ID);
         Thing1 thing1 = model.wrap(Thing1.class, model.records()
-                                                      .resolve(UUID.fromString(thing1ID)));
+                                                      .resolve(UuidUtil.decode(thing1ID)));
         assertEquals(bob, thing1.getDescription());
 
         String apple = "Connie";
@@ -145,13 +149,13 @@ public class PluginTest extends AbstractModelTest {
         variables = new HashMap<>();
         variables.put("id", thing1ID);
         variables.put("test", "me");
-        request = new QueryRequest("query it($id: String!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
+        request = new QueryRequest("query it($id: ID!, $test: String) { thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
 
-        execute = new WorkspaceContext(model, scope.getWorkspace()
-                                                   .getDefiningProduct()).execute(schema,
-                                                                                  request.getQuery(),
-                                                                                  request.getVariables());
+        execute = new ExistentialContext(model, scope.getWorkspace()
+                                                     .getDefiningProduct()).execute(schema,
+                                                                                    request.getQuery(),
+                                                                                    request.getVariables());
 
         assertTrue(execute.getErrors()
                           .toString(),

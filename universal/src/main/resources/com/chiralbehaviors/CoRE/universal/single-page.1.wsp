@@ -1,6 +1,6 @@
 workspace: 'uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page'
            version: 1
-           'UaaS SP' 'A declarative single page application framework for Ultrastructure'
+           'UaaS SPA' 'A declarative single page application framework for Ultrastructure'
 imports {
     'urn:uuid:00000000-0000-0004-0000-000000000003' as kernel {
     		IsA.Workspace
@@ -19,6 +19,7 @@ attributes {
 	root = 'Root' 'Root Route' text;
 	frameBy = 'Frame By' 'The xpath expression to extract the workspace frame id from the relation' text;
     launchBy = 'Launch By' 'The xpath expression to extract application id from the relation' text;
+    meta = 'Meta' 'If true, indicates the meta workspace frame' bool;
 }
 products {
     Page = 'Page' 'A single page in an application';

@@ -1,4 +1,4 @@
-query getApplication($id: String!) {
+query getApplication($id: ID!) {
   singlePageApplication(id: $id) {
     id
     name
@@ -8,6 +8,9 @@ query getApplication($id: String!) {
       id
       name
       description
+      frame {
+        id
+      }
       _edge {
         ... on _singlePageApplication_page {
           route
@@ -70,7 +73,6 @@ query getApplication($id: String!) {
         launchBy
         immediate {
           id
-          name
         }
       }
     }

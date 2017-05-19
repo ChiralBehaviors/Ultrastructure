@@ -12,11 +12,14 @@
 
 	<properties>
 		<main.class>com.chiralbehaviors.CoRE.universal.Universal</main.class>
-		<db>test</db>
-		<user>testme</user>
+		<com.chiralbehaviors.core.universal>com/chiralbehaviors/CoRE/universal</com.chiralbehaviors.core.universal>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4-runtime</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.chiralbehaviors.layout</groupId>
 			<artifactId>kramer-ql</artifactId>
@@ -60,10 +63,45 @@
 			<groupId>com.fasterxml.uuid</groupId>
 			<artifactId>java-uuid-generator</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/target/generated-sources/antlr4</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -179,9 +217,9 @@
 						</configuration>
 						<executions>
 							<execution>
-								<phase>compile</phase>
+								<phase>process-classes</phase>
 								<goals>
-									<goal>load</goal>
+									<goal>clear</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -192,7 +230,7 @@
 						<executions>
 							<execution>
 								<id>load-dsl</id>
-								<phase>compile</phase>
+								<phase>process-classes</phase>
 								<goals>
 									<goal>load-dsl</goal>
 								</goals>
@@ -205,13 +243,14 @@
 										<corePassword>${db.password}</corePassword>
 									</database>
 									<resources>
-										<resource>src/main/resources/com/chiralbehaviors/CoRE/universal/single-page.1.wsp</resource>
+										<resource>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/single-page.1.wsp</resource>
+										<resource>${project.build.outputDirectory}/${com.chiralbehaviors.core.universal}/explorer.1.wsp</resource>
 									</resources>
 								</configuration>
 							</execution>
 							<execution>
 								<id>generate-snapshots</id>
-								<phase>compile</phase>
+								<phase>process-classes</phase>
 								<goals>
 									<goal>generate-snapshot</goal>
 								</goals>
@@ -226,7 +265,11 @@
 									<exports>
 										<export>
 											<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page</iri>
-											<output>src/main/resources/com/chiralbehaviors/CoRE/universal/single-page.1.json</output>
+											<output>src/main/resources//${com.chiralbehaviors.core.universal}/single-page.1.json</output>
+										</export>
+										<export>
+											<iri>uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/workspace-explorer</iri>
+											<output>src/main/resources/${com.chiralbehaviors.core.universal}/explorer.1.json</output>
 										</export>
 									</exports>
 								</configuration>

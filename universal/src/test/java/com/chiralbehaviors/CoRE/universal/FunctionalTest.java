@@ -28,6 +28,7 @@ import static com.chiralbehaviors.CoRE.universal.Universal.SINGLE_PAGE_UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -62,6 +63,15 @@ import com.hellblazer.utils.Utils;
  */
 public class FunctionalTest {
     static Model model;
+    private static final String APPLICATION_QUERY;
+    
+    static {
+        try {
+            APPLICATION_QUERY = Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATION_QUERY_RESOURCE));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     @AfterClass
     public static void clearDb() throws Exception {
@@ -121,8 +131,7 @@ public class FunctionalTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", appLauncher);
-        request = new QueryRequest(Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATION_QUERY_RESOURCE)),
-                                   variables);
+        request = new QueryRequest(APPLICATION_QUERY, variables);
         response = invocationBuilder.post(Entity.entity(request,
                                                         MediaType.APPLICATION_JSON_TYPE),
                                           ObjectNode.class);

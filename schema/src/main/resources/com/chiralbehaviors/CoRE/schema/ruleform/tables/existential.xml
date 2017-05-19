@@ -46,16 +46,16 @@
             </column>
 
         </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform" referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="existential" constraintName="agency_workspace_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform" referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="existential" constraintName="existential_updated_by_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform" referencedTableSchemaName="ruleform"
             baseColumnNames="authority" baseTableName="existential" constraintName="existential_authority_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+        <addForeignKeyConstraint baseTableSchemaName="ruleform" referencedTableSchemaName="ruleform"
             baseColumnNames="inverse" baseTableName="existential" constraintName="inverse_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <createIndex schemaName="ruleform" indexName="existential_updated_by_fkey_idx" tableName="existential" unique="false">

@@ -23,14 +23,16 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.types;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
@@ -47,73 +49,128 @@ import graphql.schema.DataFetchingEnvironment;
 public class Job {
 
     public static class JobState {
+        private static final String         ASSIGN_TO    = "assignTo";
+        private static final String         AUTHORITY    = "authority";
+        private static final String         DELIVER_FROM = "deliverFrom";
+        private static final String         DELIVER_TO   = "deliverTo";
+        private static final String         NOTES        = "notes";
+        private static final String         PRODUCT      = "product";
+        private static final String         QUANTITY     = "quantity";
+        private static final String         REQUESTER    = "requester";
+        private static final String         SERVICE      = "service";
+        private static final String         STATUS       = "status";
+        private static final String         UNIT         = "unit";
+        protected final Map<String, Object> state;
+
+        public JobState(HashMap<String, Object> state) {
+            this.state = state;
+        }
+
         @GraphQLField
-        public String assignTo;
+        public UUID getAssignTo() {
+            return (UUID) state.get(ASSIGN_TO);
+        }
+
         @GraphQLField
-        public String authority;
+        public UUID getAuthority() {
+            return (UUID) state.get(AUTHORITY);
+        }
+
         @GraphQLField
-        public String deliverFrom;
+        public UUID getDeliverFrom() {
+            return (UUID) state.get(DELIVER_FROM);
+        }
+
         @GraphQLField
-        public String deliverTo;
+        public UUID getDeliverTo() {
+            return (UUID) state.get(DELIVER_TO);
+        }
+
         @GraphQLField
-        public String notes;
+        public String getNotes() {
+            return (String) state.get(NOTES);
+        }
+
         @GraphQLField
-        public String product;
+        public UUID getProduct() {
+            return (UUID) state.get(PRODUCT);
+        }
+
         @GraphQLField
-        public Float  quantity;
+        public Float getQuantity() {
+            return (Float) state.get(QUANTITY);
+        }
+
         @GraphQLField
-        public String requester;
+        public UUID getRequester() {
+            return (UUID) state.get(REQUESTER);
+        }
+
         @GraphQLField
-        public String service;
+        public UUID getService() {
+            return (UUID) state.get(SERVICE);
+        }
+
         @GraphQLField
-        public String status;
+        public UUID getStatus() {
+            return (UUID) state.get(STATUS);
+        }
+
         @GraphQLField
-        public String unit;
+        public UUID getUnit() {
+            return (UUID) state.get(UNIT);
+        }
 
         public void update(JobRecord r) {
-            if (authority != null) {
-                r.setAuthority(UUID.fromString(authority));
+            if (state.containsKey(AUTHORITY)) {
+                r.setAuthority((UUID) state.get(AUTHORITY));
             }
-            if (assignTo != null) {
-                r.setAssignTo(UUID.fromString(assignTo));
+            if (state.containsKey(ASSIGN_TO)) {
+                r.setAssignTo((UUID) state.get(ASSIGN_TO));
             }
-            if (deliverFrom != null) {
-                r.setDeliverFrom(UUID.fromString(deliverFrom));
+            if (state.containsKey(DELIVER_TO)) {
+                r.setDeliverTo((UUID) state.get(DELIVER_TO));
             }
-            if (deliverTo != null) {
-                r.setDeliverTo(UUID.fromString(deliverTo));
+            if (state.containsKey(DELIVER_FROM)) {
+                r.setDeliverFrom((UUID) state.get(DELIVER_FROM));
             }
-            if (notes != null) {
-                r.setNotes(notes);
+            if (state.containsKey(NOTES)) {
+                r.setNotes((String) state.get(NOTES));
             }
-            if (product != null) {
-                r.setProduct(UUID.fromString(product));
+            if (state.containsKey(PRODUCT)) {
+                r.setProduct((UUID) state.get(PRODUCT));
             }
-            if (quantity != null) {
-                r.setQuantity(BigDecimal.valueOf(quantity));
+            if (state.containsKey(QUANTITY)) {
+                r.setQuantity((BigDecimal) state.get(QUANTITY));
             }
-            if (product != null) {
-                r.setProduct(UUID.fromString(product));
+            if (state.containsKey(REQUESTER)) {
+                r.setRequester((UUID) state.get(REQUESTER));
             }
-            if (requester != null) {
-                r.setRequester(UUID.fromString(requester));
+            if (state.containsKey(SERVICE)) {
+                r.setService((UUID) state.get(SERVICE));
             }
-            if (service != null) {
-                r.setService(UUID.fromString(service));
+            if (state.containsKey(STATUS)) {
+                r.setStatus((UUID) state.get(STATUS));
             }
-            if (status != null) {
-                r.setStatus(UUID.fromString(status));
-            }
-            if (unit != null) {
-                r.setQuantityUnit(UUID.fromString(unit));
+            if (state.containsKey(UNIT)) {
+                r.setQuantityUnit((UUID) state.get(UNIT));
             }
         }
     }
 
     public static class JobUpdateState extends JobState {
+
+        public JobUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
+
         @GraphQLField
-        public String id;
+        public UUID getId() {
+            return (UUID) state.get(ID);
+        }
     }
+
+    private static final String ID = "id";
 
     public static JobRecord fetch(DataFetchingEnvironment env, UUID uuid) {
         return WorkspaceSchema.ctx(env)
@@ -202,21 +259,8 @@ public class Job {
     }
 
     @GraphQLField
-    public String getId() {
-        return record.getId()
-                     .toString();
-    }
-
-    @GraphQLField
-
-    public List<Protocol> getMatchingProtocols(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env)
-                              .getJobModel()
-                              .getProtocols(record)
-                              .keySet()
-                              .stream()
-                              .map(r -> new Protocol(r))
-                              .collect(Collectors.toList());
+    public UUID getId() {
+        return record.getId();
     }
 
     @GraphQLField

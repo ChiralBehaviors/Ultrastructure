@@ -13,17 +13,23 @@
 	<properties>
 		<main.class>com.chiralbehaviors.CoRE.phantasm.service.NAVI</main.class>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
-			<groupId>graphql-java-annotations</groupId>
-			<artifactId>graphql-java-annotations</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.antlr</groupId>
-					<artifactId>antlr4</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>com.chiralbehaviors</groupId>
+			<artifactId>jbcrypt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>animations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>animations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
@@ -54,22 +60,40 @@
 			<artifactId>dropwizard-auth</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors</groupId>
-			<artifactId>jbcrypt</artifactId>
+			<groupId>com.bendb.dropwizard</groupId>
+			<artifactId>dropwizard-jooq</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>io.dropwizard</groupId>
+					<artifactId>dropwizard-db</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>thing-ontology</artifactId>
-			<scope>test</scope>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.service.component.annotations</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>animations</artifactId>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-annotations</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>annotations</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -94,20 +118,7 @@
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>loader</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>test-plugin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.bendb.dropwizard</groupId>
-			<artifactId>dropwizard-jooq</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>io.dropwizard</groupId>
-					<artifactId>dropwizard-db</artifactId>
-				</exclusion>
-			</exclusions>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -115,14 +126,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.code.findbugs</groupId>
-					<artifactId>annotations</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>thing-ontology</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>loader</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -185,14 +195,14 @@
 					</classpathDependencyExcludes>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <shadedArtifactAttached>true</shadedArtifactAttached>
-                    <shadedClassifierName>phat</shadedClassifierName>
-                </configuration>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+					<shadedArtifactAttached>true</shadedArtifactAttached>
+					<shadedClassifierName>phat</shadedClassifierName>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

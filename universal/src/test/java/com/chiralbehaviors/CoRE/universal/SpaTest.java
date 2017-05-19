@@ -20,14 +20,25 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
+
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 
 import com.chiralbehaviors.layout.schema.Relation;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -35,6 +46,31 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class SpaTest {
+    @Test
+    public void testContext() throws Exception {
+        ObjectNode node = (ObjectNode) new ObjectMapper().readTree(getClass().getResourceAsStream("/test-app.json"));
+        Spa spa = new Spa(node);
+        Page page = spa.getRoot();
+        Context ctx = new Context("foo", page);
+        assertEquals("foo", ctx.getFrame());
+        assertEquals(page, ctx.getPage());
+        assertEquals("singlePageApplications", ctx.getRoot()
+                                                  .getField());
+        Relation relation = new Relation("singlePageApplications");
+        assertEquals(page.getNavigation(relation), ctx.getNavigation(relation));
+        assertEquals(page.getLaunch(relation), ctx.getLaunch(relation));
+
+        ObjectNode result = JsonNodeFactory.instance.objectNode();
+        ObjectNode data = JsonNodeFactory.instance.objectNode();
+        WebTarget target = mock(WebTarget.class);
+        Builder builder = mock(Builder.class);
+        when(target.request(any(MediaType.class))).thenReturn(builder);
+        when(target.path(any(String.class))).thenReturn(target);
+        when(builder.post(any(), eq(ObjectNode.class))).thenReturn(result);
+        result.set("data", data);
+        ctx.evaluate(target);
+    }
+
     @Test
     public void testSpa() throws Exception {
         ObjectNode node = (ObjectNode) new ObjectMapper().readTree(getClass().getResourceAsStream("/test-app.json"));
@@ -68,7 +104,7 @@ public class SpaTest {
         assertEquals("cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
                      launch.getImmediate());
         assertEquals("id", launch.getLaunchBy());
-        
+
         Route route = page.getNavigation(relation);
         assertNotNull(route);
         assertEquals("workspace", route.getFrameBy());

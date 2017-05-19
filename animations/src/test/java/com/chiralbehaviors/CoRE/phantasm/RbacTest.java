@@ -294,7 +294,7 @@ public class RbacTest extends AbstractModelTest {
                                         "testy", "test");
 
         ExistentialRuleform instance = thing1.getRuleform();
-        assertTrue(model.checkPermission(asList(model.getKernel()
+        assertTrue(model.checkExistentialPermission(asList(model.getKernel()
                                                      .getCore()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
@@ -303,7 +303,7 @@ public class RbacTest extends AbstractModelTest {
                                    .getId());
         instance.update();
 
-        assertFalse(model.checkPermission(asList(model.getKernel()
+        assertFalse(model.checkExistentialPermission(asList(model.getKernel()
                                                       .getCore()),
                                           instance, model.getKernel()
                                                          .getHadMember()));
@@ -316,11 +316,11 @@ public class RbacTest extends AbstractModelTest {
                    model.getKernel()
                         .getAnyAgency());
 
-        assertTrue(model.checkPermission(asList(model.getKernel()
+        assertTrue(model.checkExistentialPermission(asList(model.getKernel()
                                                      .getCore()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
-        assertFalse(model.checkPermission(asList(model.getKernel()
+        assertFalse(model.checkExistentialPermission(asList(model.getKernel()
                                                       .getNotApplicableAgency()),
                                           instance, model.getKernel()
                                                          .getHadMember()));
@@ -333,7 +333,7 @@ public class RbacTest extends AbstractModelTest {
                    model.getKernel()
                         .getCore());
 
-        assertTrue(model.checkPermission(asList(model.getKernel()
+        assertTrue(model.checkExistentialPermission(asList(model.getKernel()
                                                      .getNotApplicableAgency()),
                                          instance, model.getKernel()
                                                         .getHadMember()));

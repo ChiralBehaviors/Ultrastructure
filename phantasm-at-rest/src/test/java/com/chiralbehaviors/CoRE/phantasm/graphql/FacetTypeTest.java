@@ -29,10 +29,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +42,8 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
@@ -90,22 +92,18 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("artifact", artifact1.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("artifact", UuidUtil.encode(artifact1.getRuleform()
+                                                           .getId()));
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: ID) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name description } }",
                                                 variables);
 
-        ExecutionResult execute = new WorkspaceContext(model,
-                                                       scope.getWorkspace()
-                                                            .getDefiningProduct()).execute(schema,
-                                                                                           request.getQuery(),
-                                                                                           request.getVariables());
+        ExecutionResult execute = execute(scope, schema, request);
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -118,26 +116,21 @@ public class FacetTypeTest extends AbstractModelTest {
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
         Thing1 thing1 = model.wrap(Thing1.class, model.records()
-                                                      .resolve(UUID.fromString((String) thing1Result.get("id"))));
+                                                      .resolve(UuidUtil.decode((String) thing1Result.get("id"))));
         assertNotNull(thing1);
         assertEquals(artifact1, thing1.getDerivedFrom());
 
         variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                                  .getId()));
+        variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
+                                                           .getId()));
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
+        request = new QueryRequest("mutation m($id: ID!, $name: String!, $artifact: ID, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
-        execute = new WorkspaceContext(model, scope.getWorkspace()
-                                                   .getDefiningProduct()).execute(schema,
-                                                                                  request.getQuery(),
-                                                                                  request.getVariables());
+        execute = execute(scope, schema, request);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -148,30 +141,25 @@ public class FacetTypeTest extends AbstractModelTest {
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
         thing1 = model.wrap(Thing1.class, model.records()
-                                               .resolve(UUID.fromString((String) thing1Result.get("id"))));
+                                               .resolve(UuidUtil.decode((String) thing1Result.get("id"))));
         assertNotNull(thing1);
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
         assertEquals(newUri, thing1.getURI());
 
         variables = new HashMap<>();
-        variables.put("thing1", thing1.getRuleform()
-                                      .getId()
-                                      .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("thing1", UuidUtil.encode(thing1.getRuleform()
+                                                      .getId()));
+        variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
+                                                           .getId()));
         variables.put("name", "hello");
-        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { \n"
+        request = new QueryRequest("mutation m($name: String!, $artifact: ID!, $thing1: ID!) { \n"
                                    + "createThing2(state: {setName: $name, \n"
                                    + "addDerivedFrom: $artifact, \n"
                                    + "setThing1: $thing1}) { id name } }",
                                    variables);
 
-        execute = new WorkspaceContext(model, scope.getWorkspace()
-                                                   .getDefiningProduct()).execute(schema,
-                                                                                  request.getQuery(),
-                                                                                  request.getVariables());
+        execute = execute(scope, schema, request);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -186,19 +174,29 @@ public class FacetTypeTest extends AbstractModelTest {
                                         "test", "testy");
         GraphQLSchema schema = new WorkspaceSchema().build(thing1.getScope()
                                                                  .getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
         String query = getIntrospectionQuery();
-        ExecutionResult execute = new WorkspaceContext(model, thing1.getScope()
-                                                                    .getWorkspace()
-                                                                    .getDefiningProduct()).execute(schema,
-                                                                                                   query);
+        ExecutionResult execute = execute(thing1, schema, query,
+                                          Collections.emptyMap());
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
-                          .isEmpty()); 
-        JsonNode result = new ObjectMapper().convertValue(execute.getData(), JsonNode.class);
+                          .isEmpty());
+        JsonNode result = new ObjectMapper().convertValue(execute.getData(),
+                                                          JsonNode.class);
 
         assertNotNull(result);
+    }
+
+    private ExecutionResult execute(Thing1 thing1, GraphQLSchema schema,
+                                    String query,
+                                    Map<String, Object> variables) {
+        return new WorkspaceContext(model, thing1.getScope()
+                                                 .getWorkspace()
+                                                 .getDefiningProduct()).execute(schema,
+                                                                                query,
+                                                                                variables);
     }
 
     @Test
@@ -241,25 +239,20 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                                  .getId()));
+        variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
+                                                           .getId()));
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: ID!, $name: String!, $artifact: ID!, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
-        ExecutionResult execute = new WorkspaceContext(model,
-                                                       scope.getWorkspace()
-                                                            .getDefiningProduct()).execute(schema,
-                                                                                           request.getQuery(),
-                                                                                           request.getVariables());
+        ExecutionResult execute = execute(scope, schema, request);
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -317,17 +310,13 @@ public class FacetTypeTest extends AbstractModelTest {
 
         GraphQLSchema schema = new WorkspaceSchema().build(thing1.getScope()
                                                                  .getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        String query = "query it($id: String!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}";
-        ExecutionResult execute = new WorkspaceContext(model, thing1.getScope()
-                                                                    .getWorkspace()
-                                                                    .getDefiningProduct()).execute(schema,
-                                                                                                   query,
-                                                                                                   variables);
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                                  .getId()));
+        String query = "query it($id: ID!) { thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}";
+        ExecutionResult execute = execute(thing1, schema, query, variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -339,45 +328,37 @@ public class FacetTypeTest extends AbstractModelTest {
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing1.getRuleform()
+                                           .getId()),
                      thing1Result.get("id"));
 
         Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
         assertNotNull(thing2Result);
         assertEquals(thing2.getName(), thing2Result.get("name"));
-        assertEquals(thing2.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing2.getRuleform()
+                                           .getId()),
                      thing2Result.get("id"));
         List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
         assertNotNull(thing3s);
         assertEquals(1, thing3s.size());
         Map<String, Object> thing3Result = thing3s.get(0);
         assertEquals(thing3.getName(), thing3Result.get("name"));
-        assertEquals(thing3.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing3.getRuleform()
+                                           .getId()),
                      thing3Result.get("id"));
         List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
         assertNotNull(thing3DerivedFroms);
         assertEquals(2, thing3DerivedFroms.size());
 
         String q = "{ thing1s {id name URI}}";
-        result = (Map<String, Object>) new WorkspaceContext(model,
-                                                            thing1.getScope()
-                                                                  .getWorkspace()
-                                                                  .getDefiningProduct()).execute(schema,
-                                                                                                 q)
-                                                                                        .getData();
+        result = (Map<String, Object>) execute(thing1, schema, q,
+                                               Collections.emptyMap()).getData();
         List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("thing1s");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);
         assertEquals(thing1.getName(), instance.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
+        assertEquals(UuidUtil.encode(thing1.getRuleform()
+                                           .getId()),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
     }
@@ -413,7 +394,8 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("artifact", artifact2.getRuleform()
@@ -421,14 +403,10 @@ public class FacetTypeTest extends AbstractModelTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String!, $artifact: ID) { createThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
-        ExecutionResult execute = new WorkspaceContext(model,
-                                                       scope.getWorkspace()
-                                                            .getDefiningProduct()).execute(schema,
-                                                                                           request.getQuery(),
-                                                                                           request.getVariables());
+        ExecutionResult execute = execute(scope, schema, request);
 
         assertTrue(execute.getErrors()
                           .toString(),
@@ -457,24 +435,19 @@ public class FacetTypeTest extends AbstractModelTest {
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
-                                                           model);
+                                                           model,
+                                                           Collections.emptySet());
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        variables.put("thing3", thing3.getRuleform()
-                                      .getId()
-                                      .toString());
+        variables.put("id", UuidUtil.encode(thing1.getRuleform()
+                                  .getId()));
+        variables.put("thing3", UuidUtil.encode(thing3.getRuleform()
+                                      .getId()));
 
-        QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: ID!, $thing3: ID!) { updateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
                                                 variables);
 
-        ExecutionResult execute = new WorkspaceContext(model,
-                                                       scope.getWorkspace()
-                                                            .getDefiningProduct()).execute(schema,
-                                                                                           request.getQuery(),
-                                                                                           request.getVariables());
+        ExecutionResult execute = execute(scope, schema, request);
 
         assertEquals(execute.getErrors()
                             .toString(),
@@ -484,6 +457,14 @@ public class FacetTypeTest extends AbstractModelTest {
                           .get(0)
                           .getMessage()
                           .contains("ClassCastException"));
+    }
+
+    private ExecutionResult execute(WorkspaceScope scope, GraphQLSchema schema,
+                                    QueryRequest request) {
+        return new WorkspaceContext(model, scope.getWorkspace()
+                                                .getDefiningProduct()).execute(schema,
+                                                                               request.getQuery(),
+                                                                               request.getVariables());
     }
 
     private String getIntrospectionQuery() throws IOException {

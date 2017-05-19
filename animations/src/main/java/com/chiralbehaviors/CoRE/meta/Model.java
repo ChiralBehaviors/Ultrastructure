@@ -92,14 +92,9 @@ public interface Model extends AutoCloseable {
     boolean checkPermission(ExistentialRuleform target,
                             Relationship permission);
 
-    /**
-     * @param roles
-     * @param target
-     * @param permission
-     * @return
-     */
-    boolean checkPermission(List<Agency> roles, ExistentialRuleform target,
-                            Relationship permission);
+    boolean checkExistentialPermission(List<Agency> roles,
+                                       ExistentialRuleform target,
+                                       Relationship permission);
 
     boolean checkPermission(List<Agency> roles, UpdatableRecord<?> target,
                             Relationship permission);

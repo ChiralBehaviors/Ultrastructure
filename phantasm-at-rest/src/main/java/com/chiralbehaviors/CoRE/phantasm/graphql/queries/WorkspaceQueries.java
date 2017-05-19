@@ -20,15 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext.getWorkspace;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.getWorkspace;
 
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -38,8 +37,7 @@ import graphql.schema.DataFetchingEnvironment;
 /**
  * @author hhildebrand
  *
- */
-@GraphQLInterface
+ */ 
 public interface WorkspaceQueries {
 
     @GraphQLField

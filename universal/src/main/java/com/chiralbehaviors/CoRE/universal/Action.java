@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,9 +32,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Action {
-    private final Map<String, String> extract;
-    private final String              frameBy;
-    private final String              query;
+    private Map<String, String> extract;
+    private String              frameBy;
+    private String              query;
+
+    public Action() {
+        extract = new HashMap<>();
+    }
 
     public Action(ObjectNode action) {
         this(textOrNull(action.get("query")), textOrNull(action.get("frameBy")),
@@ -56,5 +61,17 @@ public class Action {
 
     public String getQuery() {
         return query;
+    }
+
+    public void setExtract(Map<String, String> extract) {
+        this.extract = extract;
+    }
+
+    public void setFrameBy(String frameBy) {
+        this.frameBy = frameBy;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

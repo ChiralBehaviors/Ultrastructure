@@ -22,11 +22,9 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.phantasm.graphql.GraphQLInterface;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
 
 import graphql.annotations.GraphQLField;
@@ -37,21 +35,13 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-@GraphQLInterface
 public interface JobChronologyQueries {
 
     @GraphQLField
-    default JobChronology jobChronology(@NotNull @GraphQLName("id") String id,
-                                        DataFetchingEnvironment env) {
-        return JobChronology.fetch(env, UUID.fromString(id));
-    }
+    public JobChronology jobChronology(@NotNull @GraphQLName("id") UUID id,
+                                       DataFetchingEnvironment env);
 
     @GraphQLField
-    default List<JobChronology> JobChronologies(@NotNull @GraphQLName("ids") List<String> ids,
-                                                DataFetchingEnvironment env) {
-        return ids.stream()
-                  .map(s -> UUID.fromString(s))
-                  .map(id -> JobChronology.fetch(env, id))
-                  .collect(Collectors.toList());
-    }
+    public List<JobChronology> JobChronologies(@NotNull @GraphQLName("ids") List<UUID> ids,
+                                               DataFetchingEnvironment env);
 }

@@ -37,7 +37,7 @@
 	<properties>
 		<db.context>local</db.context>
 
-        <antlr.version>4.7</antlr.version>
+		<antlr.version>4.7</antlr.version>
 		<dropwizard.version>1.0.5</dropwizard.version>
 		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
 		<jackson.version>2.7.8 </jackson.version>
@@ -390,9 +390,9 @@
 				<version>2.3.0</version>
 			</dependency>
 			<dependency>
-				<groupId>graphql-java-annotations</groupId>
+				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-annotations</artifactId>
-				<version>0.8.1</version>
+				<version>0.13.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -440,44 +440,9 @@
 				<version>1.0.0</version>
 			</dependency>
 			<dependency>
-				<groupId>com.chiralbehaviors.layout</groupId>
-				<artifactId>toy-app</artifactId>
-				<classifier>phat</classifier>
-				<version>0.0.1-SNAPSHOT</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.fasterxml.jackson.core</groupId>
-						<artifactId>jackson-annotations</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.chiralbehaviors.layout</groupId>
-						<artifactId>kramer-ql</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.glassfish.jersey.media</groupId>
-						<artifactId>jersey-media-json-jackson</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.fasterxml.jackson.dataformat</groupId>
-						<artifactId>jackson-dataformat-yaml</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-classic</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.glassfish.jersey.core</groupId>
-						<artifactId>jersey-client</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.hellblazer</groupId>
-						<artifactId>utils</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.fasterxml.jackson.jaxrs</groupId>
-						<artifactId>jackson-jaxrs-json-provider</artifactId>
-					</exclusion>
-				</exclusions>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.service.component.annotations</artifactId>
+				<version>1.3.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -540,7 +505,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.6.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -549,7 +514,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -571,11 +536,11 @@
 					<artifactId>jooq-codegen-maven</artifactId>
 					<version>${jooq.version}</version>
 				</plugin>
-                <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>workspace-plugin</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
+				<plugin>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>workspace-plugin</artifactId>
+					<version>${project.version}</version>
+				</plugin>
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>phantasm-plugin</artifactId>
@@ -741,16 +706,25 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.7.6.201602180812</version>
+						<version>0.7.9</version>
 						<configuration>
 							<excludes>
 								<exclude>graphql/annotations/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
 								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
-								<exclude>**/HelpMojo.*</exclude>
-								<exclude>**/Universal.*</exclude>
-								<exclude>**/English.*</exclude>
-								<exclude>**/TwoFormInflector.*</exclude>
+								<exclude>com/chiralbehaviors/CoRE/universal/spa/**/*</exclude>
+								<exclude>**/WorkspacePresentation*</exclude>
+								<exclude>**/HelpMojo*</exclude>
+								<exclude>**/Universal*</exclude>
+								<exclude>**/English*</exclude>
+								<exclude>**/TwoFormInflector*</exclude>
+								<excluded>**/json/RecordMixin*</excluded>
+								<excluded>**/json/IngoreStoredQueryOverload*</excluded>
+								<exclude>**/utils/CoreDbConfiguration*</exclude>
+								<excluded>**/utils/DbaConfiguration*</excluded>
+								<excluded>**/postgres/PostgresJSONJacksonJsonNodeBinding*</excluded>
+								<excluded>**/postgres/PostgresJSONJacksonJsonNodeConverter*</excluded>
+								<exclude>**/authentication/NullAuthFilter*</exclude>
 							</excludes>
 						</configuration>
 						<executions>

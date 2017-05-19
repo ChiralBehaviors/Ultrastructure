@@ -65,6 +65,10 @@ public class Context {
         return frame;
     }
 
+    public Launch getLaunch(Relation relation) {
+        return page.getLaunch(relation);
+    }
+
     public Route getNavigation(Relation relation) {
         return page.getNavigation(relation);
     }

@@ -59,6 +59,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorizati
  */
 public class PhantasmCRUD {
     protected final Model model;
+    public static final String _INSTANCE = "_instance";
 
     public PhantasmCRUD(Model model) {
         this.model = model;
@@ -377,7 +378,7 @@ public class PhantasmCRUD {
         return model.checkRead((UpdatableRecord<?>) child) ? child : null;
     }
 
-    public List<ExistentialRuleform> lookup(List<String> ids) {
+    public List<ExistentialRuleform> lookupList(List<UUID> ids) {
         return ids.stream()
                   .map(id -> existential(id))
                   .map(r -> model.records()
@@ -386,7 +387,7 @@ public class PhantasmCRUD {
                   .collect(Collectors.toList());
     }
 
-    public ExistentialRuleform lookup(String id) {
+    public ExistentialRuleform lookup(UUID id) {
         return Optional.ofNullable(existential(id))
                        .map(r -> model.records()
                                       .resolve(r))
@@ -676,10 +677,10 @@ public class PhantasmCRUD {
         return instance;
     }
 
-    private ExistentialRecord existential(String id) {
+    private ExistentialRecord existential(UUID id) {
         return model.create()
                     .selectFrom(EXISTENTIAL)
-                    .where(EXISTENTIAL.ID.eq(UUID.fromString(id)))
+                    .where(EXISTENTIAL.ID.eq(id))
                     .fetchOne();
     }
 

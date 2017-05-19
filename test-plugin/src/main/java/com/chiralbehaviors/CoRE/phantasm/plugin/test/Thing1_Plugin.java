@@ -39,29 +39,25 @@ public class Thing1_Plugin {
     public static final AtomicReference<String> passThrough = new AtomicReference<>();
 
     @Initializer
-    public void constructor(DataFetchingEnvironment env, PhantasmCRUD crud,
-                            Thing1 instance) {
-        crud.getModel(); // ensure it isn't null;
+    public static void constructor(DataFetchingEnvironment env) {
+        ((PhantasmCRUD) env.getContext()).getModel(); // ensure it isn't null;
         env.getArguments(); // not null;
-        instance.setDescription(passThrough.get());
+        ((Thing1) env.getSource()).setDescription(passThrough.get());
     }
 
     @GraphQLField
-    public String instanceMethod(DataFetchingEnvironment env, PhantasmCRUD crud,
-                                 Thing1 instance) {
-        return instance.getThing2()
-                       .getName();
+    public static String instanceMethod(DataFetchingEnvironment env) {
+        return ((Thing1) env.getSource()).getThing2()
+                                         .getName();
     }
 
     @GraphQLField
-    public String instanceMethodWithArgument(@GraphQLName("arg1") String arg1,
-                                             DataFetchingEnvironment env,
-                                             PhantasmCRUD crud,
-                                             Thing1 instance) {
-        crud.getModel(); // ensure it isn't null;
+    public static String instanceMethodWithArgument(@GraphQLName("arg1") String arg1,
+                                                    DataFetchingEnvironment env) {
+        ((PhantasmCRUD) env.getContext()).getModel(); // ensure it isn't null;
         env.getArguments(); // not null;
         passThrough.set(arg1);
-        return instance.getThing2()
-                       .getName();
+        return ((Thing1) env.getSource()).getThing2()
+                                         .getName();
     }
 }

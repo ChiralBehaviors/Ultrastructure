@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.universal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.universal.spa.SpaBaseListener;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.ActionContext;
@@ -35,6 +34,8 @@ import com.chiralbehaviors.CoRE.universal.spa.SpaParser.PageContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.RouteContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.UpdateContext;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -99,13 +100,14 @@ public class SpaImporter extends SpaBaseListener {
                                 .getText());
         }
         if (ctx.extract() != null) {
-            route.setExtract(ctx.extract()
-                                .extraction()
-                                .stream()
-                                .collect(Collectors.toMap(k -> k.NAME()
-                                                                .getText(),
-                                                          v -> v.Spath()
-                                                                .getText())));
+            ObjectNode extract = JsonNodeFactory.instance.objectNode();
+            ctx.extract()
+               .extraction()
+               .forEach(c -> extract.put(c.NAME()
+                                          .getText(),
+                                         c.Spath()
+                                          .getText()));
+            route.setExtract(extract);
         }
         super.enterNavigate(ctx);
     }
@@ -170,13 +172,14 @@ public class SpaImporter extends SpaBaseListener {
                                 .getText());
         }
         if (ac.extract() != null) {
-            action.setExtract(ac.extract()
-                                .extraction()
-                                .stream()
-                                .collect(Collectors.toMap(k -> k.NAME()
-                                                                .getText(),
-                                                          v -> v.Spath()
-                                                                .getText())));
+            ObjectNode extract = JsonNodeFactory.instance.objectNode();
+            ac.extract()
+              .extraction()
+              .forEach(c -> extract.put(c.NAME()
+                                         .getText(),
+                                        c.Spath()
+                                         .getText()));
+            action.setExtract(extract);
         }
         action.setQuery(getResource(stripQuotes(ac.query()
                                                   .ResourcePath()

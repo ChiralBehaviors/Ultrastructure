@@ -28,16 +28,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import graphql.language.ArrayValue;
-import graphql.language.BooleanValue;
-import graphql.language.FloatValue;
-import graphql.language.IntValue;
-import graphql.language.ObjectField;
-import graphql.language.ObjectValue;
 import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.GraphQLScalarType;
@@ -95,34 +87,8 @@ public interface WorkspsacScalarTypes {
         return new Coercing() {
             @Override
             public JsonNode parseLiteral(Object input) {
-                if (input instanceof StringValue) {
-                    return JsonNodeFactory.instance.textNode(((StringValue) input).getValue());
-                }
-                if (input instanceof BooleanValue) {
-                    return JsonNodeFactory.instance.booleanNode(((BooleanValue) input).isValue());
-                }
-                if (input instanceof IntValue) {
-                    return JsonNodeFactory.instance.numberNode(((IntValue) input).getValue());
-                }
-                if (input instanceof FloatValue) {
-                    return JsonNodeFactory.instance.numberNode(((FloatValue) input).getValue());
-                }
-                if (input instanceof ObjectValue) {
-                    ObjectValue objValue = (ObjectValue) input;
-                    ObjectNode value = JsonNodeFactory.instance.objectNode();
-                    objValue.getObjectFields()
-                            .forEach(f -> {
-                                set(value, f, input);
-                            });
-                    return value;
-                }
-                if (input instanceof ArrayValue) {
-                    ArrayNode array = JsonNodeFactory.instance.arrayNode();
-                    ((ArrayValue) input).getValues()
-                                        .stream()
-                                        .map(v -> parseLiteral(v))
-                                        .forEach(v -> array.add(v));
-                    return array;
+                if (input instanceof JsonNode) {
+                    return (JsonNode) input;
                 }
                 return null;
             }
@@ -132,7 +98,7 @@ public interface WorkspsacScalarTypes {
                 if (input instanceof JsonNode) {
                     return (JsonNode) input;
                 }
-                return parseLiteral(input);
+                return null;
             }
 
             @Override
@@ -141,25 +107,6 @@ public interface WorkspsacScalarTypes {
                     return input;
                 }
                 return null;
-            }
-
-            private void set(ObjectNode object, ObjectField field,
-                             Object value) {
-                Object literal = parseLiteral(field.getValue());
-                if (literal instanceof String) {
-                    object.put(field.getName(), (String) literal);
-                } else if (literal instanceof Float) {
-                    object.put(field.getName(), (Float) literal);
-                } else if (literal instanceof Integer) {
-                    object.put(field.getName(), (Integer) literal);
-                } else if (literal instanceof Boolean) {
-                    object.put(field.getName(), (Boolean) literal);
-                } else if (literal instanceof ObjectNode) {
-                    object.set(field.getName(), (ObjectNode) literal);
-                } else {
-                    throw new IllegalArgumentException(String.format("%s is an invalid JSON type",
-                                                                     value));
-                }
             }
         };
     }

@@ -307,10 +307,10 @@ public class Universal extends Application implements LayoutModel {
     private Context extract(String workspace, Route route, JsonNode item) {
         Map<String, Object> variables = new HashMap<>();
         route.getExtract()
-             .entrySet()
-             .stream()
-             .forEach(entry -> {
-                 variables.put(entry.getKey(), apply(item, entry.getValue()));
+             .fields()
+             .forEachRemaining(entry -> {
+                 variables.put(entry.getKey(), apply(item, entry.getValue()
+                                                                .asText()));
              });
 
         Page target = application.route(route.getPath());

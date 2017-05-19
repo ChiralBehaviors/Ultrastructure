@@ -28,8 +28,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -86,10 +84,11 @@ public class SpaTest {
         Relation relation = new Relation("singlePageApplications");
         Action create = page.getCreate(relation);
         assertNotNull(create);
-        Map<String, String> extract = create.getExtract();
+        ObjectNode extract = create.getExtract();
         assertNotNull(extract);
         assertEquals(1, extract.size());
-        assertEquals("bar", extract.get("foo"));
+        assertEquals("bar", extract.get("foo")
+                                   .asText());
         assertNotNull(create.getQuery());
         assertEquals("cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
                      create.getFrameBy());
@@ -110,7 +109,8 @@ public class SpaTest {
         assertEquals("workspace", route.getFrameBy());
         extract = route.getExtract();
         assertNotNull(extract);
-        assertEquals("bar", extract.get("foo"));
+        assertEquals("bar", extract.get("foo")
+                                   .asText());
         assertEquals("foo", route.getPath());
     }
 }

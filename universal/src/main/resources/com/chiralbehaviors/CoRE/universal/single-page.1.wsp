@@ -8,6 +8,7 @@ imports {
 }
 attributes {
     name = 'Name' 'The name of something' text;
+    meta = 'Meta' 'If true, indicates the meta workspace frame' bool;
     description = 'Description' 'The description' text;
     label = 'Label' 'The labe of something' text;
     relation = 'Relation' 'The name of a relation' text;
@@ -19,7 +20,6 @@ attributes {
 	root = 'Root' 'Root Route' text;
 	frameBy = 'Frame By' 'The xpath expression to extract the workspace frame id from the relation' text;
     launchBy = 'Launch By' 'The xpath expression to extract application id from the relation' text;
-    meta = 'Meta' 'If true, indicates the meta workspace frame' bool;
 }
 products {
     Page = 'Page' 'A single page in an application';
@@ -67,7 +67,7 @@ products {
     }
 
     facets {
-        IsA.SinglePageApp { name description root }
+        IsA.SinglePageApp { name description root meta }
             constraints {
                 one frame: IsA.Workspace named by relationship 
                 n hasPage: IsA.Page { route }
@@ -85,7 +85,7 @@ products {
                 n launch: IsA.Launch named by relationship { relation }
             }
 
-        IsA.Route { frameBy extract path }
+        IsA.Route { frameBy extract path meta }
 
         IsA.Action { frameBy extract query }
 

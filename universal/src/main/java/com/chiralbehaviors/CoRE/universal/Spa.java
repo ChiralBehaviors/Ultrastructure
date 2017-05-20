@@ -36,8 +36,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import com.chiralbehaviors.CoRE.universal.spa.SpaLexer;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
@@ -92,14 +92,15 @@ public class Spa {
 
     public Spa(ObjectNode app) {
         this(textOrNull(app.get("name")), textOrNull(app.get("description")),
-             textOrNull(app.get("frame")), (BooleanNode) app.get("meta"),
+             textOrNull(app.get("frame")), app.get("meta"),
              textOrNull(app.get("root")), routes((ArrayNode) app.get("pages")));
     }
 
-    public Spa(String name, String description, String frame, BooleanNode meta,
+    public Spa(String name, String description, String frame, JsonNode jsonNode,
                String root, Map<String, Page> routes) {
         this.name = name;
-        this.meta = meta.isNull() ? false : meta.asBoolean();
+        this.meta = (jsonNode == null
+                     || jsonNode.isNull()) ? false : jsonNode.asBoolean();
         this.description = description;
         this.frame = frame;
         this.root = root;

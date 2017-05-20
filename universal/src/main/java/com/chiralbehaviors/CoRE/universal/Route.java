@@ -45,7 +45,8 @@ public class Route {
     public Route(ObjectNode route) {
         this(textOrNull(route.get("frameBy")), textOrNull(route.get("path")),
              (ObjectNode) route.get("extract"),
-             ((BooleanNode) route.get("meta")).asBoolean());
+             ((BooleanNode) route.get("meta") == null ? JsonNodeFactory.instance.booleanNode(false)
+                                                      : route.get("meta")).asBoolean());
     }
 
     public Route(String frameBy, String path, ObjectNode extract,

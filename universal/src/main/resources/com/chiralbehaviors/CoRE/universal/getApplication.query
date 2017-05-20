@@ -4,6 +4,7 @@ query getApplication($id: ID!) {
     name
     description
     root
+    meta
     pages {
       id
       name
@@ -61,6 +62,7 @@ query getApplication($id: ID!) {
         extract
         frameBy
         path
+        meta
       }
       launches {
         id

@@ -108,7 +108,8 @@ abstract public class PhantasmContext extends PhantasmCRUD {
             if (!path.isEmpty() && fieldType instanceof GraphQLObjectType) {
                 Traversal edge = path.peek();
                 if (edge != null) {
-                    edge.child = ((Phantasm) result).getRuleform();
+                    edge.child = result == null ? null
+                                                : ((Phantasm) result).getRuleform();
                 }
             }
             return super.completeValue(executionContext, fieldType, fields,

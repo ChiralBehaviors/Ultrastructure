@@ -196,7 +196,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data;
 
-        data = execute("{ agencies { id name description updatedBy {id} authority {id}} }",
+        data = execute("{ agencies { id name description updatedBy { id } authority { id }  workspace { id } version } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("agencies")));

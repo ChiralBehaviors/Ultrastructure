@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.universal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.net.URI;
 import java.sql.Connection;
@@ -118,5 +119,29 @@ public class UniversalTest {
         universal.navigate(data.get(0), new Relation("singlePageApplications"));
         assertNotNull(launched.get());
         assertNotEquals(universal, launched.get());
+    }
+
+    @Test
+    public void testSmokeApp() throws Exception {
+        application.run("server", "target/test-classes/basic.yml");
+        String endpoint = String.format("http://localhost:%s/api/workspace",
+                                        application.getPort());
+        AtomicReference<Universal> launched = new AtomicReference<>();
+        AtomicReference<Pair<Context, JsonNode>> displayed = new AtomicReference<>();
+        WebTarget target = client.target(new URI(endpoint));
+        Spa spa = Spa.manifest("/smoke.app");
+        assertNotNull(spa);
+        Universal universal = new Universal(Universal.SPA_WSP, spa, target);
+        universal.setLauncher(u -> launched.set(u));
+        universal.setDisplay((c, n) -> displayed.set(new Pair<>(c, n)));
+        assertNotNull(universal.getApplication()
+                               .getRoot());
+        universal.places();
+        JsonNode data = universal.evaluate();
+        assertNotNull(data);
+        assertEquals(2, data.size());
+        universal.navigate(data.get(0), new Relation("singlePageApplications"));
+        assertNull(launched.get());
+        assertNotNull(displayed.get());
     }
 }

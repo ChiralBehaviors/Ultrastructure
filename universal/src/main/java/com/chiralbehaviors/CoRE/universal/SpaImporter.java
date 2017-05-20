@@ -143,6 +143,7 @@ public class SpaImporter extends SpaBaseListener {
                                           .StringValue()
                                           .getText()));
         spa.setRoot(ctx.root()
+                       .NAME()
                        .getText());
     }
 

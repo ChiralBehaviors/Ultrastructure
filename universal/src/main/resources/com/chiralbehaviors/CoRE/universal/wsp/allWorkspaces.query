@@ -1,18 +1,38 @@
 {
-  workspaces {
-    IRI
-    imports {
-      _edge {
-        ... on _workspace_import {
-          lookupOrder
-          namespace
-        }
-      }
-      _ext {
-        id
-        name
-        description
-      }
-    }
+  facets {
+    id
+    name
+  }
+  agencies {
+    id
+    name
+  }
+  attributes {
+    id
+    name
+  }
+  intervals {
+    id
+    name
+  }
+  locations {
+    id
+    name
+  }
+  products {
+    id
+    name
+  }
+  relationships {
+    id
+    name
+  }
+  statusCodes {
+    id
+    name
+  }
+  units {
+    id
+    name
   }
 }

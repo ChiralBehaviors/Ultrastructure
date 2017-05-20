@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorization;
 
@@ -107,7 +108,7 @@ abstract public class PhantasmContext extends PhantasmCRUD {
             if (!path.isEmpty() && fieldType instanceof GraphQLObjectType) {
                 Traversal edge = path.peek();
                 if (edge != null) {
-                    edge.child = (ExistentialRuleform) result;
+                    edge.child = ((Phantasm) result).getRuleform();
                 }
             }
             return super.completeValue(executionContext, fieldType, fields,

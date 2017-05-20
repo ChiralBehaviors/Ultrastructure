@@ -107,6 +107,33 @@ public interface RecordsFactory {
         r.close();
     }
 
+    static ExistentialRuleform resolveRecord(ExistentialRecord record) {
+        if (record == null) {
+            return null;
+        }
+        switch (record.getDomain()) {
+            case Agency:
+                return record.into(Agency.class);
+            case Interval:
+                return record.into(Interval.class);
+            case Location:
+                return record.into(Location.class);
+            case Product:
+                return record.into(Product.class);
+            case Relationship:
+                return record.into(Relationship.class);
+            case StatusCode:
+                return record.into(StatusCode.class);
+            case Attribute:
+                return record.into(Attribute.class);
+            case Unit:
+                return record.into(Unit.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown domain %s",
+                                                                 record.getDomain()));
+        }
+    }
+
     default ExistentialRecord copy(ExistentialRecord rf) {
         ExistentialRecord copy = rf.copy();
         copy.setId(GENERATOR.generate());
@@ -836,30 +863,7 @@ public interface RecordsFactory {
     }
 
     default ExistentialRuleform resolve(ExistentialRecord record) {
-        if (record == null) {
-            return null;
-        }
-        switch (record.getDomain()) {
-            case Agency:
-                return record.into(Agency.class);
-            case Interval:
-                return record.into(Interval.class);
-            case Location:
-                return record.into(Location.class);
-            case Product:
-                return record.into(Product.class);
-            case Relationship:
-                return record.into(Relationship.class);
-            case StatusCode:
-                return record.into(StatusCode.class);
-            case Attribute:
-                return record.into(Attribute.class);
-            case Unit:
-                return record.into(Unit.class);
-            default:
-                throw new IllegalArgumentException(String.format("Unknown domain %s",
-                                                                 record.getDomain()));
-        }
+        return resolveRecord(record);
     }
 
     @SuppressWarnings("unchecked")

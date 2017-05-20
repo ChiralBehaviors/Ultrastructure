@@ -83,4 +83,10 @@ public class Launch {
     public void setLaunchBy(String launchBy) {
         this.launchBy = launchBy;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Launch [frame=%s, frameBy=%s, immediate=%s, launchBy=%s]",
+                             frame, frameBy, immediate, launchBy);
+    }
 }

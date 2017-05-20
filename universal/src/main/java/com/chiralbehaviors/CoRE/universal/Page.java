@@ -196,6 +196,12 @@ public class Page {
         this.title = title;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Page [name=%s, description=%s, frame=%s, title=%s]",
+                             name, description, frame, title);
+    }
+
     public void update(String field, Action action) {
         updates.put(field, action);
     }

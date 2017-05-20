@@ -89,4 +89,10 @@ public class Route {
         this.path = path;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Route [path=%s, meta=%s, frameBy=%s, extract=%s]",
+                             path, meta, frameBy, extract);
+    }
+
 }

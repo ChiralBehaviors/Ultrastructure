@@ -83,7 +83,7 @@ public class SpaImporter extends SpaBaseListener {
                                  .Spath()
                                  .getText());
         } else if (ctx.frame() != null) {
-            launch.setFrame(ctx.frame()
+            launch.setFrame(ctx.frame().UUID()
                                .getText());
         }
         if (ctx.Spath() == null) {
@@ -138,7 +138,7 @@ public class SpaImporter extends SpaBaseListener {
                                                       .getText()));
         }
         if (ctx.frame() != null) {
-            currentPage.setFrame(ctx.frame()
+            currentPage.setFrame(ctx.frame().UUID()
                                     .getText());
         }
     }

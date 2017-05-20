@@ -143,5 +143,7 @@ public class UniversalTest {
         universal.navigate(data.get(0), new Relation("workspaces"));
         assertNull(launched.get());
         assertNotNull(displayed.get());
+        data = universal.evaluate();
+        assertNotNull(data);
     }
 }

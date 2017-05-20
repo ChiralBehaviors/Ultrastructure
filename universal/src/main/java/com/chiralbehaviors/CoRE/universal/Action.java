@@ -72,4 +72,10 @@ public class Action {
     public void setQuery(String query) {
         this.query = query;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Action [extract=%s, frameBy=%s]",
+                             extract, frameBy);
+    }
 }

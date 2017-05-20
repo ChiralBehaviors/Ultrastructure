@@ -154,4 +154,10 @@ public class Spa {
     public void setRoot(String root) {
         this.root = root;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Spa [name=%s, description=%s, frame=%s, meta=%s, root=%s]",
+                             name, description, frame, meta, root);
+    }
 }

@@ -84,6 +84,12 @@ public class Context {
         return root;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Context [frame=%s, meta=%s, root=%s, variables=%s, page=%s]",
+                             frame, meta, root.getField(), variables, page);
+    }
+
     private WebTarget frame(WebTarget endpoint) {
         WebTarget target = endpoint.path(frame);
         return meta ? target.path("meta") : target;

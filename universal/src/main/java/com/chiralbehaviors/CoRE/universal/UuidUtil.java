@@ -20,18 +20,30 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Test;
+import java.nio.ByteBuffer;
+import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
+import java.util.UUID;
 
 /**
  * @author halhildebrand
  *
  */
-public class TestSpaDsl {
-    @Test
-    public void testParse() throws Exception {
-        Spa constructedSpa = Spa.manifest("/smoke.app");
-        assertNotNull(constructedSpa.route("launch"));
+public class UuidUtil {
+    private static final Decoder DECODER = Base64.getUrlDecoder();
+    private static final Encoder ENCODER = Base64.getUrlEncoder()
+                                                 .withoutPadding();
+
+    public static UUID decode(String encoded) {
+        ByteBuffer bb = ByteBuffer.wrap(DECODER.decode(encoded));
+        return new UUID(bb.getLong(), bb.getLong());
+    }
+
+    public static String encode(UUID uuid) {
+        return ENCODER.encodeToString(ByteBuffer.allocate(16)
+                                                .putLong(uuid.getMostSignificantBits())
+                                                .putLong(uuid.getLeastSignificantBits())
+                                                .array());
     }
 }

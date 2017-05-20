@@ -20,12 +20,10 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static com.chiralbehaviors.CoRE.universal.Page.extract;
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -35,26 +33,31 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class Route {
 
-    private Map<String, String> extract;
-    private String              frameBy;
-    private String              path;
+    private ObjectNode extract;
+    private String     frameBy;
+    private boolean    meta = false;
+    private String     path;
 
     public Route() {
-        extract = new HashMap<>();
+        extract = JsonNodeFactory.instance.objectNode();
     }
 
     public Route(ObjectNode route) {
         this(textOrNull(route.get("frameBy")), textOrNull(route.get("path")),
-             extract(textOrNull(route.get("extract"))));
+             (ObjectNode) route.get("extract"),
+             ((BooleanNode) route.get("meta") == null ? JsonNodeFactory.instance.booleanNode(false)
+                                                      : route.get("meta")).asBoolean());
     }
 
-    public Route(String frameBy, String path, Map<String, String> extract) {
+    public Route(String frameBy, String path, ObjectNode extract,
+                 boolean meta) {
         this.path = path;
         this.frameBy = frameBy;
         this.extract = extract;
+        this.meta = meta;
     }
 
-    public Map<String, String> getExtract() {
+    public ObjectNode getExtract() {
         return extract;
     }
 
@@ -66,7 +69,11 @@ public class Route {
         return path;
     }
 
-    public void setExtract(Map<String, String> extract) {
+    public boolean isMeta() {
+        return meta;
+    }
+
+    public void setExtract(ObjectNode extract) {
         this.extract = extract;
     }
 
@@ -74,8 +81,18 @@ public class Route {
         this.frameBy = frameBy;
     }
 
+    public void setMeta(boolean meta) {
+        this.meta = meta;
+    }
+
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Route [path=%s, meta=%s, frameBy=%s, extract=%s]",
+                             path, meta, frameBy, extract);
     }
 
 }

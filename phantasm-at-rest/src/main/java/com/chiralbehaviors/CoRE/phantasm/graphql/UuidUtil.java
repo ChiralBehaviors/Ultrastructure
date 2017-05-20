@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import java.nio.ByteBuffer;
 import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.util.UUID;
 
 /**
@@ -29,19 +31,19 @@ import java.util.UUID;
  *
  */
 public class UuidUtil {
+    private static final Decoder DECODER = Base64.getUrlDecoder();
+    private static final Encoder ENCODER = Base64.getUrlEncoder()
+                                                 .withoutPadding();
+
     public static UUID decode(String encoded) {
-        ByteBuffer bb = ByteBuffer.wrap(Base64.getUrlDecoder()
-                                              .decode(encoded));
+        ByteBuffer bb = ByteBuffer.wrap(DECODER.decode(encoded));
         return new UUID(bb.getLong(), bb.getLong());
     }
 
     public static String encode(UUID uuid) {
-        byte[] bytes = ByteBuffer.allocate(16)
-                                 .putLong(uuid.getMostSignificantBits())
-                                 .putLong(uuid.getLeastSignificantBits())
-                                 .array();
-        return Base64.getUrlEncoder()
-                     .withoutPadding()
-                     .encodeToString(bytes);
+        return ENCODER.encodeToString(ByteBuffer.allocate(16)
+                                                .putLong(uuid.getMostSignificantBits())
+                                                .putLong(uuid.getLeastSignificantBits())
+                                                .array());
     }
 }

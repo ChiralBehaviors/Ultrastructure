@@ -27,15 +27,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLType;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -43,7 +45,7 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 @SuppressWarnings("unused")
-public interface Existential {
+public interface Existential extends Phantasm {
 
     @GraphQLDescription("The Agency existential ruleform")
     public class Agency extends ExistentialCommon {
@@ -118,13 +120,13 @@ public interface Existential {
     }
 
     public class AttributeUpdateState extends AttributeState {
+        public AttributeUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
+
         @GraphQLField
         public UUID getId() {
             return (UUID) state.get(ID);
-        }
-
-        public AttributeUpdateState(HashMap<String, Object> state) {
-            super(state);
         }
     }
 
@@ -174,10 +176,30 @@ public interface Existential {
         }
 
         @Override
+        public ExistentialRuleform getRuleform() {
+            return RecordsFactory.resolveRecord(record);
+        }
+
+        @Override
         public Agency getUpdatedBy(DataFetchingEnvironment env) {
             return new Agency((ExistentialRecord) WorkspaceSchema.ctx(env)
                                                                  .records()
                                                                  .resolve(record.getUpdatedBy()));
+        }
+
+        @Override
+        public int getVersion(DataFetchingEnvironment env) {
+            return WorkspaceSchema.ctx(env)
+                                  .records()
+                                  .resolve(record.getWorkspace())
+                                  .getVersion();
+        }
+
+        @Override
+        public Product getWorkspace(DataFetchingEnvironment env) {
+            return (Product) wrap(WorkspaceSchema.ctx(env)
+                                                 .records()
+                                                 .resolve(record.getWorkspace()));
         }
     }
 
@@ -350,13 +372,13 @@ public interface Existential {
     }
 
     public class StatusCodeUpdateState extends StatusCodeState {
+        public StatusCodeUpdateState(HashMap<String, Object> state) {
+            super(state);
+        }
+
         @GraphQLField
         public UUID getId() {
             return (UUID) state.get(ID);
-        }
-
-        public StatusCodeUpdateState(HashMap<String, Object> state) {
-            super(state);
         }
     }
 
@@ -422,5 +444,11 @@ public interface Existential {
 
     @GraphQLField
     Agency getUpdatedBy(DataFetchingEnvironment env);
+
+    @GraphQLField
+    int getVersion(DataFetchingEnvironment env);
+
+    @GraphQLField
+    Product getWorkspace(DataFetchingEnvironment env);
 
 }

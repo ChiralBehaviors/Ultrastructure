@@ -11,6 +11,7 @@ attributes {
     description = 'Description' 'A description' text;
     aliases = 'Aliases' 'Alias Smith and Jones' indexed: true text;
     discount = 'Percentage' 'The cut off the top' numeric;
+    jsonBlob = 'Json Blob' 'The blog of JSON' json;
     URI = 'URI' 'the Universal Resource Indicator' text;
     
     artifactId = 'Artifact ID' 'artifact identifier' text;
@@ -46,9 +47,9 @@ products {
         this.HasMember.Thing1
     }
     facets {
-    	IsA.MasterThing {name description}
+    	IsA.MasterThing {name description jsonBlob default: '{ "a" : "a" }'}
     		constraints{
-    			n derivedFrom: IsA.Thing1 { classifier }
+    			n derivedFrom: IsA.Thing1 { classifier jsonBlob }
     		}
         IsA.Thing1 {name description aliases URI discount properties}
             constraints {

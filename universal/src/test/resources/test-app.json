@@ -20,7 +20,9 @@
 						"relation": "singlePageApplications"
 					},
 					"frameBy": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
-					"extract": "{\"foo\": \"bar\"}",
+					"extract": {
+						"foo": "bar"
+					},
 					"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}"
 				}
 			],
@@ -31,7 +33,9 @@
 						"relation": "singlePageApplications"
 					},
 					"frameBy": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
-					"extract": "{\"foo\": \"bar\"}",
+					"extract": {
+						"foo": "bar"
+					},
 					"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}"
 				}
 			],
@@ -42,7 +46,9 @@
 						"relation": "singlePageApplications"
 					},
 					"frameBy": "cc2f49ae-1c72-11e7-b9f2-31cf61e9d1f6",
-					"extract": "{\"foo\": \"bar\"}",
+					"extract": {
+						"foo": "bar"
+					},
 					"query": "{\n  singlePageApplications {\n    id\n    name\n    description\n  }\n}"
 				}
 			],
@@ -53,7 +59,9 @@
 						"relation": "singlePageApplications"
 					},
 					"frameBy": "workspace",
-					"extract": "{\"foo\": \"bar\"}",
+					"extract": {
+						"foo": "bar"
+					},
 					"path": "foo"
 				}
 			],

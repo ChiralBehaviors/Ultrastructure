@@ -37,7 +37,6 @@ import java.beans.Introspector;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -76,7 +75,6 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.annotations.GraphQLField;
 import graphql.schema.DataFetchingEnvironment;
@@ -439,12 +437,10 @@ public class FacetFields extends Phantasmagoria {
                                                                   || !edge.auth.equals(auth)) {
                                                                   return null;
                                                               }
-                                                              Object value = ctx.getAttributeValue(facet,
-                                                                                                   edge.parent,
-                                                                                                   attr,
-                                                                                                   edge.child);
-                                                              return resolve(attribute,
-                                                                             value);
+                                                              return ctx.getAttributeValue(facet,
+                                                                                           edge.parent,
+                                                                                           attr,
+                                                                                           edge.child);
                                                           })
                                                           .build());
             });
@@ -642,28 +638,6 @@ public class FacetFields extends Phantasmagoria {
                                                            crud.lookupList((List<UUID>) update.get(removeChildren))));
     }
 
-    private Object resolve(Attribute attribute, Object value) {
-        if (value == null) {
-            return null;
-        }
-        switch (attribute.getValueType()) {
-            case Numeric:
-                // GraphQL does not have a NUMERIC return type, so convert to float - ugly
-                return ((BigDecimal) value).floatValue();
-            case Timestamp:
-            case JSON:
-                // GraphQL does not have a generic map or timestamp return type, so stringify it.
-                try {
-                    return new ObjectMapper().writeValueAsString(value);
-                } catch (Exception e) {
-                    throw new IllegalStateException("Unable to write json value",
-                                                    e);
-                }
-            default:
-                return value;
-        }
-    }
-
     @SuppressWarnings("unchecked")
     private void setChildren(NetworkAuthorization auth) {
         String setter = String.format(SET_TEMPLATE,
@@ -794,13 +768,9 @@ public class FacetFields extends Phantasmagoria {
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(auth.getFieldName())
                                               .description(attribute.getDescription())
-                                              .dataFetcher(env -> {
-                                                  Object value = ctx(env).getAttributeValue(facet,
-                                                                                            ((Phantasm) env.getSource()).getRuleform(),
-                                                                                            auth);
-                                                  return resolve(attribute,
-                                                                 value);
-                                              })
+                                              .dataFetcher(env -> ctx(env).getAttributeValue(facet,
+                                                                                             ((Phantasm) env.getSource()).getRuleform(),
+                                                                                             auth))
                                               .build());
 
         String setter = String.format(SET_TEMPLATE,

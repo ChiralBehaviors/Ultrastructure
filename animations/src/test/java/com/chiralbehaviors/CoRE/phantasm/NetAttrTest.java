@@ -1,7 +1,9 @@
 package com.chiralbehaviors.CoRE.phantasm;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +21,8 @@ import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
@@ -64,11 +68,30 @@ public class NetAttrTest extends AbstractModelTest {
         MasterThing master = model.construct(MasterThing.class,
                                              ExistentialDomain.Product,
                                              "Master", "blaster");
+        JsonNode json = master.getJsonBlob();
+        assertNotNull(json);
+        assertEquals("a", json.get("a")
+                              .asText());
+        ((ObjectNode) json).put("a", "b");
+        master.setJsonBlob(json);
+
+        json = master.getJsonBlob();
+        assertNotNull(json);
+        assertEquals("b", json.get("a")
+                              .asText());
+
         master.setName("Master");
         master.setDescription("blaster");
 
         master.addThing1(thing1);
         master.setClassifierOfThing1Thing1(thing1, "Hello");
+
+        assertNotNull(master.getJsonBlobOfThing1Thing1(thing1));
+        assertTrue(master.getJsonBlobOfThing1Thing1(thing1)
+                         .isNull());
+        master.setJsonBlobOfThing1Thing1(thing1, json);
+        assertFalse(master.getJsonBlobOfThing1Thing1(thing1)
+                          .isNull());
 
         String classifier = master.getClassifierOfThing1Thing1(thing1);
         assertEquals("Hello", classifier);

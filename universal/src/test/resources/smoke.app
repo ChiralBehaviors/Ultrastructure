@@ -10,17 +10,23 @@ spa {
         description: "A test page"
         title: "Ye test page"
         frame: 00000000-0000-0004-0000-000000000003
-        query: 'wsp/workspaceDetail.query'
+        query: 'wsp/allWorkspaces.query'
         
-        foo { 
+        workspaces { 
             create: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'
             update: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'
             delete: by /bar/baz {bar:/foo} query: 'wsp/workspaceDetail.query'
-            navigate: foo by /bar {bar:/foo}
-            launch: frame: 00000000-0000-0004-0000-000000000003 /bar
+            navigate: workspace meta {id:/id}
         }
-        bar { 
-            launch: by /bar 00000000-0000-0004-0000-000000000003
+        imports { 
+            launch: by /id 00000000-0000-0004-0000-000000000003
         }
+    }
+    
+    workspace {
+        name: "Workspace Detail"
+        description: "Detail for workspace"
+        title: "Ye workspace detail"
+        query: 'wsp/workspaceDetail.query'
     }
 }

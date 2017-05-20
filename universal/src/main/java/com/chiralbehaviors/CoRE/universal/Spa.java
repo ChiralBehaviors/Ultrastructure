@@ -22,11 +22,24 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
+import com.chiralbehaviors.CoRE.universal.spa.SpaLexer;
+import com.chiralbehaviors.CoRE.universal.spa.SpaParser;
+import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.hellblazer.utils.Utils;
 
 /**
  * 
@@ -34,6 +47,27 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Spa {
+    public static Spa manifest(String resource) throws IOException {
+        SpaLexer l = new SpaLexer(CharStreams.fromStream(Utils.resolveResource(Spa.class,
+                                                                               resource)));
+        SpaParser p = new SpaParser(new CommonTokenStream(l));
+        p.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer,
+                                    Object offendingSymbol, int line,
+                                    int charPositionInLine, String msg,
+                                    RecognitionException e) {
+                throw new IllegalStateException("failed to parse at line "
+                                                + line + " due to " + msg, e);
+            }
+        });
+        SpaContext spa = p.spa();
+        SpaImporter importer = new SpaImporter();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(importer, spa);
+        return importer.getSpa();
+    }
+
     public static Map<String, Page> routes(ArrayNode pages) {
         Map<String, Page> routes = new HashMap<>();
         pages.forEach(p -> {
@@ -47,6 +81,7 @@ public class Spa {
 
     private String                  description;
     private String                  frame;
+    private boolean                 meta = false;
     private String                  name;
     private String                  root;
     private final Map<String, Page> routes;
@@ -57,13 +92,15 @@ public class Spa {
 
     public Spa(ObjectNode app) {
         this(textOrNull(app.get("name")), textOrNull(app.get("description")),
-             textOrNull(app.get("frame")), textOrNull(app.get("root")),
-             routes((ArrayNode) app.get("pages")));
+             textOrNull(app.get("frame")), app.get("meta"),
+             textOrNull(app.get("root")), routes((ArrayNode) app.get("pages")));
     }
 
-    public Spa(String name, String description, String frame, String root,
-               Map<String, Page> routes) {
+    public Spa(String name, String description, String frame, JsonNode jsonNode,
+               String root, Map<String, Page> routes) {
         this.name = name;
+        this.meta = (jsonNode == null
+                     || jsonNode.isNull()) ? false : jsonNode.asBoolean();
         this.description = description;
         this.frame = frame;
         this.root = root;
@@ -76,6 +113,10 @@ public class Spa {
 
     public String getFrame() {
         return frame;
+    }
+
+    public boolean getMeta() {
+        return meta;
     }
 
     public String getName() {
@@ -102,11 +143,21 @@ public class Spa {
         this.frame = frame;
     }
 
+    public void setMeta(boolean meta) {
+        this.meta = meta;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
     public void setRoot(String root) {
         this.root = root;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Spa [name=%s, description=%s, frame=%s, meta=%s, root=%s]",
+                             name, description, frame, meta, root);
     }
 }

@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.universal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.universal.spa.SpaBaseListener;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.ActionContext;
@@ -35,6 +34,8 @@ import com.chiralbehaviors.CoRE.universal.spa.SpaParser.PageContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.RouteContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.UpdateContext;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -63,6 +64,12 @@ public class SpaImporter extends SpaBaseListener {
     }
 
     @Override
+    public void exitNavigate(NavigateContext ctx) {
+        Action action = build(ctx);
+        currentPage.delete(currentField, action);
+    }
+
+    @Override
     public void enterFieldAction(FieldActionContext ctx) {
         currentField = ctx.NAME()
                           .getText();
@@ -76,7 +83,7 @@ public class SpaImporter extends SpaBaseListener {
                                  .Spath()
                                  .getText());
         } else if (ctx.frame() != null) {
-            launch.setFrame(ctx.frame()
+            launch.setFrame(ctx.frame().UUID()
                                .getText());
         }
         if (ctx.Spath() == null) {
@@ -90,23 +97,27 @@ public class SpaImporter extends SpaBaseListener {
 
     @Override
     public void enterNavigate(NavigateContext ctx) {
-        Route route = new Route();
-        route.setPath(ctx.NAME()
-                         .getText());
-        if (ctx.frameBy() != null) {
-            route.setFrameBy(ctx.frameBy()
-                                .Spath()
-                                .getText());
-        }
+        ObjectNode extract = JsonNodeFactory.instance.objectNode();
         if (ctx.extract() != null) {
-            route.setExtract(ctx.extract()
-                                .extraction()
-                                .stream()
-                                .collect(Collectors.toMap(k -> k.NAME()
-                                                                .getText(),
-                                                          v -> v.Spath()
-                                                                .getText())));
+            ctx.extract()
+               .extraction()
+               .forEach(c -> extract.put(c.NAME()
+                                          .getText(),
+                                         c.Spath()
+                                          .getText()));
         }
+        Route route = new Route(ctx.frameBy() != null ? ctx.frameBy()
+                                                           .Spath()
+                                                           .getText()
+                                                      : null,
+                                ctx.NAME()
+                                   .getText(),
+                                extract, ctx.meta != null);
+        if (ctx.extract() != null) {
+
+            route.setExtract(extract);
+        }
+        currentPage.navigate(currentField, route);
         super.enterNavigate(ctx);
     }
 
@@ -127,7 +138,7 @@ public class SpaImporter extends SpaBaseListener {
                                                       .getText()));
         }
         if (ctx.frame() != null) {
-            currentPage.setFrame(ctx.frame()
+            currentPage.setFrame(ctx.frame().UUID()
                                     .getText());
         }
     }
@@ -141,6 +152,7 @@ public class SpaImporter extends SpaBaseListener {
                                           .StringValue()
                                           .getText()));
         spa.setRoot(ctx.root()
+                       .NAME()
                        .getText());
     }
 
@@ -170,17 +182,38 @@ public class SpaImporter extends SpaBaseListener {
                                 .getText());
         }
         if (ac.extract() != null) {
-            action.setExtract(ac.extract()
-                                .extraction()
-                                .stream()
-                                .collect(Collectors.toMap(k -> k.NAME()
-                                                                .getText(),
-                                                          v -> v.Spath()
-                                                                .getText())));
+            ObjectNode extract = JsonNodeFactory.instance.objectNode();
+            ac.extract()
+              .extraction()
+              .forEach(c -> extract.put(c.NAME()
+                                         .getText(),
+                                        c.Spath()
+                                         .getText()));
+            action.setExtract(extract);
         }
         action.setQuery(getResource(stripQuotes(ac.query()
                                                   .ResourcePath()
                                                   .getText())));
+        return action;
+    }
+
+    private Action build(NavigateContext nc) {
+        Action action = new Action();
+        if (nc.frameBy() != null) {
+            action.setFrameBy(nc.frameBy()
+                                .Spath()
+                                .getText());
+        }
+        if (nc.extract() != null) {
+            ObjectNode extract = JsonNodeFactory.instance.objectNode();
+            nc.extract()
+              .extraction()
+              .forEach(c -> extract.put(c.NAME()
+                                         .getText(),
+                                        c.Spath()
+                                         .getText()));
+            action.setExtract(extract);
+        }
         return action;
     }
 

@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
+import java.util.UUID;
+
 import javax.validation.constraints.NotNull;
 
 import graphql.annotations.GraphQLDescription;
@@ -35,7 +37,7 @@ public interface WorkspaceQueries {
 
     @GraphQLField
     @GraphQLDescription("Lookup the ID of the item in the workspace by (potentially scoped) name")
-    String lookup(@GraphQLDescription("The namespace within the workspace imports") @GraphQLName("namespace") String namespace,
-                  @GraphQLDescription("The name within the workspace") @NotNull @GraphQLName("name") String name,
-                  DataFetchingEnvironment env);
+    UUID lookup(@GraphQLDescription("The namespace within the workspace imports") @GraphQLName("namespace") String namespace,
+                @GraphQLDescription("The name within the workspace") @NotNull @GraphQLName("name") String name,
+                DataFetchingEnvironment env);
 }

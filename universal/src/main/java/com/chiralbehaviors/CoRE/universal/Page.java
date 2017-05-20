@@ -22,16 +22,10 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.chiralbehaviors.layout.schema.Relation;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -41,21 +35,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Page {
-    public static Map<String, String> extract(String json) {
-        Map<String, String> extract = new HashMap<>();
-        ObjectNode node;
-        try {
-            node = (ObjectNode) new ObjectMapper().readTree(new ByteArrayInputStream(json.getBytes()));
-        } catch (IOException e) {
-            throw new IllegalStateException("", e);
-        }
-        for (Iterator<Entry<String, JsonNode>> fields = node.fields(); fields.hasNext();) {
-            Entry<String, JsonNode> field = fields.next();
-            extract.put(field.getKey(), field.getValue()
-                                             .asText());
-        }
-        return extract;
-    }
 
     private static Map<String, Action> actions(ArrayNode array) {
         Map<String, Action> actions = new HashMap<>();
@@ -193,6 +172,10 @@ public class Page {
         return updates.get(relation.getField());
     }
 
+    public void navigate(String field, Route route) {
+        navigations.put(field, route);
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -211,6 +194,12 @@ public class Page {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Page [name=%s, description=%s, frame=%s, title=%s]",
+                             name, description, frame, title);
     }
 
     public void update(String field, Action action) {

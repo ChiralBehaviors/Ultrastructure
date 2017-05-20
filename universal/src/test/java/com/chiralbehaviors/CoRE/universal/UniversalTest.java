@@ -20,12 +20,10 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static com.chiralbehaviors.CoRE.universal.Universal.GET_APPLICATION_QUERY_RESOURCE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,23 +47,15 @@ import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.service.NAVI;
 import com.chiralbehaviors.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.hellblazer.utils.Utils;
+
+import javafx.util.Pair;
 
 /**
  * @author halhildebrand
  *
  */
 public class UniversalTest {
-    static Model                model;
-    private static final String APPLICATION_QUERY;
-
-    static {
-        try {
-            APPLICATION_QUERY = Utils.getDocument(Universal.class.getResourceAsStream(GET_APPLICATION_QUERY_RESOURCE));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+    static Model model;
 
     @AfterClass
     public static void clearDb() throws Exception {
@@ -109,14 +99,16 @@ public class UniversalTest {
     }
 
     @Test
-    public void testUniversal() throws Exception {
+    public void testLauncher() throws Exception {
         application.run("server", "target/test-classes/basic.yml");
         String endpoint = String.format("http://localhost:%s/api/workspace",
                                         application.getPort());
         AtomicReference<Universal> launched = new AtomicReference<>();
+        AtomicReference<Pair<Context, JsonNode>> displayed = new AtomicReference<>();
         WebTarget target = client.target(new URI(endpoint));
         Universal universal = new Universal(Universal.SPA_WSP, target);
         universal.setLauncher(u -> launched.set(u));
+        universal.setDisplay((c, n) -> displayed.set(new Pair<>(c, n)));
         assertNotNull(universal.getApplication()
                                .getRoot());
         universal.places();
@@ -124,7 +116,7 @@ public class UniversalTest {
         assertNotNull(data);
         assertEquals(1, data.size());
         universal.navigate(data.get(0), new Relation("singlePageApplications"));
-        assertNotNull(launched.get()); 
+        assertNotNull(launched.get());
         assertNotEquals(universal, launched.get());
     }
 }

@@ -59,9 +59,7 @@ public class UniversalApplication extends Application implements LayoutModel {
     }
 
     private AnchorPane     anchor;
-
     private Button         backButton;
-
     private Button         forwardButton;
     private AutoLayoutView layout;
     private Stage          primaryStage;
@@ -72,80 +70,7 @@ public class UniversalApplication extends Application implements LayoutModel {
     }
 
     public UniversalApplication(Universal universal) {
-        this.universal = universal;
-        this.universal.setLauncher(u -> launch(u));
-    }
-
-    private void launch(Universal unitard) {
-        Platform.runLater(() -> {
-            Stage stageLeft = new Stage();
-            Platform.setImplicitExit(false);
-            try {
-                new UniversalApplication(unitard).start(stageLeft);
-            } catch (Exception e) {
-                log.error("Unable to launch: %s", unitard.getApplication()
-                                                         .getName(),
-                          e);
-            }
-        });
-    }
-
-    private void back() {
-        universal.back();
-        displayCurrentPage();
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws IOException,
-                                          URISyntaxException, QueryException {
-        this.primaryStage = primaryStage;
-        anchor = new AnchorPane();
-        VBox vbox = new VBox(locationBar(), anchor);
-        primaryStage.setScene(new Scene(vbox, 800, 600));
-        if (universal == null) {
-            String endpoint = getParameters().getNamed()
-                                             .get("endpoint");
-            if (endpoint == null) {
-                log.error("No universal endpoint defined");
-                throw new IllegalStateException("No universal endpoint defined");
-            }
-
-            String frame = getParameters().getNamed()
-                                          .get("frame");
-            if (frame == null) {
-                log.info("No frame defined, using single page app workspace frame");
-                frame = Universal.SPA_WSP;
-            }
-            universal = new Universal(frame, getParameters().getNamed()
-                                                            .get("app"),
-                                      new URI(endpoint));
-        }
-        universal.places();
-        displayCurrentPage();
-        primaryStage.show();
-    }
-
-    private void displayCurrentPage() {
-        updateLocationBar();
-        Context pageContext = universal.current();
-        primaryStage.setTitle(pageContext.getPage()
-                                         .getTitle());
-        try {
-            layout = layout(pageContext);
-        } catch (QueryException e) {
-            log.error("Unable to display page", e);
-            return;
-        }
-        anchor.getChildren()
-              .setAll(layout);
-    }
-
-    private Button button(String imageResource) {
-        Button button = new Button();
-        Image image = new Image(getClass().getResourceAsStream(imageResource));
-        button.graphicProperty()
-              .set(new ImageView(image));
-        return button;
+        setUniversal(universal);
     }
 
     @Override
@@ -174,19 +99,60 @@ public class UniversalApplication extends Application implements LayoutModel {
         });
     }
 
-    private AutoLayoutView layout(Context pageContext) throws QueryException {
-        AutoLayoutView layout = new AutoLayoutView(pageContext.getRoot(), this);
-        layout.getStylesheets()
-              .add(getClass().getResource("/non-nested.css")
-                             .toExternalForm());
-        JsonNode evaluated = universal.evaluate();
-        layout.setData(evaluated);
-        layout.measure(evaluated);
-        AnchorPane.setTopAnchor(layout, 0.0);
-        AnchorPane.setLeftAnchor(layout, 0.0);
-        AnchorPane.setBottomAnchor(layout, 0.0);
-        AnchorPane.setRightAnchor(layout, 0.0);
-        return layout;
+    @Override
+    public void start(Stage primaryStage) throws IOException,
+                                          URISyntaxException, QueryException {
+        this.primaryStage = primaryStage;
+        anchor = new AnchorPane();
+        VBox vbox = new VBox(locationBar(), anchor);
+        primaryStage.setScene(new Scene(vbox, 800, 600));
+        if (universal == null) {
+            String endpoint = getParameters().getNamed()
+                                             .get("endpoint");
+            if (endpoint == null) {
+                log.error("No universal endpoint defined");
+                throw new IllegalStateException("No universal endpoint defined");
+            }
+
+            String frame = getParameters().getNamed()
+                                          .get("frame");
+            if (frame == null) {
+                log.info("No frame defined, using single page app workspace frame");
+                frame = Universal.SPA_WSP;
+            }
+            setUniversal(new Universal(frame, getParameters().getNamed()
+                                                             .get("app"),
+                                       new URI(endpoint)));
+        }
+        universal.places();
+        universal.display();
+        primaryStage.show();
+    }
+
+    private void back() {
+        universal.back();
+    }
+
+    private Button button(String imageResource) {
+        Button button = new Button();
+        Image image = new Image(getClass().getResourceAsStream(imageResource));
+        button.graphicProperty()
+              .set(new ImageView(image));
+        return button;
+    }
+
+    private void displayCurrentPage(JsonNode node, Context context) {
+        updateLocationBar();
+        primaryStage.setTitle(context.getPage()
+                                     .getTitle());
+        try {
+            layout = layout(context.getRoot(), node);
+        } catch (QueryException e) {
+            log.error("Unable to display page", e);
+            return;
+        }
+        anchor.getChildren()
+              .setAll(layout);
     }
 
     private void doubleClick(JsonNode item, Relation relation) {
@@ -194,12 +160,39 @@ public class UniversalApplication extends Application implements LayoutModel {
             return;
         }
         universal.navigate(item, relation);
-        displayCurrentPage();
     }
 
     private void forward() {
         universal.forward();
-        displayCurrentPage();
+    }
+
+    private void launch(Universal unitard) {
+        Platform.runLater(() -> {
+            Stage stageLeft = new Stage();
+            Platform.setImplicitExit(false);
+            try {
+                new UniversalApplication(unitard).start(stageLeft);
+            } catch (Exception e) {
+                log.error("Unable to launch: %s", unitard.getApplication()
+                                                         .getName(),
+                          e);
+            }
+        });
+    }
+
+    private AutoLayoutView layout(Relation root,
+                                  JsonNode node) throws QueryException {
+        AutoLayoutView layout = new AutoLayoutView(root, this);
+        layout.getStylesheets()
+              .add(getClass().getResource("/non-nested.css")
+                             .toExternalForm());
+        layout.setData(node);
+        layout.measure(node);
+        AnchorPane.setTopAnchor(layout, 0.0);
+        AnchorPane.setLeftAnchor(layout, 0.0);
+        AnchorPane.setBottomAnchor(layout, 0.0);
+        AnchorPane.setRightAnchor(layout, 0.0);
+        return layout;
     }
 
     private HBox locationBar() {
@@ -220,14 +213,17 @@ public class UniversalApplication extends Application implements LayoutModel {
     }
 
     private void reload() {
-        displayCurrentPage();
+        universal.display();
+    }
+
+    private void setUniversal(Universal universal) {
+        this.universal = universal;
+        this.universal.setLauncher(u -> launch(u));
+        this.universal.setDisplay((c, n) -> displayCurrentPage(n, c));
     }
 
     private void updateLocationBar() {
-        backButton.setDisable(universal.backwardContexts()
-                                       .size() <= 1);
-        forwardButton.setDisable(universal.forwardContexts()
-                                          .isEmpty());
+        backButton.setDisable(!universal.backwardContexts());
+        forwardButton.setDisable(!universal.forwardContexts());
     }
-
 }

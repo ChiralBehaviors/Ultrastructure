@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -97,12 +98,13 @@ public class Universal {
         return URL_UUID_GENERATOR.generate(url);
     }
 
-    private final Spa            application;
-    private final Stack<Context> back     = new Stack<>();
-    private final WebTarget      endpoint;
-    private final Stack<Context> forward  = new Stack<>();
-    private final String         frame;
-    private Consumer<Universal>  launcher;
+    private final Spa                     application;
+    private final Stack<Context>          back    = new Stack<>();
+    private BiConsumer<Context, JsonNode> display;
+    private final WebTarget               endpoint;
+    private final Stack<Context>          forward = new Stack<>();
+    private final String                  frame;
+    private Consumer<Universal>           launcher;
 
     public Universal(String frame, Spa application, WebTarget endpoint) {
         this.frame = frame;
@@ -156,54 +158,36 @@ public class Universal {
 
     public void back() {
         forward.push(back.pop());
+        display();
     }
 
-    public Stack<Context> backwardContexts() {
-        return back;
+    public boolean backwardContexts() {
+        return !back.isEmpty();
     }
 
-    public Context current() {
-        return back.peek();
-    }
-
-    public JsonNode evaluate() throws QueryException {
-        return current().evaluate(endpoint);
-    }
-
-    public Context extract(String workspace, Route route, JsonNode item) {
-        Map<String, Object> variables = new HashMap<>();
-        route.getExtract()
-             .fields()
-             .forEachRemaining(entry -> {
-                 variables.put(entry.getKey(), apply(item, entry.getValue()
-                                                                .asText()));
-             });
-
-        Page target = application.route(route.getPath());
-        String frame = workspace;
-        if (target.getFrame() != null) {
-            frame = target.getFrame();
-        } else if (route.getFrameBy() != null) {
-            JsonNode routedFrame = apply(item, route.getFrameBy());
-            if (routedFrame == null) {
-                log.warn("Invalid routing frame by {} route: {}",
-                         route.getFrameBy(), route.getPath());
-            }
-            frame = routedFrame.asText();
+    public void display() {
+        try {
+            display.accept(current(), evaluate());
+        } catch (QueryException e) {
+            log.error("Unable to query", e);
         }
-        return new Context(frame, target, variables);
     }
 
     public void forward() {
         back.push(forward.pop());
+        display();
     }
 
-    public Stack<Context> forwardContexts() {
-        return forward;
+    public boolean forwardContexts() {
+        return !forward.isEmpty();
     }
 
     public Spa getApplication() {
         return application;
+    }
+
+    public BiConsumer<Context, JsonNode> getDisplay() {
+        return display;
     }
 
     public String getFrame() {
@@ -222,6 +206,7 @@ public class Universal {
         if (route != null) {
             try {
                 push(extract(current.getFrame(), route, node));
+                display();
             } catch (QueryException e) {
                 log.error("Unable to push page: %s", route.getPath(), e);
             }
@@ -247,8 +232,16 @@ public class Universal {
         push(new Context(frame, application.getRoot()));
     }
 
+    public void setDisplay(BiConsumer<Context, JsonNode> display) {
+        this.display = display;
+    }
+
     public void setLauncher(Consumer<Universal> launcher) {
         this.launcher = launcher;
+    }
+
+    JsonNode evaluate() throws QueryException {
+        return current().evaluate(endpoint);
     }
 
     private String appLauncherId() {
@@ -275,6 +268,34 @@ public class Universal {
             current = node;
         }
         return node;
+    }
+
+    private Context current() {
+        return back.peek();
+    }
+
+    private Context extract(String workspace, Route route, JsonNode item) {
+        Map<String, Object> variables = new HashMap<>();
+        route.getExtract()
+             .fields()
+             .forEachRemaining(entry -> {
+                 variables.put(entry.getKey(), apply(item, entry.getValue()
+                                                                .asText()));
+             });
+
+        Page target = application.route(route.getPath());
+        String frame = workspace;
+        if (target.getFrame() != null) {
+            frame = target.getFrame();
+        } else if (route.getFrameBy() != null) {
+            JsonNode routedFrame = apply(item, route.getFrameBy());
+            if (routedFrame == null) {
+                log.warn("Invalid routing frame by {} route: {}",
+                         route.getFrameBy(), route.getPath());
+            }
+            frame = routedFrame.asText();
+        }
+        return new Context(frame, target, variables);
     }
 
     private void push(Context pageContext) throws QueryException {

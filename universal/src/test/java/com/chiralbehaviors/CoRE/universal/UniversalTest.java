@@ -139,8 +139,10 @@ public class UniversalTest {
         universal.places();
         JsonNode data = universal.evaluate();
         assertNotNull(data);
-        assertEquals(2, data.size());
-        universal.navigate(data.get(0), new Relation("workspaces"));
+        assertEquals(1, data.size());
+        universal.navigate(data.get("workspaces")
+                               .get(0),
+                           new Relation("workspaces"));
         assertNull(launched.get());
         assertNotNull(displayed.get());
         data = universal.evaluate();

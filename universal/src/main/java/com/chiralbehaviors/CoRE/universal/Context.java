@@ -60,8 +60,7 @@ public class Context {
     public JsonNode evaluate(WebTarget endpoint) throws QueryException {
         return GraphQlUtil.evaluate(frame(endpoint),
                                     new QueryRequest(page.getQuery(),
-                                                     variables))
-                          .get(root.getField());
+                                                     variables));
     }
 
     public String getFrame() {

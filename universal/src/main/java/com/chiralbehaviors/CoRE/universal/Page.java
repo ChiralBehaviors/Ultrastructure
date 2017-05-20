@@ -172,6 +172,10 @@ public class Page {
         return updates.get(relation.getField());
     }
 
+    public void navigate(String field, Route route) {
+        navigations.put(field, route);
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }

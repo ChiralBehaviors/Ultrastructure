@@ -64,6 +64,12 @@ public class SpaImporter extends SpaBaseListener {
     }
 
     @Override
+    public void exitNavigate(NavigateContext ctx) {
+        Action action = build(ctx);
+        currentPage.delete(currentField, action);
+    }
+
+    @Override
     public void enterFieldAction(FieldActionContext ctx) {
         currentField = ctx.NAME()
                           .getText();
@@ -109,6 +115,7 @@ public class SpaImporter extends SpaBaseListener {
                                           .getText()));
             route.setExtract(extract);
         }
+        currentPage.navigate(currentField, route);
         super.enterNavigate(ctx);
     }
 
@@ -185,6 +192,26 @@ public class SpaImporter extends SpaBaseListener {
         action.setQuery(getResource(stripQuotes(ac.query()
                                                   .ResourcePath()
                                                   .getText())));
+        return action;
+    }
+
+    private Action build(NavigateContext nc) {
+        Action action = new Action();
+        if (nc.frameBy() != null) {
+            action.setFrameBy(nc.frameBy()
+                                .Spath()
+                                .getText());
+        }
+        if (nc.extract() != null) {
+            ObjectNode extract = JsonNodeFactory.instance.objectNode();
+            nc.extract()
+              .extraction()
+              .forEach(c -> extract.put(c.NAME()
+                                         .getText(),
+                                        c.Spath()
+                                         .getText()));
+            action.setExtract(extract);
+        }
         return action;
     }
 

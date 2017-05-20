@@ -274,7 +274,7 @@ public class Universal {
         return back.peek();
     }
 
-    private Context extract(String workspace, Route route, JsonNode item) {
+    private Context extract(String workspace, Route route, JsonNode item) { 
         Map<String, Object> variables = new HashMap<>();
         route.getExtract()
              .fields()

@@ -116,7 +116,7 @@ public class UniversalTest {
         JsonNode data = universal.evaluate();
         assertNotNull(data);
         assertEquals(1, data.size());
-        universal.navigate(data.get(0), new Relation("singlePageApplications"));
+        universal.navigate(data.get("singlePageApplications").get(0), new Relation("singlePageApplications"));
         assertNotNull(launched.get());
         assertNotEquals(universal, launched.get());
     }

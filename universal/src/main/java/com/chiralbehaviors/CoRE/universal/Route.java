@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -34,6 +35,7 @@ public class Route {
 
     private ObjectNode extract;
     private String     frameBy;
+    private boolean    meta = false;
     private String     path;
 
     public Route() {
@@ -42,13 +44,16 @@ public class Route {
 
     public Route(ObjectNode route) {
         this(textOrNull(route.get("frameBy")), textOrNull(route.get("path")),
-             (ObjectNode) route.get("extract"));
+             (ObjectNode) route.get("extract"),
+             ((BooleanNode) route.get("meta")).asBoolean());
     }
 
-    public Route(String frameBy, String path, ObjectNode extract) {
+    public Route(String frameBy, String path, ObjectNode extract,
+                 boolean meta) {
         this.path = path;
         this.frameBy = frameBy;
         this.extract = extract;
+        this.meta = meta;
     }
 
     public ObjectNode getExtract() {
@@ -63,12 +68,20 @@ public class Route {
         return path;
     }
 
+    public boolean isMeta() {
+        return meta;
+    }
+
     public void setExtract(ObjectNode extract) {
         this.extract = extract;
     }
 
     public void setFrameBy(String frameBy) {
         this.frameBy = frameBy;
+    }
+
+    public void setMeta(boolean meta) {
+        this.meta = meta;
     }
 
     public void setPath(String path) {

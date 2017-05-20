@@ -49,7 +49,7 @@ public class SpaTest {
         ObjectNode node = (ObjectNode) new ObjectMapper().readTree(getClass().getResourceAsStream("/test-app.json"));
         Spa spa = new Spa(node);
         Page page = spa.getRoot();
-        Context ctx = new Context("foo", page);
+        Context ctx = new Context(false, "foo", page);
         assertEquals("foo", ctx.getFrame());
         assertEquals(page, ctx.getPage());
         assertEquals("singlePageApplications", ctx.getRoot()

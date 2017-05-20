@@ -97,22 +97,24 @@ public class SpaImporter extends SpaBaseListener {
 
     @Override
     public void enterNavigate(NavigateContext ctx) {
-        Route route = new Route();
-        route.setPath(ctx.NAME()
-                         .getText());
-        if (ctx.frameBy() != null) {
-            route.setFrameBy(ctx.frameBy()
-                                .Spath()
-                                .getText());
-        }
+        ObjectNode extract = JsonNodeFactory.instance.objectNode();
         if (ctx.extract() != null) {
-            ObjectNode extract = JsonNodeFactory.instance.objectNode();
             ctx.extract()
                .extraction()
                .forEach(c -> extract.put(c.NAME()
                                           .getText(),
                                          c.Spath()
                                           .getText()));
+        }
+        Route route = new Route(ctx.frameBy() != null ? ctx.frameBy()
+                                                           .Spath()
+                                                           .getText()
+                                                      : null,
+                                ctx.NAME()
+                                   .getText(),
+                                extract, ctx.meta != null);
+        if (ctx.extract() != null) {
+
             route.setExtract(extract);
         }
         currentPage.navigate(currentField, route);

@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.universal.spa.SpaLexer;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
 
@@ -80,6 +81,7 @@ public class Spa {
 
     private String                  description;
     private String                  frame;
+    private boolean                 meta = false;
     private String                  name;
     private String                  root;
     private final Map<String, Page> routes;
@@ -90,13 +92,14 @@ public class Spa {
 
     public Spa(ObjectNode app) {
         this(textOrNull(app.get("name")), textOrNull(app.get("description")),
-             textOrNull(app.get("frame")), textOrNull(app.get("root")),
-             routes((ArrayNode) app.get("pages")));
+             textOrNull(app.get("frame")), (BooleanNode) app.get("meta"),
+             textOrNull(app.get("root")), routes((ArrayNode) app.get("pages")));
     }
 
-    public Spa(String name, String description, String frame, String root,
-               Map<String, Page> routes) {
+    public Spa(String name, String description, String frame, BooleanNode meta,
+               String root, Map<String, Page> routes) {
         this.name = name;
+        this.meta = meta.isNull() ? false : meta.asBoolean();
         this.description = description;
         this.frame = frame;
         this.root = root;
@@ -109,6 +112,10 @@ public class Spa {
 
     public String getFrame() {
         return frame;
+    }
+
+    public boolean getMeta() {
+        return meta;
     }
 
     public String getName() {
@@ -133,6 +140,10 @@ public class Spa {
 
     public void setFrame(String frame) {
         this.frame = frame;
+    }
+
+    public void setMeta(boolean meta) {
+        this.meta = meta;
     }
 
     public void setName(String name) {

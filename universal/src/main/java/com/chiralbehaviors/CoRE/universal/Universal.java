@@ -229,7 +229,7 @@ public class Universal {
     }
 
     public void places() throws QueryException {
-        push(new Context(frame, application.getRoot()));
+        push(new Context(application.getMeta(), frame, application.getRoot()));
     }
 
     public void setDisplay(BiConsumer<Context, JsonNode> display) {
@@ -274,7 +274,7 @@ public class Universal {
         return back.peek();
     }
 
-    private Context extract(String workspace, Route route, JsonNode item) { 
+    private Context extract(String workspace, Route route, JsonNode item) {
         Map<String, Object> variables = new HashMap<>();
         route.getExtract()
              .fields()
@@ -295,7 +295,7 @@ public class Universal {
             }
             frame = routedFrame.asText();
         }
-        return new Context(frame, target, variables);
+        return new Context(route.isMeta(), frame, target, variables);
     }
 
     private void push(Context pageContext) throws QueryException {

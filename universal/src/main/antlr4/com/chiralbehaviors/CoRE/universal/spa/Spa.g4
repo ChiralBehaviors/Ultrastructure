@@ -50,7 +50,7 @@
 
  route
  :
-     NAME '{' page '}'
+     NAME meta = 'meta'? '{' page '}'
  ;
 
  page
@@ -126,7 +126,7 @@
 
  navigate
  :
-     'navigate:' NAME frameBy? extract?
+     'navigate:' NAME meta = 'meta'? frameBy? extract?
  ;
 
  NAME

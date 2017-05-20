@@ -38,15 +38,18 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class Context {
     private final String        frame;
+    private final boolean       meta;
     private final Page          page;
     private final Relation      root;
     private Map<String, Object> variables;
 
-    public Context(String workspace, Page page) {
-        this(workspace, page, Collections.emptyMap());
+    public Context(boolean meta, String workspace, Page page) {
+        this(meta, workspace, page, Collections.emptyMap());
     }
 
-    public Context(String frame, Page page, Map<String, Object> variables) {
+    public Context(boolean meta, String frame, Page page,
+                   Map<String, Object> variables) {
+        this.meta = meta;
         assert frame != null;
         this.frame = frame;
         this.page = page;
@@ -55,7 +58,7 @@ public class Context {
     }
 
     public JsonNode evaluate(WebTarget endpoint) throws QueryException {
-        return GraphQlUtil.evaluate(endpoint.path(frame),
+        return GraphQlUtil.evaluate(frame(endpoint),
                                     new QueryRequest(page.getQuery(),
                                                      variables))
                           .get(root.getField());
@@ -79,5 +82,10 @@ public class Context {
 
     public Relation getRoot() {
         return root;
+    }
+
+    private WebTarget frame(WebTarget endpoint) {
+        WebTarget target = endpoint.path(frame);
+        return meta ? target.path("meta") : target;
     }
 }

@@ -345,6 +345,12 @@ public class WorkspaceResource extends TransactionalResource {
                                                                     workspace),
                                                       Status.NOT_FOUND);
                 }
+                if (scoped == null) { 
+                    throw new WebApplicationException(String.format("Workspace not found [%s] %s",
+                                                                    uuid,
+                                                                    workspace),
+                                                      Status.NOT_FOUND);
+                }
                 ClassLoader prev = Thread.currentThread()
                                          .getContextClassLoader();
                 Thread.currentThread()

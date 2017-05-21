@@ -133,6 +133,7 @@ public class SpaImporter extends SpaBaseListener {
                                            .StringValue()
                                            .getText()));
         currentPage.setTitle(ctx.title()
+                                .StringValue()
                                 .getText());
         if (ctx.description() != null) {
             currentPage.setDescription(stripQuotes(ctx.description()

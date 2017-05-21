@@ -12,7 +12,10 @@ spa {
         frame: 00000000-0000-0004-0000-000000000003
         query: 'wsp/allWorkspaces.query'
         
-        workspaces {
+        workspaces { 
+            create: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'
+            update: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'
+            delete: by /bar/baz {bar:/foo} query: 'wsp/workspaceDetail.query'
             navigate: workspace meta {id:/id}
         }
         imports { 

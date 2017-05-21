@@ -83,9 +83,11 @@ public class SpaImporter extends SpaBaseListener {
                                  .Spath()
                                  .getText());
         } else if (ctx.frame() != null) {
-            launch.setFrame(ctx.frame().UUID()
+            launch.setFrame(ctx.frame()
+                               .UUID()
                                .getText());
         }
+        launch.setMeta(ctx.Meta() != null);
         if (ctx.Spath() == null) {
             launch.setImmediate(ctx.UUID()
                                    .getText());
@@ -112,7 +114,7 @@ public class SpaImporter extends SpaBaseListener {
                                                       : null,
                                 ctx.NAME()
                                    .getText(),
-                                extract, ctx.meta != null);
+                                extract, ctx.Meta() != null);
         if (ctx.extract() != null) {
 
             route.setExtract(extract);
@@ -138,7 +140,8 @@ public class SpaImporter extends SpaBaseListener {
                                                       .getText()));
         }
         if (ctx.frame() != null) {
-            currentPage.setFrame(ctx.frame().UUID()
+            currentPage.setFrame(ctx.frame()
+                                    .UUID()
                                     .getText());
         }
     }
@@ -181,6 +184,7 @@ public class SpaImporter extends SpaBaseListener {
                                 .Spath()
                                 .getText());
         }
+        action.setMeta(ac.Meta() != null);
         if (ac.extract() != null) {
             ObjectNode extract = JsonNodeFactory.instance.objectNode();
             ac.extract()

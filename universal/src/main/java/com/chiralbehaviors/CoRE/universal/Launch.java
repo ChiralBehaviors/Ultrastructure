@@ -21,6 +21,9 @@
 package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
+
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -28,10 +31,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Launch {
-    private String frame;
-    private String frameBy;
-    private String immediate;
-    private String launchBy;
+    private String  frame;
+    private String  frameBy;
+    private String  immediate;
+    private String  launchBy;
+    private boolean meta;
+
+    public boolean isMeta() {
+        return meta;
+    }
 
     public Launch() {
     }
@@ -39,16 +47,19 @@ public class Launch {
     public Launch(ObjectNode launch) {
         this(textOrNull(launch.get("launchBy")),
              textOrNull(launch.get("frameBy")), textOrNull(launch.get("frame")),
+             ((BooleanNode) launch.get("meta") == null ? JsonNodeFactory.instance.booleanNode(false)
+                                                       : launch.get("meta")).asBoolean(),
              launch.get("immediate") == null ? null
                                              : textOrNull(launch.get("immediate")
                                                                 .get("id")));
     }
 
-    public Launch(String launchBy, String frameBy, String frame,
+    public Launch(String launchBy, String frameBy, String frame, boolean meta,
                   String immediate) {
         this.frameBy = frameBy;
         this.launchBy = launchBy;
         this.frame = frame;
+        this.meta = meta;
         this.immediate = immediate;
     }
 
@@ -88,5 +99,9 @@ public class Launch {
     public String toString() {
         return String.format("Launch [frame=%s, frameBy=%s, immediate=%s, launchBy=%s]",
                              frame, frameBy, immediate, launchBy);
+    }
+
+    public void setMeta(boolean meta) {
+        this.meta = meta;
     }
 }

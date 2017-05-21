@@ -50,7 +50,7 @@
 
  route
  :
-     NAME meta = 'meta'? '{' page '}'
+     NAME '{' page '}'
  ;
 
  page
@@ -93,7 +93,7 @@
 
  action
  :
-     frameBy? extract? query
+     frameBy? Meta? extract? query
  ;
 
  create
@@ -117,7 +117,7 @@
      (
          frameBy
          | frame
-     )?
+     )? Meta?
      (
          Spath
          | UUID
@@ -126,7 +126,12 @@
 
  navigate
  :
-     'navigate:' NAME meta = 'meta'? frameBy? extract?
+     'navigate:' NAME frameBy? Meta? extract?
+ ;
+
+ Meta
+ :
+     'meta'
  ;
 
  NAME

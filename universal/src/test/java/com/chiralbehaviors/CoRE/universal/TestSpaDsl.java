@@ -31,7 +31,7 @@ import org.junit.Test;
 public class TestSpaDsl {
     @Test
     public void testParse() throws Exception {
-        Spa constructedSpa = Spa.manifest("/smoke.app");
+        Spa constructedSpa = Spa.manifest("/test.app");
         assertNotNull(constructedSpa.route("launch"));
     }
 }

@@ -186,18 +186,6 @@ public class Universal {
         return application;
     }
 
-    public BiConsumer<Context, JsonNode> getDisplay() {
-        return display;
-    }
-
-    public String getFrame() {
-        return frame;
-    }
-
-    public Consumer<Universal> getLauncher() {
-        return launcher;
-    }
-
     public void navigate(JsonNode node, Relation relation) {
         Context current = current();
 

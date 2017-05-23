@@ -6,8 +6,8 @@
             <pattern>${testing.logging.consoleLayoutPattern}</pattern>
         </encoder>
     </appender>
-    <logger name="com.chiralbehaviors.CoRE">
-        <level value="TRACE" />
+    <logger name="com.chiralbehaviors">
+        <level value="INFO" />
     </logger>
     <logger name="org.jooq">
         <level value="WARN" />

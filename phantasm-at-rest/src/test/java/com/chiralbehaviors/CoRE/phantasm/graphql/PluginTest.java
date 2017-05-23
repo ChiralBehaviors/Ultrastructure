@@ -48,8 +48,8 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.FacetFields;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing1;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;

@@ -20,16 +20,28 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
+
+import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
-import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.MetaMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.MetaQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet.FacetUpdateState;
 
+import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -37,16 +49,47 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class MetaContext extends ExistentialContext
-        implements WorkspaceQueries {
-    public static interface MetaMutations extends ExistentialMutations {
-    }
-
-    public static interface MetaQueries
-            extends ExistentialQueries, WorkspaceQueries {
-    }
+        implements MetaMutations, MetaQueries {
 
     public MetaContext(Model model, Product workspace) {
         super(model, workspace);
+    }
+
+    @Override
+    @GraphQLField
+    public Facet createFacet(@NotNull @GraphQLName("state") FacetState state,
+                             DataFetchingEnvironment env) {
+        if (!WorkspaceSchema.ctx(env)
+                            .checkCreateMeta(getWorkspace(env))) {
+            return null;
+        }
+        FacetRecord record = WorkspaceSchema.ctx(env)
+                                            .records()
+                                            .newFacet();
+        state.update(record);
+        record.insert();
+        return new Facet(record);
+    }
+
+    @Override
+    public Facet facet(UUID id, DataFetchingEnvironment env) {
+        return Facet.fetch(env, id);
+    }
+
+    @Override
+    public List<Facet> facets(List<UUID> ids, DataFetchingEnvironment env) {
+        if (ids == null) {
+            Model model = WorkspaceSchema.ctx(env);
+            return model.getPhantasmModel()
+                        .getFacets(((MetaContext) env.getContext()).getWorkspace())
+                        .stream()
+                        .filter(r -> model.checkRead(r))
+                        .map(r -> new Facet(r))
+                        .collect(Collectors.toList());
+        }
+        return ids.stream()
+                  .map(id -> Facet.fetch(env, id))
+                  .collect(Collectors.toList());
     }
 
     @Override
@@ -64,4 +107,34 @@ public class MetaContext extends ExistentialContext
                                  : scoped.lookupId(namespace, name);
     }
 
+    @Override
+    public Boolean deleteFacet(UUID id, DataFetchingEnvironment env) {
+        Facet fetch = Facet.fetch(env, id);
+        if (fetch == null || !WorkspaceSchema.ctx(env)
+                                             .checkRemove((UpdatableRecord<?>) fetch)) {
+            return false;
+        }
+        fetch.getRecord()
+             .delete();
+        return true;
+    }
+
+    @Override
+    public Facet updateFacet(FacetUpdateState state,
+                             DataFetchingEnvironment env) {
+        Model model = WorkspaceSchema.ctx(env);
+        FacetRecord record = model.create()
+                                  .selectFrom(Tables.FACET)
+                                  .where(Tables.FACET.ID.equal(state.getId()))
+                                  .fetchOne();
+        if (record == null) {
+            return null;
+        }
+        if (!model.checkUpdate(record)) {
+            return null;
+        }
+        state.update(record);
+        record.update();
+        return new Facet(record);
+    }
 }

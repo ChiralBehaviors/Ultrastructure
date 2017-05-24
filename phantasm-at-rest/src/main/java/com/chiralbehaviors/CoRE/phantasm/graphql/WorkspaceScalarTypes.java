@@ -38,7 +38,7 @@ import graphql.schema.GraphQLScalarType;
  * @author halhildebrand
  *
  */
-public interface WorkspsacScalarTypes {
+public interface WorkspaceScalarTypes {
 
     static GraphQLScalarType GraphQLBinary    = new GraphQLScalarType("BINARY",
                                                                       "Built-in Base 64 encoded BINARY",

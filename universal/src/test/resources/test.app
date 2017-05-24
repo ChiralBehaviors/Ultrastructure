@@ -16,7 +16,7 @@ spa {
             create: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'
             update: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'
             delete: by /bar/baz {bar:/foo} query: 'wsp/workspaceDetail.query'
-            navigate: workspace meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
         imports { 
             launch: by /id 00000000-0000-0004-0000-000000000003

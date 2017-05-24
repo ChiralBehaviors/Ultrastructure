@@ -13,7 +13,7 @@ spa {
         query: 'wsp/allWorkspaces.query'
         
         workspaces {
-            navigate: workspace meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
         imports { 
             launch: by /id 00000000-0000-0004-0000-000000000003
@@ -25,5 +25,16 @@ spa {
         description: "Detail for workspace"
         title: "Ye workspace detail"
         query: 'wsp/workspaceDetail.query'
+        
+        facets {
+            navigate: facet meta {id:/id}
+        }
+    }
+    
+    facet {
+        name: "Facet Detail"
+        description: "Detail for a facet"
+        title: "Ye facet detail"
+        query: 'wsp/facetDetail.query'
     }
 }

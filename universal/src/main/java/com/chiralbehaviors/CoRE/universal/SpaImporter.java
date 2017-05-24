@@ -225,7 +225,7 @@ public class SpaImporter extends SpaBaseListener {
     private String getResource(String path) {
         InputStream is = getClass().getResourceAsStream(path);
         if (is == null) {
-            throw new IllegalStateException(String.format("Invalid resource: %s",
+            throw new IllegalStateException(String.format("Unable to find resource: %s",
                                                           path));
         }
         try {

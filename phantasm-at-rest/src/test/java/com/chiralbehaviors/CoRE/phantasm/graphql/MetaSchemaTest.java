@@ -69,18 +69,14 @@ public class MetaSchemaTest extends AbstractModelTest {
     public void testChildSequencingMutations() throws IllegalArgumentException,
                                                Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        variables.put("nextChild", k.getAnyProduct()
-                                    .getId()
-                                    .toString());
-        variables.put("nextChildStatus", k.getAnyStatusCode()
-                                          .getId()
-                                          .toString());
+        variables.put("service", UuidUtil.encode(k.getAnyProduct()
+                                                  .getId()));
+        variables.put("statusCode", UuidUtil.encode(k.getAnyStatusCode()
+                                                     .getId()));
+        variables.put("nextChild", UuidUtil.encode(k.getAnyProduct()
+                                                    .getId()));
+        variables.put("nextChildStatus", UuidUtil.encode(k.getAnyStatusCode()
+                                                          .getId()));
 
         ObjectNode result = execute("mutation m($service: ID $statusCode: ID $nextChild: ID $nextChildStatus: ID) "
                                     + "{ createChildSequencingAuthorization(state: {service: $service statusCode: $statusCode "
@@ -89,9 +85,9 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createChildSequencingAuthorization")
                                   .get("id")
                                   .asText());
-        variables.put("auth", model.getKernel()
-                                   .getCore()
-                                   .getId());
+        variables.put("auth", UuidUtil.encode(model.getKernel()
+                                                   .getCore()
+                                                   .getId()));
         execute("mutation m($id: ID! $auth: ID) { updateChildSequencingAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
@@ -285,15 +281,12 @@ public class MetaSchemaTest extends AbstractModelTest {
     public void testFacetMutations() throws IllegalArgumentException,
                                      Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("auth", k.getCore()
-                               .getId()
-                               .toString());
-        variables.put("classifier", k.getIsA()
-                                     .getId()
-                                     .toString());
-        variables.put("classification", k.getCore()
-                                         .getId()
-                                         .toString());
+        variables.put("auth", UuidUtil.encode(k.getCore()
+                                               .getId()));
+        variables.put("classifier", UuidUtil.encode(k.getIsA()
+                                                     .getId()));
+        variables.put("classification", UuidUtil.encode(k.getCore()
+                                                         .getId()));
         ObjectNode result = execute("mutation m($auth: ID $classifier: ID $classification: ID) { "
                                     + "createFacet(state: {authority: $auth classifier: $classifier name: \"foo\" "
                                     + "classification: $classification }) {id} }",
@@ -327,9 +320,9 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createMetaProtocol")
                                   .get("id")
                                   .asText());
-        variables.put("auth", model.getKernel()
-                                   .getCore()
-                                   .getId());
+        variables.put("auth", UuidUtil.encode(model.getKernel()
+                                                   .getCore()
+                                                   .getId()));
         execute("mutation m($id: ID! $auth: ID) { updateMetaProtocol(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
@@ -341,18 +334,14 @@ public class MetaSchemaTest extends AbstractModelTest {
     public void testParentSequencingMutations() throws IllegalArgumentException,
                                                 Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("service", k.getAnyProduct()
-                                  .getId()
-                                  .toString());
-        variables.put("statusCode", k.getAnyStatusCode()
-                                     .getId()
-                                     .toString());
-        variables.put("parent", k.getAnyProduct()
-                                 .getId()
-                                 .toString());
-        variables.put("parentStatus", k.getAnyStatusCode()
-                                       .getId()
-                                       .toString());
+        variables.put("service", UuidUtil.encode(k.getAnyProduct()
+                                                  .getId()));
+        variables.put("statusCode", UuidUtil.encode(k.getAnyStatusCode()
+                                                     .getId()));
+        variables.put("parent", UuidUtil.encode(k.getAnyProduct()
+                                                 .getId()));
+        variables.put("parentStatus", UuidUtil.encode(k.getAnyStatusCode()
+                                                       .getId()));
         ObjectNode result = execute("mutation m($service: ID $statusCode: ID $parent: ID $parentStatus: ID) { "
                                     + "createParentSequencingAuthorization(state: {service: $service "
                                     + "statusCode: $statusCode parent: $parent parentStatusToSet: $parentStatus "
@@ -360,9 +349,9 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createParentSequencingAuthorization")
                                   .get("id")
                                   .asText());
-        variables.put("auth", model.getKernel()
-                                   .getCore()
-                                   .getId());
+        variables.put("auth", UuidUtil.encode(model.getKernel()
+                                                   .getCore()
+                                                   .getId()));
         execute("mutation m($id: ID! $auth: ID) { updateParentSequencingAuthorization(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
@@ -374,24 +363,18 @@ public class MetaSchemaTest extends AbstractModelTest {
     public void testProtocolMutations() throws IllegalArgumentException,
                                         Exception {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("r", k.getAnyRelationship()
-                            .getId()
-                            .toString());
-        variables.put("a", k.getAnyAgency()
-                            .getId()
-                            .toString());
-        variables.put("l", k.getAnyLocation()
-                            .getId()
-                            .toString());
-        variables.put("p", k.getAnyProduct()
-                            .getId()
-                            .toString());
-        variables.put("s", k.getAnyStatusCode()
-                            .getId()
-                            .toString());
-        variables.put("u", k.getAnyUnit()
-                            .getId()
-                            .toString());
+        variables.put("r", UuidUtil.encode(k.getAnyRelationship()
+                                            .getId()));
+        variables.put("a", UuidUtil.encode(k.getAnyAgency()
+                                            .getId()));
+        variables.put("l", UuidUtil.encode(k.getAnyLocation()
+                                            .getId()));
+        variables.put("p", UuidUtil.encode(k.getAnyProduct()
+                                            .getId()));
+        variables.put("s", UuidUtil.encode(k.getAnyStatusCode()
+                                            .getId()));
+        variables.put("u", UuidUtil.encode(k.getAnyUnit()
+                                            .getId()));
         ObjectNode result = execute("mutation m($r: ID) "
                                     + "{ createProtocol(state: {assignTo: $r deliverFrom: $r "
                                     + "deliverTo: $r " + "product: $r "
@@ -408,9 +391,9 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createProtocol")
                                   .get("id")
                                   .asText());
-        variables.put("auth", model.getKernel()
-                                   .getCore()
-                                   .getId());
+        variables.put("auth", UuidUtil.encode(model.getKernel()
+                                                   .getCore()
+                                                   .getId()));
         execute("mutation m($id: ID! $auth: ID) { updateProtocol(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
                 variables);
 
@@ -425,7 +408,7 @@ public class MetaSchemaTest extends AbstractModelTest {
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data;
-        
+
         variables.put("name", "IsA");
         data = execute("query q($name: String!) { lookup( name: $name) }",
                        variables);

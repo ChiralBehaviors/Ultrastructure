@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
 import static com.chiralbehaviors.CoRE.jooq.Ruleform.RULEFORM;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBoolean;
 
 import java.beans.Introspector;
@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Converter;
@@ -102,6 +102,7 @@ public class JooqSchema {
                                                          RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
                                                          RULEFORM.EXISTENTIAL_NETWORK_AUTHORIZATION,
                                                          RULEFORM.EXISTENTIAL_NETWORK,
+                                                         RULEFORM.FACET,
                                                          RULEFORM.WORKSPACE_LABEL,
                                                          RULEFORM.JOB,
                                                          RULEFORM.JOB_CHRONOLOGY }));

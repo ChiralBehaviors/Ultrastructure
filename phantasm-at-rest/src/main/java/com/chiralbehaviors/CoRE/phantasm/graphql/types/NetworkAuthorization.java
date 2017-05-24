@@ -24,10 +24,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolv
 
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
@@ -39,15 +37,6 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class NetworkAuthorization {
-
-    public static NetworkAuthorization fetch(DataFetchingEnvironment env,
-                                             UUID id) {
-        return new NetworkAuthorization(WorkspaceSchema.ctx(env)
-                                                       .create()
-                                                       .selectFrom(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                       .where(Tables.EXISTENTIAL_NETWORK_AUTHORIZATION.ID.equal(id))
-                                                       .fetchOne());
-    }
 
     private final ExistentialNetworkAuthorizationRecord record;
 

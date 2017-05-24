@@ -25,13 +25,8 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolv
 import java.util.Base64;
 import java.util.UUID;
 
-import org.jooq.exception.DataAccessException;
-import org.jooq.exception.TooManyRowsException;
-
-import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -45,17 +40,6 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class AttributeAuthorization {
-
-    public static ExistentialAttributeAuthorizationRecord fetch(DataFetchingEnvironment env,
-                                                                UUID id) throws DataAccessException,
-                                                                         TooManyRowsException {
-        return WorkspaceSchema.ctx(env)
-                              .create()
-                              .selectFrom(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                              .where(Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID.equal(id))
-                              .fetchOne();
-    }
-
     private final ExistentialAttributeAuthorizationRecord record;
 
     public AttributeAuthorization(ExistentialAttributeAuthorizationRecord record) {
@@ -97,9 +81,8 @@ public class AttributeAuthorization {
     }
 
     @GraphQLField
-    public String getId() {
-        return record.getId()
-                     .toString();
+    public UUID getId() {
+        return record.getId();
     }
 
     @GraphQLField

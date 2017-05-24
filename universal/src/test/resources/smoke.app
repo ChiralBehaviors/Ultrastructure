@@ -99,6 +99,10 @@ spa {
         description: "Detail for agency"
         title: "Ye agency detail"
         query: 'wsp/agencyDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     attribute {
@@ -106,6 +110,10 @@ spa {
         description: "Detail for attribute"
         title: "Ye attribute detail"
         query: 'wsp/attributeDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     interval {
@@ -113,6 +121,10 @@ spa {
         description: "Detail for interval"
         title: "Ye interval detail"
         query: 'wsp/intervalDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     location {
@@ -120,6 +132,10 @@ spa {
         description: "Detail for location"
         title: "Ye location detail"
         query: 'wsp/locationDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     product {
@@ -127,6 +143,10 @@ spa {
         description: "Detail for product"
         title: "Ye product detail"
         query: 'wsp/productDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     relationship {
@@ -138,6 +158,10 @@ spa {
         inverse {
             navigate: relationship meta {id:/id}
         }
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     statusCode {
@@ -145,6 +169,10 @@ spa {
         description: "Detail for status codes"
         title: "Ye status code detail"
         query: 'wsp/statusCodeDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     unit {
@@ -152,6 +180,10 @@ spa {
         description: "Detail for unit"
         title: "Ye unit detail"
         query: 'wsp/unitDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
         
     existential {
@@ -159,5 +191,9 @@ spa {
         description: "Detail for existential"
         title: "Ye existential detail"
         query: 'wsp/existentialDetail.query'
+        
+        workspace {
+            navigate: workspace by /id meta {id:/id}
+        }
     }
 }

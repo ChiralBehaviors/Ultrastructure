@@ -44,6 +44,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.*;
 
 import graphql.ExecutionResult;
 import graphql.GraphQLError;
@@ -203,7 +204,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         data = execute("query q($id: ID!) { agency(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
-        
+
         data = execute("query q($id: ID!) { existential(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
@@ -421,7 +422,8 @@ public class MetaSchemaTest extends AbstractModelTest {
         data = execute("{ facets { id name updatedBy { id } classifier { id } classification { id } authority { id } "
                        + "attributes { id authorizedAttribute { id } authority { id } notes facet { id } updatedBy { id } "
                        + "version binaryValue booleanValue integerValue textValue jsonValue timestampValue numericValue } "
-                       + "children { id cardinality parent { id } relationship { id } child { id } notes version } } }", variables);
+                       + "children { id cardinality parent { id } relationship { id } child { id } notes version } } }",
+                       variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("facets")));
         data = execute("query q($ids: [ID]!) { facets(ids: $ids) { id name  classifier {id} classification {id} authority { id } attributes { id } children { id } }}",
@@ -518,6 +520,34 @@ public class MetaSchemaTest extends AbstractModelTest {
         data = execute("query q($id: ID!) { statusCodeSequencing(id: $id) { id } }",
                        variables);
         assertNotNull(data);
+    }
+
+    @Test
+    public void testStates() {
+        RelationshipState rState = new RelationshipState(new HashMap<>());
+        rState.getAuthority();
+        rState.getInverse();
+        rState.getName();
+        rState.getDescription();
+        rState.getNotes();
+        
+        StatusCodeState scState = new StatusCodeState(new HashMap<>());
+        scState.getAuthority(); 
+        scState.getName();
+        scState.getDescription();
+        scState.getNotes();
+        scState.getFailParent();
+        scState.getPropagateChildren();
+        
+        AttributeState aState = new AttributeState(new HashMap<>());
+        aState.getAuthority(); 
+        aState.getName();
+        aState.getDescription();
+        aState.getNotes();
+        aState.getIndexed();
+        aState.getKeyed();
+        aState.getValueType();
+        
     }
 
     private ObjectNode execute(String query,

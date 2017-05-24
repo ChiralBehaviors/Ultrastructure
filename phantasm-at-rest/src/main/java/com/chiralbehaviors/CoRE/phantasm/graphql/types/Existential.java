@@ -204,10 +204,11 @@ public interface Existential extends Phantasm {
     }
 
     public class ExistentialState {
-        static final String         ID        = "id";
-        private static final String AUTHORITY = "authority";
-        private static final String NAME      = "name";
-        private static final String NOTES     = "notes";
+        private static final String DESCRIPTION = "description";
+        static final String         ID          = "id";
+        private static final String AUTHORITY   = "authority";
+        private static final String NAME        = "name";
+        private static final String NOTES       = "notes";
         final Map<String, Object>   state;
 
         public ExistentialState(HashMap<String, Object> state) {
@@ -225,6 +226,11 @@ public interface Existential extends Phantasm {
         }
 
         @GraphQLField
+        public String getDescription() {
+            return (String) state.get(NAME);
+        }
+
+        @GraphQLField
         public String getNotes() {
             return (String) state.get(NOTES);
         }
@@ -235,6 +241,9 @@ public interface Existential extends Phantasm {
             }
             if (state.containsKey(NAME)) {
                 record.setName((String) state.get(NAME));
+            }
+            if (state.containsKey(DESCRIPTION)) {
+                record.setDescription((String) state.get(DESCRIPTION));
             }
             if (state.containsKey(NOTES)) {
                 record.setNotes((String) state.get(NOTES));

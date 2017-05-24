@@ -162,7 +162,7 @@ public class Universal {
     }
 
     public boolean backwardContexts() {
-        return !back.isEmpty();
+        return back.size() > 1;
     }
 
     public void display() {
@@ -184,18 +184,6 @@ public class Universal {
 
     public Spa getApplication() {
         return application;
-    }
-
-    public BiConsumer<Context, JsonNode> getDisplay() {
-        return display;
-    }
-
-    public String getFrame() {
-        return frame;
-    }
-
-    public Consumer<Universal> getLauncher() {
-        return launcher;
     }
 
     public void navigate(JsonNode node, Relation relation) {
@@ -285,6 +273,7 @@ public class Universal {
 
         Page target = application.route(route.getPath());
         String frame = workspace;
+        boolean meta = route.isMeta();
         if (target.getFrame() != null) {
             frame = target.getFrame();
         } else if (route.getFrameBy() != null) {
@@ -295,7 +284,7 @@ public class Universal {
             }
             frame = routedFrame.asText();
         }
-        return new Context(route.isMeta(), frame, target, variables);
+        return new Context(meta, frame, target, variables);
     }
 
     private void push(Context pageContext) throws QueryException {

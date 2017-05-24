@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBigDecimal;
 import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLFloat;
@@ -62,12 +62,12 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
-import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmInitializer;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
@@ -678,7 +678,7 @@ public class FacetFields extends Phantasmagoria {
                 type = GraphQLString;
                 break;
             case JSON:
-                type = WorkspsacScalarTypes.GraphQLJson;
+                type = WorkspaceScalarTypes.GraphQLJson;
         }
         return attribute.getIndexed() ? new GraphQLList(type) : type;
     }
@@ -815,7 +815,7 @@ public class FacetFields extends Phantasmagoria {
                     builder.type(GraphQLInt);
                     break;
                 case JSON:
-                    builder.type(WorkspsacScalarTypes.GraphQLJson);
+                    builder.type(WorkspaceScalarTypes.GraphQLJson);
                     break;
                 case Numeric:
                     builder.type(GraphQLBigDecimal);

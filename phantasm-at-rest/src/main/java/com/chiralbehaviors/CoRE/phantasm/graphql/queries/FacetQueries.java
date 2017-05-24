@@ -1,7 +1,7 @@
 /**
- * Copyright (c) 2017 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -18,20 +18,30 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.universal;
+package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
 
-import static org.junit.Assert.assertNotNull;
+import java.util.List;
+import java.util.UUID;
 
-import org.junit.Test;
+import javax.validation.constraints.NotNull;
+
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Facet;
+
+import graphql.annotations.GraphQLField;
+import graphql.annotations.GraphQLName;
+import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author halhildebrand
+ * @author hhildebrand
  *
  */
-public class TestSpaDsl {
-    @Test
-    public void testParse() throws Exception {
-        Spa constructedSpa = Spa.manifest("/test.app");
-        assertNotNull(constructedSpa.route("launch"));
-    }
+public interface FacetQueries {
+
+    @GraphQLField
+    Facet facet(@NotNull @GraphQLName("id") UUID id,
+                DataFetchingEnvironment env);
+
+    @GraphQLField
+    List<Facet> facets(@GraphQLName("ids") List<UUID> ids,
+                       DataFetchingEnvironment env);
 }

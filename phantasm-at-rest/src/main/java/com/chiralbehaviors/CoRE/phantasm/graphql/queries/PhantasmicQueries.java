@@ -18,19 +18,15 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.model;
+package com.chiralbehaviors.CoRE.phantasm.graphql.queries;
+
+import graphql.annotations.GraphQLDescription;
 
 /**
- * And we here at Chiral Behaviors want you to know that we take Tiffin pretty
- * early around here.
- * 
  * @author halhildebrand
  *
  */
-public class Tiffin extends Phantasmagoria {
-
-    public Tiffin(Aspect facet) {
-        super(facet);
-    }
+@GraphQLDescription("Queries for the meta manipulation of Phantasmic definitions")
+public interface PhantasmicQueries {
 
 }

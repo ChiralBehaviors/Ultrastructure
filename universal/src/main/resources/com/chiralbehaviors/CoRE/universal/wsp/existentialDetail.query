@@ -1,0 +1,13 @@
+query($id:ID!) {
+  existential(id: $id) {
+    id
+    name
+    domain
+    description
+    version 
+    workspace {
+      id
+      name
+    }
+  }
+}

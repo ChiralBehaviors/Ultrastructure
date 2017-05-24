@@ -1,0 +1,43 @@
+query($id:ID!) {
+  facet(id: $id) {
+    id
+    name
+    notes
+    classifier {
+      id
+      name
+      description
+    }
+    classification {
+      id
+      name
+      description
+    }
+    attributes {
+      id
+      notes
+      authorizedAttribute {
+        id
+        name
+        description
+      }
+    }
+    children {
+      name 
+      notes
+      cardinality
+      parent {
+        id
+        name
+      }
+      relationship {
+        id
+        name
+      }
+      child {
+        id
+        name
+      }
+    }
+  }
+}

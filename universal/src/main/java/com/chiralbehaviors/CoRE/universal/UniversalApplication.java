@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.ws.rs.client.ClientBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,22 +109,13 @@ public class UniversalApplication extends Application implements LayoutModel {
         VBox vbox = new VBox(locationBar(), anchor);
         primaryStage.setScene(new Scene(vbox, 800, 600));
         if (universal == null) {
-            String endpoint = getParameters().getNamed()
-                                             .get("endpoint");
-            if (endpoint == null) {
-                log.error("No universal endpoint defined");
-                throw new IllegalStateException("No universal endpoint defined");
+            String spaFile = getParameters().getNamed()
+                                            .get("spa");
+            if (spaFile != null) {
+                initialize(spaFile);
+            } else {
+                initialize();
             }
-
-            String frame = getParameters().getNamed()
-                                          .get("frame");
-            if (frame == null) {
-                log.info("No frame defined, using single page app workspace frame");
-                frame = Universal.SPA_WSP;
-            }
-            setUniversal(new Universal(frame, getParameters().getNamed()
-                                                             .get("app"),
-                                       new URI(endpoint)));
         }
         universal.places();
         universal.display();
@@ -164,6 +157,44 @@ public class UniversalApplication extends Application implements LayoutModel {
 
     private void forward() {
         universal.forward();
+    }
+
+    private void initialize() throws URISyntaxException {
+        String endpoint = getParameters().getNamed()
+                                         .get("endpoint");
+        if (endpoint == null) {
+            log.error("No universal endpoint defined");
+            throw new IllegalStateException("No universal endpoint defined");
+        }
+
+        String frame = getParameters().getNamed()
+                                      .get("frame");
+        if (frame == null) {
+            log.info("No frame defined, using single page app workspace frame");
+            frame = Universal.SPA_WSP;
+        }
+        setUniversal(new Universal(frame, getParameters().getNamed()
+                                                         .get("app"),
+                                   new URI(endpoint)));
+    }
+
+    private void initialize(String spaFile) throws IOException {
+        String endpoint = getParameters().getNamed()
+                                         .get("endpoint");
+        if (endpoint == null) {
+            log.error("No universal endpoint defined");
+            throw new IllegalStateException("No universal endpoint defined");
+        }
+
+        String frame = getParameters().getNamed()
+                                      .get("frame");
+        if (frame == null) {
+            log.info("No frame defined, using single page app workspace frame");
+            frame = Universal.SPA_WSP;
+        }
+        setUniversal(new Universal(frame, Spa.manifest(spaFile),
+                                   ClientBuilder.newClient()
+                                                .target(endpoint)));
     }
 
     private void launch(Universal unitard) {

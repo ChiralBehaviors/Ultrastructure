@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -32,21 +33,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Action {
     private ObjectNode extract;
     private String     frameBy;
+    private boolean    meta;
     private String     query;
 
     public Action() {
-        extract = JsonNodeFactory.instance.objectNode();
     }
 
     public Action(ObjectNode action) {
         this(textOrNull(action.get("query")), textOrNull(action.get("frameBy")),
+             ((BooleanNode) action.get("meta") == null ? JsonNodeFactory.instance.booleanNode(false)
+                                                       : action.get("meta")).asBoolean(),
              (ObjectNode) action.get("extract"));
     }
 
-    public Action(String query, String frameBy, ObjectNode extract) {
+    public Action(String query, String frameBy, boolean meta,
+                  ObjectNode extract) {
         this.query = query;
         this.frameBy = frameBy;
         this.extract = extract;
+        this.meta = meta;
     }
 
     public ObjectNode getExtract() {
@@ -61,6 +66,10 @@ public class Action {
         return query;
     }
 
+    public boolean isMeta() {
+        return meta;
+    }
+
     public void setExtract(ObjectNode extract) {
         this.extract = extract;
     }
@@ -69,13 +78,17 @@ public class Action {
         this.frameBy = frameBy;
     }
 
+    public void setMeta(boolean meta) {
+        this.meta = meta;
+    }
+
     public void setQuery(String query) {
         this.query = query;
     }
 
     @Override
     public String toString() {
-        return String.format("Action [extract=%s, frameBy=%s]",
-                             extract, frameBy);
+        return String.format("Action [extract=%s, frameBy=%s]", extract,
+                             frameBy);
     }
 }

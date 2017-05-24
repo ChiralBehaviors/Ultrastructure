@@ -1,0 +1,16 @@
+query($id:ID!) {
+  relationship(id: $id) {
+    id
+    name
+    description
+    version
+    inverse {
+      id
+      name
+    }
+    workspace {
+      id
+      name
+    }
+  }
+}

@@ -1,0 +1,15 @@
+query($id:ID!) {
+  attribute(id: $id) {
+    id
+    name
+    description
+    version
+    valueType
+    indexed
+    keyed
+    workspace {
+      id
+      name
+    }
+  }
+}

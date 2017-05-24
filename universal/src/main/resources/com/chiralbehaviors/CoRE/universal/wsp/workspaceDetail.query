@@ -6,33 +6,41 @@
   agencies {
     id
     name
+    description
   }
   attributes {
     id
     name
+    description
   }
   intervals {
     id
     name
+    description
   }
   locations {
     id
     name
+    description
   }
   products {
     id
     name
+    description
   }
   relationships {
     id
     name
+    description
   }
   statusCodes {
     id
     name
+    description
   }
   units {
     id
     name
+    description
   }
 }

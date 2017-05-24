@@ -63,9 +63,9 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.MetaContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
@@ -342,6 +342,12 @@ public class WorkspaceResource extends TransactionalResource {
                 } catch (IllegalArgumentException e) {
                     throw new WebApplicationException(String.format("Workspace not found [%s] %s",
                                                                     id,
+                                                                    workspace),
+                                                      Status.NOT_FOUND);
+                }
+                if (scoped == null) { 
+                    throw new WebApplicationException(String.format("Workspace not found [%s] %s",
+                                                                    uuid,
                                                                     workspace),
                                                       Status.NOT_FOUND);
                 }

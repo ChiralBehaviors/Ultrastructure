@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLTimestamp;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspsacScalarTypes.GraphQLUuid;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLTimestamp;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
@@ -56,14 +56,16 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
-import com.chiralbehaviors.CoRE.phantasm.graphql.context.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.CoreUserAdmin;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
+import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.FacetMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.JobMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.CurrentUser;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.FacetQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobChronologyQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
+import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
@@ -98,6 +100,14 @@ public class WorkspaceSchema {
 
     public interface Queries extends ExistentialQueries, JobQueries,
             JobChronologyQueries, CurrentUser {
+    }
+
+    public static interface MetaMutations
+            extends ExistentialMutations, FacetMutations {
+    }
+
+    public static interface MetaQueries
+            extends ExistentialQueries, WorkspaceQueries, FacetQueries {
     }
 
     public static final String EDGE = "_Edge";
@@ -177,8 +187,8 @@ public class WorkspaceSchema {
         PhantasmProcessor processor = new PhantasmProcessor();
         registerBaseTypes(Collections.emptyMap(), processor);
 
-        GraphQLObjectType.Builder query = processor.getObjectBuilder(MetaContext.MetaQueries.class);
-        GraphQLObjectType.Builder mutation = processor.getObjectBuilder(MetaContext.MetaMutations.class);
+        GraphQLObjectType.Builder query = processor.getObjectBuilder(MetaQueries.class);
+        GraphQLObjectType.Builder mutation = processor.getObjectBuilder(MetaMutations.class);
         JooqSchema jooqSchema = JooqSchema.meta(processor);
         jooqSchema.contributeTo(query, mutation, processor);
         return GraphQLSchema.newSchema()

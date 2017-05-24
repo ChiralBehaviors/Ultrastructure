@@ -414,7 +414,12 @@ public class MetaSchemaTest extends AbstractModelTest {
                        variables);
         assertNotNull(data);
 
-        data = execute("{ facets { id name  classifier {id} classification {id} authority { id } }}",
+        data = execute("{ facets { id name  classifier {id} classification {id} authority { id } attributes { id } children { id } }}",
+                       variables);
+        assertNotNull(data);
+        variables.put("ids",
+                      ids(data.withArray("facets")));
+        data = execute("query q($ids: [ID]!) { facets(ids: $ids) { id name  classifier {id} classification {id} authority { id } attributes { id } children { id } }}",
                        variables);
         assertNotNull(data);
 

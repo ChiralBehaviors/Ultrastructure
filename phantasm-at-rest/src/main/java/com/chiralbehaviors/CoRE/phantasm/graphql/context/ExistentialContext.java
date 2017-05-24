@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.ctx;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -243,7 +243,7 @@ public class ExistentialContext extends PhantasmContext
 
     @Override
     public Existential existential(UUID id, DataFetchingEnvironment env) {
-        return resolve(env, id);
+        return new ExistentialCommon(resolve(env, id));
     }
 
     @Override

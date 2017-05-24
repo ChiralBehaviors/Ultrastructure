@@ -130,7 +130,7 @@ public interface Existential extends Phantasm {
         }
     }
 
-    public abstract class ExistentialCommon implements Existential {
+    public class ExistentialCommon implements Existential {
         protected final ExistentialRecord record;
 
         public ExistentialCommon(ExistentialRecord record) {

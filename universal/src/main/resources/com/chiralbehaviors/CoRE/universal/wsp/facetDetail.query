@@ -1,46 +1,43 @@
-{
-  facets {
+query($id:ID!) {
+  facet(id: $id) {
     id
     name
-  }
-  agencies {
-    id
-    name
-    description
-  }
-  attributes {
-    id
-    name
-    description
-  }
-  intervals {
-    id
-    name
-    description
-  }
-  locations {
-    id
-    name
-    description
-  }
-  products {
-    id
-    name
-    description
-  }
-  relationships {
-    id
-    name
-    description
-  }
-  statusCodes {
-    id
-    name
-    description
-  }
-  units {
-    id
-    name
-    description
+    notes
+    classifier {
+      id
+      name
+      description
+    }
+    classification {
+      id
+      name
+      description
+    }
+    attributes {
+      id
+      notes
+      authorizedAttribute {
+        id
+        name
+        description
+      }
+    }
+    children {
+      name 
+      notes
+      cardinality
+      parent {
+        id
+        name
+      }
+      relationship {
+        id
+        name
+      }
+      child {
+        id
+        name
+      }
+    }
   }
 }

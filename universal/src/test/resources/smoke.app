@@ -29,6 +29,38 @@ spa {
         facets {
             navigate: facet meta {id:/id}
         }
+        
+        agencies {
+            navigate: agency meta {id:/id}
+        }
+        
+        attributes {
+            navigate: attribute meta {id:/id}
+        }
+        
+        intervals {
+            navigate: interval meta {id:/id}
+        }
+        
+        locations {
+            navigate: location meta {id:/id}
+        }
+        
+        products {
+            navigate: product meta {id:/id}
+        }
+        
+        relationships {
+            navigate: relationship meta {id:/id}
+        }
+        
+        statusCodes {
+            navigate: statusCode meta {id:/id}
+        }
+        
+        units {
+            navigate: unit meta {id:/id}
+        }
     }
     
     facet {
@@ -36,5 +68,96 @@ spa {
         description: "Detail for a facet"
         title: "Ye facet detail"
         query: 'wsp/facetDetail.query'
+        
+        authorizedAttribute {
+            navigate: attribute meta {id:/id}
+        }
+        
+        classifier {
+            navigate: relationship meta {id:/id}
+        }
+        
+        classification {
+            navigate: existential meta {id:/id}
+        }
+        
+        parent {
+            navigate: facet meta {id:/id}
+        }
+        
+        relationship {
+            navigate: relationship meta {id:/id}
+        }
+        
+        child {
+            navigate: facet meta {id:/id}
+        }
+    }
+        
+    agency {
+        name: "Agency Detail"
+        description: "Detail for agency"
+        title: "Ye agency detail"
+        query: 'wsp/agencyDetail.query'
+    }
+        
+    attribute {
+        name: "Attribute Detail"
+        description: "Detail for attribute"
+        title: "Ye attribute detail"
+        query: 'wsp/attributeDetail.query'
+    }
+        
+    interval {
+        name: "Interval Detail"
+        description: "Detail for interval"
+        title: "Ye interval detail"
+        query: 'wsp/intervalDetail.query'
+    }
+        
+    location {
+        name: "Location Detail"
+        description: "Detail for location"
+        title: "Ye location detail"
+        query: 'wsp/locationDetail.query'
+    }
+        
+    product {
+        name: "Product Detail"
+        description: "Detail for product"
+        title: "Ye product detail"
+        query: 'wsp/productDetail.query'
+    }
+        
+    relationship {
+        name: "Relationship Detail"
+        description: "Detail for relationship"
+        title: "Ye relationship detail"
+        query: 'wsp/relationshipDetail.query'
+        
+        inverse {
+            navigate: relationship meta {id:/id}
+        }
+    }
+        
+    statusCode {
+        name: "Status Code Detail"
+        description: "Detail for status codes"
+        title: "Ye status code detail"
+        query: 'wsp/statusCodeDetail.query'
+    }
+        
+    unit {
+        name: "Unit Detail"
+        description: "Detail for unit"
+        title: "Ye unit detail"
+        query: 'wsp/unitDetail.query'
+    }
+        
+    existential {
+        name: "Existential Detail"
+        description: "Detail for existential"
+        title: "Ye existential detail"
+        query: 'wsp/existentialDetail.query'
     }
 }

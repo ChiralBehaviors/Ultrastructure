@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
@@ -59,6 +60,10 @@ public interface ExistentialQueries {
     @GraphQLField
     List<Attribute> attributes(@GraphQLName("ids") List<UUID> ids,
                                DataFetchingEnvironment env);
+
+    @GraphQLField
+    Existential existential(@NotNull @GraphQLName("id") UUID id,
+                            DataFetchingEnvironment env);
 
     @GraphQLField
     Interval interval(@NotNull @GraphQLName("id") UUID id,

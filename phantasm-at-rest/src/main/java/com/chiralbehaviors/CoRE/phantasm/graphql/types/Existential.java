@@ -432,6 +432,7 @@ public interface Existential extends Phantasm {
     @GraphQLField
     String getDescription();
 
+    @GraphQLField
     ExistentialDomain getDomain();
 
     @GraphQLField

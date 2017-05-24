@@ -1,0 +1,12 @@
+query($id:ID!) {
+  unit(id: $id) {
+    id
+    name
+    description
+    version 
+    workspace {
+      id
+      name
+    }
+  }
+}

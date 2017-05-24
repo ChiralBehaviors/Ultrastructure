@@ -203,6 +203,10 @@ public class MetaSchemaTest extends AbstractModelTest {
         data = execute("query q($id: ID!) { agency(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
+        
+        data = execute("query q($id: ID!) { existential(id: $id) { id name description } }",
+                       variables);
+        assertNotNull(data);
 
         data = execute("{ attributes { id name description keyed indexed valueType } }",
                        variables);

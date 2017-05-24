@@ -1,0 +1,15 @@
+query($id:ID!) {
+  statusCode(id: $id) {
+    id
+    name
+    description
+    version
+    failParent
+    propagateChildren
+    workspace {
+      id
+      name
+    }
+  }
+}
+

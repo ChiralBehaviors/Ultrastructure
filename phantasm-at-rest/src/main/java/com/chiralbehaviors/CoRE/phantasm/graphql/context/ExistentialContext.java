@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.graphql.mutations.ExistentialMutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
@@ -62,9 +63,70 @@ import graphql.schema.DataFetchingEnvironment;
  */
 public class ExistentialContext extends PhantasmContext
         implements ExistentialQueries, ExistentialMutations {
+    static List<ExistentialRecord> resolved(DataFetchingEnvironment env,
+                                            ExistentialDomain domain) {
+        Model model = WorkspaceSchema.ctx(env);
+        return model.create()
+                    .selectFrom(Tables.EXISTENTIAL)
+                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
+                                                                          .getId()))
+                    .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                    .fetch()
+                    .into(ExistentialRecord.class)
+                    .stream()
+                    .filter(r -> model.checkRead(r))
+                    .collect(Collectors.toList());
+    }
+
     public ExistentialContext(Model model,
                               com.chiralbehaviors.CoRE.domain.Product workspace) {
         super(model, workspace);
+    }
+
+    @Override
+    public List<Agency> agencies(@GraphQLName("ids") List<UUID> ids,
+                                 DataFetchingEnvironment env) {
+        if (ids == null) {
+            return resolved(env, ExistentialDomain.Agency).stream()
+                                                          .map(r -> new Agency(r))
+                                                          .collect(Collectors.toList());
+        }
+        Model model = WorkspaceSchema.ctx(env);
+        return ids.stream()
+                  .map(s -> s)
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Agency((ExistentialRecord) r))
+                  .collect(Collectors.toList());
+    }
+
+    @Override
+    public Agency agency(UUID id, DataFetchingEnvironment env) {
+        ExistentialRecord resolved = resolve(env, id);
+        return ctx(env).checkRead(resolved) ? new Agency(resolved) : null;
+    }
+
+    @Override
+    public Attribute attribute(UUID id, DataFetchingEnvironment env) {
+        ExistentialRecord resolved = resolve(env, id);
+        return ctx(env).checkRead(resolved) ? new Attribute(resolved) : null;
+    }
+
+    @Override
+    public List<Attribute> attributes(@GraphQLName("ids") List<UUID> ids,
+                                      DataFetchingEnvironment env) {
+        if (ids == null) {
+            return resolved(env, ExistentialDomain.Attribute).stream()
+                                                             .map(r -> new Attribute(r))
+                                                             .collect(Collectors.toList());
+        }
+        Model model = ctx(env);
+        return ids.stream()
+                  .map(s -> s)
+                  .map(id -> resolve(env, id))
+                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
+                  .map(r -> new Attribute((ExistentialRecord) r))
+                  .collect(Collectors.toList());
     }
 
     @Override
@@ -180,184 +242,8 @@ public class ExistentialContext extends PhantasmContext
     }
 
     @Override
-    public Boolean removeAgency(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeAttribute(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeInterval(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeLocation(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeProduct(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeRelationship(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeStatusCode(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Boolean removeUnit(UUID id, DataFetchingEnvironment env) {
-        resolve(env, id).delete();
-        return true;
-    }
-
-    @Override
-    public Agency updateAgency(ExistentialUpdateState state,
-                               DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Agency(record);
-    }
-
-    @Override
-    public Attribute updateAttribute(AttributeUpdateState state,
-                                     DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Attribute(record);
-    }
-
-    @Override
-    public Interval updateInterval(ExistentialUpdateState state,
-                                   DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Interval(record);
-    }
-
-    @Override
-    public Location updateLocation(ExistentialUpdateState state,
-                                   DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Location(record);
-    }
-
-    @Override
-    public Product updateProduct(ExistentialUpdateState state,
-                                 DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Product(record);
-    }
-
-    @Override
-    public Relationship updateRelationship(RelationshipUpdateState state,
-                                           DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Relationship(record);
-    }
-
-    @Override
-    public StatusCode updateStatusCode(StatusCodeUpdateState state,
-                                       DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new StatusCode(record);
-    }
-
-    @Override
-    public Unit updateUnit(ExistentialUpdateState state,
-                           DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Unit(record);
-    }
-
-    static List<ExistentialRecord> resolved(DataFetchingEnvironment env,
-                                            ExistentialDomain domain) {
-        Model model = WorkspaceSchema.ctx(env);
-        return model.create()
-                    .selectFrom(Tables.EXISTENTIAL)
-                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
-                                                                          .getId()))
-                    .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
-                    .fetch()
-                    .into(ExistentialRecord.class)
-                    .stream()
-                    .filter(r -> model.checkRead(r))
-                    .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Agency> agencies(@GraphQLName("ids") List<UUID> ids,
-                                 DataFetchingEnvironment env) {
-        if (ids == null) {
-            return resolved(env, ExistentialDomain.Agency).stream()
-                                                          .map(r -> new Agency(r))
-                                                          .collect(Collectors.toList());
-        }
-        Model model = WorkspaceSchema.ctx(env);
-        return ids.stream()
-                  .map(s -> s)
-                  .map(id -> resolve(env, id))
-                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
-                  .map(r -> new Agency((ExistentialRecord) r))
-                  .collect(Collectors.toList());
-    }
-
-    @Override
-    public Agency agency(UUID id, DataFetchingEnvironment env) {
-        ExistentialRecord resolved = resolve(env, id);
-        return ctx(env).checkRead(resolved) ? new Agency(resolved) : null;
-    }
-
-    @Override
-    public Attribute attribute(UUID id, DataFetchingEnvironment env) {
-        ExistentialRecord resolved = resolve(env, id);
-        return ctx(env).checkRead(resolved) ? new Attribute(resolved) : null;
-    }
-
-    @Override
-    public List<Attribute> attributes(@GraphQLName("ids") List<UUID> ids,
-                                      DataFetchingEnvironment env) {
-        if (ids == null) {
-            return resolved(env, ExistentialDomain.Attribute).stream()
-                                                             .map(r -> new Attribute(r))
-                                                             .collect(Collectors.toList());
-        }
-        Model model = ctx(env);
-        return ids.stream()
-                  .map(s -> s)
-                  .map(id -> resolve(env, id))
-                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
-                  .map(r -> new Attribute((ExistentialRecord) r))
-                  .collect(Collectors.toList());
+    public Existential existential(UUID id, DataFetchingEnvironment env) {
+        return resolve(env, id);
     }
 
     @Override
@@ -453,6 +339,54 @@ public class ExistentialContext extends PhantasmContext
     }
 
     @Override
+    public Boolean removeAgency(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeAttribute(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeInterval(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeLocation(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeProduct(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeRelationship(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeStatusCode(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
+    public Boolean removeUnit(UUID id, DataFetchingEnvironment env) {
+        resolve(env, id).delete();
+        return true;
+    }
+
+    @Override
     public StatusCode statusCode(UUID id, DataFetchingEnvironment env) {
         ExistentialRecord resolved = resolve(env, id);
         return ctx(env).checkRead(resolved) ? new StatusCode(resolved) : null;
@@ -496,5 +430,77 @@ public class ExistentialContext extends PhantasmContext
                   .filter(r -> model.checkRead((UpdatableRecord<?>) r))
                   .map(r -> new Unit((ExistentialRecord) r))
                   .collect(Collectors.toList());
+    }
+
+    @Override
+    public Agency updateAgency(ExistentialUpdateState state,
+                               DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Agency(record);
+    }
+
+    @Override
+    public Attribute updateAttribute(AttributeUpdateState state,
+                                     DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Attribute(record);
+    }
+
+    @Override
+    public Interval updateInterval(ExistentialUpdateState state,
+                                   DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Interval(record);
+    }
+
+    @Override
+    public Location updateLocation(ExistentialUpdateState state,
+                                   DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Location(record);
+    }
+
+    @Override
+    public Product updateProduct(ExistentialUpdateState state,
+                                 DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Product(record);
+    }
+
+    @Override
+    public Relationship updateRelationship(RelationshipUpdateState state,
+                                           DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Relationship(record);
+    }
+
+    @Override
+    public StatusCode updateStatusCode(StatusCodeUpdateState state,
+                                       DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new StatusCode(record);
+    }
+
+    @Override
+    public Unit updateUnit(ExistentialUpdateState state,
+                           DataFetchingEnvironment env) {
+        ExistentialRecord record = resolve(env, state.getId());
+        state.update(record);
+        record.update();
+        return new Unit(record);
     }
 }

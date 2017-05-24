@@ -1,0 +1,12 @@
+query($id:ID!) {
+  location(id: $id) {
+    id
+    name
+    description
+    version 
+    workspace {
+      id
+      name
+    }
+  }
+}

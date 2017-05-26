@@ -9,8 +9,9 @@ imports {
 attributes {
     name = 'Name' 'The name of something' text;
     meta = 'Meta' 'If true, indicates the meta workspace frame' bool;
+    style = 'Style' 'Style configuration' json;
     description = 'Description' 'The description' text;
-    label = 'Label' 'The labe of something' text;
+    label = 'Label' 'The label of something' text;
     relation = 'Relation' 'The name of a relation' text;
     route = 'Route' 'The named route' text;
     path = 'Path' 'The named path' text;
@@ -73,7 +74,7 @@ products {
                 n hasPage: IsA.Page { route }
             }
 
-		IsA.Page { name description query title }
+		IsA.Page { name description query title style }
             constraints {
                 one pageOf: IsA.SinglePageApp
                 one frame: IsA.Workspace named by relationship 

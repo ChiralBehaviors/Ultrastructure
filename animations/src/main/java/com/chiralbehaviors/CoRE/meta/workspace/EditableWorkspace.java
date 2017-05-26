@@ -87,24 +87,9 @@ public interface EditableWorkspace extends WorkspaceAccessor {
 
     void put(String key, ChildSequencingAuthorizationRecord ruleform);
 
-    void put(String key, ExistentialAttributeAuthorizationRecord ruleform);
-
-    void put(String key, ExistentialAttributeRecord ruleform);
-
-    void put(String key,
-             ExistentialNetworkAttributeAuthorizationRecord ruleform);
-
-    void put(String key, ExistentialNetworkAttributeRecord ruleform);
-
-    void put(String key, ExistentialNetworkAuthorizationRecord ruleform);
-
-    void put(String key, ExistentialNetworkRecord ruleform);
-
     void put(String key, ExistentialRecord ruleform);
 
     void put(String key, FacetRecord ruleform);
-
-    void put(String key, JobChronologyRecord ruleform);
 
     void put(String key, JobRecord ruleform);
 

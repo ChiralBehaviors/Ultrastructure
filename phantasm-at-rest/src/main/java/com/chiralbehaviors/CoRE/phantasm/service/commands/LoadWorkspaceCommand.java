@@ -20,11 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -43,20 +45,23 @@ public class LoadWorkspaceCommand extends Command {
 
     public static void loadWorkspaces(List<String> list,
                                       DSLContext create) throws Exception {
-        create.transaction(c -> WorkspaceSnapshot.load(DSL.using(c),
-                                                       list.stream()
-                                                           .map(file -> {
-                                                               try {
-                                                                   return Utils.resolveResourceURL(LoadWorkspaceCommand.class,
-                                                                                                   file);
-                                                               } catch (Exception e) {
-                                                                   throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                                    file),
-                                                                                                      e);
-                                                               }
-                                                           })
-                                                           .filter(n -> n != null)
-                                                           .collect(Collectors.toList())));
+        List<URL> resources = list.stream()
+                                  .map(file -> {
+                                      try {
+                                          return Utils.resolveResourceURL(LoadWorkspaceCommand.class,
+                                                                          file);
+                                      } catch (Exception e) {
+                                          LoggerFactory.getLogger(LoadWorkspaceCommand.class)
+                                                       .warn("Cannot resolve URL for {}",
+                                                             file);
+                                          return null;
+                                      }
+                                  })
+                                  .filter(n -> n != null)
+                                  .collect(Collectors.toList());
+        create.transaction(c -> {
+            WorkspaceSnapshot.load(DSL.using(c), resources);
+        });
     }
 
     public LoadWorkspaceCommand() {

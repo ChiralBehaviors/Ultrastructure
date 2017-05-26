@@ -103,7 +103,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(ExistentialAttributeAuthorizationRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -111,7 +112,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(ExistentialAttributeRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -119,7 +121,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -127,7 +130,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(ExistentialNetworkAttributeRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -135,7 +139,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(ExistentialNetworkAuthorizationRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -143,7 +148,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(ExistentialNetworkRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -167,7 +173,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(JobChronologyRecord ruleform) {
-        put(null, ruleform);
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
     }
 
     /* (non-Javadoc)
@@ -445,97 +452,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         ruleform.update();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
-     */
-    @Override
-    public void put(String key,
-                    ExistentialAttributeAuthorizationRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
-    @Override
-    public void put(String key, ExistentialAttributeRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
-     */
-    @Override
-    public void put(String key,
-                    ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
-     */
-    @Override
-    public void put(String key, ExistentialNetworkAttributeRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    @Override
-    public void put(String key,
-                    ExistentialNetworkAuthorizationRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
-     */
-    @Override
-    public void put(String key, ExistentialNetworkRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
     @Override
     public void put(String key, ExistentialRecord ruleform) {
         if (key != null) {
@@ -553,21 +469,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void put(String key, FacetRecord ruleform) {
-        if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
-        }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord)
-     */
-    @Override
-    public void put(String key, JobChronologyRecord ruleform) {
         if (key != null) {
             cache.put(key, ruleform);
             model.records()

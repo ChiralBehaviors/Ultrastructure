@@ -84,9 +84,16 @@ public class PhantasmDefinition extends Phantasmagoria {
                                                           uuid,
                                                           facet.workspace()));
         }
-        return new Aspect(model.create(), model.getPhantasmModel()
-                                               .getFacetDeclaration(classifier,
-                                                                    classification));
+        FacetRecord facetDeclaration = model.getPhantasmModel()
+                                            .getFacetDeclaration(classifier,
+                                                                 classification);
+        if (facetDeclaration == null) {
+            throw new IllegalArgumentException(String.format("%s not found in workspace %s | %s",
+                                                             facet.classification(),
+                                                             uuid,
+                                                             facet.workspace()));
+        }
+        return new Aspect(model.create(), facetDeclaration);
     }
 
     public static String factString(Model model, FacetRecord aspect) {

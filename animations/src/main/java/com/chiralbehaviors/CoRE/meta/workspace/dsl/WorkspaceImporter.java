@@ -198,7 +198,9 @@ public class WorkspaceImporter {
                                                           version));
         }
 
-        return load(definingProduct);
+        WorkspaceAccessor loaded = load(definingProduct);
+        existing.setVersion(version);
+        return loaded;
     }
 
     private Cardinality cardinality(ConstraintContext constraint) {
@@ -283,11 +285,11 @@ public class WorkspaceImporter {
 
         Product definingProduct = createWorkspaceProduct();
 
-        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-
         scope = model.getWorkspaceModel()
                      .createWorkspace(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
+
+        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
         phantasm.setIRI(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
         loadWorkspace();
         return workspace;
@@ -407,20 +409,23 @@ public class WorkspaceImporter {
 
     private void loadAttributes() {
         for (AttributeRuleformContext ruleform : wsp.getAttributes()) {
-            Attribute attr = model.records()
-                                  .newAttribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
-                                                ruleform.existentialRuleform().description == null ? null
-                                                                                                   : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
-            setValueType(attr, ruleform.valueType);
-            attr.setIndexed(ruleform.indexed == null ? false
-                                                     : ruleform.indexed.getText()
-                                                                       .equals("true"));
-            attr.setKeyed(ruleform.keyed == null ? false
-                                                 : ruleform.keyed.getText()
-                                                                 .equals("true"));
-            attr.insert();
-            workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
-                          attr);
+            String key = ruleform.existentialRuleform().workspaceName.getText();
+            Attribute attr = workspace.get(key);
+            if (attr == null) {
+                attr = model.records()
+                            .newAttribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
+                                          ruleform.existentialRuleform().description == null ? null
+                                                                                             : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
+                setValueType(attr, ruleform.valueType);
+                attr.setIndexed(ruleform.indexed == null ? false
+                                                         : ruleform.indexed.getText()
+                                                                           .equals("true"));
+                attr.setKeyed(ruleform.keyed == null ? false
+                                                     : ruleform.keyed.getText()
+                                                                     .equals("true"));
+                attr.insert();
+                workspace.put(key, attr);
+            }
             setAttributes(ruleform.attributeValue(), attr.getId());
         }
     }

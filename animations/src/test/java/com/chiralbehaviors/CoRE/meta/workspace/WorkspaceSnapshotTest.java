@@ -117,7 +117,9 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
-            assertEquals(7, delta.getRecords()
+            assertEquals(9, delta.getInserts()
+                                 .size());
+            assertEquals(3, delta.getUpdates()
                                  .size());
 
             assertNull(myModel.getWorkspaceModel()
@@ -162,7 +164,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         try {
             assertNull(model.wrap(Thing1.class, thing1.getRuleform()));
             fail("Thing ontology not unloaded");
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             // expected
         }
     }

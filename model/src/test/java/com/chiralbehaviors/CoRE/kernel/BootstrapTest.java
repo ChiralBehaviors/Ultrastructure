@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
@@ -31,7 +33,10 @@ import com.chiralbehaviors.CoRE.test.DatabaseTest;
 public class BootstrapTest extends DatabaseTest {
     @Test
     public void testBootstrap() throws Exception {
-        Bootstrap.boostrap("target/bootstrap-out.json", new Bootstrap(create));
+        Bootstrap.boostrap("target/bootstrap-out.json", new Bootstrap(create){
+            @Override
+            protected void serialize(String fileName) throws IOException { 
+            }});
         create.configuration()
               .connectionProvider()
               .acquire()

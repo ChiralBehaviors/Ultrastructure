@@ -22,8 +22,6 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -46,13 +44,12 @@ import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
  *
  */
-public class Bootstrap {
+abstract public class Bootstrap {
 
     public static void boostrap(String outputFile,
                                 Bootstrap bootstrap) throws SQLException,
@@ -131,7 +128,7 @@ public class Bootstrap {
      * @param wko
      * @return the {@link Product} corresponding to the well known object
      */
-    private Product find(WellKnownProduct wko) {
+    protected Product find(WellKnownProduct wko) {
         return records.resolve(wko.id());
     }
 
@@ -287,7 +284,9 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("SameAttribute", WellKnownAttribute.SAME, kernelWorkspace);
         populate("Nullable", WellKnownAttribute.NULLABLE, kernelWorkspace);
-
+        populate("Name", WellKnownAttribute.NAME, kernelWorkspace);
+        populate("Description", WellKnownAttribute.DESCRIPTION, kernelWorkspace);
+        populate("Version", WellKnownAttribute.VERSION, kernelWorkspace);
     }
 
     private void populateIntervals(Agency core, Product kernelWorkspace) {
@@ -400,12 +399,5 @@ public class Bootstrap {
         populate("Days", WellKnownUnit.DAYS, kernelWorkspace);
     }
 
-    private void serialize(String fileName) throws IOException {
-        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace,
-                                                           create);
-        try (FileOutputStream os = new FileOutputStream(new File(fileName))) {
-            snapshot.serializeTo(os);
-        }
-    }
+    abstract protected void serialize(String fileName) throws IOException;
 }

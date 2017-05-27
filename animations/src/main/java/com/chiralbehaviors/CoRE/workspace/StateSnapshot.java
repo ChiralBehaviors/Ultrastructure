@@ -42,9 +42,9 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
  */
 public class StateSnapshot extends WorkspaceSnapshot {
 
-    public static List<UpdatableRecord<? extends UpdatableRecord<?>>> selectNullClosure(DSLContext create,
-                                                                                        Collection<UUID> exlude) {
-        List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
+    public static List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> selectNullClosure(DSLContext create,
+                                                                                                                   Collection<UUID> exlude) {
+        List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
                              if (t.equals(EXISTENTIAL_NETWORK)) {
@@ -76,7 +76,7 @@ public class StateSnapshot extends WorkspaceSnapshot {
     }
 
     public StateSnapshot(DSLContext create, Collection<UUID> exlude) {
-        records = selectNullClosure(create, exlude);
+        inserts = selectNullClosure(create, exlude);
     }
 
     @Override

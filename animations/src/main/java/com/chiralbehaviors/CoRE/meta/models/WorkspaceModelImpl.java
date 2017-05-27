@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.meta.models.ModelImpl.clearPhantasmCache;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,15 +112,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public List<WorkspaceLabelRecord> getWorkspace(Product definingProduct) {
-        return null;
-    }
-
-    @Override
     public void unload(Product definingProduct) {
         model.create()
-             .batchDelete(WorkspaceSnapshot.selectWorkspaceClosure(model.create(),
-                                                                   definingProduct))
+             .batchDelete(WorkspaceSnapshot.selectForDelete(model.create(),
+                                                            definingProduct))
              .execute();
+        clearPhantasmCache();
     }
 }

@@ -28,6 +28,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
@@ -61,6 +62,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
              .initialize(definingProduct, aspect, workspace);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
+        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
+        phantasm.setName(definingProduct.getName());
+        phantasm.setDescription(definingProduct.getDescription());
         return scope;
     }
 
@@ -73,14 +77,13 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceLabelRecord get(Product definingProduct,
-                                            String key) {
+    public WorkspaceLabelRecord get(Product definingProduct, String key) {
         return null;
     }
 
     @Override
     public List<WorkspaceLabelRecord> getByType(Product definingProduct,
-                                                        String type) {
+                                                String type) {
         return null;
     }
 

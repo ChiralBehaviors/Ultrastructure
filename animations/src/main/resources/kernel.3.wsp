@@ -15,24 +15,24 @@ agencies {
         LoginRole.IsA.Role
     }
     facets {
-        IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
+        IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken Name Description }
             constraints {
                 one DefaultRole: IsA.Role named by relationship
                 n HasRole: IsA.Role named role
                 one DefaultClassification: IsA.Classification named by relationship
             }
-        IsA.Role
+        IsA.Role {  Name Description }
             constraints {
                 n RoleOf: IsA.CoreUser named grant
                 n MemberOf: IsA.Role named inherit
                 n HasMember: IsA.Role named member
             }
-        IsA.Classification
+        IsA.Classification { Name Description }
             constraints { 
                 n ClassifiedBy: IsA.Classification named inherit
                 n ClassificationOf: IsA.Classification named member
             }
-        InstanceOf.Core named: 'Core Instance'
+        InstanceOf.Core {  Name Description } named: 'Core Instance'
             constraints {
                 n MayLoginBy: IsA.CoreUser named login
             }
@@ -48,14 +48,22 @@ attributes {
     PasswordRounds = 'Password Rounds' 'The number of rounds to hash the password' int;
     PasswordHash = 'Password Hash' 'The hash the password' text;
     AccessToken = 'Access Token' 'The access bearer token' indexed: true json;
+    Name = 'Name' 'A name' text;
+    Description = 'Description' 'A description' text;
+    Version = 'Version' 'Version #' int;
 }
 
 products { 
     edges {
         KernelWorkspace.IsA.Workspace
+            attribute values {
+                Name : 'Ultrastructure Kernel Workspace'
+                Description: 'The Kernel Ontology for Ultrastructure [Ain Soph Ur]' 
+                Version: '3'
+            }
     }
     facets {
-        IsA.Workspace { IRI }
+        IsA.Workspace { IRI Name Description Version default: '1' }
             constraints {
                 n Imports: IsA.Workspace named import
                     { Namespace LookupOrder } 
@@ -89,19 +97,63 @@ relationships {
     
     edges {
         APPLY.IsA.Permission
+            attribute values {
+                Name : 'Apply'
+                Description: 'The apply permission' 
+            }
         REMOVE.IsA.Permission
+            attribute values {
+                Name : 'Remove'
+                Description: 'The remove permission' 
+            }
         CREATE.IsA.Permission
+            attribute values {
+                Name : 'Create'
+                Description: 'The create permission' 
+            }
         CREATE_META.IsA.Permission
+            attribute values {
+                Name : 'Create Meta'
+                Description: 'The create meta permission' 
+            }
         READ.IsA.Permission
+            attribute values {
+                Name : 'Read'
+                Description: 'The read permission' 
+            }
         UPDATE.IsA.Permission
+            attribute values {
+                Name : 'Update'
+                Description: 'The update permission' 
+            }
         DELETE.IsA.Permission
+            attribute values {
+                Name : 'Delete'
+                Description: 'The delete permission' 
+            }
         INVOKE.IsA.Permission
+            attribute values {
+                Name : 'Invoke'
+                Description: 'The invoke permission' 
+            }
         EXECUTE_QUERY.IsA.Permission
+            attribute values {
+                Name : 'Execute Query'
+                Description: 'The execute query permission' 
+            }
         LOGIN_TO.IsA.Permission
+            attribute values {
+                Name : 'Login'
+                Description: 'The login permission' 
+            }
         UPDATE_AUTHORITY.IsA.Permission
+            attribute values {
+                Name : 'Update Authority'
+                Description: 'The update authority permission' 
+            }
     }
     facets {
-        IsA.Permission
+        IsA.Permission { Name Description }
     } 
 }
 

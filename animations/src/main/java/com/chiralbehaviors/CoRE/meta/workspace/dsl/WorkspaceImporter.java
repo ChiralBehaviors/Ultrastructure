@@ -55,6 +55,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -155,15 +156,19 @@ public class WorkspaceImporter {
      */
     public WorkspaceAccessor load(Product definingProduct) {
         definingProduct.refresh();
-        definingProduct.setName(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
-        Token description = wsp.getWorkspaceDefinition().description;
-        definingProduct.setDescription(description == null ? null
-                                                           : WorkspacePresentation.stripQuotes(description.getText()));
+        String name = WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText());
+        definingProduct.setName(name);
+        String description = wsp.getWorkspaceDefinition().description == null ? null
+                                                                              : WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().description.getText());
+        definingProduct.setDescription(description);
         definingProduct.update();
         scope = model.getWorkspaceModel()
                      .getScoped(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
         loadWorkspace();
+        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
+        phantasm.setName(name);
+        phantasm.setDescription(description);
         return workspace;
     }
 
@@ -184,13 +189,15 @@ public class WorkspaceImporter {
                                                           wsp.getWorkspaceDefinition().name.getText(),
                                                           version));
         }
-        if (definingProduct.getVersion() >= version) {
+        Workspace existing = model.wrap(Workspace.class, definingProduct);
+
+        if (existing.getVersion() >= version) {
             throw new IllegalStateException(String.format("Workspace %s is at version %s, unable to update to %s",
                                                           wsp.getWorkspaceDefinition().name.getText(),
-                                                          definingProduct.getVersion(),
+                                                          existing.getVersion(),
                                                           version));
         }
-        // definingProduct.setVersion(version);
+
         return load(definingProduct);
     }
 
@@ -266,23 +273,22 @@ public class WorkspaceImporter {
     }
 
     private WorkspaceAccessor createWorkspace() {
-        Product existing = getWorkspaceProduct();
-        if (existing != null) {
+        if (getWorkspaceProduct() != null) {
+            Workspace phantasm = model.wrap(Workspace.class,
+                                            getWorkspaceProduct());
             throw new IllegalStateException(String.format("Workspace %s already exists at version %s, not created",
-                                                          existing.getName(),
-                                                          existing.getVersion()));
+                                                          phantasm.getName(),
+                                                          phantasm.getVersion()));
         }
+
         Product definingProduct = createWorkspaceProduct();
+
+        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
+
         scope = model.getWorkspaceModel()
                      .createWorkspace(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
-        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
-                                                         .getAttributeValue(definingProduct,
-                                                                            model.getKernel()
-                                                                                 .getIRI());
-        model.getPhantasmModel()
-             .setValue(attributeValue,
-                       WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
+        phantasm.setIRI(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
         loadWorkspace();
         return workspace;
     }
@@ -293,6 +299,7 @@ public class WorkspaceImporter {
                                         .newProduct(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                     description == null ? null
                                                                         : WorkspacePresentation.stripQuotes(description.getText()));
+
         workspaceProduct.setId(uuid);
         workspaceProduct.setVersion(-1);
         workspaceProduct.insert();

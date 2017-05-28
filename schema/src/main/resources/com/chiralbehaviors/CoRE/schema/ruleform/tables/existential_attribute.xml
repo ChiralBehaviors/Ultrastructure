@@ -59,16 +59,21 @@
 			baseTableName="existential_attribute" constraintName="existential_attribute_unit_fkey"
 			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addUniqueConstraint schemaName="ruleform"
-			columnNames="existential, attribute, sequence_number" constraintName="existential_attribute_agency_key"
-			deferrable="false" disabled="false" initiallyDeferred="true"
-			tableName="existential_attribute" />
 		<addForeignKeyConstraint baseTableSchemaName="ruleform "
 			referencedTableSchemaName="ruleform" baseColumnNames="authority"
 			baseTableName="existential_attribute"
 			constraintName="existential_attribute_authorization_grouping_agency_fkey"
 			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform "
+            referencedTableSchemaName="ruleform" baseColumnNames="workspace"
+            baseTableName="existential_attribute" constraintName="existential_attribute_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="existential" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="existential, attribute, sequence_number" constraintName="existential_attribute_agency_key"
+            deferrable="false" disabled="false" initiallyDeferred="false"
+            tableName="existential_attribute" />
 		<createIndex schemaName="ruleform"
 			indexName="existential_attribute_updated_by_fkey_idx" tableName="existential_attribute"
 			unique="false">
@@ -107,10 +112,5 @@
 			unique="false">
 			<column name="authority" />
 		</createIndex>
-		<addForeignKeyConstraint baseTableSchemaName="ruleform "
-			referencedTableSchemaName="ruleform" baseColumnNames="workspace"
-			baseTableName="existential_attribute" constraintName="existential_attribute_workspace_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 	</changeSet>
 </databaseChangeLog>

@@ -61,15 +61,16 @@ public class StateSnapshotTest extends AbstractModelTest {
              .acquire()
              .commit();
         UUID tvsFrank;
+        WorkspaceSnapshot snap;
         try (Model myModel = new ModelImpl(newConnection())) {
             CoreUser frank = myModel.construct(CoreUser.class,
                                                ExistentialDomain.Agency,
                                                "frank", "TV's frank");
             tvsFrank = frank.getRuleform()
                             .getId();
-            WorkspaceSnapshot snap = myModel.snapshot();
-            assertEquals(10, snap.getInserts()
-                                .size());
+            snap = myModel.snapshot();
+            assertEquals(8, snap.getInserts()
+                                 .size());
             try (OutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
                                                                  THINGS_JSON))) {
                 snap.serializeTo(os);

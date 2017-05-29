@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -33,11 +34,13 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -80,8 +83,8 @@ public class BootstrapModel extends Bootstrap {
 
         // Ain Soph
         Model model = new ModelImpl(create.configuration()
-                                              .connectionProvider()
-                                              .acquire());
+                                          .connectionProvider()
+                                          .acquire());
 
         new WorkspaceImporter(getClass().getResourceAsStream(KERNEL_3_WSP),
                               model).initialize()
@@ -97,5 +100,18 @@ public class BootstrapModel extends Bootstrap {
 
         return kernelWorkspace;
 
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.kernel.Bootstrap#serialize(java.lang.String)
+     */
+    @Override
+    protected void serialize(String fileName) throws IOException {
+        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace,
+                                                           create);
+        try (FileOutputStream os = new FileOutputStream(new File(fileName))) {
+            snapshot.serializeTo(os);
+        }
     }
 }

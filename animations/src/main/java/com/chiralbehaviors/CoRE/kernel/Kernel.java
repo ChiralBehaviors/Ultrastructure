@@ -92,6 +92,8 @@ public interface Kernel {
 
     Relationship getDELETE();
 
+    Attribute getDescription();
+
     Relationship getDeveloped();
 
     Relationship getDevelopedBy();
@@ -185,6 +187,8 @@ public interface Kernel {
     Unit getMilliseconds();
 
     Unit getMinutes();
+
+    Attribute getName();
 
     Attribute getNamespace();
 

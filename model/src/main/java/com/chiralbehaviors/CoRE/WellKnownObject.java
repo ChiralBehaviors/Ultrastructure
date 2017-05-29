@@ -277,6 +277,30 @@ public interface WellKnownObject {
             }
 
         },
+        DESCRIPTION() {
+
+            @Override
+            public String description() {
+                return "A description";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.Text;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.DESCRIPTION;
+            }
+
+        },
         NOT_APPLICABLE() {
 
             @Override
@@ -325,6 +349,30 @@ public interface WellKnownObject {
             }
 
         },
+        NAME() {
+
+            @Override
+            public String description() {
+                return "A label";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.Text;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NAME;
+            }
+
+        },
         SAME() {
 
             @Override
@@ -346,6 +394,30 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.SAME;
+            }
+
+        },
+        VERSION() {
+
+            @Override
+            public String description() {
+                return "A version #";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.Integer;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.VERSION;
             }
 
         };
@@ -1708,6 +1780,7 @@ public interface WellKnownObject {
     String CORE_MODEL                = "CoRE Model";
     String CORE_USER                 = "CoRE User";
     String DAYS                      = "days";
+    String DESCRIPTION               = "Description";
     String DEVELOPED                 = "developed";
     String DEVELOPED_BY              = "developed-by";
     String EQUALS                    = "=";
@@ -1747,6 +1820,7 @@ public interface WellKnownObject {
     String MICROSECONDS              = "Microseconds";
     String MILLISECONDS              = "Milliseonds";
     String MINUTES                   = "Minutes";
+    String NAME                      = "Name";
     String NAMESPACE                 = "namespace";
     String NANOSECONDS               = "Nanoseconds";
     String NOT_APPLICABLE            = "(N/A)";
@@ -1766,6 +1840,7 @@ public interface WellKnownObject {
     String SUPER_USER                = "CoRE Super User";
     String UNSET                     = "(UNSET)";
     String VALIDATES                 = "validates";
+    String VERSION                   = "Version";
     String VERSION_OF                = "version-of";
     String WORKSPACE                 = "Workspace";
     String WORKSPACE_OF              = "workspace-of";

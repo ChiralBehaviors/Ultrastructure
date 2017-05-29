@@ -30,8 +30,9 @@ import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,14 +44,19 @@ import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hellblazer.utils.collections.OaHashSet;
 
 /**
  * @author hhildebrand
@@ -83,17 +89,24 @@ public class WorkspaceSnapshot {
                          definingProduct.getVersion(),
                          resource.toExternalForm());
                 workspace.load(create);
-            } else if (existing.getVersion() < definingProduct.getVersion()) {
-                log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
-                         definingProduct.getName(), existing.getVersion(),
-                         definingProduct.getVersion(),
-                         resource.toExternalForm());
-                workspace.load(create);
             } else {
-                log.info("Not updating workspace [{}] existing version: {} is higher than version: {} from: {}",
-                         definingProduct.getName(), existing.getVersion(),
-                         definingProduct.getVersion(),
-                         resource.toExternalForm());
+                @SuppressWarnings("resource")
+                Model model = new ModelImpl(create);
+                Workspace existingWorkspace = model.wrap(Workspace.class,
+                                                         model.records()
+                                                              .resolve(definingProduct));
+                if (existingWorkspace.getVersion() < workspace.getVersion()) {
+                    log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
+                             definingProduct.getName(), existing.getVersion(),
+                             definingProduct.getVersion(),
+                             resource.toExternalForm());
+                    workspace.load(create);
+                } else {
+                    log.info("Not updating workspace [{}] existing version: {} is equal to or higher than version: {} from: {}",
+                             definingProduct.getName(), existing.getVersion(),
+                             definingProduct.getVersion(),
+                             resource.toExternalForm());
+                }
             }
         }
     }
@@ -104,9 +117,9 @@ public class WorkspaceSnapshot {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<UpdatableRecord<? extends UpdatableRecord<?>>> selectWorkspaceClosure(DSLContext create,
-                                                                                             Product definingProduct) {
-        List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
+    public static List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> selectForDelete(DSLContext create,
+                                                                                                                 Product definingProduct) {
+        List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
                              records.addAll(create.selectDistinct(t.fields())
@@ -121,9 +134,36 @@ public class WorkspaceSnapshot {
         return records;
     }
 
-    protected Product                                             definingProduct;
+    @SuppressWarnings("unchecked")
+    public static List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> selectWorkspaceClosure(DSLContext create,
+                                                                                                                        Product definingProduct) {
+        List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
+        Ruleform.RULEFORM.getTables()
+                         .forEach(t -> {
+                             records.addAll(create.selectDistinct(t.fields())
+                                                  .from(t)
+                                                  .where(((Field<UUID>) t.field("workspace")).equal(definingProduct.getId()))
+                                                  .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                                  .fetchInto(t.getRecordType())
+                                                  .stream()
+                                                  .map(r -> (UpdatableRecord<?>) r)
+                                                  .map(r -> {
+                                                      Field<Integer> version = (Field<Integer>) t.field("version");
+                                                      r.setValue(version,
+                                                                 r.get(version)
+                                                                  .intValue()
+                                                                          - 1);
+                                                      return r;
+                                                  })
+                                                  .collect(Collectors.toList()));
+                         });
+        return records;
+    }
 
-    protected List<UpdatableRecord<? extends UpdatableRecord<?>>> records = new ArrayList<>();
+    protected Product                                                                        definingProduct;
+
+    protected List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> inserts = new ArrayList<>();
+    protected List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> updates = new ArrayList<>();
 
     public WorkspaceSnapshot() {
         definingProduct = null;
@@ -135,7 +175,7 @@ public class WorkspaceSnapshot {
                                                                                       definingProduct.getWorkspace(),
                                                                                       definingProduct.getId());
         this.definingProduct = definingProduct;
-        records = selectWorkspaceClosure(create, definingProduct);
+        inserts = selectWorkspaceClosure(create, definingProduct);
     }
 
     /**
@@ -163,15 +203,18 @@ public class WorkspaceSnapshot {
         WorkspaceSnapshot delta = new WorkspaceSnapshot();
         delta.definingProduct = definingProduct;
 
-        Set<UUID> exclude = new OaHashSet<>(otherVersion.records.size());
-        for (Record record : otherVersion.records) {
-            exclude.add((UUID) record.getValue("id"));
+        Map<UUID, Integer> exclude = new HashMap<>(otherVersion.inserts.size());
+        for (Record record : otherVersion.inserts) {
+            exclude.put((UUID) record.getValue("id"),
+                        (Integer) record.getValue("version"));
         }
 
-        for (UpdatableRecord<? extends UpdatableRecord<?>> record : records) {
-            UUID id = (UUID) record.getValue("id");
-            if (!exclude.contains(id)) {
-                delta.records.add(record);
+        for (UpdatableRecord<? extends UpdatableRecord<?>> record : inserts) {
+            Integer version = exclude.get((UUID) record.getValue("id"));
+            if (version == null) {
+                delta.inserts.add(record);
+            } else if (version.intValue() < (Integer) record.getValue("version")) {
+                delta.updates.add(record);
             }
         }
         return delta;
@@ -181,8 +224,34 @@ public class WorkspaceSnapshot {
         return definingProduct;
     }
 
-    public List<UpdatableRecord<? extends UpdatableRecord<?>>> getRecords() {
-        return records;
+    public List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> getInserts() {
+        return inserts;
+    }
+
+    public List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> getUpdates() {
+        return updates;
+    }
+
+    @JsonIgnore
+    public int getVersion() {
+        return getInserts().stream()
+                           .filter(r -> r instanceof ExistentialAttributeRecord)
+                           .map(r -> (ExistentialAttributeRecord) r)
+                           .filter(a -> a.getExistential()
+                                         .equals(definingProduct.getId()))
+                           .filter(a -> a.getAttribute()
+                                         .equals(WellKnownAttribute.VERSION.id()))
+                           .findFirst()
+                           .orElseGet(() -> getUpdates().stream()
+                                                        .filter(r -> r instanceof ExistentialAttributeRecord)
+                                                        .map(r -> (ExistentialAttributeRecord) r)
+                                                        .filter(a -> a.getExistential()
+                                                                      .equals(definingProduct.getId()))
+                                                        .filter(a -> a.getAttribute()
+                                                                      .equals(WellKnownAttribute.VERSION.id()))
+                                                        .findFirst()
+                                                        .get())
+                           .getIntegerValue();
     }
 
     public void load(DSLContext create) throws SQLException {
@@ -190,7 +259,9 @@ public class WorkspaceSnapshot {
                || definingProduct.getWorkspace() != null : "defining product's workspace is null";
         loadDefiningProduct(create);
         try {
-            create.batchInsert(records)
+            create.batchInsert(inserts)
+                  .execute();
+            create.batchUpdate(updates)
                   .execute();
         } catch (DataAccessException e) {
             BatchUpdateException be = (BatchUpdateException) e.getCause();

@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.test.DatabaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -59,7 +58,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
         WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct,
                                                             create);
-        assertEquals(2, retrieved.getRecords()
+        assertEquals(2, retrieved.getInserts()
                                  .size());
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
@@ -72,13 +71,13 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
         try (FileInputStream is = new FileInputStream(temp)) {
             deserialized = mapper.readValue(is, WorkspaceSnapshot.class);
         }
-        assertEquals(2, deserialized.getRecords()
+        assertEquals(2, deserialized.getInserts()
                                     .size());
 
-        assertTrue(deserialized.getRecords()
+        assertTrue(deserialized.getInserts()
                                .stream()
                                .anyMatch(r -> pseudoScientist.equals(r)));
-        assertFalse(deserialized.getRecords()
+        assertFalse(deserialized.getInserts()
                                 .stream()
                                 .anyMatch(r -> definingProduct.equals(r)));
         create.configuration()
@@ -98,7 +97,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
         StateSnapshot retrieved = new StateSnapshot(RECORDS.create(),
                                                     Collections.emptyList());
-        assertEquals(2, retrieved.getRecords()
+        assertEquals(2, retrieved.getInserts()
                                  .size());
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
@@ -111,10 +110,10 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
         try (FileInputStream is = new FileInputStream(temp)) {
             deserialized = mapper.readValue(is, StateSnapshot.class);
         }
-        assertEquals(2, deserialized.getRecords()
+        assertEquals(2, deserialized.getInserts()
                                     .size());
 
-        assertTrue(deserialized.getRecords()
+        assertTrue(deserialized.getInserts()
                                .stream()
                                .anyMatch(r -> pseudoScientist.equals(r)));
     }

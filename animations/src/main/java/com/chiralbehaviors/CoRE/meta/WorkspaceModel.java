@@ -52,7 +52,5 @@ public interface WorkspaceModel {
 
     WorkspaceScope getScoped(UUID definingProduct);
 
-    List<WorkspaceLabelRecord> getWorkspace(Product definingProduct);
-
     void unload(Product definingProduct);
 }

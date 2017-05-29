@@ -32,6 +32,8 @@ public class TestSpaDsl {
     @Test
     public void testParse() throws Exception {
         Spa constructedSpa = Spa.manifest("/test.app");
-        assertNotNull(constructedSpa.route("launch"));
+        Page page = constructedSpa.route("launch");
+        assertNotNull(page);
+        assertNotNull(page.getStyle());
     }
 }

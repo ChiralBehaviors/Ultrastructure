@@ -7,6 +7,7 @@ query($id:ID!) {
     inverse {
       id
       name
+      description
     }
     workspace {
       id

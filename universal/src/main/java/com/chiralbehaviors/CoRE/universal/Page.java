@@ -86,6 +86,7 @@ public class Page {
     private String                    name;
     private final Map<String, Route>  navigations;
     private String                    query;
+    private ObjectNode                style;
     private String                    title;
     private final Map<String, Action> updates;
 
@@ -105,13 +106,15 @@ public class Page {
              actions((ArrayNode) page.get("updates")),
              actions((ArrayNode) page.get("deletes")),
              navigations((ArrayNode) page.get("navigates")),
-             launches((ArrayNode) page.get("launches")));
+             launches((ArrayNode) page.get("launches")),
+             (ObjectNode) page.get("style"));
     }
 
     public Page(String name, String description, String title, String frame,
                 String query, Map<String, Action> creates,
                 Map<String, Action> updates, Map<String, Action> deletes,
-                Map<String, Route> navigations, Map<String, Launch> launches) {
+                Map<String, Route> navigations, Map<String, Launch> launches,
+                ObjectNode style) {
         this.name = name;
         this.description = description;
         this.title = title;
@@ -122,6 +125,7 @@ public class Page {
         this.updates = updates;
         this.deletes = deletes;
         this.launches = launches;
+        this.style = style;
     }
 
     public void create(String field, Action action) {
@@ -164,6 +168,10 @@ public class Page {
         return query;
     }
 
+    public ObjectNode getStyle() {
+        return style;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -190,6 +198,10 @@ public class Page {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public void setStyle(ObjectNode style) {
+        this.style = style;
     }
 
     public void setTitle(String title) {

@@ -15,7 +15,6 @@ query($id:ID!) {
     }
     attributes {
       id
-      notes
       authorizedAttribute {
         id
         name
@@ -38,6 +37,7 @@ query($id:ID!) {
         id
         name
       }
+      notes
     }
   }
 }

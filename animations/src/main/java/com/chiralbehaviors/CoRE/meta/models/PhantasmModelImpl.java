@@ -115,9 +115,8 @@ public class PhantasmModelImpl implements PhantasmModel {
     public ExistentialAttributeRecord create(ExistentialRuleform existential,
                                              Attribute attribute) {
         ExistentialAttributeRecord value = model.records()
-                                                .newExistentialAttribute();
-        value.setAttribute(attribute.getId());
-        value.setExistential(existential.getId());
+                                                .newExistentialAttribute(existential,
+                                                                         attribute);
         return value;
     }
 

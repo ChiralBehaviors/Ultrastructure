@@ -55,6 +55,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -155,15 +156,19 @@ public class WorkspaceImporter {
      */
     public WorkspaceAccessor load(Product definingProduct) {
         definingProduct.refresh();
-        definingProduct.setName(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
-        Token description = wsp.getWorkspaceDefinition().description;
-        definingProduct.setDescription(description == null ? null
-                                                           : WorkspacePresentation.stripQuotes(description.getText()));
+        String name = WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText());
+        definingProduct.setName(name);
+        String description = wsp.getWorkspaceDefinition().description == null ? null
+                                                                              : WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().description.getText());
+        definingProduct.setDescription(description);
         definingProduct.update();
         scope = model.getWorkspaceModel()
                      .getScoped(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
         loadWorkspace();
+        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
+        phantasm.setName(name);
+        phantasm.setDescription(description);
         return workspace;
     }
 
@@ -184,14 +189,18 @@ public class WorkspaceImporter {
                                                           wsp.getWorkspaceDefinition().name.getText(),
                                                           version));
         }
-        if (definingProduct.getVersion() >= version) {
+        Workspace existing = model.wrap(Workspace.class, definingProduct);
+
+        if (existing.getVersion() >= version) {
             throw new IllegalStateException(String.format("Workspace %s is at version %s, unable to update to %s",
                                                           wsp.getWorkspaceDefinition().name.getText(),
-                                                          definingProduct.getVersion(),
+                                                          existing.getVersion(),
                                                           version));
         }
-        // definingProduct.setVersion(version);
-        return load(definingProduct);
+
+        WorkspaceAccessor loaded = load(definingProduct);
+        existing.setVersion(version);
+        return loaded;
     }
 
     private Cardinality cardinality(ConstraintContext constraint) {
@@ -266,23 +275,22 @@ public class WorkspaceImporter {
     }
 
     private WorkspaceAccessor createWorkspace() {
-        Product existing = getWorkspaceProduct();
-        if (existing != null) {
+        if (getWorkspaceProduct() != null) {
+            Workspace phantasm = model.wrap(Workspace.class,
+                                            getWorkspaceProduct());
             throw new IllegalStateException(String.format("Workspace %s already exists at version %s, not created",
-                                                          existing.getName(),
-                                                          existing.getVersion()));
+                                                          phantasm.getName(),
+                                                          phantasm.getVersion()));
         }
+
         Product definingProduct = createWorkspaceProduct();
+
         scope = model.getWorkspaceModel()
                      .createWorkspace(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
-        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
-                                                         .getAttributeValue(definingProduct,
-                                                                            model.getKernel()
-                                                                                 .getIRI());
-        model.getPhantasmModel()
-             .setValue(attributeValue,
-                       WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
+
+        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
+        phantasm.setIRI(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
         loadWorkspace();
         return workspace;
     }
@@ -293,6 +301,7 @@ public class WorkspaceImporter {
                                         .newProduct(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                     description == null ? null
                                                                         : WorkspacePresentation.stripQuotes(description.getText()));
+
         workspaceProduct.setId(uuid);
         workspaceProduct.setVersion(-1);
         workspaceProduct.insert();
@@ -400,20 +409,23 @@ public class WorkspaceImporter {
 
     private void loadAttributes() {
         for (AttributeRuleformContext ruleform : wsp.getAttributes()) {
-            Attribute attr = model.records()
-                                  .newAttribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
-                                                ruleform.existentialRuleform().description == null ? null
-                                                                                                   : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
-            setValueType(attr, ruleform.valueType);
-            attr.setIndexed(ruleform.indexed == null ? false
-                                                     : ruleform.indexed.getText()
-                                                                       .equals("true"));
-            attr.setKeyed(ruleform.keyed == null ? false
-                                                 : ruleform.keyed.getText()
-                                                                 .equals("true"));
-            attr.insert();
-            workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
-                          attr);
+            String key = ruleform.existentialRuleform().workspaceName.getText();
+            Attribute attr = workspace.get(key);
+            if (attr == null) {
+                attr = model.records()
+                            .newAttribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
+                                          ruleform.existentialRuleform().description == null ? null
+                                                                                             : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
+                setValueType(attr, ruleform.valueType);
+                attr.setIndexed(ruleform.indexed == null ? false
+                                                         : ruleform.indexed.getText()
+                                                                           .equals("true"));
+                attr.setKeyed(ruleform.keyed == null ? false
+                                                     : ruleform.keyed.getText()
+                                                                     .equals("true"));
+                attr.insert();
+                workspace.put(key, attr);
+            }
             setAttributes(ruleform.attributeValue(), attr.getId());
         }
     }
@@ -826,22 +838,30 @@ public class WorkspaceImporter {
     private void setAttributes(List<AttributeValueContext> attributes,
                                UUID id) {
         for (AttributeValueContext av : attributes) {
-            ExistentialAttributeRecord edgeAttribute = model.records()
-                                                            .newExistentialAttribute();
-            edgeAttribute.setExistential(id);
+            UUID attribute = resolve(av.attribute);
+            ExistentialRuleform entity = model.records()
+                                              .resolve(id);
             Attribute attr = model.records()
-                                  .resolve(resolve(av.attribute));
-            edgeAttribute.setAttribute(attr.getId());
-            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
-                                            .getPrincipal()
-                                            .getId());
-            if (av.sequenceNumber != null) {
-                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                                  .resolve(attribute);
+            ExistentialAttributeRecord aValue = model.getPhantasmModel()
+                                                     .getAttributeValue(entity,
+                                                                        attr);
+            if (aValue == null) {
+                aValue = model.records()
+                              .newExistentialAttribute();
+                aValue.setExistential(id);
+                aValue.setAttribute(attr.getId());
+                aValue.setUpdatedBy(model.getCurrentPrincipal()
+                                         .getPrincipal()
+                                         .getId());
+                if (av.sequenceNumber != null) {
+                    aValue.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                }
+                aValue.insert();
             }
-            edgeAttribute.insert();
-            setValueFromString(attr, edgeAttribute,
+            setValueFromString(attr, aValue,
                                WorkspacePresentation.stripQuotes(av.value.getText()));
-            workspace.add(edgeAttribute);
+            workspace.add(aValue);
         }
     }
 

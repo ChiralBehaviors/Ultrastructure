@@ -73,6 +73,7 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
@@ -298,8 +299,8 @@ public class ModelImpl implements Model {
 
     @Override
     public boolean checkExistentialPermission(List<Agency> roles,
-                                   ExistentialRuleform target,
-                                   Relationship permission) {
+                                              ExistentialRuleform target,
+                                              Relationship permission) {
         return checkPermission(roles, (UpdatableRecord<?>) target, permission);
 
     }
@@ -630,6 +631,17 @@ public class ModelImpl implements Model {
                                                     factory.resolve(relationship.getInverse()),
                                                     kernel.getLoginRole())
                                   .getId());
+        relationship = kernel.getInstanceOf();
+        ExistentialAttributeRecord attribute = phantasmModel.getAttributeValue(instance,
+                                                                               kernel.getName());
+        if (attribute != null) {
+            excluded.add(attribute.getId());
+        }
+        attribute = phantasmModel.getAttributeValue(instance,
+                                                    kernel.getDescription());
+        if (attribute != null) {
+            excluded.add(attribute.getId());
+        }
         return excluded;
     }
 }

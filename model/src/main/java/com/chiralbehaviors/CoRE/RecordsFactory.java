@@ -304,6 +304,7 @@ public interface RecordsFactory {
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         record.setUpdated(new Timestamp(System.currentTimeMillis()));
+        record.setSequenceNumber(0);
         return record;
     }
 

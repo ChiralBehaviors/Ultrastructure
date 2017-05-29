@@ -24,8 +24,10 @@ import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import com.chiralbehaviors.layout.schema.Relation;
+import com.chiralbehaviors.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -125,7 +127,19 @@ public class Page {
         this.updates = updates;
         this.deletes = deletes;
         this.launches = launches;
-        this.style = style;
+    }
+
+    public void applyStyle(Relation root) {
+        if (style == null) {
+            return;
+        }
+        ObjectNode labels = (ObjectNode) style.get("labels");
+        if (labels == null || labels.isNull()) {
+            return;
+        }
+        labels.fieldNames()
+              .forEachRemaining(path -> label(path, root, labels.get(path)
+                                                                .asText()));
     }
 
     public void create(String field, Action action) {
@@ -216,5 +230,24 @@ public class Page {
 
     public void update(String field, Action action) {
         updates.put(field, action);
+    }
+
+    private void label(String path, Relation root, String label) {
+        StringTokenizer toks = new StringTokenizer(path, "/");
+        Relation current = root;
+        SchemaNode leaf = null;
+        while (current != null && toks.hasMoreTokens()) {
+            leaf = current.getChild(toks.nextToken());
+            if (leaf == null) {
+                return;
+            }
+            if (leaf instanceof Relation) {
+                current = (Relation) leaf;
+            }
+        }
+        if (toks.hasMoreTokens()) {
+            return; // Hit primitive before field spath grounded
+        }
+        leaf.setLabel(label);
     }
 }

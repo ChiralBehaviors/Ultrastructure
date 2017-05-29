@@ -11,7 +11,7 @@ spa {
         title: "Ye test page"
         frame: 00000000-0000-0004-0000-000000000003
         query: 'wsp/allWorkspaces.query'
-        style: '{"a":"a"}'
+        style: '{"/workspaces/imports/_edge":"imports"}'
         
         workspaces { 
             create: by /bar {bar:/foo} query: 'wsp/workspaceDetail.query'

@@ -838,22 +838,30 @@ public class WorkspaceImporter {
     private void setAttributes(List<AttributeValueContext> attributes,
                                UUID id) {
         for (AttributeValueContext av : attributes) {
-            ExistentialAttributeRecord edgeAttribute = model.records()
-                                                            .newExistentialAttribute();
-            edgeAttribute.setExistential(id);
+            UUID attribute = resolve(av.attribute);
+            ExistentialRuleform entity = model.records()
+                                              .resolve(id);
             Attribute attr = model.records()
-                                  .resolve(resolve(av.attribute));
-            edgeAttribute.setAttribute(attr.getId());
-            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
-                                            .getPrincipal()
-                                            .getId());
-            if (av.sequenceNumber != null) {
-                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                                  .resolve(attribute);
+            ExistentialAttributeRecord aValue = model.getPhantasmModel()
+                                                     .getAttributeValue(entity,
+                                                                        attr);
+            if (aValue == null) {
+                aValue = model.records()
+                              .newExistentialAttribute();
+                aValue.setExistential(id);
+                aValue.setAttribute(attr.getId());
+                aValue.setUpdatedBy(model.getCurrentPrincipal()
+                                         .getPrincipal()
+                                         .getId());
+                if (av.sequenceNumber != null) {
+                    aValue.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                }
+                aValue.insert();
             }
-            edgeAttribute.insert();
-            setValueFromString(attr, edgeAttribute,
+            setValueFromString(attr, aValue,
                                WorkspacePresentation.stripQuotes(av.value.getText()));
-            workspace.add(edgeAttribute);
+            workspace.add(aValue);
         }
     }
 

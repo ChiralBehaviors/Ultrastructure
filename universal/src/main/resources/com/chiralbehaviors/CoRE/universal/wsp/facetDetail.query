@@ -25,13 +25,10 @@ query($id:ID!) {
       name 
       notes
       cardinality
-      parent {
-        id
-        name
-      }
       relationship {
         id
         name
+        description
       }
       child {
         id

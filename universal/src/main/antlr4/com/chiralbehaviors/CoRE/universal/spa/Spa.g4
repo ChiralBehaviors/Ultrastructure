@@ -17,220 +17,233 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
- grammar Spa;
+grammar Spa;
 
- tokens {
-     HIDDEN
- }
+tokens {
+    HIDDEN
+}
 
- spa
- :
-     'spa' '{' name description root frame? route+ '}' EOF
- ;
+spa
+:
+    'spa' '{' name description root frame? route+ '}' EOF
+;
 
- name
- :
-     'name:' StringValue
- ;
+name
+:
+    'name:' StringValue
+;
 
- description
- :
-     'description:' StringValue
- ;
+description
+:
+    'description:' StringValue
+;
 
- root
- :
-     'root:' NAME
- ;
+root
+:
+    'root:' NAME
+;
 
- frame
- :
-     'frame:' UUID
- ;
+frame
+:
+    'frame:' UUID
+;
 
- route
- :
-     NAME '{' page '}'
- ;
+route
+:
+    NAME '{' page '}'
+;
 
- page
- :
-     name description? title frame? query
-     (
-         fieldAction+
-     )?
- ;
+page
+:
+    name description? title frame? query style?
+    (
+        fieldAction+
+    )?
+;
 
- fieldAction
- :
-     NAME '{' create? update? delete? navigate? launch? '}'
- ;
+fieldAction
+:
+    NAME '{' create? update? delete? navigate? launch? '}'
+;
 
- extract
- :
-     '{' extraction+ '}'
- ;
+extract
+:
+    '{' extraction+ '}'
+;
 
- extraction
- :
-     NAME ':' Spath
- ;
+extraction
+:
+    NAME ':' Spath
+;
 
- title
- :
-     'title: ' StringValue
- ;
+title
+:
+    'title: ' StringValue
+;
 
- query
- :
-     'query:' ResourcePath
- ;
+query
+:
+    'query:' ResourcePath
+;
 
- frameBy
- :
-     ' by' Spath
- ;
+style
+:
+    'style:' Json
+;
 
- action
- :
-     frameBy? Meta? extract? query
- ;
+frameBy
+:
+    ' by' Spath
+;
 
- create
- :
-     'create:' action
- ;
+action
+:
+    frameBy? Meta? extract? query
+;
 
- update
- :
-     'update:' action
- ;
+create
+:
+    'create:' action
+;
 
- delete
- :
-     'delete:' action
- ;
+update
+:
+    'update:' action
+;
 
- launch
- :
-     'launch:'
-     (
-         frameBy
-         | frame
-     )? Meta?
-     (
-         Spath
-         | UUID
-     )
- ;
+delete
+:
+    'delete:' action
+;
 
- navigate
- :
-     'navigate:' NAME frameBy? Meta? extract?
- ;
+launch
+:
+    'launch:'
+    (
+        frameBy
+        | frame
+    )? Meta?
+    (
+        Spath
+        | UUID
+    )
+;
 
- Meta
- :
-     'meta'
- ;
+navigate
+:
+    'navigate:' NAME frameBy? Meta? extract?
+;
 
- NAME
- :
-     [_A-Za-z] [_0-9A-Za-z]*
- ;
+Meta
+:
+    'meta'
+;
 
- StringValue
- :
-     '"'
-     (
-         ~( ["\\\n\r\u2028\u2029] )
-         | EscapedChar
-     )* '"'
- ;
+NAME
+:
+    [_A-Za-z] [_0-9A-Za-z]*
+;
 
- ResourcePath
- :
-     '\''
-     (
-         ~( ["\\\n\r\u2028\u2029] )
-         | EscapedChar
-     )* '\''
- ;
+StringValue
+:
+    '"'
+    (
+        ~( ["\\\n\r\u2028\u2029] )
+        | EscapedChar
+    )* '"'
+;
 
- fragment
- EscapedChar
- :
-     '\\'
-     (
-         ["\\/bfnrt]
-         | Unicode
-     )
- ;
+ResourcePath
+:
+    '\''
+    (
+        ~( ["\\\n\r\u2028\u2029] )
+        | EscapedChar
+    )* '\''
+;
 
- fragment
- Unicode
- :
-     'u' Hex Hex Hex Hex
- ;
+Json
+:
+    '\''
+    (
+        ~( [\\'\u2028\u2029] )
+    )* '\''
+;
 
- fragment
- Hex
- :
-     [0-9a-fA-F]
- ;
+fragment
+EscapedChar
+:
+    '\\'
+    (
+        ["\\/bfnrt]
+        | Unicode
+    )
+;
 
- // --------------- IGNORED ---------------
+fragment
+Unicode
+:
+    'u' Hex Hex Hex Hex
+;
 
- Ignored
- :
-     (
-         Whitspace
-         | LineTerminator
-         | Comment
-     ) -> channel ( HIDDEN )
- ;
+fragment
+Hex
+:
+    [0-9a-fA-F]
+;
 
- fragment
- Comment
- :
-     '#' ~[\n\r\u2028\u2029]*
- ;
+// --------------- IGNORED ---------------
 
- fragment
- LineTerminator
- :
-     [\n\r\u2028\u2029]
- ;
+Ignored
+:
+    (
+        Whitspace
+        | LineTerminator
+        | Comment
+    ) -> channel ( HIDDEN )
+;
 
- fragment
- Whitspace
- :
-     [\t\u000b\f\u0020\u00a0]
- ;
+fragment
+Comment
+:
+    '#' ~[\n\r\u2028\u2029]*
+;
 
- Spath
- :
-     (
-         '/' NAME
-     )+
- ;
+fragment
+LineTerminator
+:
+    [\n\r\u2028\u2029]
+;
 
- UUID
- :
-     HEX8 '-' HEX4 '-' HEX4 '-' HEX4 '-' HEX12
- ;
+fragment
+Whitspace
+:
+    [\t\u000b\f\u0020\u00a0]
+;
 
- HEX12
- :
-     HEX4 HEX8
- ;
+Spath
+:
+    (
+        '/' NAME
+    )+
+;
 
- HEX4
- :
-     Hex Hex Hex Hex
- ;
+UUID
+:
+    HEX8 '-' HEX4 '-' HEX4 '-' HEX4 '-' HEX12
+;
 
- HEX8
- :
-     HEX4 HEX4
- ;
+HEX12
+:
+    HEX4 HEX8
+;
+
+HEX4
+:
+    Hex Hex Hex Hex
+;
+
+HEX8
+:
+    HEX4 HEX4
+;

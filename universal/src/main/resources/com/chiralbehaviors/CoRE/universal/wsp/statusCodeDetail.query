@@ -3,7 +3,7 @@ query($id:ID!) {
     id
     name
     description
-    version
+    notes
     failParent
     propagateChildren
     workspace {

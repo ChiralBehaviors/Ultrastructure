@@ -15,7 +15,6 @@ query($id:ID!) {
     }
     attributes {
       id
-      notes
       authorizedAttribute {
         id
         name
@@ -26,18 +25,16 @@ query($id:ID!) {
       name 
       notes
       cardinality
-      parent {
-        id
-        name
-      }
       relationship {
         id
         name
+        description
       }
       child {
         id
         name
       }
+      notes
     }
   }
 }

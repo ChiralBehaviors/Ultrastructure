@@ -11,6 +11,7 @@ spa {
         title: "Ye test page"
         frame: 00000000-0000-0004-0000-000000000003
         query: 'wsp/allWorkspaces.query'
+        style: '{"labels" : {"/workspaces/imports/_edge":"imports"} }'
         
         workspaces {
             navigate: workspace by /id meta {id:/id}
@@ -68,6 +69,7 @@ spa {
         description: "Detail for a facet"
         title: "Ye facet detail"
         query: 'wsp/facetDetail.query'
+        style: '{"labels" : {"/facet/attributes/authorizedAttribute":"attributes"} }'
         
         authorizedAttribute {
             navigate: attribute meta {id:/id}

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -34,6 +35,7 @@ import com.chiralbehaviors.CoRE.universal.spa.SpaParser.PageContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.RouteContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.SpaContext;
 import com.chiralbehaviors.CoRE.universal.spa.SpaParser.UpdateContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Utils;
@@ -144,6 +146,16 @@ public class SpaImporter extends SpaBaseListener {
             currentPage.setFrame(ctx.frame()
                                     .UUID()
                                     .getText());
+        }
+        if (ctx.style() != null) {
+            try {
+                ByteArrayInputStream is = new ByteArrayInputStream(stripQuotes(ctx.style()
+                                                                                  .Json()
+                                                                                  .getText()).getBytes());
+                currentPage.setStyle((ObjectNode) new ObjectMapper().readTree(is));
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 

@@ -24,8 +24,10 @@ import static com.chiralbehaviors.CoRE.universal.Universal.textOrNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import com.chiralbehaviors.layout.schema.Relation;
+import com.chiralbehaviors.layout.schema.SchemaNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -86,6 +88,7 @@ public class Page {
     private String                    name;
     private final Map<String, Route>  navigations;
     private String                    query;
+    private ObjectNode                style;
     private String                    title;
     private final Map<String, Action> updates;
 
@@ -105,13 +108,15 @@ public class Page {
              actions((ArrayNode) page.get("updates")),
              actions((ArrayNode) page.get("deletes")),
              navigations((ArrayNode) page.get("navigates")),
-             launches((ArrayNode) page.get("launches")));
+             launches((ArrayNode) page.get("launches")),
+             (ObjectNode) page.get("style"));
     }
 
     public Page(String name, String description, String title, String frame,
                 String query, Map<String, Action> creates,
                 Map<String, Action> updates, Map<String, Action> deletes,
-                Map<String, Route> navigations, Map<String, Launch> launches) {
+                Map<String, Route> navigations, Map<String, Launch> launches,
+                ObjectNode style) {
         this.name = name;
         this.description = description;
         this.title = title;
@@ -122,6 +127,19 @@ public class Page {
         this.updates = updates;
         this.deletes = deletes;
         this.launches = launches;
+    }
+
+    public void applyStyle(Relation root) {
+        if (style == null) {
+            return;
+        }
+        ObjectNode labels = (ObjectNode) style.get("labels");
+        if (labels == null || labels.isNull()) {
+            return;
+        }
+        labels.fieldNames()
+              .forEachRemaining(path -> label(path, root, labels.get(path)
+                                                                .asText()));
     }
 
     public void create(String field, Action action) {
@@ -164,6 +182,10 @@ public class Page {
         return query;
     }
 
+    public ObjectNode getStyle() {
+        return style;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -192,6 +214,10 @@ public class Page {
         this.query = query;
     }
 
+    public void setStyle(ObjectNode style) {
+        this.style = style;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -204,5 +230,24 @@ public class Page {
 
     public void update(String field, Action action) {
         updates.put(field, action);
+    }
+
+    private void label(String path, Relation root, String label) {
+        StringTokenizer toks = new StringTokenizer(path, "/");
+        Relation current = root;
+        SchemaNode leaf = null;
+        while (current != null && toks.hasMoreTokens()) {
+            leaf = current.getChild(toks.nextToken());
+            if (leaf == null) {
+                return;
+            }
+            if (leaf instanceof Relation) {
+                current = (Relation) leaf;
+            }
+        }
+        if (toks.hasMoreTokens()) {
+            return; // Hit primitive before field spath grounded
+        }
+        leaf.setLabel(label);
     }
 }

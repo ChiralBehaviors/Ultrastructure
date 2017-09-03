@@ -55,6 +55,7 @@ public class Context {
         this.page = page;
         this.variables = variables;
         this.root = GraphQlUtil.buildSchema(page.getQuery());
+        page.applyStyle(root);
     }
 
     public JsonNode evaluate(WebTarget endpoint) throws QueryException {

@@ -44,6 +44,7 @@
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
 		<jooq.version>3.9.5</jooq.version>
 		<liquibase.version>3.5.3</liquibase.version>
+		<slf4j.version>1.7.24</slf4j.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -345,12 +346,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.21</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jul-to-slf4j</artifactId>
-				<version>1.7.21</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.uuid</groupId>
@@ -371,7 +372,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>log4j-over-slf4j</artifactId>
-				<version>1.7.21</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hellblazer</groupId>

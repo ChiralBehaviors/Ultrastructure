@@ -38,12 +38,13 @@
 		<db.context>local</db.context>
 
 		<antlr.version>4.7</antlr.version>
-		<dropwizard.version>1.0.5</dropwizard.version>
+		<dropwizard.version>1.1.4</dropwizard.version>
 		<postgresql.driver.version>9.4.1212</postgresql.driver.version>
-		<jackson.version>2.7.8 </jackson.version>
+		<jackson.version>2.8.10 </jackson.version>
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
-		<jooq.version>3.9.1</jooq.version>
+		<jooq.version>3.9.5</jooq.version>
 		<liquibase.version>3.5.3</liquibase.version>
+		<slf4j.version>1.7.24</slf4j.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -129,12 +130,12 @@
 			<dependency>
 				<groupId>io.dropwizard.metrics</groupId>
 				<artifactId>metrics-healthchecks</artifactId>
-				<version>3.1.2</version>
+				<version>3.2.2</version>
 			</dependency>
 			<dependency>
 				<groupId>io.dropwizard.metrics</groupId>
 				<artifactId>metrics-annotation</artifactId>
-				<version>3.1.2</version>
+				<version>3.2.2</version>
 			</dependency>
 			<dependency>
 				<groupId>io.dropwizard</groupId>
@@ -309,7 +310,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>18.0</version>
+				<version>21.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -329,7 +330,7 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.1.7</version>
+				<version>1.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
@@ -345,12 +346,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.21</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jul-to-slf4j</artifactId>
-				<version>1.7.21</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.uuid</groupId>
@@ -371,7 +372,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>log4j-over-slf4j</artifactId>
-				<version>1.7.21</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.hellblazer</groupId>

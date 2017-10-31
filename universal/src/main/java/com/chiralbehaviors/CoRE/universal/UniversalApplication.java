@@ -29,8 +29,8 @@ import javax.ws.rs.client.ClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.layout.AutoLayoutView;
-import com.chiralbehaviors.layout.Layout.LayoutModel;
+import com.chiralbehaviors.layout.LayoutProvider.LayoutModel;
+import com.chiralbehaviors.layout.control.AutoLayout;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,6 +46,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -63,7 +64,7 @@ public class UniversalApplication extends Application implements LayoutModel {
     private AnchorPane     anchor;
     private Button         backButton;
     private Button         forwardButton;
-    private AutoLayoutView layout;
+    private AutoLayout layout;
     private Stage          primaryStage;
     private Button         reloadButton;
     private Universal      universal;
@@ -106,6 +107,7 @@ public class UniversalApplication extends Application implements LayoutModel {
                                           URISyntaxException, QueryException {
         this.primaryStage = primaryStage;
         anchor = new AnchorPane();
+        VBox.setVgrow(anchor, Priority.ALWAYS);
         VBox vbox = new VBox(locationBar(), anchor);
         primaryStage.setScene(new Scene(vbox, 800, 600));
         if (universal == null) {
@@ -211,13 +213,13 @@ public class UniversalApplication extends Application implements LayoutModel {
         });
     }
 
-    private AutoLayoutView layout(Relation root,
+    private AutoLayout layout(Relation root,
                                   JsonNode node) throws QueryException {
-        AutoLayoutView layout = new AutoLayoutView(root, this);
+        AutoLayout layout = new AutoLayout(root, this);
         layout.getStylesheets()
               .add(getClass().getResource("/non-nested.css")
                              .toExternalForm());
-        layout.setData(node);
+        layout.setItem(node);
         layout.measure(node);
         AnchorPane.setTopAnchor(layout, 0.0);
         AnchorPane.setLeftAnchor(layout, 0.0);

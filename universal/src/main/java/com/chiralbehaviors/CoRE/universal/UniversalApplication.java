@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.layout.LayoutProvider.LayoutModel;
 import com.chiralbehaviors.layout.control.AutoLayout;
+import com.chiralbehaviors.layout.flowless.Cell;
+import com.chiralbehaviors.layout.flowless.VirtualFlow;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.schema.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,8 +41,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableRow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -61,13 +61,13 @@ public class UniversalApplication extends Application implements LayoutModel {
         launch(args);
     }
 
-    private AnchorPane     anchor;
-    private Button         backButton;
-    private Button         forwardButton;
+    private AnchorPane anchor;
+    private Button     backButton;
+    private Button     forwardButton;
     private AutoLayout layout;
-    private Stage          primaryStage;
-    private Button         reloadButton;
-    private Universal      universal;
+    private Stage      primaryStage;
+    private Button     reloadButton;
+    private Universal  universal;
 
     public UniversalApplication() {
     }
@@ -77,7 +77,8 @@ public class UniversalApplication extends Application implements LayoutModel {
     }
 
     @Override
-    public void apply(ListView<JsonNode> list, Relation relation) {
+    public void apply(VirtualFlow<JsonNode, Cell<JsonNode, ?>> list,
+                      Relation relation) {
         list.setOnMouseClicked(event -> {
             if (list.getItems()
                     .isEmpty()
@@ -88,17 +89,6 @@ public class UniversalApplication extends Application implements LayoutModel {
             doubleClick(list.getSelectionModel()
                             .getSelectedItem(),
                         relation);
-        });
-    }
-
-    @Override
-    public void apply(TableRow<JsonNode> row, Relation relation) {
-        row.setOnMouseClicked(event -> {
-            if (row.isEmpty() || event.getButton() != MouseButton.PRIMARY
-                || event.getClickCount() < 2) {
-                return;
-            }
-            doubleClick(row.getItem(), relation);
         });
     }
 
@@ -214,12 +204,12 @@ public class UniversalApplication extends Application implements LayoutModel {
     }
 
     private AutoLayout layout(Relation root,
-                                  JsonNode node) throws QueryException {
+                              JsonNode node) throws QueryException {
         AutoLayout layout = new AutoLayout(root, this);
         layout.getStylesheets()
               .add(getClass().getResource("/non-nested.css")
                              .toExternalForm());
-        layout.setItem(node);
+        layout.updateItem(node);
         layout.measure(node);
         AnchorPane.setTopAnchor(layout, 0.0);
         AnchorPane.setLeftAnchor(layout, 0.0);

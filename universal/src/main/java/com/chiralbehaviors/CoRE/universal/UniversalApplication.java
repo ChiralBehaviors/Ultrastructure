@@ -21,6 +21,10 @@
 package com.chiralbehaviors.CoRE.universal;
 
 import static com.chiralbehaviors.layout.cell.SelectionEvent.DOUBLE_SELECT;
+import static javafx.scene.layout.AnchorPane.setBottomAnchor;
+import static javafx.scene.layout.AnchorPane.setLeftAnchor;
+import static javafx.scene.layout.AnchorPane.setRightAnchor;
+import static javafx.scene.layout.AnchorPane.setTopAnchor;
 
 import java.io.IOException;
 import java.net.URI;
@@ -48,9 +52,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -95,9 +98,10 @@ public class UniversalApplication extends Application
                                           URISyntaxException, QueryException {
         this.primaryStage = primaryStage;
         anchor = new AnchorPane();
-        VBox.setVgrow(anchor, Priority.ALWAYS);
-        VBox vbox = new VBox(locationBar(), anchor);
-        primaryStage.setScene(new Scene(vbox, 800, 600));
+        BorderPane root = new BorderPane();
+        root.setTop(locationBar());
+        root.setCenter(anchor);
+        primaryStage.setScene(new Scene(root, 800, 600));
         if (universal == null) {
             String spaFile = getParameters().getNamed()
                                             .get("spa");
@@ -206,10 +210,10 @@ public class UniversalApplication extends Application
         AutoLayout layout = new AutoLayout(root, this);
         layout.measure(node);
         layout.updateItem(node);
-        AnchorPane.setTopAnchor(layout, 0.0);
-        AnchorPane.setLeftAnchor(layout, 0.0);
-        AnchorPane.setBottomAnchor(layout, 0.0);
-        AnchorPane.setRightAnchor(layout, 0.0);
+        setTopAnchor(layout, 0.0);
+        setLeftAnchor(layout, 0.0);
+        setBottomAnchor(layout, 0.0);
+        setRightAnchor(layout, 0.0);
         return layout;
     }
 

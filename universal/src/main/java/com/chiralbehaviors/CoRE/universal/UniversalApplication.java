@@ -51,9 +51,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -68,14 +67,13 @@ public class UniversalApplication extends Application
         launch(args);
     }
 
-    private VBox       anchor;
     private Button     backButton;
     private Button     forwardButton;
     private AutoLayout layout;
     private Stage      primaryStage;
     private Button     reloadButton;
     private Universal  universal;
-    private HBox       locationBar;
+    private BorderPane root;
 
     public UniversalApplication() {
     }
@@ -98,12 +96,10 @@ public class UniversalApplication extends Application
     public void start(Stage primaryStage) throws IOException,
                                           URISyntaxException, QueryException {
         this.primaryStage = primaryStage;
-        anchor = new VBox();
-        locationBar = locationBar();
-        VBox.setVgrow(locationBar, Priority.NEVER);
-        anchor.getChildren()
-              .add(locationBar);
-        primaryStage.setScene(new Scene(anchor, 800, 600));
+        root = new BorderPane();
+        HBox locationBar = locationBar();
+        root.setBottom(locationBar);
+        primaryStage.setScene(new Scene(root, 800, 600));
         if (universal == null) {
             String spaFile = getParameters().getNamed()
                                             .get("spa");
@@ -134,15 +130,23 @@ public class UniversalApplication extends Application
         updateLocationBar();
         primaryStage.setTitle(context.getPage()
                                      .getTitle());
+        AutoLayout old = layout;
+
         try {
             layout = layout(context.getRoot(), node);
         } catch (QueryException e) {
             log.error("Unable to display page", e);
             return;
         }
-        VBox.setVgrow(layout, Priority.ALWAYS);
-        anchor.getChildren()
-              .setAll(locationBar, layout);
+        
+        layout.setMinSize(0, 0);
+        layout.setPrefSize(1, 1);
+
+        root.setCenter(layout);
+        if (old != null) {
+            old.dispose();
+        }
+        
     }
 
     private void doubleClick(JsonNode item, Relation relation) {

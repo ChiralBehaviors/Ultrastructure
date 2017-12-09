@@ -51,9 +51,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -68,13 +68,14 @@ public class UniversalApplication extends Application
         launch(args);
     }
 
-    private AnchorPane anchor;
+    private VBox       anchor;
     private Button     backButton;
     private Button     forwardButton;
     private AutoLayout layout;
     private Stage      primaryStage;
     private Button     reloadButton;
     private Universal  universal;
+    private HBox       locationBar;
 
     public UniversalApplication() {
     }
@@ -97,11 +98,12 @@ public class UniversalApplication extends Application
     public void start(Stage primaryStage) throws IOException,
                                           URISyntaxException, QueryException {
         this.primaryStage = primaryStage;
-        anchor = new AnchorPane();
-        BorderPane root = new BorderPane();
-        root.setTop(locationBar());
-        root.setCenter(anchor);
-        primaryStage.setScene(new Scene(root, 800, 600));
+        anchor = new VBox();
+        locationBar = locationBar();
+        VBox.setVgrow(locationBar, Priority.NEVER);
+        anchor.getChildren()
+              .add(locationBar);
+        primaryStage.setScene(new Scene(anchor, 800, 600));
         if (universal == null) {
             String spaFile = getParameters().getNamed()
                                             .get("spa");
@@ -138,8 +140,9 @@ public class UniversalApplication extends Application
             log.error("Unable to display page", e);
             return;
         }
+        VBox.setVgrow(layout, Priority.ALWAYS);
         anchor.getChildren()
-              .setAll(layout);
+              .setAll(locationBar, layout);
     }
 
     private void doubleClick(JsonNode item, Relation relation) {

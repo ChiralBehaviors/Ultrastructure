@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.universal;
 
-import static com.chiralbehaviors.layout.cell.SelectionEvent.DOUBLE_SELECT;
+import static com.chiralbehaviors.layout.cell.control.SelectionEvent.DOUBLE_SELECT;
 import static javafx.scene.layout.AnchorPane.setBottomAnchor;
 import static javafx.scene.layout.AnchorPane.setLeftAnchor;
 import static javafx.scene.layout.AnchorPane.setRightAnchor;
@@ -38,11 +38,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.layout.AutoLayout;
-import com.chiralbehaviors.layout.StyleProvider;
 import com.chiralbehaviors.layout.cell.LayoutCell;
 import com.chiralbehaviors.layout.flowless.VirtualFlow;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.schema.Relation;
+import com.chiralbehaviors.layout.style.Layout;
+import com.chiralbehaviors.layout.style.Layout.LayoutObserver;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.application.Application;
@@ -60,7 +61,7 @@ import javafx.stage.Stage;
  *
  */
 public class UniversalApplication extends Application
-        implements StyleProvider.LayoutModel {
+        implements LayoutObserver {
     private static final Logger log = LoggerFactory.getLogger(UniversalApplication.class);
 
     public static void main(String[] args) {
@@ -83,7 +84,7 @@ public class UniversalApplication extends Application
     }
 
     @Override
-    public <T extends LayoutCell<?>> void apply(VirtualFlow<JsonNode, T> list,
+    public <T extends LayoutCell<?>> void apply(VirtualFlow<T> list,
                                                 Relation relation) {
         Nodes.addInputMap(list, InputMap.consume(DOUBLE_SELECT, e -> {
             doubleClick(list.getSelectionModel()
@@ -138,7 +139,7 @@ public class UniversalApplication extends Application
             log.error("Unable to display page", e);
             return;
         }
-        
+
         layout.setMinSize(0, 0);
         layout.setPrefSize(1, 1);
 
@@ -146,7 +147,7 @@ public class UniversalApplication extends Application
         if (old != null) {
             old.dispose();
         }
-        
+
     }
 
     private void doubleClick(JsonNode item, Relation relation) {
@@ -214,7 +215,7 @@ public class UniversalApplication extends Application
 
     private AutoLayout layout(Relation root,
                               JsonNode node) throws QueryException {
-        AutoLayout layout = new AutoLayout(root, this);
+        AutoLayout layout = new AutoLayout(root, new Layout(this));
         layout.measure(node);
         layout.updateItem(node);
         setTopAnchor(layout, 0.0);

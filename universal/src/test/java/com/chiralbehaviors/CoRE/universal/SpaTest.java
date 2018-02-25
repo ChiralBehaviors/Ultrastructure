@@ -52,7 +52,7 @@ public class SpaTest {
         Context ctx = new Context(false, "foo", page);
         assertEquals("foo", ctx.getFrame());
         assertEquals(page, ctx.getPage());
-        assertEquals("query", ctx.getRoot()
+        assertEquals("singlePageApplications", ctx.getRoot()
                                  .getField());
         Relation relation = new Relation("singlePageApplications");
         assertEquals(page.getNavigation(relation), ctx.getNavigation(relation));

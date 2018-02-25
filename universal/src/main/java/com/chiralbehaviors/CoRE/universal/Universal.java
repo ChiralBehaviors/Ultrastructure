@@ -193,8 +193,11 @@ public class Universal {
         Route route = current.getNavigation(relation);
         if (route != null) {
             try {
-                push(extract(current.getFrame(), route, node));
-                display();
+                Context next = extract(current.getFrame(), route, node);
+                if (next != null) {
+                    push(next);
+                    display();
+                }
             } catch (QueryException e) {
                 log.error("Unable to push page: %s", route.getPath(), e);
             }
@@ -281,6 +284,7 @@ public class Universal {
             if (routedFrame == null) {
                 log.warn("Invalid routing frame by {} route: {}",
                          route.getFrameBy(), route.getPath());
+                return null;
             }
             frame = routedFrame.asText();
         }

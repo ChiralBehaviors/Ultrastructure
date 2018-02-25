@@ -14,14 +14,14 @@ spa {
         style: '{"labels" : {"/workspaces/imports/_edge":"imports"} }'
         
         workspaces {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
         imports { 
             launch: by /id 00000000-0000-0004-0000-000000000003
         }
     }
     
-    workspace {
+    workspaces {
         name: "Workspace Detail"
         description: "Detail for workspace"
         title: "Ye workspace detail"

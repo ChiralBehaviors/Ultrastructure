@@ -42,8 +42,8 @@ import com.chiralbehaviors.layout.cell.LayoutCell;
 import com.chiralbehaviors.layout.flowless.VirtualFlow;
 import com.chiralbehaviors.layout.graphql.GraphQlUtil.QueryException;
 import com.chiralbehaviors.layout.schema.Relation;
-import com.chiralbehaviors.layout.style.Layout;
-import com.chiralbehaviors.layout.style.Layout.LayoutObserver;
+import com.chiralbehaviors.layout.style.Style;
+import com.chiralbehaviors.layout.style.Style.LayoutObserver;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import javafx.application.Application;
@@ -215,7 +215,7 @@ public class UniversalApplication extends Application
 
     private AutoLayout layout(Relation root,
                               JsonNode node) throws QueryException {
-        AutoLayout layout = new AutoLayout(root, new Layout(this));
+        AutoLayout layout = new AutoLayout(root, new Style(this));
         layout.measure(node);
         layout.updateItem(node);
         setTopAnchor(layout, 0.0);

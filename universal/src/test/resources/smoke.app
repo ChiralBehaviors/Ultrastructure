@@ -103,7 +103,7 @@ spa {
         query: 'wsp/agencyDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -114,7 +114,7 @@ spa {
         query: 'wsp/attributeDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -125,7 +125,7 @@ spa {
         query: 'wsp/intervalDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -136,7 +136,7 @@ spa {
         query: 'wsp/locationDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -147,7 +147,7 @@ spa {
         query: 'wsp/productDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -162,7 +162,7 @@ spa {
         }
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -173,7 +173,7 @@ spa {
         query: 'wsp/statusCodeDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -184,7 +184,7 @@ spa {
         query: 'wsp/unitDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
         
@@ -195,7 +195,7 @@ spa {
         query: 'wsp/existentialDetail.query'
         
         workspace {
-            navigate: workspace by /id meta {id:/id}
+            navigate: workspaces by /id meta {id:/id}
         }
     }
 }

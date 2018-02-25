@@ -275,6 +275,10 @@ public class Universal {
              });
 
         Page target = application.route(route.getPath());
+        if (target == null) {
+            log.warn("Invalid route: {}", route.getPath());
+            return null;
+        }
         String frame = workspace;
         boolean meta = route.isMeta();
         if (target.getFrame() != null) {

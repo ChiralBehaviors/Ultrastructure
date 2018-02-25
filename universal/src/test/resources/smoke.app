@@ -13,7 +13,7 @@ spa {
         query: 'wsp/allWorkspaces.query'
         style: '{"labels" : {"/workspaces/imports/_edge":"imports"} }'
         
-        workspaces {
+        workspace {
             navigate: workspace by /id meta {id:/id}
         }
         imports { 

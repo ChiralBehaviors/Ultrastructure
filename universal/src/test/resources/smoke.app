@@ -13,15 +13,15 @@ spa {
         query: 'wsp/allWorkspaces.query'
         style: '{"labels" : {"/workspaces/imports/_edge":"imports"} }'
         
-        workspace {
-            navigate: workspace by /id meta {id:/id}
+        workspaces {
+            navigate: workspaces by /id meta {id:/id}
         }
         imports { 
             launch: by /id 00000000-0000-0004-0000-000000000003
         }
     }
     
-    workspace {
+    workspaces {
         name: "Workspace Detail"
         description: "Detail for workspace"
         title: "Ye workspace detail"

@@ -14,14 +14,14 @@ spa {
         style: '{"labels" : {"/workspaces/imports/_edge":"imports"} }'
         
         workspaces {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
         imports { 
             launch: by /id 00000000-0000-0004-0000-000000000003
         }
     }
     
-    workspaces {
+    workspace {
         name: "Workspace Detail"
         description: "Detail for workspace"
         title: "Ye workspace detail"
@@ -103,7 +103,7 @@ spa {
         query: 'wsp/agencyDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -114,7 +114,7 @@ spa {
         query: 'wsp/attributeDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -125,7 +125,7 @@ spa {
         query: 'wsp/intervalDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -136,7 +136,7 @@ spa {
         query: 'wsp/locationDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -147,7 +147,7 @@ spa {
         query: 'wsp/productDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -162,7 +162,7 @@ spa {
         }
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -173,7 +173,7 @@ spa {
         query: 'wsp/statusCodeDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -184,7 +184,7 @@ spa {
         query: 'wsp/unitDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
         
@@ -195,7 +195,7 @@ spa {
         query: 'wsp/existentialDetail.query'
         
         workspace {
-            navigate: workspaces by /id meta {id:/id}
+            navigate: workspace by /id meta {id:/id}
         }
     }
 }

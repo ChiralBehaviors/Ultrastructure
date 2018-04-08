@@ -29,6 +29,7 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.postgresql.Driver;
 
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,8 +49,10 @@ public class Configuration extends CoreDbConfiguration {
     }
 
     // Used in testing to avoid creating emf and out of band txns
+    @JsonIgnore
     private transient DSLContext create;
 
+    @SuppressWarnings("deprecation")
     public Configuration() {
         create = null;
         Driver.getVersion();

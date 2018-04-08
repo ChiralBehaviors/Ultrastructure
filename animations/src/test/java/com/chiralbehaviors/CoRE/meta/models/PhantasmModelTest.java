@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.junit.Test;
@@ -131,7 +131,7 @@ public class PhantasmModelTest extends AbstractModelTest {
                      .newExistentialAttributeAuthorization(facet, timestamp);
         value.insert();
         model.getPhantasmModel()
-             .setValue(value, new Timestamp(System.currentTimeMillis()));
+             .setValue(value, OffsetDateTime.now());
 
     }
 
@@ -214,7 +214,7 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                   timestamp);
         value.insert();
         model.getPhantasmModel()
-             .setValue(value, new Timestamp(System.currentTimeMillis()));
+             .setValue(value, OffsetDateTime.now());
 
     }
 
@@ -329,7 +329,7 @@ public class PhantasmModelTest extends AbstractModelTest {
         value = model.records()
                      .newExistentialAttribute(core, timestamp);
         value.insert();
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        OffsetDateTime ts = OffsetDateTime.now();
         model.getPhantasmModel()
              .setValue(value, ts);
         model.getPhantasmModel()
@@ -445,7 +445,7 @@ public class PhantasmModelTest extends AbstractModelTest {
                      .newExistentialNetworkAttribute(edge, timestamp);
         value.insert();
         model.getPhantasmModel()
-             .setValue(value, new Timestamp(System.currentTimeMillis()));
+             .setValue(value, OffsetDateTime.now());
 
     }
 

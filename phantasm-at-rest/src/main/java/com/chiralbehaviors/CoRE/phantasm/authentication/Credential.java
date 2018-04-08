@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +52,7 @@ public class Credential {
      * @return true if the credential is valid at the current time, given the
      *         last updated timestamp of the credential
      */
-    public boolean isValid(Timestamp lastUpdated, Timestamp currentTime) {
+    public boolean isValid(OffsetDateTime lastUpdated, OffsetDateTime currentTime) {
         return lastUpdated.toInstant()
                           .plusMillis(ttl)
                           .isAfter(currentTime.toInstant());

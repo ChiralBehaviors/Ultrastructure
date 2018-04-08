@@ -31,6 +31,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -143,7 +144,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 valueEq = EXISTENTIAL_ATTRIBUTE.TEXT_VALUE.eq((String) query);
                 break;
             case Timestamp:
-                valueEq = EXISTENTIAL_ATTRIBUTE.TIMESTAMP_VALUE.eq((Timestamp) query);
+                valueEq = EXISTENTIAL_ATTRIBUTE.TIMESTAMP_VALUE.eq((OffsetDateTime) query);
                 break;
             default:
                 throw new IllegalStateException(String.format("Unknown value type: %s",
@@ -713,7 +714,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 auth.setTextValue((String) value);
                 break;
             case Timestamp:
-                auth.setTimestampValue((Timestamp) value);
+                auth.setTimestampValue((OffsetDateTime) value);
                 break;
             case JSON:
                 auth.setJsonValue((JsonNode) value);
@@ -751,7 +752,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 attributeValue.setTextValue((String) value);
                 break;
             case Timestamp:
-                attributeValue.setTimestampValue((Timestamp) value);
+                attributeValue.setTimestampValue((OffsetDateTime) value);
                 break;
             case JSON:
                 attributeValue.setJsonValue((JsonNode) value);
@@ -763,7 +764,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         attributeValue.setUpdatedBy(model.getCurrentPrincipal()
                                          .getPrincipal()
                                          .getId());
-        attributeValue.setUpdated(new Timestamp(System.currentTimeMillis()));
+        attributeValue.setUpdated(OffsetDateTime.now());
         attributeValue.update();
     }
 
@@ -789,7 +790,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 auth.setTextValue((String) value);
                 break;
             case Timestamp:
-                auth.setTimestampValue((Timestamp) value);
+                auth.setTimestampValue((OffsetDateTime) value);
                 break;
             case JSON:
                 auth.setJsonValue((JsonNode) value);
@@ -827,7 +828,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 attributeValue.setTextValue((String) value);
                 break;
             case Timestamp:
-                attributeValue.setTimestampValue((Timestamp) value);
+                attributeValue.setTimestampValue((OffsetDateTime) value);
                 break;
             case JSON:
                 attributeValue.setJsonValue((JsonNode) value);
@@ -840,7 +841,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         attributeValue.setUpdatedBy(model.getCurrentPrincipal()
                                          .getPrincipal()
                                          .getId());
-        attributeValue.setUpdated(new Timestamp(System.currentTimeMillis()));
+        attributeValue.setUpdated(OffsetDateTime.now());
         attributeValue.update();
     }
 
@@ -986,7 +987,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 throw new IllegalStateException(String.format("Unknown value type %s",
                                                               attribute.getValueType()));
         }
-        value.setUpdated(new Timestamp(System.currentTimeMillis()));
+        value.setUpdated(OffsetDateTime.now());
         value.update();
     }
 }

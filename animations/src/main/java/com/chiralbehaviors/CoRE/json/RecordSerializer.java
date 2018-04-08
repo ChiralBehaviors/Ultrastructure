@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  *
  */
 public class RecordSerializer extends JsonSerializer<Record> {
+    @SuppressWarnings("deprecation")
     @Override
     public void serializeWithType(Record value, JsonGenerator gen,
                                   SerializerProvider provider,

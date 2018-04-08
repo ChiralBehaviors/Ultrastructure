@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -114,7 +114,7 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
 
         // Validate time to live
         UUID agency = accessToken.getExistential();
-        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        OffsetDateTime currentTime = OffsetDateTime.now();
         if (!credential.isValid(accessToken.getUpdated(), currentTime)) {
             log.warn("requested access token {} for {}:{} has timed out",
                      requestCredentials, agency, model.records()
@@ -125,15 +125,15 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
 
         // Validate agency has login cap to this core instance
         if (!model.checkExistentialPermission(credential.roles.stream()
-                                                   .map(id -> model.records()
-                                                                   .resolve(id))
-                                                   .filter(a -> a != null)
-                                                   .map(e -> (Agency) e)
-                                                   .collect(Collectors.toList()),
-                                   model.getCoreInstance()
-                                        .getRuleform(),
-                                   model.getKernel()
-                                        .getLOGIN_TO())) {
+                                                              .map(id -> model.records()
+                                                                              .resolve(id))
+                                                              .filter(a -> a != null)
+                                                              .map(e -> (Agency) e)
+                                                              .collect(Collectors.toList()),
+                                              model.getCoreInstance()
+                                                   .getRuleform(),
+                                              model.getKernel()
+                                                   .getLOGIN_TO())) {
             log.warn("requested access token {} for {}:{} has no login capability",
                      requestCredentials, agency, model.records()
                                                       .existentialName(agency));

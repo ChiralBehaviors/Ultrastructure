@@ -120,7 +120,7 @@ public class JobChronology {
     @GraphQLField
     public Long getUpdateDate() {
         return record.getUpdateDate()
-                     .getTime();
+                     .toInstant().toEpochMilli();
     }
 
     @GraphQLField

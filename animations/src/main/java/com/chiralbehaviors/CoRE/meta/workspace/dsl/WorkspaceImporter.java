@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
-
-import javax.management.openmbean.InvalidKeyException;
 
 import org.antlr.v4.runtime.Token;
 
@@ -778,10 +778,10 @@ public class WorkspaceImporter {
                 return id;
             }
         }
-        throw new InvalidKeyException(String.format("Cannot resolve %s:%s",
-                                                    qualifiedName.namespace == null ? ""
-                                                                                    : qualifiedName.namespace.getText(),
-                                                    qualifiedName.member.getText()));
+        throw new IllegalArgumentException(String.format("Cannot resolve %s:%s",
+                                                         qualifiedName.namespace == null ? ""
+                                                                                         : qualifiedName.namespace.getText(),
+                                                         qualifiedName.member.getText()));
     }
 
     private ExistentialRuleform resolveAnyEntity(String anyType) {
@@ -924,7 +924,9 @@ public class WorkspaceImporter {
                 return;
             case Timestamp:
                 model.getPhantasmModel()
-                     .setValue(auth, new Timestamp(Long.parseLong(value)));
+                     .setValue(auth,
+                               OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
+                                                        ZoneId.of("UTC")));
                 return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
@@ -971,7 +973,8 @@ public class WorkspaceImporter {
             case Timestamp:
                 model.getPhantasmModel()
                      .setValue(attributeValue,
-                               new Timestamp(Long.parseLong(value)));
+                               OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
+                                                        ZoneId.of("UTC")));
                 return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
@@ -1017,7 +1020,9 @@ public class WorkspaceImporter {
                 return;
             case Timestamp:
                 model.getPhantasmModel()
-                     .setValue(auth, new Timestamp(Long.parseLong(value)));
+                     .setValue(auth,
+                               OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
+                                                        ZoneId.of("UTC")));
                 return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
@@ -1063,7 +1068,9 @@ public class WorkspaceImporter {
                 return;
             case Timestamp:
                 model.getPhantasmModel()
-                     .setValue(auth, new Timestamp(Long.parseLong(value)));
+                     .setValue(auth,
+                               OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
+                                                        ZoneId.of("UTC")));
                 return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",

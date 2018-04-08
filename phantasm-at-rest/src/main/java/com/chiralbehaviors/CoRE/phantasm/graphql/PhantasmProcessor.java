@@ -91,6 +91,7 @@ public class PhantasmProcessor extends GraphQLAnnotations
         return defaultTypeFunction;
     }
 
+    @SuppressWarnings("deprecation")
     public GraphQLFieldDefinition getPluginField(Method method,
                                                  Class<? extends Phantasm> phantasm) throws InstantiationException,
                                                                                      IllegalAccessException {
@@ -192,6 +193,7 @@ public class PhantasmProcessor extends GraphQLAnnotations
             this.phantasm = phantasm;
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public Object get(DataFetchingEnvironment environment) {
             environment = new DataFetchingEnvironment(WorkspaceSchema.ctx(environment)

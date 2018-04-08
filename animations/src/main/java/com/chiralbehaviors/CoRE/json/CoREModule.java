@@ -50,6 +50,7 @@ public class CoREModule extends SimpleModule {
         ObjectMapper objectMapper = (ObjectMapper) context.getOwner();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.enableDefaultTyping();
+        objectMapper.findAndRegisterModules();
         addSerializer(new RecordSerializer());
         List<Class<?>> subTypes = new ArrayList<>();
         Ruleform.RULEFORM.getTables()

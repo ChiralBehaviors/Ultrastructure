@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -128,15 +128,16 @@ public class AuthxResource extends TransactionalResource {
                                                        .getAttributeValues(user.getRuleform(),
                                                                            model.getKernel()
                                                                                 .getAccessToken());
-        int seqNum = values.isEmpty() ? 0 : values.get(values.size() - 1)
-                                                  .getSequenceNumber()
-                                            + 1;
+        int seqNum = values.isEmpty() ? 0
+                                      : values.get(values.size() - 1)
+                                              .getSequenceNumber()
+                                        + 1;
         ExistentialAttributeRecord accessToken = model.records()
                                                       .newExistentialAttribute(user.getRuleform(),
                                                                                model.getKernel()
                                                                                     .getAccessToken());
         accessToken.setJsonValue(new ObjectMapper().valueToTree(cred));
-        accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
+        accessToken.setUpdated(OffsetDateTime.now());
         accessToken.setSequenceNumber(seqNum);
         accessToken.insert();
         return accessToken;

@@ -120,7 +120,8 @@ public class AttributeAuthorization {
             return null;
         }
         return record.getTimestampValue()
-                     .getTime();
+                     .toInstant()
+                     .toEpochMilli();
     }
 
     @GraphQLField

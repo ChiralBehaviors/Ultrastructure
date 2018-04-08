@@ -43,7 +43,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
@@ -303,7 +303,7 @@ public interface RecordsFactory {
         ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
-        record.setUpdated(new Timestamp(System.currentTimeMillis()));
+        record.setUpdated(OffsetDateTime.now());
         record.setSequenceNumber(0);
         return record;
     }
@@ -356,7 +356,7 @@ public interface RecordsFactory {
     default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute() {
         ExistentialNetworkAttributeRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
         record.setId(GENERATOR.generate());
-        record.setUpdated(new Timestamp(System.currentTimeMillis()));
+        record.setUpdated(OffsetDateTime.now());
         return record;
     }
 
@@ -452,7 +452,7 @@ public interface RecordsFactory {
         record.setStatus(job.getStatus());
         record.setUpdatedBy(job.getUpdatedBy());
         record.setService(job.getService());
-        record.setUpdateDate(new Timestamp(System.currentTimeMillis()));
+        record.setUpdateDate(OffsetDateTime.now());
         return record;
 
     }

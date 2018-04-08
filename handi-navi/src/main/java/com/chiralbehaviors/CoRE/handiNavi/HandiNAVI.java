@@ -79,6 +79,7 @@ public class HandiNAVI extends JFrame {
     }
 
     public static void runAnotherApp(Class<? extends Application> anotherAppClass) throws Exception {
+        @SuppressWarnings("deprecation")
         Application app2 = anotherAppClass.newInstance();
         Stage anotherStage = new Stage();
         Platform.setImplicitExit(false);

@@ -15,22 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>thing-ontology</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -41,6 +26,21 @@
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>dsl</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>thing-ontology</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>

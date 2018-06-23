@@ -3,7 +3,7 @@ auth: BASIC_DIGEST
 useCORS: true
 
 logging:
-  level: TRACE
+  level: INFO
   loggers:
     com.chiralbehaviors: ${core.log.level}
     "org.apache.tomcat": TRACE
@@ -15,5 +15,3 @@ database:
     user: ${db.login}
     password: ${db.password}
     driverClass: org.postgresql.Driver
-    executeLogging: true
-    attachRecords: true

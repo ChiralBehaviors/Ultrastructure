@@ -3,10 +3,10 @@ auth: BASIC_DIGEST
 useCORS: true
 
 logging:
-  level: WARN
+  level: TRACE
   loggers:
     com.chiralbehaviors: ${core.log.level}
-    org.jooq: WARN
+    "org.apache.tomcat": TRACE
     org.glassfish: WARN
     graphql: WARN
 
@@ -15,4 +15,5 @@ database:
     user: ${db.login}
     password: ${db.password}
     driverClass: org.postgresql.Driver
-    maxSize: 2
+    executeLogging: true
+    attachRecords: true

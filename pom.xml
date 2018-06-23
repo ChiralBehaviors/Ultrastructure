@@ -46,7 +46,7 @@
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
 		<jooq.version>3.10.7</jooq.version>
 		<jaxb.version>2.2.11</jaxb.version>
-		<liquibase.version>3.5.3</liquibase.version>
+		<liquibase.version>3.6.1</liquibase.version>
 		<slf4j.version>1.7.25</slf4j.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

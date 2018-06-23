@@ -11,8 +11,6 @@
     <include relativeToChangelogFile="true" file="tables/existential_network.xml" />
     <include relativeToChangelogFile="true" file="tables/facet.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_authorization.xml" />
-    <include relativeToChangelogFile="true" file="tables/existential_network_attribute.xml" />
-    <include relativeToChangelogFile="true" file="tables/existential_network_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/protocol.xml" />
     <include relativeToChangelogFile="true" file="tables/job.xml" />

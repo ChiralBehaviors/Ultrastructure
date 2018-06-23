@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.phantasm;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
@@ -50,7 +49,6 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -337,105 +335,6 @@ public class RbacTest extends AbstractModelTest {
                                                      .getNotApplicableAgency()),
                                          instance, model.getKernel()
                                                         .getHadMember()));
-    }
-
-    @Test
-    public void testNetworkAttributePermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-        WorkspaceScope scope = thing1.getScope();
-
-        FacetRecord facet = model.getPhantasmModel()
-                                 .getFacetDeclaration(model.getKernel()
-                                                           .getIsA(),
-                                                      scope.lookup("Thing1"));
-
-        Attribute aliases = (Attribute) scope.lookup("aliases");
-        assertNotNull(aliases);
-
-        Relationship relationship = scope.lookup("thing1Of");
-        assertNotNull(relationship);
-
-        ExistentialNetworkAuthorizationRecord auth = model.create()
-                                                          .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                          .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
-                                                          .fetchOne();
-
-        assertNotNull(auth);
-
-        ExistentialNetworkAttributeAuthorizationRecord stateAuth = model.create()
-                                                                        .selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
-                                                                        .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(auth.getId()))
-                                                                        .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(aliases.getId()))
-                                                                        .fetchOne();
-
-        assertNotNull(stateAuth);
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        stateAuth.setAuthority(model.getKernel()
-                                    .getAnyAgency()
-                                    .getId());
-        stateAuth.update();
-
-        assertFalse(model.checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-        model.executeAs(model.principalFrom(model.getKernel()
-                                                 .getCore(),
-                                            Collections.singletonList(model.getKernel()
-                                                                           .getCore())),
-                        () -> {
-                            assertTrue(model.checkPermission(stateAuth,
-                                                             model.getKernel()
-                                                                  .getHadMember()));
-                            return null;
-                        });
-
-        model.getPhantasmModel()
-             .getAttributeValue(model.getKernel()
-                                     .getCore(),
-                                model.getKernel()
-                                     .getHadMember(),
-                                model.getKernel()
-                                     .getSameAgency(),
-                                aliases);
-
-        assertFalse(model.checkPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getNotApplicableAgency(),
-                   model.getKernel()
-                        .getMemberOf(),
-                   model.getKernel()
-                        .getCore());
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
     }
 
     @Test

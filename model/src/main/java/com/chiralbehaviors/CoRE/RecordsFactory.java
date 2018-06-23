@@ -25,8 +25,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
@@ -64,8 +62,6 @@ import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -353,44 +349,6 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute() {
-        ExistentialNetworkAttributeRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
-        record.setId(GENERATOR.generate());
-        record.setUpdated(OffsetDateTime.now());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(Attribute attribute) {
-        ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
-        record.setAttribute(attribute.getId());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(ExistentialNetworkRecord edge,
-                                                                             Attribute attribute) {
-        ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
-        record.setAttribute(attribute.getId());
-        record.setEdge(edge.getId());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
-        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(ExistentialNetworkAuthorizationRecord auth,
-                                                                                                       Attribute attribute) {
-        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        record.setAuthorizedAttribute(attribute.getId());
-        record.setNetworkAuthorization(auth.getId());
-        return record;
-    }
 
     default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
         ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
@@ -398,7 +356,6 @@ public interface RecordsFactory {
         record.setUpdatedBy(currentPrincipalId());
         return record;
     }
-
     default FacetRecord newFacet() {
         FacetRecord record = create().newRecord(FACET);
         record.setId(GENERATOR.generate());
@@ -734,27 +691,6 @@ public interface RecordsFactory {
                                                    ExistentialAttributeRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Attribute);
-    }
-
-    default WorkspaceLabelRecord newWorkspaceLabel(String key,
-                                                   Product definingProduct,
-                                                   ExistentialNetworkAttributeAuthorizationRecord record) {
-        return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Network_Attribute_Authorization);
-    }
-
-    default WorkspaceLabelRecord newWorkspaceLabel(String key,
-                                                   Product definingProduct,
-                                                   ExistentialNetworkAttributeRecord record) {
-        return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Network_Attribute);
-    }
-
-    default WorkspaceLabelRecord newWorkspaceLabel(String key,
-                                                   Product definingProduct,
-                                                   ExistentialNetworkAuthorizationRecord record) {
-        return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Network_Authorization);
     }
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,

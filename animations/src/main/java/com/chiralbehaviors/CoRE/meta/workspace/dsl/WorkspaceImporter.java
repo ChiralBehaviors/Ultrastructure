@@ -550,8 +550,6 @@ public class WorkspaceImporter {
                                                                                             child);
                 workspace.add(link.a);
                 workspace.add(link.b);
-
-                setNetworkAttributes(edge.attributeValue(), link.a.getId());
             }
         }
     }
@@ -816,25 +814,6 @@ public class WorkspaceImporter {
         }
     }
 
-    private void resolveChild(ConstraintContext constraint,
-                              ExistentialNetworkAuthorizationRecord authorization) {
-        if (constraint.anyType == null) {
-            authorization.setChild(model.getPhantasmModel()
-                                        .getFacetDeclaration(model.records()
-                                                                  .resolve(resolve(constraint.authorizedRelationship)),
-                                                             model.records()
-                                                                  .resolve(resolve(constraint.authorizedParent)))
-                                        .getId());
-        } else {
-            authorization.setChild(model.getPhantasmModel()
-                                        .getFacetDeclaration(model.getKernel()
-                                                                  .getAnyRelationship(),
-                                                             model.records()
-                                                                  .resolve(resolveAnyEntity(constraint.anyType.getText()).getId()))
-                                        .getId());
-        }
-    }
-
     private void setAttributes(List<AttributeValueContext> attributes,
                                UUID id) {
         for (AttributeValueContext av : attributes) {
@@ -862,28 +841,6 @@ public class WorkspaceImporter {
             setValueFromString(attr, aValue,
                                WorkspacePresentation.stripQuotes(av.value.getText()));
             workspace.add(aValue);
-        }
-    }
-
-    private void setNetworkAttributes(List<AttributeValueContext> attributes,
-                                      UUID id) {
-        for (AttributeValueContext av : attributes) {
-            ExistentialNetworkAttributeRecord edgeAttribute = model.records()
-                                                                   .newExistentialNetworkAttribute();
-            edgeAttribute.setEdge(id);
-            Attribute attr = model.records()
-                                  .resolve(resolve(av.attribute));
-            edgeAttribute.setAttribute(attr.getId());
-            edgeAttribute.setUpdatedBy(model.getCurrentPrincipal()
-                                            .getPrincipal()
-                                            .getId());
-            if (av.sequenceNumber != null) {
-                edgeAttribute.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-            }
-            edgeAttribute.insert();
-            setValueFromString(attr, edgeAttribute,
-                               WorkspacePresentation.stripQuotes(av.value.getText()));
-            workspace.add(edgeAttribute);
         }
     }
 
@@ -973,102 +930,6 @@ public class WorkspaceImporter {
             case Timestamp:
                 model.getPhantasmModel()
                      .setValue(attributeValue,
-                               OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
-                                                        ZoneId.of("UTC")));
-                return;
-            default:
-                throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              authorizedAttribute.getValueType()));
-        }
-    }
-
-    private void setValueFromString(Attribute authorizedAttribute,
-                                    ExistentialNetworkAttributeAuthorizationRecord auth,
-                                    String value) {
-
-        switch (authorizedAttribute.getValueType()) {
-            case Binary:
-                model.getPhantasmModel()
-                     .setValue(auth, value.getBytes());
-                return;
-            case Boolean:
-                model.getPhantasmModel()
-                     .setValue(auth, Boolean.valueOf(value));
-                return;
-            case Integer:
-                model.getPhantasmModel()
-                     .setValue(auth, Integer.parseInt(value));
-                return;
-            case Numeric:
-                model.getPhantasmModel()
-                     .setValue(auth, BigDecimal.valueOf(Long.parseLong(value)));
-                return;
-            case Text:
-                model.getPhantasmModel()
-                     .setValue(auth, value);
-                return;
-            case JSON:
-                try {
-                    model.getPhantasmModel()
-                         .setValue(auth, new ObjectMapper().reader()
-                                                           .readTree(value));
-                } catch (IOException e) {
-                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
-                                                                     value),
-                                                       e);
-                }
-                return;
-            case Timestamp:
-                model.getPhantasmModel()
-                     .setValue(auth,
-                               OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
-                                                        ZoneId.of("UTC")));
-                return;
-            default:
-                throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              authorizedAttribute.getValueType()));
-        }
-    }
-
-    private void setValueFromString(Attribute authorizedAttribute,
-                                    ExistentialNetworkAttributeRecord auth,
-                                    String value) {
-
-        switch (authorizedAttribute.getValueType()) {
-            case Binary:
-                model.getPhantasmModel()
-                     .setValue(auth, value.getBytes());
-                return;
-            case Boolean:
-                model.getPhantasmModel()
-                     .setValue(auth, Boolean.valueOf(value));
-                return;
-            case Integer:
-                model.getPhantasmModel()
-                     .setValue(auth, Integer.parseInt(value));
-                return;
-            case Numeric:
-                model.getPhantasmModel()
-                     .setValue(auth, BigDecimal.valueOf(Long.parseLong(value)));
-                return;
-            case Text:
-                model.getPhantasmModel()
-                     .setValue(auth, value);
-                return;
-            case JSON:
-                try {
-                    model.getPhantasmModel()
-                         .setValue(auth, new ObjectMapper().reader()
-                                                           .readTree(value));
-                } catch (IOException e) {
-                    throw new IllegalArgumentException(String.format("Invalid JSON: %s",
-                                                                     value),
-                                                       e);
-                }
-                return;
-            case Timestamp:
-                model.getPhantasmModel()
-                     .setValue(auth,
                                OffsetDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(value)),
                                                         ZoneId.of("UTC")));
                 return;

@@ -101,19 +101,11 @@ public class RecordsFactoryTest extends DatabaseTest {
         facet.insert();
         RECORDS.newExistentialAttributeAuthorization(facet,
                                                      RECORDS.newAttribute());
-        RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
-                                                            attribute);
         RECORDS.newExistentialNetwork();
 
         RECORDS.newExistentialNetworkAuthorization();
-        RECORDS.newExistentialNetworkAttributeAuthorization();
-
-        RECORDS.newExistentialNetworkAttributeAuthorization(RECORDS.newExistentialNetworkAuthorization(),
-                                                            attribute);
         RECORDS.newExistentialNetwork(agency, RECORDS.newRelationship(),
                                       agency);
-        RECORDS.newExistentialNetworkAttribute();
-        RECORDS.newExistentialNetworkAttribute(RECORDS.newAttribute());
         RECORDS.newExistentialAttributeAuthorization();
         RECORDS.newExistentialAttributeAuthorization(facet,
                                                      RECORDS.newAttribute());
@@ -178,12 +170,6 @@ public class RecordsFactoryTest extends DatabaseTest {
                                           RECORDS.newExistentialAttributeAuthorization());
         RECORDS.newWorkspaceLabel("", p,
                                           RECORDS.newExistentialNetwork());
-        RECORDS.newWorkspaceLabel("", p,
-                                          RECORDS.newExistentialNetworkAttribute());
-        RECORDS.newWorkspaceLabel("", p,
-                                          RECORDS.newExistentialNetworkAttributeAuthorization());
-        RECORDS.newWorkspaceLabel("", p,
-                                          RECORDS.newExistentialNetworkAuthorization());
         RECORDS.newWorkspaceLabel("", p, facet);
         RECORDS.newWorkspaceLabel("", p, RECORDS.newJob());
         RECORDS.newWorkspaceLabel("", p, RECORDS.newJobChronology());
@@ -240,7 +226,5 @@ public class RecordsFactoryTest extends DatabaseTest {
         assertEquals(unit.getId(), RECORDS.resolve(unit.getId())
                                           .getId());
         assertNull(RECORDS.resolveJob(UUID.randomUUID()));
-        RECORDS.newExistentialNetworkAttribute(RECORDS.newExistentialNetwork(),
-                                               attribute);
     }
 }

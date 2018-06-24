@@ -71,10 +71,6 @@ public class Facet {
             return (String) state.get("name");
         }
 
-        @GraphQLField
-        public String getNotes() {
-            return (String) state.get("notes");
-        }
 
         public void update(FacetRecord record) {
             if (state.containsKey("authority")) {
@@ -88,9 +84,6 @@ public class Facet {
             }
             if (state.containsKey("name")) {
                 record.setName((String) state.get("name"));
-            }
-            if (state.containsKey("notes")) {
-                record.setNotes((String) state.get("notes"));
             }
         }
     }
@@ -171,11 +164,6 @@ public class Facet {
     @GraphQLField
     public String getName() {
         return record.getName();
-    }
-
-    @GraphQLField
-    public String getNotes() {
-        return record.getNotes();
     }
 
     public FacetRecord getRecord() {

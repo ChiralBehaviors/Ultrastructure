@@ -299,7 +299,7 @@ public class MetaSchemaTest extends AbstractModelTest {
         variables.put("id", result.get("createFacet")
                                   .get("id")
                                   .asText());
-        execute("mutation m($id: ID! $auth: ID) { updateFacet(state: {id: $id notes:\"foo\" authority: $auth}) {id} }",
+        execute("mutation m($id: ID! $auth: ID) { updateFacet(state: {id: $id authority: $auth}) {id} }",
                 variables);
 
         execute("mutation m($id: ID!) { deleteFacet(id: $id) }", variables);

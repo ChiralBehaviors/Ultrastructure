@@ -216,7 +216,6 @@ abstract public class Bootstrap {
         anyAgency.setClassifier(WellKnownRelationship.ANY.id());
         anyAgency.setClassification(WellKnownAgency.ANY.id());
         anyAgency.setName("AnyAgency");
-        anyAgency.setNotes("The facet that represents any agency");
         anyAgency.insert();
         populate(anyAgency, kernelWorkspace);
 
@@ -224,7 +223,6 @@ abstract public class Bootstrap {
         anyAttribute.setClassifier(WellKnownRelationship.ANY.id());
         anyAttribute.setClassification(WellKnownAttribute.ANY.id());
         anyAttribute.setName("AnyAttribute");
-        anyAttribute.setNotes("The facet that represents any attribute");
         anyAttribute.insert();
         populate(anyAttribute, kernelWorkspace);
 
@@ -232,7 +230,6 @@ abstract public class Bootstrap {
         anyInterval.setClassifier(WellKnownRelationship.ANY.id());
         anyInterval.setClassification(WellKnownInterval.ANY.id());
         anyInterval.setName("AnyInterval");
-        anyInterval.setNotes("The facet that represents any interval");
         anyInterval.insert();
         populate(anyInterval, kernelWorkspace);
 
@@ -240,7 +237,6 @@ abstract public class Bootstrap {
         anyLocation.setClassifier(WellKnownRelationship.ANY.id());
         anyLocation.setClassification(WellKnownLocation.ANY.id());
         anyLocation.setName("AnyLocation");
-        anyLocation.setNotes("The facet that represents any location");
         anyLocation.insert();
         populate(anyLocation, kernelWorkspace);
 
@@ -248,7 +244,6 @@ abstract public class Bootstrap {
         anyProduct.setClassifier(WellKnownRelationship.ANY.id());
         anyProduct.setClassification(WellKnownProduct.ANY.id());
         anyProduct.setName("AnyProduct");
-        anyProduct.setNotes("The facet that represents any product");
         anyProduct.insert();
         populate(anyProduct, kernelWorkspace);
 
@@ -256,7 +251,6 @@ abstract public class Bootstrap {
         anyRelationship.setClassifier(WellKnownRelationship.ANY.id());
         anyRelationship.setClassification(WellKnownRelationship.ANY.id());
         anyRelationship.setName("AnyRelationship");
-        anyRelationship.setNotes("The facet that represents any relationship");
         anyRelationship.insert();
         populate(anyRelationship, kernelWorkspace);
 
@@ -264,7 +258,6 @@ abstract public class Bootstrap {
         anyStatusCode.setClassifier(WellKnownRelationship.ANY.id());
         anyStatusCode.setClassification(WellKnownStatusCode.ANY.id());
         anyStatusCode.setName("AnyStatusCode");
-        anyStatusCode.setNotes("The facet that represents any statusCode");
         anyStatusCode.insert();
         populate(anyStatusCode, kernelWorkspace);
 
@@ -272,7 +265,6 @@ abstract public class Bootstrap {
         anyUnit.setClassifier(WellKnownRelationship.ANY.id());
         anyUnit.setClassification(WellKnownUnit.ANY.id());
         anyUnit.setName("AnyUnit");
-        anyUnit.setNotes("The facet that represents any unit");
         anyUnit.insert();
         populate(anyUnit, kernelWorkspace);
     }
@@ -285,7 +277,8 @@ abstract public class Bootstrap {
         populate("SameAttribute", WellKnownAttribute.SAME, kernelWorkspace);
         populate("Nullable", WellKnownAttribute.NULLABLE, kernelWorkspace);
         populate("Name", WellKnownAttribute.NAME, kernelWorkspace);
-        populate("Description", WellKnownAttribute.DESCRIPTION, kernelWorkspace);
+        populate("Description", WellKnownAttribute.DESCRIPTION,
+                 kernelWorkspace);
         populate("Version", WellKnownAttribute.VERSION, kernelWorkspace);
     }
 

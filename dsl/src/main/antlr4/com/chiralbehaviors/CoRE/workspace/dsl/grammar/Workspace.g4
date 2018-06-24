@@ -225,7 +225,6 @@ facet:
     classification = qualifiedName
     (LB (classifiedAttribute)+ RB)?
     ('named:' name = QuotedText)?
-    (description = QuotedText)?
     ('constraints' LB networkConstraints RB)?
     ;
 classifiedAttribute: 

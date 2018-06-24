@@ -89,7 +89,7 @@ public class RecordsFactoryTest extends DatabaseTest {
         Unit unit = (Unit) RECORDS.newExistential(ExistentialDomain.Unit);
         unit.setName("foo");
         unit.insert();
-        RECORDS.newExistential(ExistentialDomain.Agency, "", "");
+        RECORDS.newExistential(ExistentialDomain.Agency, "");
         RECORDS.newExistentialAttribute();
         RECORDS.newExistentialAttribute(RECORDS.newAttribute());
         RECORDS.newExistentialAttribute(RECORDS.newAttribute(),

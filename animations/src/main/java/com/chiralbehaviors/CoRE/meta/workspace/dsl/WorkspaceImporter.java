@@ -328,9 +328,7 @@ public class WorkspaceImporter {
                     ExistentialRecord erf = model.records()
                                                  .newExistential(domain,
                                                                  facet.name == null ? facet.classification.member.getText()
-                                                                                    : WorkspacePresentation.stripQuotes(facet.name.getText()),
-                                                                 facet.description == null ? null
-                                                                                           : WorkspacePresentation.stripQuotes(facet.description.getText()));
+                                                                                    : WorkspacePresentation.stripQuotes(facet.name.getText()));
                     erf.insert();
                     workspace.put(facet.classification.member.getText(), erf);
                 }
@@ -362,9 +360,6 @@ public class WorkspaceImporter {
                                        .resolve(authorization.getClassification())
                                        .getName());
         }
-        if (facet.description != null) {
-            authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
-        }
         authorization.insert();
         workspace.add(authorization);
         return authorization;
@@ -380,9 +375,7 @@ public class WorkspaceImporter {
         for (AttributedExistentialRuleformContext ruleform : existentials) {
             ExistentialRecord record = model.records()
                                             .newExistential(domain,
-                                                            WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
-                                                            ruleform.existentialRuleform().description == null ? null
-                                                                                                               : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
+                                                            WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()));
             record.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           record);

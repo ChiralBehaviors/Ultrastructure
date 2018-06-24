@@ -10,8 +10,8 @@
              SELECT 
                 n.name AS name,
                 classifier.name AS classifer, 
-                classification.name AS classification,  
-                n.notes, 
+                classification.name AS classification,
+                n.schema as schema,
                 u.name AS updated_by, 
                 w.name AS workspace, n.id, 
                 wa.key AS wsp_key,

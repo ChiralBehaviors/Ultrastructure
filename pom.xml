@@ -623,7 +623,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
-						<useSystemClassLoader>false</useSystemClassLoader>
 						<enableAssertions>true</enableAssertions>
 					</configuration>
 					<version>2.20</version>

@@ -244,16 +244,11 @@ public class FacetFields extends Phantasmagoria {
     public FacetFields(Aspect facet) {
         super(facet);
         name = WorkspacePresentation.toTypeName(facet.getName());
-        String notes = facet.getFacet()
-                            .getNotes();
-        typeBuilder = newObject().name(name)
-                                 .description(notes);
+        typeBuilder = newObject().name(name);
         updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE,
-                                                                name))
-                                            .description(notes);
+                                                                name));
         createTypeBuilder = newInputObject().name(String.format(CREATE_TYPE,
-                                                                name))
-                                            .description(notes);
+                                                                name));
     }
 
     public GraphQLObjectType build(Aspect aspect, Builder query,

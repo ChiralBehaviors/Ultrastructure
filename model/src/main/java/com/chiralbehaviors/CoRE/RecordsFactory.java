@@ -291,11 +291,10 @@ public interface RecordsFactory {
     }
 
     default ExistentialRecord newExistential(ExistentialDomain domain,
-                                             String name, String description) {
+                                             String name) {
         ExistentialRecord record = (ExistentialRecord) newExistential(domain);
         record.setUpdatedBy(currentPrincipalId());
         record.setName(name);
-        record.setDescription(description);
         return record;
     }
 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+	<changeSet author="hhildebrand" id="2.0.0">
+
+		<createTable schemaName="ruleform"
+			remarks="Facet Properties" tableName="facet_properties">
+
+            <column name="id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+
+			<column name="facet" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="existential" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="properties" type="jsonb" />
+
+			<column name="authority" remarks="authority" type="uuid" />
+
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="workspace" type="uuid" />
+
+			<column name="version" type="INT4" />
+		</createTable>
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="facet, existential"
+			constraintName="facet_properties_key" deferrable="false"
+			disabled="false" initiallyDeferred="true"
+			tableName="facet_properties" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="facet" baseTableName="facet_properties"
+			constraintName="facet_properties_facet_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="facet" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="existential" baseTableName="facet_properties"
+			constraintName="facet_properties_existential_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="facet_properties"
+			constraintName="facet_authority_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="facet_properties"
+			constraintName="facet_updated_by_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="workspace" baseTableName="facet_properties"
+			constraintName="facet_workspace_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<sql><![CDATA[
+        ALTER TABLE facet_properties ADD CONSTRAINT valid_facet_properties_json_schmema CHECK (validate_json_schema(draftV4Schema(), properties));
+        CREATE INDEX facet_properties_idx ON facet_properties USING gin(properties jsonb_path_ops);
+        ]]>
+		</sql>
+
+		<createIndex schemaName="ruleform"
+			indexName="facet_properties_updated_by_fkey_idx"
+			tableName="facet_properties" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+
+		<createIndex schemaName="ruleform"
+			indexName="facet_properties_authority_fkey_idx"
+			tableName="facet_properties" unique="false">
+			<column name="authority" />
+		</createIndex>
+	</changeSet>
+</databaseChangeLog>

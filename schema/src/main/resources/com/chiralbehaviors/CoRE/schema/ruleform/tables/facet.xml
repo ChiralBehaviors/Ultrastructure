@@ -4,9 +4,10 @@
 	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
 	<changeSet author="hhildebrand" id="2.0.0">
+	
 		<createTable schemaName="ruleform"
 			remarks="Defines Phantasms" tableName="facet">
 			
@@ -76,6 +77,12 @@
             constraintName="facet_workspace_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE"
             referencedColumnNames="id" referencedTableName="existential" />
+            
+        <sql><![CDATA[
+        ALTER TABLE facet ADD CONSTRAINT valid_facet_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
+        CREATE INDEX facet_schema_idx ON facet USING gin(schema jsonb_path_ops);
+        ]]>
+        </sql>
 			
 		<createIndex schemaName="ruleform"
 			indexName="facet_updated_by_fkey_idx" tableName="facet"

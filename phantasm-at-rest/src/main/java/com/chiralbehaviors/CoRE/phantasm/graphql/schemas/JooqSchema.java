@@ -105,7 +105,9 @@ public class JooqSchema {
                                                          RULEFORM.FACET,
                                                          RULEFORM.WORKSPACE_LABEL,
                                                          RULEFORM.JOB,
-                                                         RULEFORM.JOB_CHRONOLOGY }));
+                                                         RULEFORM.JOB_CHRONOLOGY,
+                                                         RULEFORM.FACET_PROPERTIES,
+                                                         RULEFORM.EDGE_PROPERTIES }));
         return new JooqSchema(manifested, processor);
     }
 

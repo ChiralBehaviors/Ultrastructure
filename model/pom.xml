@@ -241,20 +241,20 @@
 						<database>
 							<name>org.jooq.util.postgres.PostgresDatabase</name>
 							<includes>.*</includes>
-							<excludes></excludes>
+							<excludes> validate_json_schema | _validate_json_schema_type | draftV4Schema
+							</excludes>
 							<inputSchema>ruleform</inputSchema>
 							<recordVersionFields>version</recordVersionFields>
-							<customTypes>
-								<customType>
-									<name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
-									<type>com.fasterxml.jackson.databind.JsonNode</type>
-									<binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
-								</customType>
-							</customTypes>
 							<forcedTypes>
+                                <forcedType>
+                                    <userType>com.fasterxml.jackson.databind.JsonNode</userType>
+                                    <binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
+                                    <expression>.*json_value.*</expression>
+                                </forcedType>
 								<forcedType>
-									<name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
-									<expression>.*json_value.*</expression>
+                                    <userType>com.fasterxml.jackson.databind.JsonNode</userType>
+                                    <binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
+									<expression>.*JSON.*</expression>
 								</forcedType>
 							</forcedTypes>
 						</database>

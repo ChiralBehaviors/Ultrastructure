@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+	<changeSet author="hhildebrand" id="2.0.0">
+
+		<createTable schemaName="ruleform"
+			remarks="Edge Properties" tableName="edge_properties">
+
+			<column name="id" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="authorization" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="edge" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="properties" type="jsonb" />
+
+			<column name="authority" remarks="authority" type="uuid" />
+
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="workspace" type="uuid" />
+
+			<column name="version" type="INT4" />
+		</createTable>
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="authorization, edge"
+			constraintName="edge_properties_key" deferrable="false"
+			disabled="false" initiallyDeferred="true" tableName="edge_properties" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authorization" baseTableName="edge_properties"
+			constraintName="edge_properties_authorization_fkey"
+			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id"
+			referencedTableName="existential_network_authorization" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="edge" baseTableName="edge_properties"
+			constraintName="edge_properties_edge_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential_network" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="edge_properties"
+			constraintName="edge_authority_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="edge_properties"
+			constraintName="edge_updated_by_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="workspace" baseTableName="edge_properties"
+			constraintName="edge_workspace_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<sql><![CDATA[
+        ALTER TABLE edge_properties ADD CONSTRAINT valid_edge_properties_json_schmema CHECK (validate_json_schema(draftV4Schema(), properties));
+        CREATE INDEX edge_properties_idx ON edge_properties USING gin(properties jsonb_path_ops);
+        ]]>
+		</sql>
+
+		<createIndex schemaName="ruleform"
+			indexName="edge_properties_updated_by_fkey_idx"
+			tableName="edge_properties" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+
+		<createIndex schemaName="ruleform"
+			indexName="edge_properties_authority_fkey_idx"
+			tableName="edge_properties" unique="false">
+			<column name="authority" />
+		</createIndex>
+	</changeSet>
+</databaseChangeLog>

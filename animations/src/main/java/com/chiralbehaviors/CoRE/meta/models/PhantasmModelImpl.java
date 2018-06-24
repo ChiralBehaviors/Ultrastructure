@@ -24,6 +24,8 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
@@ -48,6 +50,8 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -99,6 +103,13 @@ public class PhantasmModelImpl implements PhantasmModel {
         @SuppressWarnings("unchecked")
         T cazt = (T) instance;
         return cazt;
+    }
+
+    @Override
+    public ExistentialNetworkAttributeRecord create(ExistentialNetworkRecord edge,
+                                                    Attribute attribute) {
+        return model.records()
+                    .newExistentialNetworkAttribute(edge, attribute);
     }
 
     @Override
@@ -184,6 +195,19 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public ExistentialNetworkAttributeRecord getAttributeValue(ExistentialNetworkRecord edge,
+                                                               Attribute attribute) {
+        ExistentialNetworkAttributeRecord result = create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE)
+                                                         .where(EXISTENTIAL_NETWORK_ATTRIBUTE.EDGE.eq(edge.getId()))
+                                                         .and(EXISTENTIAL_NETWORK_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                                                         .fetchOne();
+        if (result == null) {
+            return null;
+        }
+        return result.into(ExistentialNetworkAttributeRecord.class);
+    }
+
+    @Override
     public ExistentialAttributeRecord getAttributeValue(ExistentialRuleform ruleform,
                                                         Attribute attribute) {
         List<ExistentialAttributeRecord> values = getAttributeValues(ruleform,
@@ -196,6 +220,29 @@ public class PhantasmModelImpl implements PhantasmModel {
             return null;
         }
         return values.get(0);
+    }
+
+    @Override
+    public ExistentialNetworkAttributeRecord getAttributeValue(ExistentialRuleform parent,
+                                                               Relationship r,
+                                                               ExistentialRuleform child,
+                                                               Attribute attribute) {
+        ExistentialNetworkRecord edge = getImmediateChildLink(parent, r, child);
+        if (edge == null) {
+            return null;
+        }
+        return getAttributeValue(edge, attribute);
+    }
+
+    @Override
+    public List<ExistentialNetworkAttributeRecord> getAttributeValues(ExistentialNetworkRecord edge,
+                                                                      Attribute attribute) {
+        return create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE)
+                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE.EDGE.eq(edge.getId()))
+                     .and(EXISTENTIAL_NETWORK_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                     .orderBy(EXISTENTIAL_NETWORK_ATTRIBUTE.SEQUENCE_NUMBER)
+                     .fetch()
+                     .into(ExistentialNetworkAttributeRecord.class);
     }
 
     @Override
@@ -389,6 +436,13 @@ public class PhantasmModelImpl implements PhantasmModel {
         return result.into(ExistentialNetworkRecord.class);
     }
 
+    @Override
+    public List<ExistentialNetworkAttributeAuthorizationRecord> getNetworkAttributeAuthorizations(ExistentialNetworkAuthorizationRecord auth) {
+        return create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
+                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.eq(auth.getId()))
+                     .fetch()
+                     .into(ExistentialNetworkAttributeAuthorizationRecord.class);
+    }
 
     @Override
     public List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
@@ -403,6 +457,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         return and.fetch()
                   .into(ExistentialNetworkAuthorizationRecord.class);
     }
+
     @Override
     public List<ExistentialRuleform> getNotInGroup(ExistentialRuleform parent,
                                                    Relationship relationship,
@@ -470,6 +525,56 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public Object getValue(ExistentialAttributeRecord attributeValue) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                return attributeValue.getBinaryValue();
+            case Boolean:
+                return attributeValue.getBooleanValue();
+            case Integer:
+                return attributeValue.getIntegerValue();
+            case Numeric:
+                return attributeValue.getNumericValue();
+            case Text:
+                return attributeValue.getTextValue();
+            case Timestamp:
+                return attributeValue.getTimestampValue();
+            case JSON:
+                return attributeValue.getJsonValue();
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
+    @Override
+    public Object getValue(ExistentialNetworkAttributeAuthorizationRecord attributeValue) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                return attributeValue.getBinaryValue();
+            case Boolean:
+                return attributeValue.getBooleanValue();
+            case Integer:
+                return attributeValue.getIntegerValue();
+            case Numeric:
+                return attributeValue.getNumericValue();
+            case Text:
+                return attributeValue.getTextValue();
+            case Timestamp:
+                return attributeValue.getTimestampValue();
+            case JSON:
+                return attributeValue.getJsonValue();
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+    }
+
+    @Override
+    public Object getValue(ExistentialNetworkAttributeRecord attributeValue) {
         Attribute attribute = model.records()
                                    .resolve(attributeValue.getAttribute());
         switch (attribute.getValueType()) {
@@ -656,6 +761,83 @@ public class PhantasmModelImpl implements PhantasmModel {
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               attribute.getValueType()));
         }
+        attributeValue.setUpdatedBy(model.getCurrentPrincipal()
+                                         .getPrincipal()
+                                         .getId());
+        attributeValue.setUpdated(OffsetDateTime.now());
+        attributeValue.update();
+    }
+
+    @Override
+    public void setValue(ExistentialNetworkAttributeAuthorizationRecord auth,
+                         Object value) {
+        Attribute attribute = model.records()
+                                   .resolve(auth.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                auth.setBinaryValue((byte[]) value);
+                break;
+            case Boolean:
+                auth.setBooleanValue((Boolean) value);
+                break;
+            case Integer:
+                auth.setIntegerValue((Integer) value);
+                break;
+            case Numeric:
+                auth.setNumericValue((BigDecimal) value);
+                break;
+            case Text:
+                auth.setTextValue((String) value);
+                break;
+            case Timestamp:
+                auth.setTimestampValue((OffsetDateTime) value);
+                break;
+            case JSON:
+                auth.setJsonValue((JsonNode) value);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+
+        auth.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal()
+                               .getId());
+        auth.update();
+    }
+
+    @Override
+    public void setValue(ExistentialNetworkAttributeRecord attributeValue,
+                         Object value) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                attributeValue.setBinaryValue((byte[]) value);
+                break;
+            case Boolean:
+                attributeValue.setBooleanValue((Boolean) value);
+                break;
+            case Integer:
+                attributeValue.setIntegerValue((Integer) value);
+                break;
+            case Numeric:
+                attributeValue.setNumericValue((BigDecimal) value);
+                break;
+            case Text:
+                attributeValue.setTextValue((String) value);
+                break;
+            case Timestamp:
+                attributeValue.setTimestampValue((OffsetDateTime) value);
+                break;
+            case JSON:
+                attributeValue.setJsonValue((JsonNode) value);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+
         attributeValue.setUpdatedBy(model.getCurrentPrincipal()
                                          .getPrincipal()
                                          .getId());

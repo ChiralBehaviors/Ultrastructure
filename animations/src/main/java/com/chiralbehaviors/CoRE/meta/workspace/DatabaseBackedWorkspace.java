@@ -117,6 +117,33 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAttributeRecord ruleform) {
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAuthorizationRecord ruleform) {
+        ruleform.setWorkspace(definingProductId);
+        ruleform.update();
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
      */
     @Override

@@ -39,8 +39,13 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -161,6 +166,55 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                  "timestamp attribute",
                                                  ValueType.Timestamp);
         timestamp.insert();
+
+        ExistentialNetworkAuthorizationRecord auth = model.records()
+                                                          .newExistentialNetworkAuthorization();
+        ExistentialNetworkAttributeAuthorizationRecord value = model.records()
+                                                                    .newExistentialNetworkAttributeAuthorization(auth,
+                                                                                                                 binary);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, "hello world".getBytes());
+
+        value = model.records()
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  booleanA);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, true);
+
+        value = model.records()
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  integer);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, 1);
+
+        value = model.records()
+                     .newExistentialNetworkAttributeAuthorization(auth, json);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, new ObjectMapper().valueToTree("Hello"));
+
+        value = model.records()
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  numeric);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, BigDecimal.valueOf(4.5));
+
+        value = model.records()
+                     .newExistentialNetworkAttributeAuthorization(auth, text);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, "hello");
+
+        value = model.records()
+                     .newExistentialNetworkAttributeAuthorization(auth,
+                                                                  timestamp);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, OffsetDateTime.now());
 
     }
 
@@ -292,6 +346,107 @@ public class PhantasmModelTest extends AbstractModelTest {
         assertEquals(15, model.getPhantasmModel()
                               .getFacets(kernelWorkspace)
                               .size());
+    }
+
+    @Test
+    public void testNetworkAttributeValues() {
+        Attribute binary = model.records()
+                                .newAttribute("binary", "binary attribute",
+                                              ValueType.Binary);
+        binary.insert();
+        model.getPhantasmModel()
+             .valueClass(binary);
+        Attribute booleanA = model.records()
+                                  .newAttribute("boolean", "boolean attribute",
+                                                ValueType.Boolean);
+        booleanA.insert();
+        model.getPhantasmModel()
+             .valueClass(booleanA);
+        Attribute integer = model.records()
+                                 .newAttribute("integer", "integer attribute",
+                                               ValueType.Integer);
+        integer.insert();
+        model.getPhantasmModel()
+             .valueClass(integer);
+        Attribute json = model.records()
+                              .newAttribute("json", "json attribute",
+                                            ValueType.JSON);
+        json.insert();
+        model.getPhantasmModel()
+             .valueClass(json);
+        Attribute numeric = model.records()
+                                 .newAttribute("numeric", "numeric attribute",
+                                               ValueType.Numeric);
+        numeric.insert();
+        model.getPhantasmModel()
+             .valueClass(numeric);
+        Attribute text = model.records()
+                              .newAttribute("text", "text attribute",
+                                            ValueType.Text);
+        text.insert();
+        model.getPhantasmModel()
+             .valueClass(text);
+        Attribute timestamp = model.records()
+                                   .newAttribute("timestamp",
+                                                 "timestamp attribute",
+                                                 ValueType.Timestamp);
+        timestamp.insert();
+        model.getPhantasmModel()
+             .valueClass(timestamp);
+
+        Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> edges = model.getPhantasmModel()
+                                                                               .link(text,
+                                                                                     model.getKernel()
+                                                                                          .getAnyRelationship(),
+                                                                                     timestamp);
+        edges.a.insert();
+        edges.b.insert();
+
+        ExistentialNetworkRecord edge = edges.a;
+
+        ExistentialNetworkAttributeRecord value = model.records()
+                                                       .newExistentialNetworkAttribute(edge,
+                                                                                       binary);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, "hello world".getBytes());
+
+        value = model.records()
+                     .newExistentialNetworkAttribute(edge, booleanA);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, true);
+
+        value = model.records()
+                     .newExistentialNetworkAttribute(edge, integer);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, 1);
+
+        value = model.records()
+                     .newExistentialNetworkAttribute(edge, json);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, new ObjectMapper().valueToTree("Hello"));
+
+        value = model.records()
+                     .newExistentialNetworkAttribute(edge, numeric);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, BigDecimal.valueOf(4.5));
+
+        value = model.records()
+                     .newExistentialNetworkAttribute(edge, text);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, "hello");
+
+        value = model.records()
+                     .newExistentialNetworkAttribute(edge, timestamp);
+        value.insert();
+        model.getPhantasmModel()
+             .setValue(value, OffsetDateTime.now());
+
     }
 
     @Test

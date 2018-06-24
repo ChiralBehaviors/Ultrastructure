@@ -17,6 +17,9 @@
     <include relativeToChangelogFile="true" file="views/existential_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/existential_network.xml" />
     <include relativeToChangelogFile="true" file="views/facet.xml" />
+    <include relativeToChangelogFile="true" file="views/existential_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/existential_network_attribute.xml" />
+    <include relativeToChangelogFile="true" file="views/existential_network_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/existential_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/protocol.xml" />
     <include relativeToChangelogFile="true" file="views/job.xml" />

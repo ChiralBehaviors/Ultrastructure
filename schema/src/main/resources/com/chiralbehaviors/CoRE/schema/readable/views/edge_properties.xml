@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="edge_properties" schemaName="readable" replaceIfExists="true"><![CDATA[
+			 SELECT 
+                 p.id,
+                 a.name AS authorization,
+                 parent.name AS parent,
+                 rel.name AS relationship, 
+                 child.name AS child,
+                 jsonb_pretty(p.properties) AS properties, 
+			     up.name AS updated_by, 
+                 w.name AS workspace,
+                 wa.key AS wsp_key,
+                 wa.description AS wsp_desc,
+			     p.version
+			   FROM edge_properties p
+                 JOIN existential_network_authorization a ON p.authorization = a.id
+			     JOIN existential_network n ON p.edge = n.id
+                 JOIN existential parent ON n.parent = parent.id
+                 JOIN existential rel ON n.relationship = rel.id
+                 JOIN existential child ON n.child = child.id
+			     JOIN existential up ON p.updated_by = up.id
+                 LEFT JOIN existential w ON p.workspace = w.id
+                 LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = p.id
+            ]]>
+        </createView>
+    </changeSet>
+</databaseChangeLog>

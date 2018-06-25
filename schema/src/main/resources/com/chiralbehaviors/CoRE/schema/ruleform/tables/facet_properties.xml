@@ -11,9 +11,9 @@
 		<createTable schemaName="ruleform"
 			remarks="Facet Properties" tableName="facet_properties">
 
-            <column name="id" type="uuid">
-                <constraints nullable="false" />
-            </column>
+			<column name="id" type="uuid">
+				<constraints nullable="false" />
+			</column>
 
 			<column name="facet" type="uuid">
 				<constraints nullable="false" />
@@ -74,8 +74,18 @@
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 
+		<sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION validate_facet_properties(data jsonb, fId uuid) RETURNS boolean AS 
+            $f$
+            BEGIN
+              SELECT validate_json_schema(f.schema, jsonb) FROM facet f WHERE f.id = fId;
+            END;
+            $f$ LANGUAGE 'plpgsql' IMMUTABLE;
+        ]]>
+		</sql>
+
 		<sql><![CDATA[
-        ALTER TABLE facet_properties ADD CONSTRAINT valid_facet_properties_json_schmema CHECK (validate_json_schema(draftV4Schema(), properties));
+        ALTER TABLE facet_properties ADD CONSTRAINT valid_facet_properties_json_schmema CHECK (validate_facet_properties(properties, facet));
         CREATE INDEX facet_properties_idx ON facet_properties USING gin(properties jsonb_path_ops);
         ]]>
 		</sql>

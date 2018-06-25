@@ -15,7 +15,7 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="authorization" type="uuid">
+			<column name="auth" type="uuid">
 				<constraints nullable="false" />
 			</column>
 
@@ -38,13 +38,13 @@
 		</createTable>
 
 		<addUniqueConstraint schemaName="ruleform"
-			columnNames="authorization, edge"
+			columnNames="auth, edge"
 			constraintName="edge_properties_key" deferrable="false"
 			disabled="false" initiallyDeferred="true" tableName="edge_properties" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="authorization" baseTableName="edge_properties"
+			baseColumnNames="auth" baseTableName="edge_properties"
 			constraintName="edge_properties_authorization_fkey"
 			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id"
@@ -74,8 +74,18 @@
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 
-		<sql><![CDATA[
-        ALTER TABLE edge_properties ADD CONSTRAINT valid_edge_properties_json_schmema CHECK (validate_json_schema(draftV4Schema(), properties));
+		<sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION validate_edge_props(data jsonb, aid uuid) RETURNS boolean AS 
+            $f$
+            BEGIN
+              SELECT validate_json_schema(a.schema, jsonb) FROM existential_network_authorization a WHERE a.id = aid;
+            END;
+            $f$ LANGUAGE 'plpgsql' IMMUTABLE;
+        ]]>
+		</sql>
+
+		<sql endDelimiter=";"><![CDATA[
+        ALTER TABLE edge_properties ADD CONSTRAINT valid_edge_props_json_schmema CHECK (validate_edge_props(properties, auth));
         CREATE INDEX edge_properties_idx ON edge_properties USING gin(properties jsonb_path_ops);
         ]]>
 		</sql>

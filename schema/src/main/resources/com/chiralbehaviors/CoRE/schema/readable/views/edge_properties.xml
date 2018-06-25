@@ -9,7 +9,7 @@
         <createView viewName="edge_properties" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
                  p.id,
-                 a.name AS authorization,
+                 a.name AS auth,
                  parent.name AS parent,
                  rel.name AS relationship, 
                  child.name AS child,
@@ -20,7 +20,7 @@
                  wa.description AS wsp_desc,
 			     p.version
 			   FROM edge_properties p
-                 JOIN existential_network_authorization a ON p.authorization = a.id
+                 JOIN existential_network_authorization a ON p.auth = a.id
 			     JOIN existential_network n ON p.edge = n.id
                  JOIN existential parent ON n.parent = parent.id
                  JOIN existential rel ON n.relationship = rel.id

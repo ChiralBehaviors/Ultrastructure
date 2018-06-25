@@ -37,6 +37,10 @@
 			  pattern text;
 			  props text[];
 			BEGIN
+			  IF schema IS NULL THEN
+			    RETURN true;
+			  END IF;
+			  
 			  IF root_schema IS NULL THEN 
                 IF data IS NULL THEN
                   RETURN true;

@@ -12,6 +12,7 @@
                 classifier.name AS classifer, 
                 classification.name AS classification,
                 jsonb_pretty(n.schema) as schema,
+                jsonb_pretty(n.default_properties) as default_properties,
                 u.name AS updated_by, 
                 w.name AS workspace, n.id, 
                 wa.key AS wsp_key,

@@ -25,6 +25,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="schema" type="jsonb" />
+			<column name="default_properties" type="jsonb" />
 			<column name="cardinality" type="cardinality" defaultValue="N" />
 			<column name="authority" remarks="authority" type="uuid" />
 			<column name="updated_by"
@@ -85,7 +86,8 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql><![CDATA[
-        ALTER TABLE existential_network_authorization ADD CONSTRAINT valid_facet_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
+        ALTER TABLE existential_network_authorization ADD CONSTRAINT valid_network_auth_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
+        ALTER TABLE existential_network_authorization ADD CONSTRAINT valid_network_auth_default_props_json_schmema CHECK (validate_json_schema(schema, default_properties));
         CREATE INDEX edge_schema_idx ON existential_network_authorization USING gin(schema jsonb_path_ops);
         ]]>
 		</sql>

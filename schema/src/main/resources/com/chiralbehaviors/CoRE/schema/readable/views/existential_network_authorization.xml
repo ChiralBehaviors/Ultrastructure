@@ -17,6 +17,8 @@
                 authorized_parent.name as child_classification,
                 classification.domain as classification_domain,
                 authorized_parent.domain as child_classification_domain,
+                jsonb_pretty(auth.schema) as schema,
+                jsonb_pretty(auth.default_properties) as default_properties,
                 res.name as authority,
                 w.name AS workspace,
                 wa.key AS wsp_key,

@@ -38,7 +38,7 @@ public class Workspace {
     public List<FacetApplication>         applications;
     public Map<String, ChildSequencing>   childSequences;
     public String                         description;
-    public List<Edge>                     edges;
+    public List<List<String>>             edges;
     public Map<String, Existential>       existentials;
     public Map<String, Facet>             facets;
     public List<Import>                   imports;

@@ -7,13 +7,218 @@
         "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
         "alias": "kernel"
     },
+    "edges": [
+        [
+            "this",
+            "HasMember",
+            "Thing1"
+        ]
+    ],
     "existentials": {
         "MavenArtifact": {
             "domain": "Location",
             "description": "A maven artifact"
+        },
+        "Thing1": {
+            "domain": "Product",
+            "description": "Thing 1"
+        },
+        "Thing2": {
+            "domain": "Product",
+            "description": "Thing 2"
+        },
+        "Thing3": {
+            "domain": "Product",
+            "description": "Thing 3"
+        },
+        "OtherThing": {
+            "domain": "Product",
+            "description": "Other Thing"
+        },
+        "derivedFrom": {
+            "domain": "Relationship",
+            "description": "A is derived from B",
+            "inverse": {
+                "name": "antecedentOf",
+                "description": "Antecedent Of' 'A is an antecedent of B"
+            }
+        },
+        "inThing1": {
+            "domain": "Relationship",
+            "description": "A is part of a thing1",
+            "inverse": {
+                "name": "thing1Of",
+                "description": "Thing 1 Of' 'A is the thing 1 of B"
+            }
+        },
+        "inThing2": {
+            "domain": "Relationship",
+            "description": "A is part of a thing12",
+            "inverse": {
+                "name": "thing2Of",
+                "description": "Thing 2 Of' 'A is the thing 1 of B"
+            }
+        },
+        "AThingOfItsOwn": {
+            "domain": "Relationship",
+            "description": "A is A"
         }
     },
     "facets": {
-        
+        "MavenArtifact": {
+            "classifier": "IsA",
+            "classification": "MavenArtifact",
+            "schema": {
+                "title": "Maven Artifact",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "artifactId": {
+                        "type": "string"
+                    },
+                    "classifier": {
+                        "type": "string"
+                    },
+                    "groupId": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "MasterThing": {
+            "classifier": "IsA",
+            "classification": "MasterThing",
+            "schema": {
+                "title": "Master Thing",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Thing1": {
+            "classifier": "IsA",
+            "classification": "Thing1",
+            "schema": {
+                "title": "Thing 1",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "aliases": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "URI": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "properties": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "Thing2""{"classifier":"IsA",
+        "classification": "Thing2",
+        "schema": {
+            "title": "Thing 1",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "aliases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "URI": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "number"
+                },
+                "properties": {
+                    "type": "object"
+                }
+            }
+        }
+    },
+    "Thing3": {
+        "classifier": "IsA",
+        "classification": "Thing3",
+        "schema": {
+            "title": "Thing 1",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "aliases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "URI": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "number"
+                },
+                "properties": {
+                    "type": "object"
+                }
+            }
+        }
+    },
+    "OtherThing": {
+        "classifier": "IsA",
+        "classification": "OtherThing",
+        "schema": {
+            "title": "Thing 1",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        }
     }
+}
 }

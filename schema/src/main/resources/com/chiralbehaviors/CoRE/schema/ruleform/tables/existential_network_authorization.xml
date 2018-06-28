@@ -92,6 +92,16 @@
         ]]>
 		</sql>
 
+        <createIndex schemaName="ruleform"
+            indexName="existential_network_authorization_relationship_fkey_idx"
+            tableName="existential_network_authorization" unique="false">
+            <column name="relationship" />
+        </createIndex>
+        <createIndex schemaName="ruleform"
+            indexName="existential_network_authorization_child_fkey_idx"
+            tableName="existential_network_authorization" unique="false">
+            <column name="child" />
+        </createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_authorization_updated_by_fkey_idx"
 			tableName="existential_network_authorization" unique="false">

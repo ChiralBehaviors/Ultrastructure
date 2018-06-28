@@ -88,6 +88,12 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
+			indexName="ena_authorized_attribute_fkey_idx"
+			tableName="existential_network_attribute_authorization"
+			unique="false">
+			<column name="authorized_attribute" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
 			indexName="ena_updated_by_fkey_idx"
 			tableName="existential_network_attribute_authorization"
 			unique="false">

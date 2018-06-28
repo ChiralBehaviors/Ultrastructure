@@ -85,6 +85,11 @@
         ]]>
 		</sql>
 
+        <createIndex schemaName="ruleform"
+            indexName="edge_properties_edge_fkey_idx"
+            tableName="edge_properties" unique="false">
+            <column name="edge" />
+        </createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="edge_properties_updated_by_fkey_idx"
 			tableName="edge_properties" unique="false">

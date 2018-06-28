@@ -108,6 +108,21 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
+			indexName="child_sequencing_authorization_status_code_fkey_idx"
+			tableName="child_sequencing_authorization" unique="false">
+			<column name="status_code" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="child_sequencing_authorization_next_child_fkey_idx"
+			tableName="child_sequencing_authorization" unique="false">
+			<column name="next_child" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="child_sequencing_authorization_next_child_status_fkey_idx"
+			tableName="child_sequencing_authorization" unique="false">
+			<column name="next_child_status" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
 			indexName="child_sequencing_authorization_updated_by_fkey_idx"
 			tableName="child_sequencing_authorization" unique="false">
 			<column name="updated_by" />

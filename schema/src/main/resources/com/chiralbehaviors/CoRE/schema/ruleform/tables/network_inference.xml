@@ -77,6 +77,16 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
+			indexName="network_inference_premise2_fkey_idx"
+			tableName="network_inference" unique="false">
+			<column name="premise2" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="network_inference_inference_fkey_idx"
+			tableName="network_inference" unique="false">
+			<column name="inference" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
 			indexName="network_inference_updated_by_fkey_idx"
 			tableName="network_inference" unique="false">
 			<column name="updated_by" />

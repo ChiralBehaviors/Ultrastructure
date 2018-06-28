@@ -92,9 +92,9 @@
 			<column name="updated_by" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="e_a_a_network_authorization_fkey_idx"
+			indexName="e_a_a_authorized_attribute_fkey_idx"
 			tableName="existential_attribute_authorization" unique="false">
-			<column name="facet" />
+			<column name="authorized_attribute" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_attribute_authorization_authority_idx"

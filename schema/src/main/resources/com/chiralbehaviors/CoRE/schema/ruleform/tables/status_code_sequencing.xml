@@ -40,13 +40,13 @@
 			</column>
 			<column name="version" type="INT4" />
 		</createTable>
-		
-        <addUniqueConstraint schemaName="ruleform"
-            columnNames="service, parent, child"
-            constraintName="status_code_sequencing_service_parent_sequence_number_key"
-            deferrable="false" disabled="false" initiallyDeferred="true"
-            tableName="status_code_sequencing" />
-            
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="service, parent, child"
+			constraintName="status_code_sequencing_service_parent_sequence_number_key"
+			deferrable="false" disabled="false" initiallyDeferred="true"
+			tableName="status_code_sequencing" />
+
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="status_code_sequencing"
@@ -77,13 +77,23 @@
 			constraintName="status_code_sequencing_updated_by_fkey"
 			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="status_code_sequencing"
-            constraintName="status_code_sequencing_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="existential" />
-			
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="workspace" baseTableName="status_code_sequencing"
+			constraintName="status_code_sequencing_workspace_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<createIndex schemaName="ruleform"
+			indexName="status_code_sequencing_parent_fkey_idx"
+			tableName="status_code_sequencing" unique="false">
+			<column name="parent" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="status_code_sequencing_child_fkey_idx"
+			tableName="status_code_sequencing" unique="false">
+			<column name="child" />
+		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="status_code_sequencing_updated_by_fkey_idx"
 			tableName="status_code_sequencing" unique="false">
@@ -93,6 +103,11 @@
 			indexName="status_code_sequencing_authority_idx"
 			tableName="status_code_sequencing" unique="false">
 			<column name="authority" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="status_code_sequencing_workspace_idx"
+			tableName="status_code_sequencing" unique="false">
+			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

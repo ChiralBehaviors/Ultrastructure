@@ -87,6 +87,11 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
+			indexName="existential_attribute_attribute_fkey_idx"
+			tableName="existential_attribute" unique="false">
+			<column name="attribute" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
 			indexName="existential_attribute_updated_by_fkey_idx"
 			tableName="existential_attribute" unique="false">
 			<column name="updated_by" />

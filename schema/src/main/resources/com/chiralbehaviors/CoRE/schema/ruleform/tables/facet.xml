@@ -77,6 +77,11 @@
 		</sql>
 
 		<createIndex schemaName="ruleform"
+			indexName="facet_classification_fkey_idx" tableName="facet"
+			unique="false">
+			<column name="classification" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
 			indexName="facet_updated_by_fkey_idx" tableName="facet"
 			unique="false">
 			<column name="updated_by" />

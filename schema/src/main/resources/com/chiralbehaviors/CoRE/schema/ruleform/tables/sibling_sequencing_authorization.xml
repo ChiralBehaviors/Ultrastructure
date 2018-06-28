@@ -49,13 +49,13 @@
 			</column>
 			<column name="version" type="INT4" />
 		</createTable>
-		
-        <addUniqueConstraint schemaName="ruleform"
-            columnNames="service, status_code, next_sibling, sequence_number"
-            constraintName="sibling_sequencing_authorization_parent_status_code_seq"
-            deferrable="false" disabled="false" initiallyDeferred="true"
-            tableName="sibling_sequencing_authorization" />
-            
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="service, status_code, next_sibling, sequence_number"
+			constraintName="sibling_sequencing_authorization_parent_status_code_seq"
+			deferrable="false" disabled="false" initiallyDeferred="true"
+			tableName="sibling_sequencing_authorization" />
+
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority"
@@ -107,6 +107,21 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_status_code_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="status_code" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_next_sibling_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="next_sibling" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_next_sibling_status_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="next_sibling_status" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
 			indexName="sibling_sequencing_authorization_updated_by_fkey_idx"
 			tableName="sibling_sequencing_authorization" unique="false">
 			<column name="updated_by" />
@@ -115,6 +130,11 @@
 			indexName="sibling_sequencing_authorization_authority_idx"
 			tableName="sibling_sequencing_authorization" unique="false">
 			<column name="authority" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_workspace_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

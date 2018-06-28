@@ -71,43 +71,56 @@
 			constraintName="existential_network_authority_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="premise1" baseTableName="existential_network"
-            constraintName="existential_network_premise1_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="existential_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="premise2" baseTableName="existential_network"
-            constraintName="existential_network_premise2_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="existential_network" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="inference" baseTableName="existential_network"
-            constraintName="existential_network_inference_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="network_inference" />
-        <addForeignKeyConstraint
-            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="existential_network"
-            constraintName="existential_network_workspace_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE"
-            referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="premise1" baseTableName="existential_network"
+			constraintName="existential_network_premise1_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential_network" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="premise2" baseTableName="existential_network"
+			constraintName="existential_network_premise2_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential_network" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="inference" baseTableName="existential_network"
+			constraintName="existential_network_inference_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="network_inference" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="workspace" baseTableName="existential_network"
+			constraintName="existential_network_workspace_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_inference_idx"
+			indexName="existential_network_relationship_idx"
 			tableName="existential_network" unique="false">
-            <column name="premise1" />
-            <column name="premise2" />
-            <column name="inference" />
+			<column name="relationship" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="existential_network_child_fky_idx"
+			tableName="existential_network" unique="false">
+			<column name="child" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="existential_network_premise2_fky_idx"
+			tableName="existential_network" unique="false">
+			<column name="premise2" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="existential_network_inference_fky_idx"
+			tableName="existential_network" unique="false">
+			<column name="inference" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_workspace_fkey_idx"
 			tableName="existential_network" unique="false">
 			<column name="workspace" />
-		</createIndex> 
+		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_updated_by_fkey_idx"
 			tableName="existential_network" unique="false">

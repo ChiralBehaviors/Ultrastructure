@@ -99,6 +99,21 @@
 			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 
+        <createIndex schemaName="ruleform"
+            indexName="parent_sequencing_authorization_parent_fkey_idx"
+            tableName="parent_sequencing_authorization" unique="false">
+            <column name="parent" />
+        </createIndex>
+        <createIndex schemaName="ruleform"
+            indexName="parent_sequencing_authorization_status_code_fkey_idx"
+            tableName="parent_sequencing_authorization" unique="false">
+            <column name="status_code" />
+        </createIndex>
+        <createIndex schemaName="ruleform"
+            indexName="parent_sequencing_authorization_parent_status_to_set_fkey_idx"
+            tableName="parent_sequencing_authorization" unique="false">
+            <column name="parent_status_to_set" />
+        </createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="parent_sequencing_authorization_updated_by_fkey_idx"
 			tableName="parent_sequencing_authorization" unique="false">

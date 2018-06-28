@@ -15,8 +15,7 @@
 				<constraints primaryKey="true"
 					primaryKeyName="meta_protocol_pkey" />
 			</column>
-			<column name="service"
-				remarks="The service we are creating a mask for" type="uuid">
+			<column name="service" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="sequence_number" type="INT4" defaultValue="0">
@@ -48,12 +47,9 @@
 			</column>
 			<column defaultValueBoolean="false" name="stop_on_match"
 				type="boolean" />
-			<column name="notes"
-				remarks="Additional notes regarding usage of the metaprotocol"
-				type="TEXT" />
+			<column name="notes" type="TEXT" />
 			<column name="updated_by"
-				defaultValue="'00000000-0000-0000-0000-000000000003'"
-				remarks="The agency that last updated this rule" type="uuid">
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="version" type="INT4" />
@@ -61,9 +57,8 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, requester, assign_to, service_type, status, product, deliver_to, deliver_from"
-			constraintName="meta_protocol_unique"
-			deferrable="false" disabled="false" initiallyDeferred="true"
-			tableName="meta_protocol" />
+			constraintName="meta_protocol_unique" deferrable="false"
+			disabled="false" initiallyDeferred="true" tableName="meta_protocol" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

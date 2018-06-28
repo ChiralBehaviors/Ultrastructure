@@ -7,7 +7,6 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 	<changeSet id="2.0.0" author="hhildebrand">
 		<createTable schemaName="ruleform"
-			remarks="A workspace label labels entities in a workspace"
 			tableName="workspace_label">
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"

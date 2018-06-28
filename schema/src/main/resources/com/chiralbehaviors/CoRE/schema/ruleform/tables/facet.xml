@@ -8,8 +8,7 @@
 
 	<changeSet author="hhildebrand" id="2.0.0">
 
-		<createTable schemaName="ruleform"
-			remarks="Defines Phantasms" tableName="facet">
+		<createTable schemaName="ruleform" tableName="facet">
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="facet_pkey" />

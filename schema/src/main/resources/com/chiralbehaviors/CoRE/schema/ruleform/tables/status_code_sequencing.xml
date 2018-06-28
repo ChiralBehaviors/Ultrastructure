@@ -8,7 +8,6 @@
 
 	<changeSet author="hhildebrand" id="2.0.0">
 		<createTable schemaName="ruleform"
-			remarks="Defines the possible states that an Event can be in, as well as the path through those states"
 			tableName="status_code_sequencing">
 			<column name="authority" type="uuid" />
 			<column name="workspace" type="uuid" />
@@ -16,26 +15,18 @@
 				<constraints primaryKey="true"
 					primaryKeyName="status_code_sequencing_pkey" />
 			</column>
-			<column name="service"
-				remarks="The service whose states are being described" type="uuid">
+			<column name="service" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="parent"
-				remarks="The &quot;from&quot; state to which one may transition to any state listed in the &quot;child&quot; column"
-				type="uuid">
+			<column name="parent" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="child"
-				remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent&quot; column"
-				type="uuid">
+			<column name="child" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="notes"
-				remarks="Additional notes regarding usage of this particular rule"
-				type="TEXT" />
+			<column name="notes" type="TEXT" />
 			<column name="updated_by"
-				defaultValue="'00000000-0000-0000-0000-000000000003'"
-				remarks="The agency that last updated this rule" type="uuid">
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="version" type="INT4" />

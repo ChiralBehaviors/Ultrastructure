@@ -7,24 +7,19 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet author="hhildebrand" id="2.0.0">
-		<createTable schemaName="ruleform"
-			remarks="An instantiation of an service; something actually done"
-			tableName="job">
+		<createTable schemaName="ruleform" tableName="job">
 			<column name="workspace" type="uuid" />
 			<column name="authority" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true" primaryKeyName="job_pkey" />
 			</column>
-			<column name="service"
-				remarks="The service performed by this Job" type="uuid">
+			<column name="service" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="product" remarks="The product produced this Job"
-				type="uuid">
+			<column name="product" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="assign_to" remarks="The agency doing this Job"
-				type="uuid">
+			<column name="assign_to" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="requester" type="uuid">
@@ -36,13 +31,10 @@
 			<column name="deliver_from" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="status" remarks="The current status of this Job"
-				type="uuid">
+			<column name="status" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="parent"
-				remarks="The parent of this job, in a hierarchical sense"
-				type="uuid" />
+			<column name="parent" type="uuid" />
 			<column name="quantity" type="numeric" />
 			<column name="quantity_unit" type="uuid">
 				<constraints nullable="false" />
@@ -50,17 +42,14 @@
 			<column name="depth" type="INT4" defaultValue="0">
 				<constraints nullable="false" />
 			</column>
-			<column name="notes"
-				remarks="Additional notes regarding usage of this particular rule"
-				type="TEXT" />
+			<column name="notes" type="TEXT" />
 			<column name="updated_by"
-				defaultValue="'00000000-0000-0000-0000-000000000003'"
-				remarks="The agency that last updated this rule" type="uuid">
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="version" type="INT4" />
 		</createTable>
-            
+
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="job"

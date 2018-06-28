@@ -15,29 +15,24 @@
 					primaryKeyName="e_n_a_a_pkey" />
 			</column>
 			<column name="network_authorization"
-				remarks="The network relationship that authorizes the attributes"
-				type="uuid">
+				 type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="authorized_attribute"
-				remarks="An Attribute the existential entity is expected to have"
-				type="uuid">
+				 type="uuid">
 				<constraints nullable="true" />
 			</column>
 			<column name="boolean_value" type="boolean" />
 			<column name="binary_value" type="BYTEA" />
 			<column name="text_value"
-				remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
-				type="TEXT" />
+				 type="TEXT" />
 			<column name="integer_value" type="INT4" />
 			<column name="numeric_value" type="numeric" />
 			<column name="timestamp_value" type="TIMESTAMPTZ" />
 			<column name="authority" type="uuid" />
-			<column name="notes"
-				remarks="Additional notes regarding this rule" type="TEXT" />
+			<column name="notes" type="TEXT" />
 			<column name="updated_by"
-				defaultValue="'00000000-0000-0000-0000-000000000003'"
-				remarks="The agency that last updated this rule" type="uuid">
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="version" type="INT4" />

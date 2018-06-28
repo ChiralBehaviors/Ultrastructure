@@ -7,18 +7,14 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet author="hhildebrand" id="2.0.0">
-		<createTable schemaName="ruleform"
-			remarks="Defines protocol rules for carrying out tasks"
-			tableName="protocol">
+		<createTable schemaName="ruleform" tableName="protocol">
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="protocol_pkey" />
 			</column>
 			<column name="authority" type="uuid" />
 			<column name="workspace" type="uuid" />
-			<column name="sequence_number"
-				remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
-				type="INT4" defaultValue="0">
+			<column name="sequence_number" type="INT4" defaultValue="0">
 				<constraints nullable="false" />
 			</column>
 			<column name="deliver_to" type="uuid">
@@ -27,13 +23,10 @@
 			<column name="deliver_from" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="service"
-				remarks="The service whose steps are being specified" type="uuid">
+			<column name="service" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="status"
-				remarks="The status of the service whose steps are being specified"
-				type="uuid">
+			<column name="status" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="product" type="uuid">
@@ -70,14 +63,10 @@
 			</column>
 			<column name="child_quantity" type="numeric" />
 			<column name="child_quantity_unit" type="uuid" />
-			<column name="name" remarks="A text name for the protocol"
-				type="TEXT" />
-			<column name="notes"
-				remarks="Additional notes regarding usage of the attribute"
-				type="TEXT" />
+			<column name="name" type="TEXT" />
+			<column name="notes" type="TEXT" />
 			<column name="updated_by"
-				defaultValue="'00000000-0000-0000-0000-000000000003'"
-				remarks="The agency that last updated this rule" type="uuid">
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
 			<column name="version" type="INT4" />

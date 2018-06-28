@@ -81,10 +81,13 @@
 			unique="false">
 			<column name="updated_by" />
 		</createIndex>
-
 		<createIndex schemaName="ruleform"
 			indexName="facet_authority_fkey_idx" tableName="facet" unique="false">
 			<column name="authority" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="facet_workspace_fkey_idx" tableName="facet" unique="false">
+			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

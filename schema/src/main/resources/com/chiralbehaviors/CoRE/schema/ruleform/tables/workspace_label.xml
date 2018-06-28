@@ -1,60 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
-    <changeSet id="2.0.0" author="hhildebrand">
-        <createTable schemaName="ruleform" remarks="A workspace label labels entities in a workspace" tableName="workspace_label">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="workspace_label_pkey" />
-            </column>
-            <column name="reference" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="notes" type="TEXT" />
-            <column name="type" type="reference_type">
-                <constraints nullable="false" />
-            </column>
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="INT4" />
-            <column name="key" type="text" />
-            <column name="description" type="TEXT" />
-            <column name="workspace" type="uuid">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="2.0.0" author="hhildebrand">
+		<createTable schemaName="ruleform"
+			remarks="A workspace label labels entities in a workspace"
+			tableName="workspace_label">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="workspace_label_pkey" />
+			</column>
+			<column name="reference" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes" type="TEXT" />
+			<column name="type" type="reference_type">
+				<constraints nullable="false" />
+			</column>
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+			<column name="key" type="text" />
+			<column name="description" type="TEXT" />
+			<column name="workspace" type="uuid">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
 
-        <addUniqueConstraint schemaName="ruleform" columnNames="workspace, key," constraintName="workspace_key_constraint"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_label" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="workspace_label" constraintName="workspace_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="workspace_label" constraintName="workspace_label_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="workspace, type, key,"
+			constraintName="workspace_key_constraint" deferrable="false"
+			disabled="false" initiallyDeferred="true" tableName="workspace_label" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="workspace" baseTableName="workspace_label"
+			constraintName="workspace_workspace_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="workspace_label"
+			constraintName="workspace_label_updated_by_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
 
-        <createIndex schemaName="ruleform" indexName="workspace_label_updated_by_idx" tableName="workspace_label"
-            unique="false"
-        >
-            <column name="updated_by" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_label_workspace_idx" tableName="workspace_label"
-            unique="false"
-        >
-            <column name="workspace" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_label_key_idx" tableName="workspace_label"
-            unique="false"
-        >
-            <column name="key" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_label_reference_idx" tableName="workspace_label"
-            unique="true"
-        >
-            <column name="reference" />
-        </createIndex>
-    </changeSet>
+		<createIndex schemaName="ruleform"
+			indexName="workspace_label_updated_by_idx"
+			tableName="workspace_label" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="workspace_label_reference_idx" tableName="workspace_label"
+			unique="false">
+			<column name="reference" />
+		</createIndex>
+	</changeSet>
 </databaseChangeLog>

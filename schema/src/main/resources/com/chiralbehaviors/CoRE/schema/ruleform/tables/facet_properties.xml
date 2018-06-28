@@ -10,30 +10,22 @@
 
 		<createTable schemaName="ruleform"
 			remarks="Facet Properties" tableName="facet_properties">
-
 			<column name="id" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="facet" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="existential" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="properties" type="jsonb" />
-
 			<column name="authority" remarks="authority" type="uuid" />
-
 			<column name="updated_by"
 				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="workspace" type="uuid" />
-
 			<column name="version" type="INT4" />
 		</createTable>
 
@@ -95,11 +87,15 @@
 			tableName="facet_properties" unique="false">
 			<column name="updated_by" />
 		</createIndex>
-
 		<createIndex schemaName="ruleform"
 			indexName="facet_properties_authority_fkey_idx"
 			tableName="facet_properties" unique="false">
 			<column name="authority" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="facet_properties_workspace_fkey_idx"
+			tableName="facet_properties" unique="false">
+			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

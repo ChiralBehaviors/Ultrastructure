@@ -57,6 +57,13 @@
 			</column>
 			<column name="json_value" type="jsonb" />
 		</createTable>
+		
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="edge, attribute, sequence_number"
+            constraintName="existential_network_attribute_key" deferrable="false"
+            disabled="false" initiallyDeferred="true"
+            tableName="existential_network_attribute" />
+            
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="attribute"
@@ -90,21 +97,14 @@
 			constraintName="existential_network_attribute_updated_by_fkey"
 			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addUniqueConstraint schemaName="ruleform"
-			columnNames="edge, attribute, sequence_number"
-			constraintName="existential_network_attribute_key" deferrable="false"
-			disabled="false" initiallyDeferred="true"
-			tableName="existential_network_attribute" />
-		<createIndex schemaName="ruleform"
-			indexName="existential_network_attribute_attribute_fkey_idx"
-			tableName="existential_network_attribute" unique="false">
-			<column name="attribute" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="existential_network_attribute_edge_fkey_idx"
-			tableName="existential_network_attribute" unique="false">
-			<column name="edge" />
-		</createIndex>
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace"
+            baseTableName="existential_network_attribute"
+            constraintName="existential_network_attribute_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="existential" />
+			
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_attribute_unit_fkey_idx"
 			tableName="existential_network_attribute" unique="false">
@@ -120,6 +120,11 @@
 			tableName="existential_network_attribute" unique="false">
 			<column name="authority" />
 		</createIndex>
+        <createIndex schemaName="ruleform"
+            indexName="existential_network_attribute_workspace_fkey_idx"
+            tableName="existential_network_attribute" unique="false">
+            <column name="workspace" />
+        </createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_attribute_key_idx"
 			tableName="existential_network_attribute" unique="false">
@@ -140,12 +145,5 @@
 			tableName="existential_network_attribute" unique="false">
 			<column name="numeric_value" />
 		</createIndex>
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace"
-			baseTableName="existential_network_attribute"
-			constraintName="existential_network_attribute_workspace_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 	</changeSet>
 </databaseChangeLog>

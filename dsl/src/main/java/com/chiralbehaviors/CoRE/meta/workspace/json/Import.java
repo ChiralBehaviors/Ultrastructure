@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="filecomment_context" deleted="false" description="Comment for created Java files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.filecomment" name="filecomment">/** 
- * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
+/**
+ * Copyright (c) 2018 Chiral Behaviors, LLC, all rights reserved.
  * 
  
- * This file is part of Ultrastructure.
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,5 +15,21 @@
  *  GNU Affero General Public License for more details.
  *
  *  You should have received a copy of the GNU Affero General Public License
- *  along with Ultrastructure.  If not, see <"http://www.gnu.org/licenses"/>.
- */</template></templates>
+ *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+package com.chiralbehaviors.CoRE.meta.workspace.json;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author halhildebrand
+ *
+ */
+public class Import {
+    public String uri;
+    public String alias;
+    public List<String> facets = new ArrayList<>();
+}

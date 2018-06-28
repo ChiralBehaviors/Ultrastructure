@@ -10,37 +10,32 @@
 
 		<createTable schemaName="ruleform"
 			remarks="Edge Properties" tableName="edge_properties">
-
 			<column name="id" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="auth" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="edge" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
+			<column name="forward" type="boolean" defaultValue="true">
+				<constraints nullable="false" />
+			</column>
 			<column name="properties" type="jsonb" />
-
 			<column name="authority" remarks="authority" type="uuid" />
-
 			<column name="updated_by"
 				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
-
 			<column name="workspace" type="uuid" />
-
 			<column name="version" type="INT4" />
 		</createTable>
 
 		<addUniqueConstraint schemaName="ruleform"
-			columnNames="auth, edge"
-			constraintName="edge_properties_key" deferrable="false"
-			disabled="false" initiallyDeferred="true" tableName="edge_properties" />
+			columnNames="auth, edge" constraintName="edge_properties_key"
+			deferrable="false" disabled="false" initiallyDeferred="true"
+			tableName="edge_properties" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -95,11 +90,15 @@
 			tableName="edge_properties" unique="false">
 			<column name="updated_by" />
 		</createIndex>
-
 		<createIndex schemaName="ruleform"
 			indexName="edge_properties_authority_fkey_idx"
 			tableName="edge_properties" unique="false">
 			<column name="authority" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="edge_properties_workspace_fkey_idx"
+			tableName="edge_properties" unique="false">
+			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

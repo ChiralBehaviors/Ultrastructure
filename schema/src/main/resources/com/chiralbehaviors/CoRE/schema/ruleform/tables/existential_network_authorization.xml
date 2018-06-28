@@ -37,7 +37,7 @@
 		</createTable>
 
 		<addUniqueConstraint schemaName="ruleform"
-			columnNames="parent, relationship, child, authority"
+			columnNames="parent, relationship, child"
 			constraintName="existential_network_authorization_unique_key"
 			deferrable="false" disabled="false" initiallyDeferred="true"
 			tableName="existential_network_authorization" />
@@ -98,15 +98,9 @@
 			<column name="updated_by" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_parent_relationship_fkey_idx"
+			indexName="existential_network_authorization_workspace_fkey_idx"
 			tableName="existential_network_authorization" unique="false">
-			<column name="parent" />
-			<column name="relationship" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_child_fkey_idx"
-			tableName="existential_network_authorization" unique="false">
-			<column name="child" />
+			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_authorization_authority_fkey_idx"

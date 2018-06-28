@@ -1,0 +1,19 @@
+{
+    "name": "Phantasm Demo",
+    "description": "First demo of Phantasm",
+    "uri": "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm",
+    "version": 1,
+    "imports": {
+        "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
+        "alias": "kernel"
+    },
+    "existentials": {
+        "MavenArtifact": {
+            "domain": "Location",
+            "description": "A maven artifact"
+        }
+    },
+    "facets": {
+        
+    }
+}

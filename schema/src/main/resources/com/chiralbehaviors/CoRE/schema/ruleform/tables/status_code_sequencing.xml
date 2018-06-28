@@ -1,70 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" remarks="Defines the possible states that an Event can be in, as well as the path through those states"
-            tableName="status_code_sequencing"
-        >
-            <column name="authority" type="uuid" />
-            <column name="workspace" type="uuid" />
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="status_code_sequencing_pkey" />
-            </column>
-            <column name="service" remarks="The service whose states are being described" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="parent" remarks="The &quot;from&quot; state to which one may transition to any state listed in the &quot;child&quot; column"
-                type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="child"
-                remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent&quot; column" type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"
-                type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="INT4" />
-        </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authority" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_authority_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="child" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_child_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="parent" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_parent_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="service" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_service_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="service, parent, child"
-            constraintName="status_code_sequencing_service_parent_sequence_number_key" deferrable="false" disabled="false"
-            initiallyDeferred="true" tableName="status_code_sequencing" />
-        <createIndex schemaName="ruleform" indexName="status_code_sequencing_updated_by_fkey_idx" tableName="status_code_sequencing"
-            unique="false"
-        >
-            <column name="updated_by" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="status_code_sequencing_authority_idx" tableName="status_code_sequencing"
-            unique="false"
-        >
-            <column name="authority" />
-        </createIndex>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="status_code_sequencing" constraintName="status_code_sequencing_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-    </changeSet>
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			remarks="Defines the possible states that an Event can be in, as well as the path through those states"
+			tableName="status_code_sequencing">
+			<column name="authority" type="uuid" />
+			<column name="workspace" type="uuid" />
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="status_code_sequencing_pkey" />
+			</column>
+			<column name="service"
+				remarks="The service whose states are being described" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="parent"
+				remarks="The &quot;from&quot; state to which one may transition to any state listed in the &quot;child&quot; column"
+				type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="child"
+				remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent&quot; column"
+				type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes"
+				remarks="Additional notes regarding usage of this particular rule"
+				type="TEXT" />
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'"
+				remarks="The agency that last updated this rule" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+		</createTable>
+		
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="service, parent, child"
+            constraintName="status_code_sequencing_service_parent_sequence_number_key"
+            deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="status_code_sequencing" />
+            
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="status_code_sequencing"
+			constraintName="status_code_sequencing_authority_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="child" baseTableName="status_code_sequencing"
+			constraintName="status_code_sequencing_child_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="parent" baseTableName="status_code_sequencing"
+			constraintName="status_code_sequencing_parent_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="service" baseTableName="status_code_sequencing"
+			constraintName="status_code_sequencing_service_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="status_code_sequencing"
+			constraintName="status_code_sequencing_updated_by_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="status_code_sequencing"
+            constraintName="status_code_sequencing_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="existential" />
+			
+		<createIndex schemaName="ruleform"
+			indexName="status_code_sequencing_updated_by_fkey_idx"
+			tableName="status_code_sequencing" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="status_code_sequencing_authority_idx"
+			tableName="status_code_sequencing" unique="false">
+			<column name="authority" />
+		</createIndex>
+	</changeSet>
 </databaseChangeLog>

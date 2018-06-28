@@ -1,120 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" remarks="Tracks when status changes occur on any given job" tableName="job_chronology">
-            <column name="workspace" type="uuid" />
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="job_chronology_pkey" />
-            </column>
-            <column name="job" remarks="The Job" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="service" remarks="The service performed by this Job" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="product" remarks="The product produced this Job" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="assign_to" remarks="The agency doing this Job" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="requester" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="deliver_to" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="deliver_from" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="status" remarks="The current status of this Job" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="sequence_number" type="INT4">
-                <constraints nullable="false" />
-            </column>
-            <column name="quantity" type="numeric" />
-            <column name="quantity_unit" type="uuid">
-                <constraints nullable="true" />
-            </column>
-            <column name="notes" remarks="Notes about this job" type="TEXT" />
-            <column name="updated_by"  defaultValue= "'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="INT4" />
-            <column name="update_date" defaultValueComputed="('now'::text)::timestamp(6) with time zone" remarks="The date this rule was last changed"
-                type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="job" baseTableName="job_chronology" constraintName="job_chronology_job_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="job" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="assign_to" baseTableName="job_chronology" constraintName="job_chronology_assign_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="deliver_from" baseTableName="job_chronology" constraintName="job_chronology_deliver_from_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="deliver_to" baseTableName="job_chronology" constraintName="job_chronology_deliver_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status" baseTableName="job_chronology" constraintName="job_chronology_status_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="requester" baseTableName="job_chronology" constraintName="job_chronology_requester_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="service" baseTableName="job_chronology" constraintName="job_chronology_service_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="job_chronology" constraintName="job_chronology_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="quantity_unit" baseTableName="job_chronology" constraintName="job_chronology_quantity_unit_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="product" baseTableName="job_chronology" constraintName="job_chronology_product_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="job, sequence_number" constraintName="job_chronology_job_unique_constraint"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="job_chronology" />
-        <createIndex schemaName="ruleform" indexName="job_chronology_updated_by_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="updated_by" />
-        </createIndex>
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			remarks="Tracks when status changes occur on any given job"
+			tableName="job_chronology">
+			<column name="workspace" type="uuid" />
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="job_chronology_pkey" />
+			</column>
+			<column name="job" remarks="The Job" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="service"
+				remarks="The service performed by this Job" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="product" remarks="The product produced this Job"
+				type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="assign_to" remarks="The agency doing this Job"
+				type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="requester" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="deliver_to" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="deliver_from" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" remarks="The current status of this Job"
+				type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="sequence_number" type="INT4">
+				<constraints nullable="false" />
+			</column>
+			<column name="quantity" type="numeric" />
+			<column name="quantity_unit" type="uuid">
+				<constraints nullable="true" />
+			</column>
+			<column name="notes" remarks="Notes about this job"
+				type="TEXT" />
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'"
+				remarks="The agency that last updated this rule" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+			<column name="update_date"
+				defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+				remarks="The date this rule was last changed" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="job" baseTableName="job_chronology"
+			constraintName="job_chronology_job_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="job" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="assign_to" baseTableName="job_chronology"
+			constraintName="job_chronology_assign_to_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="deliver_from" baseTableName="job_chronology"
+			constraintName="job_chronology_deliver_from_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="deliver_to" baseTableName="job_chronology"
+			constraintName="job_chronology_deliver_to_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="status" baseTableName="job_chronology"
+			constraintName="job_chronology_status_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="requester" baseTableName="job_chronology"
+			constraintName="job_chronology_requester_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="service" baseTableName="job_chronology"
+			constraintName="job_chronology_service_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="job_chronology"
+			constraintName="job_chronology_updated_by_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="quantity_unit" baseTableName="job_chronology"
+			constraintName="job_chronology_quantity_unit_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="product" baseTableName="job_chronology"
+			constraintName="job_chronology_product_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="job, sequence_number"
+			constraintName="job_chronology_job_unique_constraint"
+			deferrable="false" disabled="false" initiallyDeferred="true"
+			tableName="job_chronology" />
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_updated_by_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="updated_by" />
+		</createIndex>
 
-        <createIndex schemaName="ruleform" indexName="job_chronology_assign_to_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="assign_to" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_status_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="status" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_deliver_to_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="deliver_to" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_deliver_from_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="deliver_from" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_product_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="product" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_requester_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="requester" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_service_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="service" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="job_chronology_job_fkey_idx" tableName="job_chronology" unique="false">
-            <column name="job" />
-        </createIndex>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="job_chronology" constraintName="job_chronology_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-    </changeSet>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_assign_to_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="assign_to" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_status_fkey_idx" tableName="job_chronology"
+			unique="false">
+			<column name="status" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_deliver_to_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="deliver_to" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_deliver_from_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="deliver_from" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_product_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="product" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_requester_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="requester" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_service_fkey_idx"
+			tableName="job_chronology" unique="false">
+			<column name="service" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="job_chronology_job_fkey_idx" tableName="job_chronology"
+			unique="false">
+			<column name="job" />
+		</createIndex>
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="workspace" baseTableName="job_chronology"
+			constraintName="job_chronology_workspace_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+	</changeSet>
 </databaseChangeLog>

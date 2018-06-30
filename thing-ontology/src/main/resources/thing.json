@@ -3,10 +3,12 @@
     "description": "First demo of Phantasm",
     "uri": "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm",
     "version": 1,
-    "imports": {
-        "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
-        "alias": "kernel"
-    },
+    "imports": [
+        {
+            "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
+            "alias": "kernel"
+        }
+    ],
     "edges": [
         [
             "this",
@@ -110,6 +112,22 @@
                         "type": "string"
                     }
                 }
+            },
+            "constraints": {
+                "derivedFrom": {
+                    "card": "MANY",
+                    "rel": "derivedFrom",
+                    "child": "Thing1",
+                    "schema": {
+                        "title": "Maven Artifact",
+                        "type": "object",
+                        "properties": {
+                            "classifier": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "Thing1": {
@@ -141,84 +159,184 @@
                         "type": "object"
                     }
                 }
+            },
+            "constraints": {
+                "thing2": {
+                    "card": "ONE",
+                    "rel": "thing1Of",
+                    "child": "Thing2",
+                    "schema": {
+                        "aliases": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "derivedFrom": {
+                    "card": "ONE",
+                    "rel": "derivedFrom",
+                    "child": "MavenArtifact",
+                    "schema": {
+                        "aliases": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "HasMember": {
+                    "card": "ONE",
+                    "rel": "kernel::HasMember",
+                    "child": "*Product"
+                }
             }
         },
-        "Thing2""{"classifier":"IsA",
-        "classification": "Thing2",
-        "schema": {
-            "title": "Thing 1",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "aliases": {
-                    "type": "array",
-                    "items": {
+        "Thing2": {
+            "classifier": "IsA",
+            "classification": "Thing2",
+            "schema": {
+                "title": "Thing 1",
+                "type": "object",
+                "properties": {
+                    "name": {
                         "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "aliases": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "URI": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "properties": {
+                        "type": "object"
                     }
                 },
-                "URI": {
-                    "type": "string"
-                },
-                "discount": {
-                    "type": "number"
-                },
-                "properties": {
-                    "type": "object"
+                "constraints": {
+                    "inThing1": {
+                        "card": "ONE",
+                        "rel": "inThing1",
+                        "child": "Thing1",
+                        "schema": {
+                            "aliases": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "derivedFrom": {
+                        "card": "ONE",
+                        "rel": "derivedFrom",
+                        "child": "MavenArtifact"
+                    },
+                    "thing2Of": {
+                        "card": "ONE",
+                        "rel": "thing2Of",
+                        "child": "Thing3",
+                        "infered": true
+                    },
+                    "derivedFrom": {
+                        "card": "ONE",
+                        "rel": "derivedFrom",
+                        "child": "MasterThing",
+                        "schema": {
+                            "properties": {
+                                "type": "object"
+                            }
+                        }
+                    }
                 }
             }
-        }
-    },
-    "Thing3": {
-        "classifier": "IsA",
-        "classification": "Thing3",
-        "schema": {
-            "title": "Thing 1",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
+        },
+        "Thing3": {
+            "classifier": "IsA",
+            "classification": "Thing3",
+            "schema": {
+                "title": "Thing 1",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "aliases": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "URI": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "properties": {
+                        "type": "object"
+                    }
+                }
+            },
+            "constraints": {
+                "superFly": {
+                    "card": "ONE",
+                    "rel": "inThing1",
+                    "child": "*Product"
                 },
-                "description": {
-                    "type": "string"
+                "derivedFrom": {
+                    "card": "ONE",
+                    "rel": "derivedFrom",
+                    "child": "MavenArtifact"
                 },
-                "aliases": {
-                    "type": "array",
-                    "items": {
+                "thing2Of": {
+                    "card": "ONE",
+                    "rel": "thing2Of",
+                    "child": "Thing2",
+                    "infered": true
+                }
+            }
+        },
+        "OtherThing": {
+            "classifier": "IsA",
+            "classification": "OtherThing",
+            "schema": {
+                "title": "Thing 1",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
                         "type": "string"
                     }
-                },
-                "URI": {
-                    "type": "string"
-                },
-                "discount": {
-                    "type": "number"
-                },
-                "properties": {
-                    "type": "object"
                 }
-            }
-        }
-    },
-    "OtherThing": {
-        "classifier": "IsA",
-        "classification": "OtherThing",
-        "schema": {
-            "title": "Thing 1",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
+            },
+            "constraints": {
+                "AThingOfItsOwn": {
+                    "card": "MANY",
+                    "rel": "AThingOfItsOwn",
+                    "child": "OtherThing"
                 },
-                "description": {
-                    "type": "string"
+                "derivedFrom": {
+                    "card": "ONE",
+                    "rel": "derivedFrom",
+                    "child": "kernel::Workspace"
                 }
             }
         }
     }
-}
 }

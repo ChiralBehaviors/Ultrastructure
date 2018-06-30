@@ -18,16 +18,25 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace.json;
+package com.chiralbehaviors.CoRE.workspace.json;
+
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
+import com.chiralbehaviors.CoRE.meta.workspace.json.JsonWorkspace;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author halhildebrand
  *
  */
-public class Relationship extends Existential {
-    public NamedExistential inverse;
+public class TestParse {
 
-    public Relationship() {
-        domain = Domain.Relationship;
+    @Test
+    public void testRead() throws Exception {
+        JsonWorkspace workspace = new ObjectMapper().readerFor(JsonWorkspace.class)
+                                                    .readValue(getClass().getResourceAsStream("/thing.json"));
+        assertNotNull(workspace);
     }
 }

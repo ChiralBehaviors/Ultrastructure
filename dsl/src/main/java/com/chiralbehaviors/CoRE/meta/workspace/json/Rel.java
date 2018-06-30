@@ -20,14 +20,19 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
  * @author halhildebrand
  *
  */
-public class FacetApplication {
-    public String   apply;
-    public String   on;
-    public JsonNode properties;
+public class Rel extends Existential {
+
+    public static class NamedRel extends Rel {
+        public String name;
+    }
+    
+    public NamedRel inverse;
+
+    public Rel() {
+        domain = Domain.Relationship;
+    }
 }

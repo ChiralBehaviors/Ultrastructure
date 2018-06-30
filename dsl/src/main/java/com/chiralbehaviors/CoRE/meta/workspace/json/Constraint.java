@@ -33,10 +33,11 @@ public class Constraint {
         ZERO
     }
 
-    public Cardinality card = Cardinality.MANY;
-    public String child;
-    public JsonNode defaultProperties;
-    public String name;
-    public String relationship;
-    public JsonNode schema;
+    public Cardinality card     = Cardinality.MANY;
+    public String      child;
+    public JsonNode    defaultProperties;
+    public String      description;
+    public boolean     infered = false;
+    public String      rel;
+    public JsonNode    schema;
 }

@@ -20,12 +20,23 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.chiralbehaviors.CoRE.meta.workspace.json.Rel.NamedRel;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * @author halhildebrand
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "domain", visible = true, defaultImpl = NamedRel.class)
+@JsonSubTypes({ @JsonSubTypes.Type(value = Existential.class, name = "Agency"),
+                @JsonSubTypes.Type(value = Existential.class, name = "Interval"),
+                @JsonSubTypes.Type(value = Existential.class, name = "Location"),
+                @JsonSubTypes.Type(value = Existential.class, name = "Product"),
+                @JsonSubTypes.Type(value = Rel.class, name = "Relationship"),
+                @JsonSubTypes.Type(value = Existential.class, name = "StatusCode") })
 public class Existential {
     public enum Domain {
         Agency,
@@ -36,11 +47,6 @@ public class Existential {
         StatusCode;
     }
 
-    public static class NamedExistential extends Existential {
-        public String name;
-    }
-
-    public String   description;
-    public Domain   domain;
-    public JsonNode properties;
+    public String description;
+    public Domain domain;
 }

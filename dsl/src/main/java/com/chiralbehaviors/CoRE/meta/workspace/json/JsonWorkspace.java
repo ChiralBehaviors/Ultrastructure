@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.workflow.SiblingSequencing;
  * @author halhildebrand
  *
  */
-public class Workspace {
+public class JsonWorkspace {
     public List<FacetApplication>         applications;
     public Map<String, ChildSequencing>   childSequences;
     public String                         description;

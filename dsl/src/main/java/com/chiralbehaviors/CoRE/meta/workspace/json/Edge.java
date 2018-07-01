@@ -18,21 +18,17 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
+package com.chiralbehaviors.CoRE.meta.workspace.json;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author halhildebrand
  *
  */
-public class MetaProtocol {
-    public String  assignTo;
-    public String  from;
-    public String  product;
-    public int     quantity;
-    public String  requester;
-    public int     sequence;
-    public String  service;
-    public boolean stopOnMatch;
-    public String  to;
-    public String  transform;
+public class Edge {
+    public String   p;
+    public String   r;
+    public String   c;
+    public JsonNode properties;
 }

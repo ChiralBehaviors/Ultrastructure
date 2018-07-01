@@ -10,11 +10,11 @@
         }
     ],
     "edges": [
-        [
-            "this",
-            "HasMember",
-            "Thing1"
-        ]
+        {
+            "p": "this",
+            "r": "HasMember",
+            "c": "Thing1"
+        }
     ],
     "existentials": {
         "MavenArtifact": {

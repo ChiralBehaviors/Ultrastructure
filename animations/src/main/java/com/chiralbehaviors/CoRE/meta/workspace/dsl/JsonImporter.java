@@ -26,8 +26,16 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -39,6 +47,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.Facet;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Import;
 import com.chiralbehaviors.CoRE.meta.workspace.json.JsonWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Rel;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -221,9 +230,36 @@ public class JsonImporter {
         }
     }
 
-    private void loadEdges() {
-        // TODO Auto-generated method stub
+    private void loadChildSequencing() {
+        dsl.childSequences.forEach((name, seq) -> {
+            ChildSequencingAuthorizationRecord auth = model.records()
+                                                           .newChildSequencingAuthorization(resolve(seq.parent),
+                                                                                            resolve(seq.status),
+                                                                                            resolve(seq.child),
+                                                                                            resolve(seq.next));
+            auth.insert();
+            workspace.put(name, auth);
+        });
+    }
 
+    private void loadEdges() {
+        dsl.edges.forEach(edge -> {
+            ExistentialRuleform parent = model.records()
+                                              .resolve(resolve(edge.p));
+            Relationship relationship = model.records()
+                                             .resolve(resolve(edge.r));
+            ExistentialRuleform child = model.records()
+                                             .resolve(resolve(edge.c));
+            Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link = model.getPhantasmModel()
+                                                                                  .link(parent,
+                                                                                        relationship,
+                                                                                        child);
+            workspace.add(link.a);
+            workspace.add(link.b);
+
+            setEdgeProperties(edge.properties, link.a.getId());
+
+        });
     }
 
     private void loadExistentials() {
@@ -248,23 +284,132 @@ public class JsonImporter {
     }
 
     private void loadInferences() {
-        // TODO Auto-generated method stub
+        dsl.inferences.forEach((name, i) -> {
+            NetworkInferenceRecord inference = model.records()
+                                                    .newNetworkInference(resolve(i.premise1),
+                                                                         resolve(i.premise2),
+                                                                         resolve(i.inference));
+            inference.insert();
+            workspace.put(name, inference);
+        });
 
     }
 
     private void loadMetaprotocols() {
-        // TODO Auto-generated method stub
+        dsl.metaProtocols.forEach((name, mpc) -> {
+            MetaProtocolRecord metaProtocol = model.getJobModel()
+                                                   .newInitializedMetaProtocol(model.records()
+                                                                                    .resolve(resolve(mpc.service)));
+            if (mpc.product != null) {
+                metaProtocol.setProduct(resolve(mpc.product));
+            }
+            if (mpc.from != null) {
+                metaProtocol.setDeliverFrom(resolve(mpc.from));
+            }
+            if (mpc.to != null) {
+                metaProtocol.setDeliverTo(resolve(mpc.to));
+            }
+            if (mpc.requester != null) {
+                metaProtocol.setRequester(resolve(mpc.requester));
+            }
+            if (mpc.assignTo != null) {
+                metaProtocol.setAssignTo(resolve(mpc.assignTo));
+            }
+            metaProtocol.setStopOnMatch(mpc.stopOnMatch);
+            workspace.put(name, metaProtocol);
+        });
+    }
 
+    private void loadParentSequencing() {
+        dsl.parentSequences.forEach((name, seq) -> {
+            ParentSequencingAuthorizationRecord auth = model.records()
+                                                            .newParentSequencingAuthorization(resolve(seq.service),
+                                                                                              resolve(seq.status),
+                                                                                              resolve(seq.parent),
+                                                                                              resolve(seq.next));
+            auth.insert();
+            workspace.put(name, auth);
+
+        });
     }
 
     private void loadProtocols() {
-        // TODO Auto-generated method stub
+        dsl.protocols.forEach((name, pc) -> {
+            ProtocolRecord protocol = model.getJobModel()
+                                           .newInitializedProtocol(model.records()
+                                                                        .resolve(resolve(pc.match.service)));
+            if (pc.match.product != null) {
+                protocol.setProduct(resolve(pc.match.product));
+            }
+            if (pc.match.from != null) {
+                protocol.setDeliverFrom(resolve(pc.match.from));
+            }
+            if (pc.match.to != null) {
+                protocol.setDeliverTo(resolve(pc.match.to));
+            }
+            if (pc.match.quantity != null) {
+                protocol.setQuantity(pc.match.quantity);
+            }
+            if (pc.match.requester != null) {
+                protocol.setRequester(resolve(pc.match.requester));
+            }
+            if (pc.match.assignTo != null) {
+                protocol.setAssignTo(resolve(pc.match.assignTo));
+            }
+            if (pc.match.sequence != null) {
+                protocol.setSequenceNumber(pc.match.sequence);
+            }
 
+            if (pc.child.service != null) {
+                protocol.setChildService(resolve(pc.child.service));
+            }
+            if (pc.child.product != null) {
+                protocol.setChildProduct(resolve(pc.child.product));
+            }
+            if (pc.child.from != null) {
+                protocol.setChildDeliverFrom(resolve(pc.child.from));
+            }
+            if (pc.child.to != null) {
+                protocol.setChildDeliverTo(resolve(pc.child.to));
+            }
+            if (pc.child.quantity != null) {
+                protocol.setChildQuantity(pc.child.quantity);
+            }
+            if (pc.child.assignTo != null) {
+                protocol.setChildAssignTo(resolve(pc.child.assignTo));
+            }
+            workspace.put(name, protocol);
+        });
+    }
+
+    private void loadSelfSequencing() {
+        dsl.selfSequences.forEach((name, seq) -> {
+            SelfSequencingAuthorizationRecord auth = model.records()
+                                                          .newSelfSequencingAuthorization(resolve(seq.service),
+                                                                                          resolve(seq.status),
+                                                                                          resolve(seq.next));
+            auth.insert();
+            workspace.put(name, auth);
+        });
     }
 
     private void loadSequencingAuths() {
-        // TODO Auto-generated method stub
+        loadParentSequencing();
+        loadSiblingSequencing();
+        loadChildSequencing();
+        loadSelfSequencing();
+    }
 
+    private void loadSiblingSequencing() {
+        dsl.siblingSequences.forEach((name, seq) -> {
+            SiblingSequencingAuthorizationRecord auth = model.records()
+                                                             .newSiblingSequencingAuthorization(resolve(seq.parent),
+                                                                                                resolve(seq.status),
+                                                                                                resolve(seq.sibling),
+                                                                                                resolve(seq.next));
+            auth.insert();
+            workspace.put(name, auth);
+        });
     }
 
     private void loadWorkspace() {
@@ -310,5 +455,10 @@ public class JsonImporter {
                                                                                   : qualifiedName[0],
                                                          qualifiedName.length < 2 ? qualifiedName[0]
                                                                                   : qualifiedName[1]));
+    }
+
+    private void setEdgeProperties(JsonNode properties, UUID id) {
+        // TODO Auto-generated method stub
+
     }
 }

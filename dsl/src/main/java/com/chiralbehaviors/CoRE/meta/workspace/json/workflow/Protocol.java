@@ -20,29 +20,32 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
 
+import java.math.BigDecimal;
+
 /**
  * @author halhildebrand
  *
  */
 public class Protocol {
     public static class Child {
-        public String assign;
-        public String children;
-        public String from;
-        public int    quantity;
-        public String service;
-        public String to;
+        public String     assignTo;
+        public String     children;
+        public String     from;
+        public String     product;
+        public BigDecimal quantity;
+        public String     service;
+        public String     to;
     }
 
     public static class Match {
-        public String assign;
-        public String from;
-        public String product;
-        public String quantity;
-        public String requester;
-        public int    sequence;
-        public String service;
-        public String to;
+        public String     assignTo;
+        public String     from;
+        public String     product;
+        public BigDecimal quantity;
+        public String     requester;
+        public Integer    sequence;
+        public String     service;
+        public String     to;
     }
 
     public Child  child;

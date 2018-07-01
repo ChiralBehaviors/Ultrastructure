@@ -38,7 +38,7 @@ public class JsonWorkspace {
     public List<FacetApplication>         applications;
     public Map<String, ChildSequencing>   childSequences;
     public String                         description;
-    public List<List<String>>             edges;
+    public List<Edge>             edges;
     public Map<String, Existential>       existentials;
     public Map<String, Facet>             facets;
     public List<Import>                   imports;

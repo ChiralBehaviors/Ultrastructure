@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
@@ -29,6 +30,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -62,6 +64,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
@@ -69,6 +72,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeR
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -251,6 +255,13 @@ public interface RecordsFactory {
         return record;
     }
 
+    default EdgePropertyRecord newEdgeProperty() {
+        EdgePropertyRecord record = create().newRecord(EDGE_PROPERTY);
+        record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+
     default ExistentialRuleform newExistential(ExistentialDomain domain) {
         Class<? extends ExistentialRecord> existential;
         switch (domain) {
@@ -410,6 +421,13 @@ public interface RecordsFactory {
         FacetRecord record = newFacet();
         record.setClassifier(classifier.getId());
         record.setClassification(classification.getId());
+        record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+
+    default FacetPropertyRecord newFacetProperty() {
+        FacetPropertyRecord record = create().newRecord(FACET_PROPERTY);
+        record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
     }

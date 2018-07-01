@@ -20,13 +20,17 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -41,6 +45,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.meta.workspace.json.Constraint;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential.Domain;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Facet;
@@ -55,6 +60,16 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class JsonImporter {
+    private static class FacetLoad {
+        public final FacetRecord auth;
+        public final Facet       facet;
+
+        public FacetLoad(Facet facet, FacetRecord auth) {
+            this.facet = facet;
+            this.auth = auth;
+        }
+    }
+
     private static final String THIS = "this";
     private final JsonWorkspace dsl;
     private final Model         model;
@@ -127,6 +142,21 @@ public class JsonImporter {
         return loaded;
     }
 
+    private Cardinality cardinality(Constraint constraint) {
+        switch (constraint.card) {
+            case MANY:
+                return Cardinality.N;
+            case ONE:
+                return Cardinality._1;
+            case ZERO:
+                return Cardinality.Zero;
+            default:
+                throw new IllegalArgumentException("unknown cardinality: "
+                                                   + constraint.card);
+
+        }
+    }
+
     private WorkspaceAccessor createWorkspace() {
         if (getWorkspaceProduct() != null) {
             Workspace phantasm = model.wrap(Workspace.class,
@@ -184,6 +214,22 @@ public class JsonImporter {
                     .resolve(uuid);
     }
 
+    private void load(String name, Constraint constraint, FacetRecord auth,
+                      Map<String, FacetLoad> loaded) {
+        ExistentialNetworkAuthorizationRecord authorization = model.records()
+                                                                   .newExistentialNetworkAuthorization();
+        authorization.setName(name);
+        authorization.setParent(auth.getId());
+        authorization.setRelationship(resolve(constraint.child));
+        resolveChild(constraint, authorization, loaded);
+        Cardinality cardinality = cardinality(constraint);
+        authorization.setCardinality(cardinality);
+        authorization.insert();
+        workspace.add(authorization);
+        authorization.setSchema(constraint.schema);
+        authorization.setDefaultProperties(constraint.defaultProperties);
+    }
+
     private FacetRecord load(String name, Facet facet) {
         Relationship classifier = model.records()
                                        .resolve(resolve(facet.classifier));
@@ -202,8 +248,9 @@ public class JsonImporter {
         authorization.setClassification(classification.getId());
         authorization.setName(name);
         authorization.setSchema(facet.schema);
+        authorization.setDefaultProperties(facet.defaultProperties);
         authorization.insert();
-        workspace.add(authorization);
+        workspace.put(name, authorization);
         return authorization;
     }
 
@@ -277,9 +324,16 @@ public class JsonImporter {
     }
 
     private void loadFacets() {
+        Map<String, FacetLoad> loaded = new HashMap<>();
         dsl.facets.forEach((name, facet) -> {
-            load(name, facet);
+            loaded.put(name, new FacetLoad(facet, load(name, facet)));
         });
+        loaded.values()
+              .forEach(pair -> {
+                  pair.facet.constraints.forEach((name, constraint) -> {
+                      load(name, constraint, pair.auth, loaded);
+                  });
+              });
     }
 
     private void loadInferences() {
@@ -454,6 +508,22 @@ public class JsonImporter {
                                                                                   : qualifiedName[0],
                                                          qualifiedName.length < 2 ? qualifiedName[0]
                                                                                   : qualifiedName[1]));
+    }
+
+    private void resolveChild(Constraint constraint,
+                              ExistentialNetworkAuthorizationRecord authorization,
+                              Map<String, FacetLoad> loaded) {
+        FacetLoad resolved = loaded.get(constraint.child);
+        if (resolved != null) {
+            authorization.setChild(resolved.auth.getId());
+        } else {
+            authorization.setChild(resolveFacet(constraint.child));
+        }
+    }
+
+    private UUID resolveFacet(String child) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private void setEdgeProperties(JsonNode properties, UUID id) {

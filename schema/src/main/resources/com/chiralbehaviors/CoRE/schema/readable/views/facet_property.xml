@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="edge_properties" schemaName="readable" replaceIfExists="true"><![CDATA[
+	<changeSet id="2.0.0" author="hhildebrand">
+		<createView viewName="facet_property" schemaName="readable"
+			replaceIfExists="true"><![CDATA[
 			 SELECT 
                  p.id,
                  f.name AS facet,
@@ -17,7 +19,7 @@
                  wa.key AS wsp_key,
                  wa.description AS wsp_desc,
 			     p.version
-			   FROM facet_properties p
+			   FROM facet_property p
                  JOIN facet f ON p.facet = f.id
 			     JOIN existential e ON p.existential = e.id
 			     JOIN existential up ON p.updated_by = up.id
@@ -25,5 +27,5 @@
                  LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = p.id
             ]]>
         </createView>
-    </changeSet>
+	</changeSet>
 </databaseChangeLog>

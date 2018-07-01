@@ -9,14 +9,17 @@
 	<changeSet author="hhildebrand" id="2.0.0">
 
 		<createTable schemaName="ruleform"
-			remarks="Facet Properties" tableName="facet_properties">
+			remarks="Edge Properties" tableName="edge_property">
 			<column name="id" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="facet" type="uuid">
+			<column name="auth" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="existential" type="uuid">
+			<column name="edge" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="forward" type="boolean" defaultValue="true">
 				<constraints nullable="false" />
 			</column>
 			<column name="properties" type="jsonb" />
@@ -30,76 +33,76 @@
 		</createTable>
 
 		<addUniqueConstraint schemaName="ruleform"
-			columnNames="facet, existential"
-			constraintName="facet_properties_key" deferrable="false"
-			disabled="false" initiallyDeferred="true"
-			tableName="facet_properties" />
+			columnNames="auth, edge" constraintName="edge_property_key"
+			deferrable="false" disabled="false" initiallyDeferred="true"
+			tableName="edge_property" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="facet" baseTableName="facet_properties"
-			constraintName="facet_properties_facet_fkey" deferrable="false"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="facet" />
+			baseColumnNames="auth" baseTableName="edge_property"
+			constraintName="edge_property_authorization_fkey"
+			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id"
+			referencedTableName="existential_network_authorization" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="existential" baseTableName="facet_properties"
-			constraintName="facet_properties_existential_fkey" deferrable="false"
+			baseColumnNames="edge" baseTableName="edge_property"
+			constraintName="edge_property_edge_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential_network" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="edge_property"
+			constraintName="edge_authority_fkey" deferrable="false"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="authority" baseTableName="facet_properties"
-			constraintName="facet_authority_fkey" deferrable="false"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="updated_by" baseTableName="facet_properties"
-			constraintName="facet_updated_by_fkey" deferrable="false"
+			baseColumnNames="updated_by" baseTableName="edge_property"
+			constraintName="edge_updated_by_fkey" deferrable="false"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="facet_properties"
-			constraintName="facet_workspace_fkey" deferrable="true"
+			baseColumnNames="workspace" baseTableName="edge_property"
+			constraintName="edge_workspace_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql splitStatements="false"><![CDATA[
-            CREATE OR REPLACE FUNCTION validate_facet_properties(data jsonb, fId uuid) RETURNS boolean AS 
+            CREATE OR REPLACE FUNCTION validate_edge_props(data jsonb, aid uuid) RETURNS boolean AS 
             $f$
             BEGIN
-              SELECT validate_json_schema(f.schema, jsonb) FROM facet f WHERE f.id = fId;
+              SELECT validate_json_schema(a.schema, jsonb) FROM existential_network_authorization a WHERE a.id = aid;
             END;
             $f$ LANGUAGE 'plpgsql' IMMUTABLE;
         ]]>
 		</sql>
 
-		<sql><![CDATA[
-        ALTER TABLE facet_properties ADD CONSTRAINT valid_facet_properties_json_schmema CHECK (validate_facet_properties(properties, facet));
-        CREATE INDEX facet_properties_idx ON facet_properties USING gin(properties jsonb_path_ops);
+		<sql endDelimiter=";"><![CDATA[
+        ALTER TABLE edge_property ADD CONSTRAINT valid_edge_props_json_schmema CHECK (validate_edge_props(properties, auth));
+        CREATE INDEX edge_property_idx ON edge_property USING gin(properties jsonb_path_ops);
         ]]>
 		</sql>
 
+        <createIndex schemaName="ruleform"
+            indexName="edge_property_edge_fkey_idx"
+            tableName="edge_property" unique="false">
+            <column name="edge" />
+        </createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="facet_properties_existential_fkey_idx"
-			tableName="facet_properties" unique="false">
-			<column name="existential" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="facet_properties_updated_by_fkey_idx"
-			tableName="facet_properties" unique="false">
+			indexName="edge_property_updated_by_fkey_idx"
+			tableName="edge_property" unique="false">
 			<column name="updated_by" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="facet_properties_authority_fkey_idx"
-			tableName="facet_properties" unique="false">
+			indexName="edge_property_authority_fkey_idx"
+			tableName="edge_property" unique="false">
 			<column name="authority" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="facet_properties_workspace_fkey_idx"
-			tableName="facet_properties" unique="false">
+			indexName="edge_property_workspace_fkey_idx"
+			tableName="edge_property" unique="false">
 			<column name="workspace" />
 		</createIndex>
 	</changeSet>

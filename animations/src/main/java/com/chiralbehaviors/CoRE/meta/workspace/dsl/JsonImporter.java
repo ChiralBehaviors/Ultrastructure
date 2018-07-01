@@ -184,7 +184,6 @@ public class JsonImporter {
                     .resolve(uuid);
     }
 
-    @SuppressWarnings("deprecation")
     private FacetRecord load(String name, Facet facet) {
         Relationship classifier = model.records()
                                        .resolve(resolve(facet.classifier));

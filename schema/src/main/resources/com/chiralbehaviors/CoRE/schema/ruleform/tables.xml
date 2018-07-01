@@ -10,9 +10,9 @@
     <include relativeToChangelogFile="true" file="tables/existential_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network.xml" />
     <include relativeToChangelogFile="true" file="tables/facet.xml" />
-    <include relativeToChangelogFile="true" file="tables/facet_properties.xml" />
+    <include relativeToChangelogFile="true" file="tables/facet_property.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_authorization.xml" />
-    <include relativeToChangelogFile="true" file="tables/edge_properties.xml" />
+    <include relativeToChangelogFile="true" file="tables/edge_property.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_attribute_authorization.xml" />

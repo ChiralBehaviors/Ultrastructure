@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.json;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class Facet {
     public String                  classification;
     public String                  classifier;
-    public Map<String, Constraint> constraints;
+    public Map<String, Constraint> constraints = new HashMap<>();
     public JsonNode                defaultProperties;
     public String                  description;
     public JsonNode                schema;

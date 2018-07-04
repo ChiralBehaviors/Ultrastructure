@@ -1,0 +1,27 @@
+{
+    "title": "Maven Artifact",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "artifactId": {
+            "type": "string"
+        },
+        "classifier": {
+            "type": "string"
+        },
+        "groupId": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        }
+    }
+}

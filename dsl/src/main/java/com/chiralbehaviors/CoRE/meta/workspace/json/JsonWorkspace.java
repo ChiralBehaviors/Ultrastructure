@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.json;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,19 +38,19 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.workflow.SiblingSequencing;
  */
 public class JsonWorkspace {
     public List<FacetApplication>         applications;
-    public Map<String, ChildSequencing>   childSequences;
+    public Map<String, ChildSequencing>   childSequences   = new HashMap<>();
     public String                         description;
-    public List<Edge>             edges;
-    public Map<String, Existential>       existentials;
+    public List<Edge>                     edges;
+    public Map<String, Existential>       existentials     = new HashMap<>();
     public Map<String, Facet>             facets;
-    public List<Import>                   imports;
-    public Map<String, Inference>         inferences;
-    public Map<String, MetaProtocol>      metaProtocols;
+    public List<Import>                   imports          = new ArrayList<>();
+    public Map<String, Inference>         inferences       = new HashMap<>();
+    public Map<String, MetaProtocol>      metaProtocols    = new HashMap<>();
     public String                         name;
-    public Map<String, ParentSequencing>  parentSequences;
-    public Map<String, Protocol>          protocols;
-    public Map<String, SelfSequencing>    selfSequences;
-    public Map<String, SiblingSequencing> siblingSequences;
+    public Map<String, ParentSequencing>  parentSequences  = new HashMap<>();
+    public Map<String, Protocol>          protocols        = new HashMap<>();
+    public Map<String, SelfSequencing>    selfSequences    = new HashMap<>();
+    public Map<String, SiblingSequencing> siblingSequences = new HashMap<>();
     public String                         uri;
     public int                            version;
 }

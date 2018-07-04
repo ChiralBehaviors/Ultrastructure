@@ -1,13 +1,13 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
- * This file is part of Ultrastructure.
+ * Copyright (c) 2018 Chiral Behaviors, LLC, all rights reserved.
+ *
+
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,207 +21,239 @@
 package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
 import java.beans.Introspector;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.List;
 
-import org.stringtemplate.v4.ST;
-import org.stringtemplate.v4.STGroup;
-import org.stringtemplate.v4.STGroupFile;
-
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
+import com.chiralbehaviors.CoRE.meta.workspace.json.Constraint;
+import com.chiralbehaviors.CoRE.meta.workspace.json.Facet;
+import com.chiralbehaviors.CoRE.meta.workspace.json.JsonWorkspace;
+import com.chiralbehaviors.CoRE.utils.English;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
 
 /**
- * @author hhildebrand
+ * @author halhildebrand
  *
  */
 public class PhantasmGenerator {
-    private static final String FACET               = "facet";
-    private static final String TEMPLATES_FACET_STG = "templates/facet.stg";
+    private static final String ADD_S              = "add%s";
+    private static final String ANNOTATIONS        = "com.chiralbehaviors.CoRE.phantasm.java.annotations.";
+    private static final String EDGE_ANNOTATION    = ANNOTATIONS + "Edge";
+    private static final String FIELD_NAME         = "fieldName";
+    private static final String GET_IMMEDIATE_S    = "getImmediate%s";
+    private static final String GET_S              = "get%s";
+    private static final String INFERED_ANNOTATION = ANNOTATIONS + "Infered";
+    private static final String REMOVE_S           = "remove%s";
+    private static final String SET_IMMEDIATE_S    = "setImmediate%s";
+    private static final String SET_S              = "set%s";
+    private static final String WRAPPED_CHILD_TYPE = "wrappedChildType";
 
-    public static Map<ScopedName, MappedAttribute> mapAttributes(WorkspacePresentation workspace) {
-        Map<ScopedName, MappedAttribute> mapped = new HashMap<>();
-        workspace.getAttributes()
-                 .forEach(attribute -> {
-                     mapped.put(new ScopedName("",
-                                               attribute.existentialRuleform().workspaceName.getText()),
-                                new MappedAttribute(attribute));
-                 });
-        return mapped;
+    public static String capitalized(String baseName) {
+        return Character.toUpperCase(baseName.charAt(0))
+               + (baseName.length() == 1 ? "" : baseName.substring(1));
     }
 
     public static String toFieldName(String name) {
         return Introspector.decapitalize(name.replaceAll("\\s", ""));
     }
 
-    private final Configuration        configuration;
+    private final Configuration config;
+    private final JsonWorkspace workspace;
 
-    private final Map<FacetKey, Facet> facets  = new HashMap<>();
-    private final Map<FacetKey, Facet> imports = new HashMap<>();
-
-    public PhantasmGenerator(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public void generate() throws IOException {
-        generateFacets();
-        for (Facet facet : facets.values()) {
-            File file = getOutputFile(facet);
-            STGroup group = new STGroupFile(TEMPLATES_FACET_STG);
-            ST template = group.getInstanceOf(FACET);
-            template.add(FACET, facet);
-            generate(template, file);
-        }
-    }
-
-    private void generate(ST template, File file) {
-        FileOutputStream os;
+    public PhantasmGenerator(Configuration config) {
+        InputStream input;
         try {
-            Files.deleteIfExists(file.toPath());
-            os = new FileOutputStream(Files.createFile(file.toPath())
-                                           .toFile());
-        } catch (FileNotFoundException e) {
-            throw new IllegalStateException(String.format("Cannot find file for create %s",
-                                                          file.getAbsolutePath(),
-                                                          e));
+            input = Utils.resolveResource(getClass(), config.resource);
         } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot resolve resource: "
+                                               + config.resource, e);
+        }
+        if (input == null) {
 
-            throw new IllegalStateException(String.format("Error creating file %s\nCause: %s",
-                                                          file.getAbsolutePath(),
-                                                          e.getMessage()));
         }
         try {
-            os.write(template.render()
-                             .getBytes());
-            os.close();
+            this.workspace = new ObjectMapper().readerFor(JsonWorkspace.class)
+                                               .readValue(input);
         } catch (IOException e) {
-            throw new IllegalStateException(String.format("Error writing file %s",
-                                                          file.getAbsolutePath(),
-                                                          e));
+            throw new IllegalArgumentException("Cannot deserialize json resource: "
+                                               + config.resource, e);
+        }
+        this.config = config;
+    }
+
+    public void generate() {
+        JCodeModel codeModel = new JCodeModel();
+        generate(codeModel);
+    }
+
+    public void generate(JCodeModel codeModel) {
+        JPackage jpackage = codeModel._package(config.packageName);
+        workspace.facets.forEach((name, facet) -> generate(name, facet,
+                                                           jpackage,
+                                                           codeModel));
+    }
+
+    private void generate(String name, Constraint constraint,
+                          JDefinedClass jClass, JCodeModel codeModel) {
+        switch (constraint.card) {
+            case MANY:
+                generateList(name, constraint, jClass, codeModel);
+            case ONE:
+                generateSingular(name, constraint, jClass, codeModel);
+            default:
+
         }
     }
 
-    private void generateFacets() throws IOException {
-        WorkspacePresentation wsp = new WorkspacePresentation(Utils.resolveResource(getClass(),
-                                                                                    configuration.resource));
-
-        importFacets(wsp);
-        String uri = wsp.getWorkspaceDefinition().uri.getText().replace("'", "\"");
-        wsp.getAgencyFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getAttributeFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getIntervalFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getLocationFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getProductFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getRelationshipFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getStatusCodeFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        wsp.getUnitFacets()
-           .forEach(facet -> {
-               facets.put(new FacetKey(facet),
-                          (Facet) new DefinedFacet(configuration.packageName,
-                                                facet, uri));
-           });
-        resolve(wsp);
-    }
-
-    private void importFacets(WorkspacePresentation wsp) {
-        wsp.getImports()
-           .forEach(imp -> {
-               String namespace = imp.namespace.getText();
-               if (imp.importedFacets() != null) {
-                   imp.importedFacets()
-                      .facetImport()
-                      .forEach(facet -> {
-                          String packageName = configuration.namespacePackages.get(namespace);
-                          FacetKey key = new FacetKey(facet.classifier,
-                                                      facet.classification);
-                          if (packageName == null) {
-                              throw new IllegalStateException(String.format("No package translation for namespace: %s [%s]",
-                                                                            namespace,
-                                                                            key));
-                          }
-                          imports.put(key,
-                                      new ImportedFacet(packageName, facet,
-                                                        imp.uri.getText()));
-                      });
-               }
-           });
-    }
-
-    private File getOutputFile(Facet facet) {
-        String packageDirectory = facet.getPackageName()
-                                       .replace('.', '/');
-        File file = new File(configuration.outputDirectory,
-                             String.format("%s/%s.java", packageDirectory,
-                                           facet.getClassName()));
-        File parentDir = new File(configuration.outputDirectory,
-                                  packageDirectory);
+    private void generate(String name, Facet facet, JPackage jpackage,
+                          JCodeModel codeModel) {
+        JDefinedClass jClass;
         try {
-            Files.createDirectories(parentDir.toPath());
-        } catch (IOException e) {
-            throw new IllegalStateException(String.format("Cannot create parent directories %s",
-                                                          file.getParent()),
-                                            e);
+            jClass = jpackage.owner()
+                             ._class(JMod.PUBLIC,
+                                     config.packageName + "." + name,
+                                     ClassType.INTERFACE);
+        } catch (JClassAlreadyExistsException e) {
+            throw new IllegalStateException(String.format("Facet %s has already been defined",
+                                                          name));
         }
-        return file;
+        facet.constraints.forEach((n, constraint) -> generate(n, constraint,
+                                                              jClass,
+                                                              codeModel));
     }
 
-    private void resolve(WorkspacePresentation presentation) {
-        Map<ScopedName, MappedAttribute> mapped = mapAttributes(presentation);
-        for (Facet facet : facets.values()) {
-            facet.resolve(this, presentation, mapped);
+    private void generateList(String name, Constraint constraint,
+                              JDefinedClass jClass, JCodeModel codeModel) {
+        String fieldName = toFieldName(name);
+        String normalized = capitalized(fieldName);
+        String plural = English.plural(normalized);
+        String pluralParameter = English.plural(fieldName);
+        JClass childType = jClass.owner()
+                                 .ref(resolveChild(constraint.child));
+        JClass listType = codeModel.ref(List.class)
+                                   .narrow(childType);
+
+        if (constraint.infered) {
+            JMethod getInfered = jClass.method(JMod.PUBLIC, listType,
+                                               String.format(GET_S, plural));
+            getInfered.annotate(codeModel.ref(EDGE_ANNOTATION))
+                      .param(FIELD_NAME, fieldName)
+                      .param(WRAPPED_CHILD_TYPE, childType);
+            getInfered.annotate(codeModel.ref(INFERED_ANNOTATION));
+
+            jClass.method(JMod.PUBLIC, listType,
+                          String.format(GET_IMMEDIATE_S, plural))
+                  .annotate(codeModel.ref(EDGE_ANNOTATION))
+                  .param(FIELD_NAME, fieldName)
+                  .param(WRAPPED_CHILD_TYPE, childType);
+
+            jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                          String.format(SET_IMMEDIATE_S, plural))
+                  .param(listType, pluralParameter)
+                  .annotate(codeModel.ref(EDGE_ANNOTATION))
+                  .param(FIELD_NAME, fieldName)
+                  .param(WRAPPED_CHILD_TYPE, childType);
+        } else {
+            jClass.method(JMod.PUBLIC, listType, String.format(GET_S, plural))
+                  .annotate(codeModel.ref(EDGE_ANNOTATION))
+                  .param(FIELD_NAME, fieldName)
+                  .param(WRAPPED_CHILD_TYPE, childType);
+
+            jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                          String.format(SET_S, plural))
+                  .param(listType, pluralParameter)
+                  .annotate(codeModel.ref(EDGE_ANNOTATION))
+                  .param(FIELD_NAME, fieldName)
+                  .param(WRAPPED_CHILD_TYPE, childType);
         }
+        jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                      String.format(ADD_S, normalized))
+              .param(childType, fieldName)
+              .annotate(codeModel.ref(EDGE_ANNOTATION))
+              .param(FIELD_NAME, fieldName)
+              .param(WRAPPED_CHILD_TYPE, childType);
+
+        jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                      String.format(REMOVE_S, normalized))
+              .param(childType, fieldName)
+              .annotate(codeModel.ref(EDGE_ANNOTATION))
+              .param(FIELD_NAME, fieldName)
+              .param(WRAPPED_CHILD_TYPE, childType);
+
+        jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                      String.format(ADD_S, plural))
+              .param(listType, pluralParameter)
+              .annotate(codeModel.ref(EDGE_ANNOTATION))
+              .param(FIELD_NAME, fieldName)
+              .param(WRAPPED_CHILD_TYPE, childType);
+
+        jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                      String.format(REMOVE_S, plural))
+              .param(listType, pluralParameter)
+              .annotate(codeModel.ref(EDGE_ANNOTATION))
+              .param(FIELD_NAME, fieldName)
+              .param(WRAPPED_CHILD_TYPE, childType);
     }
 
-    public Facet resolve(FacetKey facetKey) {
-        Facet facet = facets.get(facetKey);
-        if (facet != null) {
-            return facet;
-        }
+    private void generateSingular(String name, Constraint constraint,
+                                  JDefinedClass jClass, JCodeModel codeModel) {
+        String fieldName = toFieldName(name);
+        String normalized = capitalized(fieldName);
+        JClass childType = jClass.owner()
+                                 .ref(resolveChild(constraint.child));
+        jClass.method(JMod.PUBLIC, childType, String.format(GET_S, normalized))
+              .annotate(codeModel.ref(EDGE_ANNOTATION))
+              .param(FIELD_NAME, fieldName)
+              .param(WRAPPED_CHILD_TYPE, childType);
 
-        facet = imports.get(facetKey);
-        if (facet != null) {
-            return facet;
+        jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                      String.format(SET_S, normalized))
+              .annotate(codeModel.ref(EDGE_ANNOTATION))
+              .param(FIELD_NAME, fieldName)
+              .param(WRAPPED_CHILD_TYPE, childType);
+    }
+
+    public static String toTypeName(String name) {
+        char chars[] = toValidName(name).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toValidName(String name) {
+        name = name.replaceAll("\\s", "");
+        StringBuilder sb = new StringBuilder();
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            sb.append("_");
         }
-        return null;
+        for (char c : name.toCharArray()) {
+            if (!Character.isJavaIdentifierPart(c)) {
+                sb.append("_");
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    private String resolveChild(String child) {
+        String[] split = child.split("::");
+        if (split.length == 2) {
+            String pkg = config.namespacePackages.get(split[0]);
+            if (pkg != null) {
+                return pkg + "." + toTypeName(child);
+            }
+            throw new IllegalArgumentException("Cannot resolve facet: " + child
+                                               + " in workspace");
+        }
+        return config.packageName + "." + toTypeName(child);
     }
 }

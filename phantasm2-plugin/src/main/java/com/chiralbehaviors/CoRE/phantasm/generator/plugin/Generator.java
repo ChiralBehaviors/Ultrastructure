@@ -56,7 +56,7 @@ public class Generator extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Generating Phantasms");
-        try {
+        try { 
             new PhantasmGenerator(generator).generate();
         } catch (Exception e) {
             MojoFailureException ex = new MojoFailureException("Unable to generate phantasms",

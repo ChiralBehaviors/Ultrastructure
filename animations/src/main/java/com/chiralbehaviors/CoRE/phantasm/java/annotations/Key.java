@@ -25,6 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
+
 /**
  * 
  * A namespace scoped (optional) name within a workspace
@@ -38,4 +40,6 @@ public @interface Key {
     String name();
 
     String namespace() default "";
+
+    ReferenceType type();
 }

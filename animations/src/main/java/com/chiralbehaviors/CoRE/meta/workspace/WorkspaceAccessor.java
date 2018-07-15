@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.StringArgGenerator;
@@ -48,13 +49,13 @@ public interface WorkspaceAccessor {
 
     void flushCache();
 
-    <T> T get(String key);
+    <T> T get(ReferenceType type, String key);
 
     <T> T getAccessor(Class<T> accessorInterface);
 
     Product getDefiningProduct();
 
-    UUID getId(String name);
+    UUID getId(ReferenceType type, String name);
 
     Map<String, Tuple<Product, Integer>> getImports();
 

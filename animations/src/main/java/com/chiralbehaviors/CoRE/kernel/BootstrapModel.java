@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -86,9 +86,9 @@ public class BootstrapModel extends Bootstrap {
                                           .connectionProvider()
                                           .acquire());
 
-        new WorkspaceImporter(getClass().getResourceAsStream(KERNEL_3_WSP),
-                              model).initialize()
-                                    .load(kernelWorkspace);
+        new JsonImporter(getClass().getResourceAsStream(KERNEL_3_WSP),
+                         model).initialize()
+                               .load(kernelWorkspace);
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
                                                          .getAttributeValue(kernelWorkspace,
                                                                             model.getKernel()

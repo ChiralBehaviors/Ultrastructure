@@ -20,6 +20,10 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
+import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -53,6 +57,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.Import;
 import com.chiralbehaviors.CoRE.meta.workspace.json.JsonWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Rel;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -71,12 +76,30 @@ public class JsonImporter {
     }
 
     private static final String THIS = "this";
+
+    public static JsonWorkspace from(InputStream is) {
+        try {
+            return new ObjectMapper().readerFor(JsonWorkspace.class)
+                                     .readValue(is);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot deserialize json resource",
+                                               e);
+        }
+    }
+
     private final JsonWorkspace dsl;
     private final Model         model;
     private WorkspaceScope      scope;
     private UUID                uuid;
-
     private EditableWorkspace   workspace;
+
+    /**
+     * @param resourceAsStream
+     * @param model2
+     */
+    public JsonImporter(InputStream resource, Model model) {
+        this(from(resource), model);
+    }
 
     public JsonImporter(JsonWorkspace dsl, Model model) {
         this.dsl = dsl;
@@ -493,12 +516,13 @@ public class JsonImporter {
         UUID id;
         String[] qualifiedName = name.split("::");
         if (qualifiedName.length > 1) {
-            return scope.lookupId(qualifiedName[0], qualifiedName[1]);
+            return scope.lookupId(qualifiedName[0], Existential,
+                                  qualifiedName[1]);
         } else if (qualifiedName[0].equals(THIS)) {
             return workspace.getDefiningProduct()
                             .getId();
         } else {
-            id = scope.lookupId(qualifiedName[0]);
+            id = scope.lookupId(Existential, qualifiedName[0]);
             if (id != null) {
                 return id;
             }

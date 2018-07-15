@@ -25,6 +25,6 @@ package com.chiralbehaviors.CoRE.phantasm.java.annotations;
  * @author halhildebrand
  *
  */
-public class Properties {
+public @interface Properties {
 
 }

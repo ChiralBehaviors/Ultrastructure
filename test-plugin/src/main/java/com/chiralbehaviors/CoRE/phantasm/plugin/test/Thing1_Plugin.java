@@ -42,12 +42,14 @@ public class Thing1_Plugin {
     public static void constructor(DataFetchingEnvironment env) {
         ((PhantasmCRUD) env.getContext()).getModel(); // ensure it isn't null;
         env.getArguments(); // not null;
-        ((Thing1) env.getSource()).setDescription(passThrough.get());
+        ((Thing1) env.getSource()).get_Properties()
+                                  .setDescription(passThrough.get());
     }
 
     @GraphQLField
     public static String instanceMethod(DataFetchingEnvironment env) {
         return ((Thing1) env.getSource()).getThing2()
+                                         .get_Properties()
                                          .getName();
     }
 
@@ -58,6 +60,7 @@ public class Thing1_Plugin {
         env.getArguments(); // not null;
         passThrough.set(arg1);
         return ((Thing1) env.getSource()).getThing2()
+                                         .get_Properties()
                                          .getName();
     }
 }

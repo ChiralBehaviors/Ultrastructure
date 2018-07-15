@@ -1,8 +1,8 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2018 Chiral Behaviors, LLC, all rights reserved.
  * 
  
- * This file is part of Ultrastructure.
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
@@ -20,31 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 /**
- * @author hhildebrand
+ * @author halhildebrand
  *
  */
-/**
- * 
- * Marks the aspect oriented state and behavior associated with a facet
- * 
- * @author hhildebrand
- *
- */
-@Documented
-@Target({ TYPE })
-@Retention(RUNTIME)
 public @interface Facet {
-    Key classification();
-
-    Key classifier();
+    String key();
 
     String workspace();
 }

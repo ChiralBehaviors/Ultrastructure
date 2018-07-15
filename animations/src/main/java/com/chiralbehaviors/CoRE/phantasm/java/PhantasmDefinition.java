@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -70,27 +69,11 @@ public class PhantasmDefinition extends Phantasmagoria {
             throw new IllegalStateException(String.format("Workspace defining product: %s not found",
                                                           uuid));
         }
-        Relationship classifier = (Relationship) scope.lookup(facet.classifier());
-        if (classifier == null) {
-            throw new IllegalStateException(String.format("%s not found in workspace %s | %s",
-                                                          facet.classifier(),
-                                                          uuid,
-                                                          facet.workspace()));
-        }
-        ExistentialRuleform classification = (ExistentialRuleform) scope.lookup(facet.classification());
-        if (classification == null) {
-            throw new IllegalStateException(String.format("%s not found in workspace %s | %s",
-                                                          facet.classification(),
-                                                          uuid,
-                                                          facet.workspace()));
-        }
-        FacetRecord facetDeclaration = model.getPhantasmModel()
-                                            .getFacetDeclaration(classifier,
-                                                                 classification);
+        FacetRecord facetDeclaration = model.records()
+                                            .findFacetRecord(uuid);
         if (facetDeclaration == null) {
             throw new IllegalArgumentException(String.format("%s not found in workspace %s | %s",
-                                                             facet.classification(),
-                                                             uuid,
+                                                             facet.key(), uuid,
                                                              facet.workspace()));
         }
         return new Aspect(model.create(), facetDeclaration);

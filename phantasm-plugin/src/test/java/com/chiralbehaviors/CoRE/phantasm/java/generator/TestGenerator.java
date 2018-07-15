@@ -28,6 +28,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.phantasm.generator.json.Configuration;
+import com.chiralbehaviors.CoRE.phantasm.generator.json.PhantasmGenerator;
 import com.chiralbehaviors.CoRE.phantasm.generator.plugin.Generator;
 import com.hellblazer.utils.Utils;
 
@@ -38,7 +40,7 @@ import com.hellblazer.utils.Utils;
 public class TestGenerator {
     private static final String COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED = "com.chiralbehaviors.CoRE.phantasm.test.generated";
     private static final String TARGET_PHANTASM_TEST_GENERATION                   = "target/phantasm-test-generation";
-    private static final String THING_WSP                                         = "/thing.wsp";
+    private static final String THING_WSP                                         = "/thing.json";
 
     @Test
     public void testFile() throws IOException, MojoExecutionException,
@@ -50,14 +52,16 @@ public class TestGenerator {
         fos.close();
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
-        configuration.namespacePackages.put("kernel", "com.chiralbehaviors.CoRE.kernel.phantasm");
+        configuration.namespacePackages.put("kernel",
+                                            "com.chiralbehaviors.CoRE.phantasm.java.any");
         new Generator(configuration).execute();
     }
 
     @Test
     public void testResource() throws IOException {
         Configuration configuration = new Configuration();
-        configuration.namespacePackages.put("kernel", "com.chiralbehaviors.CoRE.kernel.phantasm");
+        configuration.namespacePackages.put("kernel",
+                                            "com.chiralbehaviors.CoRE.kernel.phantasm");
         configuration.resource = THING_WSP;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;

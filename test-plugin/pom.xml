@@ -52,11 +52,11 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>/thing.wsp</resource>
+								<resource>/thing.json</resource>
 								<outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.phantasm.plugin.test</packageName>
 								<namespacePackages>
-									<kernel>com.chiralbehaviors.CoRE.kernel.phantasm</kernel>
+									<kernel>com.chiralbehaviors.CoRE.phantasm.java.any</kernel>
 								</namespacePackages>
 							</generator>
 						</configuration>

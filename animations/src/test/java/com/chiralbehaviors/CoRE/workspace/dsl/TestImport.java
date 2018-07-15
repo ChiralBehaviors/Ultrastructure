@@ -62,7 +62,7 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", "IsA"));
+                               .lookup("kernel"));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class TestImport extends AbstractModelTest {
                      definingProduct.getDescription());
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", "IsA"));
+                               .lookup("kernel"));
     }
 
     @Test
@@ -108,6 +108,6 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", "IsA"));
+                               .lookup("kernel"));
     }
 }

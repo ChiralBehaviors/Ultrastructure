@@ -81,7 +81,6 @@
 		<module>dsl</module>
 		<module>loader-plugin-test</module>
 		<module>phantasm-plugin</module>
-        <module>phantasm2-plugin</module>
 		<module>phantasm-at-rest</module>
 		<module>thing-ontology</module>
 		<module>workspace-plugin</module>

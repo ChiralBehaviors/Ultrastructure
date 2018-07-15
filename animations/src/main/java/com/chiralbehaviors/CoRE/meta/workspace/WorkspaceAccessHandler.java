@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.InvalidKeyException;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
 /**
@@ -66,7 +67,7 @@ public class WorkspaceAccessHandler implements InvocationHandler {
                                                                   method));
         }
         name = name.substring("get".length());
-        Object ruleform = workspace.lookup(name);
+        Object ruleform = workspace.lookup(ReferenceType.Existential, name);
         return ruleform;
     }
 }

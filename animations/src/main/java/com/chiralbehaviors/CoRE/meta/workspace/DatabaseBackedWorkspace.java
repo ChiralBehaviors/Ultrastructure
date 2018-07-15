@@ -294,7 +294,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T get(String key) {
+    public <T> T get(ReferenceType type, String key) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
         }
@@ -308,6 +308,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                    .from(WORKSPACE_LABEL)
                                                    .where(WORKSPACE_LABEL.WORKSPACE.equal(getDefiningProduct().getId()))
                                                    .and(WORKSPACE_LABEL.KEY.equal(key))
+                                                   .and(WORKSPACE_LABEL.TYPE.equal(type))
                                                    .fetchOne();
         if (result == null) {
             return null;
@@ -343,12 +344,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     @Override
-    public UUID getId(String name) {
+    public UUID getId(ReferenceType type, String name) {
         Record1<UUID> id = model.create()
                                 .select(WORKSPACE_LABEL.REFERENCE)
                                 .from(WORKSPACE_LABEL)
                                 .where(WORKSPACE_LABEL.WORKSPACE.equal(getDefiningProduct().getId()))
                                 .and(WORKSPACE_LABEL.KEY.equal(name))
+                                .and(WORKSPACE_LABEL.TYPE.equal(type))
                                 .fetchOne();
         return id != null ? id.value1() : null;
     }

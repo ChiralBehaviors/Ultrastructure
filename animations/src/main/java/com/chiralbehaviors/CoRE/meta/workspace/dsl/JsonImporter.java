@@ -24,7 +24,9 @@ import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -87,10 +89,40 @@ public class JsonImporter {
         }
     }
 
+    public static JsonImporter manifest(InputStream source,
+                                        Model model) throws IOException {
+        JsonImporter importer = new JsonImporter(source, model);
+        importer.manifest();
+        return importer;
+    }
+
+    public static void manifest(List<URL> wsps, Model model) {
+        wsps.forEach(url -> {
+            manifest(url, model);
+        });
+    }
+
+    public static JsonImporter manifest(URL url, Model model) {
+        try (InputStream is = url.openStream()) {
+            try {
+                return manifest(is, model);
+            } catch (Exception e) {
+                throw new IllegalStateException(String.format("Cannot load %s",
+                                                              url),
+                                                e);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Cannot load %s",
+                                                          url),
+                                            e);
+        }
+    }
+
     private final JsonWorkspace dsl;
     private final Model         model;
     private WorkspaceScope      scope;
     private UUID                uuid;
+
     private EditableWorkspace   workspace;
 
     /**
@@ -125,8 +157,10 @@ public class JsonImporter {
         workspace = (EditableWorkspace) scope.getWorkspace();
         loadWorkspace();
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.setName(dsl.name);
-        phantasm.setDescription(dsl.description);
+        phantasm.get_Properties()
+                .setName(dsl.name);
+        phantasm.get_Properties()
+                .setDescription(dsl.description);
         return workspace;
     }
 
@@ -153,15 +187,18 @@ public class JsonImporter {
         }
         Workspace existing = model.wrap(Workspace.class, definingProduct);
 
-        if (existing.getVersion() >= dsl.version) {
+        if (existing.get_Properties()
+                    .getVersion() >= dsl.version) {
             throw new IllegalStateException(String.format("Workspace %s is at version %s, unable to update to %s",
                                                           dsl.name,
-                                                          existing.getVersion(),
+                                                          existing.get_Properties()
+                                                                  .getVersion(),
                                                           dsl.version));
         }
 
         WorkspaceAccessor loaded = load(definingProduct);
-        existing.setVersion(dsl.version);
+        existing.get_Properties()
+                .setVersion(dsl.version);
         return loaded;
     }
 
@@ -185,8 +222,10 @@ public class JsonImporter {
             Workspace phantasm = model.wrap(Workspace.class,
                                             getWorkspaceProduct());
             throw new IllegalStateException(String.format("Workspace %s already exists at version %s, not created",
-                                                          phantasm.getName(),
-                                                          phantasm.getVersion()));
+                                                          phantasm.get_Properties()
+                                                                  .getName(),
+                                                          phantasm.get_Properties()
+                                                                  .getVersion()));
         }
 
         Product definingProduct = createWorkspaceProduct();
@@ -196,7 +235,8 @@ public class JsonImporter {
         workspace = (EditableWorkspace) scope.getWorkspace();
 
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.setIRI(dsl.uri);
+        phantasm.get_Properties()
+                .setIRI(dsl.uri);
         loadWorkspace();
         return workspace;
     }

@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
+import java.beans.Introspector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeA
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.utils.English;
 
 /**
@@ -52,6 +52,10 @@ import com.chiralbehaviors.CoRE.utils.English;
  *
  */
 public class Phantasmagoria {
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
+    }
+
     public static class Aspect {
         private final ExistentialRuleform classification;
         private final Relationship        classifier;
@@ -315,9 +319,9 @@ public class Phantasmagoria {
         for (ExistentialAttributeAuthorizationRecord auth : model.getPhantasmModel()
                                                                  .getAttributeAuthorizations(facet.getFacet(),
                                                                                              false)) {
-            String fieldName = WorkspacePresentation.toFieldName(model.records()
-                                                                      .resolve(auth.getAuthorizedAttribute())
-                                                                      .getName());
+            String fieldName = toFieldName(model.records()
+                                                .resolve(auth.getAuthorizedAttribute())
+                                                .getName());
             attributes.put(fieldName,
                            new AttributeAuthorization(fieldName, model.create(),
                                                       auth));
@@ -331,7 +335,7 @@ public class Phantasmagoria {
              .getNetworkAuthorizations(facet.getFacet(), false)
              .forEach(auth -> {
                  Aspect child = new Aspect(create, auth.getChild());
-                 String fieldName = WorkspacePresentation.toFieldName(auth.getName());
+                 String fieldName = toFieldName(auth.getName());
                  NetworkAuthorization networkAuth = new NetworkAuthorization(fieldName,
                                                                              create,
                                                                              auth,
@@ -344,9 +348,9 @@ public class Phantasmagoria {
                                                   + (n.length() == 1 ? ""
                                                                      : n.substring(1));
                           String edgeName = String.format("%sOf%s%s",
-                                                          WorkspacePresentation.toFieldName(model.records()
-                                                                                                 .resolve(na.getAuthorizedAttribute())
-                                                                                                 .getName()),
+                                                          toFieldName(model.records()
+                                                                           .resolve(na.getAuthorizedAttribute())
+                                                                           .getName()),
                                                           constraintName,
                                                           capitalized(fieldName));
                           NetworkAttributeAuthorization attrAuth = new NetworkAttributeAuthorization(edgeName,

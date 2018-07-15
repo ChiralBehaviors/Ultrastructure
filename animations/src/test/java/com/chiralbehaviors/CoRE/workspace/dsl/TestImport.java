@@ -27,11 +27,12 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 
 /**
  * @author hhildebrand
@@ -43,7 +44,7 @@ public class TestImport extends AbstractModelTest {
     public void testExampleWorkspace() throws Exception {
         Product definingProduct;
         try {
-            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResource("/thing.wsp"),
+            JsonImporter importer = JsonImporter.manifest(getClass().getResource("/thing.wsp"),
                                                                     model);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
@@ -62,13 +63,13 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel"));
+                               .lookup(ReferenceType.Existential, "kernel"));
     }
 
     @Test
     public void testIncrementalVersionUpdate() throws Exception {
         try {
-            WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+            JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                        model);
         } catch (IllegalStateException e) {
             LoggerFactory.getLogger(TestImport.class)
@@ -77,14 +78,14 @@ public class TestImport extends AbstractModelTest {
         }
         // load version 2
 
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
                                                                 model);
         EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                           .getDefiningProduct(),
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("TheDude"));
+                               .lookup(ReferenceType.Existential, "TheDude"));
         Product definingProduct = workspace.getDefiningProduct();
         assertEquals(2, definingProduct.getVersion()
                                        .intValue());
@@ -93,13 +94,13 @@ public class TestImport extends AbstractModelTest {
                      definingProduct.getDescription());
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel"));
+                               .lookup(ReferenceType.Existential, "kernel"));
     }
 
     @Test
     public void testImport() throws Exception {
         Product definingProduct;
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/import-test.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/import-test.wsp"),
                                                                 model);
         definingProduct = importer.getWorkspace()
                                   .getDefiningProduct();
@@ -108,6 +109,6 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel"));
+                               .lookup(ReferenceType.Existential, "kernel"));
     }
 }

@@ -56,7 +56,7 @@
 								<outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.phantasm.plugin.test</packageName>
 								<namespacePackages>
-									<kernel>com.chiralbehaviors.CoRE.phantasm.java.any</kernel>
+									<kernel>com.chiralbehaviors.CoRE.kernel.phantasm</kernel>
 								</namespacePackages>
 							</generator>
 						</configuration>

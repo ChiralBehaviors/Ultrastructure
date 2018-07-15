@@ -121,23 +121,9 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>${basedir}/src/main/resources/kernel.3.json</resource>
+								<resource>${basedir}/src/main/resources/kernel-def.3.json</resource>
 								<outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.kernel.phantasm</packageName>
-							</generator>
-						</configuration>
-					</execution>
-					<execution>
-						<id>generate-test-sources</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<generator>
-								<resource>${basedir}/src/test/resources/humblr.wsp</resource>
-								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
-								<packageName>com.chiralbehaviors.CoRE.kernel.phantasm.test</packageName>
 							</generator>
 						</configuration>
 					</execution>
@@ -149,7 +135,7 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>/thing.wsp</resource>
+								<resource>/thing.json</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.phantasm.test</packageName>
 								<namespacePackages>

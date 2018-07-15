@@ -55,7 +55,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizat
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.OtherThing;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
@@ -70,7 +70,7 @@ public class RbacTest extends AbstractModelTest {
 
     @Before
     public void loadThingOntology() throws Exception {
-        WorkspaceImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
+        JsonImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
                                    model);
     }
 

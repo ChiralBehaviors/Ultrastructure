@@ -53,7 +53,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -67,7 +67,7 @@ public class JobModelTest extends AbstractModelTest {
 
     @Before
     public void loadOrderProcessing() throws Exception {
-        WorkspaceImporter scope = WorkspaceImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
+        JsonImporter scope = JsonImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
                                                              model);
         scenario = scope.getWorkspace()
                         .getAccessor(OrderProcessing.class);

@@ -124,7 +124,8 @@ public class PhantasmGenerator {
                                                + config.resource, e);
         }
         if (input == null) {
-
+            throw new IllegalArgumentException("Cannot resolve resource: "
+                                               + config.resource);
         }
         try {
             this.workspace = new ObjectMapper().readerFor(JsonWorkspace.class)
@@ -168,7 +169,7 @@ public class PhantasmGenerator {
                           JCodeModel codeModel) {
         JDefinedClass jClass;
         try {
-            jClass = jpackage._class(JMod.PUBLIC, name, ClassType.INTERFACE);
+            jClass = jpackage._class(JMod.PUBLIC, toValidName(name), ClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             throw new IllegalStateException(String.format("Facet %s has already been defined",
                                                           name));

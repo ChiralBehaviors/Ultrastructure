@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.java.any;
+package com.chiralbehaviors.CoRE.kernel.phantasm;
 
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
@@ -27,6 +27,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
  * @author hhildebrand
  *
  */
-@Facet(key = "AnyAttribute", workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
-public interface AnyAttribute extends Phantasm {
+@Facet(key = "AnyUnit", workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
+public interface AnyUnit extends Phantasm {
 }

@@ -36,11 +36,12 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter; 
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,12 +66,12 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         File version2_1File = new File(TARGET_TEST_CLASSES, THING_1_2_JSON);
         try (Model myModel = new ModelImpl(newConnection())) {
             myModel.create();
-            WorkspaceImporter importer;
+            JsonImporter importer;
             Product definingProduct;
             WorkspaceSnapshot snapshot;
 
             // load version 1
-            importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+            importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                   myModel);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
@@ -87,7 +88,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
             // load version 2
 
-            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
                                                                     myModel);
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();
@@ -129,7 +130,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope);
-            Agency theDude = (Agency) scope.lookup("TheDude");
+            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential, "TheDude");
             assertNotNull(theDude);
         }
 
@@ -145,14 +146,14 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope);
-            Agency theDude = (Agency) scope.lookup("TheDude");
+            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential, "TheDude");
             assertNotNull(theDude);
         }
     }
 
     @Test
     public void testUnload() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                                 model);
         Product definingProduct = importer.getWorkspace()
                                           .getDefiningProduct();

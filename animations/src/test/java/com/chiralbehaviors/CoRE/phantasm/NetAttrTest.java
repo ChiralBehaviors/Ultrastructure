@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.MasterThing;
 import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
@@ -33,7 +33,7 @@ public class NetAttrTest extends AbstractModelTest {
 
     @Test
     public void testAttributes() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                                 model);
         try (FileOutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
                                                                  SOME_MORE_THINGS_WSP_JSON))) {
@@ -43,18 +43,18 @@ public class NetAttrTest extends AbstractModelTest {
         }
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "Freddy", "He always comes back");
-        thing1.setName("Freddy");
-        thing1.setDescription("He always comes back");
+        thing1.get_Properties().setName("Freddy");
+        thing1.get_Properties().setDescription("He always comes back");
         Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
                                         "Neddy", "He never comes back");
-        thing2.setName("Neddy");
-        thing2.setDescription("He never comes back");
+        thing2.get_Properties().setName("Neddy");
+        thing2.get_Properties().setDescription("He never comes back");
 
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  ExistentialDomain.Location,
                                                  "maven", "art vandelay");
-        artifact.setName("maven");
-        artifact.setDescription("art vandelay");
+        artifact.get_Properties().setName("maven");
+        artifact.get_Properties().setDescription("art vandelay");
 
         thing1.setDerivedFrom(artifact);
 
@@ -67,33 +67,15 @@ public class NetAttrTest extends AbstractModelTest {
 
         MasterThing master = model.construct(MasterThing.class,
                                              ExistentialDomain.Product,
-                                             "Master", "blaster");
-        JsonNode json = master.getJsonBlob();
-        assertNotNull(json);
-        assertEquals("a", json.get("a")
-                              .asText());
-        ((ObjectNode) json).put("a", "b");
-        master.setJsonBlob(json);
+                                             "Master", "blaster"); 
 
-        json = master.getJsonBlob();
-        assertNotNull(json);
-        assertEquals("b", json.get("a")
-                              .asText());
-
-        master.setName("Master");
-        master.setDescription("blaster");
+        master.get_Properties().setName("Master");
+        master.get_Properties().setDescription("blaster");
 
         master.addThing1(thing1);
-        master.setClassifierOfThing1Thing1(thing1, "Hello");
+        master.get_Properties().setClassifierOfThing1Thing1(thing1, "Hello"); 
 
-        assertNotNull(master.getJsonBlobOfThing1Thing1(thing1));
-        assertTrue(master.getJsonBlobOfThing1Thing1(thing1)
-                         .isNull());
-        master.setJsonBlobOfThing1Thing1(thing1, json);
-        assertFalse(master.getJsonBlobOfThing1Thing1(thing1)
-                          .isNull());
-
-        String classifier = master.getClassifierOfThing1Thing1(thing1);
+        String classifier = master.get_Properties().getClassifierOfThing1Thing1(thing1);
         assertEquals("Hello", classifier);
 
         thing2.addMasterThing(master);

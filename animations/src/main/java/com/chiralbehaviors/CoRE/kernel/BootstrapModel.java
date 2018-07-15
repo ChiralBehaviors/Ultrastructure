@@ -48,7 +48,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class BootstrapModel extends Bootstrap {
 
-    public static final String KERNEL_3_WSP = "/kernel.3.wsp";
+    public static final String KERNEL_DEF_3_JSON = "/kernel-def.3.json";
 
     public static void main(String[] argv) throws Exception {
         if (argv.length != 2) {
@@ -86,7 +86,7 @@ public class BootstrapModel extends Bootstrap {
                                           .connectionProvider()
                                           .acquire());
 
-        new JsonImporter(getClass().getResourceAsStream(KERNEL_3_WSP),
+        new JsonImporter(getClass().getResourceAsStream(KERNEL_DEF_3_JSON),
                          model).initialize()
                                .load(kernelWorkspace);
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()

@@ -95,7 +95,8 @@ public class WorkspaceSnapshot {
                 Workspace existingWorkspace = model.wrap(Workspace.class,
                                                          model.records()
                                                               .resolve(definingProduct));
-                if (existingWorkspace.getVersion() < workspace.getVersion()) {
+                if (existingWorkspace.get_Properties()
+                                     .getVersion() < workspace.getVersion()) {
                     log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
                              definingProduct.getName(), existing.getVersion(),
                              definingProduct.getVersion(),

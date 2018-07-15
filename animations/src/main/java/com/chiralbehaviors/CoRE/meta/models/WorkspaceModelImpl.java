@@ -65,8 +65,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.setName(definingProduct.getName());
-        phantasm.setDescription(definingProduct.getDescription());
+        phantasm.get_Properties().setName(definingProduct.getName());
+        phantasm.get_Properties().setDescription(definingProduct.getDescription());
         return scope;
     }
 

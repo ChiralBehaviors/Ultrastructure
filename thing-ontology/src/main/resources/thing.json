@@ -190,7 +190,7 @@
                 "HasMember": {
                     "card": "ONE",
                     "rel": "kernel::HasMember",
-                    "child": "*Product"
+                    "child": "kernel::AnyProduct"
                 }
             }
         },
@@ -295,7 +295,7 @@
                 "superFly": {
                     "card": "ONE",
                     "rel": "inThing1",
-                    "child": "*Product"
+                    "child": "kernel::AnyProduct"
                 },
                 "derivedFrom": {
                     "card": "ONE",

@@ -1,13 +1,13 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2018 Chiral Behaviors, LLC, all rights reserved.
  * 
  
- * This file is part of Ultrastructure.
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,19 +18,14 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.java.generator;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
 /**
- * @author hhildebrand
+ * @author halhildebrand
  *
  */
-public class Configuration {
-    public Map<String, String> namespacePackages   = new HashMap<>();
-    public File                outputDirectory;
-    public String              packageName;
-    public String              resource;
+public interface Facet2 {
+    String key();
+
+    String workspace();
 }

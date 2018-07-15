@@ -18,23 +18,13 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace.json;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
 /**
  * @author halhildebrand
  *
  */
-public class Facet {
-    public String                  classification;
-    public String                  classifier;
-    public Map<String, Constraint> constraints = new HashMap<>();
-    public JsonNode                defaultProperties;
-    public String                  description;
-    public ObjectNode              schema;
+public class Properties {
+
 }

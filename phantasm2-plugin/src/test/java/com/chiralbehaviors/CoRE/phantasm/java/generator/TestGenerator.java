@@ -36,6 +36,8 @@ import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.phantasm.generator.json.Configuration;
+import com.chiralbehaviors.CoRE.phantasm.generator.json.PhantasmGenerator;
 import com.chiralbehaviors.CoRE.phantasm.generator.plugin.Generator;
 import com.hellblazer.utils.Utils;
 import com.sun.codemodel.JCodeModel;

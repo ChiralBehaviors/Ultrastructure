@@ -18,13 +18,14 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.java.generator;
+package com.chiralbehaviors.CoRE.phantasm.generator.json;
 
 import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -40,6 +41,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -55,15 +57,26 @@ import com.sun.codemodel.JPackage;
 public class PhantasmGenerator {
     private static final String ADD_S              = "add%s";
     private static final String ANNOTATIONS        = "com.chiralbehaviors.CoRE.phantasm.java.annotations.";
-    private static final String EDGE_ANNOTATION    = ANNOTATIONS + "Edge";
+    private static final String EDGE_ANNOTATION;
+    private static final String FACET_ANNOTATION;
     private static final String FIELD_NAME         = "fieldName";
     private static final String GET_IMMEDIATE_S    = "getImmediate%s";
     private static final String GET_S              = "get%s";
-    private static final String INFERED_ANNOTATION = ANNOTATIONS + "Infered";
+    private static final String GET_PROPERTIES     = "get_Properties";
+    private static final String SET_PROPERTIES     = "set_Properties";
+    private static final String INFERED_ANNOTATION;
+    private static final String PROPERTIES_ANNOTATION;
     private static final String REMOVE_S           = "remove%s";
     private static final String SET_IMMEDIATE_S    = "setImmediate%s";
     private static final String SET_S              = "set%s";
     private static final String WRAPPED_CHILD_TYPE = "wrappedChildType";
+
+    static {
+        INFERED_ANNOTATION = ANNOTATIONS + "Infered";
+        PROPERTIES_ANNOTATION = ANNOTATIONS + "Properties";
+        EDGE_ANNOTATION = ANNOTATIONS + "Edge";
+        FACET_ANNOTATION = ANNOTATIONS + "Facet2";
+    }
 
     public static String capitalized(String baseName) {
         return Character.toUpperCase(baseName.charAt(0))
@@ -161,6 +174,9 @@ public class PhantasmGenerator {
             throw new IllegalStateException(String.format("Facet %s has already been defined",
                                                           name));
         }
+        JAnnotationUse facetAnnotation = jClass.annotate(codeModel.ref(FACET_ANNOTATION));
+        facetAnnotation.param("key", name);
+        facetAnnotation.param("workspace", workspace.uri);
         facet.constraints.forEach((n, constraint) -> generate(constraint, n,
                                                               jClass,
                                                               codeModel));
@@ -170,7 +186,8 @@ public class PhantasmGenerator {
     private void generateAttributes(JDefinedClass jClass, String name,
                                     Facet facet, JPackage jpackage,
                                     JCodeModel codeModel) {
-        String propName = name + "Properties";
+        JPackage propPackage = jpackage.subPackage(toFieldName(name
+                                                               + "Properties"));
         JClass propType;
         if (facet.schema == null) {
             propType = jClass.owner()
@@ -181,29 +198,32 @@ public class PhantasmGenerator {
                 public boolean isGenerateBuilders() { // set config option by overriding method
                     return true;
                 }
+
+                @Override
+                public AnnotationStyle getAnnotationStyle() {
+                    return AnnotationStyle.JACKSON2;
+                }
             };
+            String propName = toValidName(facet.schema.get("name") == null ? name
+                                                                             + "Properties"
+                                                                           : facet.schema.get("name")
+                                                                                         .asText());
             new RuleFactory(config, new Jackson2Annotator(config),
                             new SchemaStore()).getSchemaRule()
                                               .apply(propName, facet.schema,
-                                                     jpackage,
+                                                     propPackage,
                                                      new Schema(null,
                                                                 facet.schema,
                                                                 facet.schema));
             propType = jClass.owner()
-                             .ref(jpackage.name() + "." + propName);
+                             .ref(propPackage.name() + "." + propName);
         }
-        JMethod get = jClass.method(JMod.PUBLIC, propType,
-                                    String.format(GET_S, propName));
-        get.annotate(codeModel.ref(EDGE_ANNOTATION))
-           .param(FIELD_NAME, propName)
-           .param(WRAPPED_CHILD_TYPE, propType);
-        get.annotate(codeModel.ref(INFERED_ANNOTATION));
+        JMethod get = jClass.method(JMod.PUBLIC, propType, GET_PROPERTIES);
+        get.annotate(codeModel.ref(PROPERTIES_ANNOTATION));
 
         JMethod set = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
-                                    String.format(SET_S, propName));
-        set.annotate(codeModel.ref(EDGE_ANNOTATION))
-           .param(FIELD_NAME, propName)
-           .param(WRAPPED_CHILD_TYPE, propType);
+                                    SET_PROPERTIES);
+        set.annotate(codeModel.ref(PROPERTIES_ANNOTATION));
         set.param(propType, "properties");
     }
 
@@ -328,14 +348,17 @@ public class PhantasmGenerator {
 
     private String resolveChild(String child) {
         String[] split = child.split("::");
-        if (split.length == 2) {
+        String namespace = split.length == 2 ? split[0] : null;
+        String name = split.length == 2 ? split[1] : split[0];
+
+        if (namespace != null) {
             String pkg = config.namespacePackages.get(split[0]);
             if (pkg != null) {
-                return pkg + "." + toTypeName(child);
+                return pkg + "." + toTypeName(name);
             }
             throw new IllegalArgumentException("Cannot resolve facet: " + child
                                                + " in workspace");
         }
-        return config.packageName + "." + toTypeName(child);
+        return config.packageName + "." + toTypeName(name);
     }
 }

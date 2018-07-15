@@ -1,13 +1,13 @@
 /**
- * Copyright (c) 2018 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
  * 
  
- *  This file is part of Ultrastructure.
+ * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,23 +18,19 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace.json;
+package com.chiralbehaviors.CoRE.phantasm.generator.json;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
- * @author halhildebrand
+ * @author hhildebrand
  *
  */
-public class Facet {
-    public String                  classification;
-    public String                  classifier;
-    public Map<String, Constraint> constraints = new HashMap<>();
-    public JsonNode                defaultProperties;
-    public String                  description;
-    public ObjectNode              schema;
+public class Configuration {
+    public Map<String, String> namespacePackages   = new HashMap<>();
+    public File                outputDirectory;
+    public String              packageName;
+    public String              resource;
 }

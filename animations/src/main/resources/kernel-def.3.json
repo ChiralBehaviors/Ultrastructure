@@ -10,7 +10,7 @@
             "inference": "HasMember"
         },
         "Role Inference": {
-            "premise1": "Member",
+            "premise1": "HasMember",
             "premise2": "HasRole",
             "inference": "HasRole"
         }
@@ -139,6 +139,10 @@
             "domain": "Agency",
             "description": "The unauthenticaed agency"
         },
+        "Role": {
+            "domain": "Agency",
+            "description": "The role"
+        },
         "LoginRole": {
             "domain": "Agency",
             "description": "The Login role"
@@ -146,6 +150,150 @@
         "KernelWorkspace": {
             "domain": "Product",
             "description": "The Kernel Workspace"
+        },
+        "RoleOf": {
+            "domain": "Relationship",
+            "description": "A is a role of B",
+            "inverse": {
+                "name": "HasRole",
+                "description": "A has role B"
+            }
+        },
+        "Classification": {
+            "domain": "Agency",
+            "description": "The classification"
+        },
+        "ClassifiedBy": {
+            "domain": "Relationship",
+            "description": "A is classified by B",
+            "inverse": {
+                "name": "ClassificationOf",
+                "description": "A is a classification of B"
+            }
+        },
+        "InstanceOf": {
+            "domain": "Relationship",
+            "description": "A is an instance of B",
+            "inverse": {
+                "name": "HasInstance",
+                "description": "A has instance B"
+            }
+        },
+        "SingletonOf": {
+            "domain": "Relationship",
+            "description": "A is the singleton instance of B",
+            "inverse": {
+                "name": "HasSingleton",
+                "description": "A has singleton instance B"
+            }
+        },
+        "Permission": {
+            "domain": "Relationship",
+            "description": "The defining permission classification"
+        },
+        "CREATE_META": {
+            "domain": "Relationship",
+            "description": "A may create meta data in B",
+            "inverse": {
+                "name": "MayBeCreatedMetaBy",
+                "description": "A allows meta creation by B"
+            }
+        },
+        "CREATE": {
+            "domain": "Relationship",
+            "description": "The read permission",
+            "inverse": {
+                "name": "MayBeCreatedMetaBy",
+                "description": "May Be Created By"
+            }
+        },
+        "READ": {
+            "domain": "Relationship",
+            "description": "The read permission",
+            "inverse": {
+                "name": "MayBeReadBy",
+                "description": "May Be Read By"
+            }
+        },
+        "UPDATE": {
+            "domain": "Relationship",
+            "description": "The update permission",
+            "inverse": {
+                "name": "MayBeUpdatedBy",
+                "description": "May Be Updated By"
+            }
+        },
+        "DELETE": {
+            "domain": "Relationship",
+            "description": "The delete permission",
+            "inverse": {
+                "name": "MayBeDeletedBy",
+                "description": "May Be Deleted By"
+            }
+        },
+        "APPLY": {
+            "domain": "Relationship",
+            "description": "The apply permission",
+            "inverse": {
+                "name": "MayBeAppliedBy",
+                "description": "May Be Applied By"
+            }
+        },
+        "REMOVE": {
+            "domain": "Relationship",
+            "description": "The remove permission",
+            "inverse": {
+                "name": "MayBeRemovedBy",
+                "description": "May Be Removed By"
+            }
+        },
+        "REMOVE": {
+            "domain": "Relationship",
+            "description": "The invoke permission",
+            "inverse": {
+                "name": "MayBeInvokedBy",
+                "description": "May Be Invoked By"
+            }
+        },
+        "EXECUTE_QUERY": {
+            "domain": "Relationship",
+            "description": "The execute query permission",
+            "inverse": {
+                "name": "QueryExecutedBy",
+                "description": "Query may be executed By"
+            }
+        },
+        "LOGIN_TO": {
+            "domain": "Relationship",
+            "description": "The login permission",
+            "inverse": {
+                "name": "MayLoginBy",
+                "description": "Login may be done On"
+            }
+        },
+        "UPDATE_AUTHORITY": {
+            "domain": "Relationship",
+            "description": "The update authority permission",
+            "inverse": {
+                "name": "MayUpdateAuthorityBy",
+                "description": "May Update Authority By"
+            }
+        },
+        "DefaultRole": {
+            "domain": "Relationship",
+            "description": "A has default role B",
+            "inverse": {
+                "name": "DefaultRoleOf",
+                "description": "A is the default role of B"
+            }
+        },
+        "DefaultClassification": {
+            "domain": "Relationship",
+            "description": "A has default classification B",
+            "inverse": {
+                "name": "DefaultClassificationOf",
+                "description": "A is the default classification of B"
+            }
         }
     },
     "facets": {

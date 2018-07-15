@@ -40,7 +40,7 @@ public class JsonWorkspace {
     public List<FacetApplication>         applications;
     public Map<String, ChildSequencing>   childSequences   = new HashMap<>();
     public String                         description;
-    public List<Edge>                     edges;
+    public List<Edge>                     edges            = new ArrayList<>();
     public Map<String, Existential>       existentials     = new HashMap<>();
     public Map<String, Facet>             facets;
     public List<Import>                   imports          = new ArrayList<>();

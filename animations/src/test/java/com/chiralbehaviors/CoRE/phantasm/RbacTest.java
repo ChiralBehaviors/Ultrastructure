@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
+import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.*;
+
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
@@ -71,7 +73,7 @@ public class RbacTest extends AbstractModelTest {
     @Before
     public void loadThingOntology() throws Exception {
         JsonImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
-                                   model);
+                              model);
     }
 
     @Test
@@ -90,9 +92,11 @@ public class RbacTest extends AbstractModelTest {
         FacetRecord facet = model.getPhantasmModel()
                                  .getFacetDeclaration(model.getKernel()
                                                            .getIsA(),
-                                                      scope.lookup("Thing1"));
+                                                      scope.lookup(Existential,
+                                                                   "Thing1"));
         assertNotNull(facet);
-        Attribute percentage = (Attribute) scope.lookup("discount");
+        Attribute percentage = (Attribute) scope.lookup(Existential,
+                                                        "discount");
         assertNotNull(percentage);
 
         ExistentialAttributeAuthorizationRecord stateAuth = model.create()
@@ -156,10 +160,11 @@ public class RbacTest extends AbstractModelTest {
         FacetRecord facet = model.getPhantasmModel()
                                  .getFacetDeclaration(model.getKernel()
                                                            .getIsA(),
-                                                      scope.lookup("Thing1"));
+                                                      scope.lookup(Existential,
+                                                                   "Thing1"));
         assertNotNull(facet);
 
-        Relationship relationship = scope.lookup("thing1Of");
+        Relationship relationship = scope.lookup(Existential, "thing1Of");
         assertNotNull(relationship);
         ExistentialNetworkAuthorizationRecord stateAuth = model.create()
                                                                .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
@@ -220,8 +225,10 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  ExistentialDomain.Location,
                                                  "myartifact", "artifact");
-        artifact.setType("jar");
-        artifact.setType("invalid");
+        artifact.get_Properties()
+                .setType("jar");
+        artifact.get_Properties()
+                .setType("invalid");
         try {
             model.flush();
             fail();
@@ -238,7 +245,8 @@ public class RbacTest extends AbstractModelTest {
         FacetRecord facet = model.getPhantasmModel()
                                  .getFacetDeclaration(model.getKernel()
                                                            .getIsA(),
-                                                      scope.lookup("Thing1"));
+                                                      scope.lookup(Existential,
+                                                                   "Thing1"));
         assertNotNull(facet);
 
         assertTrue(model.checkPermission(asList(model.getKernel()
@@ -295,18 +303,18 @@ public class RbacTest extends AbstractModelTest {
 
         ExistentialRuleform instance = thing1.getRuleform();
         assertTrue(model.checkExistentialPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
+                                                                .getCore()),
+                                                    instance, model.getKernel()
+                                                                   .getHadMember()));
         instance.setAuthority(model.getKernel()
                                    .getAnyAgency()
                                    .getId());
         instance.update();
 
         assertFalse(model.checkExistentialPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
+                                                                 .getCore()),
+                                                     instance, model.getKernel()
+                                                                    .getHadMember()));
 
         model.getPhantasmModel()
              .link(model.getKernel()
@@ -317,13 +325,13 @@ public class RbacTest extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.checkExistentialPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
+                                                                .getCore()),
+                                                    instance, model.getKernel()
+                                                                   .getHadMember()));
         assertFalse(model.checkExistentialPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
+                                                                 .getNotApplicableAgency()),
+                                                     instance, model.getKernel()
+                                                                    .getHadMember()));
 
         model.getPhantasmModel()
              .link(model.getKernel()
@@ -334,9 +342,9 @@ public class RbacTest extends AbstractModelTest {
                         .getCore());
 
         assertTrue(model.checkExistentialPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
+                                                                .getNotApplicableAgency()),
+                                                    instance, model.getKernel()
+                                                                   .getHadMember()));
     }
 
     @Test
@@ -348,12 +356,13 @@ public class RbacTest extends AbstractModelTest {
         FacetRecord facet = model.getPhantasmModel()
                                  .getFacetDeclaration(model.getKernel()
                                                            .getIsA(),
-                                                      scope.lookup("Thing1"));
+                                                      scope.lookup(Existential,
+                                                                   "Thing1"));
 
-        Attribute aliases = (Attribute) scope.lookup("aliases");
+        Attribute aliases = (Attribute) scope.lookup(Existential, "aliases");
         assertNotNull(aliases);
 
-        Relationship relationship = scope.lookup("thing1Of");
+        Relationship relationship = scope.lookup(Existential, "thing1Of");
         assertNotNull(relationship);
 
         ExistentialNetworkAuthorizationRecord auth = model.create()
@@ -448,30 +457,20 @@ public class RbacTest extends AbstractModelTest {
         assertNotNull(thing1);
         assertNotNull(thing1.getRuleform());
         assertNotEquals(thing1.getRuleform()
-                           .getName(),
-                     thing1.getName());
+                              .getName(),
+                        thing1.get_Properties()
+                              .getName());
         assertNull(thing1.getThing2());
         thing1.setThing2(thing2);
         assertNotNull(thing1.getThing2());
-        assertNull(thing1.getPercentage());
-        thing1.setPercentage(BigDecimal.ONE);
-        assertEquals(BigDecimal.ONE, thing1.getPercentage());
-        String[] aliases = new String[] { "foo", "bar", "baz" };
-        thing1.setAliases(aliases);
-        String[] alsoKnownAs = thing1.getAliases();
+        List<String> aliases = Arrays.asList(new String[] { "foo", "bar",
+                                                            "baz" });
+        thing1.get_Properties()
+              .setAliases(aliases);
+        List<String> alsoKnownAs = thing1.get_Properties()
+                                         .getAliases();
         assertNotNull(alsoKnownAs);
-        assertArrayEquals(aliases, alsoKnownAs);
-
-        Map<String, String> properties = new HashMap<>();
-        properties.put("foo", "bar");
-        properties.put("baz", "bozo");
-
-        assertEquals(0, thing1.getProperties()
-                              .size());
-        thing1.setProperties(properties);
-        Map<String, String> newProps = thing1.getProperties();
-        assertEquals(String.format("got: %s", newProps), properties.size(),
-                     newProps.size());
+        assertEquals(aliases, alsoKnownAs);
 
         Thing3 thing3a = model.construct(Thing3.class,
                                          ExistentialDomain.Product, "uncle it",
@@ -504,8 +503,10 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  ExistentialDomain.Location,
                                                  "myartifact", "artifact");
-        artifact.setType("jar");
-        assertEquals("jar", artifact.getType());
+        artifact.get_Properties()
+                .setType("jar");
+        assertEquals("jar", artifact.get_Properties()
+                                    .getType());
         thing1.setDerivedFrom(artifact);
         assertNotNull(thing1.getDerivedFrom());
 
@@ -524,7 +525,8 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "myartifact2", "artifact2");
-        artifact2.setType("jar");
+        artifact2.get_Properties()
+                 .setType("jar");
 
         thing2.setDerivedFroms(Arrays.asList(artifact2));
         assertEquals(1, thing2.getDerivedFroms()

@@ -11,7 +11,8 @@
 		<createTable schemaName="ruleform"
 			remarks="Facet Properties" tableName="facet_property">
 			<column name="id" type="uuid">
-				<constraints nullable="false" />
+                <constraints primaryKey="true"
+                    primaryKeyName="facet_property_pkey" />
 			</column>
 			<column name="facet" type="uuid">
 				<constraints nullable="false" />

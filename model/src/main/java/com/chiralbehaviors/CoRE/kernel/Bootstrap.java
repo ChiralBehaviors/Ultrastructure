@@ -31,7 +31,6 @@ import org.jooq.DSLContext;
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
@@ -81,9 +80,6 @@ abstract public class Bootstrap {
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
-        for (WellKnownAttribute wko : WellKnownAttribute.values()) {
-            insert(wko);
-        }
         for (WellKnownInterval wko : WellKnownInterval.values()) {
             insert(wko);
         }
@@ -112,7 +108,6 @@ abstract public class Bootstrap {
 
         // Ain 
         populateAgencies(core, kernelWorkspace);
-        populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);
         populateLocations(core, kernelWorkspace);
         populateProducts(core, kernelWorkspace);
@@ -130,20 +125,6 @@ abstract public class Bootstrap {
      */
     protected Product find(WellKnownProduct wko) {
         return records.resolve(wko.id());
-    }
-
-    private void insert(WellKnownAttribute wko) throws SQLException {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
-        record.setId(wko.id());
-        record.setName(wko.wkoName());
-        record.setDomain(wko.domain());
-        record.setDescription(wko.description());
-        record.setUpdatedBy(WellKnownAgency.CORE.id());
-        record.setIndexed(wko.indexed());
-        record.setKeyed(wko.keyed());
-        record.setValueType(wko.valueType());
-        record.setVersion(0);
-        record.insert();
     }
 
     private void insert(WellKnownObject wko) throws SQLException {
@@ -219,13 +200,6 @@ abstract public class Bootstrap {
         anyAgency.insert();
         populate(anyAgency, kernelWorkspace);
 
-        FacetRecord anyAttribute = records.newFacet();
-        anyAttribute.setClassifier(WellKnownRelationship.ANY.id());
-        anyAttribute.setClassification(WellKnownAttribute.ANY.id());
-        anyAttribute.setName("AnyAttribute");
-        anyAttribute.insert();
-        populate(anyAttribute, kernelWorkspace);
-
         FacetRecord anyInterval = records.newFacet();
         anyInterval.setClassifier(WellKnownRelationship.ANY.id());
         anyInterval.setClassification(WellKnownInterval.ANY.id());
@@ -267,19 +241,6 @@ abstract public class Bootstrap {
         anyUnit.setName("AnyUnit");
         anyUnit.insert();
         populate(anyUnit, kernelWorkspace);
-    }
-
-    private void populateAttributes(Agency core, Product kernelWorkspace) {
-        populate("AnyAttribute", WellKnownAttribute.ANY, kernelWorkspace);
-        populate("CopyAttribute", WellKnownAttribute.COPY, kernelWorkspace);
-        populate("NotApplicableAttribute", WellKnownAttribute.NOT_APPLICABLE,
-                 kernelWorkspace);
-        populate("SameAttribute", WellKnownAttribute.SAME, kernelWorkspace);
-        populate("Nullable", WellKnownAttribute.NULLABLE, kernelWorkspace);
-        populate("Name", WellKnownAttribute.NAME, kernelWorkspace);
-        populate("Description", WellKnownAttribute.DESCRIPTION,
-                 kernelWorkspace);
-        populate("Version", WellKnownAttribute.VERSION, kernelWorkspace);
     }
 
     private void populateIntervals(Agency core, Product kernelWorkspace) {

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
-    <include relativeToChangelogFile="true" file="json-meta-schema.xml" />
-    <include relativeToChangelogFile="true" file="json-schema.xml" />
-    <include relativeToChangelogFile="true" file="existential_domain.xml" />
-    <include relativeToChangelogFile="true" file="value_type.xml" />
-    <include relativeToChangelogFile="true" file="null_zero.xml" />
-    <include relativeToChangelogFile="true" file="reference_type.xml" />
-    <include relativeToChangelogFile="true" file="cardinality.xml" />
-    <include relativeToChangelogFile="true" file="tables.xml" />
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<include relativeToChangelogFile="true"
+		file="json-meta-schema.xml" />
+	<include relativeToChangelogFile="true" file="json-schema.xml" />
+	<include relativeToChangelogFile="true"
+		file="existential_domain.xml" />
+	<include relativeToChangelogFile="true"
+		file="reference_type.xml" />
+	<include relativeToChangelogFile="true" file="cardinality.xml" />
+	<include relativeToChangelogFile="true" file="tables.xml" />
 
 </databaseChangeLog>

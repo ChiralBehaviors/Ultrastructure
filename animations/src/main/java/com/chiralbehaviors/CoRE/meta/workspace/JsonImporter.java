@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace.dsl;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
 
@@ -48,9 +48,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Constraint;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential.Domain;

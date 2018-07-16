@@ -279,7 +279,8 @@
 		</sql>
 		<rollback>
 			DROP FUNCTION _validate_json_schema_type(type, data);
-			DROP FUNCTION validate_json_schema(schema, data, root_schema);
+			DROP
+			FUNCTION validate_json_schema(schema, data, root_schema);
 		</rollback>
 	</changeSet>
 </databaseChangeLog>

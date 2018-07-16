@@ -56,8 +56,8 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeA
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.OtherThing;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;

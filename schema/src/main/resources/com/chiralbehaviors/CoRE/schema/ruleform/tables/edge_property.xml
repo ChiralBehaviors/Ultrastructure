@@ -11,7 +11,8 @@
 		<createTable schemaName="ruleform"
 			remarks="Edge Properties" tableName="edge_property">
 			<column name="id" type="uuid">
-				<constraints nullable="false" />
+                <constraints primaryKey="true"
+                    primaryKeyName="edge_property_pkey" />
 			</column>
 			<column name="auth" type="uuid">
 				<constraints nullable="false" />

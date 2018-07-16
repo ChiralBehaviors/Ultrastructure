@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.kernel;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -34,11 +33,8 @@ import com.chiralbehaviors.CoRE.domain.Unit;
  *
  */
 public interface Kernel {
-    Attribute getAccessToken();
 
     Agency getAnyAgency();
-
-    Attribute getAnyAttribute();
 
     Interval getAnyInterval();
 
@@ -61,8 +57,6 @@ public interface Kernel {
     Relationship getContains();
 
     Agency getCopyAgency();
-
-    Attribute getCopyAttribute();
 
     Interval getCopyInterval();
 
@@ -92,8 +86,6 @@ public interface Kernel {
 
     Relationship getDELETE();
 
-    Attribute getDescription();
-
     Relationship getDeveloped();
 
     Relationship getDevelopedBy();
@@ -101,8 +93,6 @@ public interface Kernel {
     Relationship getEquals();
 
     Relationship getEXECUTE_QUERY();
-
-    Attribute getFacetName();
 
     Relationship getFormerMemberOf();
 
@@ -138,8 +128,6 @@ public interface Kernel {
 
     Relationship getIncludes();
 
-    Attribute getInputType();
-
     Relationship getInstanceOf();
 
     Agency getInverseSoftware();
@@ -147,8 +135,6 @@ public interface Kernel {
     Relationship getINVOKE();
 
     Relationship getInWorkspace();
-
-    Attribute getIRI();
 
     Relationship getIsA();
 
@@ -160,23 +146,15 @@ public interface Kernel {
 
     Relationship getIsValidatedBy();
 
-    Attribute getJAR();
-
-    Attribute getJsonldType();
-
     Product getKernelWorkspace();
 
     Relationship getLessThan();
 
     Relationship getLessThanOrEqual();
 
-    Attribute getLogin();
-
     Relationship getLOGIN_TO();
 
     Agency getLoginRole();
-
-    Attribute getLookupOrder();
 
     Relationship getMapsToLocation();
 
@@ -188,15 +166,9 @@ public interface Kernel {
 
     Unit getMinutes();
 
-    Attribute getName();
-
-    Attribute getNamespace();
-
     Unit getNanoseconds();
 
     Agency getNotApplicableAgency();
-
-    Attribute getNotApplicableAttribute();
 
     Interval getNotApplicableInterval();
 
@@ -214,10 +186,6 @@ public interface Kernel {
 
     Relationship getOwns();
 
-    Attribute getPasswordHash();
-
-    Attribute getPasswordRounds();
-
     Agency getPropagationSoftware();
 
     Relationship getPrototype();
@@ -231,8 +199,6 @@ public interface Kernel {
     Agency getRole();
 
     Agency getSameAgency();
-
-    Attribute getSameAttribute();
 
     Interval getSameInterval();
 

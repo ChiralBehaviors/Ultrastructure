@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.MasterThing;
 import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;

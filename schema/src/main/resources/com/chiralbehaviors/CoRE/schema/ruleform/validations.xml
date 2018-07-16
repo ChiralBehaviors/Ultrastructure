@@ -15,15 +15,15 @@
         ]]>
 		</sql>
 	</changeSet>
-	
-    <changeSet id="2.0.0" author="hhildebrand">
-        <sql splitStatements="false"><![CDATA[
+
+	<changeSet id="2.0.0" author="hhildebrand">
+		<sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION validate_facet_properties(data jsonb, fId uuid) RETURNS boolean AS $f$
             BEGIN
               RETURN SELECT validate_json_schema(f.schema, jsonb) FROM facet f WHERE f.id = fId
             END
             $f$ LANGUAGE 'plpgsql' IMMUTABLE;
         ]]>
-        </sql>
-    </changeSet>
+		</sql>
+	</changeSet>
 </databaseChangeLog>

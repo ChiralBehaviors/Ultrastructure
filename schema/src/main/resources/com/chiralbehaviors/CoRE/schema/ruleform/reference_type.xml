@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
-    <changeSet id="2.0.0" author="hhildebrand">
-        <sql splitStatements="false"><![CDATA[
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="2.0.0" author="hhildebrand">
+		<sql splitStatements="false"><![CDATA[
             CREATE TYPE reference_type AS ENUM (
-                'Agency Existential Grouping', 'Child Sequencing Authorization', 'Attribute Authorization', 'Facet',
-                'Attribute', 'Network Attribute', 'Network Attribute Authorization','Network Authorization', 'Network', 'Existential',
-                'Job Chronology', 'Job', 'Meta Protocol', 'Network Inference', 'Parent Sequencing Authorization',
-                'Protocol', 'Self Sequencing Authorization', 'Sibling Sequencing Authorization', 'Status Code Sequencing'
+                'Child Sequencing Authorization', 'Facet', 'Network Attribute Authorization',
+                'Network Authorization', 'Network', 'Existential', 'Job Chronology', 'Job',
+                'Meta Protocol', 'Network Inference', 'Parent Sequencing Authorization',
+                'Protocol', 'Self Sequencing Authorization', 'Sibling Sequencing Authorization', 
+                'Status Code Sequencing'
             );
             ]]>
-        </sql>
-        <rollback> DROP TYPE reference_type; </rollback>
-    </changeSet>
+		</sql>
+		<rollback> DROP TYPE reference_type; </rollback>
+	</changeSet>
 </databaseChangeLog>

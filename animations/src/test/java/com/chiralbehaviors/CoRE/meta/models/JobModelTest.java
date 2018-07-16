@@ -53,7 +53,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.hellblazer.utils.Tuple;
 
 /**

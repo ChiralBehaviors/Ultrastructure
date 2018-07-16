@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
@@ -44,11 +43,8 @@ import org.jooq.RecordContext;
 import org.jooq.RecordType;
 import org.jooq.impl.DefaultRecordListener;
 
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -90,7 +86,6 @@ public class Animations extends DefaultRecordListener {
     private final Map<RecordType<?>, Consumer<RecordContext>> afterDelete        = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterInsert        = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterUpdate        = new HashMap<>();
-    private final Set<ExistentialAttributeRecord>             attributeValues    = new HashSet<>();
     private final Set<ChildSequencingAuthorizationRecord>     childSequences     = new HashSet<>();
     private final Inference                                   inference;
     private boolean                                           inferNetwork;
@@ -163,7 +158,6 @@ public class Animations extends DefaultRecordListener {
             throw new TriggerException("StatusCodeSequencing validation failed",
                                        e);
         }
-        validateAttributeValues();
         validateSequenceAuthorizations();
         propagate();
         int cycles = 0;
@@ -203,18 +197,6 @@ public class Animations extends DefaultRecordListener {
         inferNetwork = true;
     }
 
-    private boolean equals(ExistentialAttributeRecord a,
-                           ExistentialAttributeRecord b) {
-        Object aValue = model.getPhantasmModel()
-                             .getValue(a);
-        Object bValue = model.getPhantasmModel()
-                             .getValue(a);
-        if (aValue == null) {
-            return bValue == null;
-        }
-        return aValue.equals(bValue);
-    }
-
     private void initializeTriggers() {
         afterUpdate.put(JOB.recordType(),
                         ctx1 -> update((JobRecord) ctx1.record()));
@@ -228,8 +210,6 @@ public class Animations extends DefaultRecordListener {
                         ctx -> insert((ChildSequencingAuthorizationRecord) ctx.record()));
         afterInsert.put(EXISTENTIAL_NETWORK.recordType(),
                         ctx -> insert((ExistentialNetworkRecord) ctx.record()));
-        afterInsert.put(EXISTENTIAL_ATTRIBUTE.recordType(),
-                        ctx -> insert((ExistentialAttributeRecord) ctx.record()));
         afterInsert.put(NETWORK_INFERENCE.recordType(),
                         ctx -> insert((NetworkInferenceRecord) ctx.record()));
         afterInsert.put(PARENT_SEQUENCING_AUTHORIZATION.recordType(),
@@ -246,17 +226,11 @@ public class Animations extends DefaultRecordListener {
                         ctx -> delete((ExistentialNetworkRecord) ctx.record()));
         afterDelete.put(NETWORK_INFERENCE.recordType(),
                         ctx -> delete((NetworkInferenceRecord) ctx.record()));
-        afterUpdate.put(EXISTENTIAL_ATTRIBUTE.recordType(),
-                        ctx -> update((ExistentialAttributeRecord) ctx.record()));
 
     }
 
     private void insert(ChildSequencingAuthorizationRecord pcsa) {
         childSequences.add(pcsa);
-    }
-
-    private void insert(ExistentialAttributeRecord value) {
-        attributeValues.add(value);
     }
 
     private void insert(ExistentialNetworkRecord a) {
@@ -322,19 +296,10 @@ public class Animations extends DefaultRecordListener {
         clearSequences();
         modifiedServices.clear();
         jobs.clear();
-        attributeValues.clear();
-    }
-
-    private void update(ExistentialAttributeRecord record) {
-        attributeValues.add(record);
     }
 
     private void update(JobRecord j) {
         jobs.add(j);
-    }
-
-    private void validateAttributeValues() {
-        validateEnums();
     }
 
     private void validateChildSequencing() {
@@ -350,39 +315,6 @@ public class Animations extends DefaultRecordListener {
                 throw new TriggerException(String.format("Invalid sequence: %s",
                                                          pcsa),
                                            e);
-            }
-        }
-    }
-
-    private void validateEnums() {
-        for (ExistentialAttributeRecord value : attributeValues) {
-            Attribute attribute = model.records()
-                                       .resolve(value.getAttribute());
-            Attribute validatingAttribute = model.getPhantasmModel()
-                                                 .getSingleChild(attribute,
-                                                                 model.getKernel()
-                                                                      .getIsValidatedBy(),
-                                                                 ExistentialDomain.Attribute);
-            if (validatingAttribute != null) {
-                List<ExistentialAttributeRecord> attrs = model.getPhantasmModel()
-                                                              .getAttributeValues(validatingAttribute,
-                                                                                  attribute);
-                if (attrs == null || attrs.size() == 0) {
-                    throw new IllegalArgumentException("No valid values for attribute "
-                                                       + attribute.getName());
-                }
-                boolean valid = false;
-                for (ExistentialAttributeRecord ama : attrs) {
-                    if (equals(ama, value)) {
-                        valid = true;
-                        break;
-                    }
-                }
-                if (!valid) {
-                    throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
-                                                                     value,
-                                                                     attribute));
-                }
             }
         }
     }

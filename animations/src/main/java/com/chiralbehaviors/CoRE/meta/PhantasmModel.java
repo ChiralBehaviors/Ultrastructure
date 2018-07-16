@@ -23,17 +23,13 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.hellblazer.utils.Tuple;
@@ -49,69 +45,10 @@ public interface PhantasmModel {
 
     public List<FacetRecord> getFacets(Product workspace);
 
-    void authorize(FacetRecord facet, Attribute attribute);
-
     <T extends ExistentialRuleform> T create(ExistentialDomain domain,
                                              String name, String description,
                                              FacetRecord aspect,
                                              FacetRecord... aspects);
-
-    ExistentialNetworkAttributeRecord create(ExistentialNetworkRecord edge,
-                                             Attribute attribute);
-
-    ExistentialAttributeRecord create(ExistentialRuleform ruleform,
-                                      Attribute attribute);
-
-    List<? extends ExistentialRuleform> findByAttributeValue(Attribute attribute,
-                                                             Object query);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by an
-     * aspect
-     *
-     * @param aspect
-     *            - the classifying aspect.
-     * @param includeGrouping
-     * @return
-     */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
-                                                                             boolean includeGrouping);
-
-    /**
-     * Answer the list of existing attributes for the ruleform instance that are
-     * authorized by the classifier relationship described by the aspect
-     *
-     * @param ruleform
-     *            - the instance
-     * @param aspect
-     *            - the classifying aspect
-     * @return the list of existing attributes authorized by this classifier
-     */
-    List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
-                                                               FacetRecord aspect);
-
-    ExistentialNetworkAttributeRecord getAttributeValue(ExistentialNetworkRecord edge,
-                                                        Attribute attribute);
-
-    ExistentialAttributeRecord getAttributeValue(ExistentialRuleform ruleform,
-                                                 Attribute attribute);
-
-    ExistentialNetworkAttributeRecord getAttributeValue(ExistentialRuleform parent,
-                                                        Relationship r,
-                                                        ExistentialRuleform child,
-                                                        Attribute attribute);
-
-    List<ExistentialNetworkAttributeRecord> getAttributeValues(ExistentialNetworkRecord edge,
-                                                               Attribute attribute);
-
-    /**
-     * Answer the list of attribute values of the attribute on the ruleform
-     *
-     * @param attribute
-     * @return
-     */
-    List<ExistentialAttributeRecord> getAttributeValues(ExistentialRuleform ruleform,
-                                                        Attribute attribute);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -228,13 +165,6 @@ public interface PhantasmModel {
                                               ExistentialRuleform child);
 
     /**
-     * 
-     * @param auth
-     * @return
-     */
-    List<ExistentialNetworkAttributeAuthorizationRecord> getNetworkAttributeAuthorizations(ExistentialNetworkAuthorizationRecord auth);
-
-    /**
      *
      * @param aspect
      * @param includeGrouping
@@ -253,17 +183,12 @@ public interface PhantasmModel {
                                             Relationship relationship,
                                             ExistentialDomain domain);
 
+    FacetPropertyRecord getProperties(Product kernelWorkspace,
+                                      Product workspace);
+
     <T extends ExistentialRuleform> T getSingleChild(ExistentialRuleform parent,
                                                      Relationship r,
                                                      ExistentialDomain domain);
-
-    Object getValue(ExistentialAttributeAuthorizationRecord attributeValue);
-
-    Object getValue(ExistentialAttributeRecord attributeValue);
-
-    Object getValue(ExistentialNetworkAttributeAuthorizationRecord attributeValue);
-
-    Object getValue(ExistentialNetworkAttributeRecord attributeValue);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect
@@ -315,20 +240,8 @@ public interface PhantasmModel {
                            Relationship relationship,
                            ExistentialRuleform child);
 
-    void setValue(ExistentialAttributeAuthorizationRecord auth, Object value);
-
-    void setValue(ExistentialAttributeRecord attributeValue, Object value);
-
-    void setValue(ExistentialNetworkAttributeAuthorizationRecord auth,
-                  Object value);
-
-    void setValue(ExistentialNetworkAttributeRecord attributeValue,
-                  Object value);
-
     void unlink(ExistentialRuleform parent, Relationship r,
                 ExistentialRuleform child);
 
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
-
-    Class<?> valueClass(Attribute attribute);
 }

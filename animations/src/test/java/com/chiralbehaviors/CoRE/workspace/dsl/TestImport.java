@@ -31,8 +31,8 @@ import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.JsonImporter;
 
 /**
  * @author hhildebrand

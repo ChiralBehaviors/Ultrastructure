@@ -62,7 +62,6 @@ import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
@@ -73,7 +72,6 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
@@ -118,9 +116,9 @@ public class ModelImpl implements Model {
                              Class<UpdatableRecord<?>> recordType = (Class<UpdatableRecord<?>>) t.getRecordType();
                              AUTHORITY_HANDLE.put(recordType, handle);
                          });
-        Arrays.asList(Agency.class, Attribute.class, Interval.class,
-                      Location.class, Product.class, Relationship.class,
-                      StatusCode.class, Unit.class)
+        Arrays.asList(Agency.class, Interval.class, Location.class,
+                      Product.class, Relationship.class, StatusCode.class,
+                      Unit.class)
               .stream()
               .forEach(c -> {
                   MethodHandle handle;
@@ -632,16 +630,6 @@ public class ModelImpl implements Model {
                                                     kernel.getLoginRole())
                                   .getId());
         relationship = kernel.getInstanceOf();
-        ExistentialAttributeRecord attribute = phantasmModel.getAttributeValue(instance,
-                                                                               kernel.getName());
-        if (attribute != null) {
-            excluded.add(attribute.getId());
-        }
-        attribute = phantasmModel.getAttributeValue(instance,
-                                                    kernel.getDescription());
-        if (attribute != null) {
-            excluded.add(attribute.getId());
-        }
         return excluded;
     }
 }

@@ -96,43 +96,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void add(ChildSequencingAuthorizationRecord ruleform) {
         put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
-     */
-    @Override
-    public void add(ExistentialAttributeAuthorizationRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
-    @Override
-    public void add(ExistentialAttributeRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAttributeRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
+    }  
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)

@@ -62,7 +62,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
@@ -720,10 +719,11 @@ public class JobModelImpl implements JobModel {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         List<StatusCode> statusCodes = getStatusCodesFor(service);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Status codes for [%s]: %s",
-                                    service.getName(), statusCodes.stream()
-                                                                  .map(r -> r.getName())
-                                                                  .collect(Collectors.toList())));
+            log.trace(String.format("Status codes for [%s]: %s", service
+                                                                        .getName(),
+                                    statusCodes.stream()
+                                               .map(r -> r.getName())
+                                               .collect(Collectors.toList())));
         }
         statusCodes.forEach(currentCode -> {
             List<StatusCode> codes = getNextStatusCodes(service, currentCode);
@@ -1336,8 +1336,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return WellKnownAgency.ANY.id();
-            case Attribute:
-                return WellKnownAttribute.ANY.id();
             case Interval:
                 return WellKnownInterval.ANY.id();
             case Location:
@@ -1360,8 +1358,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return WellKnownAgency.NOT_APPLICABLE.id();
-            case Attribute:
-                return WellKnownAttribute.NOT_APPLICABLE.id();
             case Interval:
                 return WellKnownInterval.NOT_APPLICABLE.id();
             case Location:
@@ -1397,8 +1393,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return WellKnownAgency.SAME.id();
-            case Attribute:
-                return WellKnownAttribute.SAME.id();
             case Interval:
                 return WellKnownInterval.SAME.id();
             case Location:
@@ -1509,8 +1503,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return existential.equals(WellKnownAgency.COPY.id());
-            case Attribute:
-                return existential.equals(WellKnownAttribute.COPY.id());
             case Interval:
                 return existential.equals(WellKnownInterval.COPY.id());
             case Location:
@@ -1532,8 +1524,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return existential.equals(WellKnownAgency.SAME.id());
-            case Attribute:
-                return existential.equals(WellKnownAttribute.SAME.id());
             case Interval:
                 return existential.equals(WellKnownInterval.SAME.id());
             case Location:
@@ -1593,7 +1583,8 @@ public class JobModelImpl implements JobModel {
             return true;
         }
         if (!model.getPhantasmModel()
-                  .isAccessible(rf.getId(), mpRelationship.getId(), child.getId())) {
+                  .isAccessible(rf.getId(), mpRelationship.getId(),
+                                child.getId())) {
             return false;
         }
         return true;

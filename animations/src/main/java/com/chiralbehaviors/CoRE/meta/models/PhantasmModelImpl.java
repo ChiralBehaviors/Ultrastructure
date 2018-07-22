@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
@@ -60,7 +61,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     public PhantasmModelImpl(Model model) {
         this.model = model;
         create = model.create();
-    } 
+    }
 
     @SafeVarargs
     @Override
@@ -80,7 +81,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         @SuppressWarnings("unchecked")
         T cazt = (T) instance;
         return cazt;
-    }  
+    }
 
     @Override
     public ExistentialRuleform getChild(ExistentialRuleform parent,
@@ -260,7 +261,7 @@ public class PhantasmModelImpl implements PhantasmModel {
             return null;
         }
         return result.into(ExistentialNetworkRecord.class);
-    } 
+    }
 
     @Override
     public List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
@@ -295,6 +296,12 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .collect(Collectors.toList());
     }
 
+    @Override
+    public FacetPropertyRecord getProperties(Product kernelWorkspace,
+                                             Product workspace) {
+        throw new IllegalStateException("Unimplemented");
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ExistentialRuleform> T getSingleChild(ExistentialRuleform parent,
@@ -314,7 +321,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         return (T) model.records()
                         .resolve(result.into(ExistentialRecord.class));
-    }    
+    }
 
     @Override
     public final void initialize(ExistentialRuleform ruleform,
@@ -390,7 +397,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         unlinkImmediate(parent, relationship);
         link(parent, relationship, child);
 
-    }    
+    }
 
     @Override
     public void unlink(ExistentialRuleform parent, Relationship relationship,
@@ -420,7 +427,7 @@ public class PhantasmModelImpl implements PhantasmModel {
               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
               .execute();
-    } 
+    }
 
     private List<ExistentialRuleform> getConstrainedChildren(UUID parent,
                                                              UUID relationship,
@@ -481,5 +488,5 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .filter(r -> isAccessible(r.getId(), classifier,
                                                classification))
                      .collect(Collectors.toList());
-    } 
+    }
 }

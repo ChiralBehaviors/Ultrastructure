@@ -23,10 +23,6 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -48,14 +44,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 public interface EditableWorkspace extends WorkspaceAccessor {
 
     void add(ChildSequencingAuthorizationRecord ruleform);
-
-    void add(ExistentialAttributeAuthorizationRecord ruleform);
-
-    void add(ExistentialAttributeRecord ruleform);
-
-    void add(ExistentialNetworkAttributeAuthorizationRecord ruleform);
-
-    void add(ExistentialNetworkAttributeRecord ruleform);
 
     void add(ExistentialNetworkAuthorizationRecord ruleform);
 

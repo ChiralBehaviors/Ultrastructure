@@ -81,7 +81,7 @@ public class Phantasmagoria {
         }
 
         public ExistentialDomain getDomain() {
-            return classification.getDomain();
+            return facet.getConstrainTo();
         }
 
         public FacetRecord getFacet() {

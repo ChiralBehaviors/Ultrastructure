@@ -20,12 +20,9 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-
-import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 
 /**
  * @author hhildebrand
@@ -35,8 +32,6 @@ public class KernelTest extends AbstractModelTest {
 
     @Test
     public void testKernel() throws Exception {
-        assertNotNull(model.getKernel()
-                           .getAnyAttribute());
         assertNotNull(model.getKernel()
                            .getAnyProduct());
         assertNotNull(model.getKernel()
@@ -100,8 +95,6 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(model.getKernel()
                            .getPrototypeOf());
         assertNotNull(model.getKernel()
-                           .getSameAttribute());
-        assertNotNull(model.getKernel()
                            .getSameRelationship());
         assertNotNull(model.getKernel()
                            .getSpecialSystemAgency());
@@ -112,19 +105,8 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(model.getKernel()
                            .getCoreUser());
         assertNotNull(model.getKernel()
-                           .getPasswordHash());
-        assertNotNull(model.getKernel()
-                           .getLogin());
-        assertNotNull(model.getKernel()
                            .getUnset());
         assertNotNull(model.getKernel()
                            .getInverseSoftware());
-
-        assertEquals(ValueType.Text, model.getKernel()
-                                          .getPasswordHash()
-                                          .getValueType());
-        assertEquals(ValueType.Text, model.getKernel()
-                                          .getLogin()
-                                          .getValueType());
     }
 }

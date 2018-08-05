@@ -40,13 +40,11 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -58,8 +56,13 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -68,10 +71,10 @@ import com.hellblazer.utils.Tuple;
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
 
-    private final UUID                  definingProductId;
     protected final Map<String, Object> cache = new HashMap<>();
     protected final Model               model;
     protected final WorkspaceScope      scope;
+    private final UUID                  definingProductId;
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
@@ -96,7 +99,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void add(ChildSequencingAuthorizationRecord ruleform) {
         put(null, ruleform);
-    }  
+    }
+
+    @Override
+    public void add(EdgePropertyRecord attribute) {
+        attribute.setWorkspace(definingProductId);
+        attribute.update();
+    }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
@@ -122,6 +131,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void add(ExistentialRecord ruleform) {
         put(null, ruleform);
+    }
+
+    @Override
+    public void add(FacetPropertyRecord attribute) {
+        attribute.setWorkspace(definingProductId);
+        attribute.update();
     }
 
     /* (non-Javadoc)
@@ -211,13 +226,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void addImport(String name, Product workspace) {
+        Kernel kernel = model.getKernel();
         if (!model.getPhantasmModel()
-                  .isAccessible(getDefiningProduct().getId(), model.getKernel()
-                                                                   .getIsA()
-                                                                   .getId(),
-                                model.getKernel()
-                                     .getWorkspace()
-                                     .getId())) {
+                  .isAccessible(getDefiningProduct().getId(), kernel.getIsA()
+                                                                    .getId(),
+                                kernel.getWorkspace()
+                                      .getId())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
@@ -226,20 +240,27 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                              .getWorkspace());
         Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = model.getPhantasmModel()
                                                                                .link(getDefiningProduct(),
-                                                                                     model.getKernel()
-                                                                                          .getImports(),
+                                                                                     kernel.getImports(),
                                                                                      workspace
 
         );
-        ExistentialNetworkAttributeRecord attribute = model.records()
-                                                           .newExistentialNetworkAttribute(model.getKernel()
-                                                                                                .getNamespace()
-
-        );
+        FacetRecord aspect = model.getPhantasmModel()
+                                  .getFacetDeclaration(kernel.getIsA(),
+                                                       kernel.getWorkspace());
+        ExistentialNetworkAuthorizationRecord auth = model.getPhantasmModel()
+                                                          .getNetworkAuthorization(aspect,
+                                                                                   kernel.getImports(),
+                                                                                   false);
+        EdgePropertyRecord attribute = model.records()
+                                            .newEdgeProperty();
         attribute.setEdge(links.a.getId());
+        attribute.setAuth(auth.getId());
+        attribute.setForward(true);
+        ObjectNode value = JsonNodeFactory.instance.objectNode();
+        value.put("name", name);
+        attribute.setProperties(value);
         attribute.insert();
-        model.getPhantasmModel()
-             .setValue(attribute, name);
+
         add(links.a);
         add(links.b);
         add(attribute);
@@ -325,32 +346,30 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public Map<String, Tuple<Product, Integer>> getImports() {
         Map<String, Tuple<Product, Integer>> imports = new HashMap<>();
+        Kernel kernel = model.getKernel();
+        FacetRecord aspect = model.getPhantasmModel()
+                                  .getFacetDeclaration(kernel.getIsA(),
+                                                       kernel.getWorkspace());
+        ExistentialNetworkAuthorizationRecord auth = model.getPhantasmModel()
+                                                          .getNetworkAuthorization(aspect,
+                                                                                   kernel.getImports(),
+                                                                                   false);
+
         for (ExistentialNetworkRecord link : model.getPhantasmModel()
                                                   .getImmediateChildrenLinks(getDefiningProduct(),
-                                                                             model.getKernel()
-                                                                                  .getImports(),
+                                                                             kernel.getImports(),
                                                                              ExistentialDomain.Product)) {
-            ExistentialNetworkAttributeRecord namespace = model.getPhantasmModel()
-                                                               .getAttributeValue(link,
-                                                                                  model.getKernel()
-                                                                                       .getNamespace());
-            ExistentialNetworkAttributeRecord lookupOrder = model.getPhantasmModel()
-                                                                 .getAttributeValue(link,
-                                                                                    model.getKernel()
-                                                                                         .getLookupOrder());
-            if (namespace == null) {
-                throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
-                                                              link));
-            }
-            if (namespace.getTextValue() == null) {
-                throw new IllegalStateException(String.format("Import has no name defined! : %s",
-                                                              link));
-            }
-            Integer lookupOrderValue = lookupOrder == null ? -1
-                                                           : lookupOrder.getIntegerValue();
-            imports.put(namespace.getTextValue(), new Tuple<>(model.records()
-                                                                   .resolve(link.getChild()),
-                                                              lookupOrderValue));
+            JsonNode properties = model.getPhantasmModel()
+                                       .getEdgeProperties(auth, link)
+                                       .getProperties();
+
+            Integer lookupOrderValue = properties.hasNonNull("LookupOrder") ? ((IntNode) properties.get("LookupOrder")).asInt()
+                                                                            : -1;
+            imports.put(properties.get("Namespace")
+                                  .asText(),
+                        new Tuple<>(model.records()
+                                         .resolve(link.getChild()),
+                                    lookupOrderValue));
         }
         return imports;
     }
@@ -403,9 +422,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         return imports;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
-     */
     @Override
     public void put(String key, ChildSequencingAuthorizationRecord ruleform) {
         if (key != null) {

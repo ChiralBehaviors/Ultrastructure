@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -38,11 +39,13 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Edge;
-import com.chiralbehaviors.CoRE.phantasm.java.annotations.EdgeState;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.EdgeProperties;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Inferred;
-import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Properties;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author hhildebrand
@@ -212,13 +215,13 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
     }
 
-    private void process(EdgeState annotation, Method method) {
+    private void process(EdgeProperties annotation, Method method) {
         if (method.getName()
                   .startsWith(GET)) {
-            processPrimitiveGetter(annotation, method);
+            processPropertyGetter(annotation, method);
         } else if (method.getName()
                          .startsWith(SET)) {
-            processPrimitiveSetter(annotation, method);
+            processPropertySetter(annotation, method);
         } else {
             throw new IllegalStateException(String.format("The method is neither a primitive setter/getter: %s",
                                                           method.toGenericString()));
@@ -236,20 +239,20 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
         if (method.getAnnotation(Edge.class) != null) {
             process(method.getAnnotation(Edge.class), method);
-        } else if (method.getAnnotation(EdgeState.class) != null) {
-            process(method.getAnnotation(EdgeState.class), method);
-        } else if (method.getAnnotation(PrimitiveState.class) != null) {
-            process(method.getAnnotation(PrimitiveState.class), method);
+        } else if (method.getAnnotation(EdgeProperties.class) != null) {
+            process(method.getAnnotation(EdgeProperties.class), method);
+        } else if (method.getAnnotation(Properties.class) != null) {
+            process(method.getAnnotation(Properties.class), method);
         }
     }
 
-    private void process(PrimitiveState annotation, Method method) {
+    private void process(Properties annotation, Method method) {
         if (method.getName()
                   .startsWith(GET)) {
-            processPrimitiveGetter(annotation, method);
+            processPropertyGetter(annotation, method);
         } else if (method.getName()
                          .startsWith(SET)) {
-            processPrimitiveSetter(annotation, method);
+            processPropertySetter(annotation, method);
         } else {
             throw new IllegalStateException(String.format("The method is neither a primitive setter/getter: %s",
                                                           method.toGenericString()));
@@ -289,11 +292,6 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
     }
 
-    /**
-     * @param edge
-     * @param method
-     * @return
-     */
     @SuppressWarnings("unchecked")
     private void processGetList(Edge edge, Method method) {
         Class<? extends Phantasm> returnPhantasm = (Class<Phantasm>) edge.wrappedChildType();
@@ -331,106 +329,81 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
     }
 
-    private void processPrimitiveGetter(EdgeState annotation, Method method) {
+    private void processPropertyGetter(EdgeProperties annotation,
+                                       Method method) {
         if (method.getParameterCount() != 1) {
             throw new IllegalStateException(String.format("getter method has > 1 argument %s",
                                                           method.toGenericString()));
         }
+        NetworkAuthorization auth = childAuthorizations.get(annotation.fieldName());
+        if (auth == null) {
+            throw new IllegalStateException(String.format("field %s does not exist on %s",
+                                                          annotation.fieldName(),
+                                                          phantasm.getSimpleName()));
+        }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAttributeAuthorization auth = edgeAttributes.get(annotation.fieldName());
-            if (auth == null) {
-                throw new IllegalStateException(String.format("field %s does not exist on %s",
+            JsonNode properties = state.getEdgeProperty(state.getRuleform(),
+                                                        auth,
+                                                        ((Phantasm) arguments[0]).getRuleform());
+            try {
+                return PhantasmCRUD.MAPPER.readerFor(method.getReturnType())
+                                          .readValue(properties);
+            } catch (IOException e) {
+                throw new IllegalStateException(String.format("unable to deserialize edge property %s on %s",
                                                               annotation.fieldName(),
                                                               phantasm.getSimpleName()));
             }
-            return state.getAttributeValue(facet, state.getRuleform(), auth,
-                                           ((Phantasm) arguments[0]).getRuleform());
         });
     }
 
-    private void processPrimitiveGetter(PrimitiveState annotation,
-                                        Method method) {
+    private void processPropertyGetter(Properties annotation, Method method) {
         if (method.getParameterCount() != 0) {
             throw new IllegalStateException(String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            AttributeAuthorization auth = attributes.get(annotation.fieldName());
-            if (auth == null) {
-                throw new IllegalStateException(String.format("field %s does not exist on %s",
-                                                              annotation.fieldName(),
+            JsonNode properties = state.getFacetProperty(facet,
+                                                         state.getRuleform());
+            try {
+                return PhantasmCRUD.MAPPER.readerFor(method.getReturnType())
+                                          .readValue(properties);
+            } catch (IOException e) {
+                throw new IllegalStateException(String.format("unable to deserialize facet property on %s",
                                                               phantasm.getSimpleName()));
             }
-            return state.getAttributeValue(facet, state.getRuleform(), auth);
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private void processPrimitiveSetter(EdgeState annotation, Method method) {
+    private void processPropertySetter(EdgeProperties annotation,
+                                       Method method) {
         if (method.getParameterCount() != 2) {
             throw new IllegalStateException(String.format("getter method does not have 2 arguments %s",
                                                           method.toGenericString()));
         }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAttributeAuthorization auth = edgeAttributes.get(annotation.fieldName());
+            NetworkAuthorization auth = childAuthorizations.get(annotation.fieldName());
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               annotation.fieldName(),
                                                               phantasm.getSimpleName()));
             }
-            if (arguments[1] instanceof List) {
-                return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               ((Phantasm) arguments[0]).getRuleform(),
-                                               (List<Object>) arguments[1]);
-            } else if (arguments[1] instanceof Object[]) {
-                return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               ((Phantasm) arguments[0]).getRuleform(),
-                                               (Object[]) arguments[1]);
-            } else if (arguments[1] instanceof Map) {
-                return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               ((Phantasm) arguments[0]).getRuleform(),
-                                               (Map<String, Object>) arguments[1]);
-            }
-            return state.setAttributeObjectValue(facet, state.getRuleform(),
-                                                 auth,
-                                                 ((Phantasm) arguments[0]).getRuleform(),
-                                                 arguments[1]);
+            return state.setEdgeProperty(state.getRuleform(), auth,
+                                         ((Phantasm) arguments[0]).getRuleform(),
+                                         arguments[1]);
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private void processPrimitiveSetter(PrimitiveState annotation,
-                                        Method method) {
+    private void processPropertySetter(Properties annotation, Method method) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            AttributeAuthorization auth = attributes.get(annotation.fieldName());
-            if (auth == null) {
-                throw new IllegalStateException(String.format("field %s does not exist on %s",
-                                                              annotation.fieldName(),
-                                                              phantasm.getSimpleName()));
-            }
-            if (arguments[0] instanceof List) {
-                return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               arguments[0]);
-            } else if (arguments[0] instanceof Object[]) {
-                return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               (Object[]) arguments[0]);
-            } else if (arguments[0] instanceof Map) {
-                return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               (Map<String, Object>) arguments[0]);
-            }
-            return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                           arguments[0]);
+            return state.setFacetProperty(facet, state.getRuleform(),
+                                          arguments[0]);
         });
     }
 
-    /**
-     * @param edge
-     * @param method
-     */
     @SuppressWarnings("unchecked")
     private void processRemove(Edge edge, Method method) {
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
@@ -460,10 +433,6 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
     }
 
-    /**
-     * @param edge
-     * @param method
-     */
     @SuppressWarnings("unchecked")
     private void processSetList(Edge edge, Method method) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,

@@ -20,10 +20,12 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET_PROPERTY;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +40,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -151,12 +154,50 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public EdgePropertyRecord getEdgeProperties(ExistentialNetworkAuthorizationRecord auth,
+                                                ExistentialNetworkRecord edge) {
+        return create.select(EDGE_PROPERTY.fields())
+                     .from(EDGE_PROPERTY)
+                     .where(EDGE_PROPERTY.EDGE.equal(edge.getId()))
+                     .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
+                     .fetchSingle()
+                     .into(EdgePropertyRecord.class);
+    }
+
+    @Override
+    public EdgePropertyRecord getEdgeProperties(ExistentialRuleform parent,
+                                                ExistentialNetworkAuthorizationRecord auth,
+                                                ExistentialRuleform child) {
+        return create.select(EDGE_PROPERTY.fields())
+                     .from(EDGE_PROPERTY)
+                     .join(EXISTENTIAL_NETWORK)
+                     .on(EDGE_PROPERTY.EDGE.equal(EXISTENTIAL_NETWORK.ID))
+                     .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
+                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(auth.getRelationship()))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
+                     .fetchSingle()
+                     .into(EdgePropertyRecord.class);
+    }
+
+    @Override
     public FacetRecord getFacetDeclaration(Relationship classifier,
                                            ExistentialRuleform classification) {
         return create.selectFrom(FACET)
                      .where(FACET.CLASSIFIER.equal(classifier.getId()))
                      .and(FACET.CLASSIFICATION.equal(classification.getId()))
                      .fetchOne();
+    }
+
+    @Override
+    public FacetPropertyRecord getFacetProperties(FacetRecord facet,
+                                                  ExistentialRuleform existential) {
+        return create.select(FACET_PROPERTY.fields())
+                     .from(FACET_PROPERTY)
+                     .where(FACET_PROPERTY.FACET.equal(facet.getId()))
+                     .and(FACET_PROPERTY.EXISTENTIAL.equal(existential.getId()))
+                     .fetchSingle()
+                     .into(FacetPropertyRecord.class);
     }
 
     @Override
@@ -261,6 +302,21 @@ public class PhantasmModelImpl implements PhantasmModel {
             return null;
         }
         return result.into(ExistentialNetworkRecord.class);
+    }
+
+    @Override
+    public ExistentialNetworkAuthorizationRecord getNetworkAuthorization(FacetRecord aspect,
+                                                                         Relationship relationship,
+                                                                         boolean includeGrouping) {
+
+        SelectConditionStep<ExistentialNetworkAuthorizationRecord> and = create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(aspect.getId()))
+                                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()));
+
+        if (!includeGrouping) {
+            and = and.and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull());
+        }
+        return and.fetchSingle();
     }
 
     @Override

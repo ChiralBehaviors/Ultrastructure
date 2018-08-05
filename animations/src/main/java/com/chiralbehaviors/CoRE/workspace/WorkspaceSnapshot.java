@@ -44,11 +44,10 @@ import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -57,6 +56,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.IntNode;
 
 /**
  * @author hhildebrand
@@ -236,23 +236,24 @@ public class WorkspaceSnapshot {
     @JsonIgnore
     public int getVersion() {
         return getInserts().stream()
-                           .filter(r -> r instanceof ExistentialAttributeRecord)
-                           .map(r -> (ExistentialAttributeRecord) r)
+                           .filter(r -> r instanceof FacetPropertyRecord)
+                           .map(r -> (FacetPropertyRecord) r)
                            .filter(a -> a.getExistential()
                                          .equals(definingProduct.getId()))
-                           .filter(a -> a.getAttribute()
-                                         .equals(WellKnownAttribute.VERSION.id()))
+                           .map(a -> a.getProperties()
+                                      .get("Version"))
+                           .map(a -> ((IntNode) a).intValue())
                            .findFirst()
                            .orElseGet(() -> getUpdates().stream()
-                                                        .filter(r -> r instanceof ExistentialAttributeRecord)
-                                                        .map(r -> (ExistentialAttributeRecord) r)
+                                                        .filter(r -> r instanceof FacetPropertyRecord)
+                                                        .map(r -> (FacetPropertyRecord) r)
                                                         .filter(a -> a.getExistential()
                                                                       .equals(definingProduct.getId()))
-                                                        .filter(a -> a.getAttribute()
-                                                                      .equals(WellKnownAttribute.VERSION.id()))
+                                                        .map(a -> a.getProperties()
+                                                                   .get("Version"))
+                                                        .map(a -> ((IntNode) a).intValue())
                                                         .findFirst()
-                                                        .get())
-                           .getIntegerValue();
+                                                        .get());
     }
 
     public void load(DSLContext create) throws SQLException {

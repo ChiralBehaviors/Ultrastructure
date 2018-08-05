@@ -437,10 +437,22 @@
             "classifier": "IsA",
             "classification": "Workspace",
             "constraints": {
-                "login": {
+                "import": {
                     "card": "MANY",
-                    "rel": "MayLoginBy",
-                    "child": "CoreUser"
+                    "rel": "Imports",
+                    "child": "Workspace",
+                    "schema": {
+                        "title": "Workspace",
+                        "type": "object",
+                        "properties": {
+                            "Namespace": {
+                                "type": "string"
+                            },
+                            "LookupOrder": {
+                                "type": "integer"
+                            }
+                        }
+                    }
                 }
             },
             "schema": {

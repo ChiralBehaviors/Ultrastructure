@@ -27,6 +27,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
@@ -97,8 +98,18 @@ public interface PhantasmModel {
                                                      ExistentialRuleform classification,
                                                      ExistentialDomain existentialDomain);
 
+    EdgePropertyRecord getEdgeProperties(ExistentialNetworkAuthorizationRecord edgeAuth,
+                                         ExistentialNetworkRecord edge);
+
+    EdgePropertyRecord getEdgeProperties(ExistentialRuleform parent,
+                                         ExistentialNetworkAuthorizationRecord auth,
+                                         ExistentialRuleform child);
+
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
+
+    FacetPropertyRecord getFacetProperties(FacetRecord record,
+                                           ExistentialRuleform existential);
 
     /**
      * Answer the non inferred child that is connected to the parent via the
@@ -163,6 +174,10 @@ public interface PhantasmModel {
     ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                               Relationship relationship,
                                               ExistentialRuleform child);
+
+    ExistentialNetworkAuthorizationRecord getNetworkAuthorization(FacetRecord aspect,
+                                                                  Relationship relationship,
+                                                                  boolean includeGrouping);
 
     /**
      *
@@ -243,5 +258,5 @@ public interface PhantasmModel {
     void unlink(ExistentialRuleform parent, Relationship r,
                 ExistentialRuleform child);
 
-    void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
+    void unlinkImmediate(ExistentialRuleform parent, Relationship relationship); 
 }

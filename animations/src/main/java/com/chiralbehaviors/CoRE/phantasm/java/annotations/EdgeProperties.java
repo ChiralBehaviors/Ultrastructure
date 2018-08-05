@@ -28,14 +28,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * 
  * @author hhildebrand
  *
  */
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface PrimitiveState {
-    Key attribute();
-
+public @interface EdgeProperties {
     String fieldName();
 }

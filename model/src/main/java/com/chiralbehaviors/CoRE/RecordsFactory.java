@@ -627,6 +627,13 @@ public interface RecordsFactory {
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
                                                    Product definingProduct,
+                                                   EdgePropertyRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Edge_Property);
+    }
+
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
                                                    ExistentialNetworkAuthorizationRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Network_Authorization);
@@ -644,6 +651,13 @@ public interface RecordsFactory {
                                                    ExistentialRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Existential);
+    }
+
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   FacetPropertyRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Facet_Property);
     }
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,

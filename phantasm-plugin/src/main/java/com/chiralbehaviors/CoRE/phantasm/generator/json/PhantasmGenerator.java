@@ -55,27 +55,32 @@ import com.sun.codemodel.JPackage;
  *
  */
 public class PhantasmGenerator {
-    private static final String ADD_S              = "add%s";
-    private static final String ANNOTATIONS        = "com.chiralbehaviors.CoRE.phantasm.java.annotations.";
+    private static final String ADD_S               = "add%s";
+    private static final String ANNOTATIONS         = "com.chiralbehaviors.CoRE.phantasm.java.annotations.";
     private static final String EDGE_ANNOTATION;
+    private static final String EDGE_PROPERTIES_ANNOTATION;
     private static final String FACET_ANNOTATION;
-    private static final String FIELD_NAME         = "fieldName";
-    private static final String GET_IMMEDIATE_S    = "getImmediate%s";
-    private static final String GET_PROPERTIES     = "get_Properties";
-    private static final String GET_S              = "get%s";
+    private static final String FIELD_NAME          = "fieldName";
+    private static final String GET_EDGE_PROPERTIES = "get_PropertiesOf%s";
+    private static final String GET_IMMEDIATE_S     = "getImmediate%s";
+    private static final String GET_PROPERTIES      = "get_Properties";
+    private static final String GET_S               = "get%s";
     private static final String INFERED_ANNOTATION;
     private static final String PROPERTIES_ANNOTATION;
-    private static final String REMOVE_S           = "remove%s";
+    private static final String REMOVE_S            = "remove%s";
     private static final String SCOPED_PHANTASM;
-    private static final String SET_IMMEDIATE_S    = "setImmediate%s";
-    private static final String SET_PROPERTIES     = "set_Properties";
-    private static final String SET_S              = "set%s";
-    private static final String WRAPPED_CHILD_TYPE = "wrappedChildType";
+    private static final String SET_EDGE_PROPERTIES = "set_PropertiesOf%s";
+    private static final String SET_IMMEDIATE_S     = "setImmediate%s";
+    private static final String SET_PROPERTIES      = "set_Properties";
+    private static final String SET_S               = "set%s";
+    private static final String WRAPPED_CHILD_TYPE  = "wrappedChildType";
+    private static final String CHILD               = "child";
 
     static {
         INFERED_ANNOTATION = ANNOTATIONS + "Infered";
         PROPERTIES_ANNOTATION = ANNOTATIONS + "Properties";
         EDGE_ANNOTATION = ANNOTATIONS + "Edge";
+        EDGE_PROPERTIES_ANNOTATION = ANNOTATIONS + "EdgeProperties";
         FACET_ANNOTATION = ANNOTATIONS + "Facet";
         SCOPED_PHANTASM = "com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm";
     }
@@ -151,8 +156,9 @@ public class PhantasmGenerator {
                                                            codeModel));
     }
 
-    private void generate(Constraint constraint, String name,
+    private void generate(Constraint constraint, String name, JPackage jpackage,
                           JDefinedClass jClass, JCodeModel codeModel) {
+        generateAttributes(jClass, name, constraint, jpackage, codeModel);
         switch (constraint.card) {
             case MANY:
                 generateListMethods(name, constraint, jClass, codeModel);
@@ -169,7 +175,8 @@ public class PhantasmGenerator {
                           JCodeModel codeModel) {
         JDefinedClass jClass;
         try {
-            jClass = jpackage._class(JMod.PUBLIC, toValidName(name), ClassType.INTERFACE);
+            jClass = jpackage._class(JMod.PUBLIC, toValidName(name),
+                                     ClassType.INTERFACE);
         } catch (JClassAlreadyExistsException e) {
             throw new IllegalStateException(String.format("Facet %s has already been defined",
                                                           name));
@@ -188,9 +195,78 @@ public class PhantasmGenerator {
         facetAnnotation.param("key", name);
         facetAnnotation.param("workspace", workspace.uri);
         facet.constraints.forEach((n, constraint) -> generate(constraint, n,
-                                                              jClass,
+                                                              jpackage, jClass,
                                                               codeModel));
         generateAttributes(jClass, name, facet, jpackage, codeModel);
+    }
+
+    private void generateAttributes(JDefinedClass jClass, String name,
+                                    Constraint constraint, JPackage jpackage,
+                                    JCodeModel codeModel) {
+        JPackage propPackage = jpackage.subPackage(toFieldName(name
+                                                               + "EdgeProperties"));
+        JClass propType;
+        if (constraint.schema == null) {
+            propType = jClass.owner()
+                             .ref(JsonNode.class.getCanonicalName());
+        } else {
+            GenerationConfig config = new DefaultGenerationConfig() {
+                @Override
+                public AnnotationStyle getAnnotationStyle() {
+                    return AnnotationStyle.JACKSON2;
+                }
+
+                @Override
+                public boolean isGenerateBuilders() { // set config option by overriding method
+                    return true;
+                }
+
+                @Override
+                public boolean isIncludeHashcodeAndEquals() {
+                    return false;
+                }
+
+                @Override
+                public boolean isIncludeToString() {
+                    return false;
+                }
+            };
+            String propName = capitalized(toValidName(constraint.schema.get("name") == null ? name
+                                                                                              + "Properties"
+                                                                                            : constraint.schema.get("name")
+                                                                                                               .asText()));
+            new RuleFactory(config, new Jackson2Annotator(config),
+                            new SchemaStore()).getSchemaRule()
+                                              .apply(propName,
+                                                     constraint.schema,
+                                                     propPackage,
+                                                     new Schema(null,
+                                                                constraint.schema,
+                                                                constraint.schema));
+            propType = jClass.owner()
+                             .ref(propPackage.name() + "." + propName);
+        }
+
+        String fieldName = toFieldName(name);
+        String capitalized = capitalized(fieldName);
+        JClass childType = jClass.owner()
+                                 .ref(resolveChild(constraint.child));
+        JMethod get = jClass.method(JMod.PUBLIC, propType,
+                                    String.format(GET_EDGE_PROPERTIES,
+                                                  capitalized));
+        get.annotate(jClass.owner()
+                           .ref(EDGE_PROPERTIES_ANNOTATION))
+           .param(FIELD_NAME, name);
+        get.param(childType, CHILD);
+
+        JMethod set = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
+                                    String.format(SET_EDGE_PROPERTIES,
+                                                  capitalized));
+        set.annotate(jClass.owner()
+                           .ref(EDGE_PROPERTIES_ANNOTATION))
+           .param(FIELD_NAME, name);
+        set.param(childType, CHILD);
+        set.param(propType, "properties");
     }
 
     private void generateAttributes(JDefinedClass jClass, String name,
@@ -275,64 +351,64 @@ public class PhantasmGenerator {
                               .ref(EDGE_ANNOTATION))
               .param(FIELD_NAME, fieldName)
               .param(WRAPPED_CHILD_TYPE, childType);
-        setter.param(listType, pluralParameter);
+        setter.param(listType, "x");
     }
 
-    private void generateList(String fieldName, JDefinedClass jClass,
+    private void generateList(String name, JDefinedClass jClass,
                               JClass listType, String plural,
                               String pluralParameter, JClass childType,
                               JCodeModel codeModel) {
         jClass.method(JMod.PUBLIC, listType, String.format(GET_S, plural))
               .annotate(jClass.owner()
                               .ref(EDGE_ANNOTATION))
-              .param(FIELD_NAME, fieldName)
+              .param(FIELD_NAME, name)
               .param(WRAPPED_CHILD_TYPE, childType);
 
         JMethod setter = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
                                        String.format(SET_S, plural));
         setter.annotate(jClass.owner()
                               .ref(EDGE_ANNOTATION))
-              .param(FIELD_NAME, fieldName)
+              .param(FIELD_NAME, name)
               .param(WRAPPED_CHILD_TYPE, childType);
-        setter.param(listType, pluralParameter);
+        setter.param(listType, "x");
     }
 
     private void generateListCommon(String fieldName, JClass listType,
                                     JClass childType, String plural,
                                     String pluralParameter, String normalized,
-                                    JDefinedClass jClass,
-                                    JCodeModel codeModel) {
+                                    JDefinedClass jClass, JCodeModel codeModel,
+                                    String name) {
         JMethod add = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
                                     String.format(ADD_S, normalized));
         add.annotate(jClass.owner()
                            .ref(EDGE_ANNOTATION))
-           .param(FIELD_NAME, fieldName)
+           .param(FIELD_NAME, name)
            .param(WRAPPED_CHILD_TYPE, childType);
-        add.param(childType, fieldName);
+        add.param(childType, "x");
 
         JMethod remove = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
                                        String.format(REMOVE_S, normalized));
         remove.annotate(jClass.owner()
                               .ref(EDGE_ANNOTATION))
-              .param(FIELD_NAME, fieldName)
+              .param(FIELD_NAME, name)
               .param(WRAPPED_CHILD_TYPE, childType);
-        remove.param(childType, fieldName);
+        remove.param(childType, "x");
 
         JMethod addList = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
                                         String.format(ADD_S, plural));
         addList.annotate(jClass.owner()
                                .ref(EDGE_ANNOTATION))
-               .param(FIELD_NAME, fieldName)
+               .param(FIELD_NAME, name)
                .param(WRAPPED_CHILD_TYPE, childType);
-        addList.param(listType, pluralParameter);
+        addList.param(listType, "x");
 
         JMethod removeList = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
                                            String.format(REMOVE_S, plural));
         removeList.annotate(jClass.owner()
                                   .ref(EDGE_ANNOTATION))
-                  .param(FIELD_NAME, fieldName)
+                  .param(FIELD_NAME, name)
                   .param(WRAPPED_CHILD_TYPE, childType);
-        removeList.param(listType, pluralParameter);
+        removeList.param(listType, "x");
     }
 
     private void generateListMethods(String name, Constraint constraint,
@@ -352,33 +428,34 @@ public class PhantasmGenerator {
             generateInferedList(fieldName, listType, jClass, plural,
                                 pluralParameter, childType, codeModel);
         } else {
-            generateList(fieldName, jClass, listType, plural, pluralParameter,
+            generateList(name, jClass, listType, plural, pluralParameter,
                          childType, codeModel);
         }
         generateListCommon(fieldName, listType, childType, plural,
-                           pluralParameter, normalized, jClass, codeModel);
+                           pluralParameter, normalized, jClass, codeModel,
+                           name);
     }
 
     private void generateSingularMethods(String name, Constraint constraint,
                                          JDefinedClass jClass,
                                          JCodeModel codeModel) {
         String fieldName = toFieldName(name);
-        String normalized = capitalized(fieldName);
+        String capitalized = capitalized(fieldName);
         JClass childType = jClass.owner()
                                  .ref(resolveChild(constraint.child));
-        jClass.method(JMod.PUBLIC, childType, String.format(GET_S, normalized))
+        jClass.method(JMod.PUBLIC, childType, String.format(GET_S, capitalized))
               .annotate(jClass.owner()
                               .ref(EDGE_ANNOTATION))
-              .param(FIELD_NAME, fieldName)
+              .param(FIELD_NAME, name)
               .param(WRAPPED_CHILD_TYPE, childType);
 
         JMethod set = jClass.method(JMod.PUBLIC, jClass.owner().VOID,
-                                    String.format(SET_S, normalized));
+                                    String.format(SET_S, capitalized));
         set.annotate(jClass.owner()
                            .ref(EDGE_ANNOTATION))
-           .param(FIELD_NAME, fieldName)
+           .param(FIELD_NAME, name)
            .param(WRAPPED_CHILD_TYPE, childType);
-        set.param(childType, fieldName);
+        set.param(childType, "x");
     }
 
     private String resolveChild(String child) {

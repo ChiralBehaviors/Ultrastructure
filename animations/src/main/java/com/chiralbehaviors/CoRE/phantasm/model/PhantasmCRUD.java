@@ -33,23 +33,28 @@ import java.util.stream.Collectors;
 import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.NetworkAuthorization;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * CRUD for Phantasms. This class is the animation procedure that maintains and
- * mediates the Phantasm/Facet constructs in Ultrastructure. It's a bit
- * unwieldy, because of the type signatures required for erasure. Provides a
+ * mediates the Phantasm/Facet constructs in Ultrastructure. Provides a
  * centralized implementation of Phantasm CRUD and the security model for such.
  *
  * @author hhildebrand
  *
  */
 public class PhantasmCRUD {
-    protected final Model      model;
-    public static final String _INSTANCE = "_instance";
+    public static final String       _INSTANCE = "_instance";
+    public static final ObjectMapper MAPPER    = new ObjectMapper();
+
+    protected final Model            model;
 
     public PhantasmCRUD(Model model) {
         this.model = model;
@@ -220,6 +225,21 @@ public class PhantasmCRUD {
 
     }
 
+    public JsonNode getEdgeProperty(ExistentialRuleform parent,
+                                    NetworkAuthorization auth,
+                                    ExistentialRuleform child) {
+        return model.getPhantasmModel()
+                    .getEdgeProperties(parent, auth.getAuth(), child)
+                    .getProperties();
+    }
+
+    public JsonNode getFacetProperty(Aspect facet,
+                                     ExistentialRuleform ruleform) {
+        return model.getPhantasmModel()
+                    .getFacetProperties(facet.getFacet(), ruleform)
+                    .getProperties();
+    }
+
     /**
      * Answer the immediate, non inferred children of the instance
      *
@@ -305,15 +325,6 @@ public class PhantasmCRUD {
         return model.checkRead((UpdatableRecord<?>) child) ? child : null;
     }
 
-    public List<ExistentialRuleform> lookupList(List<UUID> ids) {
-        return ids.stream()
-                  .map(id -> existential(id))
-                  .map(r -> model.records()
-                                 .resolve(r))
-                  .filter(child -> model.checkRead((UpdatableRecord<?>) child))
-                  .collect(Collectors.toList());
-    }
-
     public ExistentialRuleform lookup(UUID id) {
         return Optional.ofNullable(existential(id))
                        .map(r -> model.records()
@@ -321,6 +332,15 @@ public class PhantasmCRUD {
                        .filter(rf -> rf != null)
                        .filter(child -> model.checkRead((UpdatableRecord<?>) child))
                        .orElse(null);
+    }
+
+    public List<ExistentialRuleform> lookupList(List<UUID> ids) {
+        return ids.stream()
+                  .map(id -> existential(id))
+                  .map(r -> model.records()
+                                 .resolve(r))
+                  .filter(child -> model.checkRead((UpdatableRecord<?>) child))
+                  .collect(Collectors.toList());
     }
 
     /**
@@ -443,6 +463,26 @@ public class PhantasmCRUD {
         }
         instance.setDescription(description);
         return instance;
+    }
+
+    public Object setEdgeProperty(ExistentialRuleform parent,
+                                  NetworkAuthorization auth,
+                                  ExistentialRuleform child, Object object) {
+        EdgePropertyRecord properties = model.getPhantasmModel()
+                                             .getEdgeProperties(parent,
+                                                                auth.getAuth(),
+                                                                child);
+        properties.setProperties(MAPPER.valueToTree(object));
+        return null;
+    }
+
+    public Object setFacetProperty(Aspect facet, ExistentialRuleform ruleform,
+                                   Object object) {
+        FacetPropertyRecord properties = model.getPhantasmModel()
+                                              .getFacetProperties(facet.getFacet(),
+                                                                  ruleform);
+        properties.setProperties(MAPPER.valueToTree(object));
+        return null;
     }
 
     public ExistentialRuleform setName(ExistentialRuleform instance,

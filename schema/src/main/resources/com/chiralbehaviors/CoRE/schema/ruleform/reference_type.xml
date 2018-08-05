@@ -12,7 +12,7 @@
                 'Network Authorization', 'Network', 'Existential', 'Job Chronology', 'Job',
                 'Meta Protocol', 'Network Inference', 'Parent Sequencing Authorization',
                 'Protocol', 'Self Sequencing Authorization', 'Sibling Sequencing Authorization', 
-                'Status Code Sequencing'
+                'Status Code Sequencing', 'Edge Property', 'Facet Property'
             );
             ]]>
 		</sql>

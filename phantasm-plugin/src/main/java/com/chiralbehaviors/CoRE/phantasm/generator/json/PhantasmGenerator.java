@@ -233,10 +233,7 @@ public class PhantasmGenerator {
                     return false;
                 }
             };
-            String propName = capitalized(toValidName(constraint.schema.get("title") == null ? name
-                                                                                               + "Properties"
-                                                                                             : constraint.schema.get("title")
-                                                                                                                .asText()));
+            String propName = capitalized(toValidName(name + "Properties"));
             SchemaMapper mapper = new SchemaMapper(new RuleFactory(config,
                                                                    new Jackson2Annotator(config),
                                                                    new SchemaStore()),
@@ -303,10 +300,7 @@ public class PhantasmGenerator {
                     return false;
                 }
             };
-            String propName = toValidName(facet.schema.get("title") == null ? name
-                                                                              + "Properties"
-                                                                            : facet.schema.get("title")
-                                                                                          .asText());
+            String propName = capitalized(toValidName(name + "Properties"));
             SchemaMapper mapper = new SchemaMapper(new RuleFactory(config,
                                                                    new Jackson2Annotator(config),
                                                                    new SchemaStore()),

@@ -29,7 +29,8 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -57,6 +58,7 @@ import com.sun.codemodel.JPackage;
 public class PhantasmGenerator {
     private static final String ADD_S               = "add%s";
     private static final String ANNOTATIONS         = "com.chiralbehaviors.CoRE.phantasm.java.annotations.";
+    private static final String CHILD               = "child";
     private static final String EDGE_ANNOTATION;
     private static final String EDGE_PROPERTIES_ANNOTATION;
     private static final String FACET_ANNOTATION;
@@ -74,7 +76,6 @@ public class PhantasmGenerator {
     private static final String SET_PROPERTIES      = "set_Properties";
     private static final String SET_S               = "set%s";
     private static final String WRAPPED_CHILD_TYPE  = "wrappedChildType";
-    private static final String CHILD               = "child";
 
     static {
         INFERED_ANNOTATION = ANNOTATIONS + "Infered";
@@ -151,27 +152,27 @@ public class PhantasmGenerator {
 
     public void generate(JCodeModel codeModel) {
         JPackage jpackage = codeModel._package(config.packageName);
-        workspace.facets.forEach((name, facet) -> generate(facet, name,
+        workspace.facets.forEach((name, facet) -> generate(name, facet,
                                                            jpackage,
                                                            codeModel));
     }
 
-    private void generate(Constraint constraint, String name, JPackage jpackage,
+    private void generate(String name, Constraint constraint, JPackage jpackage,
                           JDefinedClass jClass, JCodeModel codeModel) {
-        generateAttributes(jClass, name, constraint, jpackage, codeModel);
+        generateAttributes(name, constraint, jClass, codeModel);
         switch (constraint.card) {
             case MANY:
-                generateListMethods(name, constraint, jClass, codeModel);
+                generateMany(name, constraint, jClass, codeModel);
                 break;
             case ONE:
-                generateSingularMethods(name, constraint, jClass, codeModel);
+                generateOne(name, constraint, jClass, codeModel);
                 break;
             default:
 
         }
     }
 
-    private void generate(Facet facet, String name, JPackage jpackage,
+    private void generate(String name, Facet facet, JPackage jpackage,
                           JCodeModel codeModel) {
         JDefinedClass jClass;
         try {
@@ -194,21 +195,22 @@ public class PhantasmGenerator {
                                                                .ref(FACET_ANNOTATION));
         facetAnnotation.param("key", name);
         facetAnnotation.param("workspace", workspace.uri);
-        facet.constraints.forEach((n, constraint) -> generate(constraint, n,
+        facet.constraints.forEach((n, constraint) -> generate(n, constraint,
                                                               jpackage, jClass,
                                                               codeModel));
-        generateAttributes(jClass, name, facet, jpackage, codeModel);
+        generateAttributes(name, facet, jClass, jpackage, codeModel);
     }
 
-    private void generateAttributes(JDefinedClass jClass, String name,
-                                    Constraint constraint, JPackage jpackage,
+    private void generateAttributes(String name, Constraint constraint,
+                                    JDefinedClass jClass,
                                     JCodeModel codeModel) {
-        JPackage propPackage = jpackage.subPackage(toFieldName(name
-                                                               + "EdgeProperties"));
+        JPackage propPackage = jClass.getPackage()
+                                     .subPackage(Introspector.decapitalize(jClass.name()
+                                                                           + "EdgeProperties"))
+                                     .subPackage(toFieldName(name) + "_");
         JClass propType;
         if (constraint.schema == null) {
-            propType = jClass.owner()
-                             .ref(JsonNode.class.getCanonicalName());
+            propType = codeModel.ref(JsonNode.class.getCanonicalName());
         } else {
             GenerationConfig config = new DefaultGenerationConfig() {
                 @Override
@@ -231,18 +233,20 @@ public class PhantasmGenerator {
                     return false;
                 }
             };
-            String propName = capitalized(toValidName(constraint.schema.get("name") == null ? name
-                                                                                              + "Properties"
-                                                                                            : constraint.schema.get("name")
-                                                                                                               .asText()));
-            new RuleFactory(config, new Jackson2Annotator(config),
-                            new SchemaStore()).getSchemaRule()
-                                              .apply(propName,
-                                                     constraint.schema,
-                                                     propPackage,
-                                                     new Schema(null,
-                                                                constraint.schema,
-                                                                constraint.schema));
+            String propName = capitalized(toValidName(constraint.schema.get("title") == null ? name
+                                                                                               + "Properties"
+                                                                                             : constraint.schema.get("title")
+                                                                                                                .asText()));
+            SchemaMapper mapper = new SchemaMapper(new RuleFactory(config,
+                                                                   new Jackson2Annotator(config),
+                                                                   new SchemaStore()),
+                                                   new SchemaGenerator());
+            try {
+                mapper.generate(codeModel, propName, propPackage.name(),
+                                constraint.schema.toString());
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
             propType = jClass.owner()
                              .ref(propPackage.name() + "." + propName);
         }
@@ -269,15 +273,14 @@ public class PhantasmGenerator {
         set.param(propType, "properties");
     }
 
-    private void generateAttributes(JDefinedClass jClass, String name,
-                                    Facet facet, JPackage jpackage,
+    private void generateAttributes(String name, Facet facet,
+                                    JDefinedClass jClass, JPackage jpackage,
                                     JCodeModel codeModel) {
         JPackage propPackage = jpackage.subPackage(toFieldName(name
                                                                + "Properties"));
         JClass propType;
         if (facet.schema == null) {
-            propType = jClass.owner()
-                             .ref(JsonNode.class.getCanonicalName());
+            propType = codeModel.ref(JsonNode.class.getCanonicalName());
         } else {
             GenerationConfig config = new DefaultGenerationConfig() {
                 @Override
@@ -300,17 +303,20 @@ public class PhantasmGenerator {
                     return false;
                 }
             };
-            String propName = toValidName(facet.schema.get("name") == null ? name
-                                                                             + "Properties"
-                                                                           : facet.schema.get("name")
-                                                                                         .asText());
-            new RuleFactory(config, new Jackson2Annotator(config),
-                            new SchemaStore()).getSchemaRule()
-                                              .apply(propName, facet.schema,
-                                                     propPackage,
-                                                     new Schema(null,
-                                                                facet.schema,
-                                                                facet.schema));
+            String propName = toValidName(facet.schema.get("title") == null ? name
+                                                                              + "Properties"
+                                                                            : facet.schema.get("title")
+                                                                                          .asText());
+            SchemaMapper mapper = new SchemaMapper(new RuleFactory(config,
+                                                                   new Jackson2Annotator(config),
+                                                                   new SchemaStore()),
+                                                   new SchemaGenerator());
+            try {
+                mapper.generate(codeModel, propName, propPackage.name(),
+                                facet.schema.toString());
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
             propType = jClass.owner()
                              .ref(propPackage.name() + "." + propName);
         }
@@ -411,9 +417,8 @@ public class PhantasmGenerator {
         removeList.param(listType, "x");
     }
 
-    private void generateListMethods(String name, Constraint constraint,
-                                     JDefinedClass jClass,
-                                     JCodeModel codeModel) {
+    private void generateMany(String name, Constraint constraint,
+                              JDefinedClass jClass, JCodeModel codeModel) {
         String fieldName = toFieldName(name);
         String normalized = capitalized(fieldName);
         String plural = English.plural(normalized);
@@ -436,9 +441,8 @@ public class PhantasmGenerator {
                            name);
     }
 
-    private void generateSingularMethods(String name, Constraint constraint,
-                                         JDefinedClass jClass,
-                                         JCodeModel codeModel) {
+    private void generateOne(String name, Constraint constraint,
+                             JDefinedClass jClass, JCodeModel codeModel) {
         String fieldName = toFieldName(name);
         String capitalized = capitalized(fieldName);
         JClass childType = jClass.owner()

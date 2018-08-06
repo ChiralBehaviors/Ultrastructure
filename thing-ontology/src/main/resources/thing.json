@@ -166,6 +166,7 @@
                     "rel": "thing1Of",
                     "child": "Thing2",
                     "schema": {
+                        "type": "object",
                         "aliases": {
                             "type": "array",
                             "items": {
@@ -179,6 +180,7 @@
                     "rel": "derivedFrom",
                     "child": "MavenArtifact",
                     "schema": {
+                        "type": "object",
                         "aliases": {
                             "type": "array",
                             "items": {

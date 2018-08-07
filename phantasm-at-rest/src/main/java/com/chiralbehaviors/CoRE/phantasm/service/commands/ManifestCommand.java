@@ -28,7 +28,7 @@ import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.hellblazer.utils.Utils;
 

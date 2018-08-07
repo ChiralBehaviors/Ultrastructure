@@ -110,6 +110,9 @@
                     },
                     "description": {
                         "type": "string"
+                    },
+                    "jsonBlob": {
+                        "type": "object"
                     }
                 }
             },
@@ -124,6 +127,9 @@
                         "properties": {
                             "classifier": {
                                 "type": "string"
+                            },
+                            "jsonBlob": {
+                                "type": "object"
                             }
                         }
                     }
@@ -167,10 +173,12 @@
                     "child": "Thing2",
                     "schema": {
                         "type": "object",
-                        "aliases": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                        "properties": {
+                            "aliases": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
@@ -181,10 +189,12 @@
                     "child": "MavenArtifact",
                     "schema": {
                         "type": "object",
-                        "aliases": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
+                        "properties": {
+                            "aliases": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
@@ -200,7 +210,6 @@
             "classifier": "IsA",
             "classification": "Thing2",
             "schema": {
-                "title": "Thing 1",
                 "type": "object",
                 "properties": {
                     "name": {
@@ -218,19 +227,19 @@
                     "URI": {
                         "type": "string"
                     },
-                    "discount": {
-                        "type": "number"
-                    },
                     "properties": {
                         "type": "object"
                     }
-                },
-                "constraints": {
-                    "inThing1": {
-                        "card": "ONE",
-                        "rel": "inThing1",
-                        "child": "Thing1",
-                        "schema": {
+                }
+            },
+            "constraints": {
+                "Thing1": {
+                    "card": "ONE",
+                    "rel": "inThing1",
+                    "child": "Thing1",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
                             "aliases": {
                                 "type": "array",
                                 "items": {
@@ -238,26 +247,27 @@
                                 }
                             }
                         }
-                    },
-                    "derivedFrom": {
-                        "card": "ONE",
-                        "rel": "derivedFrom",
-                        "child": "MavenArtifact"
-                    },
-                    "thing2Of": {
-                        "card": "ONE",
-                        "rel": "thing2Of",
-                        "child": "Thing3",
-                        "infered": true
-                    },
-                    "derivedFrom": {
-                        "card": "ONE",
-                        "rel": "derivedFrom",
-                        "child": "MasterThing",
-                        "schema": {
-                            "properties": {
-                                "type": "object"
-                            }
+                    }
+                },
+                "derivedFrom": {
+                    "card": "MANY",
+                    "rel": "derivedFrom",
+                    "child": "MavenArtifact"
+                },
+                "Thing3": {
+                    "card": "MANY",
+                    "rel": "thing2Of",
+                    "child": "Thing3",
+                    "infered": true
+                },
+                "MasterThing": {
+                    "card": "MANY",
+                    "rel": "derivedFrom",
+                    "child": "MasterThing",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "type": "object"
                         }
                     }
                 }

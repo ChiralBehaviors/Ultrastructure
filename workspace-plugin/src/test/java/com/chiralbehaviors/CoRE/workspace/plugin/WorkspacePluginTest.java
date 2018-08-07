@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -55,7 +56,7 @@ public class WorkspacePluginTest extends AbstractModelTest {
         loader.execute();
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-        assertNotNull(scope.lookup("TheDude"));
+        assertNotNull(scope.lookup(ReferenceType.Existential, "TheDude"));
 
     }
 
@@ -89,7 +90,6 @@ public class WorkspacePluginTest extends AbstractModelTest {
         loader.execute();
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-        assertNotNull(scope.lookup("TheDude"));
-
+        assertNotNull(scope.lookup(ReferenceType.Existential, "TheDude"));
     }
 }

@@ -1,15 +1,11 @@
 package com.chiralbehaviors.CoRE.phantasm;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -20,9 +16,10 @@ import com.chiralbehaviors.CoRE.phantasm.test.MasterThing;
 import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.masterThingProperties.MasterThingProperties;
+import com.chiralbehaviors.CoRE.phantasm.test.mavenArtifactProperties.MavenArtifactProperties;
+import com.chiralbehaviors.CoRE.phantasm.test.thing1EdgeProperties.thing2_.Thing2Properties;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 
@@ -31,10 +28,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class NetAttrTest extends AbstractModelTest {
 
+    @SuppressWarnings("serial")
     @Test
     public void testAttributes() throws Exception {
         JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                                model);
+                                                      model);
         try (FileOutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
                                                                  SOME_MORE_THINGS_WSP_JSON))) {
             new WorkspaceSnapshot(importer.getWorkspace()
@@ -43,49 +41,54 @@ public class NetAttrTest extends AbstractModelTest {
         }
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "Freddy", "He always comes back");
-        thing1.get_Properties().setName("Freddy");
-        thing1.get_Properties().setDescription("He always comes back");
+        thing1.get_Properties()
+              .setName("Freddy");
+        thing1.get_Properties()
+              .setDescription("He always comes back");
         Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
                                         "Neddy", "He never comes back");
-        thing2.get_Properties().setName("Neddy");
-        thing2.get_Properties().setDescription("He never comes back");
+        thing2.get_Properties()
+              .setName("Neddy");
+        thing2.get_Properties()
+              .setDescription("He never comes back");
 
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  ExistentialDomain.Location,
                                                  "maven", "art vandelay");
-        artifact.get_Properties().setName("maven");
-        artifact.get_Properties().setDescription("art vandelay");
+        MavenArtifactProperties artProps = new MavenArtifactProperties();
+        artProps.setName("maven");
+        artProps.setDescription("art vandelay");
+        artifact.set_Properties(artProps);
 
         thing1.setDerivedFrom(artifact);
 
         thing1.setThing2(thing2);
-        thing1.setAliasesOfThing2Thing2(thing2, new String[] { "foo" });
 
-        String[] aliases = thing1.getAliasesOfThing2Thing2(thing2);
-        assertNotNull(aliases);
-        assertEquals("foo", aliases[0]);
+        Thing2Properties props = new Thing2Properties();
+        props.setAliases(new ArrayList<String>() {
+            {
+                add("foo");
+            }
+        });
+        thing1.set_PropertiesOfThing2(thing2, props);
 
         MasterThing master = model.construct(MasterThing.class,
                                              ExistentialDomain.Product,
-                                             "Master", "blaster"); 
+                                             "Master", "blaster");
 
-        master.get_Properties().setName("Master");
-        master.get_Properties().setDescription("blaster");
+        MasterThingProperties masterProps = new MasterThingProperties();
+        masterProps.setName("Master");
+        masterProps.setDescription("blaster");
+        master.addDerivedFrom(thing1);
+        master.get_PropertiesOfDerivedFrom(thing1)
+              .setClassifier("Hello");
+        master.set_Properties(masterProps);
 
-        master.addThing1(thing1);
-        master.get_Properties().setClassifierOfThing1Thing1(thing1, "Hello"); 
-
-        String classifier = master.get_Properties().getClassifierOfThing1Thing1(thing1);
+        String classifier = master.get_PropertiesOfDerivedFrom(thing1)
+                                  .getClassifier();
         assertEquals("Hello", classifier);
 
-        thing2.addMasterThing(master);
-        Map<String, String> properties = new HashMap<>();
-        properties.put("hello", "world");
-        thing2.setPropertiesOfMasterThingMasterThing(master, properties);
-
-        properties = thing2.getPropertiesOfMasterThingMasterThing(master);
-        assertNotNull(properties);
-        assertEquals("world", properties.get("hello"));
+        thing2. addMasterThing(master);
 
         WorkspaceSnapshot snap = model.snapshot();
         try (OutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,

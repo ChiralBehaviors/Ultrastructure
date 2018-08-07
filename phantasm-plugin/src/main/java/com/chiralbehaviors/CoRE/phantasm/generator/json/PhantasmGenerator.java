@@ -67,7 +67,7 @@ public class PhantasmGenerator {
     private static final String GET_IMMEDIATE_S     = "getImmediate%s";
     private static final String GET_PROPERTIES      = "get_Properties";
     private static final String GET_S               = "get%s";
-    private static final String INFERED_ANNOTATION;
+    private static final String INFERRED_ANNOTATION;
     private static final String PROPERTIES_ANNOTATION;
     private static final String REMOVE_S            = "remove%s";
     private static final String SCOPED_PHANTASM;
@@ -78,7 +78,7 @@ public class PhantasmGenerator {
     private static final String WRAPPED_CHILD_TYPE  = "wrappedChildType";
 
     static {
-        INFERED_ANNOTATION = ANNOTATIONS + "Infered";
+        INFERRED_ANNOTATION = ANNOTATIONS + "Inferred";
         PROPERTIES_ANNOTATION = ANNOTATIONS + "Properties";
         EDGE_ANNOTATION = ANNOTATIONS + "Edge";
         EDGE_PROPERTIES_ANNOTATION = ANNOTATIONS + "EdgeProperties";
@@ -336,7 +336,7 @@ public class PhantasmGenerator {
                   .param(FIELD_NAME, fieldName)
                   .param(WRAPPED_CHILD_TYPE, childType);
         getInfered.annotate(jClass.owner()
-                                  .ref(INFERED_ANNOTATION));
+                                  .ref(INFERRED_ANNOTATION));
 
         jClass.method(JMod.PUBLIC, listType,
                       String.format(GET_IMMEDIATE_S, plural))

@@ -20,10 +20,20 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented; 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
  * @author halhildebrand
  *
  */
+@Documented
+@Target(TYPE)
+@Retention(RUNTIME)
 public @interface Facet {
     String key();
 

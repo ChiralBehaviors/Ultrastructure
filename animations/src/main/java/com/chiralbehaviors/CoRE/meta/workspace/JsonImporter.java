@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
@@ -197,6 +198,28 @@ public class JsonImporter {
         existing.get_Properties()
                 .setVersion(dsl.version);
         return loaded;
+    }
+
+    private void apply(String apply, String on, JsonNode properties) {
+        ExistentialRuleform existential = model.records()
+                                               .resolve(resolve(on));
+        if (on == null) {
+            throw new IllegalStateException("Unable to find existential: "
+                                            + on);
+        }
+        FacetRecord facet = model.records()
+                                 .findFacetRecord(resolveFacet(apply));
+        if (facet == null) {
+            throw new IllegalStateException("Unable to find facet: " + apply);
+        }
+        model.getPhantasmModel()
+             .initialize(existential, facet);
+    }
+
+    private void applyFacets() {
+        dsl.applications.forEach(application -> apply(application.apply,
+                                                      application.on,
+                                                      application.properties));
     }
 
     private Cardinality cardinality(Constraint constraint) {
@@ -534,6 +557,7 @@ public class JsonImporter {
         loadSequencingAuths();
         loadProtocols();
         loadMetaprotocols();
+        applyFacets();
     }
 
     private void processImports() {
@@ -582,9 +606,26 @@ public class JsonImporter {
         }
     }
 
-    private UUID resolveFacet(String child) {
-        // TODO Auto-generated method stub
-        return null;
+    private UUID resolveFacet(String name) {
+        UUID id;
+        String[] qualifiedName = name.split("::");
+        if (qualifiedName.length > 1) {
+            return scope.lookupId(qualifiedName[0], ReferenceType.Facet,
+                                  qualifiedName[1]);
+        } else if (qualifiedName[0].equals(THIS)) {
+            return workspace.getDefiningProduct()
+                            .getId();
+        } else {
+            id = scope.lookupId(ReferenceType.Facet, qualifiedName[0]);
+            if (id != null) {
+                return id;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Cannot resolve %s:%s",
+                                                         qualifiedName.length < 2 ? ""
+                                                                                  : qualifiedName[0],
+                                                         qualifiedName.length < 2 ? qualifiedName[0]
+                                                                                  : qualifiedName[1]));
     }
 
     private void setEdgeProperties(JsonNode properties, UUID id) {

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -72,8 +73,8 @@ public class PhantasmDefinition extends Phantasmagoria {
             throw new IllegalStateException(String.format("Workspace defining product: %s not found",
                                                           uuid));
         }
-        FacetRecord facetDeclaration = model.records()
-                                            .findFacetRecord(uuid);
+        FacetRecord facetDeclaration = scope.lookup(ReferenceType.Facet,
+                                                    facet.key());
         if (facetDeclaration == null) {
             throw new IllegalArgumentException(String.format("%s not found in workspace %s | %s",
                                                              facet.key(), uuid,

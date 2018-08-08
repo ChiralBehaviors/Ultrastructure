@@ -280,7 +280,7 @@ public class JsonImporter {
                                                                    .newExistentialNetworkAuthorization();
         authorization.setName(name);
         authorization.setParent(auth.getId());
-        authorization.setRelationship(resolve(constraint.child));
+        authorization.setRelationship(resolve(constraint.rel));
         resolveChild(constraint, authorization, loaded);
         Cardinality cardinality = cardinality(constraint);
         authorization.setCardinality(cardinality);

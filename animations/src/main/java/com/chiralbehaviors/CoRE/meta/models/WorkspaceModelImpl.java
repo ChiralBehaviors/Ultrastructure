@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
@@ -65,8 +66,10 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.get_Properties().setName(definingProduct.getName());
-        phantasm.get_Properties().setDescription(definingProduct.getDescription());
+        WorkspaceProperties props = new WorkspaceProperties();
+        props.setName(definingProduct.getName());
+        props.setDescription(definingProduct.getDescription());
+        phantasm.set_Properties(props);
         return scope;
     }
 

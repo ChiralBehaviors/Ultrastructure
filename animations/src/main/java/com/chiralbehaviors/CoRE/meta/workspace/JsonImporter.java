@@ -256,8 +256,9 @@ public class JsonImporter {
         workspace = (EditableWorkspace) scope.getWorkspace();
 
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.get_Properties()
-                .setIRI(dsl.uri);
+        WorkspaceProperties props = new WorkspaceProperties();
+        props.setIRI(dsl.uri);
+        phantasm.set_Properties(props);
         loadWorkspace();
         return workspace;
     }
@@ -589,9 +590,10 @@ public class JsonImporter {
                 return id;
             }
         }
-        throw new IllegalArgumentException(String.format("Cannot resolve %s:%s",
+        throw new IllegalArgumentException(String.format("Cannot resolve %s%s",
                                                          qualifiedName.length < 2 ? ""
-                                                                                  : qualifiedName[0],
+                                                                                  : qualifiedName[0]
+                                                                                    + "::",
                                                          qualifiedName.length < 2 ? qualifiedName[0]
                                                                                   : qualifiedName[1]));
     }

@@ -21,6 +21,10 @@
             "domain": "Location",
             "description": "A maven artifact"
         },
+        "MasterThing": {
+            "domain": "Product",
+            "description": "Like a Boss"
+        },
         "Thing1": {
             "domain": "Product",
             "description": "Thing 1"

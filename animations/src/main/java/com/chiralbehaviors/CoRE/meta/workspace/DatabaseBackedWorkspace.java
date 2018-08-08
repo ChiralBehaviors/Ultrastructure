@@ -334,6 +334,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                 ruleform = model.records()
                                 .resolve(result.value1());
                 break;
+            case Facet:
+                ruleform = (T) model.records().findFacetRecord(result.value1());
+                break;
             default:
                 throw new IllegalStateException(String.format("Unable to find result type: %s",
                                                               result.value2()));

@@ -235,9 +235,10 @@ public class PhantasmCRUD {
 
     public JsonNode getFacetProperty(Aspect facet,
                                      ExistentialRuleform ruleform) {
-        return model.getPhantasmModel()
-                    .getFacetProperties(facet.getFacet(), ruleform)
-                    .getProperties();
+        FacetPropertyRecord record = model.getPhantasmModel()
+                                          .getFacetProperties(facet.getFacet(),
+                                                              ruleform);
+        return record == null ? null : record.getProperties();
     }
 
     /**
@@ -481,7 +482,8 @@ public class PhantasmCRUD {
         FacetPropertyRecord properties = model.getPhantasmModel()
                                               .getFacetProperties(facet.getFacet(),
                                                                   ruleform);
-        properties.setProperties(MAPPER.valueToTree(object));
+        properties.setProperties(object == null ? null
+                                                : MAPPER.valueToTree(object));
         return null;
     }
 

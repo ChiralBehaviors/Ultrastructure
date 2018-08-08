@@ -196,7 +196,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .from(FACET_PROPERTY)
                      .where(FACET_PROPERTY.FACET.equal(facet.getId()))
                      .and(FACET_PROPERTY.EXISTENTIAL.equal(existential.getId()))
-                     .fetchSingle()
+                     .fetchOne()
                      .into(FacetPropertyRecord.class);
     }
 
@@ -353,9 +353,13 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public FacetPropertyRecord getProperties(Product kernelWorkspace,
-                                             Product workspace) {
-        throw new IllegalStateException("Unimplemented");
+    public FacetPropertyRecord getProperties(ExistentialRuleform existential,
+                                             FacetRecord facet) {
+        return create.selectDistinct(FACET_PROPERTY.fields())
+              .from(FACET_PROPERTY)
+              .where(FACET_PROPERTY.EXISTENTIAL.eq(existential.getId()))
+              .and(FACET_PROPERTY.FACET.eq(facet.getId()))
+              .fetchOne().into(FacetPropertyRecord.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -402,7 +406,12 @@ public class PhantasmModelImpl implements PhantasmModel {
                 workspace.add(links.b);
             }
         }
-        throw new IllegalStateException("Need to initialize the instance!");
+        FacetPropertyRecord properties = model.records()
+                                              .newFacetProperty();
+        properties.setExistential(ruleform.getId());
+        properties.setFacet(aspect.getId());
+        properties.setProperties(aspect.getDefaultProperties());
+        properties.insert();
     }
 
     @Override

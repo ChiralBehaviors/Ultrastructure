@@ -147,10 +147,6 @@
             "domain": "Agency",
             "description": "The Login role"
         },
-        "KernelWorkspace": {
-            "domain": "Product",
-            "description": "The Kernel Workspace"
-        },
         "RoleOf": {
             "domain": "Relationship",
             "description": "A is a role of B",
@@ -203,7 +199,7 @@
             "domain": "Relationship",
             "description": "The read permission",
             "inverse": {
-                "name": "MayBeCreatedMetaBy",
+                "name": "MayBeCreatedBy",
                 "description": "May Be Created By"
             }
         },
@@ -247,7 +243,7 @@
                 "description": "May Be Removed By"
             }
         },
-        "REMOVE": {
+        "INVOKE": {
             "domain": "Relationship",
             "description": "The invoke permission",
             "inverse": {

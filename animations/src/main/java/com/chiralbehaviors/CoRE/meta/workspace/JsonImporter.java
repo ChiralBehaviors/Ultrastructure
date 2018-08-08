@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Constraint;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential;
@@ -155,10 +156,10 @@ public class JsonImporter {
         workspace = (EditableWorkspace) scope.getWorkspace();
         loadWorkspace();
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.get_Properties()
-                .setName(dsl.name);
-        phantasm.get_Properties()
-                .setDescription(dsl.description);
+        WorkspaceProperties props = new WorkspaceProperties();
+        props.setName(dsl.name);
+        props.setDescription(dsl.description);
+        phantasm.set_Properties(props);
         return workspace;
     }
 

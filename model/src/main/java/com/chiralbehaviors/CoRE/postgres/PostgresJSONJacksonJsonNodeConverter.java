@@ -41,7 +41,7 @@ public class PostgresJSONJacksonJsonNodeConverter
     @Override
     public JsonNode from(Object t) {
         try {
-            return t == null ? NullNode.instance : MAPPER.readTree(t + "");
+            return t == null ? null : MAPPER.readTree(t + "");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

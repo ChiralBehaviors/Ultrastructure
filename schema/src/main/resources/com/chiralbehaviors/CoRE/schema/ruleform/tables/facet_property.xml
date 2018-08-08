@@ -70,7 +70,10 @@
             CREATE OR REPLACE FUNCTION validate_facet_property(data jsonb, fId uuid) RETURNS boolean AS 
             $f$
             BEGIN
-              SELECT validate_json_schema(f.schema, jsonb) FROM facet f WHERE f.id = fId;
+              IF ( SELECT validate_json_schema(f.schema, data) FROM facet f WHERE f.id = fId )
+                THEN RETURN TRUE;
+                ELSE RETURN FALSE;
+              END IF;
             END;
             $f$ LANGUAGE 'plpgsql' IMMUTABLE;
         ]]>

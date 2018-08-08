@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
@@ -91,16 +92,21 @@ public class BootstrapModel extends Bootstrap {
         new JsonImporter(getClass().getResourceAsStream(KERNEL_DEF_3_JSON),
                          model).initialize()
                                .load(kernelWorkspace);
+        FacetRecord workspace = model.getPhantasmModel()
+                                     .getFacetDeclaration(model.getKernel()
+                                                               .getIsA(),
+                                                          model.getKernel()
+                                                               .getWorkspace());
+
         FacetPropertyRecord properties = model.getPhantasmModel()
                                               .getProperties(kernelWorkspace,
-                                                             model.getKernel()
-                                                                  .getWorkspace());
+                                                             workspace);
         ObjectNode props = (ObjectNode) properties.getProperties();
         if (props == null) {
             props = JsonNodeFactory.instance.objectNode();
         }
         props.put("IRI", WellKnownObject.KERNEL_IRI);
-        
+
         properties.setProperties(props);
         properties.store();
 

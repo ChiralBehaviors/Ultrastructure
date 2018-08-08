@@ -198,8 +198,8 @@ public interface PhantasmModel {
                                             Relationship relationship,
                                             ExistentialDomain domain);
 
-    FacetPropertyRecord getProperties(Product kernelWorkspace,
-                                      Product workspace);
+    FacetPropertyRecord getProperties(ExistentialRuleform existential,
+                                      FacetRecord facet);
 
     <T extends ExistentialRuleform> T getSingleChild(ExistentialRuleform parent,
                                                      Relationship r,
@@ -258,5 +258,5 @@ public interface PhantasmModel {
     void unlink(ExistentialRuleform parent, Relationship r,
                 ExistentialRuleform child);
 
-    void unlinkImmediate(ExistentialRuleform parent, Relationship relationship); 
+    void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
 }

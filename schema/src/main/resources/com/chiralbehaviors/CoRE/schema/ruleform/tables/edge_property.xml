@@ -74,7 +74,10 @@
             CREATE OR REPLACE FUNCTION validate_edge_props(data jsonb, aid uuid) RETURNS boolean AS 
             $f$
             BEGIN
-              SELECT validate_json_schema(a.schema, jsonb) FROM existential_network_authorization a WHERE a.id = aid;
+              IF ( SELECT validate_json_schema(a.schema, data) FROM existential_network_authorization a WHERE a.id = aid )
+                THEN RETURN TRUE;
+                ELSE RETURN FALSE;
+              END IF;
             END;
             $f$ LANGUAGE 'plpgsql' IMMUTABLE;
         ]]>

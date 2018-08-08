@@ -368,8 +368,9 @@ public class PhantasmDefinition extends Phantasmagoria {
             JsonNode properties = state.getFacetProperty(facet,
                                                          state.getRuleform());
             try {
-                return PhantasmCRUD.MAPPER.readerFor(method.getReturnType())
-                                          .readValue(properties);
+                return properties == null ? null
+                                          : PhantasmCRUD.MAPPER.readerFor(method.getReturnType())
+                                                               .readValue(properties);
             } catch (IOException e) {
                 throw new IllegalStateException(String.format("unable to deserialize facet property on %s",
                                                               phantasm.getSimpleName()));

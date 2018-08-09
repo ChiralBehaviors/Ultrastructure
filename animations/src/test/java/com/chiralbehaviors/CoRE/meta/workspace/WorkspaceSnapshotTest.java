@@ -70,7 +70,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             WorkspaceSnapshot snapshot;
 
             // load version 1
-            importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+            importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
                                                   myModel);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
@@ -87,7 +87,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
             // load version 2
 
-            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.json"),
                                                                     myModel);
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();
@@ -152,7 +152,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testUnload() throws Exception {
-        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
                                                                 model);
         Product definingProduct = importer.getWorkspace()
                                           .getDefiningProduct();

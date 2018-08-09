@@ -154,7 +154,12 @@ abstract public class Bootstrap {
 
     private void populate(FacetRecord auth, Product kernelWorkspace) {
         auth.setWorkspace(kernelWorkspace.getId());
-        auth.update();
+        auth.update(); 
+        WorkspaceLabelRecord label = records.newWorkspaceLabel(auth.getName(), auth.getId(),
+                                                              ReferenceType.Facet,
+                                                              kernelWorkspace);
+        auth.insert();
+        label.insert();
     }
 
     private void populate(String key, WellKnownObject wko,

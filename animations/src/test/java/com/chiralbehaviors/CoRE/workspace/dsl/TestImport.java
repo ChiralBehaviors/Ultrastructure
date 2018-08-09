@@ -69,7 +69,7 @@ public class TestImport extends AbstractModelTest {
     @Test
     public void testIncrementalVersionUpdate() throws Exception {
         try {
-            JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+            JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
                                        model);
         } catch (IllegalStateException e) {
             LoggerFactory.getLogger(TestImport.class)
@@ -78,7 +78,7 @@ public class TestImport extends AbstractModelTest {
         }
         // load version 2
 
-        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.json"),
                                                                 model);
         EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                           .getDefiningProduct(),
@@ -100,7 +100,7 @@ public class TestImport extends AbstractModelTest {
     @Test
     public void testImport() throws Exception {
         Product definingProduct;
-        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/import-test.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/import-test.json"),
                                                                 model);
         definingProduct = importer.getWorkspace()
                                   .getDefiningProduct();

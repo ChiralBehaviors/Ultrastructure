@@ -25,11 +25,9 @@ import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +51,7 @@ import com.chiralbehaviors.CoRE.phantasm.test.OtherThing;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.test.thing1Properties.Thing1Properties;
 
 /**
  * @author hhildebrand
@@ -140,22 +139,6 @@ public class RbacTest extends AbstractModelTest {
                                                      .getNotApplicableAgency()),
                                          stateAuth, model.getKernel()
                                                          .getHadMember()));
-    }
-
-    @Test
-    public void testEnums() throws Exception {
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 ExistentialDomain.Location,
-                                                 "myartifact", "artifact");
-        artifact.get_Properties()
-                .setType("jar");
-        artifact.get_Properties()
-                .setType("invalid");
-        try {
-            model.flush();
-            fail();
-        } catch (Exception e) {
-        }
     }
 
     @Test
@@ -278,19 +261,19 @@ public class RbacTest extends AbstractModelTest {
                                         "tasty", "chips");
         assertNotNull(thing1);
         assertNotNull(thing1.getRuleform());
-        assertNotEquals(thing1.getRuleform()
-                              .getName(),
-                        thing1.get_Properties()
-                              .getName());
+        Thing1Properties thing1Props = new Thing1Properties();
+
         assertNull(thing1.getThing2());
         thing1.setThing2(thing2);
         assertNotNull(thing1.getThing2());
+
         List<String> aliases = Arrays.asList(new String[] { "foo", "bar",
                                                             "baz" });
-        thing1.get_Properties()
-              .setAliases(aliases);
-        List<String> alsoKnownAs = thing1.get_Properties()
-                                         .getAliases();
+        thing1Props.setAliases(aliases);
+        thing1.set_Properties(thing1Props);
+        
+        thing1Props = thing1.get_Properties();
+        List<String> alsoKnownAs = thing1Props.getAliases();
         assertNotNull(alsoKnownAs);
         assertEquals(aliases, alsoKnownAs);
 

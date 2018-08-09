@@ -219,10 +219,10 @@ public class PhantasmDefinition extends Phantasmagoria {
     private void process(EdgeProperties annotation, Method method) {
         if (method.getName()
                   .startsWith(GET)) {
-            processPropertyGetter(annotation, method);
+            processGetProperty(annotation, method);
         } else if (method.getName()
                          .startsWith(SET)) {
-            processPropertySetter(annotation, method);
+            processSetProperty(annotation, method);
         } else {
             throw new IllegalStateException(String.format("The method is neither a primitive setter/getter: %s",
                                                           method.toGenericString()));
@@ -250,10 +250,10 @@ public class PhantasmDefinition extends Phantasmagoria {
     private void process(Properties annotation, Method method) {
         if (method.getName()
                   .startsWith(GET)) {
-            processPropertyGetter(annotation, method);
+            processGetProperty(annotation, method);
         } else if (method.getName()
                          .startsWith(SET)) {
-            processPropertySetter(annotation, method);
+            processSetProperty(annotation, method);
         } else {
             throw new IllegalStateException(String.format("The method is neither a primitive setter/getter: %s",
                                                           method.toGenericString()));
@@ -265,7 +265,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = childAuthorizations.get(toFieldName(edge.fieldName()));
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
@@ -281,7 +281,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = childAuthorizations.get(toFieldName(edge.fieldName()));
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
@@ -299,7 +299,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         if (method.getAnnotation(Inferred.class) != null) {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = childAuthorizations.get(toFieldName(edge.fieldName()));
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
@@ -314,7 +314,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         } else {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = childAuthorizations.get(toFieldName(edge.fieldName()));
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
@@ -330,22 +330,26 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
     }
 
-    private void processPropertyGetter(EdgeProperties annotation,
+    private void processGetProperty(EdgeProperties annotation,
                                        Method method) {
         if (method.getParameterCount() != 1) {
             throw new IllegalStateException(String.format("getter method has > 1 argument %s",
                                                           method.toGenericString()));
         }
-        NetworkAuthorization auth = childAuthorizations.get(annotation.fieldName());
+        NetworkAuthorization auth = childAuthorizations.get(toFieldName(annotation.fieldName()));
         if (auth == null) {
-            throw new IllegalStateException(String.format("field %s does not exist on %s",
-                                                          annotation.fieldName(),
-                                                          phantasm.getSimpleName()));
+            auth = singularAuthorizations.get(toFieldName(annotation.fieldName()));
+            if (auth == null) {
+                throw new IllegalStateException(String.format("field %s does not exist on %s",
+                                                              annotation.fieldName(),
+                                                              phantasm.getSimpleName()));
+            }
         }
+        NetworkAuthorization finalAuth = auth;
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             JsonNode properties = state.getEdgeProperty(state.getRuleform(),
-                                                        auth,
+                                                        finalAuth,
                                                         ((Phantasm) arguments[0]).getRuleform());
             try {
                 return PhantasmCRUD.MAPPER.readerFor(method.getReturnType())
@@ -358,7 +362,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         });
     }
 
-    private void processPropertyGetter(Properties annotation, Method method) {
+    private void processGetProperty(Properties annotation, Method method) {
         if (method.getParameterCount() != 0) {
             throw new IllegalStateException(String.format("getter method has arguments %s",
                                                           method.toGenericString()));
@@ -378,7 +382,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         });
     }
 
-    private void processPropertySetter(EdgeProperties annotation,
+    private void processSetProperty(EdgeProperties annotation,
                                        Method method) {
         if (method.getParameterCount() != 2) {
             throw new IllegalStateException(String.format("getter method does not have 2 arguments %s",
@@ -398,7 +402,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         });
     }
 
-    private void processPropertySetter(Properties annotation, Method method) {
+    private void processSetProperty(Properties annotation, Method method) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
             return state.setFacetProperty(facet, state.getRuleform(),
@@ -416,14 +420,14 @@ public class PhantasmDefinition extends Phantasmagoria {
                 return state.removeChildren(facet,
 
                                             state.getRuleform(),
-                                            childAuthorizations.get(edge.fieldName()),
+                                            childAuthorizations.get(toFieldName(edge.fieldName())),
                                             children);
             });
 
         } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = childAuthorizations.get(toFieldName(edge.fieldName()));
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
@@ -439,7 +443,7 @@ public class PhantasmDefinition extends Phantasmagoria {
     private void processSetList(Edge edge, Method method) {
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAuthorization auth = childAuthorizations.get(edge.fieldName());
+            NetworkAuthorization auth = childAuthorizations.get(toFieldName(edge.fieldName()));
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               edge.fieldName(),
@@ -459,7 +463,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
         methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                              Object[] arguments) -> {
-            NetworkAuthorization auth = singularAuthorizations.get(edge.fieldName());
+            NetworkAuthorization auth = singularAuthorizations.get(toFieldName(edge.fieldName()));
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               edge.fieldName(),
@@ -484,7 +488,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         } else {
             methods.put(method, (PhantasmTwo state, WorkspaceScope scope,
                                  Object[] arguments) -> {
-                NetworkAuthorization auth = singularAuthorizations.get(edge.fieldName());
+                NetworkAuthorization auth = singularAuthorizations.get(toFieldName(edge.fieldName()));
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),

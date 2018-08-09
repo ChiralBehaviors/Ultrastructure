@@ -45,7 +45,7 @@ public class PhantasmCRUDTest extends AbstractModelTest {
 
     @Before
     public void loadThingOntology() throws Exception {
-        JsonImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
+        JsonImporter.manifest(RbacTest.class.getResourceAsStream("/thing.json"),
                                    model);
     }
 

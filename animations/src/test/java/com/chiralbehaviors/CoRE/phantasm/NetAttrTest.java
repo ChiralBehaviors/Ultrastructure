@@ -31,7 +31,7 @@ public class NetAttrTest extends AbstractModelTest {
     @SuppressWarnings("serial")
     @Test
     public void testAttributes() throws Exception {
-        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
                                                       model);
         try (FileOutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
                                                                  SOME_MORE_THINGS_WSP_JSON))) {

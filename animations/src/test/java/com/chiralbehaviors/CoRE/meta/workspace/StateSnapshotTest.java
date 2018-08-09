@@ -69,7 +69,7 @@ public class StateSnapshotTest extends AbstractModelTest {
             tvsFrank = frank.getRuleform()
                             .getId();
             snap = myModel.snapshot();
-            assertEquals(8, snap.getInserts()
+            assertEquals(6, snap.getInserts()
                                  .size());
             try (OutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
                                                                  THINGS_JSON))) {

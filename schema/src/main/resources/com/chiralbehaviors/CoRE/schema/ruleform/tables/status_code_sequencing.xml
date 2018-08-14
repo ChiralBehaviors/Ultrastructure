@@ -13,7 +13,7 @@
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="status_code_sequencing_pkey" />
+					primaryKeyName="status_code_sequencing_pkey" nullable="false" />
 			</column>
 			<column name="service" type="uuid">
 				<constraints nullable="false" />
@@ -35,7 +35,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, parent, child"
 			constraintName="status_code_sequencing_service_parent_sequence_number_key"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="status_code_sequencing" />
 
 		<addForeignKeyConstraint

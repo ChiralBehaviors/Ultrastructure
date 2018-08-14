@@ -10,7 +10,7 @@
 		<createTable schemaName="ruleform" tableName="protocol">
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="protocol_pkey" />
+					primaryKeyName="protocol_pkey" nullable="false" />
 			</column>
 			<column name="authority" type="uuid" />
 			<column name="workspace" type="uuid" />
@@ -76,7 +76,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, status, assign_to, deliver_from, deliver_to, product, children_relationship, requester, sequence_number"
 			constraintName="protocol_unique" deferrable="false" disabled="false"
-			initiallyDeferred="true" tableName="protocol" />
+			initiallyDeferred="false" tableName="protocol" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

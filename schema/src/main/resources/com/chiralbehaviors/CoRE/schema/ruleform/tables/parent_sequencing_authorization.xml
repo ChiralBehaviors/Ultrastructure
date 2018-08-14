@@ -13,7 +13,8 @@
 			<column name="authority" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="parent_sequencing_authorization_pkey" />
+					primaryKeyName="parent_sequencing_authorization_pkey"
+					nullable="false" />
 			</column>
 			<column name="service" type="uuid">
 				<constraints nullable="false" />
@@ -44,7 +45,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, status_code, parent, sequence_number"
 			constraintName="parent_sequencing_authorization_parent_status_code_sequ"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="parent_sequencing_authorization" />
 
 		<addForeignKeyConstraint

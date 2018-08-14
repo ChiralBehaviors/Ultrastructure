@@ -11,8 +11,8 @@
 		<createTable schemaName="ruleform"
 			remarks="Facet Properties" tableName="facet_property">
 			<column name="id" type="uuid">
-                <constraints primaryKey="true"
-                    primaryKeyName="facet_property_pkey" />
+				<constraints primaryKey="true"
+					primaryKeyName="facet_property_pkey" nullable="false" />
 			</column>
 			<column name="facet" type="uuid">
 				<constraints nullable="false" />
@@ -32,7 +32,7 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="facet, existential" constraintName="facet_property_key"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="facet_property" />
 
 		<addForeignKeyConstraint

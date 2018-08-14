@@ -11,7 +11,7 @@
 		<createTable schemaName="ruleform" tableName="facet">
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="facet_pkey" />
+					primaryKeyName="facet_pkey" nullable="false" />
 			</column>
 			<column name="name" type="text" />
 			<column name="classifier" type="uuid">
@@ -35,7 +35,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="classifier, classification"
 			constraintName="facet_unique_key" deferrable="false" disabled="false"
-			initiallyDeferred="true" tableName="facet" />
+			initiallyDeferred="false" tableName="facet" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

@@ -42,7 +42,7 @@ public class JsonWorkspace {
     public String                         description;
     public List<Edge>                     edges            = new ArrayList<>();
     public Map<String, Existential>       existentials     = new HashMap<>();
-    public Map<String, Facet>             facets;
+    public Map<String, Facet>             facets           = new HashMap<>();
     public List<Import>                   imports          = new ArrayList<>();
     public Map<String, Inference>         inferences       = new HashMap<>();
     public Map<String, MetaProtocol>      metaProtocols    = new HashMap<>();

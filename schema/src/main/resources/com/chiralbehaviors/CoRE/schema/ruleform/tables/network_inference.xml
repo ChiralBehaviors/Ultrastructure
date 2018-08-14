@@ -13,7 +13,7 @@
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="network_inference_pkey" />
+					primaryKeyName="network_inference_pkey" nullable="false" />
 			</column>
 			<column name="premise1" type="uuid">
 				<constraints nullable="false" />
@@ -36,7 +36,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="premise1, premise2, inference"
 			constraintName="network_inference_relationship1_key"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="network_inference" />
 
 		<addForeignKeyConstraint

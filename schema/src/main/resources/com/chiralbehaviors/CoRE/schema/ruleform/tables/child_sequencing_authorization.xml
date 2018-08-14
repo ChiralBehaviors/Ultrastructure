@@ -12,7 +12,8 @@
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="child_sequencing_authorization_pkey" />
+					primaryKeyName="child_sequencing_authorization_pkey"
+					nullable="false" />
 			</column>
 			<column name="service" type="uuid">
 				<constraints nullable="false" />
@@ -42,7 +43,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, status_code, next_child, sequence_number"
 			constraintName="child_sequencing_authorization_service_status_code_sequ_"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="child_sequencing_authorization" />
 
 		<addForeignKeyConstraint

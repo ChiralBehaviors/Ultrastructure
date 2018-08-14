@@ -267,12 +267,19 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         scope.add(name, model.getWorkspaceModel()
                              .getScoped(workspace)
                              .getWorkspace());
-        Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = model.getPhantasmModel()
-                                                                               .link(getDefiningProduct(),
-                                                                                     kernel.getImports(),
-                                                                                     workspace
-
-        );
+        ExistentialNetworkRecord imported = model.getPhantasmModel()
+                                                 .getImmediateLink(getDefiningProduct(),
+                                                                   kernel.getImports(),
+                                                                   workspace);
+        if (imported == null) {
+            Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = model.getPhantasmModel()
+                                                                                   .link(getDefiningProduct(),
+                                                                                         kernel.getImports(),
+                                                                                         workspace);
+            add(links.a);
+            add(links.b);
+            imported = links.a;
+        }
         FacetRecord aspect = model.getPhantasmModel()
                                   .getFacetDeclaration(kernel.getIsA(),
                                                        kernel.getWorkspace());
@@ -280,18 +287,26 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                           .getNetworkAuthorization(aspect,
                                                                                    kernel.getImports(),
                                                                                    false);
-        EdgePropertyRecord attribute = model.records()
-                                            .newEdgeProperty();
-        attribute.setEdge(links.a.getId());
-        attribute.setAuth(auth.getId());
-        attribute.setForward(true);
+        EdgePropertyRecord attribute = model.getPhantasmModel()
+                                            .getEdgeProperties(auth, imported);
+        boolean update = true;
+        if (attribute == null) {
+            attribute = model.records()
+                             .newEdgeProperty();
+            attribute.setEdge(imported.getId());
+            attribute.setAuth(auth.getId());
+            attribute.setForward(true);
+            update = false;
+        }
         ObjectNode value = JsonNodeFactory.instance.objectNode();
-        value.put("name", name);
+        value.put("Namespace", name);
         attribute.setProperties(value);
-        attribute.insert();
+        if (update) {
+            attribute.update();
+        } else {
+            attribute.insert();
+        }
 
-        add(links.a);
-        add(links.b);
         add(attribute);
     }
 
@@ -335,7 +350,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                 .resolve(result.value1());
                 break;
             case Facet:
-                ruleform = (T) model.records().findFacetRecord(result.value1());
+                ruleform = (T) model.records()
+                                    .findFacetRecord(result.value1());
                 break;
             default:
                 throw new IllegalStateException(String.format("Unable to find result type: %s",

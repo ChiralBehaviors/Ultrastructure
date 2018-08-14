@@ -12,7 +12,7 @@
 			tableName="existential">
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="existential_pkey" />
+					primaryKeyName="existential_pkey" nullable="false" />
 			</column>
 			<column name="domain" type="existential_domain">
 				<constraints nullable="false" />
@@ -65,7 +65,7 @@
 			constraintName="inverse_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
-			
+
 		<createIndex schemaName="ruleform"
 			indexName="existential_updated_by_fkey_idx" tableName="existential"
 			unique="false">

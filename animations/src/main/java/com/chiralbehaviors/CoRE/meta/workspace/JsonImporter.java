@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -214,7 +215,7 @@ public class JsonImporter {
             throw new IllegalStateException("Unable to find facet: " + apply);
         }
         model.getPhantasmModel()
-             .initialize(existential, facet);
+             .initialize(existential, facet, workspace);
     }
 
     private void applyFacets() {
@@ -254,10 +255,16 @@ public class JsonImporter {
         scope = model.getWorkspaceModel()
                      .createWorkspace(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
-
+        Kernel kernel = model.getKernel();
+        FacetRecord facet = model.getPhantasmModel()
+                                 .getFacetDeclaration(kernel.getIsA(),
+                                                      kernel.getWorkspace());
+        model.getPhantasmModel()
+             .initialize(definingProduct, facet, workspace);
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        WorkspaceProperties props = new WorkspaceProperties();
+        WorkspaceProperties props = phantasm.get_Properties();
         props.setIRI(dsl.uri);
+        props.setVersion(dsl.version);
         phantasm.set_Properties(props);
         loadWorkspace();
         return workspace;

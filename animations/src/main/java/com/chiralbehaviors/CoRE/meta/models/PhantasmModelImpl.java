@@ -156,28 +156,26 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public EdgePropertyRecord getEdgeProperties(ExistentialNetworkAuthorizationRecord auth,
                                                 ExistentialNetworkRecord edge) {
-        return create.select(EDGE_PROPERTY.fields())
-                     .from(EDGE_PROPERTY)
+        return create.selectFrom(EDGE_PROPERTY)
                      .where(EDGE_PROPERTY.EDGE.equal(edge.getId()))
                      .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
-                     .fetchSingle()
-                     .into(EdgePropertyRecord.class);
+                     .fetchOne();
     }
 
     @Override
     public EdgePropertyRecord getEdgeProperties(ExistentialRuleform parent,
                                                 ExistentialNetworkAuthorizationRecord auth,
                                                 ExistentialRuleform child) {
-        return create.select(EDGE_PROPERTY.fields())
-                     .from(EDGE_PROPERTY)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EDGE_PROPERTY.EDGE.equal(EXISTENTIAL_NETWORK.ID))
-                     .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(auth.getRelationship()))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
-                     .fetchSingle()
-                     .into(EdgePropertyRecord.class);
+        Record fetched = create.select(EDGE_PROPERTY.fields())
+                               .from(EDGE_PROPERTY)
+                               .join(EXISTENTIAL_NETWORK)
+                               .on(EDGE_PROPERTY.EDGE.equal(EXISTENTIAL_NETWORK.ID))
+                               .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
+                               .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(auth.getRelationship()))
+                               .and(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
+                               .fetchOne();
+        return fetched == null ? null : fetched.into(EdgePropertyRecord.class);
     }
 
     @Override
@@ -192,12 +190,10 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public FacetPropertyRecord getFacetProperties(FacetRecord facet,
                                                   ExistentialRuleform existential) {
-        return create.select(FACET_PROPERTY.fields())
-                     .from(FACET_PROPERTY)
+        return create.selectFrom(FACET_PROPERTY)
                      .where(FACET_PROPERTY.FACET.equal(facet.getId()))
                      .and(FACET_PROPERTY.EXISTENTIAL.equal(existential.getId()))
-                     .fetchOne()
-                     .into(FacetPropertyRecord.class);
+                     .fetchOne();
     }
 
     @Override
@@ -356,10 +352,11 @@ public class PhantasmModelImpl implements PhantasmModel {
     public FacetPropertyRecord getProperties(ExistentialRuleform existential,
                                              FacetRecord facet) {
         return create.selectDistinct(FACET_PROPERTY.fields())
-              .from(FACET_PROPERTY)
-              .where(FACET_PROPERTY.EXISTENTIAL.eq(existential.getId()))
-              .and(FACET_PROPERTY.FACET.eq(facet.getId()))
-              .fetchOne().into(FacetPropertyRecord.class);
+                     .from(FACET_PROPERTY)
+                     .where(FACET_PROPERTY.EXISTENTIAL.eq(existential.getId()))
+                     .and(FACET_PROPERTY.FACET.eq(facet.getId()))
+                     .fetchOne()
+                     .into(FacetPropertyRecord.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -406,12 +403,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                 workspace.add(links.b);
             }
         }
-        FacetPropertyRecord properties = model.records()
-                                              .newFacetProperty();
-        properties.setExistential(ruleform.getId());
-        properties.setFacet(aspect.getId());
-        properties.setProperties(aspect.getDefaultProperties());
-        properties.insert();
     }
 
     @Override

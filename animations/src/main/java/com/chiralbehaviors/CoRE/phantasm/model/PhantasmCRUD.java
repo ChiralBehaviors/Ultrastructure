@@ -228,9 +228,11 @@ public class PhantasmCRUD {
     public JsonNode getEdgeProperty(ExistentialRuleform parent,
                                     NetworkAuthorization auth,
                                     ExistentialRuleform child) {
-        return model.getPhantasmModel()
-                    .getEdgeProperties(parent, auth.getAuth(), child)
-                    .getProperties();
+        EdgePropertyRecord edgeProperties = model.getPhantasmModel()
+                                                 .getEdgeProperties(parent,
+                                                                    auth.getAuth(),
+                                                                    child);
+        return edgeProperties == null ? null : edgeProperties.getProperties();
     }
 
     public JsonNode getFacetProperty(Aspect facet,
@@ -482,8 +484,23 @@ public class PhantasmCRUD {
         FacetPropertyRecord properties = model.getPhantasmModel()
                                               .getFacetProperties(facet.getFacet(),
                                                                   ruleform);
+        boolean create = false;
+        if (properties == null) {
+            properties = model.records()
+                              .newFacetProperty();
+            properties.setFacet(facet.getFacet()
+                                     .getId());
+            properties.setExistential(ruleform.getId());
+            create = true;
+        }
         properties.setProperties(object == null ? null
                                                 : MAPPER.valueToTree(object));
+        if (create) {
+            properties.insert();
+        } else {
+            properties.update();
+        }
+
         return null;
     }
 

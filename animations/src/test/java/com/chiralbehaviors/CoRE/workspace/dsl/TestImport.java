@@ -44,7 +44,7 @@ public class TestImport extends AbstractModelTest {
     public void testExampleWorkspace() throws Exception {
         Product definingProduct;
         try {
-            JsonImporter importer = JsonImporter.manifest(getClass().getResource("/thing.wsp"),
+            JsonImporter importer = JsonImporter.manifest(getClass().getResource("/thing.json"),
                                                                     model);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
@@ -63,7 +63,7 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup(ReferenceType.Existential, "kernel"));
+                               .lookup("kernel", ReferenceType.Existential, "IsA"));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TestImport extends AbstractModelTest {
         }
         // load version 2
 
-        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.json"),
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.def.json"),
                                                                 model);
         EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                           .getDefiningProduct(),
@@ -94,7 +94,7 @@ public class TestImport extends AbstractModelTest {
                      definingProduct.getDescription());
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup(ReferenceType.Existential, "kernel"));
+                               .lookup("kernel", ReferenceType.Existential, "IsA"));
     }
 
     @Test

@@ -13,7 +13,7 @@
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="meta_protocol_pkey" />
+					primaryKeyName="meta_protocol_pkey" nullable="false" />
 			</column>
 			<column name="service" type="uuid">
 				<constraints nullable="false" />
@@ -58,7 +58,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, requester, assign_to, service_type, status, product, deliver_to, deliver_from"
 			constraintName="meta_protocol_unique" deferrable="false"
-			disabled="false" initiallyDeferred="true" tableName="meta_protocol" />
+			disabled="false" initiallyDeferred="false" tableName="meta_protocol" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

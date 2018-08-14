@@ -11,8 +11,8 @@
 		<createTable schemaName="ruleform"
 			remarks="Edge Properties" tableName="edge_property">
 			<column name="id" type="uuid">
-                <constraints primaryKey="true"
-                    primaryKeyName="edge_property_pkey" />
+				<constraints primaryKey="true"
+					primaryKeyName="edge_property_pkey" nullable="false" />
 			</column>
 			<column name="auth" type="uuid">
 				<constraints nullable="false" />
@@ -35,14 +35,14 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="auth, edge" constraintName="edge_property_key"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="edge_property" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="auth" baseTableName="edge_property"
-			constraintName="edge_property_authorization_fkey"
-			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			constraintName="edge_property_authorization_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id"
 			referencedTableName="existential_network_authorization" />
 		<addForeignKeyConstraint
@@ -89,11 +89,11 @@
         ]]>
 		</sql>
 
-        <createIndex schemaName="ruleform"
-            indexName="edge_property_edge_fkey_idx"
-            tableName="edge_property" unique="false">
-            <column name="edge" />
-        </createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="edge_property_edge_fkey_idx" tableName="edge_property"
+			unique="false">
+			<column name="edge" />
+		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="edge_property_updated_by_fkey_idx"
 			tableName="edge_property" unique="false">

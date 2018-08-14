@@ -73,6 +73,8 @@ import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -612,6 +614,14 @@ public class ModelImpl implements Model {
                                                     instance)
                                   .getId());
 
+        FacetRecord facet = phantasmModel.getFacetDeclaration(relationship,
+                                                              kernel.getCore());
+        FacetPropertyRecord prop = phantasmModel.getFacetProperties(facet,
+                                                                    instance);
+        if (prop != null) {
+            excluded.add(prop.getId());
+        }
+
         relationship = kernel.getInstanceOf();
         excluded.add(phantasmModel.getImmediateLink(instance, relationship,
                                                     kernel.getCore())
@@ -620,6 +630,13 @@ public class ModelImpl implements Model {
                                                     factory.resolve(relationship.getInverse()),
                                                     instance)
                                   .getId());
+
+        facet = phantasmModel.getFacetDeclaration(relationship,
+                                                  kernel.getCore());
+        prop = phantasmModel.getFacetProperties(facet, instance);
+        if (prop != null) {
+            excluded.add(prop.getId());
+        }
 
         relationship = kernel.getLOGIN_TO();
         excluded.add(phantasmModel.getImmediateLink(kernel.getLoginRole(),
@@ -630,6 +647,7 @@ public class ModelImpl implements Model {
                                                     kernel.getLoginRole())
                                   .getId());
         relationship = kernel.getInstanceOf();
+
         return excluded;
     }
 }

@@ -87,7 +87,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
             // load version 2
 
-            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.json"),
+            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.def.json"),
                                                                     myModel);
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();

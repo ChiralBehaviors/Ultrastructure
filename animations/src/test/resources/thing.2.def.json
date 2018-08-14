@@ -1,0 +1,24 @@
+{
+    "name": "Phantasm Demo V2",
+    "description": "Test of Workspace versioning",
+    "uri": "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm",
+    "version": 2,
+    "imports": [
+        {
+            "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
+            "alias": "kernel"
+        }
+    ],
+    "existentials": {
+        "TheDude": {
+            "domain": "Agency",
+            "description": "Finally"
+        }
+    },
+    "applications": [
+        {
+            "apply": "CoreUser",
+            "on": "TheDude"
+        }
+    ]
+}

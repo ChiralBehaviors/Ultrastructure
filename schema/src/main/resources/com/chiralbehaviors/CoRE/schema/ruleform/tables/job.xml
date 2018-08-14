@@ -11,7 +11,8 @@
 			<column name="workspace" type="uuid" />
 			<column name="authority" type="uuid" />
 			<column name="id" type="uuid">
-				<constraints primaryKey="true" primaryKeyName="job_pkey" />
+				<constraints primaryKey="true" primaryKeyName="job_pkey"
+					nullable="false" />
 			</column>
 			<column name="service" type="uuid">
 				<constraints nullable="false" />

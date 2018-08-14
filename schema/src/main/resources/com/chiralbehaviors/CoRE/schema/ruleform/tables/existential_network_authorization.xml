@@ -12,7 +12,8 @@
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="existential_network_authorization_pkey" />
+					primaryKeyName="existential_network_authorization_pkey"
+					nullable="false" />
 			</column>
 			<column name="name" type="text" />
 			<column name="parent" type="uuid">
@@ -39,7 +40,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
 			constraintName="existential_network_authorization_unique_key"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="false" disabled="false" initiallyDeferred="false"
 			tableName="existential_network_authorization" />
 
 		<addForeignKeyConstraint
@@ -92,16 +93,16 @@
         ]]>
 		</sql>
 
-        <createIndex schemaName="ruleform"
-            indexName="existential_network_authorization_relationship_fkey_idx"
-            tableName="existential_network_authorization" unique="false">
-            <column name="relationship" />
-        </createIndex>
-        <createIndex schemaName="ruleform"
-            indexName="existential_network_authorization_child_fkey_idx"
-            tableName="existential_network_authorization" unique="false">
-            <column name="child" />
-        </createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="existential_network_authorization_relationship_fkey_idx"
+			tableName="existential_network_authorization" unique="false">
+			<column name="relationship" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="existential_network_authorization_child_fkey_idx"
+			tableName="existential_network_authorization" unique="false">
+			<column name="child" />
+		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="existential_network_authorization_updated_by_fkey_idx"
 			tableName="existential_network_authorization" unique="false">

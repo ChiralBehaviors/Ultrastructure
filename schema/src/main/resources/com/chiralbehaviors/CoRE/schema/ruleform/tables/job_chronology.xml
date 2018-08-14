@@ -13,7 +13,7 @@
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="job_chronology_pkey" />
+					primaryKeyName="job_chronology_pkey" nullable="false" />
 			</column>
 			<column name="job" type="uuid">
 				<constraints nullable="false" />

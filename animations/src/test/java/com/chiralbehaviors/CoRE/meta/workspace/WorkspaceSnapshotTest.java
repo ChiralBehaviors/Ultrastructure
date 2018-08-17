@@ -117,9 +117,9 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
-            assertEquals(9, delta.getInserts()
+            assertEquals(4, delta.getInserts()
                                  .size());
-            assertEquals(3, delta.getUpdates()
+            assertEquals(2, delta.getUpdates()
                                  .size());
 
             assertNull(myModel.getWorkspaceModel()

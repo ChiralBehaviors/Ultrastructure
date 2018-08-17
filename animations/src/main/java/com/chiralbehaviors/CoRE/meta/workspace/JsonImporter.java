@@ -47,7 +47,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -157,7 +156,11 @@ public class JsonImporter {
         workspace = (EditableWorkspace) scope.getWorkspace();
         loadWorkspace();
         Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        WorkspaceProperties props = new WorkspaceProperties();
+        WorkspaceProperties props = phantasm.get_Properties();
+        if (props == null) {
+            props = new WorkspaceProperties();
+            props.setVersion(dsl.version);
+        }
         props.setName(dsl.name);
         props.setDescription(dsl.description);
         phantasm.set_Properties(props);
@@ -187,18 +190,18 @@ public class JsonImporter {
         }
         Workspace existing = model.wrap(Workspace.class, definingProduct);
 
-        if (existing.get_Properties()
-                    .getVersion() >= dsl.version) {
+        WorkspaceProperties properties = existing.get_Properties();
+        if (properties.getVersion() >= dsl.version) {
             throw new IllegalStateException(String.format("Workspace %s is at version %s, unable to update to %s",
                                                           dsl.name,
-                                                          existing.get_Properties()
-                                                                  .getVersion(),
+                                                          properties.getVersion(),
                                                           dsl.version));
         }
 
+        properties.setVersion(dsl.version);
+        existing.set_Properties(properties);
+        
         WorkspaceAccessor loaded = load(definingProduct);
-        existing.get_Properties()
-                .setVersion(dsl.version);
         return loaded;
     }
 
@@ -251,21 +254,10 @@ public class JsonImporter {
         }
 
         Product definingProduct = createWorkspaceProduct();
-
         scope = model.getWorkspaceModel()
-                     .createWorkspace(definingProduct);
+                     .createWorkspace(definingProduct, dsl.uri, dsl.version);
+
         workspace = (EditableWorkspace) scope.getWorkspace();
-        Kernel kernel = model.getKernel();
-        FacetRecord facet = model.getPhantasmModel()
-                                 .getFacetDeclaration(kernel.getIsA(),
-                                                      kernel.getWorkspace());
-        model.getPhantasmModel()
-             .initialize(definingProduct, facet, workspace);
-        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        WorkspaceProperties props = phantasm.get_Properties();
-        props.setIRI(dsl.uri);
-        props.setVersion(dsl.version);
-        phantasm.set_Properties(props);
         loadWorkspace();
         return workspace;
     }

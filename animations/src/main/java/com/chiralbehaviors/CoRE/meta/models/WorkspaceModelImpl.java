@@ -27,17 +27,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
-import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author hhildebrand
@@ -53,7 +54,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceScope createWorkspace(Product definingProduct) {
+    public WorkspaceScope createWorkspace(Product definingProduct, String iri, int version) {
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                   model);
         workspace.add(definingProduct);
@@ -62,14 +63,22 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                   .getFacetDeclaration(kernel.getIsA(),
                                                        kernel.getWorkspace());
         model.getPhantasmModel()
-             .initialize(definingProduct, aspect, workspace);
+             .initialize(definingProduct, aspect, workspace); 
         WorkspaceScope scope = workspace.getScope();
-        scopes.put(definingProduct.getId(), scope);
-        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        WorkspaceProperties props = new WorkspaceProperties();
-        props.setName(definingProduct.getName());
-        props.setDescription(definingProduct.getDescription());
-        phantasm.set_Properties(props);
+        scopes.put(definingProduct.getId(), scope); 
+        
+        FacetPropertyRecord properties = model.records()
+                                              .newFacetProperty();
+        properties.setExistential(definingProduct.getId());
+        properties.setFacet(aspect.getId());
+        ObjectNode props = JsonNodeFactory.instance.objectNode();
+        props.put("IRI", iri);
+        props.put("Version", version);
+        props.put("Name", definingProduct.getName());
+        props.put("Description", definingProduct.getDescription());
+        properties.setProperties(props);
+        properties.insert();
+        workspace.add(properties);
         return scope;
     }
 

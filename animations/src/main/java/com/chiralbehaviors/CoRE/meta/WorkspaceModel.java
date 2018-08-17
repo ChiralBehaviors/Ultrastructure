@@ -37,9 +37,11 @@ public interface WorkspaceModel {
      * workspace
      *
      * @param definingProduct
+     * @param iri TODO
+     * @param version TODO
      * @return
      */
-    WorkspaceScope createWorkspace(Product definingProduct);
+    WorkspaceScope createWorkspace(Product definingProduct, String iri, int version);
 
     void flush();
 

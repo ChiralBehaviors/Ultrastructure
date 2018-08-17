@@ -67,6 +67,7 @@ public class Phantasmagoria {
 
         public Aspect(FacetRecord facet, Relationship classifier,
                       ExistentialRuleform classification) {
+            assert facet != null & classifier != null & classification != null;
             this.facet = facet;
             this.classifier = classifier;
             this.classification = classification;

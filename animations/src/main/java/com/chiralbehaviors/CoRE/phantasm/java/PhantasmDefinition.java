@@ -30,8 +30,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.jooq.DSLContext;
+
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -80,7 +83,24 @@ public class PhantasmDefinition extends Phantasmagoria {
                                                              facet.key(), uuid,
                                                              facet.workspace()));
         }
-        return new Aspect(model.create(), facetDeclaration);
+        DSLContext create = model.create();
+        Relationship classifier = resolve(create,
+                                          facetDeclaration.getClassifier());
+        if (classifier == null) {
+            throw new IllegalArgumentException(String.format("classifier %s not found for %s, %s | %s",
+                                                             facetDeclaration.getClassifier(),
+                                                             facet.key(), uuid,
+                                                             facet.workspace()));
+        }
+        ExistentialRuleform classification = resolveExistential(create,
+                                                                facetDeclaration.getClassification());
+        if (classification == null) {
+            throw new IllegalArgumentException(String.format("classification %s not found for %s, %s | %s",
+                                                             facetDeclaration.getClassification(),
+                                                             facet.key(), uuid,
+                                                             facet.workspace()));
+        }
+        return new Aspect(facetDeclaration, classifier, classification);
     }
 
     public static String factString(Model model, FacetRecord aspect) {
@@ -330,8 +350,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         }
     }
 
-    private void processGetProperty(EdgeProperties annotation,
-                                       Method method) {
+    private void processGetProperty(EdgeProperties annotation, Method method) {
         if (method.getParameterCount() != 1) {
             throw new IllegalStateException(String.format("getter method has > 1 argument %s",
                                                           method.toGenericString()));
@@ -382,8 +401,7 @@ public class PhantasmDefinition extends Phantasmagoria {
         });
     }
 
-    private void processSetProperty(EdgeProperties annotation,
-                                       Method method) {
+    private void processSetProperty(EdgeProperties annotation, Method method) {
         if (method.getParameterCount() != 2) {
             throw new IllegalStateException(String.format("getter method does not have 2 arguments %s",
                                                           method.toGenericString()));

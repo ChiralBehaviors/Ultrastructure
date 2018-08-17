@@ -47,10 +47,6 @@ import com.chiralbehaviors.CoRE.utils.English;
  *
  */
 public class Phantasmagoria {
-    public static String toFieldName(String name) {
-        return Introspector.decapitalize(name.replaceAll("\\s", ""));
-    }
-
     public static class Aspect {
         private final ExistentialRuleform classification;
         private final Relationship        classifier;
@@ -164,15 +160,25 @@ public class Phantasmagoria {
         }
     }
 
-    private static Relationship resolve(DSLContext create, UUID id) {
+    public static String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
+    }
+
+    protected static Relationship resolve(DSLContext create, UUID id) {
         return create.selectFrom(EXISTENTIAL)
                      .where(EXISTENTIAL.ID.equal(id))
                      .fetchOne()
                      .into(Relationship.class);
     }
 
-    private static ExistentialRuleform resolveExistential(DSLContext create,
-                                                          UUID id) {
+    protected static ExistentialRuleform resolveExistential(DSLContext create,
+                                                            UUID id) {
         return new RecordsFactory() {
             @Override
             public DSLContext create() {
@@ -194,6 +200,7 @@ public class Phantasmagoria {
 
     public final Map<String, NetworkAuthorization> childAuthorizations    = new HashMap<>();
     public final Aspect                            facet;
+
     public final Map<String, NetworkAuthorization> singularAuthorizations = new HashMap<>();
 
     public Phantasmagoria(Aspect facet) {
@@ -219,17 +226,12 @@ public class Phantasmagoria {
                                                                              child);
 
                  if (auth.getCardinality() == Cardinality.N) {
-                     childAuthorizations.put(networkAuth.getFieldName(), networkAuth);
+                     childAuthorizations.put(networkAuth.getFieldName(),
+                                             networkAuth);
                  } else {
                      singularAuthorizations.put(networkAuth.getFieldName(),
                                                 networkAuth);
                  }
              });
-    }
-
-    public static String capitalized(String field) {
-        char[] chars = field.toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
     }
 }

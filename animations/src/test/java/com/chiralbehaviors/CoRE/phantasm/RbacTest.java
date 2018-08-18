@@ -51,6 +51,7 @@ import com.chiralbehaviors.CoRE.phantasm.test.OtherThing;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.test.mavenArtifactProperties.MavenArtifactProperties;
 import com.chiralbehaviors.CoRE.phantasm.test.thing1Properties.Thing1Properties;
 
 /**
@@ -271,7 +272,7 @@ public class RbacTest extends AbstractModelTest {
                                                             "baz" });
         thing1Props.setAliases(aliases);
         thing1.set_Properties(thing1Props);
-        
+
         thing1Props = thing1.get_Properties();
         List<String> alsoKnownAs = thing1Props.getAliases();
         assertNotNull(alsoKnownAs);
@@ -308,11 +309,12 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  ExistentialDomain.Location,
                                                  "myartifact", "artifact");
-        artifact.get_Properties()
-                .setType("jar");
-        assertEquals("jar", artifact.get_Properties()
-                                    .getType());
+
+        MavenArtifactProperties properties = new MavenArtifactProperties();
+        properties.setType("jar");
+        assertEquals("jar", properties.getType());
         thing1.setDerivedFrom(artifact);
+        artifact.set_Properties(properties);
         assertNotNull(thing1.getDerivedFrom());
 
         assertEquals(0, thing2.getDerivedFroms()
@@ -330,8 +332,6 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "myartifact2", "artifact2");
-        artifact2.get_Properties()
-                 .setType("jar");
 
         thing2.setDerivedFroms(Arrays.asList(artifact2));
         assertEquals(1, thing2.getDerivedFroms()

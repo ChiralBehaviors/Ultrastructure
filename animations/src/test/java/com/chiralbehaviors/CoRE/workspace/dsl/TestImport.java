@@ -96,19 +96,4 @@ public class TestImport extends AbstractModelTest {
         assertNotNull(workspace.getScope()
                                .lookup("kernel", ReferenceType.Existential, "IsA"));
     }
-
-    @Test
-    public void testImport() throws Exception {
-        Product definingProduct;
-        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/import-test.json"),
-                                                                model);
-        definingProduct = importer.getWorkspace()
-                                  .getDefiningProduct();
-
-        EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
-                                                                  model);
-        assertNotNull(workspace);
-        assertNotNull(workspace.getScope()
-                               .lookup(ReferenceType.Existential, "kernel"));
-    }
 }

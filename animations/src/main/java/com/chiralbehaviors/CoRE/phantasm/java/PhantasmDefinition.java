@@ -370,6 +370,9 @@ public class PhantasmDefinition extends Phantasmagoria {
             JsonNode properties = state.getEdgeProperty(state.getRuleform(),
                                                         finalAuth,
                                                         ((Phantasm) arguments[0]).getRuleform());
+            if (properties == null) {
+                return null;
+            }
             try {
                 return PhantasmCRUD.MAPPER.readerFor(method.getReturnType())
                                           .readValue(properties);
@@ -410,9 +413,12 @@ public class PhantasmDefinition extends Phantasmagoria {
                              Object[] arguments) -> {
             NetworkAuthorization auth = childAuthorizations.get(annotation.fieldName());
             if (auth == null) {
-                throw new IllegalStateException(String.format("field %s does not exist on %s",
-                                                              annotation.fieldName(),
-                                                              phantasm.getSimpleName()));
+                auth = singularAuthorizations.get(annotation.fieldName());
+                if (auth == null) {
+                    throw new IllegalStateException(String.format("field %s does not exist on %s",
+                                                                  annotation.fieldName(),
+                                                                  phantasm.getSimpleName()));
+                }
             }
             return state.setEdgeProperty(state.getRuleform(), auth,
                                          ((Phantasm) arguments[0]).getRuleform(),

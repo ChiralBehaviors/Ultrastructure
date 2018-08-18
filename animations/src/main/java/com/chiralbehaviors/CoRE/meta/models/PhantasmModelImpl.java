@@ -35,6 +35,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectOnConditionStep;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -90,14 +91,16 @@ public class PhantasmModelImpl implements PhantasmModel {
     public ExistentialRuleform getChild(ExistentialRuleform parent,
                                         Relationship relationship,
                                         ExistentialDomain domain) {
-        Record result = create.selectDistinct(EXISTENTIAL.fields())
-                              .from(EXISTENTIAL)
-                              .join(EXISTENTIAL_NETWORK)
-                              .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                              .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                              .and(EXISTENTIAL.DOMAIN.equal(domain))
-                              .fetchOne();
+        SelectOnConditionStep<Record> statement = create.selectDistinct(EXISTENTIAL.fields())
+                                                        .from(EXISTENTIAL)
+                                                        .join(EXISTENTIAL_NETWORK)
+                                                        .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                                        .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                                        .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        Record result = statement.fetchOne();
         if (result == null) {
             return null;
         }
@@ -126,19 +129,21 @@ public class PhantasmModelImpl implements PhantasmModel {
     public List<ExistentialRuleform> getChildrenUuid(UUID parent,
                                                      UUID relationship,
                                                      ExistentialDomain domain) {
-        return create.selectDistinct(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
+        SelectOnConditionStep<Record> statement = create.selectDistinct(EXISTENTIAL.fields())
+                                                        .from(EXISTENTIAL)
+                                                        .join(EXISTENTIAL_NETWORK)
+                                                        .on(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                                                        .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                                                        .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        return statement.fetch()
+                        .into(ExistentialRecord.class)
+                        .stream()
+                        .map(r -> model.records()
+                                       .resolve(r))
+                        .collect(Collectors.toList());
     }
 
     @Override
@@ -173,7 +178,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
                                .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                                .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(auth.getRelationship()))
-                               .and(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
+                               .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
                                .fetchOne();
         return fetched == null ? null : fetched.into(EdgePropertyRecord.class);
     }
@@ -212,15 +217,24 @@ public class PhantasmModelImpl implements PhantasmModel {
     public ExistentialRuleform getImmediateChild(ExistentialRuleform parent,
                                                  Relationship relationship,
                                                  ExistentialDomain domain) {
-        Record result = create.selectDistinct(EXISTENTIAL.fields())
-                              .from(EXISTENTIAL)
-                              .join(EXISTENTIAL_NETWORK)
-                              .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                              .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                              .and(EXISTENTIAL.DOMAIN.equal(domain))
-                              .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                              .fetchOne();
+        Record result = domain != null ? create.selectDistinct(EXISTENTIAL.fields())
+                                               .from(EXISTENTIAL)
+                                               .join(EXISTENTIAL_NETWORK)
+                                               .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                               .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                               .and(EXISTENTIAL.DOMAIN.equal(domain))
+                                               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                               .fetchOne()
+                                       : create.selectDistinct(EXISTENTIAL.fields())
+                                               .from(EXISTENTIAL)
+                                               .join(EXISTENTIAL_NETWORK)
+                                               .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                               .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                               .fetchOne();
+        ;
         if (result == null) {
             return null;
         }
@@ -256,15 +270,23 @@ public class PhantasmModelImpl implements PhantasmModel {
     public List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
                                                                     Relationship relationship,
                                                                     ExistentialDomain domain) {
-        Result<Record> result = create.selectDistinct(EXISTENTIAL_NETWORK.fields())
-                                      .from(EXISTENTIAL_NETWORK)
-                                      .join(EXISTENTIAL)
-                                      .on(EXISTENTIAL.DOMAIN.equal(domain))
-                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                      .fetch();
+        Result<Record> result = domain != null ? create.selectDistinct(EXISTENTIAL_NETWORK.fields())
+                                                       .from(EXISTENTIAL_NETWORK)
+                                                       .join(EXISTENTIAL)
+                                                       .on(EXISTENTIAL.DOMAIN.equal(domain))
+                                                       .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                                                       .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                                       .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                                       .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                       .fetch()
+                                               : create.selectDistinct(EXISTENTIAL_NETWORK.fields())
+                                                       .from(EXISTENTIAL_NETWORK)
+                                                       .join(EXISTENTIAL)
+                                                       .on(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                                                       .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                                       .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                                       .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                       .fetch();
         if (result == null) {
             return null;
         }
@@ -334,18 +356,20 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                    Relationship relationship,
                                                    ExistentialDomain domain) {
 
-        return create.selectFrom(EXISTENTIAL)
-                     .whereNotExists(create.selectFrom(EXISTENTIAL_NETWORK)
-                                           .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                           .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                           .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID)))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
+        SelectConditionStep<ExistentialRecord> statement = create.selectFrom(EXISTENTIAL)
+                                                                 .whereNotExists(create.selectFrom(EXISTENTIAL_NETWORK)
+                                                                                       .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                                                                       .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                                                                       .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID)));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        return statement.fetch()
+                        .into(ExistentialRecord.class)
+                        .stream()
+                        .map(r -> model.records()
+                                       .resolve(r))
+                        .collect(Collectors.toList());
     }
 
     @Override
@@ -364,15 +388,17 @@ public class PhantasmModelImpl implements PhantasmModel {
     public <T extends ExistentialRuleform> T getSingleChild(ExistentialRuleform parent,
                                                             Relationship relationship,
                                                             ExistentialDomain domain) {
-        Record result = create.selectDistinct(EXISTENTIAL.fields())
-                              .from(EXISTENTIAL)
-                              .join(EXISTENTIAL_NETWORK)
-                              .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                              .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                              .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                              .and(EXISTENTIAL.DOMAIN.equal(domain))
-                              .fetchOne();
+        SelectConditionStep<Record> statement = create.selectDistinct(EXISTENTIAL.fields())
+                                                      .from(EXISTENTIAL)
+                                                      .join(EXISTENTIAL_NETWORK)
+                                                      .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                                      .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        Record result = statement.fetchOne();
         if (result == null) {
             return null;
         }
@@ -490,38 +516,44 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                              UUID classifier,
                                                              UUID classification,
                                                              ExistentialDomain domain) {
-        return create.select(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .filter(r -> isAccessible(r.getId(), classifier,
-                                               classification))
-                     .collect(Collectors.toList());
+        SelectConditionStep<Record> statement = create.select(EXISTENTIAL.fields())
+                                                      .from(EXISTENTIAL,
+                                                            EXISTENTIAL_NETWORK)
+                                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        return statement.fetch()
+                        .into(ExistentialRecord.class)
+                        .stream()
+                        .map(r -> model.records()
+                                       .resolve(r))
+                        .filter(r -> isAccessible(r.getId(), classifier,
+                                                  classification))
+                        .collect(Collectors.toList());
     }
 
     private List<ExistentialRuleform> getImmediateChildren(UUID parent,
                                                            UUID relationship,
                                                            ExistentialDomain domain) {
-        return create.select(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                     .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
+        SelectConditionStep<Record> statement = create.select(EXISTENTIAL.fields())
+                                                      .from(EXISTENTIAL,
+                                                            EXISTENTIAL_NETWORK)
+                                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        return statement.fetch()
+                        .into(ExistentialRecord.class)
+                        .stream()
+                        .map(r -> model.records()
+                                       .resolve(r))
+                        .collect(Collectors.toList());
     }
 
     private List<ExistentialRuleform> getImmediateConstrainedChildren(UUID parent,
@@ -529,20 +561,23 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                       UUID classifier,
                                                                       UUID classification,
                                                                       ExistentialDomain domain) {
-        return create.select(EXISTENTIAL.fields())
-                     .from(EXISTENTIAL, EXISTENTIAL_NETWORK)
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                     .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                     .and(EXISTENTIAL.DOMAIN.equal(domain))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .filter(r -> isAccessible(r.getId(), classifier,
-                                               classification))
-                     .collect(Collectors.toList());
+        SelectConditionStep<Record> statement = create.select(EXISTENTIAL.fields())
+                                                      .from(EXISTENTIAL,
+                                                            EXISTENTIAL_NETWORK)
+                                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
+                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
+                                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+        if (domain != null) {
+            statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
+        }
+        return statement.fetch()
+                        .into(ExistentialRecord.class)
+                        .stream()
+                        .map(r -> model.records()
+                                       .resolve(r))
+                        .filter(r -> isAccessible(r.getId(), classifier,
+                                                  classification))
+                        .collect(Collectors.toList());
     }
 }

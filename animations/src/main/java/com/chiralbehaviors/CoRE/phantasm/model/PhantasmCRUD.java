@@ -34,6 +34,7 @@ import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -475,7 +476,30 @@ public class PhantasmCRUD {
                                              .getEdgeProperties(parent,
                                                                 auth.getAuth(),
                                                                 child);
-        properties.setProperties(MAPPER.valueToTree(object));
+        if (properties == null) {
+            ExistentialNetworkRecord edge = model.getPhantasmModel()
+                                                 .getImmediateChildLink(parent,
+                                                                        auth.getRelationship(),
+                                                                        child);
+            if (edge == null) {
+                throw new IllegalStateException(String.format("No edge {%s, %s, %s}",
+                                                              parent.getName(),
+                                                              auth.getRelationship()
+                                                                  .getName(),
+                                                              child.getName()));
+            }
+            properties = model.records()
+                              .newEdgeProperty();
+            properties.setForward(true);
+            properties.setAuth(auth.getAuth()
+                                   .getId());
+            properties.setEdge(edge.getId());
+            properties.setProperties(MAPPER.valueToTree(object));
+            properties.insert();
+        } else {
+            properties.setProperties(MAPPER.valueToTree(object));
+            properties.update();
+        }
         return null;
     }
 

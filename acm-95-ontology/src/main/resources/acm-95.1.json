@@ -1577,5 +1577,19 @@
             "next": "Available",
             "activeSiblings": false
         }
+    ],
+    "siblingSequences": [
+        {
+            "parent": "Pick",
+            "status": "Completed",
+            "sibling": "Ship",
+            "next": "WaitingOnPurchaseOrder"
+        },
+        {
+            "parent": "PrintPurchaseOrder",
+            "status": "Completed",
+            "sibling": "PrintCustomsDeclaration",
+            "next": "Available"
+        }
     ]
 }

@@ -446,10 +446,10 @@ public class JsonImporter {
     }
 
     private void loadMetaprotocols() {
-        dsl.metaProtocols.forEach((name, mpc) -> {
+        dsl.metaProtocols.forEach(mpc -> {
             MetaProtocolRecord metaProtocol = model.getJobModel()
                                                    .newInitializedMetaProtocol(model.records()
-                                                                                    .resolve(resolve(mpc.service)));
+                                                                                    .resolve(resolve(mpc.transform)));
             if (mpc.product != null) {
                 metaProtocol.setProduct(resolve(mpc.product));
             }
@@ -462,11 +462,11 @@ public class JsonImporter {
             if (mpc.requester != null) {
                 metaProtocol.setRequester(resolve(mpc.requester));
             }
-            if (mpc.assignTo != null) {
-                metaProtocol.setAssignTo(resolve(mpc.assignTo));
+            if (mpc.assign != null) {
+                metaProtocol.setAssignTo(resolve(mpc.assign));
             }
             metaProtocol.setStopOnMatch(mpc.stopOnMatch);
-            workspace.put(name, metaProtocol);
+            workspace.add(metaProtocol);
         });
     }
 

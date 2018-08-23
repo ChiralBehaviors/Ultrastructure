@@ -45,7 +45,7 @@ public class JsonWorkspace {
     public Map<String, Facet>            facets           = new HashMap<>();
     public List<Import>                  imports          = new ArrayList<>();
     public List<Inference>               inferences       = new ArrayList<>();
-    public Map<String, MetaProtocol>     metaProtocols    = new HashMap<>();
+    public List<MetaProtocol>            metaProtocols    = new ArrayList<>();
     public String                        name;
     public List<ParentSequencing>        parentSequences  = new ArrayList<>();
     public List<Protocol>                protocols        = new ArrayList<>();

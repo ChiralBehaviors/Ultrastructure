@@ -193,7 +193,7 @@ public class JobModelTest extends AbstractModelTest {
                          .map(j -> jobModel.toString(j))
                          .collect(Collectors.toList())
                          .toString(),
-                     6, jobs.size());
+                     7, jobs.size());
     }
 
     @Test

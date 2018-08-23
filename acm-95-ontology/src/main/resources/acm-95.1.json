@@ -1787,7 +1787,7 @@
                 "product": "NonExemptProduct",
                 "from": "AnyLocation",
                 "to": "District Of Columbia",
-                "requester": "NonExemptAgency"
+                "requester": "NonExempt"
             },
             "child": {
                 "service": "SalesTax",
@@ -1822,6 +1822,40 @@
                 "product": "SameProduct",
                 "assign": "BillingComputer"
             }
+        }
+    ],
+    "metaProtocols": [
+        {
+            "transform": "Deliver",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "InState"
+        },
+        {
+            "transform": "Pick",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "requester": "CustomerType"
+        },
+        {
+            "transform": "Ship",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "InArea",
+            "requester": "CustomerType"
+        },
+        {
+            "transform": "Fee",
+            "product": "AnyRelationship",
+            "from": "InCity",
+            "requester": "AgencyTaxStatus"
+        },
+        {
+            "transform": "PrintPurchaseOrder",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "AnyRelationship",
+            "requester": "AnyRelationship"
         }
     ]
 }

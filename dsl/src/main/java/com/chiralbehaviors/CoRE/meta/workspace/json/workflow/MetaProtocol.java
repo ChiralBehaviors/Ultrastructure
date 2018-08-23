@@ -25,13 +25,12 @@ package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
  *
  */
 public class MetaProtocol {
-    public String  assignTo;
+    public String  assign;
     public String  from;
     public String  product;
     public int     quantity;
     public String  requester;
     public int     sequence;
-    public String  service;
     public boolean stopOnMatch;
     public String  to;
     public String  transform;

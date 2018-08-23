@@ -28,7 +28,7 @@ import java.math.BigDecimal;
  */
 public class Protocol {
     public static class Child {
-        public String     assignTo;
+        public String     assign;
         public String     children;
         public String     from;
         public String     product;
@@ -38,7 +38,7 @@ public class Protocol {
     }
 
     public static class Match {
-        public String     assignTo;
+        public String     assign;
         public String     from;
         public String     product;
         public BigDecimal quantity;

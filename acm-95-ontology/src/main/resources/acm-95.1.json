@@ -1686,5 +1686,142 @@
             "child": "Discount",
             "next": "Available"
         }
+    ],
+    "protocols": [
+        {
+            "match": {
+                "service": "Deliver",
+                "product": "AnyProduct",
+                "from": "AnyLocation",
+                "to": "AnyLocation"
+            },
+            "child": {
+                "service": "Pick",
+                "product": "SameProduct",
+                "assign": "Factory1Agency"
+            }
+        },
+        {
+            "match": {
+                "service": "Deliver",
+                "product": "AnyProduct",
+                "from": "AnyLocation",
+                "to": "AnyLocation",
+                "requester": "AnyAgency"
+            },
+            "child": {
+                "service": "Ship",
+                "product": "SameProduct",
+                "assign": "Factory1Agency"
+            }
+        },
+        {
+            "match": {
+                "service": "Pick",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "United States"
+            },
+            "child": {
+                "service": "CheckCredit",
+                "product": "SameProduct",
+                "assign": "CPU"
+            }
+        },
+        {
+            "match": {
+                "service": "Pick",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "European Union"
+            },
+            "child": {
+                "service": "CheckLetterOfCredit",
+                "product": "SameProduct",
+                "assign": "CreditDepartment"
+            }
+        },
+        {
+            "match": {
+                "service": "Ship",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "European Union"
+            },
+            "child": {
+                "service": "PrintCustomsDeclaration",
+                "product": "SameProduct",
+                "assign": "CPU"
+            }
+        },
+        {
+            "match": {
+                "service": "Ship",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "AnyLocation"
+            },
+            "child": {
+                "service": "PrintPurchaseOrder",
+                "product": "SameProduct",
+                "assign": "CPU"
+            }
+        },
+        {
+            "match": {
+                "service": "PrintPurchaseOrder",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "AnyLocation",
+                "requester": "AnyAgency"
+            },
+            "child": {
+                "service": "Fee",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        },
+        {
+            "match": {
+                "service": "Fee",
+                "product": "NonExemptProduct",
+                "from": "AnyLocation",
+                "to": "District Of Columbia",
+                "requester": "NonExemptAgency"
+            },
+            "child": {
+                "service": "SalesTax",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        },
+        {
+            "match": {
+                "service": "Fee",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "European Union",
+                "requester": "ExternalCustomer"
+            },
+            "child": {
+                "service": "Discount",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        },
+        {
+            "match": {
+                "service": "Fee",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "District Of Columbia",
+                "requester": "GeorgetownUniversity"
+            },
+            "child": {
+                "service": "SalesTax",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        }
     ]
 }

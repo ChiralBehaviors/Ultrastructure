@@ -503,8 +503,8 @@ public class JsonImporter {
             if (pc.match.requester != null) {
                 protocol.setRequester(resolve(pc.match.requester));
             }
-            if (pc.match.assignTo != null) {
-                protocol.setAssignTo(resolve(pc.match.assignTo));
+            if (pc.match.assign != null) {
+                protocol.setAssignTo(resolve(pc.match.assign));
             }
             if (pc.match.sequence != null) {
                 protocol.setSequenceNumber(pc.match.sequence);
@@ -525,8 +525,8 @@ public class JsonImporter {
             if (pc.child.quantity != null) {
                 protocol.setChildQuantity(pc.child.quantity);
             }
-            if (pc.child.assignTo != null) {
-                protocol.setChildAssignTo(resolve(pc.child.assignTo));
+            if (pc.child.assign != null) {
+                protocol.setChildAssignTo(resolve(pc.child.assign));
             }
             workspace.add(protocol);
         });

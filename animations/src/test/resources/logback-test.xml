@@ -10,7 +10,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.jooq">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	<root>
 		<level value="INFO" />

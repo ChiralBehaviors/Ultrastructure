@@ -80,7 +80,7 @@ public class JobSchemaTest extends AbstractModelTest {
                                                            .getId()));
         variables.put("deliverFrom", UuidUtil.encode(scenario.getFactory1()
                                                              .getId()));
-        variables.put("requester", UuidUtil.encode(scenario.getCafleurBon()
+        variables.put("requester", UuidUtil.encode(scenario.getCafleurebon()
                                                            .getId()));
 
         ObjectNode result = execute(schema,

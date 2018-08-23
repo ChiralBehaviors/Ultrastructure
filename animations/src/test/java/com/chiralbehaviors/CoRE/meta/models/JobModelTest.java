@@ -176,7 +176,7 @@ public class JobModelTest extends AbstractModelTest {
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());
-        order.setRequester(scenario.getCafleurBon()
+        order.setRequester(scenario.getCafleurebon()
                                    .getId());
         order.update();
         model.flush();
@@ -601,7 +601,7 @@ public class JobModelTest extends AbstractModelTest {
                                  .getId());
         job.setDeliverFrom(scenario.getFactory1()
                                    .getId());
-        job.setRequester(scenario.getCafleurBon()
+        job.setRequester(scenario.getCafleurebon()
                                  .getId());
         jobModel.changeStatus(job, model.getKernel()
                                         .getUnset(),

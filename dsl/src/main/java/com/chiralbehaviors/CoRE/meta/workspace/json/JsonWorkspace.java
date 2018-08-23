@@ -50,6 +50,7 @@ public class JsonWorkspace {
     public Map<String, ParentSequencing>  parentSequences  = new HashMap<>();
     public Map<String, Protocol>          protocols        = new HashMap<>();
     public Map<String, SelfSequencing>    selfSequences    = new HashMap<>();
+    public Map<String, List<Sequencing>>  sequencing       = new HashMap<>();
     public Map<String, SiblingSequencing> siblingSequences = new HashMap<>();
     public String                         uri;
     public int                            version;

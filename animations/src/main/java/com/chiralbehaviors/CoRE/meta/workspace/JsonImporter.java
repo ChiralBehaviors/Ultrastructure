@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -57,6 +58,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.Facet;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Import;
 import com.chiralbehaviors.CoRE.meta.workspace.json.JsonWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Rel;
+import com.chiralbehaviors.CoRE.meta.workspace.json.Sequencing;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Tuple;
@@ -200,7 +202,7 @@ public class JsonImporter {
 
         properties.setVersion(dsl.version);
         existing.set_Properties(properties);
-        
+
         WorkspaceAccessor loaded = load(definingProduct);
         return loaded;
     }
@@ -358,6 +360,17 @@ public class JsonImporter {
             workspace.put(name, relationships.a);
             workspace.put(relationship.inverse.name, relationships.b);
         }
+    }
+
+    private void load(String service, Sequencing sequence) {
+        UUID product = resolve(service);
+        StatusCodeSequencingRecord scs = model.records()
+                                              .newStatusCodeSequencing();
+        scs.setService(product);
+        scs.setParent(resolve(sequence.parent));
+        scs.setChild(resolve(sequence.child));
+        scs.insert();
+        workspace.add(scs);
     }
 
     private void loadChildSequencing() {
@@ -530,6 +543,12 @@ public class JsonImporter {
         });
     }
 
+    private void loadSequencing() {
+        dsl.sequencing.forEach((service,
+                                sequencing) -> sequencing.forEach(sequence -> load(service,
+                                                                                   sequence)));
+    }
+
     private void loadSequencingAuths() {
         loadParentSequencing();
         loadSiblingSequencing();
@@ -558,6 +577,7 @@ public class JsonImporter {
         loadSequencingAuths();
         loadProtocols();
         loadMetaprotocols();
+        loadSequencing();
         applyFacets();
     }
 

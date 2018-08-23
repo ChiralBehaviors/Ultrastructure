@@ -454,7 +454,7 @@
             "domain": "Product",
             "description": "Ship inventory"
         },
-        "Check Credit": {
+        "CheckCredit": {
             "domain": "Product",
             "description": "Check customer in-house credit"
         },
@@ -470,11 +470,11 @@
             "domain": "Product",
             "description": "Compute Fee"
         },
-        "Print Customs Declaration": {
+        "PrintCustomsDeclaration": {
             "domain": "Product",
             "description": "Print the customs declaration"
         },
-        "PrintCustomsDeclaration": {
+        "PrintPurchaseOrder": {
             "domain": "Product",
             "description": "Print the purchase order"
         },
@@ -1403,5 +1403,123 @@
                 }
             }
         }
+    },
+    "sequencing": {
+        "Pick": [
+            {
+                "parent": "WaitingOnCreditCheck",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Ship": [
+            {
+                "parent": "WaitingOnPurchaseOrder",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Deliver": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "CheckCredit": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "CheckLetterOfCredit": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Discount": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Fee": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "PrintCustomsDeclaration": [
+            {
+                "parent": "WaitingOnFee",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "PrintPurchaseOrder": [
+            {
+                "parent": "WaitingOnFee",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "SalesTax": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ]
     }
 }

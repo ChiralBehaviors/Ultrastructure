@@ -3,18 +3,18 @@
     "description": "The Kernel Ontology for Ultrastructure [Ain Soph Ur]",
     "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
     "version": 3,
-    "inferences": {
-        "Membership Inference": {
+    "inferences": [
+        {
             "premise1": "HasMember",
             "premise2": "HasMember",
             "inference": "HasMember"
         },
-        "Role Inference": {
+        {
             "premise1": "HasMember",
             "premise2": "HasRole",
             "inference": "HasRole"
         }
-    },
+    ],
     "applications": [
         {
             "apply": "CoreUser",

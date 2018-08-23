@@ -1835,6 +1835,7 @@
             "transform": "Pick",
             "product": "AnyRelationship",
             "from": "InArea",
+            "to": "InArea",
             "requester": "CustomerType"
         },
         {

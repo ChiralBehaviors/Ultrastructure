@@ -68,7 +68,7 @@ public class JobModelTest extends AbstractModelTest {
     @Before
     public void loadOrderProcessing() throws Exception {
         JsonImporter scope = JsonImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
-                                                             model);
+                                                   model);
         scenario = scope.getWorkspace()
                         .getAccessor(OrderProcessing.class);
         jobModel = model.getJobModel();
@@ -187,13 +187,18 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
         model.flush();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         assertTrue(jobModel.isActive(order));
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(jobs.stream()
                          .map(j -> jobModel.toString(j))
                          .collect(Collectors.toList())
                          .toString(),
-                     7, jobs.size());
+                     6, jobs.size());
     }
 
     @Test
@@ -640,7 +645,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         model.flush();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
-        assertEquals(6, jobs.size());
+        assertEquals(5, jobs.size());
     }
 
     @Test

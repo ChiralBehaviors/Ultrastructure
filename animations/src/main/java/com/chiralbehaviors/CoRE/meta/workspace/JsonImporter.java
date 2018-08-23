@@ -571,8 +571,8 @@ public class JsonImporter {
     private void loadWorkspace() {
         processImports();
         loadExistentials();
-        loadFacets();
         loadInferences();
+        loadFacets();
         loadEdges();
         loadSequencingAuths();
         loadProtocols();

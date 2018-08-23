@@ -434,13 +434,13 @@ public class JsonImporter {
     }
 
     private void loadInferences() {
-        dsl.inferences.forEach((name, i) -> {
+        dsl.inferences.forEach(i -> {
             NetworkInferenceRecord inference = model.records()
                                                     .newNetworkInference(resolve(i.premise1),
                                                                          resolve(i.premise2),
                                                                          resolve(i.inference));
             inference.insert();
-            workspace.put(name, inference);
+            workspace.add(inference);
         });
 
     }

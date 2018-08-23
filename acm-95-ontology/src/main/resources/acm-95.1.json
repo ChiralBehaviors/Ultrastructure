@@ -9,6 +9,63 @@
             "alias": "kernel"
         }
     ],
+    "inferences": [
+        {
+            "premise1": "AreaOf",
+            "premise2": "RegionOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "AreaOf",
+            "premise2": "StateOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "AreaOf",
+            "premise2": "CityOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "AreaOf",
+            "premise2": "StreetOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "RegionOf",
+            "premise2": "StateOf",
+            "inference": "RegionOf"
+        },
+        {
+            "premise1": "RegionOf",
+            "premise2": "CityOf",
+            "inference": "RegionOf"
+        },
+        {
+            "premise1": "RegionOf",
+            "premise2": "StreetOf",
+            "inference": "RegionOf"
+        },
+        {
+            "premise1": "StateOf",
+            "premise2": "CityOf",
+            "inference": "StateOf"
+        },
+        {
+            "premise1": "StateOf",
+            "premise2": "StreetOf",
+            "inference": "StateOf"
+        },
+        {
+            "premise1": "CityOf",
+            "premise2": "StreetOf",
+            "inference": "CityOf"
+        },
+        {
+            "premise1": "ReportsTo",
+            "premise2": "ReportsTo",
+            "inference": "ReportsTo"
+        }
+    ],
     "edges": [
         {
             "p": "GeorgetownUniversity",

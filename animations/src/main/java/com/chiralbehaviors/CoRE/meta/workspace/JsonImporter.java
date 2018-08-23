@@ -374,14 +374,14 @@ public class JsonImporter {
     }
 
     private void loadChildSequencing() {
-        dsl.childSequences.forEach((name, seq) -> {
+        dsl.childSequences.forEach(seq -> {
             ChildSequencingAuthorizationRecord auth = model.records()
                                                            .newChildSequencingAuthorization(resolve(seq.parent),
                                                                                             resolve(seq.status),
                                                                                             resolve(seq.child),
                                                                                             resolve(seq.next));
             auth.insert();
-            workspace.put(name, auth);
+            workspace.add(auth);
         });
     }
 

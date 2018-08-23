@@ -38,7 +38,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.workflow.SiblingSequencing;
  */
 public class JsonWorkspace {
     public List<FacetApplication>        applications     = new ArrayList<>();
-    public Map<String, ChildSequencing>  childSequences   = new HashMap<>();
+    public List<ChildSequencing>         childSequences   = new ArrayList<>();
     public String                        description;
     public List<Edge>                    edges            = new ArrayList<>();
     public Map<String, Existential>      existentials     = new HashMap<>();

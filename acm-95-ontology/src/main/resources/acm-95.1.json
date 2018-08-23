@@ -1591,5 +1591,43 @@
             "sibling": "PrintCustomsDeclaration",
             "next": "Available"
         }
+    ],
+    "childSequences": [
+        {
+            "parent": "Ship",
+            "status": "WaitingOnPurchaseOrder",
+            "child": "PrintPurchaseOrder",
+            "next": "WaitingOnFee"
+        },
+        {
+            "parent": "Pick",
+            "status": "WaitingOnCreditCheck",
+            "child": "CheckCredit",
+            "next": "Available"
+        },
+        {
+            "parent": "PrintPurchaseOrder",
+            "status": "WaitingOnFee",
+            "child": "Fee",
+            "next": "Available"
+        },
+        {
+            "parent": "Deliver",
+            "status": "Available",
+            "child": "Pick",
+            "next": "WaitingOnCreditCheck"
+        },
+        {
+            "parent": "Fee",
+            "status": "Available",
+            "child": "SalesTax",
+            "next": "Available"
+        },
+        {
+            "parent": "Fee",
+            "status": "Available",
+            "child": "Discount",
+            "next": "Available"
+        }
     ]
 }

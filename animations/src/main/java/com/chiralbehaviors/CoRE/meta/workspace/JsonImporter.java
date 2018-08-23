@@ -471,20 +471,20 @@ public class JsonImporter {
     }
 
     private void loadParentSequencing() {
-        dsl.parentSequences.forEach((name, seq) -> {
+        dsl.parentSequences.forEach(seq -> {
             ParentSequencingAuthorizationRecord auth = model.records()
                                                             .newParentSequencingAuthorization(resolve(seq.service),
                                                                                               resolve(seq.status),
                                                                                               resolve(seq.parent),
                                                                                               resolve(seq.next));
             auth.insert();
-            workspace.put(name, auth);
+            workspace.add(auth);
 
         });
     }
 
     private void loadProtocols() {
-        dsl.protocols.forEach((name, pc) -> {
+        dsl.protocols.forEach(pc -> {
             ProtocolRecord protocol = model.getJobModel()
                                            .newInitializedProtocol(model.records()
                                                                         .resolve(resolve(pc.match.service)));
@@ -528,18 +528,18 @@ public class JsonImporter {
             if (pc.child.assignTo != null) {
                 protocol.setChildAssignTo(resolve(pc.child.assignTo));
             }
-            workspace.put(name, protocol);
+            workspace.add(protocol);
         });
     }
 
     private void loadSelfSequencing() {
-        dsl.selfSequences.forEach((name, seq) -> {
+        dsl.selfSequences.forEach(seq -> {
             SelfSequencingAuthorizationRecord auth = model.records()
                                                           .newSelfSequencingAuthorization(resolve(seq.service),
                                                                                           resolve(seq.status),
                                                                                           resolve(seq.next));
             auth.insert();
-            workspace.put(name, auth);
+            workspace.add(auth);
         });
     }
 
@@ -557,14 +557,14 @@ public class JsonImporter {
     }
 
     private void loadSiblingSequencing() {
-        dsl.siblingSequences.forEach((name, seq) -> {
+        dsl.siblingSequences.forEach(seq -> {
             SiblingSequencingAuthorizationRecord auth = model.records()
                                                              .newSiblingSequencingAuthorization(resolve(seq.parent),
                                                                                                 resolve(seq.status),
                                                                                                 resolve(seq.sibling),
                                                                                                 resolve(seq.next));
             auth.insert();
-            workspace.put(name, auth);
+            workspace.add(auth);
         });
     }
 

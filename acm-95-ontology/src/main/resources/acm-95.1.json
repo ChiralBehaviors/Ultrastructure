@@ -1521,5 +1521,61 @@
                 "child": "Completed"
             }
         ]
-    }
+    },
+    "parentSequences": [
+        {
+            "service": "CheckCredit",
+            "status": "Completed",
+            "parent": "Pick",
+            "next": "Available"
+        },
+        {
+            "service": "CheckLetterOfCredit",
+            "status": "Completed",
+            "parent": "Pick",
+            "next": "Available"
+        },
+        {
+            "service": "PrintCustomsDeclaration",
+            "status": "Completed",
+            "parent": "Ship",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "PrintPurchaseOrder",
+            "status": "Completed",
+            "parent": "Ship",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "Discount",
+            "status": "Completed",
+            "parent": "Fee",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "SalesTax",
+            "status": "Completed",
+            "parent": "Fee",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "Ship",
+            "status": "Completed",
+            "parent": "Deliver",
+            "next": "Completed",
+            "activeSiblings": false
+        },
+        {
+            "service": "Fee",
+            "status": "Completed",
+            "parent": "PrintPurchaseOrder",
+            "next": "Available",
+            "activeSiblings": false
+        }
+    ]
 }

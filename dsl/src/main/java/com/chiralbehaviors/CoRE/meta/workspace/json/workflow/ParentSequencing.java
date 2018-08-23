@@ -30,6 +30,6 @@ public class ParentSequencing {
     public String  parent;
     public String  next;
     public boolean replace;
-    public boolean activeSiblings;
+    public boolean activeSiblings = true;
     public int     sequence;
 }

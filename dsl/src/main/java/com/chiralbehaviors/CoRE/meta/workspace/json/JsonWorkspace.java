@@ -37,21 +37,21 @@ import com.chiralbehaviors.CoRE.meta.workspace.json.workflow.SiblingSequencing;
  *
  */
 public class JsonWorkspace {
-    public List<FacetApplication>         applications     = new ArrayList<>();
-    public Map<String, ChildSequencing>   childSequences   = new HashMap<>();
-    public String                         description;
-    public List<Edge>                     edges            = new ArrayList<>();
-    public Map<String, Existential>       existentials     = new HashMap<>();
-    public Map<String, Facet>             facets           = new HashMap<>();
-    public List<Import>                   imports          = new ArrayList<>();
-    public Map<String, Inference>         inferences       = new HashMap<>();
-    public Map<String, MetaProtocol>      metaProtocols    = new HashMap<>();
-    public String                         name;
-    public Map<String, ParentSequencing>  parentSequences  = new HashMap<>();
-    public Map<String, Protocol>          protocols        = new HashMap<>();
-    public Map<String, SelfSequencing>    selfSequences    = new HashMap<>();
-    public Map<String, List<Sequencing>>  sequencing       = new HashMap<>();
-    public Map<String, SiblingSequencing> siblingSequences = new HashMap<>();
-    public String                         uri;
-    public int                            version;
+    public List<FacetApplication>        applications     = new ArrayList<>();
+    public Map<String, ChildSequencing>  childSequences   = new HashMap<>();
+    public String                        description;
+    public List<Edge>                    edges            = new ArrayList<>();
+    public Map<String, Existential>      existentials     = new HashMap<>();
+    public Map<String, Facet>            facets           = new HashMap<>();
+    public List<Import>                  imports          = new ArrayList<>();
+    public Map<String, Inference>        inferences       = new HashMap<>();
+    public Map<String, MetaProtocol>     metaProtocols    = new HashMap<>();
+    public String                        name;
+    public List<ParentSequencing>        parentSequences  = new ArrayList<>();
+    public List<Protocol>                protocols        = new ArrayList<>();
+    public List<SelfSequencing>          selfSequences    = new ArrayList<>();
+    public Map<String, List<Sequencing>> sequencing       = new HashMap<>();
+    public List<SiblingSequencing>       siblingSequences = new ArrayList<>();
+    public String                        uri;
+    public int                           version;
 }

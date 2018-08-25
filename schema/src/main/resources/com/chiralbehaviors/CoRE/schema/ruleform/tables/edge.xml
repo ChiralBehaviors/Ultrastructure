@@ -8,7 +8,6 @@
 
 	<changeSet author="hhildebrand" id="2.0.0">
 		<createTable schemaName="ruleform" tableName="edge">
-			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="edge_pkey" nullable="false" />
@@ -92,12 +91,6 @@
 			constraintName="edge_inference_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="network_inference" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="edge"
-			constraintName="edge_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="edge_relationship_idx" tableName="edge" unique="false">
@@ -114,10 +107,6 @@
 		<createIndex schemaName="ruleform"
 			indexName="edge_inference_fky_idx" tableName="edge" unique="false">
 			<column name="inference" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="edge_workspace_fkey_idx" tableName="edge" unique="false">
-			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="edge_updated_by_fkey_idx" tableName="edge" unique="false">

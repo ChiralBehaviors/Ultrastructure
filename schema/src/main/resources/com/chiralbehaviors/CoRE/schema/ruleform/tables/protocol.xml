@@ -13,7 +13,6 @@
 					primaryKeyName="protocol_pkey" nullable="false" />
 			</column>
 			<column name="authority" type="uuid" />
-			<column name="workspace" type="uuid" />
 			<column name="sequence_number" type="INT4" defaultValue="0">
 				<constraints nullable="false" />
 			</column>
@@ -190,12 +189,6 @@
 			constraintName="child_quantity_unit_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="protocol"
-			constraintName="protocol_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="protocol_updated_by_fkey_idx" tableName="protocol"
@@ -206,11 +199,6 @@
 			indexName="protocol_authority_idx" tableName="protocol"
 			unique="false">
 			<column name="authority" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="protocol_workspace_idx" tableName="protocol"
-			unique="false">
-			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

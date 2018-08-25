@@ -10,7 +10,6 @@
 		<createTable schemaName="ruleform"
 			tableName="meta_protocol">
 			<column name="authority" type="uuid" />
-			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="meta_protocol_pkey" nullable="false" />
@@ -131,22 +130,11 @@
 			constraintName="meta_protocol_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="meta_protocol"
-			constraintName="meta_protocol_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="meta_protocol_updated_by_fkey_idx"
 			tableName="meta_protocol" unique="false">
 			<column name="updated_by" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="meta_protocol_workspace_fkey_idx"
-			tableName="meta_protocol" unique="false">
-			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="meta_protocol_authority_idx" tableName="meta_protocol"

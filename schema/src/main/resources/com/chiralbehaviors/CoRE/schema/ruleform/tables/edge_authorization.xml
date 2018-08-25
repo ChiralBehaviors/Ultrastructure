@@ -9,7 +9,6 @@
 	<changeSet author="hhildebrand" id="2.0.0">
 		<createTable schemaName="ruleform"
 			tableName="edge_authorization">
-			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="edge_authorization_pkey" nullable="false" />
@@ -77,12 +76,6 @@
 			constraintName="edge_authorization_updated_by_fkey"
 			deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="edge_authorization"
-			constraintName="edge_authorization_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql><![CDATA[
         ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
@@ -105,11 +98,6 @@
 			indexName="edge_authorization_updated_by_fkey_idx"
 			tableName="edge_authorization" unique="false">
 			<column name="updated_by" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="edge_authorization_workspace_fkey_idx"
-			tableName="edge_authorization" unique="false">
-			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="edge_authorization_authority_fkey_idx"

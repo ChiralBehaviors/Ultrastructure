@@ -9,7 +9,6 @@
 		<createTable schemaName="ruleform"
 			tableName="self_sequencing_authorization">
 			<column name="authority" type="uuid" />
-			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="self_sequencing_authorization_pkey"
@@ -81,13 +80,6 @@
 			constraintName="self_sequencing_authorization_updated_by_fkey"
 			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace"
-			baseTableName="self_sequencing_authorization"
-			constraintName="self_sequencing_authorization_workspace_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="self_sequencing_authorization_status_code_fkey_idx"
@@ -108,11 +100,6 @@
 			indexName="self_sequencing_authorization_authority_idx"
 			tableName="self_sequencing_authorization" unique="false">
 			<column name="authority" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="self_sequencing_authorization_workspace_idx"
-			tableName="self_sequencing_authorization" unique="false">
-			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

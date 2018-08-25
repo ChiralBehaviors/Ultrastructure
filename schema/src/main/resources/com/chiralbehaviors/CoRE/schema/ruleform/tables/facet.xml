@@ -29,7 +29,6 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="version" type="INT4" />
-			<column name="workspace" type="uuid" />
 		</createTable>
 
 		<sql splitStatements="false"><![CDATA[
@@ -66,12 +65,6 @@
 			constraintName="facet_updated_by_fkey" deferrable="false"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="facet"
-			constraintName="facet_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql><![CDATA[
         ALTER TABLE facet ADD CONSTRAINT valid_facet_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
@@ -93,10 +86,6 @@
 		<createIndex schemaName="ruleform"
 			indexName="facet_authority_fkey_idx" tableName="facet" unique="false">
 			<column name="authority" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="facet_workspace_fkey_idx" tableName="facet" unique="false">
-			<column name="workspace" />
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

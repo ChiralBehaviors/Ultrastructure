@@ -34,7 +34,6 @@
 				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="workspace" type="uuid" />
 			<column name="version" type="INT4" />
 		</createTable>
 
@@ -72,12 +71,6 @@
 			constraintName="edge_updated_by_fkey" deferrable="false"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="edge_property"
-			constraintName="edge_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql splitStatements="false"><![CDATA[
             CREATE OR REPLACE FUNCTION validate_edge_props(data jsonb, aid uuid) RETURNS boolean AS 
@@ -112,11 +105,6 @@
 			indexName="edge_property_authority_fkey_idx"
 			tableName="edge_property" unique="false">
 			<column name="authority" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="edge_property_workspace_fkey_idx"
-			tableName="edge_property" unique="false">
-			<column name="workspace" />
 		</createIndex>
 
 		<sql>

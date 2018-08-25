@@ -8,7 +8,6 @@
 
 	<changeSet author="hhildebrand" id="2.0.0">
 		<createTable schemaName="ruleform" tableName="job">
-			<column name="workspace" type="uuid" />
 			<column name="authority" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true" primaryKeyName="job_pkey"
@@ -159,11 +158,5 @@
 			indexName="job_authority_idx" tableName="job" unique="false">
 			<column name="authority" />
 		</createIndex>
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="job"
-			constraintName="job_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 	</changeSet>
 </databaseChangeLog>

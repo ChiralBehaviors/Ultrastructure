@@ -9,7 +9,6 @@
 	<changeSet author="hhildebrand" id="2.0.0">
 		<createTable schemaName="ruleform"
 			tableName="parent_sequencing_authorization">
-			<column name="workspace" type="uuid" />
 			<column name="authority" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
@@ -95,13 +94,6 @@
 			constraintName="parent_sequencing_authorization_updated_by_fkey"
 			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace"
-			baseTableName="parent_sequencing_authorization"
-			constraintName="parent_sequencing_authorization_workspace_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="parent_sequencing_authorization_parent_fkey_idx"
@@ -122,11 +114,6 @@
 			indexName="parent_sequencing_authorization_updated_by_fkey_idx"
 			tableName="parent_sequencing_authorization" unique="false">
 			<column name="updated_by" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="parent_sequencing_authorization_workspace_idx"
-			tableName="parent_sequencing_authorization" unique="false">
-			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
 			indexName="parent_sequencing_authorization_authority_idx"

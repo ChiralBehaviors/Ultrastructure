@@ -8,14 +8,9 @@
 	<changeSet id="2.0.0" author="hhildebrand">
 		<createTable schemaName="ruleform"
 			tableName="workspace_label">
-			<column name="id" type="uuid">
-				<constraints primaryKey="true"
-					primaryKeyName="workspace_label_pkey" nullable="false" />
-			</column>
 			<column name="reference" type="uuid">
 				<constraints nullable="false" />
-			</column>
-			<column name="notes" type="TEXT" />
+			</column> 
 			<column name="type" type="reference_type">
 				<constraints nullable="false" />
 			</column>
@@ -32,11 +27,17 @@
 		</createTable>
 
 		<addUniqueConstraint schemaName="ruleform"
-			columnNames="workspace, type, key,"
+			columnNames="workspace, type, key"
 			constraintName="workspace_key_constraint" deferrable="false"
 			disabled="false" initiallyDeferred="false"
 			tableName="workspace_label" />
-
+			
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="reference" baseTableName="workspace_label"
+            constraintName="workspace_label_reference_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT"
+            referencedColumnNames="id" referencedTableName="ruleform_parent" /> 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="workspace" baseTableName="workspace_label"

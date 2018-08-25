@@ -10,7 +10,6 @@
 		<createTable schemaName="ruleform"
 			tableName="network_inference">
 			<column name="authority" type="uuid" />
-			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
 					primaryKeyName="network_inference_pkey" nullable="false" />
@@ -73,12 +72,6 @@
 			constraintName="network_inference_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="network_inference"
-			constraintName="network_inference_workspace_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="network_inference_premise2_fkey_idx"
@@ -99,11 +92,6 @@
 			indexName="network_inference_authority_idx"
 			tableName="network_inference" unique="false">
 			<column name="authority"></column>
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="network_inference_workspace_idx"
-			tableName="network_inference" unique="false">
-			<column name="workspace"></column>
 		</createIndex>
 	</changeSet>
 </databaseChangeLog>

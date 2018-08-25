@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.RULEFORM_PARENT;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +47,8 @@ public class StateSnapshot extends WorkspaceSnapshot {
                                                                                                                    Collection<UUID> exlude) {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .filter(t -> !t.equals(RULEFORM_PARENT))
                          .forEach(t -> {
                              if (t.equals(EDGE)) {
                                  // Snapshots do not contain network inferences

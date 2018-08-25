@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.json;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.RULEFORM_PARENT;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,8 @@ public class CoREModule extends SimpleModule {
         addSerializer(new RecordSerializer());
         List<Class<?>> subTypes = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .filter(t -> !t.equals(RULEFORM_PARENT))
                          .forEach(table -> {
                              subTypes.add(table.getRecordType());
                          });

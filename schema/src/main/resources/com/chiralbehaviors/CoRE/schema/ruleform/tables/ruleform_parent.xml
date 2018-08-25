@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			remarks="The parent table of all ruleforms"
+			tableName="ruleform_parent">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="ruleform_parent_pkey" nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog>

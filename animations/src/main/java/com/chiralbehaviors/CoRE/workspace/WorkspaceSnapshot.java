@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.RULEFORM_PARENT;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -122,6 +123,8 @@ public class WorkspaceSnapshot {
                                                                                                                  Product definingProduct) {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .filter(t -> !t.equals(RULEFORM_PARENT))
                          .forEach(t -> {
                              records.addAll(create.selectDistinct(t.fields())
                                                   .from(t)
@@ -140,6 +143,8 @@ public class WorkspaceSnapshot {
                                                                                                                         Product definingProduct) {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
+                         .stream()
+                         .filter(t -> !t.equals(RULEFORM_PARENT))
                          .forEach(t -> {
                              records.addAll(create.selectDistinct(t.fields())
                                                   .from(t)

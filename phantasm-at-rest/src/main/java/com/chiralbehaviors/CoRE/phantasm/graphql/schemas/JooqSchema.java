@@ -96,12 +96,8 @@ public class JooqSchema {
     public static JooqSchema meta(PhantasmProcessor processor) {
         List<Table<?>> manifested = Ruleform.RULEFORM.getTables();
         manifested.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL,
-                                                         RULEFORM.EXISTENTIAL_ATTRIBUTE,
-                                                         RULEFORM.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
-                                                         RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE,
-                                                         RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
-                                                         RULEFORM.EXISTENTIAL_NETWORK_AUTHORIZATION,
-                                                         RULEFORM.EXISTENTIAL_NETWORK,
+                                                         RULEFORM.EDGE_AUTHORIZATION,
+                                                         RULEFORM.EDGE,
                                                          RULEFORM.FACET,
                                                          RULEFORM.WORKSPACE_LABEL,
                                                          RULEFORM.JOB,

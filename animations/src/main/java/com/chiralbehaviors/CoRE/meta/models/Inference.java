@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 
 import java.util.Arrays;
@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.jooq.tables.Existential;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
+import com.chiralbehaviors.CoRE.jooq.tables.Edge;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
@@ -218,43 +218,43 @@ public interface Inference {
 
     default void generateInverses() {
         long then = System.currentTimeMillis();
-        ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
-        ExistentialNetwork net = EXISTENTIAL_NETWORK.as("net");
+        Edge exist = EDGE.as("exist");
+        Edge net = EDGE.as("net");
         Existential rel = EXISTENTIAL.as("rel");
 
-        int inverses = create().insertInto(EXISTENTIAL_NETWORK,
-                                           EXISTENTIAL_NETWORK.ID,
-                                           EXISTENTIAL_NETWORK.PARENT,
-                                           EXISTENTIAL_NETWORK.RELATIONSHIP,
-                                           EXISTENTIAL_NETWORK.CHILD,
-                                           EXISTENTIAL_NETWORK.INFERENCE,
-                                           EXISTENTIAL_NETWORK.PREMISE1,
-                                           EXISTENTIAL_NETWORK.PREMISE2,
-                                           EXISTENTIAL_NETWORK.UPDATED_BY,
-                                           EXISTENTIAL_NETWORK.VERSION)
+        int inverses = create().insertInto(EDGE,
+                                           EDGE.ID,
+                                           EDGE.PARENT,
+                                           EDGE.RELATIONSHIP,
+                                           EDGE.CHILD,
+                                           EDGE.INFERENCE,
+                                           EDGE.PREMISE1,
+                                           EDGE.PREMISE2,
+                                           EDGE.UPDATED_BY,
+                                           EDGE.VERSION)
                                .select(create().select(GENERATE_UUID,
-                                                       net.field(EXISTENTIAL_NETWORK.CHILD),
+                                                       net.field(EDGE.CHILD),
                                                        rel.field(EXISTENTIAL.INVERSE),
-                                                       net.field(EXISTENTIAL_NETWORK.PARENT),
-                                                       net.field(EXISTENTIAL_NETWORK.INFERENCE),
-                                                       net.field(EXISTENTIAL_NETWORK.PREMISE1),
-                                                       net.field(EXISTENTIAL_NETWORK.PREMISE2),
+                                                       net.field(EDGE.PARENT),
+                                                       net.field(EDGE.INFERENCE),
+                                                       net.field(EDGE.PREMISE1),
+                                                       net.field(EDGE.PREMISE2),
                                                        DSL.val(model().getCurrentPrincipal()
                                                                       .getPrincipal()
                                                                       .getId()),
                                                        DSL.val(0))
                                                .from(net)
                                                .join(rel)
-                                               .on(net.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                               .on(net.field(EDGE.RELATIONSHIP)
                                                       .equal(rel.field(EXISTENTIAL.ID)))
                                                .leftOuterJoin(exist)
-                                               .on(net.field(EXISTENTIAL_NETWORK.CHILD)
-                                                      .equal(exist.field(EXISTENTIAL_NETWORK.PARENT)))
+                                               .on(net.field(EDGE.CHILD)
+                                                      .equal(exist.field(EDGE.PARENT)))
                                                .and(rel.field(EXISTENTIAL.INVERSE)
-                                                       .equal(exist.field(EXISTENTIAL_NETWORK.RELATIONSHIP)))
-                                               .and(net.field(EXISTENTIAL_NETWORK.PARENT)
-                                                       .equal(exist.field(EXISTENTIAL_NETWORK.CHILD)))
-                                               .where(exist.field(EXISTENTIAL_NETWORK.ID)
+                                                       .equal(exist.field(EDGE.RELATIONSHIP)))
+                                               .and(net.field(EDGE.PARENT)
+                                                       .equal(exist.field(EDGE.CHILD)))
+                                               .where(exist.field(EDGE.ID)
                                                            .isNull()))
 
                                .execute();
@@ -266,42 +266,42 @@ public interface Inference {
     }
 
     default int infer() {
-        ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
-        ExistentialNetwork p1 = EXISTENTIAL_NETWORK.as("p1");
-        ExistentialNetwork p2 = EXISTENTIAL_NETWORK.as("p2");
+        Edge exist = EDGE.as("exist");
+        Edge p1 = EDGE.as("p1");
+        Edge p2 = EDGE.as("p2");
 
         return create().insertInto(WORKING_MEMORY_TABLE, WorkingMemory.PARENT,
                                    WorkingMemory.RELATIONSHIP,
                                    WorkingMemory.CHILD, WorkingMemory.INFERENCE,
                                    WorkingMemory.PREMISE1,
                                    WorkingMemory.PREMISE2)
-                       .select(create().select(p1.field(EXISTENTIAL_NETWORK.PARENT),
+                       .select(create().select(p1.field(EDGE.PARENT),
                                                NETWORK_INFERENCE.INFERENCE,
-                                               p2.field(EXISTENTIAL_NETWORK.CHILD),
+                                               p2.field(EDGE.CHILD),
                                                NETWORK_INFERENCE.ID,
-                                               p1.field(EXISTENTIAL_NETWORK.ID),
-                                               p2.field(EXISTENTIAL_NETWORK.ID))
+                                               p1.field(EDGE.ID),
+                                               p2.field(EDGE.ID))
                                        .from(p1)
                                        .join(p2)
-                                       .on(p2.field(EXISTENTIAL_NETWORK.PARENT)
-                                             .equal(p1.field(EXISTENTIAL_NETWORK.CHILD)))
-                                       .and(p2.field(EXISTENTIAL_NETWORK.CHILD)
-                                              .notEqual(p1.field(EXISTENTIAL_NETWORK.PARENT)))
+                                       .on(p2.field(EDGE.PARENT)
+                                             .equal(p1.field(EDGE.CHILD)))
+                                       .and(p2.field(EDGE.CHILD)
+                                              .notEqual(p1.field(EDGE.PARENT)))
                                        .and(p2.field(p2.INFERENCE)
                                               .isNull())
                                        .join(NETWORK_INFERENCE)
-                                       .on(p1.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                       .on(p1.field(EDGE.RELATIONSHIP)
                                              .equal(NETWORK_INFERENCE.PREMISE1))
-                                       .and(p2.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                       .and(p2.field(EDGE.RELATIONSHIP)
                                               .equal(NETWORK_INFERENCE.PREMISE2))
                                        .leftOuterJoin(exist)
-                                       .on(exist.field(EXISTENTIAL_NETWORK.PARENT)
-                                                .equal(p1.field(EXISTENTIAL_NETWORK.PARENT)))
-                                       .and(exist.field(EXISTENTIAL_NETWORK.RELATIONSHIP)
+                                       .on(exist.field(EDGE.PARENT)
+                                                .equal(p1.field(EDGE.PARENT)))
+                                       .and(exist.field(EDGE.RELATIONSHIP)
                                                  .equal(NETWORK_INFERENCE.INFERENCE))
-                                       .and(exist.field(EXISTENTIAL_NETWORK.CHILD)
-                                                 .equal(p2.field(EXISTENTIAL_NETWORK.CHILD)))
-                                       .where(exist.field(EXISTENTIAL_NETWORK.ID)
+                                       .and(exist.field(EDGE.CHILD)
+                                                 .equal(p2.field(EDGE.CHILD)))
+                                       .where(exist.field(EDGE.ID)
                                                    .isNull()))
                        .execute();
     }
@@ -322,8 +322,8 @@ public interface Inference {
     }
 
     default int inferFromLastPass() {
-        ExistentialNetwork exist = EXISTENTIAL_NETWORK.as("exist");
-        ExistentialNetwork p2 = EXISTENTIAL_NETWORK.as("p2");
+        Edge exist = EDGE.as("exist");
+        Edge p2 = EDGE.as("p2");
 
         return create().insertInto(WORKING_MEMORY_TABLE, WorkingMemory.PARENT,
                                    WorkingMemory.RELATIONSHIP,
@@ -332,17 +332,17 @@ public interface Inference {
                                    WorkingMemory.PREMISE2)
                        .select(create().select(LastPassRules.PARENT,
                                                NETWORK_INFERENCE.INFERENCE,
-                                               p2.field(EXISTENTIAL_NETWORK.CHILD),
+                                               p2.field(EDGE.CHILD),
                                                NETWORK_INFERENCE.ID,
                                                LastPassRules.ID,
-                                               p2.field(EXISTENTIAL_NETWORK.ID))
+                                               p2.field(EDGE.ID))
                                        .from(LAST_PASS_RULES_TABLE)
                                        .join(p2)
-                                       .on(p2.field(EXISTENTIAL_NETWORK.PARENT)
+                                       .on(p2.field(EDGE.PARENT)
                                              .equal(LastPassRules.CHILD))
-                                       .and(p2.field(EXISTENTIAL_NETWORK.CHILD)
+                                       .and(p2.field(EDGE.CHILD)
                                               .notEqual(LastPassRules.PARENT))
-                                       .and(p2.field(EXISTENTIAL_NETWORK.INFERENCE)
+                                       .and(p2.field(EDGE.INFERENCE)
                                               .isNull())
                                        .join(NETWORK_INFERENCE)
                                        .on(LastPassRules.RELATIONSHIP.equal(NETWORK_INFERENCE.PREMISE1))
@@ -353,21 +353,21 @@ public interface Inference {
                                                 .equal(LastPassRules.PARENT))
                                        .and(exist.field(LastPassRules.RELATIONSHIP)
                                                  .equal(NETWORK_INFERENCE.INFERENCE))
-                                       .and(exist.CHILD.equal(p2.field(EXISTENTIAL_NETWORK.CHILD)))
+                                       .and(exist.CHILD.equal(p2.field(EDGE.CHILD)))
                                        .where(exist.ID.isNull()))
                        .execute();
     }
 
     default int insert() {
-        return create().insertInto(EXISTENTIAL_NETWORK, EXISTENTIAL_NETWORK.ID,
-                                   EXISTENTIAL_NETWORK.PARENT,
-                                   EXISTENTIAL_NETWORK.RELATIONSHIP,
-                                   EXISTENTIAL_NETWORK.CHILD,
-                                   EXISTENTIAL_NETWORK.INFERENCE,
-                                   EXISTENTIAL_NETWORK.PREMISE1,
-                                   EXISTENTIAL_NETWORK.PREMISE2,
-                                   EXISTENTIAL_NETWORK.UPDATED_BY,
-                                   EXISTENTIAL_NETWORK.VERSION)
+        return create().insertInto(EDGE, EDGE.ID,
+                                   EDGE.PARENT,
+                                   EDGE.RELATIONSHIP,
+                                   EDGE.CHILD,
+                                   EDGE.INFERENCE,
+                                   EDGE.PREMISE1,
+                                   EDGE.PREMISE2,
+                                   EDGE.UPDATED_BY,
+                                   EDGE.VERSION)
                        .select(create().select(CurentPassRules.ID,
                                                CurentPassRules.PARENT,
                                                CurentPassRules.RELATIONSHIP,
@@ -380,11 +380,11 @@ public interface Inference {
                                                               .getId()),
                                                DSL.val(0))
                                        .from(CURRENT_PASS_RULES_TABLE)
-                                       .leftOuterJoin(EXISTENTIAL_NETWORK)
-                                       .on(CurentPassRules.PARENT.equal(EXISTENTIAL_NETWORK.PARENT))
-                                       .and(CurentPassRules.RELATIONSHIP.equal(EXISTENTIAL_NETWORK.RELATIONSHIP))
-                                       .and(CurentPassRules.CHILD.equal(EXISTENTIAL_NETWORK.CHILD))
-                                       .where(EXISTENTIAL_NETWORK.ID.isNull()))
+                                       .leftOuterJoin(EDGE)
+                                       .on(CurentPassRules.PARENT.equal(EDGE.PARENT))
+                                       .and(CurentPassRules.RELATIONSHIP.equal(EDGE.RELATIONSHIP))
+                                       .and(CurentPassRules.CHILD.equal(EDGE.CHILD))
+                                       .where(EDGE.ID.isNull()))
                        .execute();
 
     }

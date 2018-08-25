@@ -30,6 +30,7 @@ import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Tables;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -103,8 +104,11 @@ public class MetaContext extends ExistentialContext
         }
         WorkspaceScope scoped = model.getWorkspaceModel()
                                      .getScoped(wspProduct);
-        return namespace == null ? scoped.lookupId(name)
-                                 : scoped.lookupId(namespace, name);
+        return namespace == null ? scoped.lookupId(ReferenceType.Existential,
+                                                   name)
+                                 : scoped.lookupId(namespace,
+                                                   ReferenceType.Existential,
+                                                   name);
     }
 
     @Override

@@ -16,14 +16,15 @@
                  rel.name AS relationship, 
                  child.name AS child,
                  jsonb_pretty(p.properties) AS properties, 
+                 p.updated,
 			     up.name AS updated_by, 
                  w.name AS workspace,
                  wa.key AS wsp_key,
                  wa.description AS wsp_desc,
 			     p.version
 			   FROM edge_property p
-                 JOIN existential_network_authorization a ON p.auth = a.id
-			     JOIN existential_network n ON p.edge = n.id
+                 JOIN edge_authorization a ON p.auth = a.id
+			     JOIN edge n ON p.edge = n.id
                  JOIN existential parent ON n.parent = parent.id
                  JOIN existential rel ON n.relationship = rel.id
                  JOIN existential child ON n.child = child.id

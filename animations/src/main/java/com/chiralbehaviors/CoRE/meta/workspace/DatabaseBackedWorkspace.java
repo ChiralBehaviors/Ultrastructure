@@ -41,8 +41,8 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -140,7 +140,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
      */
     @Override
-    public void add(ExistentialNetworkAuthorizationRecord ruleform) {
+    public void add(EdgeAuthorizationRecord ruleform) {
         ruleform.setWorkspace(definingProductId);
         ruleform.update();
     }
@@ -149,7 +149,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
      */
     @Override
-    public void add(ExistentialNetworkRecord ruleform) {
+    public void add(EdgeRecord ruleform) {
         ruleform.setWorkspace(definingProductId);
         ruleform.update();
     }
@@ -267,12 +267,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         scope.add(name, model.getWorkspaceModel()
                              .getScoped(workspace)
                              .getWorkspace());
-        ExistentialNetworkRecord imported = model.getPhantasmModel()
+        EdgeRecord imported = model.getPhantasmModel()
                                                  .getImmediateLink(getDefiningProduct(),
                                                                    kernel.getImports(),
                                                                    workspace);
         if (imported == null) {
-            Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = model.getPhantasmModel()
+            Tuple<EdgeRecord, EdgeRecord> links = model.getPhantasmModel()
                                                                                    .link(getDefiningProduct(),
                                                                                          kernel.getImports(),
                                                                                          workspace);
@@ -283,7 +283,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         FacetRecord aspect = model.getPhantasmModel()
                                   .getFacetDeclaration(kernel.getIsA(),
                                                        kernel.getWorkspace());
-        ExistentialNetworkAuthorizationRecord auth = model.getPhantasmModel()
+        EdgeAuthorizationRecord auth = model.getPhantasmModel()
                                                           .getNetworkAuthorization(aspect,
                                                                                    kernel.getImports(),
                                                                                    false);
@@ -399,12 +399,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         FacetRecord aspect = model.getPhantasmModel()
                                   .getFacetDeclaration(kernel.getIsA(),
                                                        kernel.getWorkspace());
-        ExistentialNetworkAuthorizationRecord auth = model.getPhantasmModel()
+        EdgeAuthorizationRecord auth = model.getPhantasmModel()
                                                           .getNetworkAuthorization(aspect,
                                                                                    kernel.getImports(),
                                                                                    false);
 
-        for (ExistentialNetworkRecord link : model.getPhantasmModel()
+        for (EdgeRecord link : model.getPhantasmModel()
                                                   .getImmediateChildrenLinks(getDefiningProduct(),
                                                                              kernel.getImports(),
                                                                              ExistentialDomain.Product)) {

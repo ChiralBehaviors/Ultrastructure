@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
@@ -88,10 +88,10 @@ public class RbacTest extends AbstractModelTest {
 
         Relationship relationship = scope.lookup(Existential, "thing1Of");
         assertNotNull(relationship);
-        ExistentialNetworkAuthorizationRecord stateAuth = model.create()
-                                                               .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
+        EdgeAuthorizationRecord stateAuth = model.create()
+                                                               .selectFrom(EDGE_AUTHORIZATION)
+                                                               .where(EDGE_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                               .and(EDGE_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
                                                                .fetchOne();
 
         assertNotNull(stateAuth);

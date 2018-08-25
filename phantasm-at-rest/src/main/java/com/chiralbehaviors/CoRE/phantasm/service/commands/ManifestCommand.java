@@ -28,7 +28,7 @@ import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.hellblazer.utils.Utils;
 
@@ -43,24 +43,23 @@ import net.sourceforge.argparse4j.inf.Subparser;
  */
 public class ManifestCommand extends Command {
 
-    @SuppressWarnings("resource")
     public static void manifest(List<String> list,
                                 DSLContext create) throws Exception {
         create.transaction(c -> {
             Model model = new ModelImpl(create);
-            WorkspaceImporter.manifest(list.stream()
-                                           .map(file -> {
-                                               try {
-                                                   return Utils.resolveResourceURL(ManifestCommand.class,
-                                                                                   file);
-                                               } catch (Exception e) {
-                                                   throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                    file),
-                                                                                      e);
-                                               }
-                                           })
-                                           .collect(Collectors.toList()),
-                                       model);
+            JsonImporter.manifest(list.stream()
+                                      .map(file -> {
+                                          try {
+                                              return Utils.resolveResourceURL(ManifestCommand.class,
+                                                                              file);
+                                          } catch (Exception e) {
+                                              throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
+                                                                                               file),
+                                                                                 e);
+                                          }
+                                      })
+                                      .collect(Collectors.toList()),
+                                  model);
         });
     }
 

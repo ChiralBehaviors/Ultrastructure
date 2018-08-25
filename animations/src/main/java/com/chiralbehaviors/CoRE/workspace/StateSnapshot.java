@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,7 @@ import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 
 /**
  * Every category must have its null
@@ -47,13 +47,13 @@ public class StateSnapshot extends WorkspaceSnapshot {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
-                             if (t.equals(EXISTENTIAL_NETWORK)) {
+                             if (t.equals(EDGE)) {
                                  // Snapshots do not contain network inferences
-                                 records.addAll(create.selectFrom(EXISTENTIAL_NETWORK)
-                                                      .where(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                                      .and(EXISTENTIAL_NETWORK.WORKSPACE.isNull())
-                                                      .and(EXISTENTIAL_NETWORK.ID.notIn(exlude))
-                                                      .fetchInto(ExistentialNetworkRecord.class)
+                                 records.addAll(create.selectFrom(EDGE)
+                                                      .where(EDGE.INFERENCE.isNull())
+                                                      .and(EDGE.WORKSPACE.isNull())
+                                                      .and(EDGE.ID.notIn(exlude))
+                                                      .fetchInto(EdgeRecord.class)
                                                       .stream()
                                                       .collect(Collectors.toList()));
                              } else {

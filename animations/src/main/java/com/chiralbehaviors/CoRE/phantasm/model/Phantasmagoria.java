@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.utils.English;
@@ -97,21 +97,21 @@ public class Phantasmagoria {
     }
 
     public static class NetworkAuthorization {
-        private final ExistentialNetworkAuthorizationRecord auth;
+        private final EdgeAuthorizationRecord auth;
         private final Aspect                                child;
         private final String                                fieldName;
         private final FacetRecord                           parent;
         private final Relationship                          relationship;
 
         public NetworkAuthorization(String fieldName, DSLContext create,
-                                    ExistentialNetworkAuthorizationRecord auth,
+                                    EdgeAuthorizationRecord auth,
                                     Aspect child) {
             this(fieldName, auth, resolveFacet(create, auth.getParent()),
                  resolve(create, auth.getRelationship()), child);
         }
 
         public NetworkAuthorization(String fieldName,
-                                    ExistentialNetworkAuthorizationRecord auth,
+                                    EdgeAuthorizationRecord auth,
                                     FacetRecord parent,
                                     Relationship relationship, Aspect child) {
             this.fieldName = fieldName;
@@ -121,7 +121,7 @@ public class Phantasmagoria {
             this.child = child;
         }
 
-        public ExistentialNetworkAuthorizationRecord getAuth() {
+        public EdgeAuthorizationRecord getAuth() {
             return auth;
         }
 

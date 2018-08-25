@@ -22,8 +22,8 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET_PROPERTY;
 
@@ -42,8 +42,8 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -93,10 +93,10 @@ public class PhantasmModelImpl implements PhantasmModel {
                                         ExistentialDomain domain) {
         SelectOnConditionStep<Record> statement = create.selectDistinct(EXISTENTIAL.fields())
                                                         .from(EXISTENTIAL)
-                                                        .join(EXISTENTIAL_NETWORK)
-                                                        .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                        .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                        .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID));
+                                                        .join(EDGE)
+                                                        .on(EDGE.PARENT.equal(parent.getId()))
+                                                        .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                        .and(EDGE.CHILD.equal(EXISTENTIAL.ID));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }
@@ -116,12 +116,12 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
+    public List<EdgeRecord> getChildrenLinks(ExistentialRuleform parent,
                                                            Relationship relationship) {
 
-        return create.selectFrom(EXISTENTIAL_NETWORK)
-                     .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+        return create.selectFrom(EDGE)
+                     .where(EDGE.PARENT.equal(parent.getId()))
+                     .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
                      .fetch();
     }
 
@@ -131,10 +131,10 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                      ExistentialDomain domain) {
         SelectOnConditionStep<Record> statement = create.selectDistinct(EXISTENTIAL.fields())
                                                         .from(EXISTENTIAL)
-                                                        .join(EXISTENTIAL_NETWORK)
-                                                        .on(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                                                        .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                                                        .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID));
+                                                        .join(EDGE)
+                                                        .on(EDGE.PARENT.equal(parent))
+                                                        .and(EDGE.RELATIONSHIP.equal(relationship))
+                                                        .and(EDGE.CHILD.equal(EXISTENTIAL.ID));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }
@@ -159,8 +159,8 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public EdgePropertyRecord getEdgeProperties(ExistentialNetworkAuthorizationRecord auth,
-                                                ExistentialNetworkRecord edge) {
+    public EdgePropertyRecord getEdgeProperties(EdgeAuthorizationRecord auth,
+                                                EdgeRecord edge) {
         return create.selectFrom(EDGE_PROPERTY)
                      .where(EDGE_PROPERTY.EDGE.equal(edge.getId()))
                      .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
@@ -169,16 +169,16 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public EdgePropertyRecord getEdgeProperties(ExistentialRuleform parent,
-                                                ExistentialNetworkAuthorizationRecord auth,
+                                                EdgeAuthorizationRecord auth,
                                                 ExistentialRuleform child) {
         Record fetched = create.select(EDGE_PROPERTY.fields())
                                .from(EDGE_PROPERTY)
-                               .join(EXISTENTIAL_NETWORK)
-                               .on(EDGE_PROPERTY.EDGE.equal(EXISTENTIAL_NETWORK.ID))
+                               .join(EDGE)
+                               .on(EDGE_PROPERTY.EDGE.equal(EDGE.ID))
                                .and(EDGE_PROPERTY.AUTH.equal(auth.getId()))
-                               .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(auth.getRelationship()))
-                               .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
+                               .where(EDGE.PARENT.equal(parent.getId()))
+                               .and(EDGE.RELATIONSHIP.equal(auth.getRelationship()))
+                               .and(EDGE.CHILD.equal(child.getId()))
                                .fetchOne();
         return fetched == null ? null : fetched.into(EdgePropertyRecord.class);
     }
@@ -219,20 +219,20 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                  ExistentialDomain domain) {
         Record result = domain != null ? create.selectDistinct(EXISTENTIAL.fields())
                                                .from(EXISTENTIAL)
-                                               .join(EXISTENTIAL_NETWORK)
-                                               .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                               .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                               .join(EDGE)
+                                               .on(EDGE.PARENT.equal(parent.getId()))
+                                               .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                               .and(EDGE.CHILD.equal(EXISTENTIAL.ID))
                                                .and(EXISTENTIAL.DOMAIN.equal(domain))
-                                               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                               .and(EDGE.INFERENCE.isNull())
                                                .fetchOne()
                                        : create.selectDistinct(EXISTENTIAL.fields())
                                                .from(EXISTENTIAL)
-                                               .join(EXISTENTIAL_NETWORK)
-                                               .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                               .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                               .join(EDGE)
+                                               .on(EDGE.PARENT.equal(parent.getId()))
+                                               .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                               .and(EDGE.CHILD.equal(EXISTENTIAL.ID))
+                                               .and(EDGE.INFERENCE.isNull())
                                                .fetchOne();
         ;
         if (result == null) {
@@ -243,19 +243,19 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public ExistentialNetworkRecord getImmediateChildLink(ExistentialRuleform parent,
+    public EdgeRecord getImmediateChildLink(ExistentialRuleform parent,
                                                           Relationship relationship,
                                                           ExistentialRuleform child) {
-        ExistentialNetworkRecord result = create.selectFrom(EXISTENTIAL_NETWORK)
-                                                .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
-                                                .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+        EdgeRecord result = create.selectFrom(EDGE)
+                                                .where(EDGE.PARENT.equal(parent.getId()))
+                                                .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                .and(EDGE.CHILD.equal(child.getId()))
+                                                .and(EDGE.INFERENCE.isNull())
                                                 .fetchOne();
         if (result == null) {
             return null;
         }
-        return result.into(ExistentialNetworkRecord.class);
+        return result.into(EdgeRecord.class);
     }
 
     @Override
@@ -267,30 +267,30 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
+    public List<EdgeRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
                                                                     Relationship relationship,
                                                                     ExistentialDomain domain) {
-        Result<Record> result = domain != null ? create.selectDistinct(EXISTENTIAL_NETWORK.fields())
-                                                       .from(EXISTENTIAL_NETWORK)
+        Result<Record> result = domain != null ? create.selectDistinct(EDGE.fields())
+                                                       .from(EDGE)
                                                        .join(EXISTENTIAL)
                                                        .on(EXISTENTIAL.DOMAIN.equal(domain))
-                                                       .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                                                       .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                       .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                       .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                       .and(EXISTENTIAL.ID.equal(EDGE.CHILD))
+                                                       .where(EDGE.PARENT.equal(parent.getId()))
+                                                       .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                       .and(EDGE.INFERENCE.isNull())
                                                        .fetch()
-                                               : create.selectDistinct(EXISTENTIAL_NETWORK.fields())
-                                                       .from(EXISTENTIAL_NETWORK)
+                                               : create.selectDistinct(EDGE.fields())
+                                                       .from(EDGE)
                                                        .join(EXISTENTIAL)
-                                                       .on(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
-                                                       .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                       .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                       .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                                       .on(EXISTENTIAL.ID.equal(EDGE.CHILD))
+                                                       .where(EDGE.PARENT.equal(parent.getId()))
+                                                       .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                       .and(EDGE.INFERENCE.isNull())
                                                        .fetch();
         if (result == null) {
             return null;
         }
-        return result.into(ExistentialNetworkRecord.class);
+        return result.into(EdgeRecord.class);
     }
 
     @Override
@@ -307,48 +307,48 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
+    public EdgeRecord getImmediateLink(ExistentialRuleform parent,
                                                      Relationship relationship,
                                                      ExistentialRuleform child) {
-        ExistentialNetworkRecord result = create.selectFrom(EXISTENTIAL_NETWORK)
-                                                .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
-                                                .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+        EdgeRecord result = create.selectFrom(EDGE)
+                                                .where(EDGE.PARENT.equal(parent.getId()))
+                                                .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                .and(EDGE.CHILD.equal(child.getId()))
+                                                .and(EDGE.INFERENCE.isNull())
                                                 .fetchOne();
         if (result == null) {
             return null;
         }
-        return result.into(ExistentialNetworkRecord.class);
+        return result.into(EdgeRecord.class);
     }
 
     @Override
-    public ExistentialNetworkAuthorizationRecord getNetworkAuthorization(FacetRecord aspect,
+    public EdgeAuthorizationRecord getNetworkAuthorization(FacetRecord aspect,
                                                                          Relationship relationship,
                                                                          boolean includeGrouping) {
 
-        SelectConditionStep<ExistentialNetworkAuthorizationRecord> and = create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(aspect.getId()))
-                                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()));
+        SelectConditionStep<EdgeAuthorizationRecord> and = create.selectFrom(EDGE_AUTHORIZATION)
+                                                                               .where(EDGE_AUTHORIZATION.PARENT.equal(aspect.getId()))
+                                                                               .and(EDGE_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()));
 
         if (!includeGrouping) {
-            and = and.and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull());
+            and = and.and(EDGE_AUTHORIZATION.AUTHORITY.isNull());
         }
         return and.fetchSingle();
     }
 
     @Override
-    public List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
+    public List<EdgeAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
                                                                                 boolean includeGrouping) {
 
-        SelectConditionStep<ExistentialNetworkAuthorizationRecord> and = create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(aspect.getId()));
+        SelectConditionStep<EdgeAuthorizationRecord> and = create.selectFrom(EDGE_AUTHORIZATION)
+                                                                               .where(EDGE_AUTHORIZATION.PARENT.equal(aspect.getId()));
 
         if (!includeGrouping) {
-            and = and.and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull());
+            and = and.and(EDGE_AUTHORIZATION.AUTHORITY.isNull());
         }
         return and.fetch()
-                  .into(ExistentialNetworkAuthorizationRecord.class);
+                  .into(EdgeAuthorizationRecord.class);
     }
 
     @Override
@@ -357,10 +357,10 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                    ExistentialDomain domain) {
 
         SelectConditionStep<ExistentialRecord> statement = create.selectFrom(EXISTENTIAL)
-                                                                 .whereNotExists(create.selectFrom(EXISTENTIAL_NETWORK)
-                                                                                       .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                                                       .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                                                       .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID)));
+                                                                 .whereNotExists(create.selectFrom(EDGE)
+                                                                                       .where(EDGE.PARENT.equal(parent.getId()))
+                                                                                       .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                                                       .and(EDGE.CHILD.equal(EXISTENTIAL.ID)));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }
@@ -390,11 +390,11 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                             ExistentialDomain domain) {
         SelectConditionStep<Record> statement = create.selectDistinct(EXISTENTIAL.fields())
                                                       .from(EXISTENTIAL)
-                                                      .join(EXISTENTIAL_NETWORK)
-                                                      .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                                      .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+                                                      .join(EDGE)
+                                                      .on(EDGE.PARENT.equal(parent.getId()))
+                                                      .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+                                                      .and(EDGE.CHILD.equal(EXISTENTIAL.ID))
+                                                      .where(EXISTENTIAL.ID.equal(EDGE.CHILD));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }
@@ -420,7 +420,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                           aspect.getClassification())) {
             UUID inverseRelationship = ((Relationship) model.records()
                                                             .resolve(aspect.getClassifier())).getInverse();
-            Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = link(ruleform.getId(),
+            Tuple<EdgeRecord, EdgeRecord> links = link(ruleform.getId(),
                                                                                    aspect.getClassifier(),
                                                                                    aspect.getClassification(),
                                                                                    inverseRelationship);
@@ -435,34 +435,34 @@ public class PhantasmModelImpl implements PhantasmModel {
     public boolean isAccessible(UUID parent, UUID relationship, UUID child) {
         assert parent != null && relationship != null && child != null;
         return !ZERO.equals(create.selectCount()
-                                  .from(EXISTENTIAL_NETWORK)
-                                  .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                                  .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(child))
-                                  .and(EXISTENTIAL_NETWORK.CHILD.notEqual(parent))
+                                  .from(EDGE)
+                                  .where(EDGE.PARENT.equal(parent))
+                                  .and(EDGE.RELATIONSHIP.equal(relationship))
+                                  .and(EDGE.CHILD.equal(child))
+                                  .and(EDGE.CHILD.notEqual(parent))
                                   .fetchOne()
                                   .value1());
     }
 
     @Override
-    public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(ExistentialRuleform parent,
+    public Tuple<EdgeRecord, EdgeRecord> link(ExistentialRuleform parent,
                                                                           Relationship r,
                                                                           ExistentialRuleform child) {
         return link(parent.getId(), r.getId(), child.getId(), r.getInverse());
     }
 
-    public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(UUID parent,
+    public Tuple<EdgeRecord, EdgeRecord> link(UUID parent,
                                                                           UUID r,
                                                                           UUID child,
                                                                           UUID inverseR) {
-        ExistentialNetworkRecord forward = model.records()
+        EdgeRecord forward = model.records()
                                                 .newExistentialNetwork();
         forward.setParent(parent);
         forward.setRelationship(r);
         forward.setChild(child);
         forward.insert();
 
-        ExistentialNetworkRecord inverse = model.records()
+        EdgeRecord inverse = model.records()
                                                 .newExistentialNetwork();
         inverse.setParent(child);
         inverse.setRelationship(inverseR);
@@ -484,30 +484,30 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public void unlink(ExistentialRuleform parent, Relationship relationship,
                        ExistentialRuleform child) {
-        create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-              .and(EXISTENTIAL_NETWORK.CHILD.equal(child.getId()))
+        create.deleteFrom(EDGE)
+              .where(EDGE.PARENT.equal(parent.getId()))
+              .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+              .and(EDGE.CHILD.equal(child.getId()))
               .execute();
-        create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.PARENT.equal(child.getId()))
-              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
-              .and(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
+        create.deleteFrom(EDGE)
+              .where(EDGE.PARENT.equal(child.getId()))
+              .and(EDGE.RELATIONSHIP.equal(relationship.getInverse()))
+              .and(EDGE.CHILD.equal(parent.getId()))
               .execute();
     }
 
     @Override
     public void unlinkImmediate(ExistentialRuleform parent,
                                 Relationship relationship) {
-        create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-              .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+        create.deleteFrom(EDGE)
+              .where(EDGE.PARENT.equal(parent.getId()))
+              .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
+              .and(EDGE.INFERENCE.isNull())
               .execute();
-        create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.CHILD.equal(parent.getId()))
-              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
-              .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+        create.deleteFrom(EDGE)
+              .where(EDGE.CHILD.equal(parent.getId()))
+              .and(EDGE.RELATIONSHIP.equal(relationship.getInverse()))
+              .and(EDGE.INFERENCE.isNull())
               .execute();
     }
 
@@ -518,10 +518,10 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                              ExistentialDomain domain) {
         SelectConditionStep<Record> statement = create.select(EXISTENTIAL.fields())
                                                       .from(EXISTENTIAL,
-                                                            EXISTENTIAL_NETWORK)
-                                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+                                                            EDGE)
+                                                      .where(EDGE.PARENT.equal(parent))
+                                                      .and(EDGE.RELATIONSHIP.equal(relationship))
+                                                      .and(EXISTENTIAL.ID.equal(EDGE.CHILD));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }
@@ -540,11 +540,11 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                            ExistentialDomain domain) {
         SelectConditionStep<Record> statement = create.select(EXISTENTIAL.fields())
                                                       .from(EXISTENTIAL,
-                                                            EXISTENTIAL_NETWORK)
-                                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+                                                            EDGE)
+                                                      .where(EDGE.PARENT.equal(parent))
+                                                      .and(EDGE.RELATIONSHIP.equal(relationship))
+                                                      .and(EDGE.INFERENCE.isNull())
+                                                      .and(EXISTENTIAL.ID.equal(EDGE.CHILD));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }
@@ -563,11 +563,11 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                       ExistentialDomain domain) {
         SelectConditionStep<Record> statement = create.select(EXISTENTIAL.fields())
                                                       .from(EXISTENTIAL,
-                                                            EXISTENTIAL_NETWORK)
-                                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent))
-                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship))
-                                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD));
+                                                            EDGE)
+                                                      .where(EDGE.PARENT.equal(parent))
+                                                      .and(EDGE.RELATIONSHIP.equal(relationship))
+                                                      .and(EDGE.INFERENCE.isNull())
+                                                      .and(EXISTENTIAL.ID.equal(EDGE.CHILD));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
         }

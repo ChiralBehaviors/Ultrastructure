@@ -34,7 +34,7 @@ import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -477,7 +477,7 @@ public class PhantasmCRUD {
                                                                 auth.getAuth(),
                                                                 child);
         if (properties == null) {
-            ExistentialNetworkRecord edge = model.getPhantasmModel()
+            EdgeRecord edge = model.getPhantasmModel()
                                                  .getImmediateChildLink(parent,
                                                                         auth.getRelationship(),
                                                                         child);

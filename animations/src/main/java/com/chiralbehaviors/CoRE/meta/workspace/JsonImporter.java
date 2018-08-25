@@ -37,8 +37,8 @@ import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
@@ -302,7 +302,7 @@ public class JsonImporter {
 
     private void load(String name, Constraint constraint, FacetRecord auth,
                       Map<String, FacetLoad> loaded) {
-        ExistentialNetworkAuthorizationRecord authorization = model.records()
+        EdgeAuthorizationRecord authorization = model.records()
                                                                    .newExistentialNetworkAuthorization();
         authorization.setName(name);
         authorization.setParent(auth.getId());
@@ -393,7 +393,7 @@ public class JsonImporter {
                                              .resolve(resolve(edge.r));
             ExistentialRuleform child = model.records()
                                              .resolve(resolve(edge.c));
-            Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link = model.getPhantasmModel()
+            Tuple<EdgeRecord, EdgeRecord> link = model.getPhantasmModel()
                                                                                   .link(parent,
                                                                                         relationship,
                                                                                         child);
@@ -618,7 +618,7 @@ public class JsonImporter {
     }
 
     private void resolveChild(Constraint constraint,
-                              ExistentialNetworkAuthorizationRecord authorization,
+                              EdgeAuthorizationRecord authorization,
                               Map<String, FacetLoad> loaded) {
         FacetLoad resolved = loaded.get(constraint.child);
         if (resolved != null) {

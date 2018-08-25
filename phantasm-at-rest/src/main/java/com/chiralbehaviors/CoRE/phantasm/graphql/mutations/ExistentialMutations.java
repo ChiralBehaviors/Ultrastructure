@@ -25,9 +25,6 @@ import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
@@ -54,10 +51,6 @@ public interface ExistentialMutations {
     @GraphQLField
     Agency createAgency(@NotNull @GraphQLName("state") ExistentialState state,
                         DataFetchingEnvironment env);
-
-    @GraphQLField
-    Attribute createAttribute(@NotNull @GraphQLName("state") AttributeState state,
-                              DataFetchingEnvironment env);
 
     @GraphQLField
     Interval createInterval(@NotNull @GraphQLName("state") ExistentialState state,
@@ -118,10 +111,6 @@ public interface ExistentialMutations {
     @GraphQLField
     Agency updateAgency(@NotNull @GraphQLName("state") ExistentialUpdateState state,
                         DataFetchingEnvironment env);
-
-    @GraphQLField
-    Attribute updateAttribute(@NotNull @GraphQLName("state") AttributeUpdateState state,
-                              DataFetchingEnvironment env);
 
     @GraphQLField
     Interval updateInterval(@NotNull @GraphQLName("state") ExistentialUpdateState state,

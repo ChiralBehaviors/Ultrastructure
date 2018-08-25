@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -95,12 +96,12 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
     }
 
     public static Optional<AuthorizedPrincipal> validate(RequestCredentials requestCredentials,
-                                                         ExistentialAttributeRecord accessToken,
+                                                         FacetPropertyRecord accessToken,
                                                          Model model) {
         // Validate the credential
         Credential credential;
         try {
-            credential = OBJECT_MAPPER.treeToValue(accessToken.getJsonValue(),
+            credential = OBJECT_MAPPER.treeToValue(accessToken.getProperties(),
                                                    Credential.class);
         } catch (JsonProcessingException e) {
             log.warn("Cannot deserialize access token {}", accessToken);
@@ -151,7 +152,7 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
     }
 
     private static AuthorizedPrincipal principalFrom(Agency agency,
-                                                     ExistentialAttributeRecord accessToken,
+                                                     FacetPropertyRecord accessToken,
                                                      Model model) {
         Credential credential;
         try {

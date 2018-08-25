@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 import static org.jooq.impl.DSL.name;
@@ -71,7 +71,7 @@ import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
+import com.chiralbehaviors.CoRE.jooq.tables.Edge;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -544,7 +544,7 @@ public class ModelImpl implements Model {
         List<UUID> roles = agencies.stream()
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
+        Edge membership = EDGE.as(MEMBERSHIP);
         CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
                                                                   .as(create.select(membership.field(membership.CHILD))
                                                                             .from(membership)
@@ -557,12 +557,12 @@ public class ModelImpl implements Model {
                                  .selectCount()
                                  .from(EXISTENTIAL)
                                  .where(EXISTENTIAL.ID.equal(intrinsic))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
+                                 .andNotExists(create.select(EDGE.CHILD)
+                                                     .from(EDGE)
+                                                     .where(EDGE.PARENT.in(create.selectFrom(groups))
+                                                                                      .or(EDGE.PARENT.in(roles)))
+                                                     .and(EDGE.RELATIONSHIP.equal(permission.getId()))
+                                                     .and(EDGE.CHILD.eq(EXISTENTIAL.ID)))
                                  .fetchOne()
                                  .value1());
     }

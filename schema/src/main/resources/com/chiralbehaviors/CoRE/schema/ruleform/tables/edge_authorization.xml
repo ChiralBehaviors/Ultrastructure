@@ -8,12 +8,11 @@
 
 	<changeSet author="hhildebrand" id="2.0.0">
 		<createTable schemaName="ruleform"
-			tableName="existential_network_authorization">
+			tableName="edge_authorization">
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="existential_network_authorization_pkey"
-					nullable="false" />
+					primaryKeyName="edge_authorization_pkey" nullable="false" />
 			</column>
 			<column name="name" type="text" />
 			<column name="parent" type="uuid">
@@ -39,83 +38,77 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
-			constraintName="existential_network_authorization_unique_key"
-			deferrable="false" disabled="false" initiallyDeferred="false"
-			tableName="existential_network_authorization" />
+			constraintName="edge_authorization_unique_key" deferrable="false"
+			disabled="false" initiallyDeferred="false"
+			tableName="edge_authorization" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="parent"
-			baseTableName="existential_network_authorization"
-			constraintName="existential_network_authorization_parent_fkey"
-			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			baseColumnNames="parent" baseTableName="edge_authorization"
+			constraintName="edge_authorization_parent_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="facet" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="relationship"
-			baseTableName="existential_network_authorization"
-			constraintName="existential_network_authorization_relationship_fkey"
+			baseColumnNames="relationship" baseTableName="edge_authorization"
+			constraintName="edge_authorization_relationship_fkey"
 			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="child"
-			baseTableName="existential_network_authorization"
-			constraintName="existential_network_authorization_child_fkey"
-			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			baseColumnNames="child" baseTableName="edge_authorization"
+			constraintName="edge_authorization_child_fkey" deferrable="false"
+			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="facet" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="authority"
-			baseTableName="existential_network_authorization"
-			constraintName="existential_network_authorization_grouping_agency_fkey"
+			baseColumnNames="authority" baseTableName="edge_authorization"
+			constraintName="edge_authorization_grouping_agency_fkey"
 			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="updated_by"
-			baseTableName="existential_network_authorization"
-			constraintName="existential_network_authorization_updated_by_fkey"
+			baseColumnNames="updated_by" baseTableName="edge_authorization"
+			constraintName="edge_authorization_updated_by_fkey"
 			deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace"
-			baseTableName="existential_network_authorization"
-			constraintName="existential_network_authorization_workspace_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			baseColumnNames="workspace" baseTableName="edge_authorization"
+			constraintName="edge_authorization_workspace_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql><![CDATA[
-        ALTER TABLE existential_network_authorization ADD CONSTRAINT valid_network_auth_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
-        ALTER TABLE existential_network_authorization ADD CONSTRAINT valid_network_auth_default_props_json_schmema CHECK (validate_json_schema(schema, default_properties));
-        CREATE INDEX edge_schema_idx ON existential_network_authorization USING gin(schema jsonb_path_ops);
+        ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
+        ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_default_props_json_schmema CHECK (validate_json_schema(schema, default_properties));
+        CREATE INDEX edge_schema_idx ON edge_authorization USING gin(schema jsonb_path_ops);
         ]]>
 		</sql>
 
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_relationship_fkey_idx"
-			tableName="existential_network_authorization" unique="false">
+			indexName="edge_authorization_relationship_fkey_idx"
+			tableName="edge_authorization" unique="false">
 			<column name="relationship" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_child_fkey_idx"
-			tableName="existential_network_authorization" unique="false">
+			indexName="edge_authorization_child_fkey_idx"
+			tableName="edge_authorization" unique="false">
 			<column name="child" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_updated_by_fkey_idx"
-			tableName="existential_network_authorization" unique="false">
+			indexName="edge_authorization_updated_by_fkey_idx"
+			tableName="edge_authorization" unique="false">
 			<column name="updated_by" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_workspace_fkey_idx"
-			tableName="existential_network_authorization" unique="false">
+			indexName="edge_authorization_workspace_fkey_idx"
+			tableName="edge_authorization" unique="false">
 			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authorization_authority_fkey_idx"
-			tableName="existential_network_authorization" unique="false">
+			indexName="edge_authorization_authority_fkey_idx"
+			tableName="edge_authorization" unique="false">
 			<column name="authority" />
 		</createIndex>
 	</changeSet>

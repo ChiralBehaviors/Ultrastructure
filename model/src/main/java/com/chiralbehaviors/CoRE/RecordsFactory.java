@@ -21,10 +21,10 @@
 package com.chiralbehaviors.CoRE;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
@@ -58,9 +58,9 @@ import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -271,25 +271,25 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialNetworkRecord newExistentialNetwork() {
-        ExistentialNetworkRecord record = create().newRecord(EXISTENTIAL_NETWORK);
+    default EdgeRecord newExistentialNetwork() {
+        EdgeRecord record = create().newRecord(EDGE);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
-    default ExistentialNetworkRecord newExistentialNetwork(ExistentialRuleform parent,
-                                                           Relationship relationship,
-                                                           ExistentialRuleform child) {
-        ExistentialNetworkRecord record = newExistentialNetwork();
+    default EdgeRecord newExistentialNetwork(ExistentialRuleform parent,
+                                             Relationship relationship,
+                                             ExistentialRuleform child) {
+        EdgeRecord record = newExistentialNetwork();
         record.setParent(parent.getId());
         record.setRelationship(relationship.getId());
         record.setChild(child.getId());
         return record;
     }
 
-    default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
-        ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
+    default EdgeAuthorizationRecord newExistentialNetworkAuthorization() {
+        EdgeAuthorizationRecord record = create().newRecord(EDGE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
@@ -634,14 +634,14 @@ public interface RecordsFactory {
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
                                                    Product definingProduct,
-                                                   ExistentialNetworkAuthorizationRecord record) {
+                                                   EdgeAuthorizationRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Network_Authorization);
     }
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
                                                    Product definingProduct,
-                                                   ExistentialNetworkRecord record) {
+                                                   EdgeRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Network);
     }

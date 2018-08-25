@@ -11,12 +11,12 @@
 	<include relativeToChangelogFile="true"
 		file="tables/network_inference.xml" />
 	<include relativeToChangelogFile="true"
-		file="tables/existential_network.xml" />
+		file="tables/edge.xml" />
 	<include relativeToChangelogFile="true" file="tables/facet.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/facet_property.xml" />
 	<include relativeToChangelogFile="true"
-		file="tables/existential_network_authorization.xml" />
+		file="tables/edge_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/edge_property.xml" />
 	<include relativeToChangelogFile="true"

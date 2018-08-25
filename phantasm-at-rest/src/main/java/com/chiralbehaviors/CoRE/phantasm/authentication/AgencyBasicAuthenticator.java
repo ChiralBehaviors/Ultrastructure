@@ -27,6 +27,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -46,19 +47,24 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
     private final static Logger log   = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     public static boolean authenticate(CoreUser user, String password) {
-        return BCrypt.checkpw(password, user.getPasswordHash());
+        return BCrypt.checkpw(password, user.get_Properties()
+                                            .getPasswordHash());
     }
 
     public static void resetPassword(CoreUser user, String newPassword) {
-        user.setPasswordHash(BCrypt.hashpw(newPassword,
-                                           BCrypt.gensalt(user.getPasswordRounds())));
+        CoreUserProperties properties = user.get_Properties();
+        properties.setPasswordHash(BCrypt.hashpw(newPassword,
+                                                 BCrypt.gensalt(properties.getPasswordRounds())));
+        user.set_Properties(properties);
     }
 
     public static void updatePassword(CoreUser user, String newPassword,
                                       String oldPassword) {
-        if (BCrypt.checkpw(oldPassword, user.getPasswordHash())) {
-            user.setPasswordHash(BCrypt.hashpw(newPassword,
-                                               BCrypt.gensalt(user.getPasswordRounds())));
+        CoreUserProperties properties = user.get_Properties();
+        if (BCrypt.checkpw(oldPassword, properties.getPasswordHash())) {
+            properties.setPasswordHash(BCrypt.hashpw(newPassword,
+                                                     BCrypt.gensalt(properties.getPasswordRounds())));
+            user.set_Properties(properties);
         }
     }
 
@@ -139,14 +145,14 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
 
     private boolean canLoginToInstance(CoreUser user, Model model) {
         return model.checkExistentialPermission(user.getRoles()
-                                         .stream()
-                                         .map(r -> r.getRuleform())
-                                         .map(e -> (Agency) e)
-                                         .collect(Collectors.toList()),
-                                     model.getCoreInstance()
-                                          .getRuleform(),
-                                     model.getKernel()
-                                          .getLOGIN_TO());
+                                                    .stream()
+                                                    .map(r -> r.getRuleform())
+                                                    .map(e -> (Agency) e)
+                                                    .collect(Collectors.toList()),
+                                                model.getCoreInstance()
+                                                     .getRuleform(),
+                                                model.getKernel()
+                                                     .getLOGIN_TO());
     }
 
     private Optional<AuthorizedPrincipal> noCapability(String username,

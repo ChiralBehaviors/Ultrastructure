@@ -21,12 +21,12 @@
 	<include relativeToChangelogFile="true"
 		file="views/network_inference.xml" />
 	<include relativeToChangelogFile="true"
-		file="views/existential_network.xml" />
+		file="views/edge.xml" />
 	<include relativeToChangelogFile="true" file="views/facet.xml" />
 	<include relativeToChangelogFile="true"
 		file="views/facet_property.xml" />
 	<include relativeToChangelogFile="true"
-		file="views/existential_network_authorization.xml" />
+		file="views/edge_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="views/edge_property.xml" />
 	<include relativeToChangelogFile="true"

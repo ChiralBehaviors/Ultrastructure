@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.ctx;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,7 +47,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLName;
 import graphql.schema.DataFetchingEnvironment;
@@ -204,7 +204,8 @@ public class WorkspaceContext extends ExistentialContext
         AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
                                                 oldPassword);
         // force reauthentication
-        currentUser.setAccessToken(new JsonNode[0]);
+        currentUser.get_Properties()
+                   .setAccessToken(Collections.emptyList());
         return currentUser;
     }
 

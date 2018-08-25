@@ -6,7 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hparry">
-        <createView viewName="existential_network_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="edge_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
             SELECT  
                 auth.id, 
                 auth.name,
@@ -24,7 +24,7 @@
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc
                 
-                from existential_network_authorization auth
+                from edge_authorization auth
                 join facet parent on auth.parent = parent.id
                 join facet child on auth.child = child.id
                 join existential classification on parent.classification = classification.id

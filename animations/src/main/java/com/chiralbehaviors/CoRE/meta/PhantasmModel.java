@@ -28,8 +28,8 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -78,7 +78,7 @@ public interface PhantasmModel {
      * @param relationship
      * @return
      */
-    List<ExistentialNetworkRecord> getChildrenLinks(ExistentialRuleform parent,
+    List<EdgeRecord> getChildrenLinks(ExistentialRuleform parent,
                                                     Relationship relationship);
 
     List<ExistentialRuleform> getChildrenUuid(UUID id, UUID inverse,
@@ -98,11 +98,11 @@ public interface PhantasmModel {
                                                      ExistentialRuleform classification,
                                                      ExistentialDomain existentialDomain);
 
-    EdgePropertyRecord getEdgeProperties(ExistentialNetworkAuthorizationRecord edgeAuth,
-                                         ExistentialNetworkRecord edge);
+    EdgePropertyRecord getEdgeProperties(EdgeAuthorizationRecord edgeAuth,
+                                         EdgeRecord edge);
 
     EdgePropertyRecord getEdgeProperties(ExistentialRuleform parent,
-                                         ExistentialNetworkAuthorizationRecord auth,
+                                         EdgeAuthorizationRecord auth,
                                          ExistentialRuleform child);
 
     FacetRecord getFacetDeclaration(Relationship classifier,
@@ -131,7 +131,7 @@ public interface PhantasmModel {
      * @param child
      * @return
      */
-    ExistentialNetworkRecord getImmediateChildLink(ExistentialRuleform parent,
+    EdgeRecord getImmediateChildLink(ExistentialRuleform parent,
                                                    Relationship relationship,
                                                    ExistentialRuleform child);
 
@@ -152,7 +152,7 @@ public interface PhantasmModel {
      * @param relationship
      * @return
      */
-    List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
+    List<EdgeRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
                                                              Relationship relationship,
                                                              ExistentialDomain domain);
 
@@ -171,11 +171,11 @@ public interface PhantasmModel {
                                                               ExistentialRuleform classification,
                                                               ExistentialDomain existentialDomain);
 
-    ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
+    EdgeRecord getImmediateLink(ExistentialRuleform parent,
                                               Relationship relationship,
                                               ExistentialRuleform child);
 
-    ExistentialNetworkAuthorizationRecord getNetworkAuthorization(FacetRecord aspect,
+    EdgeAuthorizationRecord getNetworkAuthorization(FacetRecord aspect,
                                                                   Relationship relationship,
                                                                   boolean includeGrouping);
 
@@ -185,7 +185,7 @@ public interface PhantasmModel {
      * @param includeGrouping
      * @return the list of network authorizations for this aspect
      */
-    List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
+    List<EdgeAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
                                                                          boolean includeGrouping);
 
     /**
@@ -238,7 +238,7 @@ public interface PhantasmModel {
      * @param r
      * @param child
      */
-    Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(ExistentialRuleform parent,
+    Tuple<EdgeRecord, EdgeRecord> link(ExistentialRuleform parent,
                                                                    Relationship r,
                                                                    ExistentialRuleform child);
 

@@ -22,6 +22,11 @@
 			</column>
 			<column name="properties" type="jsonb" />
 			<column name="authority" remarks="authority" type="uuid" />
+			<column name="updated"
+				defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+				type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
 			<column name="updated_by"
 				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
@@ -105,5 +110,14 @@
 			tableName="facet_property" unique="false">
 			<column name="workspace" />
 		</createIndex>
+		<sql>
+			DROP TRIGGER IF EXISTS facet_property_updated ON facet_property;
+			CREATE TRIGGER update_facet_property_timestamp BEFORE UPDATE ON
+			facet_property FOR
+			EACH ROW EXECUTE PROCEDURE updated();
+		</sql>
+		<rollback>
+			DROP TRIGGER facet_property_updated ON facet_property;
+		</rollback>
 	</changeSet>
 </databaseChangeLog>

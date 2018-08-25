@@ -25,6 +25,11 @@
 			</column>
 			<column name="properties" type="jsonb" />
 			<column name="authority" remarks="authority" type="uuid" />
+			<column name="updated"
+				defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+				type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
 			<column name="updated_by"
 				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
@@ -43,14 +48,13 @@
 			baseColumnNames="auth" baseTableName="edge_property"
 			constraintName="edge_property_authorization_fkey" deferrable="false"
 			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id"
-			referencedTableName="existential_network_authorization" />
+			referencedColumnNames="id" referencedTableName="edge_authorization" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="edge" baseTableName="edge_property"
 			constraintName="edge_property_edge_fkey" deferrable="false"
 			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential_network" />
+			referencedColumnNames="id" referencedTableName="edge" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="edge_property"
@@ -74,7 +78,7 @@
             CREATE OR REPLACE FUNCTION validate_edge_props(data jsonb, aid uuid) RETURNS boolean AS 
             $f$
             BEGIN
-              IF ( SELECT validate_json_schema(a.schema, data) FROM existential_network_authorization a WHERE a.id = aid )
+              IF ( SELECT validate_json_schema(a.schema, data) FROM edge_authorization a WHERE a.id = aid )
                 THEN RETURN TRUE;
                 ELSE RETURN FALSE;
               END IF;
@@ -109,5 +113,15 @@
 			tableName="edge_property" unique="false">
 			<column name="workspace" />
 		</createIndex>
+
+		<sql>
+			DROP TRIGGER IF EXISTS edge_property_updated ON edge_property;
+			CREATE TRIGGER update_edge_property_timestamp BEFORE UPDATE ON
+			edge_property FOR
+			EACH ROW EXECUTE PROCEDURE updated();
+		</sql>
+		<rollback>
+			DROP TRIGGER edge_property_updated ON edge_property;
+		</rollback>
 	</changeSet>
 </databaseChangeLog>

@@ -19,8 +19,7 @@
  */
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
-
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+ 
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -45,8 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform; 
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;

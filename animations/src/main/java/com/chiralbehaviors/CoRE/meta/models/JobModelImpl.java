@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -1423,10 +1423,10 @@ public class JobModelImpl implements JobModel {
     private SelectConditionStep<Record1<UUID>> inferenceSubQuery(UUID classifier,
                                                                  UUID classification) {
         return model.create()
-                    .select(EXISTENTIAL_NETWORK.CHILD)
-                    .from(EXISTENTIAL_NETWORK)
-                    .where(EXISTENTIAL_NETWORK.PARENT.equal(classification))
-                    .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(classifier));
+                    .select(EDGE.CHILD)
+                    .from(EDGE)
+                    .where(EDGE.PARENT.equal(classification))
+                    .and(EDGE.RELATIONSHIP.equal(classifier));
     }
 
     private void insert(JobRecord child, JobRecord parent,

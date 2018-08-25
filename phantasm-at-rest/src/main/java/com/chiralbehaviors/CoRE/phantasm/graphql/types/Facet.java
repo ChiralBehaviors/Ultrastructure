@@ -119,16 +119,6 @@ public class Facet {
     }
 
     @GraphQLField
-    public List<AttributeAuthorization> getAttributes(DataFetchingEnvironment env) {
-        return WorkspaceSchema.ctx(env)
-                              .getPhantasmModel()
-                              .getAttributeAuthorizations(record, false)
-                              .stream()
-                              .map(r -> new AttributeAuthorization(r))
-                              .collect(Collectors.toList());
-    }
-
-    @GraphQLField
     public Agency getAuthority(DataFetchingEnvironment env) {
         if (record.getAuthority() == null) {
             return null;

@@ -319,8 +319,8 @@
                     "Login": {
                         "type": "string"
                     },
-                    "PassworRounds": {
-                        "type": "string"
+                    "PasswordRounds": {
+                        "type": "integer"
                     },
                     "PasswordHash": {
                         "type": "string"

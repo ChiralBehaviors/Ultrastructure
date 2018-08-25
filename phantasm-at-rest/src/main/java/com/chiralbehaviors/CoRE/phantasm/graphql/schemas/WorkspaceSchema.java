@@ -40,6 +40,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Classification;
@@ -52,7 +53,6 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
@@ -68,7 +68,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
@@ -244,10 +243,6 @@ public class WorkspaceSchema {
                                                 processor.getObjectBuilder(Agency.class));
         processor.registerType(new ZtypeFunction(Agency.class, agencyType));
 
-        GraphQLObjectType attrType = phantasm(resolved,
-                                              processor.getObjectBuilder(Attribute.class));
-        processor.registerType(new ZtypeFunction(Attribute.class, attrType));
-
         GraphQLObjectType intervalType = phantasm(resolved,
                                                   processor.getObjectBuilder(Interval.class));
         processor.registerType(new ZtypeFunction(Interval.class, intervalType));
@@ -280,8 +275,8 @@ public class WorkspaceSchema {
                                  Entry<FacetRecord, FacetFields> resolved) {
         typeBuilder.field(GraphQLFieldDefinition.newFieldDefinition()
                                                 .name(String.format("as%s",
-                                                                    WorkspacePresentation.toTypeName(resolved.getKey()
-                                                                                                             .getName())))
+                                                                    FacetFields.toTypeName(resolved.getKey()
+                                                                                                   .getName())))
                                                 .description(String.format("Cast to the %s facet",
                                                                            resolved.getKey()
                                                                                    .getName()))
@@ -303,8 +298,8 @@ public class WorkspaceSchema {
                                  Entry<FacetRecord, FacetFields> resolved) {
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
                                             .name(String.format("as%s",
-                                                                WorkspacePresentation.toTypeName(resolved.getKey()
-                                                                                                         .getName())))
+                                                                FacetFields.toTypeName(resolved.getKey()
+                                                                                               .getName())))
                                             .description(String.format("Cast to the %s facet",
                                                                        resolved.getKey()
                                                                                .getName()))
@@ -370,9 +365,9 @@ public class WorkspaceSchema {
         if (ws.getRuleform()
               .getId()
               .equals(WorkspaceAccessor.uuidOf(facetAnnotation.workspace()))) {
-            FacetRecord declaration = model.getPhantasmModel()
-                                           .getFacetDeclaration(scope.lookup(facetAnnotation.classifier()),
-                                                                scope.lookup(facetAnnotation.classification()));
+            FacetRecord declaration = model.records()
+                                           .findFacetRecord(scope.lookup(ReferenceType.Facet,
+                                                                         facetAnnotation.key()));
             return facet.equals(declaration);
 
         }

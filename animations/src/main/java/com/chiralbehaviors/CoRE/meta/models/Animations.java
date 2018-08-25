@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.PARENT_SEQUENCING_AUTHORIZATION;
@@ -45,7 +45,7 @@ import org.jooq.impl.DefaultRecordListener;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
@@ -185,7 +185,7 @@ public class Animations extends DefaultRecordListener {
         selfSequences.clear();
     }
 
-    private void delete(ExistentialNetworkRecord inference) {
+    private void delete(EdgeRecord inference) {
         inferNetwork = true;
     }
 
@@ -208,8 +208,8 @@ public class Animations extends DefaultRecordListener {
                         ctx -> insert((ExistentialRecord) ctx.record()));
         afterInsert.put(CHILD_SEQUENCING_AUTHORIZATION.recordType(),
                         ctx -> insert((ChildSequencingAuthorizationRecord) ctx.record()));
-        afterInsert.put(EXISTENTIAL_NETWORK.recordType(),
-                        ctx -> insert((ExistentialNetworkRecord) ctx.record()));
+        afterInsert.put(EDGE.recordType(),
+                        ctx -> insert((EdgeRecord) ctx.record()));
         afterInsert.put(NETWORK_INFERENCE.recordType(),
                         ctx -> insert((NetworkInferenceRecord) ctx.record()));
         afterInsert.put(PARENT_SEQUENCING_AUTHORIZATION.recordType(),
@@ -222,8 +222,8 @@ public class Animations extends DefaultRecordListener {
                         ctx -> modify((StatusCodeSequencingRecord) ctx.record()));
         afterDelete.put(EXISTENTIAL.recordType(),
                         ctx -> delete((ExistentialRecord) ctx.record()));
-        afterDelete.put(EXISTENTIAL_NETWORK.recordType(),
-                        ctx -> delete((ExistentialNetworkRecord) ctx.record()));
+        afterDelete.put(EDGE.recordType(),
+                        ctx -> delete((EdgeRecord) ctx.record()));
         afterDelete.put(NETWORK_INFERENCE.recordType(),
                         ctx -> delete((NetworkInferenceRecord) ctx.record()));
 
@@ -233,7 +233,7 @@ public class Animations extends DefaultRecordListener {
         childSequences.add(pcsa);
     }
 
-    private void insert(ExistentialNetworkRecord a) {
+    private void insert(EdgeRecord a) {
         inferNetwork = true;
     }
 

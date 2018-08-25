@@ -7,12 +7,11 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<changeSet author="hhildebrand" id="2.0.0">
-		<createTable schemaName="ruleform"
-			tableName="existential_network">
+		<createTable schemaName="ruleform" tableName="edge">
 			<column name="workspace" type="uuid" />
 			<column name="id" type="uuid">
 				<constraints primaryKey="true"
-					primaryKeyName="existential_network_pkey" nullable="false" />
+					primaryKeyName="edge_pkey" nullable="false" />
 			</column>
 			<column name="parent" type="uuid">
 				<constraints nullable="false" />
@@ -37,98 +36,90 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
-			constraintName="existential_network_p_r_c_unique" deferrable="false"
-			disabled="false" initiallyDeferred="false"
-			tableName="existential_network" />
+			constraintName="edge_p_r_c_unique" deferrable="false"
+			disabled="false" initiallyDeferred="false" tableName="edge" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="child" baseTableName="existential_network"
-			constraintName="existential_network_child_fkey" deferrable="true"
+			baseColumnNames="child" baseTableName="edge"
+			constraintName="edge_child_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="parent" baseTableName="existential_network"
-			constraintName="existential_network_parent_fkey" deferrable="true"
+			baseColumnNames="parent" baseTableName="edge"
+			constraintName="edge_parent_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="relationship" baseTableName="existential_network"
-			constraintName="existential_network_relationship_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			baseColumnNames="relationship" baseTableName="edge"
+			constraintName="edge_relationship_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="updated_by" baseTableName="existential_network"
-			constraintName="existential_network_updated_by_fkey"
-			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
-			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="authority" baseTableName="existential_network"
-			constraintName="existential_network_authority_fkey" deferrable="true"
+			baseColumnNames="updated_by" baseTableName="edge"
+			constraintName="edge_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="premise1" baseTableName="existential_network"
-			constraintName="existential_network_premise1_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential_network" />
+			baseColumnNames="authority" baseTableName="edge"
+			constraintName="edge_authority_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="premise2" baseTableName="existential_network"
-			constraintName="existential_network_premise2_fkey" deferrable="true"
+			baseColumnNames="premise1" baseTableName="edge"
+			constraintName="edge_premise1_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential_network" />
+			referencedColumnNames="id" referencedTableName="edge" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="inference" baseTableName="existential_network"
-			constraintName="existential_network_inference_fkey" deferrable="true"
+			baseColumnNames="premise2" baseTableName="edge"
+			constraintName="edge_premise2_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="edge" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="inference" baseTableName="edge"
+			constraintName="edge_inference_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="network_inference" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="workspace" baseTableName="existential_network"
-			constraintName="existential_network_workspace_fkey" deferrable="true"
+			baseColumnNames="workspace" baseTableName="edge"
+			constraintName="edge_workspace_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_relationship_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_relationship_idx" tableName="edge" unique="false">
 			<column name="relationship" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_child_fky_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_child_fky_idx" tableName="edge" unique="false">
 			<column name="child" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_premise2_fky_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_premise2_fky_idx" tableName="edge" unique="false">
 			<column name="premise2" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_inference_fky_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_inference_fky_idx" tableName="edge" unique="false">
 			<column name="inference" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_workspace_fkey_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_workspace_fkey_idx" tableName="edge" unique="false">
 			<column name="workspace" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_updated_by_fkey_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_updated_by_fkey_idx" tableName="edge" unique="false">
 			<column name="updated_by" />
 		</createIndex>
 		<createIndex schemaName="ruleform"
-			indexName="existential_network_authority_fkey_idx"
-			tableName="existential_network" unique="false">
+			indexName="edge_authority_fkey_idx" tableName="edge" unique="false">
 			<column name="authority" />
 		</createIndex>
 	</changeSet>

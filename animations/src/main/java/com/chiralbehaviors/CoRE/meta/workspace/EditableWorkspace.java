@@ -24,8 +24,8 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -49,9 +49,9 @@ public interface EditableWorkspace extends WorkspaceAccessor {
 
     void add(EdgePropertyRecord attribute);
 
-    void add(ExistentialNetworkAuthorizationRecord ruleform);
+    void add(EdgeAuthorizationRecord ruleform);
 
-    void add(ExistentialNetworkRecord ruleform);
+    void add(EdgeRecord ruleform);
 
     void add(ExistentialRecord ruleform);
 

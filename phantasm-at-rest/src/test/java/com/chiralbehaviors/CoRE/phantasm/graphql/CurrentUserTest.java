@@ -38,6 +38,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
@@ -71,8 +72,10 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                       "My Role", "As a test dummy");
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
+        CoreUserProperties properties = new CoreUserProperties();
+        properties.setLogin(username);
+        properties.setPasswordRounds(10);
+        bob.set_Properties(properties);
         AgencyBasicAuthenticator.resetPassword(bob, password);
         AuthorizedPrincipal principal = new AuthorizedPrincipal((Agency) bob.getRuleform());
         Map<String, Object> variables = new HashMap<>();
@@ -115,8 +118,9 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertFalse(result.get("hasRole")
                           .asBoolean());
 
-        variables.put("roles", Collections.singletonList(UuidUtil.encode(myRole.getRuleform()
-                                                               .getId())));
+        variables.put("roles",
+                      Collections.singletonList(UuidUtil.encode(myRole.getRuleform()
+                                                                      .getId())));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($roles: [ID]!) { hasRoles(roles: $roles) }",
@@ -135,8 +139,9 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertTrue(result.get("hasRole")
                          .asBoolean());
 
-        variables.put("roles", Collections.singletonList(UuidUtil.encode(myRole.getRuleform()
-                                                               .getId())));
+        variables.put("roles",
+                      Collections.singletonList(UuidUtil.encode(myRole.getRuleform()
+                                                                      .getId())));
         result = model.executeAs(principal,
                                  () -> execute(schema,
                                                "query m($roles: [ID]!) { hasRoles(roles: $roles) }",
@@ -150,9 +155,10 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         variables.put("e", UuidUtil.encode(model.getCoreInstance()
                                                 .getRuleform()
                                                 .getId()));
-        variables.put("roles", Collections.singletonList(UuidUtil.encode(model.getKernel()
-                                                              .getLoginRole()
-                                                              .getId())));
+        variables.put("roles",
+                      Collections.singletonList(UuidUtil.encode(model.getKernel()
+                                                                     .getLoginRole()
+                                                                     .getId())));
 
         result = model.executeAs(principal,
                                  () -> execute(schema,

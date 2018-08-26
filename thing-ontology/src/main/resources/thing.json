@@ -311,12 +311,12 @@
                     "child": "kernel::AnyProduct"
                 },
                 "derivedFrom": {
-                    "card": "ONE",
+                    "card": "MANY",
                     "rel": "derivedFrom",
                     "child": "MavenArtifact"
                 },
                 "thing2Of": {
-                    "card": "ONE",
+                    "card": "MANY",
                     "rel": "thing2Of",
                     "child": "Thing2",
                     "infered": true

@@ -38,13 +38,14 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.RelationshipState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.StatusCodeState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.*;
 
 import graphql.ExecutionResult;
 import graphql.GraphQLError;
@@ -111,16 +112,6 @@ public class MetaSchemaTest extends AbstractModelTest {
 
         execute("mutation m($id: ID!) { removeAgency(id: $id) }", variables);
 
-        result = execute("mutation m { createAttribute(state: {name:\"foo\" notes:\"bar\"}) {id} }",
-                         variables);
-        variables.put("id", result.get("createAttribute")
-                                  .get("id")
-                                  .asText());
-        execute("mutation m($id: ID!) { updateAttribute(state: {id: $id notes:\"foo\"}) {id} }",
-                variables);
-
-        execute("mutation m($id: ID!) { removeAttribute(id: $id) }", variables);
-
         result = execute("mutation m { createInterval(state: {name:\"foo\" notes:\"bar\"}) {id} }",
                          variables);
         variables.put("id", result.get("createInterval")
@@ -186,14 +177,14 @@ public class MetaSchemaTest extends AbstractModelTest {
 
     @Test
     public void testExistentialQueries() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                                                model);
+        JsonImporter importer = JsonImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                                      model);
         definingProduct = importer.getWorkspace()
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
         ObjectNode data;
 
-        data = execute("{ agencies { id name description updatedBy { id } authority { id }  workspace { id } version } }",
+        data = execute("{ agencies { id name description updatedBy { id } authority { id } version } }",
                        variables);
         assertNotNull(data);
         variables.put("ids", ids(data.withArray("agencies")));
@@ -206,18 +197,6 @@ public class MetaSchemaTest extends AbstractModelTest {
         assertNotNull(data);
 
         data = execute("query q($id: ID!) { existential(id: $id) { id name description domain } }",
-                       variables);
-        assertNotNull(data);
-
-        data = execute("{ attributes { id name description keyed indexed valueType } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("ids", ids(data.withArray("attributes")));
-        data = execute("query q($ids: [ID]!) { attributes(ids: $ids) { id name description } }",
-                       variables);
-        assertNotNull(data);
-        variables.put("id", ids(data.withArray("attributes")).get(0));
-        data = execute("query q($id: ID!) { attribute(id: $id) { id name description } }",
                        variables);
         assertNotNull(data);
 
@@ -407,8 +386,8 @@ public class MetaSchemaTest extends AbstractModelTest {
 
     @Test
     public void testQueries() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                                                model);
+        JsonImporter importer = JsonImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                                      model);
         definingProduct = importer.getWorkspace()
                                   .getDefiningProduct();
         Map<String, Object> variables = new HashMap<>();
@@ -530,24 +509,15 @@ public class MetaSchemaTest extends AbstractModelTest {
         rState.getName();
         rState.getDescription();
         rState.getNotes();
-        
+
         StatusCodeState scState = new StatusCodeState(new HashMap<>());
-        scState.getAuthority(); 
+        scState.getAuthority();
         scState.getName();
         scState.getDescription();
         scState.getNotes();
         scState.getFailParent();
         scState.getPropagateChildren();
-        
-        AttributeState aState = new AttributeState(new HashMap<>());
-        aState.getAuthority(); 
-        aState.getName();
-        aState.getDescription();
-        aState.getNotes();
-        aState.getIndexed();
-        aState.getKeyed();
-        aState.getValueType();
-        
+
     }
 
     private ObjectNode execute(String query,

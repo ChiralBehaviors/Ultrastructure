@@ -39,8 +39,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
@@ -49,6 +49,8 @@ import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.test.mavenArtifactProperties.MavenArtifactProperties;
+import com.chiralbehaviors.CoRE.phantasm.test.thing1Properties.Thing1Properties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -65,33 +67,37 @@ public class FacetTypeTest extends AbstractModelTest {
 
     @Before
     public void initializeScope() throws IOException {
-        WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream("/thing.wsp"),
+        JsonImporter.manifest(FacetTypeTest.class.getResourceAsStream("/thing.json"),
                                    model);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testCreateAndMutate() throws Exception {
-        String[] newAliases = new String[] { "jones", "smith" };
+        List<String> newAliases = Arrays.asList(new String[] { "jones", "smith" });
         String newUri = "new iri";
 
         MavenArtifact artifact1 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "core", "core artifact");
-        artifact1.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact1.setArtifactID("core");
-        artifact1.setVersion("0.0.2-SNAPSHOT");
-        artifact1.setType("jar");
-
+        MavenArtifactProperties props = new MavenArtifactProperties();
+        props.setGroupId("com.chiralbehaviors.CoRE");
+        props.setArtifactId("core");
+        props.setVersion("0.0.2-SNAPSHOT");
+        props.setType("jar");
+        artifact1.set_Properties(props);
+        
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "animations",
                                                   "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-
+        props = new MavenArtifactProperties();
+        props.setGroupId("com.chiralbehaviors.CoRE");
+        props.setArtifactId("animations");
+        props.setVersion("0.0.2-SNAPSHOT");
+        props.setType("jar");
+        artifact2.set_Properties(props);
+        
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
         GraphQLSchema schema = new WorkspaceSchema().build(scope.getWorkspace(),
@@ -147,8 +153,9 @@ public class FacetTypeTest extends AbstractModelTest {
                                                .resolve(UuidUtil.decode((String) thing1Result.get("id"))));
         assertNotNull(thing1);
         assertEquals(artifact2, thing1.getDerivedFrom());
-        assertArrayEquals(newAliases, thing1.getAliases());
-        assertEquals(newUri, thing1.getURI());
+        assertEquals(newAliases.size(), thing1.get_Properties().getAliases().size());
+        assertTrue(newAliases.containsAll(thing1.get_Properties().getAliases()));
+        assertEquals(newUri, thing1.get_Properties().getURI());
 
         variables = new HashMap<>();
         variables.put("thing1", UuidUtil.encode(thing1.getRuleform()
@@ -213,31 +220,40 @@ public class FacetTypeTest extends AbstractModelTest {
                                         "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
                                         "Thingy", "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 ExistentialDomain.Location,
-                                                 "model", "model artifact");
-        artifact.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact.setArtifactID("model");
-        artifact.setVersion("0.0.2-SNAPSHOT");
-        artifact.setType("jar");
-
+        
+        MavenArtifact artifact1 = model.construct(MavenArtifact.class,
+                                                  ExistentialDomain.Location,
+                                                  "core", "core artifact");
+        MavenArtifactProperties props = new MavenArtifactProperties();
+        props.setGroupId("com.chiralbehaviors.CoRE");
+        props.setArtifactId("core");
+        props.setVersion("0.0.2-SNAPSHOT");
+        props.setType("jar");
+        artifact1.set_Properties(props);
+        
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "animations",
                                                   "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-
-        thing1.setAliases(new String[] { "smith", "jones" });
+        props = new MavenArtifactProperties();
+        props.setGroupId("com.chiralbehaviors.CoRE");
+        props.setArtifactId("animations");
+        props.setVersion("0.0.2-SNAPSHOT");
+        props.setType("jar");
+        artifact2.set_Properties(props);
+        
+        Thing1Properties thing1Props = new Thing1Properties();
+        
+        thing1Props.setAliases(Arrays.asList(new String[] { "smith", "jones" }));
         String uri = "http://example.com";
-        thing1.setURI(uri);
-        thing1.setDerivedFrom(artifact);
+        thing1Props.setURI(uri);
+        thing1.set_Properties(thing1Props);
+        
+        thing1.setDerivedFrom(artifact1);
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);
 
-        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact1);
         thing3.addDerivedFrom(artifact2);
 
         WorkspaceScope scope = model.getWorkspaceModel()

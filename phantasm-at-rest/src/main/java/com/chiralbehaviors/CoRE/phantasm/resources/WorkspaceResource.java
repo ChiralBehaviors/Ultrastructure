@@ -60,6 +60,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -171,13 +172,13 @@ public class WorkspaceResource extends TransactionalResource {
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put("id", definingProduct.getId()
                                              .toString());
-                wsp.put("name", definingProduct.getName());
-                wsp.put("description", definingProduct.getDescription());
-                wsp.put("IRI",
-                        readOnlyModel.wrap(Workspace.class, definingProduct)
-                                     .get_Properties()
-                                     .getIRI());
-                wsp.put("version", definingProduct.getVersion());
+                WorkspaceProperties properties = readOnlyModel.wrap(Workspace.class,
+                                                                    definingProduct)
+                                                              .get_Properties();
+                wsp.put("name", properties.getName());
+                wsp.put("description", properties.getDescription());
+                wsp.put("IRI", properties.getIRI());
+                wsp.put("version", properties.getVersion());
                 workspaces.add(wsp);
             }
             return workspaces;

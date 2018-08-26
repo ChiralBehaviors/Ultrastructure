@@ -106,9 +106,11 @@ public class BootstrapModel extends Bootstrap {
             props = JsonNodeFactory.instance.objectNode();
         }
         props.put("IRI", WellKnownObject.KERNEL_IRI);
+        props.put("Name", WellKnownObject.KERNEL_WORKSPACE);
+        props.put("Description", WellKnownObject.KERNEL_WORKSPACE);
 
         properties.setProperties(props);
-        properties.store();
+        properties.update();
 
         // Ain Soph Aur
 

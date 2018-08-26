@@ -29,9 +29,12 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 
 import graphql.annotations.GraphQLDescription;
@@ -112,17 +115,7 @@ public interface Existential extends Phantasm {
 
         @Override
         public int getVersion(DataFetchingEnvironment env) {
-            return WorkspaceSchema.ctx(env)
-                                  .records()
-                                  .resolve(record.getWorkspace())
-                                  .getVersion();
-        }
-
-        @Override
-        public Product getWorkspace(DataFetchingEnvironment env) {
-            return (Product) wrap(WorkspaceSchema.ctx(env)
-                                                 .records()
-                                                 .resolve(record.getWorkspace()));
+            return getRuleform().getVersion();
         }
     }
 
@@ -377,9 +370,6 @@ public interface Existential extends Phantasm {
     Agency getUpdatedBy(DataFetchingEnvironment env);
 
     @GraphQLField
-    int getVersion(DataFetchingEnvironment env);
-
-    @GraphQLField
-    Product getWorkspace(DataFetchingEnvironment env);
+    int getVersion(DataFetchingEnvironment env); 
 
 }

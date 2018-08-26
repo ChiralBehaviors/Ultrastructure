@@ -65,10 +65,13 @@ public class ExistentialContext extends PhantasmContext
                                             ExistentialDomain domain) {
         Model model = WorkspaceSchema.ctx(env);
         return model.create()
-                    .selectFrom(Tables.EXISTENTIAL)
-                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
-                                                                          .getId()))
-                    .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                    .selectDistinct(Tables.EXISTENTIAL.fields())
+                    .from(Tables.EXISTENTIAL)
+                    .join(Tables.WORKSPACE_LABEL)
+                    .on(Tables.WORKSPACE_LABEL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
+                                                                           .getId()))
+                    .and(Tables.WORKSPACE_LABEL.REFERENCE.eq(Tables.EXISTENTIAL.ID))
+                    .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()

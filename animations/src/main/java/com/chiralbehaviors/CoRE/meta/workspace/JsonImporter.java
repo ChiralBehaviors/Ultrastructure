@@ -42,6 +42,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorization
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
@@ -222,6 +223,23 @@ public class JsonImporter {
         }
         model.getPhantasmModel()
              .initialize(existential, facet, workspace);
+        if (properties != null) {
+            FacetPropertyRecord facetProperties = model.getPhantasmModel()
+                                                       .getFacetProperties(facet,
+                                                                           existential);
+            if (facetProperties == null) {
+                facetProperties = model.records()
+                                       .newFacetProperty();
+                facetProperties.setExistential(existential.getId());
+                facetProperties.setFacet(facet.getId());
+                facetProperties.setProperties(properties);
+                facetProperties.insert();
+                workspace.add(facetProperties);
+            } else {
+                facetProperties.setProperties(properties);
+                facetProperties.update();
+            }
+        }
     }
 
     private void applyFacets() {

@@ -28,4 +28,10 @@ public class Inference {
     public String inference;
     public String premise1;
     public String premise2;
+
+    @Override
+    public String toString() {
+        return String.format("Inference [premise1=%s, premise2=%s, inference=%s]",
+                             premise1, premise2, inference);
+    }
 }

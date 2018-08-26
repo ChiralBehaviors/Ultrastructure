@@ -25,11 +25,18 @@ package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
  *
  */
 public class ParentSequencing {
+    public boolean activeSiblings = true;
+    public String  next;
+    public String  parent;
+    public boolean replace;
+    public int     sequence;
     public String  service;
     public String  status;
-    public String  parent;
-    public String  next;
-    public boolean replace;
-    public boolean activeSiblings = true;
-    public int     sequence;
+
+    @Override
+    public String toString() {
+        return String.format("ParentSequencing [service=%s, parent=%s, status=%s, next=%s, activeSiblings=%s, replace=%s, sequence=%s]",
+                             service, parent, status, next, activeSiblings,
+                             replace, sequence);
+    }
 }

@@ -27,4 +27,9 @@ package com.chiralbehaviors.CoRE.meta.workspace.json;
 public class Sequencing {
     public String parent;
     public String child;
+
+    @Override
+    public String toString() {
+        return String.format("Sequencing [parent=%s, child=%s]", parent, child);
+    }
 }

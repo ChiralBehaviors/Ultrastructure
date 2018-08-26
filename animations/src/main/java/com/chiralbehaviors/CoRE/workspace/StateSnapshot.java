@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.RULEFORM_PARENT;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
@@ -42,19 +43,23 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
  *
  */
 public class StateSnapshot extends WorkspaceSnapshot {
-
+ 
+    @SuppressWarnings("unchecked")
     public static List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> selectNullClosure(DSLContext create,
                                                                                                                    Collection<UUID> exlude) {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
-                         .filter(t -> !t.equals(RULEFORM_PARENT))
+                         .filter(t -> !t.equals(WORKSPACE_LABEL)) 
                          .forEach(t -> {
                              if (t.equals(EDGE)) {
                                  // Snapshots do not contain network inferences
-                                 records.addAll(create.selectFrom(EDGE)
+                                 records.addAll(create.selectDistinct(EDGE.fields())
+                                                      .from(EDGE)
+                                                      .leftJoin(WORKSPACE_LABEL)
+                                                      .on(WORKSPACE_LABEL.REFERENCE.eq(EDGE.ID))
                                                       .where(EDGE.INFERENCE.isNull())
-                                                      .and(EDGE.WORKSPACE.isNull())
+                                                      .and(WORKSPACE_LABEL.WORKSPACE.isNull())
                                                       .and(EDGE.ID.notIn(exlude))
                                                       .fetchInto(EdgeRecord.class)
                                                       .stream()
@@ -62,8 +67,9 @@ public class StateSnapshot extends WorkspaceSnapshot {
                              } else {
                                  records.addAll(create.selectDistinct(t.fields())
                                                       .from(t)
-                                                      .where(t.field("workspace")
-                                                              .isNull())
+                                                      .leftJoin(WORKSPACE_LABEL)
+                                                      .on(((Field<UUID>) t.field("id")).equal(WORKSPACE_LABEL.REFERENCE))
+                                                      .where(WORKSPACE_LABEL.WORKSPACE.isNull())
                                                       .and(t.field("id")
                                                             .notIn(exlude))
                                                       .fetchInto(t.getRecordType())

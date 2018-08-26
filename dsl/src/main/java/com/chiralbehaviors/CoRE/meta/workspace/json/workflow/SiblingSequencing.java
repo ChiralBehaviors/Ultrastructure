@@ -18,7 +18,6 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
 
 /**
@@ -26,10 +25,16 @@ package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
  *
  */
 public class SiblingSequencing {
-    public String next;
-    public String parent;
+    public String  next;
+    public String  parent;
     public boolean replace;
-    public int sequence;
-    public String sibling;
-    public String status;
+    public int     sequence;
+    public String  sibling;
+    public String  status;
+
+    @Override
+    public String toString() {
+        return String.format("SiblingSequencing [parent=%s, status=%s, sibling=%s, next=%s, replace=%s, sequence=%s]",
+                             parent, status, sibling, next, replace, sequence);
+    }
 }

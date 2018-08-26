@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.jooq.TableRecord;
+
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
@@ -208,8 +210,7 @@ public class JsonImporter {
     }
 
     private void apply(String apply, String on, JsonNode properties) {
-        ExistentialRuleform existential = model.records()
-                                               .resolve(resolve(on));
+        ExistentialRuleform existential = resolveRecord(on);
         if (on == null) {
             throw new IllegalStateException("Unable to find existential: "
                                             + on);
@@ -303,7 +304,7 @@ public class JsonImporter {
     private void load(String name, Constraint constraint, FacetRecord auth,
                       Map<String, FacetLoad> loaded) {
         EdgeAuthorizationRecord authorization = model.records()
-                                                                   .newExistentialNetworkAuthorization();
+                                                     .newExistentialNetworkAuthorization();
         authorization.setName(name);
         authorization.setParent(auth.getId());
         authorization.setRelationship(resolve(constraint.rel));
@@ -317,10 +318,8 @@ public class JsonImporter {
     }
 
     private FacetRecord load(String name, Facet facet) {
-        Relationship classifier = model.records()
-                                       .resolve(resolve(facet.classifier));
-        ExistentialRuleform classification = model.records()
-                                                  .resolve(resolve(facet.classification));
+        Relationship classifier = resolveRecord(facet.classifier);
+        ExistentialRuleform classification = resolveRecord(facet.classification);
 
         FacetRecord authorization = model.getPhantasmModel()
                                          .getFacetDeclaration(classifier,
@@ -387,16 +386,13 @@ public class JsonImporter {
 
     private void loadEdges() {
         dsl.edges.forEach(edge -> {
-            ExistentialRuleform parent = model.records()
-                                              .resolve(resolve(edge.p));
-            Relationship relationship = model.records()
-                                             .resolve(resolve(edge.r));
-            ExistentialRuleform child = model.records()
-                                             .resolve(resolve(edge.c));
+            ExistentialRuleform parent = resolveRecord(edge.p);
+            Relationship relationship = resolveRecord(edge.r);
+            ExistentialRuleform child = resolveRecord(edge.c);
             Tuple<EdgeRecord, EdgeRecord> link = model.getPhantasmModel()
-                                                                                  .link(parent,
-                                                                                        relationship,
-                                                                                        child);
+                                                      .link(parent,
+                                                            relationship,
+                                                            child);
             workspace.add(link.a);
             workspace.add(link.b);
 
@@ -448,8 +444,7 @@ public class JsonImporter {
     private void loadMetaprotocols() {
         dsl.metaProtocols.forEach(mpc -> {
             MetaProtocolRecord metaProtocol = model.getJobModel()
-                                                   .newInitializedMetaProtocol(model.records()
-                                                                                    .resolve(resolve(mpc.transform)));
+                                                   .newInitializedMetaProtocol(resolveRecord(mpc.transform));
             if (mpc.product != null) {
                 metaProtocol.setProduct(resolve(mpc.product));
             }
@@ -466,6 +461,7 @@ public class JsonImporter {
                 metaProtocol.setAssignTo(resolve(mpc.assign));
             }
             metaProtocol.setStopOnMatch(mpc.stopOnMatch);
+            metaProtocol.insert();
             workspace.add(metaProtocol);
         });
     }
@@ -486,8 +482,7 @@ public class JsonImporter {
     private void loadProtocols() {
         dsl.protocols.forEach(pc -> {
             ProtocolRecord protocol = model.getJobModel()
-                                           .newInitializedProtocol(model.records()
-                                                                        .resolve(resolve(pc.match.service)));
+                                           .newInitializedProtocol(resolveRecord(pc.match.service));
             if (pc.match.product != null) {
                 protocol.setProduct(resolve(pc.match.product));
             }
@@ -505,9 +500,6 @@ public class JsonImporter {
             }
             if (pc.match.assign != null) {
                 protocol.setAssignTo(resolve(pc.match.assign));
-            }
-            if (pc.match.sequence != null) {
-                protocol.setSequenceNumber(pc.match.sequence);
             }
 
             if (pc.child.service != null) {
@@ -528,6 +520,7 @@ public class JsonImporter {
             if (pc.child.assign != null) {
                 protocol.setChildAssignTo(resolve(pc.child.assign));
             }
+            protocol.insert();
             workspace.add(protocol);
         });
     }
@@ -592,6 +585,29 @@ public class JsonImporter {
             }
             workspace.addImport(w.alias, imported);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends TableRecord<?>> T resolveRecord(String name) {
+        T record;
+        String[] qualifiedName = name.split("::");
+        if (qualifiedName.length > 1) {
+            return scope.lookup(qualifiedName[0], Existential,
+                                qualifiedName[1]);
+        } else if (qualifiedName[0].equals(THIS)) {
+            return (T) workspace.getDefiningProduct();
+        } else {
+            record = scope.lookup(Existential, qualifiedName[0]);
+            if (record != null) {
+                return record;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Cannot resolve %s%s",
+                                                         qualifiedName.length < 2 ? ""
+                                                                                  : qualifiedName[0]
+                                                                                    + "::",
+                                                         qualifiedName.length < 2 ? qualifiedName[0]
+                                                                                  : qualifiedName[1]));
     }
 
     private UUID resolve(String name) {

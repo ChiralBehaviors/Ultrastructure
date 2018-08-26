@@ -19,7 +19,6 @@
                         df.name AS deliver_from, 
                         dt.name AS deliver_to, 
                         base_table.stop_on_match,
-                        base_table.sequence_number, 
                         up.name AS updated_by, 
                         w.name AS workspace,
                         wa.key AS wsp_key,
@@ -36,8 +35,8 @@
                    LEFT JOIN existential at ON base_table.assign_to = at.id 
                    LEFT JOIN existential u ON base_table.quantity_unit = u.id
                    JOIN existential up ON base_table.updated_by = up.id
-             LEFT JOIN existential w ON base_table.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = base_table.id
+             LEFT JOIN workspace_label wa ON wa.reference = base_table.id
+             LEFT JOIN existential w ON wa.workspace = w.id
         ]]>
         </createView>
     </changeSet>

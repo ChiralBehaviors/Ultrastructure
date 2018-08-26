@@ -18,8 +18,8 @@
                 b.version
 			   FROM existential b
 			   JOIN existential up ON b.updated_by = up.id
-             LEFT JOIN existential w ON b.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = b.id
+             LEFT JOIN workspace_label wa ON wa.reference = b.id
+             LEFT JOIN existential w ON wa.workspace = w.id
                WHERE b.domain = 'Product'
             ]]>
         </createView>

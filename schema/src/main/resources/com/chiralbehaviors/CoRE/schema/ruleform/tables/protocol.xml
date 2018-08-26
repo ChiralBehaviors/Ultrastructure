@@ -13,9 +13,6 @@
 					primaryKeyName="protocol_pkey" nullable="false" />
 			</column>
 			<column name="authority" type="uuid" />
-			<column name="sequence_number" type="INT4" defaultValue="0">
-				<constraints nullable="false" />
-			</column>
 			<column name="deliver_to" type="uuid">
 				<constraints nullable="false" />
 			</column>
@@ -71,13 +68,8 @@
 			<column name="version" type="INT4" />
 		</createTable>
 
-		<sql splitStatements="false"><![CDATA[
-            ALTER TABLE ruleform.protocol INHERIT ruleform.ruleform_parent;
-            ]]>
-		</sql>
-
 		<addUniqueConstraint schemaName="ruleform"
-			columnNames="service, status, assign_to, deliver_from, deliver_to, product, children_relationship, requester, sequence_number"
+			columnNames="service, status, assign_to, deliver_from, deliver_to, product, children_relationship, requester, child_service, child_status, child_assign_to, child_deliver_from, child_deliver_to, child_product"
 			constraintName="protocol_unique" deferrable="false" disabled="false"
 			initiallyDeferred="false" tableName="protocol" />
 

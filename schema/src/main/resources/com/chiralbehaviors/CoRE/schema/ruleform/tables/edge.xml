@@ -33,11 +33,6 @@
 			<column name="version" type="INT4" />
 		</createTable>
 
-		<sql splitStatements="false"><![CDATA[
-            ALTER TABLE ruleform.edge INHERIT ruleform.ruleform_parent;
-            ]]>
-		</sql>
-
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
 			constraintName="edge_p_r_c_unique" deferrable="false"

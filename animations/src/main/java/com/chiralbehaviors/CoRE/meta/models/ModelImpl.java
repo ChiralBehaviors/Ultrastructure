@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.*;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 import static org.jooq.impl.DSL.name;
@@ -103,7 +103,6 @@ public class ModelImpl implements Model {
         AUTHORITY_HANDLE = new HashMap<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
-                         .filter(t -> !t.equals(RULEFORM_PARENT))
                          .filter(t -> !t.equals(JOB_CHRONOLOGY))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
                          .forEach(t -> {
@@ -561,7 +560,7 @@ public class ModelImpl implements Model {
                                  .andNotExists(create.select(EDGE.CHILD)
                                                      .from(EDGE)
                                                      .where(EDGE.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EDGE.PARENT.in(roles)))
+                                                                       .or(EDGE.PARENT.in(roles)))
                                                      .and(EDGE.RELATIONSHIP.equal(permission.getId()))
                                                      .and(EDGE.CHILD.eq(EXISTENTIAL.ID)))
                                  .fetchOne()

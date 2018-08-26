@@ -30,4 +30,10 @@ public class FacetApplication {
     public String   apply;
     public String   on;
     public JsonNode properties;
+
+    @Override
+    public String toString() {
+        return String.format("FacetApplication [apply=%s, on=%s, properties=%s]",
+                             apply, on, properties);
+    }
 }

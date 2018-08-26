@@ -106,7 +106,7 @@ public class WorkspaceContext extends ExistentialContext
                                 .newInitializedJob(model.records()
                                                         .resolve(state.getService()));
         state.update(record);
-        record.update();
+        record.insert();
         return new Job(record);
     }
 

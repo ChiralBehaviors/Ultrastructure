@@ -30,8 +30,14 @@ public class MetaProtocol {
     public String  product;
     public int     quantity;
     public String  requester;
-    public int     sequence;
     public boolean stopOnMatch;
     public String  to;
     public String  transform;
+
+    @Override
+    public String toString() {
+        return String.format("MetaProtocol [transform=%s, requester=%s, product=%s, assign=%s, from=%s, to=%s, quantity=%s, stopOnMatch=%s]",
+                             transform, requester, product, assign, from, to,
+                             quantity, stopOnMatch);
+    }
 }

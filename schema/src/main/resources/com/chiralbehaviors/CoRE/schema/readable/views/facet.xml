@@ -22,8 +22,8 @@
                 JOIN existential classification ON n.classification = classification.id
                 JOIN existential classifier ON n.classifier = classifier.id
                 JOIN existential u ON n.updated_by = u.id
-                LEFT JOIN existential w ON n.workspace = w.id
-                LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = n.id
+                LEFT JOIN workspace_label wa ON wa.reference = n.id
+                LEFT JOIN existential w ON wa.workspace = w.id
             ]]>
         </createView>
     </changeSet>

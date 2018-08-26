@@ -17,9 +17,6 @@
 			<column name="service" type="uuid">
 				<constraints nullable="false" />
 			</column>
-			<column name="sequence_number" type="INT4" defaultValue="0">
-				<constraints nullable="false" />
-			</column>
 			<column name="requester" type="uuid">
 				<constraints nullable="false" />
 			</column>
@@ -53,11 +50,6 @@
 			</column>
 			<column name="version" type="INT4" />
 		</createTable>
-
-		<sql splitStatements="false"><![CDATA[
-            ALTER TABLE ruleform.meta_protocol INHERIT ruleform.ruleform_parent;
-            ]]>
-		</sql>
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, requester, assign_to, service_type, status, product, deliver_to, deliver_from"

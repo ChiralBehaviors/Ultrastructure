@@ -24,8 +24,8 @@
 			   JOIN existential rel ON n.relationship = rel.id
 			   JOIN existential c ON n.child = c.id
 			   JOIN existential u ON n.updated_by = u.id
-             LEFT JOIN existential w ON n.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = n.id
+             LEFT JOIN workspace_label wa ON wa.reference = n.id
+             LEFT JOIN existential w ON wa.workspace = w.id
              WHERE n.inference IS NULL
             ]]>
         </createView>

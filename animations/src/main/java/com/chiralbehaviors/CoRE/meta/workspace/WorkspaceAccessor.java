@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.jooq.TableRecord;
+
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -49,7 +51,7 @@ public interface WorkspaceAccessor {
 
     void flushCache();
 
-    <T> T get(ReferenceType type, String key);
+    <T extends TableRecord<?>> T get(ReferenceType type, String key);
 
     <T> T getAccessor(Class<T> accessorInterface);
 

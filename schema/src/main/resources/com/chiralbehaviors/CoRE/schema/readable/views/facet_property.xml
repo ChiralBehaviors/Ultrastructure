@@ -24,8 +24,8 @@
                  JOIN facet f ON p.facet = f.id
 			     JOIN existential e ON p.existential = e.id
 			     JOIN existential up ON p.updated_by = up.id
-                 LEFT JOIN existential w ON p.workspace = w.id
-                 LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = p.id
+                 LEFT JOIN workspace_label wa ON wa.reference = p.id
+                 LEFT JOIN existential w ON wa.workspace = w.id
             ]]>
         </createView>
 	</changeSet>

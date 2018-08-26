@@ -35,11 +35,6 @@
 			<column name="notes" type="TEXT" />
 		</createTable>
 
-		<sql splitStatements="false"><![CDATA[
-            ALTER TABLE ruleform.edge_authorization INHERIT ruleform.ruleform_parent;
-            ]]>
-		</sql>
-
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
 			constraintName="edge_authorization_unique_key" deferrable="false"

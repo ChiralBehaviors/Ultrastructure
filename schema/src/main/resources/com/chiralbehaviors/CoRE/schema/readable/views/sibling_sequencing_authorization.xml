@@ -26,8 +26,8 @@
 			 LEFT JOIN existential ns ON base_table.next_sibling = ns.id
 			 LEFT JOIN existential nss ON base_table.next_sibling_status = nss.id
 			 JOIN existential up ON base_table.updated_by = up.id
-             LEFT JOIN existential w ON base_table.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = base_table.id
+             LEFT JOIN workspace_label wa ON wa.reference = base_table.id
+             LEFT JOIN existential w ON wa.workspace = w.id
             ]]>
         </createView>
     </changeSet>

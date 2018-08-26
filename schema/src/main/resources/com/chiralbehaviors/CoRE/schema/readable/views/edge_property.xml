@@ -29,8 +29,8 @@
                  JOIN existential rel ON n.relationship = rel.id
                  JOIN existential child ON n.child = child.id
 			     JOIN existential up ON p.updated_by = up.id
-                 LEFT JOIN existential w ON p.workspace = w.id
-                 LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = p.id
+                 LEFT JOIN workspace_label wa ON wa.reference = p.id
+                 LEFT JOIN existential w ON wa.workspace = w.id
             ]]>
         </createView>
 	</changeSet>

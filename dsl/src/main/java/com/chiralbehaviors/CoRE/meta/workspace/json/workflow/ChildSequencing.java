@@ -31,4 +31,10 @@ public class ChildSequencing {
     public boolean replace;
     public int     sequence;
     public String  status;
+
+    @Override
+    public String toString() {
+        return String.format("ChildSequencing [parent=%s, child=%s, status=%s, next=%s, replace=%s, sequence=%s]",
+                             parent, child, status, next, replace, sequence);
+    }
 }

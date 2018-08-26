@@ -31,7 +31,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class Facet {
-    public String                  classification;
+    public String classification;
+
+    @Override
+    public String toString() {
+        return String.format("Facet [description=%s, classifier=%s, classification=%s, schema=%s, defaultProperties=%s, constraints=%s]",
+                             description, classifier, classification, schema,
+                             defaultProperties, constraints);
+    }
+
     public String                  classifier;
     public Map<String, Constraint> constraints = new HashMap<>();
     public JsonNode                defaultProperties;

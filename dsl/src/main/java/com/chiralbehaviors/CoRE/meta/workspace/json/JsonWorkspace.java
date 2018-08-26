@@ -54,4 +54,14 @@ public class JsonWorkspace {
     public List<SiblingSequencing>       siblingSequences = new ArrayList<>();
     public String                        uri;
     public int                           version;
+
+    @Override
+    public String toString() {
+        return String.format("JsonWorkspace [name=%s, uri=%s, description=%s, version=%s, imports=%s, existentials=%s, facets=%s, edges=%s, inferences=%s, applications=%s, protocols=%s, metaProtocols=%s, sequencing=%s, selfSequences=%s, parentSequences=%s, siblingSequences=%s, childSequences=%s]",
+                             name, uri, description, version, imports,
+                             existentials, facets, edges, inferences,
+                             applications, protocols, metaProtocols, sequencing,
+                             selfSequences, parentSequences, siblingSequences,
+                             childSequences);
+    }
 }

@@ -23,8 +23,8 @@
 			   JOIN existential r2 ON c.premise2 = r2.id
 			   JOIN existential r3 ON c.inference = r3.id
 			   JOIN existential up ON c.updated_by = up.id
-             LEFT JOIN existential w ON c.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = c.id
+             LEFT JOIN workspace_label wa ON wa.reference = c.id
+             LEFT JOIN existential w ON wa.workspace = w.id
             ]]>
         </createView>
     </changeSet>

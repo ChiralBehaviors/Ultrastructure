@@ -37,8 +37,8 @@
                JOIN existential u ON base_table.quantity_unit = u.id
              LEFT JOIN job pjob ON base_table.parent = pJob.id
              LEFT JOIN existential parent ON pjob.service = parent.id
-             LEFT JOIN existential w ON base_table.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = base_table.id
+             LEFT JOIN workspace_label wa ON wa.reference = base_table.id
+             LEFT JOIN existential w ON wa.workspace = w.id
             ]]></createView>
     </changeSet>
 </databaseChangeLog>

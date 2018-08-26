@@ -736,7 +736,6 @@ public interface RecordsFactory {
                                                    ReferenceType referenceType) {
         WorkspaceLabelRecord record = newWorkspaceLabel();
         record.setKey(key);
-        record.setId(GENERATOR.generate());
         record.setWorkspace(definingProduct.getId());
         record.setReference(reference);
         record.setType(referenceType);

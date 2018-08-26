@@ -87,7 +87,8 @@ public class TestImport extends AbstractModelTest {
         assertNotNull(workspace.getScope()
                                .lookup(ReferenceType.Existential, "TheDude"));
         Product definingProduct = workspace.getDefiningProduct();
-        assertEquals(2, definingProduct.getVersion()
+        definingProduct.refresh();
+        assertEquals(1, definingProduct.getVersion()
                                        .intValue());
         assertEquals("Phantasm Demo V2", definingProduct.getName());
         assertEquals("Test of Workspace versioning",

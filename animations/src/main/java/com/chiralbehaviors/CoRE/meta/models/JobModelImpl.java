@@ -881,7 +881,6 @@ public class JobModelImpl implements JobModel {
                                   .getId());
         job.setStatus(kernel.getUnset()
                             .getId());
-        job.insert();
         return job;
     }
 
@@ -900,7 +899,6 @@ public class JobModelImpl implements JobModel {
         mp.setServiceType(kernel.getSameRelationship()
                                 .getId());
         mp.setQuantityUnit(any.getId());
-        mp.insert();
         return mp;
     }
 
@@ -937,7 +935,6 @@ public class JobModelImpl implements JobModel {
         protocol.setChildStatus(WellKnownStatusCode.UNSET.id());
         protocol.setChildQuantityUnit(kernel.getNotApplicableUnit()
                                             .getId());
-        protocol.insert();
         return protocol;
     }
 

@@ -153,26 +153,24 @@ abstract public class Bootstrap {
     }
 
     private void populate(FacetRecord auth, Product kernelWorkspace) {
-        auth.setWorkspace(kernelWorkspace.getId());
-        auth.update(); 
-        WorkspaceLabelRecord label = records.newWorkspaceLabel(auth.getName(), auth.getId(),
-                                                              ReferenceType.Facet,
-                                                              kernelWorkspace);
+        WorkspaceLabelRecord label = records.newWorkspaceLabel(auth.getName(),
+                                                               auth.getId(),
+                                                               ReferenceType.Facet,
+                                                               kernelWorkspace);
         auth.insert();
         label.insert();
     }
 
     private void populate(String key, WellKnownObject wko,
                           Product kernelWorkspace) {
+        ExistentialRecord existential = create.selectFrom(EXISTENTIAL)
+                                              .where(EXISTENTIAL.ID.equal(wko.id()))
+                                              .fetchOne();
+        existential.insert();
         WorkspaceLabelRecord auth = records.newWorkspaceLabel(key, wko.id(),
                                                               ReferenceType.Existential,
                                                               kernelWorkspace);
         auth.insert();
-        ExistentialRecord existential = create.selectFrom(EXISTENTIAL)
-                                              .where(EXISTENTIAL.ID.equal(wko.id()))
-                                              .fetchOne();
-        existential.setWorkspace(kernelWorkspace.getId());
-        existential.update();
     }
 
     private void populateAgencies(Agency core, Product kernelWorkspace) {

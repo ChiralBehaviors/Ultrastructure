@@ -27,8 +27,14 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public class Edge {
-    public String   p;
-    public String   r;
     public String   c;
+    public String   p;
     public JsonNode properties;
+    public String   r;
+
+    @Override
+    public String toString() {
+        return String.format("Edge [p=%s, r=%s, c=%s, properties=%s]", p, r, c,
+                             properties);
+    }
 }

@@ -33,11 +33,18 @@ public class Constraint {
         ZERO
     }
 
-    public Cardinality card     = Cardinality.MANY;
+    public Cardinality card    = Cardinality.MANY;
     public String      child;
     public JsonNode    defaultProperties;
     public String      description;
     public boolean     infered = false;
     public String      rel;
     public JsonNode    schema;
+
+    @Override
+    public String toString() {
+        return String.format("Constraint [description=%s, infered=%s, card=%s, rel=%s, child=%s, schema=%s, defaultProperties=%s]",
+                             description, infered, card, rel, child, schema,
+                             defaultProperties);
+    }
 }

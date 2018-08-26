@@ -174,9 +174,10 @@ public class StatusCodeTest extends AbstractModelTest {
                                                                                               terminalState);
         invalidSeq.insert();
         JobRecord parent = jobModel.newInitializedJob(service);
+        parent.insert();
         JobRecord child = jobModel.newInitializedJob(service2);
         child.setParent(parent.getId());
-        child.update();
+        child.insert();
         model.flush();
         assertNotNull("Parent is null", child.getParent());
         assertFalse("Child is active", jobModel.isActive(child));

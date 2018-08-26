@@ -43,7 +43,6 @@ public class Protocol {
         public String     product;
         public BigDecimal quantity;
         public String     requester;
-        public Integer    sequence;
         public String     service;
         public String     to;
     }

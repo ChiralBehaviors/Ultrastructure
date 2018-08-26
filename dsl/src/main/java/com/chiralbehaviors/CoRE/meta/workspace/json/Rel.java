@@ -30,6 +30,12 @@ public class Rel extends Existential {
         public String name;
     }
     
+    @Override
+    public String toString() {
+        return String.format("Rel [domain=%s, description=%s, inverse=%s]",
+                             domain, description, inverse);
+    }
+
     public NamedRel inverse;
 
     public Rel() {

@@ -47,6 +47,12 @@ public class Existential {
         StatusCode;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Existential [domain=%s, description=%s]", domain,
+                             description);
+    }
+
     public String description;
     public Domain domain;
 }

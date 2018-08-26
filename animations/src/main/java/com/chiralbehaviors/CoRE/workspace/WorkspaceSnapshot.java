@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.RULEFORM_PARENT;
+import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -124,17 +123,22 @@ public class WorkspaceSnapshot {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
-                         .filter(t -> !t.equals(RULEFORM_PARENT))
+                         .filter(t -> !t.equals(WORKSPACE_LABEL))
                          .forEach(t -> {
-                             records.addAll(create.selectDistinct(t.fields())
-                                                  .from(t)
-                                                  .where(((Field<UUID>) t.field("workspace")).equal(definingProduct.getId()))
-                                                  .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
-                                                  .fetchInto(t.getRecordType())
-                                                  .stream()
-                                                  .map(r -> (UpdatableRecord<?>) r)
-                                                  .collect(Collectors.toList()));
+                             create.selectDistinct(t.fields())
+                                   .from(t)
+                                   .join(WORKSPACE_LABEL)
+                                   .on(WORKSPACE_LABEL.WORKSPACE.eq(definingProduct.getId()))
+                                   .and(((Field<UUID>) t.field("id")).equal(WORKSPACE_LABEL.REFERENCE))
+                                   .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                   .fetchInto(t.getRecordType())
+                                   .stream()
+                                   .map(r -> (UpdatableRecord<?>) r)
+                                   .forEach(r -> records.add(r));
                          });
+        create.selectFrom(WORKSPACE_LABEL)
+              .where(WORKSPACE_LABEL.WORKSPACE.eq(definingProduct.getId()))
+              .forEach(r -> records.add(r));
         return records;
     }
 
@@ -144,25 +148,31 @@ public class WorkspaceSnapshot {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
-                         .filter(t -> !t.equals(RULEFORM_PARENT))
+                         .filter(t -> !t.equals(WORKSPACE_LABEL))
                          .forEach(t -> {
-                             records.addAll(create.selectDistinct(t.fields())
-                                                  .from(t)
-                                                  .where(((Field<UUID>) t.field("workspace")).equal(definingProduct.getId()))
-                                                  .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
-                                                  .fetchInto(t.getRecordType())
-                                                  .stream()
-                                                  .map(r -> (UpdatableRecord<?>) r)
-                                                  .map(r -> {
-                                                      Field<Integer> version = (Field<Integer>) t.field("version");
-                                                      r.setValue(version,
-                                                                 r.get(version)
-                                                                  .intValue()
-                                                                          - 1);
-                                                      return r;
-                                                  })
-                                                  .collect(Collectors.toList()));
+                             create.selectDistinct(t.fields())
+                                   .from(t)
+                                   .join(WORKSPACE_LABEL)
+                                   .on(((Field<UUID>) t.field("id")).equal(WORKSPACE_LABEL.REFERENCE))
+                                   .where(WORKSPACE_LABEL.WORKSPACE.equal(definingProduct.getId()))
+                                   .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
+                                   .fetchInto(t.getRecordType())
+                                   .stream()
+                                   .map(r -> (UpdatableRecord<?>) r)
+                                   .map(r -> {
+                                       Field<Integer> version = (Field<Integer>) t.field("version");
+                                       r.setValue(version, r.get(version)
+                                                            .intValue()
+                                                           - 1);
+                                       return r;
+                                   })
+                                   .forEach(r -> records.add(r));
                          });
+        create.selectFrom(WORKSPACE_LABEL)
+              .where(WORKSPACE_LABEL.WORKSPACE.eq(definingProduct.getId()))
+              .stream()
+              .map(r -> (UpdatableRecord<?>) r)
+              .forEach(r -> records.add(r));
         return records;
     }
 
@@ -176,10 +186,6 @@ public class WorkspaceSnapshot {
     }
 
     public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
-        assert definingProduct.getId()
-                              .equals(definingProduct.getWorkspace()) : String.format("Defining product's workspace [%s} is not equal to the defining product [%s]!",
-                                                                                      definingProduct.getWorkspace(),
-                                                                                      definingProduct.getId());
         this.definingProduct = definingProduct;
         inserts = selectWorkspaceClosure(create, definingProduct);
     }
@@ -264,8 +270,6 @@ public class WorkspaceSnapshot {
     }
 
     public void load(DSLContext create) throws SQLException {
-        assert definingProduct == null
-               || definingProduct.getWorkspace() != null : "defining product's workspace is null";
         loadDefiningProduct(create);
         try {
             create.batchInsert(inserts)

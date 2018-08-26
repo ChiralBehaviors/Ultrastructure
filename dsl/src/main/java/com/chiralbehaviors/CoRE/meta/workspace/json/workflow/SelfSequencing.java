@@ -18,7 +18,6 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
 
 /**
@@ -26,8 +25,14 @@ package com.chiralbehaviors.CoRE.meta.workspace.json.workflow;
  *
  */
 public class SelfSequencing {
+    public String next;
+    public int    sequence;
     public String service;
     public String status;
-    public String next;
-    public int sequence;
+
+    @Override
+    public String toString() {
+        return String.format("SelfSequencing [service=%s, status=%s, next=%s, sequence=%s]",
+                             service, status, next, sequence);
+    }
 }

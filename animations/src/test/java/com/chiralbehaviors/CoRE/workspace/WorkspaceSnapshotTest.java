@@ -46,10 +46,8 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
         Product definingProduct = RECORDS.newProduct("zee product");
-        definingProduct.setWorkspace(definingProduct.getId());
         definingProduct.insert();
         Agency pseudoScientist = RECORDS.newAgency("Behold the Pseudo Scientist!");
-        pseudoScientist.setWorkspace(definingProduct.getId());
         pseudoScientist.insert();
         WorkspaceLabelRecord auth = RECORDS.newWorkspaceLabel("Su Su Sudio",
                                                               definingProduct,

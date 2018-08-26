@@ -18,7 +18,6 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.chiralbehaviors.CoRE.meta.workspace.json;
 
 import java.util.ArrayList;
@@ -29,7 +28,13 @@ import java.util.List;
  *
  */
 public class Import {
-    public String uri;
-    public String alias;
+    public String       alias;
     public List<String> facets = new ArrayList<>();
+    public String       uri;
+
+    @Override
+    public String toString() {
+        return String.format("Import [uri=%s, alias=%s, facets=%s]", uri, alias,
+                             facets);
+    }
 }

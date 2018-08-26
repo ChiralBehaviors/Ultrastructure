@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 import static com.chiralbehaviors.CoRE.jooq.Ruleform.RULEFORM;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBoolean;
+import static com.chiralbehaviors.CoRE.jooq.Tables.*;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -160,6 +161,29 @@ public class JooqSchema {
                    return Existential.wrap(Existential.resolve(env, fk));
                });
         return builder;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected <T> T fetch(UUID id, Class<?> record,
+                          DataFetchingEnvironment env) {
+        Table<?> table = TABLES.get(record);
+        Field field;
+        try {
+            field = (Field) table.getClass()
+                                 .getField("ID")
+                                 .get(table);
+        } catch (DataAccessException | IllegalArgumentException
+                | IllegalAccessException | NoSuchFieldException
+                | SecurityException e) {
+            throw new IllegalStateException(String.format("Cannot access 'id' field on %s",
+                                                          record.getCanonicalName()),
+                                            e);
+        }
+        return (T) WorkspaceSchema.ctx(env)
+                                  .create()
+                                  .selectFrom(table)
+                                  .where(field.eq(id))
+                                  .fetchOne();
     }
 
     private GraphQLFieldDefinition.Builder buildPrimitive(GraphQLFieldDefinition.Builder builder,
@@ -342,50 +366,20 @@ public class JooqSchema {
         return true;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected <T> T fetch(UUID id, Class<?> record,
-                          DataFetchingEnvironment env) {
-        Table<?> table = TABLES.get(record);
-        Field field;
-        try {
-            field = (Field) table.getClass()
-                                 .getField("ID")
-                                 .get(table);
-        } catch (DataAccessException | IllegalArgumentException
-                | IllegalAccessException | NoSuchFieldException
-                | SecurityException e) {
-            throw new IllegalStateException(String.format("Cannot access 'id' field on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
-        return (T) WorkspaceSchema.ctx(env)
-                                  .create()
-                                  .selectFrom(table)
-                                  .where(field.eq(id))
-                                  .fetchOne();
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     private <T> T fetchAll(Class<?> record, DataFetchingEnvironment env) {
         Table<?> table = TABLES.get(record);
-        Field field;
-        try {
-            field = (Field) table.getClass()
-                                 .getField("WORKSPACE")
-                                 .get(table);
-        } catch (DataAccessException | IllegalArgumentException
-                | IllegalAccessException | NoSuchFieldException
-                | SecurityException e) {
-            throw new IllegalStateException(String.format("Cannot access 'id' field on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
+        Field<UUID> idField = (Field<UUID>) table.field("id");
         return (T) WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectFrom(table)
-                                  .where(field.eq(PhantasmContext.getWorkspace(env)
-                                                                 .getId()))
+                                  .selectDistinct(table.fields())
+                                  .from(table)
+                                  .join(WORKSPACE_LABEL)
+                                  .on(WORKSPACE_LABEL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
+                                                                                  .getId()))
+                                  .and(WORKSPACE_LABEL.REFERENCE.eq(idField))
                                   .fetch()
+                                  .into(table.getRecordType())
                                   .stream()
                                   .collect(Collectors.toList());
     }

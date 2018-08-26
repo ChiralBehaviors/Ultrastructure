@@ -98,10 +98,10 @@ public class Phantasmagoria {
 
     public static class NetworkAuthorization {
         private final EdgeAuthorizationRecord auth;
-        private final Aspect                                child;
-        private final String                                fieldName;
-        private final FacetRecord                           parent;
-        private final Relationship                          relationship;
+        private final Aspect                  child;
+        private final String                  fieldName;
+        private final FacetRecord             parent;
+        private final Relationship            relationship;
 
         public NetworkAuthorization(String fieldName, DSLContext create,
                                     EdgeAuthorizationRecord auth,

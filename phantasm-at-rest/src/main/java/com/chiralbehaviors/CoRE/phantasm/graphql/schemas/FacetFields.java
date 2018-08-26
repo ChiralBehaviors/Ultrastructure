@@ -435,6 +435,29 @@ public class FacetFields extends Phantasmagoria {
                                              .description(String.format("The edge \"%s\" from facet \"%s\"",
                                                                         auth.getFieldName(),
                                                                         facetName));
+        auth
+            .forEach(attr -> {
+                Attribute attribute = attr.getAttribute();
+                String fieldName = WorkspacePresentation.toFieldName(attr.getAttribute()
+                                                                         .getName());
+                GraphQLOutputType type = typeOf(attribute);
+                edgeTypeBuilder.field(newFieldDefinition().type(type)
+                                                          .name(fieldName)
+                                                          .description(attribute.getDescription())
+                                                          .dataFetcher(env -> {
+                                                              PhantasmContext ctx = ctx(env);
+                                                              Traversal edge = (Traversal) env.getSource();
+                                                              if (edge == null
+                                                                  || !edge.auth.equals(auth)) {
+                                                                  return null;
+                                                              }
+                                                              return ctx.getAttributeValue(facet,
+                                                                                           edge.parent,
+                                                                                           attr,
+                                                                                           edge.child);
+                                                          })
+                                                          .build());
+            });
         GraphQLObjectType edgeType = edgeTypeBuilder.build();
         if (!edgeType.getFieldDefinitions()
                      .isEmpty()) {

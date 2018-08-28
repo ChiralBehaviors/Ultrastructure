@@ -56,8 +56,10 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmInitializer;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext.Traversal;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
@@ -65,6 +67,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLField;
 import graphql.schema.DataFetchingEnvironment;
@@ -89,41 +92,14 @@ import graphql.schema.GraphQLUnionType;
  */
 public class FacetFields extends Phantasmagoria {
 
-    public static String capitalized(String baseName) {
-        return Character.toUpperCase(baseName.charAt(0))
-               + (baseName.length() == 1 ? "" : baseName.substring(1));
-    }
-
-    public static String toFieldName(String name) {
-        return Introspector.decapitalize(name.replaceAll("\\s", ""));
-    }
-
-    public static String toTypeName(String name) {
-        char chars[] = toValidName(name).toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
-    }
-
-    public static String toValidName(String name) {
-        name = name.replaceAll("\\s", "");
-        StringBuilder sb = new StringBuilder();
-        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
-            sb.append("_");
-        }
-        for (char c : name.toCharArray()) {
-            if (!Character.isJavaIdentifierPart(c)) {
-                sb.append("_");
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     private static final String _EDGE              = "_edge";
+
     private static final String _EXT               = "_ext";
+
     private static final String ADD_TEMPLATE       = "add%s";
+
     private static final String APPLY_MUTATION     = "apply%s";
+
     private static final String AT_RULEFORM        = "@ruleform";
     private static final String CREATE_MUTATION    = "create%s";
     private static final String CREATE_TYPE        = "%sCreate";
@@ -141,6 +117,11 @@ public class FacetFields extends Phantasmagoria {
     private static final String STATE              = "state";
     private static final String UPDATE_MUTATION    = "update%s";
     private static final String UPDATE_TYPE        = "%sUpdate";
+
+    public static String capitalized(String baseName) {
+        return Character.toUpperCase(baseName.charAt(0))
+               + (baseName.length() == 1 ? "" : baseName.substring(1));
+    }
 
     public static URLClassLoader configureExecutionScope(List<String> urlStrings) {
         ClassLoader parent = Thread.currentThread()
@@ -227,6 +208,32 @@ public class FacetFields extends Phantasmagoria {
         }
         return initializers;
 
+    }
+
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
+    }
+
+    public static String toTypeName(String name) {
+        char chars[] = toValidName(name).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toValidName(String name) {
+        name = name.replaceAll("\\s", "");
+        StringBuilder sb = new StringBuilder();
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            sb.append("_");
+        }
+        for (char c : name.toCharArray()) {
+            if (!Character.isJavaIdentifierPart(c)) {
+                sb.append("_");
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     static Class<?> getDeclaringClass(Method method) {
@@ -435,29 +442,42 @@ public class FacetFields extends Phantasmagoria {
                                              .description(String.format("The edge \"%s\" from facet \"%s\"",
                                                                         auth.getFieldName(),
                                                                         facetName));
-        auth
-            .forEach(attr -> {
-                Attribute attribute = attr.getAttribute();
-                String fieldName = WorkspacePresentation.toFieldName(attr.getAttribute()
-                                                                         .getName());
-                GraphQLOutputType type = typeOf(attribute);
-                edgeTypeBuilder.field(newFieldDefinition().type(type)
-                                                          .name(fieldName)
-                                                          .description(attribute.getDescription())
-                                                          .dataFetcher(env -> {
-                                                              PhantasmContext ctx = ctx(env);
-                                                              Traversal edge = (Traversal) env.getSource();
-                                                              if (edge == null
-                                                                  || !edge.auth.equals(auth)) {
-                                                                  return null;
-                                                              }
-                                                              return ctx.getAttributeValue(facet,
-                                                                                           edge.parent,
-                                                                                           attr,
-                                                                                           edge.child);
-                                                          })
-                                                          .build());
-            });
+        JsonNode propertySchema = facet.getFacet()
+                                       .getSchema();
+        if (propertySchema != null) {
+            edgeTypeBuilder.field(newFieldDefinition().type(edgePropertyType(auth,
+                                                                             propertySchema))
+                                                      .name("properties")
+                                                      .description("Json properties for edge")
+                                                      .dataFetcher(env -> {
+                                                          PhantasmContext ctx = ctx(env);
+                                                          Traversal edge = (Traversal) env.getSource();
+                                                          if (edge == null
+                                                              || !edge.auth.equals(auth)) {
+                                                              return null;
+                                                          }
+                                                          return ctx.getProperties(edge.parent,
+                                                                                   edge.auth,
+                                                                                   edge.child);
+                                                      })
+                                                      .build());
+        } else {
+            edgeTypeBuilder.field(newFieldDefinition().type(WorkspaceScalarTypes.GraphQLJson)
+                                                      .name("properties")
+                                                      .description("Json properties for edge")
+                                                      .dataFetcher(env -> {
+                                                          PhantasmContext ctx = ctx(env);
+                                                          Traversal edge = (Traversal) env.getSource();
+                                                          if (edge == null
+                                                              || !edge.auth.equals(auth)) {
+                                                              return null;
+                                                          }
+                                                          return ctx.getProperties(edge.parent,
+                                                                                   edge.auth,
+                                                                                   edge.child);
+                                                      })
+                                                      .build());
+        }
         GraphQLObjectType edgeType = edgeTypeBuilder.build();
         if (!edgeType.getFieldDefinitions()
                      .isEmpty()) {
@@ -573,6 +593,11 @@ public class FacetFields extends Phantasmagoria {
                                .collect(Collectors.toList());
         })
                     .build();
+    }
+
+    private GraphQLOutputType edgePropertyType(NetworkAuthorization auth,
+                                               JsonNode propertySchema) {
+        return WorkspaceScalarTypes.GraphQLJson;
     }
 
     private GraphQLFieldDefinition instance() {

@@ -303,6 +303,16 @@ public class PhantasmCRUD {
         return model;
     }
 
+    public JsonNode getProperties(ExistentialRuleform parent,
+                                  NetworkAuthorization auth,
+                                  ExistentialRuleform child) {
+        EdgePropertyRecord edgeProperties = model.getPhantasmModel()
+                                                 .getEdgeProperties(parent,
+                                                                    auth.getAuth(),
+                                                                    child);
+        return edgeProperties == null ? null : edgeProperties.getProperties();
+    }
+
     /**
      * Answer the singular network child of the instance
      *
@@ -478,9 +488,9 @@ public class PhantasmCRUD {
                                                                 child);
         if (properties == null) {
             EdgeRecord edge = model.getPhantasmModel()
-                                                 .getImmediateChildLink(parent,
-                                                                        auth.getRelationship(),
-                                                                        child);
+                                   .getImmediateChildLink(parent,
+                                                          auth.getRelationship(),
+                                                          child);
             if (edge == null) {
                 throw new IllegalStateException(String.format("No edge {%s, %s, %s}",
                                                               parent.getName(),

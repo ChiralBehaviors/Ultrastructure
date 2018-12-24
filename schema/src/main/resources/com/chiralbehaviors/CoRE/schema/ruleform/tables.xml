@@ -38,5 +38,7 @@
 		file="tables/self_sequencing_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/workspace_label.xml" />
+    <include relativeToChangelogFile="true"
+        file="tables/authentication.xml" />
 
 </databaseChangeLog>

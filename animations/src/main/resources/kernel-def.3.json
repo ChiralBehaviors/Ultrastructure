@@ -319,18 +319,6 @@
                     "Login": {
                         "type": "string"
                     },
-                    "PasswordRounds": {
-                        "type": "integer"
-                    },
-                    "PasswordHash": {
-                        "type": "string"
-                    },
-                    "AccessToken": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
                     "Name": {
                         "type": "string"
                     },

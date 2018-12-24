@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			tableName="token">
+			<column name="id" type="uuid">
+                <constraints primaryKey="true"
+                    primaryKeyName="token_pkey" nullable="false" />
+			</column>
+            <column name="agency" type="uuid">
+                <constraints nullable="false" />
+            </column>
+			<column name="random" type="uuid">
+				<constraints nullable="false" />
+			</column>
+            <column name="created"
+                defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+                type="TIMESTAMPTZ">
+                <constraints nullable="false" />
+            </column>
+		</createTable>
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="agency" baseTableName="token"
+			constraintName="token_agency_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+	</changeSet>
+</databaseChangeLog>

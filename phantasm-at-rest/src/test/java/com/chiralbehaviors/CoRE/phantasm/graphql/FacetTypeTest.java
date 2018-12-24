@@ -50,6 +50,8 @@ import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.test.mavenArtifactProperties.MavenArtifactProperties;
 import com.chiralbehaviors.CoRE.phantasm.test.thing1Properties.Thing1Properties;
+import com.chiralbehaviors.CoRE.phantasm.test.thing2Properties.Thing2Properties;
+import com.chiralbehaviors.CoRE.phantasm.test.thing3Properties.Thing3Properties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -134,7 +136,7 @@ public class FacetTypeTest extends AbstractModelTest {
                                                   .getId()));
         variables.put("artifact", UuidUtil.encode(artifact2.getRuleform()
                                                            .getId()));
-        variables.put("aliases", Arrays.asList(newAliases));
+        variables.put("aliases", newAliases);
         variables.put("name", "hello");
         variables.put("uri", newUri);
         request = new QueryRequest("mutation m($id: ID!, $name: String!, $artifact: ID, $aliases: [String], $uri: String) { updateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
@@ -297,8 +299,8 @@ public class FacetTypeTest extends AbstractModelTest {
                            .getName(),
                      thing1Result.get("name"));
         assertEquals(artifact2, thing1.getDerivedFrom());
-        assertEquals(newAliases, thing1.get_Properties()
-                                       .getAliases());
+        assertEquals(Arrays.asList(newAliases), thing1.get_Properties()
+                                                      .getAliases());
         assertEquals(newUri, thing1.get_Properties()
                                    .getURI());
 
@@ -334,8 +336,18 @@ public class FacetTypeTest extends AbstractModelTest {
                                         "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
                                         "tester", "testier");
+        Thing2Properties thing2Props = new Thing2Properties();
+        thing2Props.setName("tester");
+        thing2Props.setName("testier");
+        thing2.set_Properties(thing2Props);
+
         Thing3 thing3 = model.construct(Thing3.class, ExistentialDomain.Product,
                                         "Thingy", "a favorite thing");
+        Thing3Properties thing3Props = new Thing3Properties();
+        thing3Props.setName("Thingy");
+        thing3Props.setDescription("a favorite thing");
+        thing3.set_Properties(thing3Props);
+
         MavenArtifact artifact1 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "model", "model artifact");
@@ -363,8 +375,9 @@ public class FacetTypeTest extends AbstractModelTest {
                                                             "jones" }));
         String uri = "http://example.com";
         thing1Props.setURI(uri);
+        thing1Props.setName("test");
+        thing1Props.setDescription("testy");
         thing1.set_Properties(thing1Props);
-
         thing1.setDerivedFrom(artifact1);
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);

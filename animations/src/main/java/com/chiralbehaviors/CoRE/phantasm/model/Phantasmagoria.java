@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.utils.English;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Bare bones metadata representation of a Phantasm facet in Java
@@ -200,6 +201,7 @@ public class Phantasmagoria {
 
     public final Map<String, NetworkAuthorization> childAuthorizations    = new HashMap<>();
     public final Aspect                            facet;
+    public JsonNode                                schema;
 
     public final Map<String, NetworkAuthorization> singularAuthorizations = new HashMap<>();
 
@@ -208,6 +210,10 @@ public class Phantasmagoria {
     }
 
     public void traverse(Model model) {
+        schema = model.getPhantasmModel()
+                      .getFacetDeclaration(facet.classifier,
+                                           facet.classification)
+                      .getSchema();
         traverseNetworkAuths(model);
 
     }

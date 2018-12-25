@@ -16,9 +16,16 @@
             <column name="agency" type="uuid">
                 <constraints nullable="false" />
             </column>
-			<column name="random" type="uuid">
+			<column name="nonce" type="uuid">
 				<constraints nullable="false" />
 			</column>
+            <column name="roles" type="uuid[]"/>
+			<column name="ttl" type = "INT4">
+                <constraints nullable="false" />
+			</column>
+            <column name="ip" type = "text">
+                <constraints nullable="false" />
+            </column>
             <column name="created"
                 defaultValueComputed="('now'::text)::timestamp(6) with time zone"
                 type="TIMESTAMPTZ">

@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.AUTHENTICATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
+import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 import static org.jooq.impl.DSL.name;
 
@@ -77,6 +79,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
+import com.chiralbehaviors.CoRE.meta.AuthnModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
@@ -103,6 +106,8 @@ public class ModelImpl implements Model {
         AUTHORITY_HANDLE = new HashMap<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
+                         .filter(t -> !t.equals(AUTHENTICATION))
+                         .filter(t -> !t.equals(TOKEN))
                          .filter(t -> !t.equals(JOB_CHRONOLOGY))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
                          .forEach(t -> {
@@ -282,6 +287,14 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public boolean checkExistentialPermission(List<Agency> roles,
+                                              ExistentialRuleform target,
+                                              Relationship permission) {
+        return checkPermission(roles, (UpdatableRecord<?>) target, permission);
+
+    }
+
+    @Override
     public boolean checkInvoke(UpdatableRecord<?> target) {
         return checkPermission(target, invokePerm);
     }
@@ -295,14 +308,6 @@ public class ModelImpl implements Model {
     public boolean checkPermission(ExistentialRuleform target,
                                    Relationship permission) {
         return checkPermission((UpdatableRecord<?>) target, permission);
-    }
-
-    @Override
-    public boolean checkExistentialPermission(List<Agency> roles,
-                                              ExistentialRuleform target,
-                                              Relationship permission) {
-        return checkPermission(roles, (UpdatableRecord<?>) target, permission);
-
     }
 
     @Override
@@ -411,6 +416,11 @@ public class ModelImpl implements Model {
     @Override
     public Relationship getApplyPerm() {
         return applyPerm;
+    }
+
+    @Override
+    public AuthnModel getAuthnModel() {
+        return new AuthnModelImpl(this);
     }
 
     @Override

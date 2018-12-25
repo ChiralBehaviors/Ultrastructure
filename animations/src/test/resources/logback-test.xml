@@ -10,8 +10,11 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.jooq">
-		<level value="INFO" />
+		<level value="info" />
 	</logger>
+    <logger name="org.jooq.tools.LoggerListener">
+        <level value="debug" />
+    </logger> 
 	<root>
 		<level value="INFO" />
 		<appender-ref ref="C" />

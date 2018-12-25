@@ -25,12 +25,15 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
  *
  */
 public class RequestCredentials {
+    public final String user;
     public final String bearerToken;
     public final String remoteIp;
 
-    public RequestCredentials(String remoteIp, String bearerToken) {
+    public RequestCredentials(String remoteIp, String agency,
+                              String bearerToken) {
         this.remoteIp = remoteIp;
         this.bearerToken = bearerToken;
+        this.user = agency;
     }
 
     @Override

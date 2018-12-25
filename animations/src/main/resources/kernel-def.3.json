@@ -405,6 +405,9 @@
                     },
                     "Description": {
                         "type": "string"
+                    },
+                    "PasswordRounds": {
+                        "type": "integer"
                     }
                 }
             }

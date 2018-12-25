@@ -16,9 +16,7 @@
 			<column name="password_rounds" type="INT4">
 				<constraints nullable="false" />
 			</column>
-			<column name="password_hash" type="TEXT">
-				<constraints nullable="false" />
-			</column>
+			<column name="password_hash" type="TEXT" />
 		</createTable>
 
 		<addForeignKeyConstraint

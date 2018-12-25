@@ -20,7 +20,9 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.AUTHENTICATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 
 import java.io.IOException;
@@ -148,6 +150,8 @@ public class WorkspaceSnapshot {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
+                         .filter(t -> !t.equals(TOKEN))
+                         .filter(t -> !t.equals(AUTHENTICATION))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
                          .forEach(t -> {
                              create.selectDistinct(t.fields())

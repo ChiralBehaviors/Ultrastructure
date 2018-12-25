@@ -87,9 +87,8 @@ public class AuthxResource extends TransactionalResource {
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
-        CoreUser user = model.wrap(CoreUser.class, agencies.get(0));
-
-        if (!AgencyBasicAuthenticator.authenticate(user, password)) {
+        CoreUser user = model.wrap(CoreUser.class, agencies.get(0)); 
+        if (!model.getAuthnModel().authenticate(user, password.toCharArray())) {
             log.warn(String.format("Invalid attempt to login from username %s",
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);

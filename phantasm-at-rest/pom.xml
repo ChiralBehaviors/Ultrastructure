@@ -28,10 +28,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors</groupId>
-			<artifactId>jbcrypt</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>animations</artifactId>
 		</dependency>

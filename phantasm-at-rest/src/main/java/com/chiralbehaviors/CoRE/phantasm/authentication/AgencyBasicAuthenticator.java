@@ -27,11 +27,9 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
-import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.bcrypt.BCrypt;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -46,29 +44,7 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
     private static final long   DWELL = (long) (Math.random() * 1000);
     private final static Logger log   = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
-    public static boolean authenticate(CoreUser user, String password) {
-        return BCrypt.checkpw(password, user.get_Properties()
-                                            .getPasswordHash());
-    }
-
-    public static void resetPassword(CoreUser user, String newPassword) {
-        CoreUserProperties properties = user.get_Properties();
-        properties.setPasswordHash(BCrypt.hashpw(newPassword,
-                                                 BCrypt.gensalt(properties.getPasswordRounds())));
-        user.set_Properties(properties);
-    }
-
-    public static void updatePassword(CoreUser user, String newPassword,
-                                      String oldPassword) {
-        CoreUserProperties properties = user.get_Properties();
-        if (BCrypt.checkpw(oldPassword, properties.getPasswordHash())) {
-            properties.setPasswordHash(BCrypt.hashpw(newPassword,
-                                                     BCrypt.gensalt(properties.getPasswordRounds())));
-            user.set_Properties(properties);
-        }
-    }
-
-    private Model model;
+    private Model               model;
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials) throws AuthenticationException {
@@ -117,7 +93,10 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
             return noCapability(username, user);
         }
 
-        boolean authenticated = authenticate(user, credentials.getPassword());
+        boolean authenticated = model.getAuthnModel()
+                                     .authenticate(user,
+                                                   credentials.getPassword()
+                                                              .toCharArray());
         if (authenticated) {
             return authenticatedPrincipal(user, username);
         } else {

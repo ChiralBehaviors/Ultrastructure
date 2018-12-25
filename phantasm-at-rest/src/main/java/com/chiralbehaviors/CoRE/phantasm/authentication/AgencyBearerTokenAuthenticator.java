@@ -20,12 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
-
-import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,13 +36,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.TokenRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -67,11 +62,8 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
         }
     }
 
-    public static final int           ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
-    private static final long         DWELL                        = (long) (Math.random()
-                                                                             * 1000);
-    private final static Logger       log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
-    private final static ObjectMapper OBJECT_MAPPER                = new ObjectMapper();
+    private static final long   DWELL = (long) (Math.random() * 1000);
+    private final static Logger log   = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     public static Optional<AuthorizedPrincipal> absent() {
         try {
@@ -95,78 +87,43 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
         return credential.ip.equals(onRequest.remoteIp);
     }
 
-    public static Optional<AuthorizedPrincipal> validate(RequestCredentials requestCredentials,
-                                                         FacetPropertyRecord accessToken,
+    public static Optional<AuthorizedPrincipal> validate(RequestCredentials request,
                                                          Model model) {
-        // Validate the credential
-        Credential credential;
-        try {
-            credential = OBJECT_MAPPER.treeToValue(accessToken.getProperties(),
-                                                   Credential.class);
-        } catch (JsonProcessingException e) {
-            log.warn("Cannot deserialize access token {}", accessToken);
-            return absent();
-        }
-        if (!validate(credential, requestCredentials)) {
-            accessToken.delete();
-            log.warn("Invalid access token {}", requestCredentials);
-            return absent();
-        }
 
-        // Validate time to live
-        UUID agency = accessToken.getExistential();
-        OffsetDateTime currentTime = OffsetDateTime.now();
-        if (!credential.isValid(accessToken.getUpdated(), currentTime)) {
-            log.warn("requested access token {} for {}:{} has timed out",
-                     requestCredentials, agency, model.records()
-                                                      .existentialName(agency));
-            accessToken.delete();
-            return absent();
-        }
-
+        TokenRecord token = model.getAuthnModel()
+                                 .authenticate(null,
+                                               UuidUtil.decode(request.bearerToken),
+                                               null);
         // Validate agency has login cap to this core instance
-        if (!model.checkExistentialPermission(credential.roles.stream()
-                                                              .map(id -> model.records()
-                                                                              .resolve(id))
-                                                              .filter(a -> a != null)
-                                                              .map(e -> (Agency) e)
-                                                              .collect(Collectors.toList()),
+        if (!model.checkExistentialPermission(Arrays.asList(token.getRoles())
+                                                    .stream()
+                                                    .map(id -> model.records()
+                                                                    .resolve(id))
+                                                    .filter(a -> a != null)
+                                                    .map(e -> (Agency) e)
+                                                    .collect(Collectors.toList()),
                                               model.getCoreInstance()
                                                    .getRuleform(),
                                               model.getKernel()
                                                    .getLOGIN_TO())) {
-            log.warn("requested access token {} for {}:{} has no login capability",
-                     requestCredentials, agency, model.records()
-                                                      .existentialName(agency));
-            accessToken.delete();
+            log.warn("requested access token {} has no login capability",
+                     request);
             return absent();
         }
 
-        // Update and auth
-        accessToken.setUpdated(currentTime);
-        log.info("requested access token {} refreshed for {}:{}",
-                 requestCredentials, agency, agency);
         return Optional.of(principalFrom(model.records()
-                                              .resolve(agency),
-                                         accessToken, model));
+                                              .resolve(UuidUtil.decode(request.user)),
+                                         token, model));
     }
 
     private static AuthorizedPrincipal principalFrom(Agency agency,
-                                                     FacetPropertyRecord accessToken,
+                                                     TokenRecord token,
                                                      Model model) {
-        Credential credential;
-        try {
-            credential = OBJECT_MAPPER.treeToValue(accessToken.getJsonValue(),
-                                                   Credential.class);
-        } catch (JsonProcessingException e) {
-            log.warn("unable to deserialize access token {}", accessToken);
-            return null;
-        }
-        return credential == null ? new AuthorizedPrincipal(agency,
-                                                            Collections.singletonList(model.getKernel()
-                                                                                           .getLoginRole()))
-                                  : model.principalFromIds(agency,
-                                                           credential.roles);
+        return token.getRoles() == null ? new AuthorizedPrincipal(agency,
+                                                                  Collections.singletonList(model.getKernel()
+                                                                                                 .getLoginRole()))
+                                        : model.principalFromIds(agency,
+                                                                 Arrays.asList(token.getRoles()));
     }
 
     private Model              model;
@@ -175,28 +132,9 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
     private HttpServletRequest request;
 
     public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(credentials.bearerToken);
-        } catch (IllegalArgumentException e) {
-            // Must be a valid UUID
-            log.warn("requested access token {} invalid bearer token",
-                     credentials);
-            return absent();
-        }
         return model.create()
                     .transactionResult(c -> {
-                        ExistentialAttributeRecord accessToken;
-                        accessToken = model.create()
-                                           .selectFrom(EXISTENTIAL_ATTRIBUTE)
-                                           .where(EXISTENTIAL_ATTRIBUTE.ID.eq(uuid))
-                                           .fetchOne();
-                        if (accessToken == null) {
-                            log.warn("requested access token {} not found",
-                                     credentials);
-                            return absent();
-                        }
-                        return validate(credentials, accessToken, model);
+                        return validate(credentials, model);
                     });
 
     }
@@ -204,7 +142,8 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
     @Override
     public Optional<AuthorizedPrincipal> authenticate(String token) throws AuthenticationException {
         return authenticate(new RequestCredentials(request.getRemoteAddr(),
-                                                   token));
+                                                   token.substring(0, 22),
+                                                   token.substring(22)));
     }
 
     public void register(Environment environment) {

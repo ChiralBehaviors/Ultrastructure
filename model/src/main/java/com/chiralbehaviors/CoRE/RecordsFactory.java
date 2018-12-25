@@ -57,6 +57,7 @@ import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AuthenticationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
@@ -324,6 +325,12 @@ public interface RecordsFactory {
         record.setDomain(ExistentialDomain.Interval);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+    
+    default AuthenticationRecord newAuthentication() {
+        AuthenticationRecord record = new AuthenticationRecord();
+        record.setAgency(null);
         return record;
     }
 

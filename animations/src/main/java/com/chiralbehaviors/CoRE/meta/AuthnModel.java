@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2018 Chiral Behaviors, LLC, all rights reserved.
  * 
  
  *  This file is part of Ultrastructure.
@@ -18,23 +18,27 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
+package com.chiralbehaviors.CoRE.meta;
 
-import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
-import graphql.annotations.GraphQLDescription;
-import graphql.annotations.GraphQLField;
-import graphql.annotations.GraphQLName;
-import graphql.schema.DataFetchingEnvironment;
+import com.chiralbehaviors.CoRE.jooq.tables.records.TokenRecord;
+import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 
 /**
- * @author hhildebrand
+ * @author halhildebrand
  *
  */
-public interface CoreUserAdmin {
-    @GraphQLField
-    @GraphQLDescription("Update the password of the Current User of the session")
-    boolean setUpdatePassword(@NotNull @GraphQLName("oldPassword") String oldPassword,
-                              @NotNull @GraphQLName("newPassword") String newPassword,
-                              DataFetchingEnvironment env);
+public interface AuthnModel {
+    boolean authenticate(CoreUser user, char[] password);
+
+    TokenRecord authenticate(CoreUser user, UUID token, String ip);
+
+    boolean changePassword(CoreUser user, char[] oldPassword,
+                           char[] newPassword);
+
+    boolean create(CoreUser user, char[] password);
+
+    TokenRecord mintToken(CoreUser user, String ip, int ttlSeconds, UUID nonce,
+                          UUID[] roles);
 }

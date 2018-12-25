@@ -10,8 +10,7 @@
 		file="tables/existential.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/network_inference.xml" />
-	<include relativeToChangelogFile="true"
-		file="tables/edge.xml" />
+	<include relativeToChangelogFile="true" file="tables/edge.xml" />
 	<include relativeToChangelogFile="true" file="tables/facet.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/facet_property.xml" />
@@ -38,7 +37,8 @@
 		file="tables/self_sequencing_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="tables/workspace_label.xml" />
-    <include relativeToChangelogFile="true"
-        file="tables/authentication.xml" />
+	<include relativeToChangelogFile="true"
+		file="tables/authentication.xml" />
+	<include relativeToChangelogFile="true" file="tables/token.xml" />
 
 </databaseChangeLog>

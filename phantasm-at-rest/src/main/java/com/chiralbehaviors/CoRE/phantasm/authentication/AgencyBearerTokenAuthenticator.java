@@ -20,9 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,11 +92,15 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
 
     public static Optional<AuthorizedPrincipal> validate(RequestCredentials request,
                                                          Model model) {
-
-        TokenRecord token = model.getAuthnModel()
-                                 .authenticate(null,
-                                               UuidUtil.decode(request.bearerToken),
-                                               null);
+        UUID tokenId = UuidUtil.decode(request.bearerToken);
+        TokenRecord token = model.create()
+                                 .selectFrom(TOKEN)
+                                 .where(TOKEN.ID.eq(tokenId))
+                                 .fetchOne();
+        if (token == null) {
+            log.warn("requested access token {} does not exist", request);
+            return absent();
+        }
         // Validate agency has login cap to this core instance
         if (!model.checkExistentialPermission(Arrays.asList(token.getRoles())
                                                     .stream()

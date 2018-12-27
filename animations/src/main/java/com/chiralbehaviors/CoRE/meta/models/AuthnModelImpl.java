@@ -57,29 +57,25 @@ public class AuthnModelImpl implements AuthnModel {
                                                                           .getId()))
                                    .fetchOne()
                                    .component1();
-        return BCrypt.checkpw(password.toString(), passwordHash);
+        return BCrypt.checkpw(new String(password), passwordHash);
     }
 
     @Override
-    public TokenRecord authenticate(CoreUser user, UUID token, String ip) {
+    public TokenRecord authenticate(UUID token, String ip) {
         TokenRecord record = model.create()
                                   .selectFrom(TOKEN)
                                   .where(TOKEN.ID.eq(token))
                                   .fetchOne();
         if (record == null) {
             LoggerFactory.getLogger(AuthnModelImpl.class)
-                         .info("Expired or invalid token authenticating core user {} token {} from {}",
-                               user.getRuleform()
-                                   .getId(),
+                         .info("Expired or invalid token authenticating token {} from {}",
                                token, ip);
             return null;
         }
         if (!record.getIp()
                    .equals(ip)) {
             LoggerFactory.getLogger(AuthnModelImpl.class)
-                         .info("Invalid IP authenticating core user {} token {} from {}",
-                               user.getRuleform()
-                                   .getId(),
+                         .info("Invalid IP authenticating token {} from {}",
                                token, ip);
             return null;
         }
@@ -87,9 +83,7 @@ public class AuthnModelImpl implements AuthnModel {
                   .plusSeconds(record.getTtl())
                   .compareTo(OffsetDateTime.now()) >= 0) {
             LoggerFactory.getLogger(AuthnModelImpl.class)
-                         .info("Token timeout authenticating core user {} token {} from {}",
-                               user.getRuleform()
-                                   .getId(),
+                         .info("Token timeout authenticating token {} from {}",
                                token, ip);
             record.delete();
             return null;
@@ -108,7 +102,7 @@ public class AuthnModelImpl implements AuthnModel {
                                                    .where(AUTHENTICATION.AGENCY.equal(user.getRuleform()
                                                                                           .getId()))
                                                    .fetchOne();
-        authentication.setPasswordHash(BCrypt.hashpw(newPassword.toString(),
+        authentication.setPasswordHash(BCrypt.hashpw(new String(newPassword),
                                                      BCrypt.gensalt(authentication.getPasswordRounds())));
         model.create()
              .executeUpdate(authentication);
@@ -129,16 +123,11 @@ public class AuthnModelImpl implements AuthnModel {
         authn.setPasswordRounds(model.getCoreInstance()
                                      .get_Properties()
                                      .getPasswordRounds());
-        authn.setPasswordHash(BCrypt.hashpw(password.toString(),
-                                            BCrypt.gensalt(authn.getPasswordRounds())));
-        try {
-            model.create()
-                 .executeInsert(authn);
-        } catch (Exception e) {
-            LoggerFactory.getLogger(AuthnModelImpl.class)
-                         .info("Error creating core user", e);
-            return false;
-        }
+        String hashpw = BCrypt.hashpw(new String(password),
+                                      BCrypt.gensalt(authn.getPasswordRounds()));
+        authn.setPasswordHash(hashpw);
+        model.create()
+             .executeInsert(authn);
         return true;
     }
 
@@ -158,6 +147,8 @@ public class AuthnModelImpl implements AuthnModel {
                                                 .getId(),
                                             nonce, roles, ttlSeconds, ip,
                                             OffsetDateTime.now());
+        model.create()
+             .executeInsert(token);
         return token;
     }
 

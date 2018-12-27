@@ -44,6 +44,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,10 +126,10 @@ public class AuthxResource extends TransactionalResource {
         return model.create()
                     .selectDistinct(EXISTENTIAL.ID)
                     .from(EXISTENTIAL, FACET_PROPERTY, EDGE)
-                    .where(EDGE.CHILD.equal(EXISTENTIAL.ID))
-                    .and(EDGE.PARENT.equal(model.getKernel()
-                                                .getCoreUser()
-                                                .getId()))
+                    .where(EDGE.PARENT.equal(EXISTENTIAL.ID))
+                    .and(EDGE.CHILD.equal(model.getKernel()
+                                               .getCoreUser()
+                                               .getId()))
                     .and(EDGE.RELATIONSHIP.equal(model.getKernel()
                                                       .getIsA()
                                                       .getId()))

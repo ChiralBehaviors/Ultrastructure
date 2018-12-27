@@ -32,7 +32,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 public interface AuthnModel {
     boolean authenticate(CoreUser user, char[] password);
 
-    TokenRecord authenticate(CoreUser user, UUID token, String ip);
+    TokenRecord authenticate(UUID token, String ip);
 
     boolean changePassword(CoreUser user, char[] oldPassword,
                            char[] newPassword);

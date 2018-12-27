@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -171,8 +172,10 @@ public class AuthenticatorsTest extends AbstractModelTest {
         props.setLogin(username);
         bob.set_Properties(props);
 
-        model.getAuthnModel()
-             .create(bob, password.toCharArray());
+        assertTrue(model.getAuthnModel()
+                        .create(bob, password.toCharArray()));
+        assertTrue(model.getAuthnModel()
+                        .authenticate(bob, password.toCharArray()));
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
 
@@ -187,7 +190,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
         authenticator.setModel(model);
         RequestCredentials credential = new RequestCredentials(ip,
-                                                               authToken.toString());
+                                                               UuidUtil.encode(authToken));
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(credential);
         assertTrue(authenticated.isPresent());
         AuthorizedPrincipal authBob = authenticated.get();
@@ -204,7 +207,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         capRequest.capabilities = Arrays.asList(asserted.getId());
         authToken = AuthxResource.requestCapability(capRequest, request, model);
 
-        credential = new RequestCredentials(ip, authToken.toString());
+        credential = new RequestCredentials(ip, UuidUtil.encode(authToken));
         authenticated = authenticator.authenticate(credential);
         assertTrue(authenticated.isPresent());
         authBob = authenticated.get();

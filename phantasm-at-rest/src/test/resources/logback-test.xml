@@ -14,6 +14,9 @@
     </logger>
     <logger name="org.jooq">
         <level value="WARN" />
+    </logger>
+    <logger name="org.jooq.tools.LoggerListener">
+        <level value="debug" />
     </logger> 
     <root>
         <level value="INFO" />

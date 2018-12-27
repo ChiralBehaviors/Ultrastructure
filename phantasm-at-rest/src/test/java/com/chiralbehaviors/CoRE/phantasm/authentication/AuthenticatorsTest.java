@@ -35,15 +35,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.TokenRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.auth.basic.BasicCredentials;
 
@@ -61,9 +61,11 @@ public class AuthenticatorsTest extends AbstractModelTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+        model.getAuthnModel()
+             .create(bob, password.toCharArray());
 
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
@@ -102,7 +104,10 @@ public class AuthenticatorsTest extends AbstractModelTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+
         Credential credential = new Credential();
         credential.ip = "No place like 127.00.1";
         List<UUID> roles = Arrays.asList(model.getKernel()
@@ -115,15 +120,10 @@ public class AuthenticatorsTest extends AbstractModelTest {
         OffsetDateTime current = OffsetDateTime.now();
         credential.isValid(current, current);
 
-        ExistentialAttributeRecord accessToken = model.records()
-                                                      .newExistentialAttribute();
-        accessToken.setAttribute(model.getKernel()
-                                      .getAccessToken()
-                                      .getId());
-        accessToken.setExistential(bob.getRuleform()
-                                      .getId());
-        accessToken.setJsonValue(new ObjectMapper().valueToTree(credential));
-        accessToken.insert();
+        TokenRecord accessToken = model.getAuthnModel()
+                                       .mintToken(bob, credential.ip, 60,
+                                                  UUID.randomUUID(), null);
+
         model.flush();
 
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
@@ -167,9 +167,12 @@ public class AuthenticatorsTest extends AbstractModelTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+
+        model.getAuthnModel()
+             .create(bob, password.toCharArray());
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
 

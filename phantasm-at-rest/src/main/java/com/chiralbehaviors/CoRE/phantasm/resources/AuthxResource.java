@@ -153,9 +153,6 @@ public class AuthxResource extends TransactionalResource {
         cred.ip = httpRequest.getRemoteAddr();
 
         AuthnModel authnModel = model.getAuthnModel();
-        if (!authnModel.authenticate(null, null)) {
-            return null;
-        }
         List<CoreUser> agencies = find(username, model);
         if (agencies.size() > 1) {
             log.error(String.format("Multiple agencies with login name %s",

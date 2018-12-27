@@ -21,7 +21,9 @@
 package com.chiralbehaviors.CoRE.postgres;
 
 import org.jooq.Field;
+import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultDataType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -30,49 +32,55 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public interface JsonExtensions {
+    final PostgresJSONJacksonJsonNodeConverter CONVERTER = new PostgresJSONJacksonJsonNodeConverter();
+    final DefaultDataType<JsonNode>            JSON_B    = new DefaultDataType<>(SQLDialect.POSTGRES_9_5,
+                                                                                 JsonNode.class,
+                                                                                 "jsonb");
+
     public static Field<JsonNode> concatenate(Field<JsonNode> field,
                                               JsonNode value) {
-        return DSL.field("{0}||{1}", JsonNode.class, field, value);
+        return DSL.field("{0}||{1}", JSON_B, field, CONVERTER.to(value));
     }
 
     public static Field<Boolean> containedIn(Field<JsonNode> field,
                                              JsonNode parent) {
-        return DSL.field("{0}<@{1}", Boolean.class, field, parent);
+        return DSL.field("{0}<@{1}", Boolean.class, field,
+                         CONVERTER.to(parent));
     }
 
     public static Field<Boolean> contains(Field<JsonNode> field,
                                           JsonNode value) {
-        return DSL.field("{0}@>{1}", Boolean.class, field, value);
+        return DSL.field("{0}@>{1}", Boolean.class, field, CONVERTER.to(value));
     }
 
     public static Field<JsonNode> delete(Field<JsonNode> field, int index) {
-        return DSL.field("{0}-{1}", JsonNode.class, field, index);
+        return DSL.field("{0}-{1}", JSON_B, field, index);
     }
 
     public static Field<JsonNode> delete(Field<JsonNode> field, String value) {
-        return DSL.field("{0}-{1}", JsonNode.class, field, value);
+        return DSL.field("{0}-{1}", JSON_B, field, value);
     }
 
     public static Field<JsonNode> delete(Field<JsonNode> field,
                                          String value[]) {
-        return DSL.field("{0}-{1}", JsonNode.class, field, value);
+        return DSL.field("{0}-{1}", JSON_B, field, value);
     }
 
     public static Field<JsonNode> deletePath(Field<JsonNode> field,
                                              String value[]) {
-        return DSL.field("{0}#-{1}", JsonNode.class, field, value);
+        return DSL.field("{0}#-{1}", JSON_B, field, value);
     }
 
     public static Field<JsonNode> jsonAt(Field<?> field, int index) {
-        return DSL.field("{0}->{1}", JsonNode.class, field, DSL.inline(index));
+        return DSL.field("{0}->{1}", JSON_B, field, DSL.inline(index));
     }
 
     public static Field<JsonNode> jsonAt(Field<?> field, String name) {
-        return DSL.field("{0}->{1}", JsonNode.class, field, DSL.inline(name));
+        return DSL.field("{0}->{1}", JSON_B, field, DSL.inline(name));
     }
 
     public static Field<JsonNode> jsonPath(Field<?> field, String name) {
-        return DSL.field("{0}#>{1}", JsonNode.class, field, DSL.inline(name));
+        return DSL.field("{0}#>{1}", JSON_B, field, DSL.inline(name));
     }
 
     public static Field<Boolean> topLevelKeyExist(Field<JsonNode> field,

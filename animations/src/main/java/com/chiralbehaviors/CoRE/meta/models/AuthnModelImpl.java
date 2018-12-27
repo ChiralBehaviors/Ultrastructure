@@ -79,9 +79,14 @@ public class AuthnModelImpl implements AuthnModel {
                                token, ip);
             return null;
         }
-        if (record.getCreated()
-                  .plusSeconds(record.getTtl())
-                  .compareTo(OffsetDateTime.now()) >= 0) {
+        OffsetDateTime plusSeconds = record.getCreated()
+                                           .plusSeconds(record.getTtl());
+
+        OffsetDateTime now = OffsetDateTime.now();
+
+        System.out.println(String.format("%s < %s: %s", plusSeconds, now,
+                                         plusSeconds.compareTo(now)));
+        if (plusSeconds.compareTo(now) < 0) {
             LoggerFactory.getLogger(AuthnModelImpl.class)
                          .info("Token timeout authenticating token {} from {}",
                                token, ip);

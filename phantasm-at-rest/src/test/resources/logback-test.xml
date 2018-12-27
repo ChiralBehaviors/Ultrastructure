@@ -16,7 +16,7 @@
         <level value="WARN" />
     </logger>
     <logger name="org.jooq.tools.LoggerListener">
-        <level value="debug" />
+        <level value="WARN" />
     </logger> 
     <root>
         <level value="INFO" />

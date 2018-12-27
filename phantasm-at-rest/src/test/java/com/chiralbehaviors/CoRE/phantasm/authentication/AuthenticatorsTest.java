@@ -109,6 +109,9 @@ public class AuthenticatorsTest extends AbstractModelTest {
         props.setLogin(username);
         bob.set_Properties(props);
 
+        model.getCoreInstance()
+             .addLogin(bob);
+
         Credential credential = new Credential();
         credential.ip = "No place like 127.00.1";
         List<UUID> roles = Arrays.asList(model.getKernel()
@@ -130,8 +133,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
         authenticator.setModel(model);
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
-                                                                       accessToken.getId()
-                                                                                  .toString());
+                                                                       UuidUtil.encode(accessToken.getId()));
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(requestCredentials);
         assertTrue(authenticated.isPresent());
         AuthorizedPrincipal authBob = authenticated.get();
@@ -144,16 +146,14 @@ public class AuthenticatorsTest extends AbstractModelTest {
                             .get(0));
 
         requestCredentials = new RequestCredentials("No place like HOME",
-                                                    accessToken.getId()
-                                                               .toString());
+                                                    UuidUtil.encode(accessToken.getId()));
         authenticated = authenticator.authenticate(requestCredentials);
         assertFalse(authenticated.isPresent());
 
         requestCredentials = new RequestCredentials(credential.ip,
-                                                    accessToken.getId()
-                                                               .toString());
+                                                    UuidUtil.encode(accessToken.getId()));
         authenticated = authenticator.authenticate(requestCredentials);
-        assertFalse(authenticated.isPresent());
+        assertTrue(authenticated.isPresent());
 
         requestCredentials = new RequestCredentials(credential.ip,
                                                     "No place like HOME");

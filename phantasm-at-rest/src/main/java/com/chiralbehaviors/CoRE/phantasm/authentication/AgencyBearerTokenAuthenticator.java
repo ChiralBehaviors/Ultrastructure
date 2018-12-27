@@ -20,10 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -92,23 +92,32 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
 
     public static Optional<AuthorizedPrincipal> validate(RequestCredentials request,
                                                          Model model) {
-        UUID tokenId = UuidUtil.decode(request.bearerToken);
-        TokenRecord token = model.create()
-                                 .selectFrom(TOKEN)
-                                 .where(TOKEN.ID.eq(tokenId))
-                                 .fetchOne();
+        UUID tokenId;
+        try {
+            tokenId = UuidUtil.decode(request.bearerToken);
+        } catch (Exception e) {
+            log.debug("unable to resolve requested access token {}", request);
+            return absent();
+        }
+        TokenRecord token = model.getAuthnModel()
+                                 .authenticate(tokenId, request.remoteIp);
+
         if (token == null) {
             log.warn("requested access token {} does not exist", request);
             return absent();
         }
-        // Validate agency has login cap to this core instance
-        if (!model.checkExistentialPermission(Arrays.asList(token.getRoles())
-                                                    .stream()
-                                                    .map(id -> model.records()
-                                                                    .resolve(id))
-                                                    .filter(a -> a != null)
-                                                    .map(e -> (Agency) e)
-                                                    .collect(Collectors.toList()),
+        List<UUID> roles = token.getRoles() == null ? new ArrayList<>()
+                                                    : Arrays.asList(token.getRoles());
+        roles.add(model.getKernel()
+                       .getLoginRole()
+                       .getId());
+        // Validate agency has login cap to this core instance 
+        if (!model.checkExistentialPermission(roles.stream()
+                                                   .map(id -> model.records()
+                                                                   .resolve(id))
+                                                   .filter(a -> a != null)
+                                                   .map(e -> (Agency) e)
+                                                   .collect(Collectors.toList()),
                                               model.getCoreInstance()
                                                    .getRuleform(),
                                               model.getKernel()

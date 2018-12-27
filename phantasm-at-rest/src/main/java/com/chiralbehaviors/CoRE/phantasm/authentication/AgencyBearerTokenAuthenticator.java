@@ -106,8 +106,13 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
             log.warn("requested access token {} does not exist", request);
             return absent();
         }
-        List<UUID> roles = token.getRoles() == null ? new ArrayList<>()
-                                                    : Arrays.asList(token.getRoles());
+        List<UUID> roles = new ArrayList<>();
+        if (token.getRoles() != null) {
+            for (UUID role : token.getRoles()) {
+                roles.add(role);
+            }
+        }
+        ;
         roles.add(model.getKernel()
                        .getLoginRole()
                        .getId());

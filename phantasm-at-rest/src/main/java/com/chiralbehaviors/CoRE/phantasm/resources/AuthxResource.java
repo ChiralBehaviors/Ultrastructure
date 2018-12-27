@@ -237,23 +237,23 @@ public class AuthxResource extends TransactionalResource {
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public UUID loginForToken(@FormParam("username") String username,
-                              @FormParam("password") String password,
-                              @Context HttpServletRequest httpRequest,
-                              @Context DSLContext create) {
-        return mutate(null, model -> {
+    public String loginForToken(@FormParam("username") String username,
+                                @FormParam("password") String password,
+                                @Context HttpServletRequest httpRequest,
+                                @Context DSLContext create) {
+        return UuidUtil.encode(mutate(null, model -> {
             return loginUuidForToken(username, password, httpRequest, model);
-        }, create);
+        }, create));
     }
 
     @POST
     @Path("capability")
     @Consumes(MediaType.APPLICATION_JSON)
-    public UUID requestCapability(CapabilityRequest request,
-                                  @Context HttpServletRequest httpRequest,
-                                  @Context DSLContext create) {
-        return mutate(null, model -> {
+    public String requestCapability(CapabilityRequest request,
+                                    @Context HttpServletRequest httpRequest,
+                                    @Context DSLContext create) {
+        return UuidUtil.encode(mutate(null, model -> {
             return requestCapability(request, httpRequest, model);
-        }, create);
+        }, create));
     }
 }

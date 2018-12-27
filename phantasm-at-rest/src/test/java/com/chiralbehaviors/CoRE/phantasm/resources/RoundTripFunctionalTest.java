@@ -28,7 +28,6 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
@@ -164,9 +163,9 @@ public class RoundTripFunctionalTest {
         Form creds = new Form();
         creds.param("username", USER);
         creds.param("password", PASSWORD);
-        UUID token = invocationBuilder.post(Entity.entity(creds,
-                                                          MediaType.APPLICATION_FORM_URLENCODED),
-                                            UUID.class);
+        String token = invocationBuilder.post(Entity.entity(creds,
+                                                            MediaType.APPLICATION_FORM_URLENCODED),
+                                              String.class);
         webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                 application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
@@ -217,7 +216,7 @@ public class RoundTripFunctionalTest {
         webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/capability",
                                                 application.getPort()));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-        token = invocationBuilder.post(Entity.json(capReq), UUID.class);
+        token = invocationBuilder.post(Entity.json(capReq), String.class);
 
         webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/deauthorize",
                                                 application.getPort()));

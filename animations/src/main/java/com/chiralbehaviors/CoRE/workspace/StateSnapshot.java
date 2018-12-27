@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.*;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 
 import java.util.ArrayList;
@@ -50,6 +50,8 @@ public class StateSnapshot extends WorkspaceSnapshot {
         List<UpdatableRecord<? extends UpdatableRecord<? extends UpdatableRecord<?>>>> records = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
+                         .filter(t -> !t.equals(TOKEN)) 
+                         .filter(t -> !t.equals(AUTHENTICATION)) 
                          .filter(t -> !t.equals(WORKSPACE_LABEL)) 
                          .forEach(t -> {
                              if (t.equals(EDGE)) {

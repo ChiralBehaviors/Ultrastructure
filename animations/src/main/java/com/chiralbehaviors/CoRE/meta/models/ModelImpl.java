@@ -150,7 +150,7 @@ public class ModelImpl implements Model {
     }
 
     public static Configuration configuration() {
-        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_9_5);
+        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_10);
         Settings settings = new Settings();
         settings.setExecuteWithOptimisticLocking(true);
         settings.withRenderFormatted(false);

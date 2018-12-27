@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.postgres;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -37,20 +38,17 @@ public interface JsonExtensions {
                                                                                  JsonNode.class,
                                                                                  "jsonb");
 
-    public static Field<JsonNode> concatenate(Field<JsonNode> field,
-                                              JsonNode value) {
-        return DSL.field("{0}||{1}", JSON_B, field, CONVERTER.to(value));
+    public static Condition concatenate(Field<JsonNode> field, JsonNode value) {
+        return DSL.condition("{0}||{1}", field, DSL.val(value, field));
     }
 
-    public static Field<Boolean> containedIn(Field<JsonNode> field,
-                                             JsonNode parent) {
-        return DSL.field("{0}<@{1}", Boolean.class, field,
-                         CONVERTER.to(parent));
+    public static Condition containedIn(Field<JsonNode> field,
+                                        JsonNode parent) {
+        return DSL.condition("{0}<@{1}", field, DSL.val(parent, field));
     }
 
-    public static Field<Boolean> contains(Field<JsonNode> field,
-                                          JsonNode value) {
-        return DSL.field("{0}@>{1}", Boolean.class, field, CONVERTER.to(value));
+    public static Condition contains(Field<JsonNode> field, JsonNode value) {
+        return DSL.condition("{0}@>{1}", field, DSL.val(value, field));
     }
 
     public static Field<JsonNode> delete(Field<JsonNode> field, int index) {
@@ -72,29 +70,29 @@ public interface JsonExtensions {
     }
 
     public static Field<JsonNode> jsonAt(Field<?> field, int index) {
-        return DSL.field("{0}->{1}", JSON_B, field, DSL.inline(index));
+        return DSL.field("{0}->{1}", JSON_B, field, index);
     }
 
-    public static Field<JsonNode> jsonAt(Field<?> field, String name) {
-        return DSL.field("{0}->{1}", JSON_B, field, DSL.inline(name));
+    public static Field<JsonNode> jsonAt(Field<JsonNode> field, String name) {
+        return DSL.field("{0}->{1}", JSON_B, field, name);
     }
 
-    public static Field<JsonNode> jsonPath(Field<?> field, String name) {
-        return DSL.field("{0}#>{1}", JSON_B, field, DSL.inline(name));
+    public static Field<JsonNode> jsonPath(Field<JsonNode> field, String name) {
+        return DSL.field("{0}#>{1}", JSON_B, field, name);
     }
 
-    public static Field<Boolean> topLevelKeyExist(Field<JsonNode> field,
-                                                  String key) {
-        return DSL.field("{0}?{1}", Boolean.class, field, key);
+    public static Condition topLevelKeyExist(Field<JsonNode> field,
+                                             String key) {
+        return DSL.condition("{0}?{1}", field, key);
     }
 
-    public static Field<Boolean> topLevelKeysAllExist(Field<JsonNode> field,
-                                                      String[] key) {
-        return DSL.field("{0}?&{1}", Boolean.class, field, key);
+    public static Condition topLevelKeysAllExist(Field<JsonNode> field,
+                                                 String[] keys) {
+        return DSL.condition("{0}?&{1}", field, keys);
     }
 
-    public static Field<Boolean> topLevelKeysExist(Field<JsonNode> field,
-                                                   String[] key) {
-        return DSL.field("{0}?|{1}", Boolean.class, field, key);
+    public static Condition topLevelKeysExist(Field<JsonNode> field,
+                                              String[] keys) {
+        return DSL.condition("{0}?|{1}", field, keys);
     }
 }

@@ -143,6 +143,14 @@ public class AuthnModelImpl implements AuthnModel {
     }
 
     @Override
+    public void deauthorize(UUID token) {
+        model.create()
+             .deleteFrom(TOKEN)
+             .where(TOKEN.ID.eq(token))
+             .execute();
+    }
+
+    @Override
     public TokenRecord mintToken(CoreUser user, String ip, int ttlSeconds,
                                  UUID nonce, UUID[] roles) {
         TokenRecord token = new TokenRecord(RecordsFactory.GENERATOR.generate(),

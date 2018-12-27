@@ -112,7 +112,7 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
         }
 
         return Optional.of(principalFrom(model.records()
-                                              .resolve(UuidUtil.decode(request.user)),
+                                              .resolve(token.getAgency()),
                                          token, model));
     }
 
@@ -142,8 +142,7 @@ public class AgencyBearerTokenAuthenticator implements ModelAuthenticator,
     @Override
     public Optional<AuthorizedPrincipal> authenticate(String token) throws AuthenticationException {
         return authenticate(new RequestCredentials(request.getRemoteAddr(),
-                                                   token.substring(0, 22),
-                                                   token.substring(22)));
+                                                   token));
     }
 
     public void register(Environment environment) {

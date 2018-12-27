@@ -39,6 +39,8 @@ public interface AuthnModel {
 
     boolean create(CoreUser user, char[] password);
 
+    void deauthorize(UUID token);
+
     TokenRecord mintToken(CoreUser user, String ip, int ttlSeconds, UUID nonce,
                           UUID[] roles);
 }

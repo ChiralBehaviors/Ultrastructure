@@ -30,19 +30,63 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public interface JsonExtensions {
-    public static Field<JsonNode> jsonObject(Field<?> field, int index) {
+    public static Field<JsonNode> concatenate(Field<JsonNode> field,
+                                              JsonNode value) {
+        return DSL.field("{0}||{1}", JsonNode.class, field, value);
+    }
+
+    public static Field<Boolean> containedIn(Field<JsonNode> field,
+                                             JsonNode parent) {
+        return DSL.field("{0}<@{1}", Boolean.class, field, parent);
+    }
+
+    public static Field<Boolean> contains(Field<JsonNode> field,
+                                          JsonNode value) {
+        return DSL.field("{0}@>{1}", Boolean.class, field, value);
+    }
+
+    public static Field<JsonNode> delete(Field<JsonNode> field, int index) {
+        return DSL.field("{0}-{1}", JsonNode.class, field, index);
+    }
+
+    public static Field<JsonNode> delete(Field<JsonNode> field, String value) {
+        return DSL.field("{0}-{1}", JsonNode.class, field, value);
+    }
+
+    public static Field<JsonNode> delete(Field<JsonNode> field,
+                                         String value[]) {
+        return DSL.field("{0}-{1}", JsonNode.class, field, value);
+    }
+
+    public static Field<JsonNode> deletePath(Field<JsonNode> field,
+                                             String value[]) {
+        return DSL.field("{0}#-{1}", JsonNode.class, field, value);
+    }
+
+    public static Field<JsonNode> jsonAt(Field<?> field, int index) {
         return DSL.field("{0}->{1}", JsonNode.class, field, DSL.inline(index));
     }
 
-    public static Field<JsonNode> jsonObject(Field<?> field, String name) {
+    public static Field<JsonNode> jsonAt(Field<?> field, String name) {
         return DSL.field("{0}->{1}", JsonNode.class, field, DSL.inline(name));
     }
 
-    public static Field<String> jsonText(Field<?> field, int index) {
-        return DSL.field("{0}->>{1}", String.class, field, DSL.inline(index));
+    public static Field<JsonNode> jsonPath(Field<?> field, String name) {
+        return DSL.field("{0}#>{1}", JsonNode.class, field, DSL.inline(name));
     }
 
-    public static Field<String> jsonText(Field<?> field, String name) {
-        return DSL.field("{0}->>{1}", String.class, field, DSL.inline(name));
+    public static Field<Boolean> topLevelKeyExist(Field<JsonNode> field,
+                                                  String key) {
+        return DSL.field("{0}?{1}", Boolean.class, field, key);
+    }
+
+    public static Field<Boolean> topLevelKeysAllExist(Field<JsonNode> field,
+                                                      String[] key) {
+        return DSL.field("{0}?&{1}", Boolean.class, field, key);
+    }
+
+    public static Field<Boolean> topLevelKeysExist(Field<JsonNode> field,
+                                                   String[] key) {
+        return DSL.field("{0}?|{1}", Boolean.class, field, key);
     }
 }

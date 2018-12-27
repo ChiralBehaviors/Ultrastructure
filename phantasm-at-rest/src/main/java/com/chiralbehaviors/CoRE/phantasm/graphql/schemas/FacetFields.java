@@ -391,6 +391,29 @@ public class FacetFields extends Phantasmagoria {
         });
     }
 
+    private void addAttribute(String key, JsonNode value,
+                              Builder edgeTypeBuilder,
+                              EdgeTypeResolver edgeTypeResolver,
+                              NetworkAuthorization auth) {
+        Resolution resolution = outputTypeFor(value);
+        edgeTypeBuilder.field(newFieldDefinition().type((GraphQLOutputType) resolution.type)
+                                                  .name(key)
+                                                  .description("Edge field")
+                                                  .dataFetcher(env -> {
+                                                      Traversal edge = (Traversal) env.getSource();
+                                                      if (edge == null
+                                                          || !edge.auth.equals(auth)) {
+                                                          return null;
+                                                      }
+                                                      JsonNode properties = ctx(env).getEdgeProperty(edge.parent,
+                                                                                                     auth,
+                                                                                                     edge.child);
+                                                      return properties == null ? null
+                                                                                : resolution.transform.apply(properties.get(key));
+                                                  })
+                                                  .build());
+    }
+
     private void addChild(NetworkAuthorization auth) {
         String add = String.format(ADD_TEMPLATE,
                                    Phantasmagoria.capitalized(auth.getFieldName()));
@@ -539,6 +562,18 @@ public class FacetFields extends Phantasmagoria {
              });
     }
 
+    private void buildAttributes(JsonNode propertySchema,
+                                 Builder edgeTypeBuilder,
+                                 EdgeTypeResolver edgeTypeResolver,
+                                 NetworkAuthorization auth) {
+        ObjectNode props = (ObjectNode) propertySchema.get("properties");
+        props.fields()
+             .forEachRemaining(entry -> {
+                 addAttribute(entry.getKey(), entry.getValue(), edgeTypeBuilder,
+                              edgeTypeResolver, auth);
+             });
+    }
+
     private void buildEdge(NetworkAuthorization auth,
                            EdgeTypeResolver edgeTypeResolver,
                            GraphQLUnionType.Builder union) {
@@ -549,27 +584,13 @@ public class FacetFields extends Phantasmagoria {
                                              .description(String.format("The edge \"%s\" from facet \"%s\"",
                                                                         auth.getFieldName(),
                                                                         facetName));
-        JsonNode propertySchema = facet.getFacet()
-                                       .getSchema();
+        JsonNode propertySchema = auth.getSchema();
         if (propertySchema != null) {
+            buildAttributes(propertySchema, edgeTypeBuilder, edgeTypeResolver,
+                            auth);
+
             edgeTypeBuilder.field(newFieldDefinition().type(edgePropertyType(auth,
                                                                              propertySchema))
-                                                      .name("properties")
-                                                      .description("Json properties for edge")
-                                                      .dataFetcher(env -> {
-                                                          PhantasmContext ctx = ctx(env);
-                                                          Traversal edge = (Traversal) env.getSource();
-                                                          if (edge == null
-                                                              || !edge.auth.equals(auth)) {
-                                                              return null;
-                                                          }
-                                                          return ctx.getProperties(edge.parent,
-                                                                                   edge.auth,
-                                                                                   edge.child);
-                                                      })
-                                                      .build());
-        } else {
-            edgeTypeBuilder.field(newFieldDefinition().type(WorkspaceScalarTypes.GraphQLJson)
                                                       .name("properties")
                                                       .description("Json properties for edge")
                                                       .dataFetcher(env -> {

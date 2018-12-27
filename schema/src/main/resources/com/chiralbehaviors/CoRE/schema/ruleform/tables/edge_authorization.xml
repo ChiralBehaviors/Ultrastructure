@@ -73,7 +73,7 @@
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql><![CDATA[
-        ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
+        ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_json_schema CHECK (validate_json_schema(draftV4Schema(), schema));
         ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_default_props_json_schmema CHECK (validate_json_schema(schema, default_properties));
         CREATE INDEX edge_schema_idx ON edge_authorization USING gin(schema jsonb_path_ops);
         ]]>

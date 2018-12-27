@@ -77,6 +77,7 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 
+import graphql.AssertException;
 import graphql.annotations.GraphQLAnnotations;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
@@ -170,12 +171,16 @@ public class WorkspaceSchema {
                                               .build(new Aspect(model.create(),
                                                                 e.getKey()),
                                                      topLevelQuery,
-                                                     topLevelMutation)));
 
-        GraphQLUnionType edgeUnion = edgeUnionBuilder.build();
-        if (!edgeUnion.getTypes()
-                      .isEmpty()) {
-            dictionary.add(edgeUnion);
+                                                     topLevelMutation)));
+        try {
+            GraphQLUnionType edgeUnion = edgeUnionBuilder.build();
+            if (!edgeUnion.getTypes()
+                          .isEmpty()) {
+                dictionary.add(edgeUnion);
+            }
+        } catch (AssertException e) {
+            // only one type, ignore
         }
         return GraphQLSchema.newSchema()
                             .query(topLevelQuery.build())
@@ -232,7 +237,8 @@ public class WorkspaceSchema {
                                                  GraphQLFloat));
         processor.registerType(new ZtypeFunction(int.class, GraphQLInt));
         processor.registerType(new ZtypeFunction(UUID.class, GraphQLUuid));
-        processor.registerType(new ZtypeFunction(new UUID[0].getClass(), new GraphQLList(GraphQLUuid)));
+        processor.registerType(new ZtypeFunction(new UUID[0].getClass(),
+                                                 new GraphQLList(GraphQLUuid)));
         processor.registerType(new ZtypeFunction(OffsetDateTime.class,
                                                  GraphQLTimestamp));
 

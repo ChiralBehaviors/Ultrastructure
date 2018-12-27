@@ -150,6 +150,10 @@ public class Phantasmagoria {
             return relationship;
         }
 
+        public JsonNode getSchema() {
+            return auth.getSchema();
+        }
+
         public String plural() {
             return English.plural(fieldName);
         }

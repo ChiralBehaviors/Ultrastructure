@@ -165,7 +165,7 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>/thing.wsp</resource>
+								<resource>/thing.json</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.phantasm.resource.test</packageName>
 								<namespacePackages>

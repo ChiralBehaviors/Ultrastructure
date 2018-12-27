@@ -50,7 +50,7 @@ public class EdgeTest extends AbstractModelTest {
         Map<String, Object> variables = new HashMap<>();
         variables.put("id",
                       UuidUtil.encode(WorkspaceAccessor.uuidOf(THING_URI)));
-        QueryRequest request = new QueryRequest("query ($id: ID!) { workspace(id: $id) { imports { _edge { ... on _workspace_import { lookupOrder namespace } } } } }",
+        QueryRequest request = new QueryRequest("query ($id: ID!) { workspace(id: $id) { imports { _edge { ... on _workspace_import { LookupOrder Namespace } } } } }",
                                                 variables);
 
         ExecutionResult execute = new WorkspaceContext(model,
@@ -70,7 +70,7 @@ public class EdgeTest extends AbstractModelTest {
                                      .get("imports")
                                      .get(0)
                                      .get("_edge")
-                                     .get("namespace")
+                                     .get("Namespace")
                                      .asText());
     }
 }

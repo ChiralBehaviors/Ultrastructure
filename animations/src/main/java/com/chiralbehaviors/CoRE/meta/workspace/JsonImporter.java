@@ -326,13 +326,14 @@ public class JsonImporter {
         authorization.setName(name);
         authorization.setParent(auth.getId());
         authorization.setRelationship(resolve(constraint.rel));
+        authorization.setSchema(constraint.schema);
+        authorization.setDefaultProperties(constraint.defaultProperties);
         resolveChild(constraint, authorization, loaded);
         Cardinality cardinality = cardinality(constraint);
         authorization.setCardinality(cardinality);
         authorization.insert();
         workspace.add(authorization);
         authorization.setSchema(constraint.schema);
-        authorization.setDefaultProperties(constraint.defaultProperties);
     }
 
     private FacetRecord load(String name, Facet facet) {

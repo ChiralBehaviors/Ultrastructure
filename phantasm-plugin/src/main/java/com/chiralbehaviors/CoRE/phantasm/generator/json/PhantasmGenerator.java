@@ -125,7 +125,7 @@ public class PhantasmGenerator {
         InputStream input;
         try {
             input = Utils.resolveResource(getClass(), config.resource);
-        } catch (IOException e) {
+        } catch (Exception  e) {
             throw new IllegalArgumentException("Cannot resolve resource: "
                                                + config.resource, e);
         }

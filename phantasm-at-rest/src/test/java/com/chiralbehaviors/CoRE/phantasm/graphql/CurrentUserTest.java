@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -40,7 +39,6 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
 import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -74,14 +72,15 @@ public class CurrentUserTest extends AbstractGraphQLTest {
                                                 .getLoginRole()));
         CoreUserProperties properties = new CoreUserProperties();
         properties.setLogin(username);
-        properties.setPasswordRounds(10);
         bob.set_Properties(properties);
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+
+        model.getAuthnModel()
+             .create(bob, password.toCharArray());
         AuthorizedPrincipal principal = new AuthorizedPrincipal((Agency) bob.getRuleform());
         Map<String, Object> variables = new HashMap<>();
         ObjectNode result = model.executeAs(principal,
                                             () -> execute(schema,
-                                                          "{ currentUser { id login } }",
+                                                          "{ currentUser { id Login } }",
                                                           variables));
         String id = result.get("currentUser")
                           .get("id")
@@ -93,10 +92,10 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         variables.put("id", id);
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "query m($id: ID!) { coreUser(id: $id) {login } }",
+                                               "query m($id: ID!) { coreUser(id: $id) {Login } }",
                                                variables));
         assertEquals(username, result.get("coreUser")
-                                     .get("login")
+                                     .get("Login")
                                      .asText());
 
         variables.put("id", UuidUtil.encode(model.getKernel()
@@ -185,23 +184,14 @@ public class CurrentUserTest extends AbstractGraphQLTest {
         assertTrue(result.get("inRoles")
                          .asBoolean());
 
-        result = model.executeAs(principal,
-                                 () -> execute(schema,
-                                               "{ currentUser { passwordHash } }",
-                                               variables));
-        String oldHash = result.get("currentUser")
-                               .get("passwordHash")
-                               .asText();
-
         variables.put("old", password);
         variables.put("new", password + " or kill me");
         result = model.executeAs(principal,
                                  () -> execute(schema,
-                                               "mutation m($old: String! $new: String!) { updatePassword(oldPassword: $old newPassword: $new) {passwordHash}}",
+                                               "mutation m($old: String! $new: String!) { updatePassword(oldPassword: $old newPassword: $new)}",
                                                variables));
-        assertNotEquals(oldHash, result.get("updatePassword")
-                                       .get("passwordHash")
-                                       .asText());
+        assertTrue(result.get("updatePassword")
+                         .asBoolean());
 
     }
 }

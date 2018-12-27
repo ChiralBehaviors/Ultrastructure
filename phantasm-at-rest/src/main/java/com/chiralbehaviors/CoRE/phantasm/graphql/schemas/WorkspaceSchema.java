@@ -27,7 +27,7 @@ import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -81,6 +81,7 @@ import graphql.annotations.GraphQLAnnotations;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInterfaceType;
+import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
@@ -231,7 +232,8 @@ public class WorkspaceSchema {
                                                  GraphQLFloat));
         processor.registerType(new ZtypeFunction(int.class, GraphQLInt));
         processor.registerType(new ZtypeFunction(UUID.class, GraphQLUuid));
-        processor.registerType(new ZtypeFunction(Timestamp.class,
+        processor.registerType(new ZtypeFunction(new UUID[0].getClass(), new GraphQLList(GraphQLUuid)));
+        processor.registerType(new ZtypeFunction(OffsetDateTime.class,
                                                  GraphQLTimestamp));
 
         GraphQLType existentialType = GraphQLAnnotations.iface(Existential.class);

@@ -55,10 +55,10 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.NAVI;
@@ -98,11 +98,14 @@ public class RoundTripFunctionalTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+        model.getAuthnModel()
+             .create(bob, password.toCharArray());
         // Commit is required
         model.create()
              .configuration()

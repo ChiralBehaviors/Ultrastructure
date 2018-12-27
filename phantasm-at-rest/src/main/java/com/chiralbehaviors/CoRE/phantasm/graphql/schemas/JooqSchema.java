@@ -221,8 +221,13 @@ public class JooqSchema {
                                      .equals("id"))
               .forEach(field -> {
                   updateBuilder.field(b -> {
+                      GraphQLType zType = type(field, processor);
+                      if (!(zType instanceof GraphQLInputType)) {
+                          throw new IllegalStateException("Should be input type: "
+                                                          + zType);
+                      }
                       return b.name(field.getName())
-                              .type((GraphQLInputType) type(field, processor));
+                              .type((GraphQLInputType) zType);
                   });
               });
         GraphQLInputObjectType update = updateBuilder.build();

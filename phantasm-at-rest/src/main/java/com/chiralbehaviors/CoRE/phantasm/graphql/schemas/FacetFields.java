@@ -148,7 +148,7 @@ public class FacetFields extends Phantasmagoria {
         ClassLoader parent = Thread.currentThread()
                                    .getContextClassLoader();
         if (parent == null) {
-            parent = PhantasmBundle.class.getClassLoader();
+            parent = FacetFields.class.getClassLoader();
         }
         List<URL> urls = new ArrayList<>();
         for (String url : urlStrings) {

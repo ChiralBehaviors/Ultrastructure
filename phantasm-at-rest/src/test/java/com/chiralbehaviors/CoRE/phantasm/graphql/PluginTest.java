@@ -139,7 +139,7 @@ public class PluginTest extends AbstractModelTest {
         assertNotNull(thing1ID);
         Thing1 thing1 = model.wrap(Thing1.class, model.records()
                                                       .resolve(UuidUtil.decode(thing1ID)));
-        assertEquals(bob, thing1.getRuleform()
+        assertEquals(bob, thing1.get_Properties()
                                 .getDescription());
 
         String apple = "Connie";

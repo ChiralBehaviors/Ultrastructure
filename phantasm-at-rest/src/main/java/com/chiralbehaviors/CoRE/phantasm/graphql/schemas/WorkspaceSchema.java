@@ -373,9 +373,18 @@ public class WorkspaceSchema {
         if (ws.getRuleform()
               .getId()
               .equals(WorkspaceAccessor.uuidOf(facetAnnotation.workspace()))) {
-            FacetRecord declaration = model.records()
-                                           .findFacetRecord(scope.lookup(ReferenceType.Facet,
-                                                                         facetAnnotation.key()));
+            FacetRecord declaration;
+            try {
+                FacetRecord lookup = scope.lookup(ReferenceType.Facet,
+                                                  facetAnnotation.key());
+                declaration = model.records()
+                                   .findFacetRecord(lookup.getId());
+            } catch (Exception e) {
+                throw new IllegalArgumentException(annotation.value()
+                                                             .getName()
+                                                   + " Facet annotation incomplete",
+                                                   e);
+            }
             return facet.equals(declaration);
 
         }

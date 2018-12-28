@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Initializer;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.plugin.test.thing1Properties.Thing1Properties;
 
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
@@ -42,8 +43,9 @@ public class Thing1_Plugin {
     public static void constructor(DataFetchingEnvironment env) {
         ((PhantasmCRUD) env.getContext()).getModel(); // ensure it isn't null;
         env.getArguments(); // not null;
-        ((Thing1) env.getSource()).get_Properties()
-                                  .setDescription(passThrough.get());
+        Thing1Properties props = new Thing1Properties();
+        props.setDescription(passThrough.get()); 
+        ((Thing1) env.getSource()).set_Properties(props);
     }
 
     @GraphQLField

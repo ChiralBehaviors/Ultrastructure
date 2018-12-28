@@ -1,0 +1,373 @@
+{
+    "name": "UaaS SPA",
+    "description": "A declarative single page application framework for Ultrastructure",
+    "uri": "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page",
+    "version": 1,
+    "imports": [
+        {
+            "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
+            "alias": "kernel"
+        }
+    ],
+    "edges": [
+        {
+            "p": "AppLauncher",
+            "r": "HasPage",
+            "c": "AllApplications",
+            "properties": {
+                "Route": "launch"
+            }
+        },
+        {
+            "p": "AllApplicatoins",
+            "r": "Launch",
+            "c": "LaunchApplication",
+            "properties": {
+                "Relation": "singlePageApplications"
+            }
+        }
+    ],
+    "applications": [
+        {
+            "apply": "SinglePageApp",
+            "on": "AppLauncher",
+            "properties": {
+                "Name": "Application Launcher",
+                "Description": "A well known application for launching applications",
+                "root": "launch"
+            }
+        },
+        {
+            "apply": "Page",
+            "on": "AllApplications",
+            "properties": {
+                "Name": "All Applications",
+                "Description": "Page with all applications",
+                "Title": "Applications",
+                "Query": "{ singlePageApplications { id name description } }"
+            }
+        },
+        {
+            "apply": "Launch",
+            "on": "LaunchApplication",
+            "properties": {
+                "Name": "Launch Application",
+                "Description": "Launch the selected application",
+                "LaunchBy": "id"
+            }
+        }
+    ],
+    "existentials": {
+        "Page": {
+            "domain": "Product",
+            "description": "A single page in an applicationr"
+        },
+        "SinglePageApp": {
+            "domain": "Product",
+            "description": "'A single page application"
+        },
+        "Route": {
+            "domain": "Product",
+            "description": "A routing from one page to another"
+        },
+        "Launch": {
+            "domain": "Product",
+            "description": "An application launch from a page in another application"
+        },
+        "Action": {
+            "domain": "Product",
+            "description": "An action on an instance of a relation"
+        },
+        "AppLauncher": {
+            "domain": "Product",
+            "description": "A well known application for launching applications"
+        },
+        "AllApplications": {
+            "domain": "Product",
+            "description": "Page with all applications"
+        },
+        "LaunchApplication": {
+            "domain": "Product",
+            "description": "Launch the selected application"
+        },
+        "HasPage": {
+            "domain": "Relationship",
+            "description": "A has page B",
+            "inverse": {
+                "name": "PageOf",
+                "description": "A is a page of B"
+            }
+        },
+        "HasRoute": {
+            "domain": "Relationship",
+            "description": "A has route B",
+            "inverse": {
+                "name": "RouteOf",
+                "description": "A is a route of B"
+            }
+        },
+        "Frame": {
+            "domain": "Relationship",
+            "description": "A is framed by the workspace B",
+            "inverse": {
+                "name": "FrameOf",
+                "description": "A is the workspace frame of page B"
+            }
+        },
+        "Create": {
+            "domain": "Relationship",
+            "description": "A creates an instance of the relation using action B",
+            "inverse": {
+                "name": "CreateActionOf",
+                "description": "A is an action used to create a new instance of a relation of page B"
+            }
+        },
+        "Delete": {
+            "domain": "Relationship",
+            "description": "A deletes the relation using the action B",
+            "inverse": {
+                "name": "DeleteActionOf",
+                "description": "A is an action used to delete a relation of page B"
+            }
+        },
+        "Update": {
+            "domain": "Relationship",
+            "description": "A updates relation using route B",
+            "inverse": {
+                "name": "UpdateActionOf",
+                "description": "A is a route used to update a relation of page B"
+            }
+        },
+        "Navigate": {
+            "domain": "Relationship",
+            "description": "A navigates the relation using route B",
+            "inverse": {
+                "name": "NavigateActionOf",
+                "description": "A is a route used to navigate a relation of page B"
+            }
+        },
+        "Launch": {
+            "domain": "Relationship",
+            "description": "A launches the application using the application launch defined by B",
+            "inverse": {
+                "name": "LaunchOf",
+                "description": "A is a launch used to launch an application from a relation of page B"
+            }
+        }
+    },
+    "facets": {
+        "SinglePageApp": {
+            "classifier": "IsA",
+            "classification": "SinglePageApp",
+            "constraints": {
+                "frame": {
+                    "card": "ONE",
+                    "rel": "IsA",
+                    "child": "kernel::Workspace"
+                },
+                "hasPage": {
+                    "card": "MANY",
+                    "rel": "IsA",
+                    "child": "Page",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Route": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Description": {
+                        "type": "string"
+                    },
+                    "Root": {
+                        "type": "string"
+                    },
+                    "Meta": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "Page": {
+            "classifier": "IsA",
+            "classification": "Page",
+            "constraints": {
+                "pageOf": {
+                    "card": "ONE",
+                    "rel": "IsA",
+                    "child": "SinglePageApp"
+                },
+                "frame": {
+                    "card": "ONE",
+                    "rel": "IsA",
+                    "child": "kernel::Workspace"
+                },
+                "create": {
+                    "card": "MANY",
+                    "rel": "Create",
+                    "child": "Action",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Relation": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "update": {
+                    "card": "MANY",
+                    "rel": "Update",
+                    "child": "Action",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Relation": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "delete": {
+                    "card": "MANY",
+                    "rel": "Delete",
+                    "child": "Action",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Relation": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "navigate": {
+                    "card": "MANY",
+                    "rel": "Navigate",
+                    "child": "Action",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Relation": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "launch": {
+                    "card": "MANY",
+                    "rel": "Launch",
+                    "child": "Action",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Relation": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Description": {
+                        "type": "string"
+                    },
+                    "Query": {
+                        "type": "string"
+                    },
+                    "Title": {
+                        "type": "String"
+                    },
+                    "Style": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "Route": {
+            "classifier": "IsA",
+            "classification": "Route",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "FrameBy": {
+                        "type": "string"
+                    },
+                    "Extract": {
+                        "type": "object"
+                    },
+                    "Path": {
+                        "type": "string"
+                    },
+                    "Meta": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "Action": {
+            "classifier": "IsA",
+            "classification": "Action",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "FrameBy": {
+                        "type": "string"
+                    },
+                    "Extract": {
+                        "type": "object"
+                    },
+                    "Query": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Launch": {
+            "classifier": "IsA",
+            "classification": "Action",
+            "constraints": {
+                "pageOf": {
+                    "card": "ONE",
+                    "rel": "LaunchOf",
+                    "child": "Page"
+                },
+                "frame": {
+                    "card": "ONE",
+                    "rel": "IsA",
+                    "child": "kernel::Workspace"
+                },
+                "launch": {
+                    "card": "ONE",
+                    "rel": "IsA",
+                    "child": "SinglePageApp"
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "FrameBy": {
+                        "type": "string"
+                    },
+                    "LaunchBy": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

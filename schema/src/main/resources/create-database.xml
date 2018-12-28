@@ -20,7 +20,7 @@
             ]]>
         </sql>
         <rollback>
-            <sql>DROP ROLE ${create.db.role};</sql>
+            <sql>DROP ROLE IF EXISTS ${create.db.role};</sql>
         </rollback>
     </changeSet>
 
@@ -31,7 +31,7 @@
             ]]>
         </sql>
         <rollback>
-            <sql>DROP ROLE ${create.db.role};</sql>
+            <sql>DROP ROLE IF EXISTS ${create.db.role};</sql>
         </rollback>
     </changeSet>
 

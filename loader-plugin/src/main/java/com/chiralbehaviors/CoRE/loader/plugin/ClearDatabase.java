@@ -60,7 +60,7 @@ public class ClearDatabase extends AbstractMojo {
             new Loader(loader).clear();
         } catch (Exception e) {
             throw new MojoFailureException(String.format("Unable to clear %s",
-                                                         loader.getCoreJdbcURL()));
+                                                         loader.getCoreJdbcURL()), e);
         }
     }
 }

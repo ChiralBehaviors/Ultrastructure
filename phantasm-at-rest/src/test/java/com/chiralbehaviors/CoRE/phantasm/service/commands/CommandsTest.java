@@ -30,6 +30,7 @@ import java.util.Properties;
 import org.junit.After;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.loader.Loader;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
@@ -56,34 +57,36 @@ public class CommandsTest {
         config.dbaDb = (String) properties.get("dba.db");
         config.dbaPort = Integer.parseInt((String) properties.get("dba.port"));
         config.dbaUsername = (String) properties.get("dba.login");
+        config.dropDatabase = true;
 
-        CoreDbConfiguration coreConfig = new CoreDbConfiguration();
+        config.corePassword = "tiger";
+        config.coreServer = (String) properties.get("core.server");
+        config.coreDb = "testme";
+        config.corePort = Integer.parseInt((String) properties.get("core.port"));
+        config.coreUsername = "scott";
 
-        coreConfig.corePassword = "tiger";
-        coreConfig.coreServer = (String) properties.get("core.server");
-        coreConfig.coreDb = "testme";
-        coreConfig.corePort = Integer.parseInt((String) properties.get("core.port"));
-        coreConfig.coreUsername = "scott";
-        CoreDbConfiguration.TEST_ENV_CONFIGURATION = coreConfig;
+        CoreDbConfiguration.TEST_ENV_CONFIGURATION = config;
 
-        try (Connection dbaConnection = config.getDbaConnection()) {
+        new Loader(config).prepareDb();
+        try (Connection dbaConnection = config.getDbaConnection();) {
             dbaConnection.setAutoCommit(true);
-            dbaConnection.prepareStatement("DROP DATABASE IF EXISTS testme")
+            dbaConnection.prepareStatement(String.format("CREATE ROLE %s WITH SUPERUSER LOGIN PASSWORD '%s'",
+                                                         config.coreUsername,
+                                                         config.corePassword))
                          .execute();
-            dbaConnection.prepareStatement("DROP ROLE IF EXISTS scott")
+            dbaConnection.prepareStatement(String.format("CREATE DATABASE %s ENCODING 'UTF8'",
+                                                         config.coreDb))
                          .execute();
-            dbaConnection.prepareStatement("CREATE ROLE scott WITH SUPERUSER LOGIN PASSWORD 'tiger'")
-                         .execute();
-            dbaConnection.prepareStatement("CREATE DATABASE testme ENCODING 'UTF8'")
-                         .execute();
-            dbaConnection.prepareStatement("GRANT CREATE ON DATABASE testme TO scott")
+            dbaConnection.prepareStatement(String.format("GRANT CREATE ON DATABASE %s TO %s",
+                                                         config.coreDb,
+                                                         config.coreUsername))
                          .execute();
         }
 
         new BootstrapCommand().run(null, null);
         Namespace namespace = mock(Namespace.class);
-//        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.wsp"));
-//        new ManifestCommand().run(null, namespace);
+        //        when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.wsp"));
+        //        new ManifestCommand().run(null, namespace);
         new ClearCommand().run(null, null);
         new BootstrapCommand().run(null, null);
         when(namespace.getList("files")).thenReturn(Collections.singletonList("/thing.2.json"));

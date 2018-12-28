@@ -51,7 +51,7 @@ public class WorkspacePluginTest extends AbstractModelTest {
                         .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
         Configuration config = Configuration.fromYaml(getClass().getResourceAsStream("/db-configuration.yml"));
         config.set(model.create());
-        List<String> toLoad = Arrays.asList("/thing.wsp", "/thing.2.wsp");
+        List<String> toLoad = Arrays.asList("/thing.json", "/thing.2.def.json");
         WorkspaceDslLoader loader = new WorkspaceDslLoader(config, toLoad);
         loader.execute();
         WorkspaceScope scope = model.getWorkspaceModel()

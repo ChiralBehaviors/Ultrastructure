@@ -122,7 +122,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="job, sequence_number"
 			constraintName="job_chronology_job_unique_constraint"
-			deferrable="false" disabled="false" initiallyDeferred="true"
+			deferrable="true" disabled="false" initiallyDeferred="true"
 			tableName="job_chronology" />
 		<createIndex schemaName="ruleform"
 			indexName="job_chronology_updated_by_fkey_idx"

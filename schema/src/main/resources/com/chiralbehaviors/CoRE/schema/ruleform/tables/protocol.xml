@@ -70,8 +70,8 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, status, assign_to, deliver_from, deliver_to, product, children_relationship, requester, child_service, child_status, child_assign_to, child_deliver_from, child_deliver_to, child_product"
-			constraintName="protocol_unique" deferrable="false" disabled="false"
-			initiallyDeferred="false" tableName="protocol" />
+			constraintName="protocol_unique" deferrable="true" disabled="false"
+			initiallyDeferred="true" tableName="protocol" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

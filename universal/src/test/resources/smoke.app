@@ -35,10 +35,6 @@ spa {
             navigate: agency meta {id:/id}
         }
         
-        attributes {
-            navigate: attribute meta {id:/id}
-        }
-        
         intervals {
             navigate: interval meta {id:/id}
         }
@@ -69,11 +65,6 @@ spa {
         description: "Detail for a facet"
         title: "Ye facet detail"
         query: 'wsp/facetDetail.query'
-        style: '{"labels" : {"/facet/attributes/authorizedAttribute":"attributes"} }'
-        
-        authorizedAttribute {
-            navigate: attribute meta {id:/id}
-        }
         
         classifier {
             navigate: relationship meta {id:/id}
@@ -106,18 +97,7 @@ spa {
             navigate: workspace by /id meta {id:/id}
         }
     }
-        
-    attribute {
-        name: "Attribute Detail"
-        description: "Detail for attribute"
-        title: "Ye attribute detail"
-        query: 'wsp/attributeDetail.query'
-        
-        workspace {
-            navigate: workspace by /id meta {id:/id}
-        }
-    }
-        
+     
     interval {
         name: "Interval Detail"
         description: "Detail for interval"

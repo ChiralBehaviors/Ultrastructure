@@ -28,13 +28,15 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class Edge {
     public String   c;
+    public String   facet;
     public String   p;
     public JsonNode properties;
     public String   r;
 
     @Override
     public String toString() {
-        return String.format("Edge [p=%s, r=%s, c=%s, properties=%s]", p, r, c,
-                             properties);
+        return String.format("Edge [p=%s, r=%s, c=%s, facet=%s, properties=%s]",
+                             p, r, c, facet == null ? "-" : facet, properties);
     }
+
 }

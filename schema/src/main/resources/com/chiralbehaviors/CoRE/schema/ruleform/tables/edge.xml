@@ -35,8 +35,8 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
-			constraintName="edge_p_r_c_unique" deferrable="false"
-			disabled="false" initiallyDeferred="false" tableName="edge" />
+			constraintName="edge_p_r_c_unique" deferrable="true"
+			disabled="false" initiallyDeferred="true" tableName="edge" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

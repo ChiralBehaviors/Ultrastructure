@@ -32,8 +32,8 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="workspace, type, key"
-			constraintName="workspace_key_constraint" deferrable="false"
-			disabled="false" initiallyDeferred="false"
+			constraintName="workspace_key_constraint" deferrable="true"
+			disabled="false" initiallyDeferred="true"
 			tableName="workspace_label" />
 
 		<addForeignKeyConstraint

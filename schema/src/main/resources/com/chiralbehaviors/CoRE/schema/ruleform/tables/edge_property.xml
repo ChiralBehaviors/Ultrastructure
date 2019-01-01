@@ -39,31 +39,31 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="auth, edge" constraintName="edge_property_key"
-			deferrable="false" disabled="false" initiallyDeferred="false"
+			deferrable="true" disabled="false" initiallyDeferred="true"
 			tableName="edge_property" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="auth" baseTableName="edge_property"
-			constraintName="edge_property_authorization_fkey" deferrable="false"
+			constraintName="edge_property_authorization_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="edge_authorization" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="edge" baseTableName="edge_property"
-			constraintName="edge_property_edge_fkey" deferrable="false"
+			constraintName="edge_property_edge_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="edge" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="edge_property"
-			constraintName="edge_authority_fkey" deferrable="false"
+			constraintName="edge_authority_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="updated_by" baseTableName="edge_property"
-			constraintName="edge_updated_by_fkey" deferrable="false"
+			constraintName="edge_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 

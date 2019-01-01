@@ -33,31 +33,31 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="classifier, classification"
-			constraintName="facet_unique_key" deferrable="false" disabled="false"
-			initiallyDeferred="false" tableName="facet" />
+			constraintName="facet_unique_key" deferrable="true" disabled="false"
+			initiallyDeferred="true" tableName="facet" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="classifier" baseTableName="facet"
-			constraintName="facet_classifier_fkey" deferrable="false"
+			constraintName="facet_classifier_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="classification" baseTableName="facet"
-			constraintName="facet_classification_fkey" deferrable="false"
+			constraintName="facet_classification_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="facet"
-			constraintName="facet_authority_fkey" deferrable="false"
+			constraintName="facet_authority_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="updated_by" baseTableName="facet"
-			constraintName="facet_updated_by_fkey" deferrable="false"
+			constraintName="facet_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 

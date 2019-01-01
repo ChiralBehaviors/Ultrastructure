@@ -44,7 +44,7 @@
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="service, status_code, parent, sequence_number"
 			constraintName="parent_sequencing_authorization_parent_status_code_sequ"
-			deferrable="false" disabled="false" initiallyDeferred="false"
+			deferrable="true" disabled="false" initiallyDeferred="true"
 			tableName="parent_sequencing_authorization" />
 
 		<addForeignKeyConstraint

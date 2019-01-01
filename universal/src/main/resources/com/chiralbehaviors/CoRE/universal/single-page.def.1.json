@@ -14,6 +14,7 @@
             "p": "AppLauncher",
             "r": "HasPage",
             "c": "AllApplications",
+            "facet": "SinglePageApp",
             "properties": {
                 "route": "launch"
             }
@@ -22,8 +23,9 @@
             "p": "AllApplications",
             "r": "Launch",
             "c": "LaunchApplication",
+            "facet": "Page",
             "properties": {
-                "relation": "singlePageApplications"
+                "relation": "singlePageApps"
             }
         }
     ],
@@ -44,7 +46,7 @@
                 "name": "All Applications",
                 "description": "Page with all applications",
                 "title": "Applications",
-                "query": "{ singlePageApplications { id name description } }"
+                "query": "{ singlePageApps { id name description } }"
             }
         },
         {
@@ -165,14 +167,14 @@
                     "rel": "IsA",
                     "child": "kernel::Workspace"
                 },
-                "hasPage": {
+                "page": {
                     "card": "MANY",
-                    "rel": "IsA",
+                    "rel": "HasPage",
                     "child": "Page",
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Route": {
+                            "route": {
                                 "type": "string"
                             }
                         }
@@ -203,12 +205,12 @@
             "constraints": {
                 "pageOf": {
                     "card": "ONE",
-                    "rel": "IsA",
+                    "rel": "PageOf",
                     "child": "SinglePageApp"
                 },
                 "frame": {
                     "card": "ONE",
-                    "rel": "IsA",
+                    "rel": "Frame",
                     "child": "kernel::Workspace"
                 },
                 "create": {
@@ -218,7 +220,7 @@
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Relation": {
+                            "relation": {
                                 "type": "string"
                             }
                         }
@@ -231,7 +233,7 @@
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Relation": {
+                            "relation": {
                                 "type": "string"
                             }
                         }
@@ -244,7 +246,7 @@
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Relation": {
+                            "relation": {
                                 "type": "string"
                             }
                         }
@@ -253,11 +255,11 @@
                 "navigate": {
                     "card": "MANY",
                     "rel": "Navigate",
-                    "child": "Action",
+                    "child": "Route",
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Relation": {
+                            "relation": {
                                 "type": "string"
                             }
                         }
@@ -266,11 +268,11 @@
                 "launch": {
                     "card": "MANY",
                     "rel": "Launch",
-                    "child": "Action",
+                    "child": "Launch",
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Relation": {
+                            "relation": {
                                 "type": "string"
                             }
                         }
@@ -289,7 +291,7 @@
                     "query": {
                         "type": "string"
                     },
-                    "Title": {
+                    "title": {
                         "type": "string"
                     },
                     "style": {
@@ -331,7 +333,7 @@
                     "extract": {
                         "type": "object"
                     },
-                    "auery": {
+                    "query": {
                         "type": "string"
                     }
                 }
@@ -348,12 +350,12 @@
                 },
                 "frame": {
                     "card": "ONE",
-                    "rel": "IsA",
+                    "rel": "Frame",
                     "child": "kernel::Workspace"
                 },
-                "launch": {
+                "immediate": {
                     "card": "ONE",
-                    "rel": "IsA",
+                    "rel": "Launch",
                     "child": "SinglePageApp"
                 }
             },

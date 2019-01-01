@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
@@ -57,6 +59,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Constraint;
+import com.chiralbehaviors.CoRE.meta.workspace.json.Edge;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Existential.Domain;
 import com.chiralbehaviors.CoRE.meta.workspace.json.Facet;
@@ -129,7 +132,6 @@ public class JsonImporter {
     private final Model         model;
     private WorkspaceScope      scope;
     private UUID                uuid;
-
     private EditableWorkspace   workspace;
 
     /**
@@ -424,7 +426,7 @@ public class JsonImporter {
             workspace.add(link.a);
             workspace.add(link.b);
 
-            setEdgeProperties(edge.properties, link.a.getId());
+            setEdgeProperties(edge, link.a);
 
         });
     }
@@ -700,8 +702,25 @@ public class JsonImporter {
                                                                                   : qualifiedName[1]));
     }
 
-    private void setEdgeProperties(JsonNode properties, UUID id) {
-        // TODO Auto-generated method stub
-
+    private void setEdgeProperties(Edge edge, EdgeRecord record) {
+        if (edge.properties == null) {
+            return;
+        }
+        EdgePropertyRecord props = model.records()
+                                        .newEdgeProperty();
+        UUID relationship = resolve(edge.r);
+        UUID facet = resolveFacet(edge.facet);
+        UUID auth = model.create()
+                         .select(EDGE_AUTHORIZATION.ID)
+                         .from(EDGE_AUTHORIZATION)
+                         .where(EDGE_AUTHORIZATION.PARENT.equal(facet))
+                         .and(EDGE_AUTHORIZATION.RELATIONSHIP.equal(relationship))
+                         .fetchSingle()
+                         .component1();
+        props.setAuth(auth);
+        props.setProperties(edge.properties);
+        props.setEdge(record.getId());
+        props.insert(); 
+        workspace.add(props);
     }
 }

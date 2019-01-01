@@ -37,39 +37,39 @@
 
 		<addUniqueConstraint schemaName="ruleform"
 			columnNames="parent, relationship, child"
-			constraintName="edge_authorization_unique_key" deferrable="false"
-			disabled="false" initiallyDeferred="false"
+			constraintName="edge_authorization_unique_key" deferrable="true"
+			disabled="false" initiallyDeferred="true"
 			tableName="edge_authorization" />
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="parent" baseTableName="edge_authorization"
-			constraintName="edge_authorization_parent_fkey" deferrable="false"
+			constraintName="edge_authorization_parent_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="facet" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="relationship" baseTableName="edge_authorization"
 			constraintName="edge_authorization_relationship_fkey"
-			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="child" baseTableName="edge_authorization"
-			constraintName="edge_authorization_child_fkey" deferrable="false"
+			constraintName="edge_authorization_child_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="facet" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="edge_authorization"
 			constraintName="edge_authorization_grouping_agency_fkey"
-			deferrable="false" initiallyDeferred="true" onDelete="CASCADE"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="updated_by" baseTableName="edge_authorization"
 			constraintName="edge_authorization_updated_by_fkey"
-			deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"
+			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 
 		<sql><![CDATA[

@@ -255,6 +255,7 @@ public class WorkspaceSnapshot {
                            .filter(a -> a.getProperties() != null)
                            .map(a -> a.getProperties()
                                       .get("version"))
+                           .filter(a -> a != null)
                            .map(a -> ((IntNode) a).intValue())
                            .findFirst()
                            .orElseGet(() -> getUpdates().stream()

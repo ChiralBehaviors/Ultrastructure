@@ -60,7 +60,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                  .size());
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
-        File temp = File.createTempFile("snaptest", "wsp");
+        File temp = File.createTempFile("snaptest", "json");
         temp.deleteOnExit();
         try (FileOutputStream os = new FileOutputStream(temp)) {
             mapper.writeValue(os, retrieved);

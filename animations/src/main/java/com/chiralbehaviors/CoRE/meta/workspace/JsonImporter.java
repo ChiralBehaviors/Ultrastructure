@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.jooq.TableRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -81,6 +83,7 @@ public class JsonImporter {
         }
     }
 
+    private static final Logger log  = LoggerFactory.getLogger(JsonImporter.class);
     private static final String THIS = "this";
 
     public static JsonWorkspace from(InputStream is) {
@@ -164,10 +167,11 @@ public class JsonImporter {
         WorkspaceProperties props = phantasm.get_Properties();
         if (props == null) {
             props = new WorkspaceProperties();
-            props.setVersion(dsl.version);
         }
+        props.setIri(dsl.uri);
         props.setName(dsl.name);
         props.setDescription(dsl.description);
+        props.setVersion(dsl.version);
         phantasm.set_Properties(props);
         return workspace;
     }
@@ -203,6 +207,8 @@ public class JsonImporter {
                                                           dsl.version));
         }
 
+        properties.setName(dsl.name);
+        properties.setDescription(dsl.description);
         properties.setVersion(dsl.version);
         existing.set_Properties(properties);
 
@@ -211,6 +217,7 @@ public class JsonImporter {
     }
 
     private void apply(String apply, String on, JsonNode properties) {
+        log.debug("applying {} on {}", apply, on);
         ExistentialRuleform existential = resolveRecord(on);
         if (on == null) {
             throw new IllegalStateException("Unable to find existential: "
@@ -276,7 +283,8 @@ public class JsonImporter {
 
         Product definingProduct = createWorkspaceProduct();
         scope = model.getWorkspaceModel()
-                     .createWorkspace(definingProduct, dsl.uri, dsl.version);
+                     .createWorkspace(dsl.name, dsl.description,
+                                      definingProduct, dsl.uri, dsl.version);
 
         workspace = (EditableWorkspace) scope.getWorkspace();
         loadWorkspace();
@@ -288,7 +296,6 @@ public class JsonImporter {
                                         .newProduct(dsl.name, dsl.description);
 
         workspaceProduct.setId(uuid);
-        workspaceProduct.setVersion(-1);
         workspaceProduct.insert();
         return workspaceProduct;
     }
@@ -333,6 +340,7 @@ public class JsonImporter {
         authorization.setCardinality(cardinality);
         authorization.insert();
         workspace.add(authorization);
+        log.debug("loading constraint {} on {}", name, auth.getName());
         authorization.setSchema(constraint.schema);
     }
 
@@ -354,6 +362,7 @@ public class JsonImporter {
         authorization.setSchema(facet.schema);
         authorization.setDefaultProperties(facet.defaultProperties);
         authorization.insert();
+        log.debug("loading Facet {}", name);
         workspace.put(name, authorization);
         return authorization;
     }
@@ -430,6 +439,8 @@ public class JsonImporter {
                                                                 name);
                 record.setDescription(existential.description);
                 record.insert();
+                log.debug("loading existential {}:{}", name,
+                          existential.description);
                 workspace.put(name, record);
             }
         });
@@ -455,6 +466,7 @@ public class JsonImporter {
                                                                          resolve(i.premise2),
                                                                          resolve(i.inference));
             inference.insert();
+            log.debug("loading {}", i);
             workspace.add(inference);
         });
 
@@ -581,6 +593,8 @@ public class JsonImporter {
     }
 
     private void loadWorkspace() {
+        log.debug("loading workspace {} version {} : {}", dsl.name, dsl.version,
+                  dsl.description);
         processImports();
         loadExistentials();
         loadInferences();
@@ -602,31 +616,9 @@ public class JsonImporter {
                 throw new IllegalStateException(String.format("the import is not found: %s:%s",
                                                               uuid, w.uri));
             }
+            log.debug("adding import of workspace {}:{}", w.alias, w.uri);
             workspace.addImport(w.alias, imported);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends TableRecord<?>> T resolveRecord(String name) {
-        T record;
-        String[] qualifiedName = name.split("::");
-        if (qualifiedName.length > 1) {
-            return scope.lookup(qualifiedName[0], Existential,
-                                qualifiedName[1]);
-        } else if (qualifiedName[0].equals(THIS)) {
-            return (T) workspace.getDefiningProduct();
-        } else {
-            record = scope.lookup(Existential, qualifiedName[0]);
-            if (record != null) {
-                return record;
-            }
-        }
-        throw new IllegalArgumentException(String.format("Cannot resolve %s%s",
-                                                         qualifiedName.length < 2 ? ""
-                                                                                  : qualifiedName[0]
-                                                                                    + "::",
-                                                         qualifiedName.length < 2 ? qualifiedName[0]
-                                                                                  : qualifiedName[1]));
     }
 
     private UUID resolve(String name) {
@@ -681,6 +673,29 @@ public class JsonImporter {
         throw new IllegalArgumentException(String.format("Cannot resolve %s:%s",
                                                          qualifiedName.length < 2 ? ""
                                                                                   : qualifiedName[0],
+                                                         qualifiedName.length < 2 ? qualifiedName[0]
+                                                                                  : qualifiedName[1]));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends TableRecord<?>> T resolveRecord(String name) {
+        T record;
+        String[] qualifiedName = name.split("::");
+        if (qualifiedName.length > 1) {
+            return scope.lookup(qualifiedName[0], Existential,
+                                qualifiedName[1]);
+        } else if (qualifiedName[0].equals(THIS)) {
+            return (T) workspace.getDefiningProduct();
+        } else {
+            record = scope.lookup(Existential, qualifiedName[0]);
+            if (record != null) {
+                return record;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Cannot resolve %s%s",
+                                                         qualifiedName.length < 2 ? ""
+                                                                                  : qualifiedName[0]
+                                                                                    + "::",
                                                          qualifiedName.length < 2 ? qualifiedName[0]
                                                                                   : qualifiedName[1]));
     }

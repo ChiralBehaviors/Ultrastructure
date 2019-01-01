@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -45,7 +46,7 @@ public class TestImport extends AbstractModelTest {
         Product definingProduct;
         try {
             JsonImporter importer = JsonImporter.manifest(getClass().getResource("/thing.json"),
-                                                                    model);
+                                                          model);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
         } catch (IllegalStateException e) {
@@ -63,14 +64,15 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", ReferenceType.Existential, "IsA"));
+                               .lookup("kernel", ReferenceType.Existential,
+                                       "IsA"));
     }
 
     @Test
     public void testIncrementalVersionUpdate() throws Exception {
         try {
             JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
-                                       model);
+                                  model);
         } catch (IllegalStateException e) {
             LoggerFactory.getLogger(TestImport.class)
                          .info("Not loading thing ontology version 1: {}",
@@ -79,7 +81,7 @@ public class TestImport extends AbstractModelTest {
         // load version 2
 
         JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.def.json"),
-                                                                model);
+                                                      model);
         EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                           .getDefiningProduct(),
                                                                   model);
@@ -87,14 +89,17 @@ public class TestImport extends AbstractModelTest {
         assertNotNull(workspace.getScope()
                                .lookup(ReferenceType.Existential, "TheDude"));
         Product definingProduct = workspace.getDefiningProduct();
-        definingProduct.refresh();
-        assertEquals(1, definingProduct.getVersion()
-                                       .intValue());
-        assertEquals("Phantasm Demo V2", definingProduct.getName());
-        assertEquals("Test of Workspace versioning",
-                     definingProduct.getDescription());
+        Workspace wsp = model.wrap(Workspace.class, definingProduct);
+        assertEquals(2, wsp.get_Properties()
+                           .getVersion()
+                           .intValue());
+        assertEquals("Phantasm Demo V2", wsp.get_Properties()
+                                            .getName());
+        assertEquals("Test of Workspace versioning", wsp.get_Properties()
+                                                        .getDescription());
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", ReferenceType.Existential, "IsA"));
+                               .lookup("kernel", ReferenceType.Existential,
+                                       "IsA"));
     }
 }

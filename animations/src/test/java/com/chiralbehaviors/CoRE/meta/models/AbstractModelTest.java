@@ -59,10 +59,9 @@ public class AbstractModelTest {
         properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
         LoggerFactory.getLogger(AbstractModelTest.class)
                      .info(String.format(" ---------> Connecting to DB: %s",
-                                         properties.get("url")));
+                                         properties.get("url"))); 
         Connection conn = DriverManager.getConnection((String) properties.get("url"),
-                                                      (String) properties.get("user"),
-                                                      (String) properties.get("password"));
+                                                      properties);
         conn.setAutoCommit(false);
         return conn;
     }

@@ -75,7 +75,7 @@ public class AuthxResource extends TransactionalResource {
 
     private static final Logger log    = LoggerFactory.getLogger(AuthxResource.class);
 
-    private static final String LOGIN  = "Login";
+    private static final String LOGIN  = "login";
     private final static String PREFIX = "Bearer";
 
     public static CoreUser authenticate(String username, String password,

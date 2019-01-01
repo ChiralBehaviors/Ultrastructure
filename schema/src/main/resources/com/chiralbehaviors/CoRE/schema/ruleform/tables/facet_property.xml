@@ -42,25 +42,25 @@
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="facet" baseTableName="facet_property"
-			constraintName="facet_property_facet_fkey" deferrable="false"
+			constraintName="facet_property_facet_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="facet" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="existential" baseTableName="facet_property"
-			constraintName="facet_property_existential_fkey" deferrable="false"
+			constraintName="facet_property_existential_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="authority" baseTableName="facet_property"
-			constraintName="facet_authority_fkey" deferrable="false"
+			constraintName="facet_authority_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="updated_by" baseTableName="facet_property"
-			constraintName="facet_updated_by_fkey" deferrable="false"
+			constraintName="facet_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
 
@@ -70,7 +70,11 @@
             BEGIN
               IF ( SELECT validate_json_schema(f.schema, data) FROM facet f WHERE f.id = fId )
                 THEN RETURN TRUE;
-                ELSE RETURN FALSE;
+                ELSE 
+			        raise exception using
+			            errcode='INVALID_PROPERTIES',
+			            message= 'invalide props: ' || data #>> '{}',
+			            hint= 'schema: ' || f.schema #>> '{}';
               END IF;
             END;
             $f$ LANGUAGE 'plpgsql' IMMUTABLE;

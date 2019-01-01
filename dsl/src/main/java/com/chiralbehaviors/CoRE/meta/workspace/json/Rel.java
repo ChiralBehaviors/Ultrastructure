@@ -28,8 +28,14 @@ public class Rel extends Existential {
 
     public static class NamedRel extends Rel {
         public String name;
+
+        @Override
+        public String toString() {
+            return String.format("Rel [name=%s, description=%s]", name,
+                                 description);
+        }
     }
-    
+
     @Override
     public String toString() {
         return String.format("Rel [domain=%s, description=%s, inverse=%s]",

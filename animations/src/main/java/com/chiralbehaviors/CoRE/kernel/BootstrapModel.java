@@ -33,17 +33,12 @@ import java.util.Properties;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author hhildebrand
@@ -92,25 +87,6 @@ public class BootstrapModel extends Bootstrap {
         new JsonImporter(getClass().getResourceAsStream(KERNEL_DEF_3_JSON),
                          model).initialize()
                                .load(kernelWorkspace);
-        FacetRecord workspace = model.getPhantasmModel()
-                                     .getFacetDeclaration(model.getKernel()
-                                                               .getIsA(),
-                                                          model.getKernel()
-                                                               .getWorkspace());
-
-        FacetPropertyRecord properties = model.getPhantasmModel()
-                                              .getProperties(kernelWorkspace,
-                                                             workspace);
-        ObjectNode props = (ObjectNode) properties.getProperties();
-        if (props == null) {
-            props = JsonNodeFactory.instance.objectNode();
-        }
-        props.put("IRI", WellKnownObject.KERNEL_IRI);
-        props.put("Name", WellKnownObject.KERNEL_WORKSPACE);
-        props.put("Description", WellKnownObject.KERNEL_WORKSPACE);
-
-        properties.setProperties(props);
-        properties.update();
 
         // Ain Soph Aur
 

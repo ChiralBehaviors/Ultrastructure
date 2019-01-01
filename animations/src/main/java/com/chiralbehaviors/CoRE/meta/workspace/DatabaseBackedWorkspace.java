@@ -71,6 +71,9 @@ import com.hellblazer.utils.Tuple;
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
 
+    private static final String LOOKUP_ORDER = "lookupOrder";
+    private static final String NAMESPACE = "namespace";
+
     private static class CacheKey {
         private final String        key;
         private final ReferenceType type;
@@ -304,7 +307,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
             update = false;
         }
         ObjectNode value = JsonNodeFactory.instance.objectNode();
-        value.put("Namespace", name);
+        value.put(NAMESPACE, name);
         attribute.setProperties(value);
         if (update) {
             attribute.update();
@@ -410,9 +413,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                        .getEdgeProperties(auth, link)
                                        .getProperties();
 
-            Integer lookupOrderValue = properties.hasNonNull("LookupOrder") ? ((IntNode) properties.get("LookupOrder")).asInt()
+            Integer lookupOrderValue = properties.hasNonNull(LOOKUP_ORDER) ? ((IntNode) properties.get(LOOKUP_ORDER)).asInt()
                                                                             : -1;
-            imports.put(properties.get("Namespace")
+            imports.put(properties.get(NAMESPACE)
                                   .asText(),
                         new Tuple<>(model.records()
                                          .resolve(link.getChild()),

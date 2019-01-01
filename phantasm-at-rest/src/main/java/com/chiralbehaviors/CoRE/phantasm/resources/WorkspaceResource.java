@@ -170,14 +170,13 @@ public class WorkspaceResource extends TransactionalResource {
                                                                                            .getInverse(),
                                                                                      ExistentialDomain.Product)) {
                 Map<String, Object> wsp = new TreeMap<>();
-                wsp.put("id", definingProduct.getId()
-                                             .toString());
+                wsp.put("id", UuidUtil.encode(definingProduct.getId()));
                 WorkspaceProperties properties = readOnlyModel.wrap(Workspace.class,
                                                                     definingProduct)
                                                               .get_Properties();
                 wsp.put("name", properties.getName());
                 wsp.put("description", properties.getDescription());
-                wsp.put("IRI", properties.getIRI());
+                wsp.put("iri", properties.getIri());
                 wsp.put("version", properties.getVersion());
                 workspaces.add(wsp);
             }
@@ -259,7 +258,7 @@ public class WorkspaceResource extends TransactionalResource {
 
             Workspace workspace = model.wrap(Workspace.class, definingProduct);
             return workspace.get_Properties()
-                            .getIRI();
+                            .getIri();
         }, create);
     }
 
@@ -290,7 +289,7 @@ public class WorkspaceResource extends TransactionalResource {
                                               .getDefiningProduct();
             Workspace workspace = model.wrap(Workspace.class, definingProduct);
             return workspace.get_Properties()
-                            .getIRI();
+                            .getIri();
         }, create);
     }
 

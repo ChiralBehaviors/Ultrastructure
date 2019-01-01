@@ -29,10 +29,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.util.Arrays;
 
+import org.jooq.util.postgres.PostgresDSL;
+import org.junit.AfterClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
@@ -51,6 +55,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
 
+    @AfterClass
+    public static void cleanup() {
+        try {
+            Connection connection = newConnection();
+            RecordsFactory.clear(PostgresDSL.using(connection));
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void testDeltaGeneration() throws Exception {
         // This is a test where we have to have the kernel state committed, 
@@ -60,24 +75,25 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
              .connectionProvider()
              .acquire()
              .commit();
+        model.close();
+
         File version1File = new File(TARGET_TEST_CLASSES, THING_1_JSON);
         File version2File = new File(TARGET_TEST_CLASSES, THING_2_JSON);
         File version2_1File = new File(TARGET_TEST_CLASSES, THING_1_2_JSON);
-        try (Model myModel = new ModelImpl(newConnection())) {
-            myModel.create();
-            JsonImporter importer;
-            Product definingProduct;
-            WorkspaceSnapshot snapshot;
 
+        try (Model myModel = new ModelImpl(newConnection())) {
             // load version 1
-            importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
-                                                  myModel);
-            definingProduct = importer.getWorkspace()
-                                      .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, myModel.create());
+            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
+                                                          myModel);
+            Product definingProduct = importer.getWorkspace()
+                                              .getDefiningProduct();
+            WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
+                                                               myModel.create());
+
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
+
         }
 
         try (Model myModel = new ModelImpl(newConnection())) {
@@ -88,7 +104,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             // load version 2
 
             JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.def.json"),
-                                                                    myModel);
+                                                          myModel);
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();
             WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
@@ -99,7 +115,6 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
 
         try (Model myModel = new ModelImpl(newConnection())) {
-
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new CoREModule());
             WorkspaceSnapshot version1;
@@ -119,7 +134,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             }
             assertEquals(7, delta.getInserts()
                                  .size());
-            assertEquals(43, delta.getUpdates()
+            assertEquals(1, delta.getUpdates()
                                  .size());
 
             assertNull(myModel.getWorkspaceModel()
@@ -129,23 +144,31 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope);
-            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential, "TheDude");
+            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential,
+                                                   "TheDude");
             assertNotNull(theDude);
         }
 
         try (Model myModel = new ModelImpl(newConnection())) {
-
+            model.create()
+                 .configuration()
+                 .connectionProvider()
+                 .acquire();
             assertNull(myModel.getWorkspaceModel()
                               .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
-            WorkspaceSnapshot.load(myModel.create(),
-                                   Arrays.asList(version1File.toURI()
-                                                             .toURL(),
-                                                 version2_1File.toURI()
-                                                               .toURL()));
+            WorkspaceSnapshot.load(myModel.create(), version1File.toURI()
+                                                                 .toURL());
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope);
-            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential, "TheDude");
+
+            WorkspaceSnapshot.load(myModel.create(), version2_1File.toURI()
+                                                                   .toURL());
+            scope = myModel.getWorkspaceModel()
+                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            assertNotNull(scope);
+            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential,
+                                                   "TheDude");
             assertNotNull(theDude);
         }
     }
@@ -153,7 +176,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
     @Test
     public void testUnload() throws Exception {
         JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
-                                                                model);
+                                                      model);
         Product definingProduct = importer.getWorkspace()
                                           .getDefiningProduct();
 

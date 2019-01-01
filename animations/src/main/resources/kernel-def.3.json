@@ -32,97 +32,97 @@
             "apply": "Workspace",
             "on": "KernelWorkspace",
             "properties": {
-                "Name": "Ultrastructure Kernel Workspace",
-                "Description": "The Kernel Ontology for Ultrastructure [Ain Soph Ur]",
-                "Version": 3
+                "name": "Ultrastructure Kernel Workspace",
+                "description": "The Kernel Ontology for Ultrastructure [Ain Soph Ur]",
+                "version": 3
             }
         },
         {
             "apply": "Permission",
             "on": "APPLY",
             "properties": {
-                "Name": "Apply",
-                "Description": "The apply permission"
+                "name": "Apply",
+                "description": "The apply permission"
             }
         },
         {
             "apply": "Permission",
             "on": "REMOVE",
             "properties": {
-                "Name": "Remove",
-                "Description": "The remove permission"
+                "name": "Remove",
+                "description": "The remove permission"
             }
         },
         {
             "apply": "Permission",
             "on": "CREATE",
             "properties": {
-                "Name": "Create",
-                "Description": "The create permission"
+                "name": "Create",
+                "description": "The create permission"
             }
         },
         {
             "apply": "Permission",
             "on": "CREATE_META",
             "properties": {
-                "Name": "Create Meta",
-                "Description": "The create meta permission"
+                "name": "Create Meta",
+                "description": "The create meta permission"
             }
         },
         {
             "apply": "Permission",
             "on": "READ",
             "properties": {
-                "Name": "Read",
-                "Description": "The read permission"
+                "name": "Read",
+                "description": "The read permission"
             }
         },
         {
             "apply": "Permission",
             "on": "UPDATE",
             "properties": {
-                "Name": "Update",
-                "Description": "The upate permission"
+                "name": "Update",
+                "description": "The upate permission"
             }
         },
         {
             "apply": "Permission",
             "on": "DELETE",
             "properties": {
-                "Name": "Delete",
-                "Description": "The delete permission"
+                "name": "Delete",
+                "description": "The delete permission"
             }
         },
         {
             "apply": "Permission",
             "on": "INVOKE",
             "properties": {
-                "Name": "Invoke",
-                "Description": "The invoke permission"
+                "name": "Invoke",
+                "description": "The invoke permission"
             }
         },
         {
             "apply": "Permission",
             "on": "EXECUTE_QUERY",
             "properties": {
-                "Name": "Execute Query",
-                "Description": "The execute query permission"
+                "name": "Execute Query",
+                "description": "The execute query permission"
             }
         },
         {
             "apply": "Permission",
             "on": "LOGIN_TO",
             "properties": {
-                "Name": "Login",
-                "Description": "The login permission"
+                "name": "Login",
+                "description": "The login permission"
             }
         },
         {
             "apply": "Permission",
             "on": "UPDATE_AUTHORITY",
             "properties": {
-                "Name": "Update Authority",
-                "Description": "The update authority permission"
+                "name": "Update Authority",
+                "description": "The update authority permission"
             }
         }
     ],
@@ -297,7 +297,7 @@
             "classifier": "IsA",
             "classification": "CoreUser",
             "constraints": {
-                "DefaultRole": {
+                "defaultRole": {
                     "card": "ONE",
                     "rel": "DefaultRole",
                     "child": "Role"
@@ -307,7 +307,7 @@
                     "rel": "HasRole",
                     "child": "Role"
                 },
-                "DefaultClassification": {
+                "defaultClassification": {
                     "card": "ONE",
                     "rel": "DefaultClassification",
                     "child": "Classification"
@@ -316,13 +316,13 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Login": {
+                    "login": {
                         "type": "string"
                     },
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     }
                 }
@@ -351,10 +351,10 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     }
                 }
@@ -378,10 +378,10 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     }
                 }
@@ -400,13 +400,13 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     },
-                    "PasswordRounds": {
+                    "passwordRounds": {
                         "type": "integer"
                     }
                 }
@@ -427,10 +427,10 @@
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "Namespace": {
+                            "namespace": {
                                 "type": "string"
                             },
-                            "LookupOrder": {
+                            "lookupOrder": {
                                 "type": "integer"
                             }
                         }
@@ -440,16 +440,16 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     },
-                    "IRI": {
+                    "iri": {
                         "type": "string"
                     },
-                    "Version": {
+                    "version": {
                         "type": "integer"
                     }
                 }
@@ -461,10 +461,10 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     }
                 }

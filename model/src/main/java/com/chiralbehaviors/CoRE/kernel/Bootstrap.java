@@ -134,7 +134,6 @@ abstract public class Bootstrap {
         record.setDomain(wko.domain());
         record.setDescription(wko.description());
         record.setUpdatedBy(WellKnownAgency.CORE.id());
-        record.setVersion(0);
         record.insert();
     }
 
@@ -146,7 +145,6 @@ abstract public class Bootstrap {
         record.setDescription(wko.description());
         record.setDomain(wko.domain());
         record.setUpdatedBy(WellKnownAgency.CORE.id());
-        record.setVersion(0);
         record.setInverse(wko.inverse()
                              .id());
         record.insert();

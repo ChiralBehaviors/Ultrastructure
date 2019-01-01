@@ -15,15 +15,15 @@
             "r": "HasPage",
             "c": "AllApplications",
             "properties": {
-                "Route": "launch"
+                "route": "launch"
             }
         },
         {
-            "p": "AllApplicatoins",
+            "p": "AllApplications",
             "r": "Launch",
             "c": "LaunchApplication",
             "properties": {
-                "Relation": "singlePageApplications"
+                "relation": "singlePageApplications"
             }
         }
     ],
@@ -32,8 +32,8 @@
             "apply": "SinglePageApp",
             "on": "AppLauncher",
             "properties": {
-                "Name": "Application Launcher",
-                "Description": "A well known application for launching applications",
+                "name": "Application Launcher",
+                "description": "A well known application for launching applications",
                 "root": "launch"
             }
         },
@@ -41,19 +41,19 @@
             "apply": "Page",
             "on": "AllApplications",
             "properties": {
-                "Name": "All Applications",
-                "Description": "Page with all applications",
-                "Title": "Applications",
-                "Query": "{ singlePageApplications { id name description } }"
+                "name": "All Applications",
+                "description": "Page with all applications",
+                "title": "Applications",
+                "query": "{ singlePageApplications { id name description } }"
             }
         },
         {
             "apply": "Launch",
             "on": "LaunchApplication",
             "properties": {
-                "Name": "Launch Application",
-                "Description": "Launch the selected application",
-                "LaunchBy": "id"
+                "name": "Launch Application",
+                "description": "Launch the selected application",
+                "launchBy": "id"
             }
         }
     ],
@@ -182,16 +182,16 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     },
-                    "Root": {
+                    "root": {
                         "type": "string"
                     },
-                    "Meta": {
+                    "meta": {
                         "type": "boolean"
                     }
                 }
@@ -280,19 +280,19 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Name": {
+                    "name": {
                         "type": "string"
                     },
-                    "Description": {
+                    "description": {
                         "type": "string"
                     },
-                    "Query": {
+                    "query": {
                         "type": "string"
                     },
                     "Title": {
-                        "type": "String"
+                        "type": "string"
                     },
-                    "Style": {
+                    "style": {
                         "type": "object"
                     }
                 }
@@ -304,16 +304,16 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "FrameBy": {
+                    "frameBy": {
                         "type": "string"
                     },
-                    "Extract": {
+                    "extract": {
                         "type": "object"
                     },
-                    "Path": {
+                    "path": {
                         "type": "string"
                     },
-                    "Meta": {
+                    "meta": {
                         "type": "boolean"
                     }
                 }
@@ -325,13 +325,13 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "FrameBy": {
+                    "frameBy": {
                         "type": "string"
                     },
-                    "Extract": {
+                    "extract": {
                         "type": "object"
                     },
-                    "Query": {
+                    "auery": {
                         "type": "string"
                     }
                 }
@@ -339,7 +339,7 @@
         },
         "Launch": {
             "classifier": "IsA",
-            "classification": "Action",
+            "classification": "Launch",
             "constraints": {
                 "pageOf": {
                     "card": "ONE",
@@ -360,10 +360,10 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "FrameBy": {
+                    "frameBy": {
                         "type": "string"
                     },
-                    "LaunchBy": {
+                    "launchBy": {
                         "type": "string"
                     }
                 }

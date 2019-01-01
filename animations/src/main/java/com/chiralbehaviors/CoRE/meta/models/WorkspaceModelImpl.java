@@ -54,7 +54,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceScope createWorkspace(Product definingProduct, String iri, int version) {
+    public WorkspaceScope createWorkspace(String name, String description,
+                                          Product definingProduct, String iri,
+                                          int version) {
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                   model);
         workspace.add(definingProduct);
@@ -63,19 +65,19 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                   .getFacetDeclaration(kernel.getIsA(),
                                                        kernel.getWorkspace());
         model.getPhantasmModel()
-             .initialize(definingProduct, aspect, workspace); 
+             .initialize(definingProduct, aspect, workspace);
         WorkspaceScope scope = workspace.getScope();
-        scopes.put(definingProduct.getId(), scope); 
-        
+        scopes.put(definingProduct.getId(), scope);
+
         FacetPropertyRecord properties = model.records()
                                               .newFacetProperty();
         properties.setExistential(definingProduct.getId());
         properties.setFacet(aspect.getId());
         ObjectNode props = JsonNodeFactory.instance.objectNode();
-        props.put("IRI", iri);
-        props.put("Version", version);
-        props.put("Name", definingProduct.getName());
-        props.put("Description", definingProduct.getDescription());
+        props.put("iri", iri);
+        props.put("version", version);
+        props.put("name", name);
+        props.put("description", description);
         properties.setProperties(props);
         properties.insert();
         workspace.add(properties);

@@ -1,19 +1,17 @@
 package com.chiralbehaviors.CoRE.pgTesting;
 
+import static ru.yandex.qatools.embed.postgresql.EmbeddedPostgres.cachedRuntimeConfig;
 import static ru.yandex.qatools.embed.postgresql.distribution.Version.Main.PRODUCTION;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
-import de.flapdoodle.embed.process.io.directories.FixedPath;
-import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
-import ru.yandex.qatools.embed.postgresql.Command;
-import ru.yandex.qatools.embed.postgresql.PackagePaths;
 import ru.yandex.qatools.embed.postgresql.PostgresExecutable;
 import ru.yandex.qatools.embed.postgresql.PostgresProcess;
 import ru.yandex.qatools.embed.postgresql.PostgresStarter;
@@ -21,10 +19,7 @@ import ru.yandex.qatools.embed.postgresql.config.AbstractPostgresConfig.Credenti
 import ru.yandex.qatools.embed.postgresql.config.AbstractPostgresConfig.Net;
 import ru.yandex.qatools.embed.postgresql.config.AbstractPostgresConfig.Storage;
 import ru.yandex.qatools.embed.postgresql.config.AbstractPostgresConfig.Timeout;
-import ru.yandex.qatools.embed.postgresql.config.DownloadConfigBuilder;
 import ru.yandex.qatools.embed.postgresql.config.PostgresConfig;
-import ru.yandex.qatools.embed.postgresql.config.RuntimeConfigBuilder;
-import ru.yandex.qatools.embed.postgresql.ext.CachedArtifactStoreBuilder;
 
 abstract public class AbstractPgTest {
     public final static String           JDBC_URI;
@@ -34,20 +29,10 @@ abstract public class AbstractPgTest {
     static {
         String username = "core";
         String password = "core";
-        final Command cmd = Command.Postgres;
         // the cached directory should contain pgsql folder
-        final FixedPath cachedDir = new FixedPath(".postgres");
-        ArtifactStoreBuilder download = new CachedArtifactStoreBuilder().defaults(cmd)
-                                                                        .tempDir(cachedDir)
-                                                                        .download(new DownloadConfigBuilder().defaultsForCommand(cmd)
-                                                                                                             .packageResolver(new PackagePaths(cmd,
-                                                                                                                                               cachedDir))
-                                                                                                             .build());
-        IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder().defaults(cmd)
-                                                                 .artifactStore(download)
-                                                                 .build();
+        final Path cachedDir = Paths.get(".postgres");
 
-        PostgresStarter<PostgresExecutable, PostgresProcess> runtime = PostgresStarter.getInstance(runtimeConfig);
+        PostgresStarter<PostgresExecutable, PostgresProcess> runtime = PostgresStarter.getInstance(cachedRuntimeConfig(cachedDir));
 
         LOG.info("Starting Postgres");
         Storage storage;

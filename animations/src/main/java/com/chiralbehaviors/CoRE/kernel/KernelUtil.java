@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
 import com.chiralbehaviors.CoRE.kernel.phantasm.ThisCoreInstance;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreInstanceProperties.CoreInstanceProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
@@ -71,7 +72,13 @@ public class KernelUtil {
                               .getId());
         core.getRuleform()
             .update();
-        model.apply(CoreInstance.class, core);
+        CoreInstance instance = model.apply(CoreInstance.class, core);
+        CoreInstanceProperties props = new CoreInstanceProperties();
+        props.setName(name);
+        props.setDescription(description);
+        props.setPasswordRounds(12);
+        instance.set_Properties(props);
+
         model.getPhantasmModel()
              .link(model.getKernel()
                         .getLoginRole(),

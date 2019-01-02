@@ -35,18 +35,17 @@ public interface WorkspaceModel {
     /**
      * Create the workspace and return the Workspace scope defined by that
      * workspace
-     *
-     * @param definingProduct
-     * @return
+     * 
      */
-    WorkspaceScope createWorkspace(Product definingProduct);
+    WorkspaceScope createWorkspace(String name, String description,
+                                   Product definingProduct, String iri,
+                                   int version);
 
     void flush();
 
     WorkspaceLabelRecord get(Product definingProduct, String key);
 
-    List<WorkspaceLabelRecord> getByType(Product definingProduct,
-                                                 String type);
+    List<WorkspaceLabelRecord> getByType(Product definingProduct, String type);
 
     WorkspaceScope getScoped(Product definingProduct);
 

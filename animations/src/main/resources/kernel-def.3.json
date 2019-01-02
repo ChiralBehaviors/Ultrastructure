@@ -1,0 +1,474 @@
+{
+    "name": "Ultrastructure Kernel Workspace",
+    "description": "The Kernel Ontology for Ultrastructure [Ain Soph Ur]",
+    "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
+    "version": 3,
+    "inferences": [
+        {
+            "premise1": "HasMember",
+            "premise2": "HasMember",
+            "inference": "HasMember"
+        },
+        {
+            "premise1": "HasMember",
+            "premise2": "HasRole",
+            "inference": "HasRole"
+        }
+    ],
+    "applications": [
+        {
+            "apply": "CoreUser",
+            "on": "SuperUser"
+        },
+        {
+            "apply": "CoreUser",
+            "on": "UnauthenticatedAgency"
+        },
+        {
+            "apply": "Role",
+            "on": "LoginRole"
+        },
+        {
+            "apply": "Workspace",
+            "on": "KernelWorkspace",
+            "properties": {
+                "name": "Ultrastructure Kernel Workspace",
+                "description": "The Kernel Ontology for Ultrastructure [Ain Soph Ur]",
+                "version": 3
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "APPLY",
+            "properties": {
+                "name": "Apply",
+                "description": "The apply permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "REMOVE",
+            "properties": {
+                "name": "Remove",
+                "description": "The remove permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "CREATE",
+            "properties": {
+                "name": "Create",
+                "description": "The create permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "CREATE_META",
+            "properties": {
+                "name": "Create Meta",
+                "description": "The create meta permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "READ",
+            "properties": {
+                "name": "Read",
+                "description": "The read permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "UPDATE",
+            "properties": {
+                "name": "Update",
+                "description": "The upate permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "DELETE",
+            "properties": {
+                "name": "Delete",
+                "description": "The delete permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "INVOKE",
+            "properties": {
+                "name": "Invoke",
+                "description": "The invoke permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "EXECUTE_QUERY",
+            "properties": {
+                "name": "Execute Query",
+                "description": "The execute query permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "LOGIN_TO",
+            "properties": {
+                "name": "Login",
+                "description": "The login permission"
+            }
+        },
+        {
+            "apply": "Permission",
+            "on": "UPDATE_AUTHORITY",
+            "properties": {
+                "name": "Update Authority",
+                "description": "The update authority permission"
+            }
+        }
+    ],
+    "existentials": {
+        "CoreUser": {
+            "domain": "Agency",
+            "description": "Ultrastructure CoRE API user"
+        },
+        "SuperUser": {
+            "domain": "Agency",
+            "description": "'Ultrastructure Super User"
+        },
+        "UnauthenticatedAgency": {
+            "domain": "Agency",
+            "description": "The unauthenticaed agency"
+        },
+        "Role": {
+            "domain": "Agency",
+            "description": "The role"
+        },
+        "LoginRole": {
+            "domain": "Agency",
+            "description": "The Login role"
+        },
+        "RoleOf": {
+            "domain": "Relationship",
+            "description": "A is a role of B",
+            "inverse": {
+                "name": "HasRole",
+                "description": "A has role B"
+            }
+        },
+        "Classification": {
+            "domain": "Agency",
+            "description": "The classification"
+        },
+        "ClassifiedBy": {
+            "domain": "Relationship",
+            "description": "A is classified by B",
+            "inverse": {
+                "name": "ClassificationOf",
+                "description": "A is a classification of B"
+            }
+        },
+        "InstanceOf": {
+            "domain": "Relationship",
+            "description": "A is an instance of B",
+            "inverse": {
+                "name": "HasInstance",
+                "description": "A has instance B"
+            }
+        },
+        "SingletonOf": {
+            "domain": "Relationship",
+            "description": "A is the singleton instance of B",
+            "inverse": {
+                "name": "HasSingleton",
+                "description": "A has singleton instance B"
+            }
+        },
+        "Permission": {
+            "domain": "Relationship",
+            "description": "The defining permission classification"
+        },
+        "CREATE_META": {
+            "domain": "Relationship",
+            "description": "A may create meta data in B",
+            "inverse": {
+                "name": "MayBeCreatedMetaBy",
+                "description": "A allows meta creation by B"
+            }
+        },
+        "CREATE": {
+            "domain": "Relationship",
+            "description": "The read permission",
+            "inverse": {
+                "name": "MayBeCreatedBy",
+                "description": "May Be Created By"
+            }
+        },
+        "READ": {
+            "domain": "Relationship",
+            "description": "The read permission",
+            "inverse": {
+                "name": "MayBeReadBy",
+                "description": "May Be Read By"
+            }
+        },
+        "UPDATE": {
+            "domain": "Relationship",
+            "description": "The update permission",
+            "inverse": {
+                "name": "MayBeUpdatedBy",
+                "description": "May Be Updated By"
+            }
+        },
+        "DELETE": {
+            "domain": "Relationship",
+            "description": "The delete permission",
+            "inverse": {
+                "name": "MayBeDeletedBy",
+                "description": "May Be Deleted By"
+            }
+        },
+        "APPLY": {
+            "domain": "Relationship",
+            "description": "The apply permission",
+            "inverse": {
+                "name": "MayBeAppliedBy",
+                "description": "May Be Applied By"
+            }
+        },
+        "REMOVE": {
+            "domain": "Relationship",
+            "description": "The remove permission",
+            "inverse": {
+                "name": "MayBeRemovedBy",
+                "description": "May Be Removed By"
+            }
+        },
+        "INVOKE": {
+            "domain": "Relationship",
+            "description": "The invoke permission",
+            "inverse": {
+                "name": "MayBeInvokedBy",
+                "description": "May Be Invoked By"
+            }
+        },
+        "EXECUTE_QUERY": {
+            "domain": "Relationship",
+            "description": "The execute query permission",
+            "inverse": {
+                "name": "QueryExecutedBy",
+                "description": "Query may be executed By"
+            }
+        },
+        "LOGIN_TO": {
+            "domain": "Relationship",
+            "description": "The login permission",
+            "inverse": {
+                "name": "MayLoginBy",
+                "description": "Login may be done On"
+            }
+        },
+        "UPDATE_AUTHORITY": {
+            "domain": "Relationship",
+            "description": "The update authority permission",
+            "inverse": {
+                "name": "MayUpdateAuthorityBy",
+                "description": "May Update Authority By"
+            }
+        },
+        "DefaultRole": {
+            "domain": "Relationship",
+            "description": "A has default role B",
+            "inverse": {
+                "name": "DefaultRoleOf",
+                "description": "A is the default role of B"
+            }
+        },
+        "DefaultClassification": {
+            "domain": "Relationship",
+            "description": "A has default classification B",
+            "inverse": {
+                "name": "DefaultClassificationOf",
+                "description": "A is the default classification of B"
+            }
+        }
+    },
+    "facets": {
+        "CoreUser": {
+            "classifier": "IsA",
+            "classification": "CoreUser",
+            "constraints": {
+                "defaultRole": {
+                    "card": "ONE",
+                    "rel": "DefaultRole",
+                    "child": "Role"
+                },
+                "role": {
+                    "card": "MANY",
+                    "rel": "HasRole",
+                    "child": "Role"
+                },
+                "defaultClassification": {
+                    "card": "ONE",
+                    "rel": "DefaultClassification",
+                    "child": "Classification"
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Role": {
+            "classifier": "IsA",
+            "classification": "Role",
+            "constraints": {
+                "grant": {
+                    "card": "MANY",
+                    "rel": "RoleOf",
+                    "child": "CoreUser"
+                },
+                "inherit": {
+                    "card": "MANY",
+                    "rel": "MemberOf",
+                    "child": "Role"
+                },
+                "member": {
+                    "card": "MANY",
+                    "rel": "HasMember",
+                    "child": "Role"
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Classification": {
+            "classifier": "IsA",
+            "classification": "Classification",
+            "constraints": {
+                "inherit": {
+                    "card": "MANY",
+                    "rel": "ClassifiedBy",
+                    "child": "Classification"
+                },
+                "member": {
+                    "card": "MANY",
+                    "rel": "ClassificationOf",
+                    "child": "Classification"
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "CoreInstance": {
+            "classifier": "InstanceOf",
+            "classification": "Core",
+            "constraints": {
+                "login": {
+                    "card": "MANY",
+                    "rel": "MayLoginBy",
+                    "child": "CoreUser"
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "passwordRounds": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "This Core Instance": {
+            "classifier": "SingletonOf",
+            "classification": "Core"
+        },
+        "Workspace": {
+            "classifier": "IsA",
+            "classification": "Workspace",
+            "constraints": {
+                "import": {
+                    "card": "MANY",
+                    "rel": "Imports",
+                    "child": "Workspace",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "namespace": {
+                                "type": "string"
+                            },
+                            "lookupOrder": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "iri": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "Permission": {
+            "classifier": "IsA",
+            "classification": "Permission",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,85 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform"
-            remarks="Determines what the next available product should be, based on the status code returned for the previous product"
-            tableName="sibling_sequencing_authorization"
-        >
-            <column name="authority" type="uuid" />
-            <column name="workspace" type="uuid" />
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="sibling_sequencing_authorization_pkey" />
-            </column>
-            <column name="service" remarks="The service of the job" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="status_code" remarks="The status of the last product completed" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products" type="INT4"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="next_sibling" remarks="A sibling job with an product equal to this can have its status changed" type="uuid" />
-            <column name="next_sibling_status" remarks="The status to set for the sibling job referred to by &quot;next_sibling&quot;"
-                type="uuid" />
-            <column name="replace_product" type="boolean" defaultValue="false">
-                <constraints nullable="false" />
-            </column>
-            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"
-                type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="INT4" />
-        </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authority" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_authority_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="next_sibling" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_next_sibling_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="next_sibling_status" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_next_sibling_status_fk"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="service" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_parent_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="status_code" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_status_code_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, next_sibling, sequence_number"
-            constraintName="sibling_sequencing_authorization_parent_status_code_seq" deferrable="false" disabled="false" initiallyDeferred="true"
-            tableName="sibling_sequencing_authorization" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="sibling_sequencing_authorization" constraintName="sibling_sequencing_authorization_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			tableName="sibling_sequencing_authorization">
+			<column name="authority" type="uuid" />
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="sibling_sequencing_authorization_pkey"
+					nullable="false" />
+			</column>
+			<column name="service" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="status_code" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column defaultValueComputed="1" name="sequence_number"
+				type="INT4">
+				<constraints nullable="false" />
+			</column>
+			<column name="next_sibling" type="uuid" />
+			<column name="next_sibling_status" type="uuid" />
+			<column name="replace_product" type="boolean"
+				defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes" type="TEXT" />
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+		</createTable>
 
-        <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_updated_by_fkey_idx" tableName="sibling_sequencing_authorization"
-            unique="false"
-        >
-            <column name="updated_by" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_service_status_idx" tableName="sibling_sequencing_authorization"
-            unique="false"
-        >
-            <column name="service" />
-            <column name="status_code" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="sibling_sequencing_authorization_authority_idx" tableName="sibling_sequencing_authorization"
-            unique="false"
-        >
-            <column name="authority" />
-        </createIndex>
-    </changeSet>
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="service, status_code, next_sibling, sequence_number"
+			constraintName="sibling_sequencing_authorization_parent_status_code_seq"
+			deferrable="true" disabled="false" initiallyDeferred="true"
+			tableName="sibling_sequencing_authorization" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority"
+			baseTableName="sibling_sequencing_authorization"
+			constraintName="sibling_sequencing_authorization_authority_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="next_sibling"
+			baseTableName="sibling_sequencing_authorization"
+			constraintName="sibling_sequencing_authorization_next_sibling_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="next_sibling_status"
+			baseTableName="sibling_sequencing_authorization"
+			constraintName="sibling_sequencing_authorization_next_sibling_status_fk"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="service"
+			baseTableName="sibling_sequencing_authorization"
+			constraintName="sibling_sequencing_authorization_parent_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="status_code"
+			baseTableName="sibling_sequencing_authorization"
+			constraintName="sibling_sequencing_authorization_status_code_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by"
+			baseTableName="sibling_sequencing_authorization"
+			constraintName="sibling_sequencing_authorization_updated_by_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_status_code_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="status_code" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_next_sibling_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="next_sibling" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_next_sibling_status_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="next_sibling_status" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_updated_by_fkey_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="sibling_sequencing_authorization_authority_idx"
+			tableName="sibling_sequencing_authorization" unique="false">
+			<column name="authority" />
+		</createIndex>
+	</changeSet>
 </databaseChangeLog>

@@ -53,7 +53,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -67,8 +67,8 @@ public class JobModelTest extends AbstractModelTest {
 
     @Before
     public void loadOrderProcessing() throws Exception {
-        WorkspaceImporter scope = WorkspaceImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
-                                                             model);
+        JsonImporter scope = JsonImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
+                                                   model);
         scenario = scope.getWorkspace()
                         .getAccessor(OrderProcessing.class);
         jobModel = model.getJobModel();
@@ -129,7 +129,7 @@ public class JobModelTest extends AbstractModelTest {
                            .getId());
         p.setChildService(shipping.getId());
         p.setChildProduct(bento.getId());
-        p.update();
+        p.insert();
 
         model.flush();
 
@@ -151,7 +151,7 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(job, model.getKernel()
                                         .getUnset(),
                               "transition during test");
-        job.update();
+        job.insert();
         model.flush();
         jobModel.changeStatus(job, startState, "transition during test");
 
@@ -176,9 +176,9 @@ public class JobModelTest extends AbstractModelTest {
                                    .getId());
         order.setDeliverFrom(scenario.getFactory1()
                                      .getId());
-        order.setRequester(scenario.getCafleurBon()
+        order.setRequester(scenario.getCafleurebon()
                                    .getId());
-        order.update();
+        order.insert();
         model.flush();
         jobModel.changeStatus(order, scenario.getAvailable(),
                               "transition during test");
@@ -210,6 +210,7 @@ public class JobModelTest extends AbstractModelTest {
                                    .getId());
         job.setRequester(scenario.getGeorgetownUniversity()
                                  .getId());
+        job.insert();
         jobModel.changeStatus(job, scenario.getAvailable(), "Test transition");
 
         List<JobRecord> jobs = jobModel.generateImplicitJobs(job);
@@ -242,12 +243,12 @@ public class JobModelTest extends AbstractModelTest {
         mp.setDeliverTo(model.getKernel()
                              .getGreaterThanOrEqual()
                              .getId());
-        mp.update();
+        mp.insert();
         ProtocolRecord p = jobModel.newInitializedProtocol(service);
         p.setAssignTo(model.getKernel()
                            .getPropagationSoftware()
                            .getId());
-        p.update();
+        p.insert();
         JobRecord order = jobModel.newInitializedJob(service);
         order.setAssignTo(model.getKernel()
                                .getCoreUser()
@@ -256,7 +257,7 @@ public class JobModelTest extends AbstractModelTest {
                             .newLocation("crap location");
         loc.insert();
         order.setDeliverTo(loc.getId());
-        order.update();
+        order.insert();
         TestDebuggingUtil.printProtocolGaps(jobModel.findProtocolGaps(order));
         TestDebuggingUtil.printMetaProtocolGaps(jobModel.findMetaProtocolGaps(order));
         List<ProtocolRecord> protocols = model.getJobModel()
@@ -291,7 +292,7 @@ public class JobModelTest extends AbstractModelTest {
                                      .getId());
         order.setRequester(scenario.getGeorgetownUniversity()
                                    .getId());
-        order.update();
+        order.insert();
         jobModel.changeStatus(order, scenario.getAvailable(),
                               "transition during test");
         jobModel.changeStatus(order, scenario.getActive(),
@@ -360,13 +361,13 @@ public class JobModelTest extends AbstractModelTest {
         ProtocolRecord p = jobModel.newInitializedProtocol(service);
         p.setChildrenRelationship(childRelationship.getId());
         p.setChildService(childService.getId());
-        p.update();
+        p.insert();
         JobRecord order = jobModel.newInitializedJob(service);
         order.setProduct(parent.getId());
         order.setStatus(model.getKernel()
                              .getUnset()
                              .getId());
-        order.update();
+        order.insert();
         List<ProtocolRecord> protocols = model.getJobModel()
                                               .getProtocolsFor(service);
         assertEquals(1, protocols.size());
@@ -403,9 +404,9 @@ public class JobModelTest extends AbstractModelTest {
                                      .getId());
         order.setRequester(scenario.getGeorgetownUniversity()
                                    .getId());
+        order.insert();
         jobModel.changeStatus(order, scenario.getAvailable(),
                               "Test transition");
-        order.update();
         model.flush();
         order.refresh();
         List<JobChronologyRecord> chronologies = model.getJobModel()
@@ -462,7 +463,7 @@ public class JobModelTest extends AbstractModelTest {
                                 .newInitializedProtocol(pushit);
         p.setProduct(pushit.getId());
         p.setChildService(shoveit.getId());
-        p.update();
+        p.insert();
         model.getJobModel()
              .createStatusCodeChain(pushit,
                                     new StatusCode[] { pushingMe, shovingMe,
@@ -478,7 +479,7 @@ public class JobModelTest extends AbstractModelTest {
         JobRecord push = model.getJobModel()
                               .newInitializedJob(pushit);
         push.setProduct(pushit.getId());
-        push.update();
+        push.insert();
 
         List<JobRecord> children = model.getJobModel()
                                         .getAllChildren(push);
@@ -509,6 +510,7 @@ public class JobModelTest extends AbstractModelTest {
                                    .getId());
         job.setRequester(scenario.getGeorgetownUniversity()
                                  .getId());
+        job.insert();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> txfm = jobModel.getProtocols(job);
@@ -601,7 +603,7 @@ public class JobModelTest extends AbstractModelTest {
                                  .getId());
         job.setDeliverFrom(scenario.getFactory1()
                                    .getId());
-        job.setRequester(scenario.getCafleurBon()
+        job.setRequester(scenario.getCafleurebon()
                                  .getId());
         jobModel.changeStatus(job, model.getKernel()
                                         .getUnset(),
@@ -627,7 +629,7 @@ public class JobModelTest extends AbstractModelTest {
                                      .getId());
         order.setRequester(scenario.getOrgA()
                                    .getId());
-        order.update();
+        order.insert();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -640,7 +642,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         model.flush();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
-        assertEquals(6, jobs.size());
+        assertEquals(5, jobs.size());
     }
 
     @Test
@@ -657,7 +659,7 @@ public class JobModelTest extends AbstractModelTest {
                                      .getId());
         order.setRequester(scenario.getGeorgetownUniversity()
                                    .getId());
-        order.update();
+        order.insert();
         List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -847,7 +849,7 @@ public class JobModelTest extends AbstractModelTest {
 
         JobRecord job = model.getJobModel()
                              .newInitializedJob(service);
-        job.update();
+        job.insert();
 
         model.getJobModel()
              .changeStatus(job, kickingAss, "taking names");
@@ -883,12 +885,12 @@ public class JobModelTest extends AbstractModelTest {
         ProtocolRecord p = model.getJobModel()
                                 .newInitializedProtocol(pushit);
         p.setChildService(shoveit.getId());
-        p.update();
+        p.insert();
 
         ProtocolRecord p2 = model.getJobModel()
                                  .newInitializedProtocol(shoveit);
         p2.setChildService(pullit.getId());
-        p2.update();
+        p2.insert();
 
         model.getJobModel()
              .createStatusCodeChain(pushit,
@@ -915,6 +917,7 @@ public class JobModelTest extends AbstractModelTest {
 
         JobRecord push = model.getJobModel()
                               .newInitializedJob(pushit);
+        push.insert();
         model.flush();
 
         List<JobRecord> children = model.getJobModel()

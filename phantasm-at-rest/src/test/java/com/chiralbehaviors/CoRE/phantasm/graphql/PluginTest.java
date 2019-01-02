@@ -40,9 +40,9 @@ import org.reflections.util.ConfigurationBuilder;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.ExistentialContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.FacetFields;
@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.thing2Properties.Thing2Properties;
 
 import graphql.ExecutionResult;
 import graphql.schema.GraphQLSchema;
@@ -64,8 +65,8 @@ public class PluginTest extends AbstractModelTest {
 
     @Before
     public void initializeScope() throws IOException {
-        WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream("/thing.wsp"),
-                                   model);
+        JsonImporter.manifest(FacetTypeTest.class.getResourceAsStream("/thing.json"),
+                              model);
     }
 
     @Test
@@ -138,13 +139,16 @@ public class PluginTest extends AbstractModelTest {
         assertNotNull(thing1ID);
         Thing1 thing1 = model.wrap(Thing1.class, model.records()
                                                       .resolve(UuidUtil.decode(thing1ID)));
-        assertEquals(bob, thing1.getDescription());
+        assertEquals(bob, thing1.get_Properties()
+                                .getDescription());
 
         String apple = "Connie";
         Thing2 thing2 = model.construct(Thing2.class, ExistentialDomain.Product,
                                         apple, "Her Dobbsness");
-        thing2.setName(apple);
-        thing2.setDescription("Her Dobbsness");
+        Thing2Properties props = new Thing2Properties();
+        props.setName(apple);
+        props.setDescription("Her Dobbsness");
+        thing2.set_Properties(props);
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);

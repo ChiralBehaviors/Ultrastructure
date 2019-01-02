@@ -21,14 +21,12 @@
 package com.chiralbehaviors.CoRE;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET_PROPERTY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -50,7 +48,6 @@ import org.jooq.DSLContext;
 import org.jooq.Record1;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
@@ -60,15 +57,13 @@ import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
-import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AuthenticationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -124,8 +119,6 @@ public interface RecordsFactory {
                 return record.into(Relationship.class);
             case StatusCode:
                 return record.into(StatusCode.class);
-            case Attribute:
-                return record.into(Attribute.class);
             case Unit:
                 return record.into(Unit.class);
             default:
@@ -201,29 +194,6 @@ public interface RecordsFactory {
         return record;
     }
 
-    default Attribute newAttribute() {
-        Attribute record = create().newRecord(EXISTENTIAL)
-                                   .into(Attribute.class);
-        record.setUpdatedBy(currentPrincipalId());
-        record.setDomain(ExistentialDomain.Attribute);
-        record.setId(GENERATOR.generate());
-        return record;
-    }
-
-    default Attribute newAttribute(String name, String description) {
-        Attribute record = newAttribute();
-        record.setName(name);
-        record.setDescription(description);
-        return record;
-    }
-
-    default Attribute newAttribute(String name, String description,
-                                   ValueType type) {
-        Attribute attr = newAttribute(name, description);
-        attr.setValueType(type);
-        return attr;
-    }
-
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization() {
         ChildSequencingAuthorizationRecord record = create().newRecord(CHILD_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
@@ -251,6 +221,13 @@ public interface RecordsFactory {
         return record;
     }
 
+    default EdgePropertyRecord newEdgeProperty() {
+        EdgePropertyRecord record = create().newRecord(EDGE_PROPERTY);
+        record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+
     default ExistentialRuleform newExistential(ExistentialDomain domain) {
         Class<? extends ExistentialRecord> existential;
         switch (domain) {
@@ -272,9 +249,6 @@ public interface RecordsFactory {
             case StatusCode:
                 existential = StatusCode.class;
                 break;
-            case Attribute:
-                existential = Attribute.class;
-                break;
             case Unit:
                 existential = Unit.class;
                 break;
@@ -291,109 +265,32 @@ public interface RecordsFactory {
     }
 
     default ExistentialRecord newExistential(ExistentialDomain domain,
-                                             String name, String description) {
+                                             String name) {
         ExistentialRecord record = (ExistentialRecord) newExistential(domain);
         record.setUpdatedBy(currentPrincipalId());
         record.setName(name);
-        record.setDescription(description);
         return record;
     }
 
-    default ExistentialAttributeRecord newExistentialAttribute() {
-        ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        record.setUpdated(OffsetDateTime.now());
-        record.setSequenceNumber(0);
-        return record;
-    }
-
-    default ExistentialAttributeRecord newExistentialAttribute(Attribute attr) {
-        ExistentialAttributeRecord record = newExistentialAttribute();
-        record.setAttribute(attr.getId());
-        return record;
-    }
-
-    default ExistentialAttributeRecord newExistentialAttribute(ExistentialRuleform ruleform,
-                                                               Attribute attribute) {
-        ExistentialAttributeRecord record = newExistentialAttribute(attribute);
-        record.setExistential(ruleform.getId());
-        return record;
-    }
-
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization() {
-        ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
+    default EdgeRecord newExistentialNetwork() {
+        EdgeRecord record = create().newRecord(EDGE);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet,
-                                                                                         Attribute attribute) {
-        ExistentialAttributeAuthorizationRecord record = newExistentialAttributeAuthorization();
-        record.setAuthorizedAttribute(attribute.getId());
-        record.setFacet(facet.getId());
-        return record;
-    }
-
-    default ExistentialNetworkRecord newExistentialNetwork() {
-        ExistentialNetworkRecord record = create().newRecord(EXISTENTIAL_NETWORK);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default ExistentialNetworkRecord newExistentialNetwork(ExistentialRuleform parent,
-                                                           Relationship relationship,
-                                                           ExistentialRuleform child) {
-        ExistentialNetworkRecord record = newExistentialNetwork();
+    default EdgeRecord newExistentialNetwork(ExistentialRuleform parent,
+                                             Relationship relationship,
+                                             ExistentialRuleform child) {
+        EdgeRecord record = newExistentialNetwork();
         record.setParent(parent.getId());
         record.setRelationship(relationship.getId());
         record.setChild(child.getId());
         return record;
     }
 
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute() {
-        ExistentialNetworkAttributeRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
-        record.setId(GENERATOR.generate());
-        record.setUpdated(OffsetDateTime.now());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(Attribute attribute) {
-        ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
-        record.setAttribute(attribute.getId());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(ExistentialNetworkRecord edge,
-                                                                             Attribute attribute) {
-        ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
-        record.setAttribute(attribute.getId());
-        record.setEdge(edge.getId());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
-        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(ExistentialNetworkAuthorizationRecord auth,
-                                                                                                       Attribute attribute) {
-        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
-        record.setAuthorizedAttribute(attribute.getId());
-        record.setNetworkAuthorization(auth.getId());
-        return record;
-    }
-
-    default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
-        ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
+    default EdgeAuthorizationRecord newExistentialNetworkAuthorization() {
+        EdgeAuthorizationRecord record = create().newRecord(EDGE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
         return record;
@@ -415,12 +312,25 @@ public interface RecordsFactory {
         return record;
     }
 
+    default FacetPropertyRecord newFacetProperty() {
+        FacetPropertyRecord record = create().newRecord(FACET_PROPERTY);
+        record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+
     default Interval newInterval() {
         Interval record = create().newRecord(EXISTENTIAL)
                                   .into(Interval.class);
         record.setDomain(ExistentialDomain.Interval);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());
+        return record;
+    }
+    
+    default AuthenticationRecord newAuthentication() {
+        AuthenticationRecord record = new AuthenticationRecord();
+        record.setAgency(null);
         return record;
     }
 
@@ -724,42 +634,21 @@ public interface RecordsFactory {
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
                                                    Product definingProduct,
-                                                   ExistentialAttributeAuthorizationRecord record) {
+                                                   EdgePropertyRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Attribute_Authorization);
+                                 ReferenceType.Edge_Property);
     }
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
                                                    Product definingProduct,
-                                                   ExistentialAttributeRecord record) {
-        return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Attribute);
-    }
-
-    default WorkspaceLabelRecord newWorkspaceLabel(String key,
-                                                   Product definingProduct,
-                                                   ExistentialNetworkAttributeAuthorizationRecord record) {
-        return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Network_Attribute_Authorization);
-    }
-
-    default WorkspaceLabelRecord newWorkspaceLabel(String key,
-                                                   Product definingProduct,
-                                                   ExistentialNetworkAttributeRecord record) {
-        return newWorkspaceLabel(key, definingProduct, record.getId(),
-                                 ReferenceType.Network_Attribute);
-    }
-
-    default WorkspaceLabelRecord newWorkspaceLabel(String key,
-                                                   Product definingProduct,
-                                                   ExistentialNetworkAuthorizationRecord record) {
+                                                   EdgeAuthorizationRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Network_Authorization);
     }
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
                                                    Product definingProduct,
-                                                   ExistentialNetworkRecord record) {
+                                                   EdgeRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Network);
     }
@@ -769,6 +658,13 @@ public interface RecordsFactory {
                                                    ExistentialRecord record) {
         return newWorkspaceLabel(key, definingProduct, record.getId(),
                                  ReferenceType.Existential);
+    }
+
+    default WorkspaceLabelRecord newWorkspaceLabel(String key,
+                                                   Product definingProduct,
+                                                   FacetPropertyRecord record) {
+        return newWorkspaceLabel(key, definingProduct, record.getId(),
+                                 ReferenceType.Facet_Property);
     }
 
     default WorkspaceLabelRecord newWorkspaceLabel(String key,
@@ -847,7 +743,6 @@ public interface RecordsFactory {
                                                    ReferenceType referenceType) {
         WorkspaceLabelRecord record = newWorkspaceLabel();
         record.setKey(key);
-        record.setId(GENERATOR.generate());
         record.setWorkspace(definingProduct.getId());
         record.setReference(reference);
         record.setType(referenceType);
@@ -888,8 +783,6 @@ public interface RecordsFactory {
                 return (T) record.into(Relationship.class);
             case StatusCode:
                 return (T) record.into(StatusCode.class);
-            case Attribute:
-                return (T) record.into(Attribute.class);
             case Unit:
                 return (T) record.into(Unit.class);
             default:

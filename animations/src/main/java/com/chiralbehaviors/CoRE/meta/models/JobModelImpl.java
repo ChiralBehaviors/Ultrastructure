@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -62,7 +62,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownLocation;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
@@ -720,10 +719,11 @@ public class JobModelImpl implements JobModel {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         List<StatusCode> statusCodes = getStatusCodesFor(service);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Status codes for [%s]: %s",
-                                    service.getName(), statusCodes.stream()
-                                                                  .map(r -> r.getName())
-                                                                  .collect(Collectors.toList())));
+            log.trace(String.format("Status codes for [%s]: %s", service
+                                                                        .getName(),
+                                    statusCodes.stream()
+                                               .map(r -> r.getName())
+                                               .collect(Collectors.toList())));
         }
         statusCodes.forEach(currentCode -> {
             List<StatusCode> codes = getNextStatusCodes(service, currentCode);
@@ -881,7 +881,6 @@ public class JobModelImpl implements JobModel {
                                   .getId());
         job.setStatus(kernel.getUnset()
                             .getId());
-        job.insert();
         return job;
     }
 
@@ -900,7 +899,6 @@ public class JobModelImpl implements JobModel {
         mp.setServiceType(kernel.getSameRelationship()
                                 .getId());
         mp.setQuantityUnit(any.getId());
-        mp.insert();
         return mp;
     }
 
@@ -937,7 +935,6 @@ public class JobModelImpl implements JobModel {
         protocol.setChildStatus(WellKnownStatusCode.UNSET.id());
         protocol.setChildQuantityUnit(kernel.getNotApplicableUnit()
                                             .getId());
-        protocol.insert();
         return protocol;
     }
 
@@ -1336,8 +1333,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return WellKnownAgency.ANY.id();
-            case Attribute:
-                return WellKnownAttribute.ANY.id();
             case Interval:
                 return WellKnownInterval.ANY.id();
             case Location:
@@ -1360,8 +1355,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return WellKnownAgency.NOT_APPLICABLE.id();
-            case Attribute:
-                return WellKnownAttribute.NOT_APPLICABLE.id();
             case Interval:
                 return WellKnownInterval.NOT_APPLICABLE.id();
             case Location:
@@ -1397,8 +1390,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return WellKnownAgency.SAME.id();
-            case Attribute:
-                return WellKnownAttribute.SAME.id();
             case Interval:
                 return WellKnownInterval.SAME.id();
             case Location:
@@ -1429,10 +1420,10 @@ public class JobModelImpl implements JobModel {
     private SelectConditionStep<Record1<UUID>> inferenceSubQuery(UUID classifier,
                                                                  UUID classification) {
         return model.create()
-                    .select(EXISTENTIAL_NETWORK.CHILD)
-                    .from(EXISTENTIAL_NETWORK)
-                    .where(EXISTENTIAL_NETWORK.PARENT.equal(classification))
-                    .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(classifier));
+                    .select(EDGE.CHILD)
+                    .from(EDGE)
+                    .where(EDGE.PARENT.equal(classification))
+                    .and(EDGE.RELATIONSHIP.equal(classifier));
     }
 
     private void insert(JobRecord child, JobRecord parent,
@@ -1509,8 +1500,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return existential.equals(WellKnownAgency.COPY.id());
-            case Attribute:
-                return existential.equals(WellKnownAttribute.COPY.id());
             case Interval:
                 return existential.equals(WellKnownInterval.COPY.id());
             case Location:
@@ -1532,8 +1521,6 @@ public class JobModelImpl implements JobModel {
         switch (domain) {
             case Agency:
                 return existential.equals(WellKnownAgency.SAME.id());
-            case Attribute:
-                return existential.equals(WellKnownAttribute.SAME.id());
             case Interval:
                 return existential.equals(WellKnownInterval.SAME.id());
             case Location:
@@ -1593,7 +1580,8 @@ public class JobModelImpl implements JobModel {
             return true;
         }
         if (!model.getPhantasmModel()
-                  .isAccessible(rf.getId(), mpRelationship.getId(), child.getId())) {
+                  .isAccessible(rf.getId(), mpRelationship.getId(),
+                                child.getId())) {
             return false;
         }
         return true;

@@ -3,7 +3,7 @@
     id 
     name
     description 
-    IRI
+    iri
     imports {
       _edge {
         ... on _workspace_import {

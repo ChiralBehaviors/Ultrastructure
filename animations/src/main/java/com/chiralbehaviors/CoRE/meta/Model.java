@@ -85,16 +85,16 @@ public interface Model extends AutoCloseable {
 
     boolean checkExecuteQuery(UpdatableRecord<?> target);
 
+    boolean checkExistentialPermission(List<Agency> roles,
+                                       ExistentialRuleform target,
+                                       Relationship permission);
+
     boolean checkInvoke(UpdatableRecord<?> target);
 
     boolean checkLoginTo(UpdatableRecord<?> target);
 
     boolean checkPermission(ExistentialRuleform target,
                             Relationship permission);
-
-    boolean checkExistentialPermission(List<Agency> roles,
-                                       ExistentialRuleform target,
-                                       Relationship permission);
 
     boolean checkPermission(List<Agency> roles, UpdatableRecord<?> target,
                             Relationship permission);
@@ -151,6 +151,8 @@ public interface Model extends AutoCloseable {
     void flushWorkspaces();
 
     Relationship getApplyPerm();
+
+    AuthnModel getAuthnModel();
 
     /**
      * @return the agency that represents this instance of the CoRE

@@ -28,7 +28,6 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
@@ -55,10 +54,10 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.graphql.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.NAVI;
@@ -98,11 +97,14 @@ public class RoundTripFunctionalTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+        model.getAuthnModel()
+             .create(bob, password.toCharArray());
         // Commit is required
         model.create()
              .configuration()
@@ -161,9 +163,9 @@ public class RoundTripFunctionalTest {
         Form creds = new Form();
         creds.param("username", USER);
         creds.param("password", PASSWORD);
-        UUID token = invocationBuilder.post(Entity.entity(creds,
-                                                          MediaType.APPLICATION_FORM_URLENCODED),
-                                            UUID.class);
+        String token = invocationBuilder.post(Entity.entity(creds,
+                                                            MediaType.APPLICATION_FORM_URLENCODED),
+                                              String.class);
         webTarget = client.target(String.format("http://localhost:%s/api/workspace",
                                                 application.getPort()));
         webTarget = webTarget.path(URLEncoder.encode(WellKnownObject.KERNEL_IRI,
@@ -214,7 +216,7 @@ public class RoundTripFunctionalTest {
         webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/capability",
                                                 application.getPort()));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
-        token = invocationBuilder.post(Entity.json(capReq), UUID.class);
+        token = invocationBuilder.post(Entity.json(capReq), String.class);
 
         webTarget = client.target(String.format("http://localhost:%s/api/oauth2/token/deauthorize",
                                                 application.getPort()));

@@ -93,7 +93,7 @@ public class WorkspaceResourceTest extends AbstractModelTest {
     public void testManifest() throws Exception {
         WorkspaceResource resource = new WorkspaceResource();
         String iri = resource.manifest(null, null,
-                                       getClass().getResourceAsStream("/thing.wsp"),
+                                       getClass().getResourceAsStream("/thing.json"),
                                        model.create());
         assertEquals(THING_URI, iri);
     }

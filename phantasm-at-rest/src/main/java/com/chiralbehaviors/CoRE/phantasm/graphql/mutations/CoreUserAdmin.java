@@ -22,8 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.mutations;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
-
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
 import graphql.annotations.GraphQLName;
@@ -36,7 +34,7 @@ import graphql.schema.DataFetchingEnvironment;
 public interface CoreUserAdmin {
     @GraphQLField
     @GraphQLDescription("Update the password of the Current User of the session")
-    CoreUser setUpdatePassword(@NotNull @GraphQLName("oldPassword") String oldPassword,
-                               @NotNull @GraphQLName("newPassword") String newPassword,
-                               DataFetchingEnvironment env);
+    boolean setUpdatePassword(@NotNull @GraphQLName("oldPassword") String oldPassword,
+                              @NotNull @GraphQLName("newPassword") String newPassword,
+                              DataFetchingEnvironment env);
 }

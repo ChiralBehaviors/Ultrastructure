@@ -21,7 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.context;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.ctx;
-import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.*;
+import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolve;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,9 +38,7 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.ExistentialQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeState;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.AttributeUpdateState;
+import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialCommon;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.ExistentialUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
@@ -67,10 +65,13 @@ public class ExistentialContext extends PhantasmContext
                                             ExistentialDomain domain) {
         Model model = WorkspaceSchema.ctx(env);
         return model.create()
-                    .selectFrom(Tables.EXISTENTIAL)
-                    .where(Tables.EXISTENTIAL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
-                                                                          .getId()))
-                    .and(Tables.EXISTENTIAL.DOMAIN.equal(domain))
+                    .selectDistinct(Tables.EXISTENTIAL.fields())
+                    .from(Tables.EXISTENTIAL)
+                    .join(Tables.WORKSPACE_LABEL)
+                    .on(Tables.WORKSPACE_LABEL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
+                                                                           .getId()))
+                    .and(Tables.WORKSPACE_LABEL.REFERENCE.eq(Tables.EXISTENTIAL.ID))
+                    .where(Tables.EXISTENTIAL.DOMAIN.equal(domain))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()
@@ -107,29 +108,6 @@ public class ExistentialContext extends PhantasmContext
     }
 
     @Override
-    public Attribute attribute(UUID id, DataFetchingEnvironment env) {
-        ExistentialRecord resolved = resolve(env, id);
-        return ctx(env).checkRead(resolved) ? new Attribute(resolved) : null;
-    }
-
-    @Override
-    public List<Attribute> attributes(@GraphQLName("ids") List<UUID> ids,
-                                      DataFetchingEnvironment env) {
-        if (ids == null) {
-            return resolved(env, ExistentialDomain.Attribute).stream()
-                                                             .map(r -> new Attribute(r))
-                                                             .collect(Collectors.toList());
-        }
-        Model model = ctx(env);
-        return ids.stream()
-                  .map(s -> s)
-                  .map(id -> resolve(env, id))
-                  .filter(r -> model.checkRead((UpdatableRecord<?>) r))
-                  .map(r -> new Attribute((ExistentialRecord) r))
-                  .collect(Collectors.toList());
-    }
-
-    @Override
     public Agency createAgency(ExistentialState state,
                                DataFetchingEnvironment env) {
         Model model = WorkspaceSchema.ctx(env);
@@ -141,20 +119,6 @@ public class ExistentialContext extends PhantasmContext
         state.update(record);
         record.insert();
         return new Agency(record);
-    }
-
-    @Override
-    public Attribute createAttribute(AttributeState state,
-                                     DataFetchingEnvironment env) {
-        Model model = WorkspaceSchema.ctx(env);
-        if (!model.checkCreateMeta(getWorkspace(env))) {
-            return null;
-        }
-        ExistentialRecord record = model.records()
-                                        .newAttribute();
-        state.update(record);
-        record.insert();
-        return new Attribute(record);
     }
 
     @Override
@@ -439,15 +403,6 @@ public class ExistentialContext extends PhantasmContext
         state.update(record);
         record.update();
         return new Agency(record);
-    }
-
-    @Override
-    public Attribute updateAttribute(AttributeUpdateState state,
-                                     DataFetchingEnvironment env) {
-        ExistentialRecord record = resolve(env, state.getId());
-        state.update(record);
-        record.update();
-        return new Attribute(record);
     }
 
     @Override

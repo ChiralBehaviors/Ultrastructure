@@ -5,8 +5,9 @@ useCORS: true
 logging:
   level: INFO
   loggers:
-    com.chiralbehaviors: DEBUG
-    org.jooq: WARN
+    com.chiralbehaviors: TRACE
+    org.jooq.tools.LoggerListener: INFO
+    org.jooq: INFO
     org.glassfish: WARN
     graphql: WARN
 

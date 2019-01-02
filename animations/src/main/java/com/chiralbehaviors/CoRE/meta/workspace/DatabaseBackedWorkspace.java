@@ -31,8 +31,8 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.jooq.Record1;
 import org.jooq.Record2;
+import org.jooq.TableRecord;
 
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
@@ -40,13 +40,11 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -58,8 +56,13 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -68,14 +71,46 @@ import com.hellblazer.utils.Tuple;
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
 
-    private final UUID                  definingProductId;
-    protected final Map<String, Object> cache = new HashMap<>();
-    protected final Model               model;
-    protected final WorkspaceScope      scope;
+    private static final String LOOKUP_ORDER = "lookupOrder";
+    private static final String NAMESPACE = "namespace";
+
+    private static class CacheKey {
+        private final String        key;
+        private final ReferenceType type;
+
+        private CacheKey(ReferenceType type, String key) {
+            assert type != null & key != null;
+            this.type = type;
+            this.key = key;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof CacheKey) {
+                CacheKey other = (CacheKey) o;
+                return other.type == type && other.key.equals(key);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 31 * result + key.hashCode();
+            result = 31 * result + type.hashCode();
+            return result;
+        }
+
+    }
+
+    protected final Map<CacheKey, TableRecord<?>> cache = new HashMap<>();
+    protected final Model                         model;
+    protected final WorkspaceScope                scope;
+    private final Product                         definingProduct;
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
-        definingProductId = definingProduct.getId();
+        this.definingProduct = definingProduct;
         this.model = model;
         scope = new WorkspaceScope(this);
         // We need the kernel workspace to lookup workspaces, so special case the kernel
@@ -98,58 +133,31 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         put(null, ruleform);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
-     */
     @Override
-    public void add(ExistentialAttributeAuthorizationRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
-    @Override
-    public void add(ExistentialAttributeRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAttributeRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+    public void add(EdgePropertyRecord attribute) {
+        model.records()
+             .newWorkspaceLabel(null, getDefiningProduct(), attribute)
+             .insert();
     }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
      */
     @Override
-    public void add(ExistentialNetworkAuthorizationRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+    public void add(EdgeAuthorizationRecord ruleform) {
+        model.records()
+             .newWorkspaceLabel(null, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
      */
     @Override
-    public void add(ExistentialNetworkRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+    public void add(EdgeRecord ruleform) {
+        model.records()
+             .newWorkspaceLabel(null, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -158,6 +166,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void add(ExistentialRecord ruleform) {
         put(null, ruleform);
+    }
+
+    @Override
+    public void add(FacetPropertyRecord attribute) {
+        model.records()
+             .newWorkspaceLabel(null, getDefiningProduct(), attribute)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -173,8 +188,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void add(JobChronologyRecord ruleform) {
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(null, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -247,37 +263,58 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public void addImport(String name, Product workspace) {
+        Kernel kernel = model.getKernel();
         if (!model.getPhantasmModel()
-                  .isAccessible(getDefiningProduct().getId(), model.getKernel()
-                                                                   .getIsA()
-                                                                   .getId(),
-                                model.getKernel()
-                                     .getWorkspace()
-                                     .getId())) {
+                  .isAccessible(getDefiningProduct().getId(), kernel.getIsA()
+                                                                    .getId(),
+                                kernel.getWorkspace()
+                                      .getId())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
         scope.add(name, model.getWorkspaceModel()
                              .getScoped(workspace)
                              .getWorkspace());
-        Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = model.getPhantasmModel()
-                                                                               .link(getDefiningProduct(),
-                                                                                     model.getKernel()
-                                                                                          .getImports(),
-                                                                                     workspace
+        EdgeRecord imported = model.getPhantasmModel()
+                                   .getImmediateLink(getDefiningProduct(),
+                                                     kernel.getImports(),
+                                                     workspace);
+        if (imported == null) {
+            Tuple<EdgeRecord, EdgeRecord> links = model.getPhantasmModel()
+                                                       .link(getDefiningProduct(),
+                                                             kernel.getImports(),
+                                                             workspace);
+            add(links.a);
+            add(links.b);
+            imported = links.a;
+        }
+        FacetRecord aspect = model.getPhantasmModel()
+                                  .getFacetDeclaration(kernel.getIsA(),
+                                                       kernel.getWorkspace());
+        EdgeAuthorizationRecord auth = model.getPhantasmModel()
+                                            .getNetworkAuthorization(aspect,
+                                                                     kernel.getImports(),
+                                                                     false);
+        EdgePropertyRecord attribute = model.getPhantasmModel()
+                                            .getEdgeProperties(auth, imported);
+        boolean update = true;
+        if (attribute == null) {
+            attribute = model.records()
+                             .newEdgeProperty();
+            attribute.setEdge(imported.getId());
+            attribute.setAuth(auth.getId());
+            attribute.setForward(true);
+            update = false;
+        }
+        ObjectNode value = JsonNodeFactory.instance.objectNode();
+        value.put(NAMESPACE, name);
+        attribute.setProperties(value);
+        if (update) {
+            attribute.update();
+        } else {
+            attribute.insert();
+        }
 
-        );
-        ExistentialNetworkAttributeRecord attribute = model.records()
-                                                           .newExistentialNetworkAttribute(model.getKernel()
-                                                                                                .getNamespace()
-
-        );
-        attribute.setEdge(links.a.getId());
-        attribute.insert();
-        model.getPhantasmModel()
-             .setValue(attribute, name);
-        add(links.a);
-        add(links.b);
         add(attribute);
     }
 
@@ -294,11 +331,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T get(String key) {
+    public <T extends TableRecord<?>> T get(ReferenceType type, String key) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
         }
-        Object cached = cache.get(key);
+        CacheKey cacheKey = new CacheKey(type, key);
+        Object cached = cache.get(cacheKey);
         if (cached != null) {
             return (T) cached;
         }
@@ -308,6 +346,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                    .from(WORKSPACE_LABEL)
                                                    .where(WORKSPACE_LABEL.WORKSPACE.equal(getDefiningProduct().getId()))
                                                    .and(WORKSPACE_LABEL.KEY.equal(key))
+                                                   .and(WORKSPACE_LABEL.TYPE.equal(type))
                                                    .fetchOne();
         if (result == null) {
             return null;
@@ -318,12 +357,16 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                 ruleform = model.records()
                                 .resolve(result.value1());
                 break;
+            case Facet:
+                ruleform = (T) model.records()
+                                    .findFacetRecord(result.value1());
+                break;
             default:
                 throw new IllegalStateException(String.format("Unable to find result type: %s",
                                                               result.value2()));
         }
         if (key != null) {
-            cache.put(key, ruleform);
+            cache.put(cacheKey, ruleform);
         }
         return ruleform;
     }
@@ -338,19 +381,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public Product getDefiningProduct() {
-        return model.records()
-                    .resolve(definingProductId);
+        return definingProduct;
     }
 
     @Override
-    public UUID getId(String name) {
-        Record1<UUID> id = model.create()
-                                .select(WORKSPACE_LABEL.REFERENCE)
-                                .from(WORKSPACE_LABEL)
-                                .where(WORKSPACE_LABEL.WORKSPACE.equal(getDefiningProduct().getId()))
-                                .and(WORKSPACE_LABEL.KEY.equal(name))
-                                .fetchOne();
-        return id != null ? id.value1() : null;
+    public UUID getId(ReferenceType type, String name) {
+        TableRecord<?> tableRecord = get(type, name);
+        return tableRecord != null ? (UUID) tableRecord.get("id") : null;
     }
 
     /* (non-Javadoc)
@@ -359,32 +396,30 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public Map<String, Tuple<Product, Integer>> getImports() {
         Map<String, Tuple<Product, Integer>> imports = new HashMap<>();
-        for (ExistentialNetworkRecord link : model.getPhantasmModel()
-                                                  .getImmediateChildrenLinks(getDefiningProduct(),
-                                                                             model.getKernel()
-                                                                                  .getImports(),
-                                                                             ExistentialDomain.Product)) {
-            ExistentialNetworkAttributeRecord namespace = model.getPhantasmModel()
-                                                               .getAttributeValue(link,
-                                                                                  model.getKernel()
-                                                                                       .getNamespace());
-            ExistentialNetworkAttributeRecord lookupOrder = model.getPhantasmModel()
-                                                                 .getAttributeValue(link,
-                                                                                    model.getKernel()
-                                                                                         .getLookupOrder());
-            if (namespace == null) {
-                throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
-                                                              link));
-            }
-            if (namespace.getTextValue() == null) {
-                throw new IllegalStateException(String.format("Import has no name defined! : %s",
-                                                              link));
-            }
-            Integer lookupOrderValue = lookupOrder == null ? -1
-                                                           : lookupOrder.getIntegerValue();
-            imports.put(namespace.getTextValue(), new Tuple<>(model.records()
-                                                                   .resolve(link.getChild()),
-                                                              lookupOrderValue));
+        Kernel kernel = model.getKernel();
+        FacetRecord aspect = model.getPhantasmModel()
+                                  .getFacetDeclaration(kernel.getIsA(),
+                                                       kernel.getWorkspace());
+        EdgeAuthorizationRecord auth = model.getPhantasmModel()
+                                            .getNetworkAuthorization(aspect,
+                                                                     kernel.getImports(),
+                                                                     false);
+
+        for (EdgeRecord link : model.getPhantasmModel()
+                                    .getImmediateChildrenLinks(getDefiningProduct(),
+                                                               kernel.getImports(),
+                                                               ExistentialDomain.Product)) {
+            JsonNode properties = model.getPhantasmModel()
+                                       .getEdgeProperties(auth, link)
+                                       .getProperties();
+
+            Integer lookupOrderValue = properties.hasNonNull(LOOKUP_ORDER) ? ((IntNode) properties.get(LOOKUP_ORDER)).asInt()
+                                                                            : -1;
+            imports.put(properties.get(NAMESPACE)
+                                  .asText(),
+                        new Tuple<>(model.records()
+                                         .resolve(link.getChild()),
+                                    lookupOrderValue));
         }
         return imports;
     }
@@ -437,31 +472,26 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         return imports;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
-     */
     @Override
     public void put(String key, ChildSequencingAuthorizationRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Child_Sequencing_Authorization,
+                                   key),
+                      ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     @Override
     public void put(String key, ExistentialRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Existential, key), ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -470,13 +500,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, FacetRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Facet, key), ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -485,13 +513,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, JobRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Job, key), ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -500,13 +526,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, MetaProtocolRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Meta_Protocol, key), ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -515,13 +539,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, NetworkInferenceRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Network_Inference, key),
+                      ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -530,13 +553,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, ParentSequencingAuthorizationRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Parent_Sequencing_Authorization,
+                                   key),
+                      ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -545,13 +568,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, ProtocolRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Protocol, key), ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -560,13 +581,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, SelfSequencingAuthorizationRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Self_Sequencing_Authorization,
+                                   key),
+                      ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -575,13 +596,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, SiblingSequencingAuthorizationRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Sibling_Sequencing_Authorization,
+                                   key),
+                      ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)
@@ -590,13 +611,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void put(String key, StatusCodeSequencingRecord ruleform) {
         if (key != null) {
-            cache.put(key, ruleform);
-            model.records()
-                 .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
-                 .insert();
+            cache.put(new CacheKey(ReferenceType.Status_Code_Sequencing, key),
+                      ruleform);
         }
-        ruleform.setWorkspace(definingProductId);
-        ruleform.update();
+        model.records()
+             .newWorkspaceLabel(key, getDefiningProduct(), ruleform)
+             .insert();
     }
 
     /* (non-Javadoc)

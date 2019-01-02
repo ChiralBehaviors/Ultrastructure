@@ -46,10 +46,8 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
         Product definingProduct = RECORDS.newProduct("zee product");
-        definingProduct.setWorkspace(definingProduct.getId());
         definingProduct.insert();
         Agency pseudoScientist = RECORDS.newAgency("Behold the Pseudo Scientist!");
-        pseudoScientist.setWorkspace(definingProduct.getId());
         pseudoScientist.insert();
         WorkspaceLabelRecord auth = RECORDS.newWorkspaceLabel("Su Su Sudio",
                                                               definingProduct,
@@ -62,7 +60,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                  .size());
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
-        File temp = File.createTempFile("snaptest", "wsp");
+        File temp = File.createTempFile("snaptest", "json");
         temp.deleteOnExit();
         try (FileOutputStream os = new FileOutputStream(temp)) {
             mapper.writeValue(os, retrieved);

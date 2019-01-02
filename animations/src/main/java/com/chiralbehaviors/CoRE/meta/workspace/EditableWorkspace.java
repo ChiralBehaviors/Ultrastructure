@@ -23,13 +23,11 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgePropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -49,19 +47,15 @@ public interface EditableWorkspace extends WorkspaceAccessor {
 
     void add(ChildSequencingAuthorizationRecord ruleform);
 
-    void add(ExistentialAttributeAuthorizationRecord ruleform);
+    void add(EdgePropertyRecord attribute);
 
-    void add(ExistentialAttributeRecord ruleform);
+    void add(EdgeAuthorizationRecord ruleform);
 
-    void add(ExistentialNetworkAttributeAuthorizationRecord ruleform);
-
-    void add(ExistentialNetworkAttributeRecord ruleform);
-
-    void add(ExistentialNetworkAuthorizationRecord ruleform);
-
-    void add(ExistentialNetworkRecord ruleform);
+    void add(EdgeRecord ruleform);
 
     void add(ExistentialRecord ruleform);
+
+    void add(FacetPropertyRecord attribute);
 
     void add(FacetRecord ruleform);
 

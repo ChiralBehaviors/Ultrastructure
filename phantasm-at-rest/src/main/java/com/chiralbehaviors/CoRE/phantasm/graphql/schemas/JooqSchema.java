@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 import static com.chiralbehaviors.CoRE.jooq.Ruleform.RULEFORM;
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLUuid;
 import static graphql.Scalars.GraphQLBoolean;
+import static com.chiralbehaviors.CoRE.jooq.Tables.*;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -96,16 +97,14 @@ public class JooqSchema {
     public static JooqSchema meta(PhantasmProcessor processor) {
         List<Table<?>> manifested = Ruleform.RULEFORM.getTables();
         manifested.removeAll(Arrays.asList(new Table[] { RULEFORM.EXISTENTIAL,
-                                                         RULEFORM.EXISTENTIAL_ATTRIBUTE,
-                                                         RULEFORM.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
-                                                         RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE,
-                                                         RULEFORM.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
-                                                         RULEFORM.EXISTENTIAL_NETWORK_AUTHORIZATION,
-                                                         RULEFORM.EXISTENTIAL_NETWORK,
+                                                         RULEFORM.EDGE_AUTHORIZATION,
+                                                         RULEFORM.EDGE,
                                                          RULEFORM.FACET,
                                                          RULEFORM.WORKSPACE_LABEL,
                                                          RULEFORM.JOB,
-                                                         RULEFORM.JOB_CHRONOLOGY }));
+                                                         RULEFORM.JOB_CHRONOLOGY,
+                                                         RULEFORM.FACET_PROPERTY,
+                                                         RULEFORM.EDGE_PROPERTY }));
         return new JooqSchema(manifested, processor);
     }
 
@@ -164,6 +163,29 @@ public class JooqSchema {
         return builder;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected <T> T fetch(UUID id, Class<?> record,
+                          DataFetchingEnvironment env) {
+        Table<?> table = TABLES.get(record);
+        Field field;
+        try {
+            field = (Field) table.getClass()
+                                 .getField("ID")
+                                 .get(table);
+        } catch (DataAccessException | IllegalArgumentException
+                | IllegalAccessException | NoSuchFieldException
+                | SecurityException e) {
+            throw new IllegalStateException(String.format("Cannot access 'id' field on %s",
+                                                          record.getCanonicalName()),
+                                            e);
+        }
+        return (T) WorkspaceSchema.ctx(env)
+                                  .create()
+                                  .selectFrom(table)
+                                  .where(field.eq(id))
+                                  .fetchOne();
+    }
+
     private GraphQLFieldDefinition.Builder buildPrimitive(GraphQLFieldDefinition.Builder builder,
                                                           PropertyDescriptor field,
                                                           PhantasmProcessor processor) {
@@ -199,8 +221,13 @@ public class JooqSchema {
                                      .equals("id"))
               .forEach(field -> {
                   updateBuilder.field(b -> {
+                      GraphQLType zType = type(field, processor);
+                      if (!(zType instanceof GraphQLInputType)) {
+                          throw new IllegalStateException("Should be input type: "
+                                                          + zType);
+                      }
                       return b.name(field.getName())
-                              .type((GraphQLInputType) type(field, processor));
+                              .type((GraphQLInputType) zType);
                   });
               });
         GraphQLInputObjectType update = updateBuilder.build();
@@ -344,50 +371,20 @@ public class JooqSchema {
         return true;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected <T> T fetch(UUID id, Class<?> record,
-                          DataFetchingEnvironment env) {
-        Table<?> table = TABLES.get(record);
-        Field field;
-        try {
-            field = (Field) table.getClass()
-                                 .getField("ID")
-                                 .get(table);
-        } catch (DataAccessException | IllegalArgumentException
-                | IllegalAccessException | NoSuchFieldException
-                | SecurityException e) {
-            throw new IllegalStateException(String.format("Cannot access 'id' field on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
-        return (T) WorkspaceSchema.ctx(env)
-                                  .create()
-                                  .selectFrom(table)
-                                  .where(field.eq(id))
-                                  .fetchOne();
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     private <T> T fetchAll(Class<?> record, DataFetchingEnvironment env) {
         Table<?> table = TABLES.get(record);
-        Field field;
-        try {
-            field = (Field) table.getClass()
-                                 .getField("WORKSPACE")
-                                 .get(table);
-        } catch (DataAccessException | IllegalArgumentException
-                | IllegalAccessException | NoSuchFieldException
-                | SecurityException e) {
-            throw new IllegalStateException(String.format("Cannot access 'id' field on %s",
-                                                          record.getCanonicalName()),
-                                            e);
-        }
+        Field<UUID> idField = (Field<UUID>) table.field("id");
         return (T) WorkspaceSchema.ctx(env)
                                   .create()
-                                  .selectFrom(table)
-                                  .where(field.eq(PhantasmContext.getWorkspace(env)
-                                                                 .getId()))
+                                  .selectDistinct(table.fields())
+                                  .from(table)
+                                  .join(WORKSPACE_LABEL)
+                                  .on(WORKSPACE_LABEL.WORKSPACE.eq(PhantasmContext.getWorkspace(env)
+                                                                                  .getId()))
+                                  .and(WORKSPACE_LABEL.REFERENCE.eq(idField))
                                   .fetch()
+                                  .into(table.getRecordType())
                                   .stream()
                                   .collect(Collectors.toList());
     }

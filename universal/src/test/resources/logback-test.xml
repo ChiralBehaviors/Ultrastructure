@@ -12,6 +12,9 @@
     <logger name="org.jooq">
         <level value="WARN" />
     </logger> 
+    <logger name="org.jooq.tools.LoggerListener">
+        <level value="info" />
+    </logger> 
     <root>
         <level value="INFO" />
         <appender-ref ref="C" />

@@ -35,7 +35,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.OrderProcessing;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,13 +50,13 @@ import graphql.schema.GraphQLSchema;
  */
 public class JobSchemaTest extends AbstractModelTest {
 
-    private OrderProcessing   scenario;
-    private WorkspaceImporter scope;
+    private OrderProcessing scenario;
+    private JsonImporter    scope;
 
     @Before
     public void initializeScope() throws IOException {
-        scope = WorkspaceImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
-                                           model);
+        scope = JsonImporter.manifest(FacetTypeTest.class.getResourceAsStream(ACM_95_WSP),
+                                      model);
         scenario = scope.getWorkspace()
                         .getAccessor(OrderProcessing.class);
     }
@@ -80,7 +80,7 @@ public class JobSchemaTest extends AbstractModelTest {
                                                            .getId()));
         variables.put("deliverFrom", UuidUtil.encode(scenario.getFactory1()
                                                              .getId()));
-        variables.put("requester", UuidUtil.encode(scenario.getCafleurBon()
+        variables.put("requester", UuidUtil.encode(scenario.getCafleurebon()
                                                            .getId()));
 
         ObjectNode result = execute(schema,

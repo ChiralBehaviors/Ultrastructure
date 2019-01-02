@@ -26,8 +26,6 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
 /**
- * If you forget to disable this during non bootstrap debugging, you will be
- * lost in a twisty maze of uuids that look all alike. This test is stateful.
  * 
  * @author hhildebrand
  *

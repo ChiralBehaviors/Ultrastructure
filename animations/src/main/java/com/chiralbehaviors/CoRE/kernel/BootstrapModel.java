@@ -33,13 +33,11 @@ import java.util.Properties;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -48,7 +46,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class BootstrapModel extends Bootstrap {
 
-    public static final String KERNEL_3_WSP = "/kernel.3.wsp";
+    public static final String KERNEL_DEF_3_JSON = "/kernel-def.3.json";
 
     public static void main(String[] argv) throws Exception {
         if (argv.length != 2) {
@@ -86,15 +84,9 @@ public class BootstrapModel extends Bootstrap {
                                           .connectionProvider()
                                           .acquire());
 
-        new WorkspaceImporter(getClass().getResourceAsStream(KERNEL_3_WSP),
-                              model).initialize()
-                                    .load(kernelWorkspace);
-        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
-                                                         .getAttributeValue(kernelWorkspace,
-                                                                            model.getKernel()
-                                                                                 .getIRI());
-        model.getPhantasmModel()
-             .setValue(attributeValue, WellKnownObject.KERNEL_IRI);
+        new JsonImporter(getClass().getResourceAsStream(KERNEL_DEF_3_JSON),
+                         model).initialize()
+                               .load(kernelWorkspace);
 
         // Ain Soph Aur
 

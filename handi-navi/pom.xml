@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -15,6 +16,18 @@
 	</properties>
 
 	<dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId> 
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId> 
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId> 
+        </dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -35,7 +48,6 @@
 		<dependency>
 			<groupId>ru.yandex.qatools.embed</groupId>
 			<artifactId>postgresql-embedded</artifactId>
-			<version>1.22</version>
 		</dependency>
 	</dependencies>
 
@@ -50,30 +62,32 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>loader-plugin</artifactId>
+				<configuration>
+					<loader>
+						<contexts>${db.context}</contexts>
+						<dbaServer>${dba.db.server}</dbaServer>
+						<dbaPort>${dba.db.port}</dbaPort>
+						<dbaUsername>${dba.db.login}</dbaUsername>
+						<dbaPassword>${dba.db.password}</dbaPassword>
+
+						<coreServer>${db.server}</coreServer>
+						<corePort>${db.port}</corePort>
+						<corePassword>tiger</corePassword>
+						<coreDb>testme</coreDb>
+						<coreUsername>scott</coreUsername>
+						<dropDatabase>true</dropDatabase>
+					</loader>
+				</configuration>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<phase>generate-sources</phase>
 						<goals>
-							<goal>clear</goal>
+							<goal>load</goal>
 						</goals>
-						<configuration>
-							<loader>
-								<dbaServer>${dba.db.server}</dbaServer>
-								<dbaPort>${dba.db.port}</dbaPort>
-								<dbaUsername>${dba.db.login}</dbaUsername>
-								<dbaPassword>${dba.db.password}</dbaPassword>
-
-								<coreServer>${db.server}</coreServer>
-								<corePort>${db.port}</corePort>
-								<corePassword>${db.password}</corePassword>
-								<coreDb>${db}</coreDb>
-								<coreUsername>${db.login}</coreUsername>
-							</loader>
-						</configuration>
 					</execution>
 				</executions>
-				<groupId>com.chiralbehaviors.CoRE</groupId>
-				<artifactId>loader-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>com.chiralbehaviors.CoRE</groupId>
@@ -93,7 +107,7 @@
 				<executions>
 					<execution>
 						<id>load-dsl</id>
-						<phase>compile</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>load-dsl</goal>
 						</goals>
@@ -101,19 +115,19 @@
 							<database>
 								<coreServer>${db.server}</coreServer>
 								<corePort>${db.port}</corePort>
-								<coreDb>${db}</coreDb>
-								<coreUsername>${db.user}</coreUsername>
-								<corePassword>${db.password}</corePassword>
+								<corePassword>tiger</corePassword>
+								<coreDb>testme</coreDb>
+								<coreUsername>scott</coreUsername>
 							</database>
 							<resources>
-								<resource>/acm-95.1.wsp</resource>
-								<resource>/thing.wsp</resource>
+								<resource>/acm-95.1.json</resource>
+								<resource>/thing.json</resource>
 							</resources>
 						</configuration>
 					</execution>
 					<execution>
 						<id>generate-snapshots</id>
-						<phase>compile</phase>
+						<phase>process-classes</phase>
 						<goals>
 							<goal>generate-snapshot</goal>
 						</goals>
@@ -121,9 +135,9 @@
 							<database>
 								<coreServer>${db.server}</coreServer>
 								<corePort>${db.port}</corePort>
-								<coreUsername>${db.user}</coreUsername>
-								<coreDb>${db}</coreDb>
-								<corePassword>${db.password}</corePassword>
+								<corePassword>tiger</corePassword>
+								<coreDb>testme</coreDb>
+								<coreUsername>scott</coreUsername>
 							</database>
 							<exports>
 								<export>
@@ -186,6 +200,7 @@
 										</versionRange>
 										<goals>
 											<goal>clear</goal>
+											<goal>load</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

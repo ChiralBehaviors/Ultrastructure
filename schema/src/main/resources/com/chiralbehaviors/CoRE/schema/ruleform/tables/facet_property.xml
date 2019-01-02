@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+	<changeSet author="hhildebrand" id="2.0.0">
+
+		<createTable schemaName="ruleform"
+			remarks="Facet Properties" tableName="facet_property">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="facet_property_pkey" nullable="false" />
+			</column>
+			<column name="facet" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="existential" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="properties" type="jsonb" />
+			<column name="authority" remarks="authority" type="uuid" />
+			<column name="updated"
+				defaultValueComputed="('now'::text)::timestamp(6) with time zone"
+				type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+		</createTable>
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="facet, existential" constraintName="facet_property_key"
+			deferrable="true" disabled="false" initiallyDeferred="true"
+			tableName="facet_property" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="facet" baseTableName="facet_property"
+			constraintName="facet_property_facet_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="facet" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="existential" baseTableName="facet_property"
+			constraintName="facet_property_existential_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="facet_property"
+			constraintName="facet_authority_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="facet_property"
+			constraintName="facet_updated_by_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION validate_facet_property(data jsonb, fId uuid) RETURNS boolean AS 
+            $f$
+            BEGIN
+              IF ( SELECT validate_json_schema(f.schema, data) FROM facet f WHERE f.id = fId )
+                THEN RETURN TRUE;
+                ELSE 
+			        raise exception using
+			            errcode='INVALID_PROPERTIES',
+			            message= 'invalide props: ' || data #>> '{}',
+			            hint= 'schema: ' || f.schema #>> '{}';
+              END IF;
+            END;
+            $f$ LANGUAGE 'plpgsql' IMMUTABLE;
+        ]]>
+		</sql>
+
+		<sql><![CDATA[
+        ALTER TABLE facet_property ADD CONSTRAINT valid_facet_property_json_schmema CHECK (validate_facet_property(properties, facet));
+        CREATE INDEX facet_property_idx ON facet_property USING gin(properties jsonb_path_ops);
+        ]]>
+		</sql>
+
+		<createIndex schemaName="ruleform"
+			indexName="facet_property_existential_fkey_idx"
+			tableName="facet_property" unique="false">
+			<column name="existential" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="facet_property_updated_by_fkey_idx"
+			tableName="facet_property" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="facet_property_authority_fkey_idx"
+			tableName="facet_property" unique="false">
+			<column name="authority" />
+		</createIndex>
+		<sql>
+			DROP TRIGGER IF EXISTS facet_property_updated ON facet_property;
+			CREATE TRIGGER update_facet_property_timestamp BEFORE UPDATE ON
+			facet_property FOR
+			EACH ROW EXECUTE PROCEDURE updated();
+		</sql>
+		<rollback>
+			DROP TRIGGER facet_property_updated ON facet_property;
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

@@ -7,12 +7,15 @@
         </encoder>
     </appender>
     <logger name="com.chiralbehaviors.CoRE">
-        <level value="WARN" />
+        <level value="INFO" />
     </logger>
     <logger name = "org.reflections">
         <level value="ERROR" />
     </logger>
     <logger name="org.jooq">
+        <level value="WARN" />
+    </logger>
+    <logger name="org.jooq.tools.LoggerListener">
         <level value="WARN" />
     </logger> 
     <root>

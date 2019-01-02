@@ -58,8 +58,8 @@ public class Universal {
     public static final String              GET_APPLICATION_QUERY;
     public static final String              GET_APPLICATION_QUERY_RESOURCE           = "getApplication.query";
     public static final String              GET_APPLICATIONS_QUERY_RESOURCE          = "getApplications.query";
-    public static final String              SINGLE_PAGE_APPLICATION                  = "singlePageApplication";
-    public static final String              SINGLE_PAGE_APPLICATIONS                 = "singlePageApplications";
+    public static final String              SINGLE_PAGE_APPLICATION                  = "singlePageApp";
+    public static final String              SINGLE_PAGE_APPLICATIONS                 = "singlePageApps";
     public static final String              SINGLE_PAGE_URI                          = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/uaas/single-page";
     public static final String              SINGLE_PAGE_UUID;
     public static final String              SPA_WSP;

@@ -8,7 +8,8 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="job"><![CDATA[
              SELECT 
-                    base_table.id, 
+                    base_table.id,
+                    parent.name AS parent,
                     s.name AS service,  
                     sc.name AS status, 
                     p.name AS product,  
@@ -19,7 +20,6 @@
                     base_table.quantity,
                     u.name AS quantity_unit,
                     base_table.notes,
-                    base_table.parent,
                     up.name AS updated_by, 
                     w.name AS workspace,
                     wa.key AS wsp_key,
@@ -35,8 +35,10 @@
                JOIN existential sc ON base_table.status = sc.id
                JOIN existential up ON base_table.updated_by = up.id
                JOIN existential u ON base_table.quantity_unit = u.id
-             LEFT JOIN existential w ON base_table.workspace = w.id
-             LEFT JOIN workspace_label wa ON wa.workspace = w.id AND wa.reference = base_table.id
+             LEFT JOIN job pjob ON base_table.parent = pJob.id
+             LEFT JOIN existential parent ON pjob.service = parent.id
+             LEFT JOIN workspace_label wa ON wa.reference = base_table.id
+             LEFT JOIN existential w ON wa.workspace = w.id
             ]]></createView>
     </changeSet>
 </databaseChangeLog>

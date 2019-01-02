@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.LoggerFactory;
+
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
@@ -37,8 +39,9 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
+import com.chiralbehaviors.CoRE.meta.AuthnModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.Mutations;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema.Queries;
@@ -46,7 +49,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Job.JobUpdateState;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.JobChronology;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.annotations.GraphQLName;
 import graphql.schema.DataFetchingEnvironment;
@@ -106,7 +108,7 @@ public class WorkspaceContext extends ExistentialContext
                                 .newInitializedJob(model.records()
                                                         .resolve(state.getService()));
         state.update(record);
-        record.update();
+        record.insert();
         return new Job(record);
     }
 
@@ -196,16 +198,22 @@ public class WorkspaceContext extends ExistentialContext
     }
 
     @Override
-    public CoreUser setUpdatePassword(String oldPassword, String newPassword,
-                                      DataFetchingEnvironment env) {
+    public boolean setUpdatePassword(String oldPassword, String newPassword,
+                                     DataFetchingEnvironment env) {
         CoreUser currentUser = ctx(env).wrap(CoreUser.class,
                                              ctx(env).getCurrentPrincipal()
                                                      .getPrincipal());
-        AgencyBasicAuthenticator.updatePassword(currentUser, newPassword,
-                                                oldPassword);
-        // force reauthentication
-        currentUser.setAccessToken(new JsonNode[0]);
-        return currentUser;
+        AuthnModel authnModel = WorkspaceSchema.ctx(env)
+                                               .getAuthnModel();
+        if (!authnModel.changePassword(currentUser, oldPassword.toCharArray(),
+                                       newPassword.toCharArray())) {
+            LoggerFactory.getLogger(WorkspaceContext.class)
+                         .warn("Failure to change password for CoreUser: "
+                               + UuidUtil.encode(currentUser.getRuleform()
+                                                            .getId()));
+            return false;
+        }
+        return true;
     }
 
     @Override

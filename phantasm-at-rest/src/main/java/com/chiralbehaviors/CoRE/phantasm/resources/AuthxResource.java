@@ -20,12 +20,15 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET_PROPERTY;
+import static com.chiralbehaviors.CoRE.postgres.JsonExtensions.contains;
 
-import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -46,13 +49,14 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
+import com.chiralbehaviors.CoRE.meta.AuthnModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.Credential;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.dropwizard.auth.Auth;
 
@@ -71,14 +75,12 @@ public class AuthxResource extends TransactionalResource {
 
     private static final Logger log    = LoggerFactory.getLogger(AuthxResource.class);
 
+    private static final String LOGIN  = "login";
     private final static String PREFIX = "Bearer";
 
     public static CoreUser authenticate(String username, String password,
                                         Model model) {
-        List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
-                                                            .findByAttributeValue(model.getKernel()
-                                                                                       .getLogin(),
-                                                                                  username);
+        List<CoreUser> agencies = find(username, model);
         if (agencies.size() > 1) {
             log.error(String.format("Multiple agencies with login name %s",
                                     username));
@@ -89,9 +91,9 @@ public class AuthxResource extends TransactionalResource {
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
-        CoreUser user = model.wrap(CoreUser.class, agencies.get(0));
-
-        if (!AgencyBasicAuthenticator.authenticate(user, password)) {
+        CoreUser user = agencies.get(0);
+        if (!model.getAuthnModel()
+                  .authenticate(user, password.toCharArray())) {
             log.warn(String.format("Invalid attempt to login from username %s",
                                    username));
             throw new WebApplicationException(Status.UNAUTHORIZED);
@@ -102,45 +104,42 @@ public class AuthxResource extends TransactionalResource {
         return user;
     }
 
-    public static void deauthorize(AuthorizedPrincipal principal,
-                                   String bearerToken, Model model) {
-        if (bearerToken == null) {
+    public static void deauthorize(AuthorizedPrincipal principal, String token,
+                                   Model model) {
+        if (token == null) {
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
-        UUID uuid = UUID.fromString(parse(bearerToken));
-        ExistentialAttributeRecord record = model.create()
-                                                 .selectFrom(EXISTENTIAL_ATTRIBUTE)
-                                                 .where(EXISTENTIAL_ATTRIBUTE.ID.equal(uuid))
-                                                 .fetchOne();
-        if (record != null) {
-            record.delete();
-        }
+        UUID uuid = UuidUtil.decode(parse(token));
+        model.getAuthnModel()
+             .deauthorize(uuid);
 
         Agency user = principal.getPrincipal();
-        log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
+        log.info("Deauthorized token {} for {}:{}", uuid, user.getId(),
                  user.getName());
     }
 
-    public static ExistentialAttributeRecord generateToken(Credential cred,
-                                                           CoreUser user,
-                                                           Model model) {
-        List<ExistentialAttributeRecord> values = model.getPhantasmModel()
-                                                       .getAttributeValues(user.getRuleform(),
-                                                                           model.getKernel()
-                                                                                .getAccessToken());
-        int seqNum = values.isEmpty() ? 0
-                                      : values.get(values.size() - 1)
-                                              .getSequenceNumber()
-                                        + 1;
-        ExistentialAttributeRecord accessToken = model.records()
-                                                      .newExistentialAttribute(user.getRuleform(),
-                                                                               model.getKernel()
-                                                                                    .getAccessToken());
-        accessToken.setJsonValue(new ObjectMapper().valueToTree(cred));
-        accessToken.setUpdated(OffsetDateTime.now());
-        accessToken.setSequenceNumber(seqNum);
-        accessToken.insert();
-        return accessToken;
+    public static List<CoreUser> find(String userName, Model model) {
+        ObjectNode target = JsonNodeFactory.instance.objectNode();
+        target.put(LOGIN, userName);
+        return model.create()
+                    .selectDistinct(EXISTENTIAL.ID)
+                    .from(EXISTENTIAL, FACET_PROPERTY, EDGE)
+                    .where(EDGE.PARENT.equal(EXISTENTIAL.ID))
+                    .and(EDGE.CHILD.equal(model.getKernel()
+                                               .getCoreUser()
+                                               .getId()))
+                    .and(EDGE.RELATIONSHIP.equal(model.getKernel()
+                                                      .getIsA()
+                                                      .getId()))
+                    .and(FACET_PROPERTY.EXISTENTIAL.eq(EXISTENTIAL.ID))
+                    .and(contains(FACET_PROPERTY.PROPERTIES, target))
+                    .fetch()
+                    .stream()
+                    .map(row -> row.component1())
+                    .map(id -> (ExistentialRuleform) model.records()
+                                                          .resolve(id))
+                    .map(ex -> model.wrap(CoreUser.class, ex))
+                    .collect(Collectors.toList());
     }
 
     public static UUID loginUuidForToken(String username, String password,
@@ -151,8 +150,29 @@ public class AuthxResource extends TransactionalResource {
                             .getLoginRole()
                             .getId());
         cred.ip = httpRequest.getRemoteAddr();
-        return generateToken(cred, authenticate(username, password, model),
-                             model).getId();
+
+        AuthnModel authnModel = model.getAuthnModel();
+        List<CoreUser> agencies = find(username, model);
+        if (agencies.size() > 1) {
+            log.error(String.format("Multiple agencies with login name %s",
+                                    username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        if (agencies.size() == 0) {
+            log.warn(String.format("Attempt to login from non existent username %s",
+                                   username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        CoreUser user = agencies.get(0);
+        if (!authnModel.authenticate(user, password.toCharArray())) {
+            log.warn(String.format("Faild authentication from username %s",
+                                   username, user.getRuleform()
+                                                 .getId()));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        return authnModel.mintToken(user, cred.ip, 60, UUID.randomUUID(),
+                                    cred.roles.toArray(new UUID[cred.roles.size()]))
+                         .getId();
     }
 
     public static String parse(String header) {
@@ -178,9 +198,28 @@ public class AuthxResource extends TransactionalResource {
                             .getId());
         cred.roles.addAll(request.capabilities);
         cred.ip = httpRequest.getRemoteAddr();
-        return generateToken(cred, authenticate(request.username,
-                                                request.password, model),
-                             model).getId();
+        AuthnModel authnModel = model.getAuthnModel();
+        List<CoreUser> agencies = find(request.username, model);
+        if (agencies.size() > 1) {
+            log.error(String.format("Multiple agencies with login name %s",
+                                    request.username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        if (agencies.size() == 0) {
+            log.warn(String.format("Attempt to login from non existent username %s",
+                                   request.username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        CoreUser user = agencies.get(0);
+        if (!authnModel.authenticate(user, request.password.toCharArray())) {
+            log.warn(String.format("Faild authentication from username %s",
+                                   request.username, user.getRuleform()
+                                                         .getId()));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        return authnModel.mintToken(user, cred.ip, 60, UUID.randomUUID(),
+                                    cred.roles.toArray(new UUID[cred.roles.size()]))
+                         .getId();
     }
 
     @POST
@@ -198,23 +237,23 @@ public class AuthxResource extends TransactionalResource {
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public UUID loginForToken(@FormParam("username") String username,
-                              @FormParam("password") String password,
-                              @Context HttpServletRequest httpRequest,
-                              @Context DSLContext create) {
-        return mutate(null, model -> {
+    public String loginForToken(@FormParam("username") String username,
+                                @FormParam("password") String password,
+                                @Context HttpServletRequest httpRequest,
+                                @Context DSLContext create) {
+        return UuidUtil.encode(mutate(null, model -> {
             return loginUuidForToken(username, password, httpRequest, model);
-        }, create);
+        }, create));
     }
 
     @POST
     @Path("capability")
     @Consumes(MediaType.APPLICATION_JSON)
-    public UUID requestCapability(CapabilityRequest request,
-                                  @Context HttpServletRequest httpRequest,
-                                  @Context DSLContext create) {
-        return mutate(null, model -> {
+    public String requestCapability(CapabilityRequest request,
+                                    @Context HttpServletRequest httpRequest,
+                                    @Context DSLContext create) {
+        return UuidUtil.encode(mutate(null, model -> {
             return requestCapability(request, httpRequest, model);
-        }, create);
+        }, create));
     }
 }

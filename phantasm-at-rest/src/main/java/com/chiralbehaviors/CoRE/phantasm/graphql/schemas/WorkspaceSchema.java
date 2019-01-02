@@ -27,7 +27,7 @@ import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -40,6 +40,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Classification;
@@ -52,7 +53,6 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmProcessor;
 import com.chiralbehaviors.CoRE.phantasm.graphql.ZtypeFunction;
@@ -68,7 +68,6 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.queries.JobQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.queries.WorkspaceQueries;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Interval;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Location;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
@@ -78,10 +77,12 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Plugin;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria.Aspect;
 
+import graphql.AssertException;
 import graphql.annotations.GraphQLAnnotations;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInterfaceType;
+import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
@@ -170,12 +171,16 @@ public class WorkspaceSchema {
                                               .build(new Aspect(model.create(),
                                                                 e.getKey()),
                                                      topLevelQuery,
-                                                     topLevelMutation)));
 
-        GraphQLUnionType edgeUnion = edgeUnionBuilder.build();
-        if (!edgeUnion.getTypes()
-                      .isEmpty()) {
-            dictionary.add(edgeUnion);
+                                                     topLevelMutation)));
+        try {
+            GraphQLUnionType edgeUnion = edgeUnionBuilder.build();
+            if (!edgeUnion.getTypes()
+                          .isEmpty()) {
+                dictionary.add(edgeUnion);
+            }
+        } catch (AssertException e) {
+            // only one type, ignore
         }
         return GraphQLSchema.newSchema()
                             .query(topLevelQuery.build())
@@ -232,7 +237,9 @@ public class WorkspaceSchema {
                                                  GraphQLFloat));
         processor.registerType(new ZtypeFunction(int.class, GraphQLInt));
         processor.registerType(new ZtypeFunction(UUID.class, GraphQLUuid));
-        processor.registerType(new ZtypeFunction(Timestamp.class,
+        processor.registerType(new ZtypeFunction(new UUID[0].getClass(),
+                                                 new GraphQLList(GraphQLUuid)));
+        processor.registerType(new ZtypeFunction(OffsetDateTime.class,
                                                  GraphQLTimestamp));
 
         GraphQLType existentialType = GraphQLAnnotations.iface(Existential.class);
@@ -243,10 +250,6 @@ public class WorkspaceSchema {
         GraphQLObjectType agencyType = phantasm(resolved,
                                                 processor.getObjectBuilder(Agency.class));
         processor.registerType(new ZtypeFunction(Agency.class, agencyType));
-
-        GraphQLObjectType attrType = phantasm(resolved,
-                                              processor.getObjectBuilder(Attribute.class));
-        processor.registerType(new ZtypeFunction(Attribute.class, attrType));
 
         GraphQLObjectType intervalType = phantasm(resolved,
                                                   processor.getObjectBuilder(Interval.class));
@@ -280,8 +283,8 @@ public class WorkspaceSchema {
                                  Entry<FacetRecord, FacetFields> resolved) {
         typeBuilder.field(GraphQLFieldDefinition.newFieldDefinition()
                                                 .name(String.format("as%s",
-                                                                    WorkspacePresentation.toTypeName(resolved.getKey()
-                                                                                                             .getName())))
+                                                                    FacetFields.toTypeName(resolved.getKey()
+                                                                                                   .getName())))
                                                 .description(String.format("Cast to the %s facet",
                                                                            resolved.getKey()
                                                                                    .getName()))
@@ -303,8 +306,8 @@ public class WorkspaceSchema {
                                  Entry<FacetRecord, FacetFields> resolved) {
         builder.field(GraphQLFieldDefinition.newFieldDefinition()
                                             .name(String.format("as%s",
-                                                                WorkspacePresentation.toTypeName(resolved.getKey()
-                                                                                                         .getName())))
+                                                                FacetFields.toTypeName(resolved.getKey()
+                                                                                               .getName())))
                                             .description(String.format("Cast to the %s facet",
                                                                        resolved.getKey()
                                                                                .getName()))
@@ -370,9 +373,18 @@ public class WorkspaceSchema {
         if (ws.getRuleform()
               .getId()
               .equals(WorkspaceAccessor.uuidOf(facetAnnotation.workspace()))) {
-            FacetRecord declaration = model.getPhantasmModel()
-                                           .getFacetDeclaration(scope.lookup(facetAnnotation.classifier()),
-                                                                scope.lookup(facetAnnotation.classification()));
+            FacetRecord declaration;
+            try {
+                FacetRecord lookup = scope.lookup(ReferenceType.Facet,
+                                                  facetAnnotation.key());
+                declaration = model.records()
+                                   .findFacetRecord(lookup.getId());
+            } catch (Exception e) {
+                throw new IllegalArgumentException(annotation.value()
+                                                             .getName()
+                                                   + " Facet annotation incomplete",
+                                                   e);
+            }
             return facet.equals(declaration);
 
         }

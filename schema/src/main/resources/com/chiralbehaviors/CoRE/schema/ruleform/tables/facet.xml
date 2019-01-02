@@ -1,59 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" remarks="Defines Phantasms" tableName="facet">
-            <column name="workspace" type="uuid" />
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="facet_pkey" />
-            </column>
-            <column name="name" type="text" />
-            <column name="classifier" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="classification" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="constrain_to" type="existential_domain"/>
-            <column name="authority" remarks="authority" type="uuid" />
-            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"
-                type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="INT4" />
-        </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classifier" baseTableName="facet" constraintName="facet_classifier_fkey" deferrable="false" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classification" baseTableName="facet" constraintName="facet_classification_fkey" deferrable="false"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authority" baseTableName="facet" constraintName="facet_authority_fkey" deferrable="false" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="facet" constraintName="facet_updated_by_fkey" deferrable="false" initiallyDeferred="true"
-            onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, name, authority"
-            constraintName="facet_unique_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="facet" />
-        <createIndex schemaName="ruleform" indexName="facet_updated_by_fkey_idx" tableName="facet" unique="false">
-            <column name="updated_by" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="facet_classifier_fkey_idx" tableName="facet" unique="false">
-            <column name="classifier" />
-            <column name="classification" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="facet_grouping_agency_fkey_idx" tableName="facet" unique="false">
-            <column name="authority" />
-        </createIndex>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="facet" constraintName="facet_workspace_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-    </changeSet>
+	<changeSet author="hhildebrand" id="2.0.0">
+
+		<createTable schemaName="ruleform" tableName="facet">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="facet_pkey" nullable="false" />
+			</column>
+			<column name="name" type="text" />
+			<column name="classifier" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="classification" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="constrain_to" type="existential_domain" />
+			<column name="schema" type="jsonb" />
+			<column name="default_properties" type="jsonb" />
+			<column name="authority" remarks="authority" type="uuid" />
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+		</createTable>
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="classifier, classification"
+			constraintName="facet_unique_key" deferrable="true" disabled="false"
+			initiallyDeferred="true" tableName="facet" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="classifier" baseTableName="facet"
+			constraintName="facet_classifier_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="classification" baseTableName="facet"
+			constraintName="facet_classification_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="facet"
+			constraintName="facet_authority_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="facet"
+			constraintName="facet_updated_by_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<sql><![CDATA[
+        ALTER TABLE facet ADD CONSTRAINT valid_facet_json_schmema CHECK (validate_json_schema(draftV4Schema(), schema));
+        ALTER TABLE facet ADD CONSTRAINT valid_facet_default_props_json_schmema CHECK (validate_json_schema(schema, default_properties));
+        CREATE INDEX facet_schema_idx ON facet USING gin(schema jsonb_path_ops);
+        ]]>
+		</sql>
+
+		<createIndex schemaName="ruleform"
+			indexName="facet_classification_fkey_idx" tableName="facet"
+			unique="false">
+			<column name="classification" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="facet_updated_by_fkey_idx" tableName="facet"
+			unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="facet_authority_fkey_idx" tableName="facet" unique="false">
+			<column name="authority" />
+		</createIndex>
+	</changeSet>
 </databaseChangeLog>

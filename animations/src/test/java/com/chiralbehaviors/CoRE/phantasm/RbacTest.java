@@ -20,47 +20,39 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.test.OtherThing;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.test.mavenArtifactProperties.MavenArtifactProperties;
+import com.chiralbehaviors.CoRE.phantasm.test.thing1Properties.Thing1Properties;
 
 /**
  * @author hhildebrand
@@ -70,8 +62,8 @@ public class RbacTest extends AbstractModelTest {
 
     @Before
     public void loadThingOntology() throws Exception {
-        WorkspaceImporter.manifest(RbacTest.class.getResourceAsStream("/thing.wsp"),
-                                   model);
+        JsonImporter.manifest(RbacTest.class.getResourceAsStream("/thing.json"),
+                              model);
     }
 
     @Test
@@ -79,72 +71,6 @@ public class RbacTest extends AbstractModelTest {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
         model.apply(OtherThing.class, thing1);
-    }
-
-    @Test
-    public void testAttributePermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-
-        WorkspaceScope scope = thing1.getScope();
-        FacetRecord facet = model.getPhantasmModel()
-                                 .getFacetDeclaration(model.getKernel()
-                                                           .getIsA(),
-                                                      scope.lookup("Thing1"));
-        assertNotNull(facet);
-        Attribute percentage = (Attribute) scope.lookup("discount");
-        assertNotNull(percentage);
-
-        ExistentialAttributeAuthorizationRecord stateAuth = model.create()
-                                                                 .selectFrom(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
-                                                                 .where(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(percentage.getId()))
-                                                                 .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(facet.getId()))
-                                                                 .fetchOne();
-        assertNotNull(stateAuth);
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-        stateAuth.setAuthority(model.getKernel()
-                                    .getAnyAgency()
-                                    .getId());
-
-        assertFalse(model.checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        assertFalse(model.checkPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getNotApplicableAgency(),
-                   model.getKernel()
-                        .getMemberOf(),
-                   model.getKernel()
-                        .getCore());
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
     }
 
     @Test
@@ -156,15 +82,16 @@ public class RbacTest extends AbstractModelTest {
         FacetRecord facet = model.getPhantasmModel()
                                  .getFacetDeclaration(model.getKernel()
                                                            .getIsA(),
-                                                      scope.lookup("Thing1"));
+                                                      scope.lookup(Existential,
+                                                                   "Thing1"));
         assertNotNull(facet);
 
-        Relationship relationship = scope.lookup("thing1Of");
+        Relationship relationship = scope.lookup(Existential, "thing1Of");
         assertNotNull(relationship);
-        ExistentialNetworkAuthorizationRecord stateAuth = model.create()
-                                                               .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
+        EdgeAuthorizationRecord stateAuth = model.create()
+                                                               .selectFrom(EDGE_AUTHORIZATION)
+                                                               .where(EDGE_AUTHORIZATION.PARENT.equal(facet.getId()))
+                                                               .and(EDGE_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
                                                                .fetchOne();
 
         assertNotNull(stateAuth);
@@ -216,20 +143,6 @@ public class RbacTest extends AbstractModelTest {
     }
 
     @Test
-    public void testEnums() throws Exception {
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 ExistentialDomain.Location,
-                                                 "myartifact", "artifact");
-        artifact.setType("jar");
-        artifact.setType("invalid");
-        try {
-            model.flush();
-            fail();
-        } catch (Exception e) {
-        }
-    }
-
-    @Test
     public void testFacetPermissions() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
                                         "testy", "test");
@@ -238,7 +151,8 @@ public class RbacTest extends AbstractModelTest {
         FacetRecord facet = model.getPhantasmModel()
                                  .getFacetDeclaration(model.getKernel()
                                                            .getIsA(),
-                                                      scope.lookup("Thing1"));
+                                                      scope.lookup(Existential,
+                                                                   "Thing1"));
         assertNotNull(facet);
 
         assertTrue(model.checkPermission(asList(model.getKernel()
@@ -295,18 +209,18 @@ public class RbacTest extends AbstractModelTest {
 
         ExistentialRuleform instance = thing1.getRuleform();
         assertTrue(model.checkExistentialPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
+                                                                .getCore()),
+                                                    instance, model.getKernel()
+                                                                   .getHadMember()));
         instance.setAuthority(model.getKernel()
                                    .getAnyAgency()
                                    .getId());
         instance.update();
 
         assertFalse(model.checkExistentialPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
+                                                                 .getCore()),
+                                                     instance, model.getKernel()
+                                                                    .getHadMember()));
 
         model.getPhantasmModel()
              .link(model.getKernel()
@@ -317,13 +231,13 @@ public class RbacTest extends AbstractModelTest {
                         .getAnyAgency());
 
         assertTrue(model.checkExistentialPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
+                                                                .getCore()),
+                                                    instance, model.getKernel()
+                                                                   .getHadMember()));
         assertFalse(model.checkExistentialPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          instance, model.getKernel()
-                                                         .getHadMember()));
+                                                                 .getNotApplicableAgency()),
+                                                     instance, model.getKernel()
+                                                                    .getHadMember()));
 
         model.getPhantasmModel()
              .link(model.getKernel()
@@ -334,108 +248,9 @@ public class RbacTest extends AbstractModelTest {
                         .getCore());
 
         assertTrue(model.checkExistentialPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         instance, model.getKernel()
-                                                        .getHadMember()));
-    }
-
-    @Test
-    public void testNetworkAttributePermissions() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, ExistentialDomain.Product,
-                                        "testy", "test");
-        WorkspaceScope scope = thing1.getScope();
-
-        FacetRecord facet = model.getPhantasmModel()
-                                 .getFacetDeclaration(model.getKernel()
-                                                           .getIsA(),
-                                                      scope.lookup("Thing1"));
-
-        Attribute aliases = (Attribute) scope.lookup("aliases");
-        assertNotNull(aliases);
-
-        Relationship relationship = scope.lookup("thing1Of");
-        assertNotNull(relationship);
-
-        ExistentialNetworkAuthorizationRecord auth = model.create()
-                                                          .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                          .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
-                                                          .fetchOne();
-
-        assertNotNull(auth);
-
-        ExistentialNetworkAttributeAuthorizationRecord stateAuth = model.create()
-                                                                        .selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION)
-                                                                        .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(auth.getId()))
-                                                                        .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(aliases.getId()))
-                                                                        .fetchOne();
-
-        assertNotNull(stateAuth);
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-
-        stateAuth.setAuthority(model.getKernel()
-                                    .getAnyAgency()
-                                    .getId());
-        stateAuth.update();
-
-        assertFalse(model.checkPermission(asList(model.getKernel()
-                                                      .getCore()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getCore(),
-                   model.getKernel()
-                        .getHadMember(),
-                   model.getKernel()
-                        .getAnyAgency());
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getCore()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
-        model.executeAs(model.principalFrom(model.getKernel()
-                                                 .getCore(),
-                                            Collections.singletonList(model.getKernel()
-                                                                           .getCore())),
-                        () -> {
-                            assertTrue(model.checkPermission(stateAuth,
-                                                             model.getKernel()
-                                                                  .getHadMember()));
-                            return null;
-                        });
-
-        model.getPhantasmModel()
-             .getAttributeValue(model.getKernel()
-                                     .getCore(),
-                                model.getKernel()
-                                     .getHadMember(),
-                                model.getKernel()
-                                     .getSameAgency(),
-                                aliases);
-
-        assertFalse(model.checkPermission(asList(model.getKernel()
-                                                      .getNotApplicableAgency()),
-                                          stateAuth, model.getKernel()
-                                                          .getHadMember()));
-
-        model.getPhantasmModel()
-             .link(model.getKernel()
-                        .getNotApplicableAgency(),
-                   model.getKernel()
-                        .getMemberOf(),
-                   model.getKernel()
-                        .getCore());
-
-        assertTrue(model.checkPermission(asList(model.getKernel()
-                                                     .getNotApplicableAgency()),
-                                         stateAuth, model.getKernel()
-                                                         .getHadMember()));
+                                                                .getNotApplicableAgency()),
+                                                    instance, model.getKernel()
+                                                                   .getHadMember()));
     }
 
     @Test
@@ -447,31 +262,21 @@ public class RbacTest extends AbstractModelTest {
                                         "tasty", "chips");
         assertNotNull(thing1);
         assertNotNull(thing1.getRuleform());
-        assertNotEquals(thing1.getRuleform()
-                           .getName(),
-                     thing1.getName());
+        Thing1Properties thing1Props = new Thing1Properties();
+
         assertNull(thing1.getThing2());
         thing1.setThing2(thing2);
         assertNotNull(thing1.getThing2());
-        assertNull(thing1.getPercentage());
-        thing1.setPercentage(BigDecimal.ONE);
-        assertEquals(BigDecimal.ONE, thing1.getPercentage());
-        String[] aliases = new String[] { "foo", "bar", "baz" };
-        thing1.setAliases(aliases);
-        String[] alsoKnownAs = thing1.getAliases();
+
+        List<String> aliases = Arrays.asList(new String[] { "foo", "bar",
+                                                            "baz" });
+        thing1Props.setAliases(aliases);
+        thing1.set_Properties(thing1Props);
+
+        thing1Props = thing1.get_Properties();
+        List<String> alsoKnownAs = thing1Props.getAliases();
         assertNotNull(alsoKnownAs);
-        assertArrayEquals(aliases, alsoKnownAs);
-
-        Map<String, String> properties = new HashMap<>();
-        properties.put("foo", "bar");
-        properties.put("baz", "bozo");
-
-        assertEquals(0, thing1.getProperties()
-                              .size());
-        thing1.setProperties(properties);
-        Map<String, String> newProps = thing1.getProperties();
-        assertEquals(String.format("got: %s", newProps), properties.size(),
-                     newProps.size());
+        assertEquals(aliases, alsoKnownAs);
 
         Thing3 thing3a = model.construct(Thing3.class,
                                          ExistentialDomain.Product, "uncle it",
@@ -504,9 +309,12 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  ExistentialDomain.Location,
                                                  "myartifact", "artifact");
-        artifact.setType("jar");
-        assertEquals("jar", artifact.getType());
+
+        MavenArtifactProperties properties = new MavenArtifactProperties();
+        properties.setType("jar");
+        assertEquals("jar", properties.getType());
         thing1.setDerivedFrom(artifact);
+        artifact.set_Properties(properties);
         assertNotNull(thing1.getDerivedFrom());
 
         assertEquals(0, thing2.getDerivedFroms()
@@ -524,7 +332,6 @@ public class RbacTest extends AbstractModelTest {
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   ExistentialDomain.Location,
                                                   "myartifact2", "artifact2");
-        artifact2.setType("jar");
 
         thing2.setDerivedFroms(Arrays.asList(artifact2));
         assertEquals(1, thing2.getDerivedFroms()

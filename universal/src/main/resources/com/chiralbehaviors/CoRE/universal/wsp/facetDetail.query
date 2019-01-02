@@ -2,7 +2,6 @@ query($id:ID!) {
   facet(id: $id) {
     id
     name
-    notes
     classifier {
       id
       name
@@ -13,17 +12,8 @@ query($id:ID!) {
       name
       description
     }
-    attributes {
-      id
-      authorizedAttribute {
-        id
-        name
-        description
-      }
-    }
     children {
       name 
-      notes
       cardinality
       relationship {
         id
@@ -34,7 +24,6 @@ query($id:ID!) {
         id
         name
       }
-      notes
     }
   }
 }

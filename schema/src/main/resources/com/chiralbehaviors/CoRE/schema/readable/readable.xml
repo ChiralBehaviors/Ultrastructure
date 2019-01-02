@@ -1,35 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include relativeToChangelogFile="true" file="views/agency.xml" />
-    <include relativeToChangelogFile="true" file="views/attribute.xml" />
-    <include relativeToChangelogFile="true" file="views/interval.xml" />
-    <include relativeToChangelogFile="true" file="views/location.xml" />
-    <include relativeToChangelogFile="true" file="views/product.xml" />
-    <include relativeToChangelogFile="true" file="views/relationship.xml" />
-    <include relativeToChangelogFile="true" file="views/status_code.xml" />
-    <include relativeToChangelogFile="true" file="views/unit.xml" />
-    <include relativeToChangelogFile="true" file="views/network_inference.xml" />
-    <include relativeToChangelogFile="true" file="views/existential_attribute.xml" />
-    <include relativeToChangelogFile="true" file="views/existential_network.xml" />
-    <include relativeToChangelogFile="true" file="views/facet.xml" />
-    <include relativeToChangelogFile="true" file="views/existential_network_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/existential_network_attribute.xml" />
-    <include relativeToChangelogFile="true" file="views/existential_network_attribute_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/existential_attribute_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/protocol.xml" />
-    <include relativeToChangelogFile="true" file="views/job.xml" />
-    <include relativeToChangelogFile="true" file="views/job_chronology.xml" />
-    <include relativeToChangelogFile="true" file="views/meta_protocol.xml" />
-    <include relativeToChangelogFile="true" file="views/status_code_sequencing.xml" />
-    <include relativeToChangelogFile="true" file="views/parent_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/sibling_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/child_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/self_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true" file="views/deductions.xml" />
-    
+	<include relativeToChangelogFile="true" file="views/agency.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/interval.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/location.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/product.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/relationship.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/status_code.xml" />
+	<include relativeToChangelogFile="true" file="views/unit.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/network_inference.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/edge.xml" />
+	<include relativeToChangelogFile="true" file="views/facet.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/facet_property.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/edge_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/edge_property.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/protocol.xml" />
+	<include relativeToChangelogFile="true" file="views/job.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/job_chronology.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/meta_protocol.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/status_code_sequencing.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/parent_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/sibling_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/child_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/self_sequencing_authorization.xml" />
+	<include relativeToChangelogFile="true"
+		file="views/deductions.xml" />
+
 </databaseChangeLog>

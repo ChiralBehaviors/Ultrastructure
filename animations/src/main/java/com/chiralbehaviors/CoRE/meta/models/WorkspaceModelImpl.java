@@ -27,16 +27,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceLabelRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author hhildebrand
@@ -52,7 +54,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceScope createWorkspace(Product definingProduct) {
+    public WorkspaceScope createWorkspace(String name, String description,
+                                          Product definingProduct, String iri,
+                                          int version) {
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                   model);
         workspace.add(definingProduct);
@@ -64,9 +68,19 @@ public class WorkspaceModelImpl implements WorkspaceModel {
              .initialize(definingProduct, aspect, workspace);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
-        Workspace phantasm = model.wrap(Workspace.class, definingProduct);
-        phantasm.setName(definingProduct.getName());
-        phantasm.setDescription(definingProduct.getDescription());
+
+        FacetPropertyRecord properties = model.records()
+                                              .newFacetProperty();
+        properties.setExistential(definingProduct.getId());
+        properties.setFacet(aspect.getId());
+        ObjectNode props = JsonNodeFactory.instance.objectNode();
+        props.put("iri", iri);
+        props.put("version", version);
+        props.put("name", name);
+        props.put("description", description);
+        properties.setProperties(props);
+        properties.insert();
+        workspace.add(properties);
         return scope;
     }
 

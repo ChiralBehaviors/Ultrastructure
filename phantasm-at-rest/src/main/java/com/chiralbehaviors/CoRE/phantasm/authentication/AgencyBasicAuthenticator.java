@@ -16,21 +16,24 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
+import static com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.find;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
+import com.chiralbehaviors.CoRE.meta.AuthnModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle.ModelAuthenticator;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.bcrypt.BCrypt;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -45,24 +48,7 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
     private static final long   DWELL = (long) (Math.random() * 1000);
     private final static Logger log   = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
-    public static boolean authenticate(CoreUser user, String password) {
-        return BCrypt.checkpw(password, user.getPasswordHash());
-    }
-
-    public static void resetPassword(CoreUser user, String newPassword) {
-        user.setPasswordHash(BCrypt.hashpw(newPassword,
-                                           BCrypt.gensalt(user.getPasswordRounds())));
-    }
-
-    public static void updatePassword(CoreUser user, String newPassword,
-                                      String oldPassword) {
-        if (BCrypt.checkpw(oldPassword, user.getPasswordHash())) {
-            user.setPasswordHash(BCrypt.hashpw(newPassword,
-                                               BCrypt.gensalt(user.getPasswordRounds())));
-        }
-    }
-
-    private Model model;
+    private Model               model;
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials) throws AuthenticationException {
@@ -84,38 +70,40 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
 
     private Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials,
                                                        Model model) {
-        String username = credentials.getUsername();
-        List<? extends ExistentialRuleform> agencies = model.getPhantasmModel()
-                                                            .findByAttributeValue(model.getKernel()
-                                                                                       .getLogin(),
-                                                                                  username);
+
+        AuthnModel authnModel = model.getAuthnModel();
+        List<CoreUser> agencies = find(credentials.getUsername(), model);
         if (agencies.size() > 1) {
-            log.error(String.format("Multiple agencies with username %s",
-                                    username));
-            return absent();
+            log.error(String.format("Multiple agencies with login name %s",
+                                    credentials.getUsername()));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
         }
         if (agencies.size() == 0) {
             log.warn(String.format("Attempt to login from non existent username %s",
-                                   username));
-            return absent();
+                                   credentials.getUsername()));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
         }
-        ExistentialRuleform agency = agencies.get(0);
-        if (agency.getDomain() != ExistentialDomain.Agency) {
-            log.warn(String.format("Attempt to login from non existent agency %s",
-                                   username));
-            return absent();
+        CoreUser user = agencies.get(0);
+        if (!authnModel.authenticate(user, credentials.getPassword()
+                                                      .toCharArray())) {
+            log.warn(String.format("Faild authentication from username %s",
+                                   credentials.getUsername(), user.getRuleform()
+                                                                  .getId()));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
         }
-        CoreUser user = model.wrap(CoreUser.class, agency);
 
         if (!canLoginToInstance(user, model)) {
-            return noCapability(username, user);
+            return noCapability(credentials.getUsername(), user);
         }
 
-        boolean authenticated = authenticate(user, credentials.getPassword());
+        boolean authenticated = model.getAuthnModel()
+                                     .authenticate(user,
+                                                   credentials.getPassword()
+                                                              .toCharArray());
         if (authenticated) {
-            return authenticatedPrincipal(user, username);
+            return authenticatedPrincipal(user, credentials.getUsername());
         } else {
-            return authenticationFailure(username, user);
+            return authenticationFailure(credentials.getUsername(), user);
         }
     }
 
@@ -139,14 +127,14 @@ public class AgencyBasicAuthenticator implements ModelAuthenticator,
 
     private boolean canLoginToInstance(CoreUser user, Model model) {
         return model.checkExistentialPermission(user.getRoles()
-                                         .stream()
-                                         .map(r -> r.getRuleform())
-                                         .map(e -> (Agency) e)
-                                         .collect(Collectors.toList()),
-                                     model.getCoreInstance()
-                                          .getRuleform(),
-                                     model.getKernel()
-                                          .getLOGIN_TO());
+                                                    .stream()
+                                                    .map(r -> r.getRuleform())
+                                                    .map(e -> (Agency) e)
+                                                    .collect(Collectors.toList()),
+                                                model.getCoreInstance()
+                                                     .getRuleform(),
+                                                model.getKernel()
+                                                     .getLOGIN_TO());
     }
 
     private Optional<AuthorizedPrincipal> noCapability(String username,

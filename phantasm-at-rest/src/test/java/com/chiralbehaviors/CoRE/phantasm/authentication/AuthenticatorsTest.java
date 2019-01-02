@@ -35,15 +35,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.TokenRecord;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreUser;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Role;
+import com.chiralbehaviors.CoRE.kernel.phantasm.coreUserProperties.CoreUserProperties;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.auth.basic.BasicCredentials;
 
@@ -61,9 +62,11 @@ public class AuthenticatorsTest extends AbstractModelTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+        model.getAuthnModel()
+             .create(bob, password.toCharArray());
 
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
@@ -102,7 +105,13 @@ public class AuthenticatorsTest extends AbstractModelTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+
+        model.getCoreInstance()
+             .addLogin(bob);
+
         Credential credential = new Credential();
         credential.ip = "No place like 127.00.1";
         List<UUID> roles = Arrays.asList(model.getKernel()
@@ -115,22 +124,16 @@ public class AuthenticatorsTest extends AbstractModelTest {
         OffsetDateTime current = OffsetDateTime.now();
         credential.isValid(current, current);
 
-        ExistentialAttributeRecord accessToken = model.records()
-                                                      .newExistentialAttribute();
-        accessToken.setAttribute(model.getKernel()
-                                      .getAccessToken()
-                                      .getId());
-        accessToken.setExistential(bob.getRuleform()
-                                      .getId());
-        accessToken.setJsonValue(new ObjectMapper().valueToTree(credential));
-        accessToken.insert();
+        TokenRecord accessToken = model.getAuthnModel()
+                                       .mintToken(bob, credential.ip, 60,
+                                                  UUID.randomUUID(), null);
+
         model.flush();
 
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
         authenticator.setModel(model);
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
-                                                                       accessToken.getId()
-                                                                                  .toString());
+                                                                       UuidUtil.encode(accessToken.getId()));
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(requestCredentials);
         assertTrue(authenticated.isPresent());
         AuthorizedPrincipal authBob = authenticated.get();
@@ -143,16 +146,14 @@ public class AuthenticatorsTest extends AbstractModelTest {
                             .get(0));
 
         requestCredentials = new RequestCredentials("No place like HOME",
-                                                    accessToken.getId()
-                                                               .toString());
+                                                    UuidUtil.encode(accessToken.getId()));
         authenticated = authenticator.authenticate(requestCredentials);
         assertFalse(authenticated.isPresent());
 
         requestCredentials = new RequestCredentials(credential.ip,
-                                                    accessToken.getId()
-                                                               .toString());
+                                                    UuidUtil.encode(accessToken.getId()));
         authenticated = authenticator.authenticate(requestCredentials);
-        assertFalse(authenticated.isPresent());
+        assertTrue(authenticated.isPresent());
 
         requestCredentials = new RequestCredentials(credential.ip,
                                                     "No place like HOME");
@@ -167,9 +168,14 @@ public class AuthenticatorsTest extends AbstractModelTest {
         CoreUser bob = (CoreUser) model.construct(CoreUser.class,
                                                   ExistentialDomain.Agency,
                                                   "Bob", "Test Dummy");
-        bob.setLogin(username);
-        bob.setPasswordRounds(10);
-        AgencyBasicAuthenticator.resetPassword(bob, password);
+        CoreUserProperties props = new CoreUserProperties();
+        props.setLogin(username);
+        bob.set_Properties(props);
+
+        assertTrue(model.getAuthnModel()
+                        .create(bob, password.toCharArray()));
+        assertTrue(model.getAuthnModel()
+                        .authenticate(bob, password.toCharArray()));
         bob.addRole(model.wrap(Role.class, model.getKernel()
                                                 .getLoginRole()));
 
@@ -184,7 +190,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator();
         authenticator.setModel(model);
         RequestCredentials credential = new RequestCredentials(ip,
-                                                               authToken.toString());
+                                                               UuidUtil.encode(authToken));
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(credential);
         assertTrue(authenticated.isPresent());
         AuthorizedPrincipal authBob = authenticated.get();
@@ -201,7 +207,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         capRequest.capabilities = Arrays.asList(asserted.getId());
         authToken = AuthxResource.requestCapability(capRequest, request, model);
 
-        credential = new RequestCredentials(ip, authToken.toString());
+        credential = new RequestCredentials(ip, UuidUtil.encode(authToken));
         authenticated = authenticator.authenticate(credential);
         assertTrue(authenticated.isPresent());
         authBob = authenticated.get();

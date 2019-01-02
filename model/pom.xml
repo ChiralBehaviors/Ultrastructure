@@ -89,7 +89,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sun.activation</groupId>
-			<artifactId>javax.activation</artifactId> 
+			<artifactId>javax.activation</artifactId>
 		</dependency>
 
 
@@ -239,22 +239,31 @@
 					</jdbc>
 					<generator>
 						<database>
-							<name>org.jooq.util.postgres.PostgresDatabase</name>
+							<name>org.jooq.meta.postgres.PostgresDatabase</name>
 							<includes>.*</includes>
-							<excludes></excludes>
+							<excludes> validate_json_schema | _validate_json_schema_type |
+								draftV4Schema
+							</excludes>
 							<inputSchema>ruleform</inputSchema>
 							<recordVersionFields>version</recordVersionFields>
-							<customTypes>
-								<customType>
-									<name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
-									<type>com.fasterxml.jackson.databind.JsonNode</type>
-									<binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
-								</customType>
-							</customTypes>
 							<forcedTypes>
 								<forcedType>
-									<name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
-									<expression>.*json_value.*</expression>
+									<userType>com.fasterxml.jackson.databind.JsonNode</userType>
+									<binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
+									<expression>.*JSON_VALUE.*</expression>
+									<types>.*</types>
+								</forcedType>
+								<forcedType>
+									<userType>com.fasterxml.jackson.databind.JsonNode</userType>
+									<binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
+									<expression>.*schema.*</expression>
+									<types>.*</types>
+								</forcedType>
+								<forcedType>
+									<userType>com.fasterxml.jackson.databind.JsonNode</userType>
+									<binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
+									<expression>.*properties.*</expression>
+									<types>.*</types>
 								</forcedType>
 							</forcedTypes>
 						</database>

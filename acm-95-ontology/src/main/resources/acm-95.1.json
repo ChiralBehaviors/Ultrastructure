@@ -1,0 +1,1862 @@
+{
+    "name": "Northwind",
+    "description": "Ultrastructure ontology for ACM 95 Ultrastructure order processing example",
+    "uri": "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/acm-95",
+    "version": 1,
+    "imports": [
+        {
+            "uri": "urn:uuid:00000000-0000-0004-0000-000000000003",
+            "alias": "kernel"
+        }
+    ],
+    "inferences": [
+        {
+            "premise1": "AreaOf",
+            "premise2": "RegionOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "AreaOf",
+            "premise2": "StateOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "AreaOf",
+            "premise2": "CityOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "AreaOf",
+            "premise2": "StreetOf",
+            "inference": "AreaOf"
+        },
+        {
+            "premise1": "RegionOf",
+            "premise2": "StateOf",
+            "inference": "RegionOf"
+        },
+        {
+            "premise1": "RegionOf",
+            "premise2": "CityOf",
+            "inference": "RegionOf"
+        },
+        {
+            "premise1": "RegionOf",
+            "premise2": "StreetOf",
+            "inference": "RegionOf"
+        },
+        {
+            "premise1": "StateOf",
+            "premise2": "CityOf",
+            "inference": "StateOf"
+        },
+        {
+            "premise1": "StateOf",
+            "premise2": "StreetOf",
+            "inference": "StateOf"
+        },
+        {
+            "premise1": "CityOf",
+            "premise2": "StreetOf",
+            "inference": "CityOf"
+        },
+        {
+            "premise1": "ReportsTo",
+            "premise2": "ReportsTo",
+            "inference": "ReportsTo"
+        }
+    ],
+    "edges": [
+        {
+            "p": "GeorgetownUniversity",
+            "r": "CustomerType",
+            "c": "ExternalCustomer"
+        },
+        {
+            "p": "GeorgetownUniversity",
+            "r": "SalesTaxStatus",
+            "c": "Exempt"
+        },
+        {
+            "p": "OrgA",
+            "r": "CustomerType",
+            "c": "ExternalCustomer"
+        },
+        {
+            "p": "OrgA",
+            "r": "SalesTaxStatus",
+            "c": "NonExempt"
+        },
+        {
+            "p": "Cafleurebon",
+            "r": "CustomerType",
+            "c": "ExternalCustomer"
+        },
+        {
+            "p": "Cafleurebon",
+            "r": "SalesTaxStatus",
+            "c": "NonExempt"
+        },
+        {
+            "p": "Bin1",
+            "r": "InArea",
+            "c": "Factory1"
+        },
+        {
+            "p": "Bin15",
+            "r": "InArea",
+            "c": "Factory1"
+        },
+        {
+            "p": "Rsb225",
+            "r": "InCity",
+            "c": "District Of Columbia"
+        },
+        {
+            "p": "Bht37",
+            "r": "InCity",
+            "c": "District Of Columbia"
+        },
+        {
+            "p": "Rc31",
+            "r": "InCity",
+            "c": "Paris"
+        },
+        {
+            "p": "District Of Columbia",
+            "r": "InRegion",
+            "c": "EastCoast"
+        },
+        {
+            "p": "EastCoast",
+            "r": "InArea",
+            "c": "United States"
+        },
+        {
+            "p": "Paris",
+            "r": "InRegion",
+            "c": "France"
+        },
+        {
+            "p": "France",
+            "r": "InArea",
+            "c": "European Union"
+        },
+        {
+            "p": "Factory1",
+            "r": "OnStreet",
+            "c": "Bht37"
+        },
+        {
+            "p": "Abc486",
+            "r": "StorageType",
+            "c": "RoomTemperature"
+        },
+        {
+            "p": "Abc486",
+            "r": "SalesTaxStatus",
+            "c": "NonExemptProduct"
+        },
+        {
+            "p": "ChemB",
+            "r": "StorageType",
+            "c": "Frozen"
+        },
+        {
+            "p": "ChemB",
+            "r": "SalesTaxStatus",
+            "c": "NonExemptProduct"
+        }
+    ],
+    "applications": [
+        {
+            "apply": "Company",
+            "on": "Shipper"
+        },
+        {
+            "apply": "Customer",
+            "on": "GeorgetownUniversity"
+        },
+        {
+            "apply": "Customer",
+            "on": "OrgA"
+        },
+        {
+            "apply": "Customer",
+            "on": "Cafleurebon"
+        },
+        {
+            "apply": "Company",
+            "on": "Northwind"
+        },
+        {
+            "apply": "ComputeResource",
+            "on": "BillingComputer"
+        },
+        {
+            "apply": "ComputeResource",
+            "on": "CPU"
+        },
+        {
+            "apply": "Supplier",
+            "on": "Manufacturer"
+        },
+        {
+            "apply": "Department",
+            "on": "CreditDepartment"
+        },
+        {
+            "apply": "Department",
+            "on": "Factory1Agency"
+        },
+        {
+            "apply": "Department",
+            "on": "OrderFullfillment"
+        },
+        {
+            "apply": "CustomerType",
+            "on": "InternalCustomer"
+        },
+        {
+            "apply": "CustomerType",
+            "on": "ExternalCustomer"
+        },
+        {
+            "apply": "AgencyTaxStatus",
+            "on": "Exempt"
+        },
+        {
+            "apply": "AgencyTaxStatus",
+            "on": "NonExempt"
+        },
+        {
+            "apply": "Area",
+            "on": "United States"
+        },
+        {
+            "apply": "Country",
+            "on": "United States"
+        },
+        {
+            "apply": "Region",
+            "on": "EastCoast"
+        },
+        {
+            "apply": "Region",
+            "on": "WestCoast"
+        },
+        {
+            "apply": "Area",
+            "on": "European Union"
+        },
+        {
+            "apply": "City",
+            "on": "District Of Columbia"
+        },
+        {
+            "apply": "City",
+            "on": "Paris"
+        },
+        {
+            "apply": "Area",
+            "on": "Factory1"
+        },
+        {
+            "apply": "PricedProduct",
+            "on": "Abc486"
+        },
+        {
+            "apply": "PricedProduct",
+            "on": "ChemB"
+        },
+        {
+            "apply": "ProductTaxStatus",
+            "on": "ExemptProduct"
+        },
+        {
+            "apply": "ProductTaxStatus",
+            "on": "NonExemptProduct"
+        }
+    ],
+    "existentials": {
+        "AgencyCustomerType": {
+            "domain": "Agency",
+            "description": "Customer Type Classification"
+        },
+        "AgencyTaxStatus": {
+            "domain": "Agency",
+            "description": "Agency Tax Status Classification"
+        },
+        "Exempt": {
+            "domain": "Agency",
+            "description": "Exempt from sales tax"
+        },
+        "NonExempt": {
+            "domain": "Agency",
+            "description": "Non tax exempt"
+        },
+        "ExternalCustomer": {
+            "domain": "Agency",
+            "description": "External (paying) Customer"
+        },
+        "InternalCustomer": {
+            "domain": "Agency",
+            "description": "Internal (non paying) Customer"
+        },
+        "Employee": {
+            "domain": "Agency",
+            "description": "An employee of a company"
+        },
+        "Customer": {
+            "domain": "Agency",
+            "description": "A customer"
+        },
+        "Manager": {
+            "domain": "Agency",
+            "description": "A manager of other employees"
+        },
+        "ComputeResource": {
+            "domain": "Agency",
+            "description": "Compute system resource for doing computing"
+        },
+        "Department": {
+            "domain": "Agency",
+            "description": "A group of employees organized by function"
+        },
+        "Company": {
+            "domain": "Agency",
+            "description": "A company"
+        },
+        "BillingComputer": {
+            "domain": "Agency",
+            "description": "Billing computer"
+        },
+        "CPU": {
+            "domain": "Agency",
+            "description": "General purpose CPU"
+        },
+        "CreditDepartment": {
+            "domain": "Agency",
+            "description": "Credit Department"
+        },
+        "Factory1Agency": {
+            "domain": "Agency",
+            "description": "Agency for Factory #1"
+        },
+        "GeorgetownUniversity": {
+            "domain": "Agency",
+            "description": "Georgetown University"
+        },
+        "Cafleurebon": {
+            "domain": "Agency",
+            "description": "Cafleurebon"
+        },
+        "Manufacturer": {
+            "domain": "Agency",
+            "description": "Manufacturer"
+        },
+        "OrgA": {
+            "domain": "Agency",
+            "description": "Organization A"
+        },
+        "OrderFullfillment": {
+            "domain": "Agency",
+            "description": "Order Fullfillment"
+        },
+        "Northwind": {
+            "domain": "Agency",
+            "description": "Northwind, inc"
+        },
+        "Shipper": {
+            "domain": "Agency",
+            "description": "Fast Shippers"
+        },
+        "Supplier": {
+            "domain": "Agency",
+            "description": "Good Suppliers"
+        },
+        "Region": {
+            "domain": "Location",
+            "description": "A region"
+        },
+        "Country": {
+            "domain": "Location",
+            "description": "A country"
+        },
+        "Area": {
+            "domain": "Location",
+            "description": "An economic area"
+        },
+        "StateOrProvince": {
+            "domain": "Location",
+            "description": "A state or province of a country"
+        },
+        "City": {
+            "domain": "Location",
+            "description": "A city"
+        },
+        "Street": {
+            "domain": "Location",
+            "description": "A street"
+        },
+        "StreetAddress": {
+            "domain": "Location",
+            "description": "An address on a street"
+        },
+        "Territory": {
+            "domain": "Location",
+            "description": "A span of region"
+        },
+        "StockLocation": {
+            "domain": "Location",
+            "description": "The location of a stock of some good"
+        },
+        "District Of Columbia": {
+            "domain": "Location",
+            "description": "District Of Columbia"
+        },
+        "EastCoast": {
+            "domain": "Location",
+            "description": "East Coast"
+        },
+        "WestCoast": {
+            "domain": "Location",
+            "description": "West Coast"
+        },
+        "France": {
+            "domain": "Location",
+            "description": "France"
+        },
+        "Paris": {
+            "domain": "Location",
+            "description": "The city Paris"
+        },
+        "United States": {
+            "domain": "Location",
+            "description": "United States"
+        },
+        "European Union": {
+            "domain": "Location",
+            "description": "European Union Locations"
+        },
+        "Rsb225": {
+            "domain": "Location",
+            "description": "225 Reiss Science Bldg"
+        },
+        "Bht37": {
+            "domain": "Location",
+            "description": "37 Bret Harte Terrace"
+        },
+        "Rc31": {
+            "domain": "Location",
+            "description": "31 Rue Cambon"
+        },
+        "Factory1": {
+            "domain": "Location",
+            "description": "Factory #1"
+        },
+        "Bin1": {
+            "domain": "Location",
+            "description": "Bin #1"
+        },
+        "Bin15": {
+            "domain": "Location",
+            "description": "Bin #15"
+        },
+        "Category": {
+            "domain": "Product",
+            "description": "A category of products"
+        },
+        "Order": {
+            "domain": "Product",
+            "description": "An order with items"
+        },
+        "PricedProduct": {
+            "domain": "Product",
+            "description": "Product with a price"
+        },
+        "ItemDetail": {
+            "domain": "Product",
+            "description": "Detail on item"
+        },
+        "RoomTemperature": {
+            "domain": "Product",
+            "description": "Room temperature products"
+        },
+        "Frozen": {
+            "domain": "Product",
+            "description": "Frozen Products"
+        },
+        "ProductTaxStatus": {
+            "domain": "Product",
+            "description": "Tax status of products"
+        },
+        "ExemptProduct": {
+            "domain": "Product",
+            "description": "Tax exempt products"
+        },
+        "NonExemptProduct": {
+            "domain": "Product",
+            "description": "Non tax exempt products"
+        },
+        "Deliver": {
+            "domain": "Product",
+            "description": "Deliver product"
+        },
+        "Pick": {
+            "domain": "Product",
+            "description": "Pick inventory"
+        },
+        "Ship": {
+            "domain": "Product",
+            "description": "Ship inventory"
+        },
+        "CheckCredit": {
+            "domain": "Product",
+            "description": "Check customer in-house credit"
+        },
+        "CheckLetterOfCredit": {
+            "domain": "Product",
+            "description": "Check customer letter of credit"
+        },
+        "Discount": {
+            "domain": "Product",
+            "description": "Compute Fee Discount"
+        },
+        "Fee": {
+            "domain": "Product",
+            "description": "Compute Fee"
+        },
+        "PrintCustomsDeclaration": {
+            "domain": "Product",
+            "description": "Print the customs declaration"
+        },
+        "PrintPurchaseOrder": {
+            "domain": "Product",
+            "description": "Print the purchase order"
+        },
+        "SalesTax": {
+            "domain": "Product",
+            "description": "Compute sales tax"
+        },
+        "Abc486": {
+            "domain": "Product",
+            "description": "Laptop computer"
+        },
+        "ChemB": {
+            "domain": "Product",
+            "description": "Chemical B"
+        },
+        "Available": {
+            "domain": "StatusCode",
+            "description": "Job is Available for processing"
+        },
+        "Active": {
+            "domain": "StatusCode",
+            "description": "Working on it now"
+        },
+        "WaitingOnCreditCheck": {
+            "domain": "StatusCode",
+            "description": "Waiting on credit check to be Completed"
+        },
+        "Completed": {
+            "domain": "StatusCode",
+            "description": "Completed job"
+        },
+        "Failure": {
+            "domain": "StatusCode",
+            "description": "Something went pear shaped"
+        },
+        "PickCompleted": {
+            "domain": "StatusCode",
+            "description": "Pick product has been Completed"
+        },
+        "WaitingOnPurchaseOrder": {
+            "domain": "StatusCode",
+            "description": "Waiting for the purchase order to be complete"
+        },
+        "WaitingOnPricing": {
+            "domain": "StatusCode",
+            "description": "Waiting for pricing to be Completed"
+        },
+        "WaitingOnFee": {
+            "domain": "StatusCode",
+            "description": "Waiting for Fee calculation to be Completed"
+        },
+        "Abandoned": {
+            "domain": "StatusCode",
+            "description": "We were going to do it, something happened in earlier processing that will prevent us from proceeding"
+        },
+        "InArea": {
+            "domain": "Relationship",
+            "description": "A is a member of the economic community B",
+            "inverse": {
+                "name": "AreaOf",
+                "description": "A is an economic community of B"
+            }
+        },
+        "InCountry": {
+            "domain": "Relationship",
+            "description": "A is located in the country B",
+            "inverse": {
+                "name": "countryOf",
+                "description": "A is the country of B"
+            }
+        },
+        "InRegion": {
+            "domain": "Relationship",
+            "description": "The general region of A is B",
+            "inverse": {
+                "name": "RegionOf",
+                "description": "A is the general region of B"
+            }
+        },
+        "HasTerritory": {
+            "domain": "Relationship",
+            "description": "A has territory B",
+            "inverse": {
+                "name": "TerritoryOf",
+                "description": "A is a territory of B"
+            }
+        },
+        "InState": {
+            "domain": "Relationship",
+            "description": "A is located in the State B",
+            "inverse": {
+                "name": "StateOf",
+                "description": "A is the State of B"
+            }
+        },
+        "InCity": {
+            "domain": "Relationship",
+            "description": "A is located in the City B",
+            "inverse": {
+                "name": "CityOf",
+                "description": "A is the city of B"
+            }
+        },
+        "AtAddress": {
+            "domain": "Relationship",
+            "description": "A is located at the address B",
+            "inverse": {
+                "name": "AddressOf",
+                "description": "A is an address of B"
+            }
+        },
+        "InStateOrProvince": {
+            "domain": "Relationship",
+            "description": "A is located in the State or Province of B",
+            "inverse": {
+                "name": "StateOrProvinceOf",
+                "description": "A is the State or Province of B"
+            }
+        },
+        "OnStreet": {
+            "domain": "Relationship",
+            "description": "A is located on the Street B",
+            "inverse": {
+                "name": "StreetOf",
+                "description": "A is the State or Province of B"
+            }
+        },
+        "CustomerType": {
+            "domain": "Relationship",
+            "description": "A has customer type of B",
+            "inverse": {
+                "name": "CustomerTypeOf",
+                "description": "A is the customer type of B"
+            }
+        },
+        "SalesTaxStatus": {
+            "domain": "Relationship",
+            "description": "The sales tax status of A is B",
+            "inverse": {
+                "name": "SalesTaxStatusOf",
+                "description": "A is the sales tax status of B"
+            }
+        },
+        "StorageType": {
+            "domain": "Relationship",
+            "description": "The type of storage required for A is B",
+            "inverse": {
+                "name": "StorageTypeOf",
+                "description": "A is the storage type of B"
+            }
+        },
+        "ShippingAddress": {
+            "domain": "Relationship",
+            "description": "The shipping address of A is B",
+            "inverse": {
+                "name": "ShippingAddressOf",
+                "description": "A is the shipping address of B"
+            }
+        },
+        "MailingAddress": {
+            "domain": "Relationship",
+            "description": "The mailing address of A is B",
+            "inverse": {
+                "name": "MailingAddressOf",
+                "description": "A is the mailing address of B"
+            }
+        },
+        "ReportsTo": {
+            "domain": "Relationship",
+            "description": "A reports to B",
+            "inverse": {
+                "name": "HasReport",
+                "description": "A has report B"
+            }
+        },
+        "EmployeeOf": {
+            "domain": "Relationship",
+            "description": "A is an employee of B",
+            "inverse": {
+                "name": "HasEmployee",
+                "description": "A has employee B"
+            }
+        },
+        "SupplierOf": {
+            "domain": "Relationship",
+            "description": "A is a supplier of B",
+            "inverse": {
+                "name": "HasSupplier",
+                "description": "A has supplier B"
+            }
+        },
+        "Ships": {
+            "domain": "Relationship",
+            "description": "A is a supplier of B",
+            "inverse": {
+                "name": "HasShipper",
+                "description": "A has shipper B"
+            }
+        },
+        "ContactOf": {
+            "domain": "Relationship",
+            "description": "A is the contact of B",
+            "inverse": {
+                "name": "Contact",
+                "description": "The contact of A is B"
+            }
+        },
+        "DepartmentOf": {
+            "domain": "Relationship",
+            "description": "A is an organizational department of B",
+            "inverse": {
+                "name": "HasDepartment",
+                "description": "A has department B"
+            }
+        },
+        "ShippedBy": {
+            "domain": "Relationship",
+            "description": "A was shipped by B",
+            "inverse": {
+                "name": "Shipped",
+                "description": "A shipped B"
+            }
+        },
+        "DeliveredTo": {
+            "domain": "Relationship",
+            "description": "A was delivered to B",
+            "inverse": {
+                "name": "Recieved",
+                "description": "A recieved B"
+            }
+        },
+        "OrderedBy": {
+            "domain": "Relationship",
+            "description": "A was ordered by B",
+            "inverse": {
+                "name": "Ordered",
+                "description": "A ordered B"
+            }
+        },
+        "ItemDetailOf": {
+            "domain": "Relationship",
+            "description": "A is an item detail of B",
+            "inverse": {
+                "name": "HasItemDetail",
+                "description": "A has item detail B"
+            }
+        },
+        "OrderedProductOf": {
+            "domain": "Relationship",
+            "description": "A is the ordered product of B",
+            "inverse": {
+                "name": "ProductOrdered",
+                "description": "A is a product order of B"
+            }
+        },
+        "IsCategorizedAs": {
+            "domain": "Relationship",
+            "description": "A is categorized as B",
+            "inverse": {
+                "name": "CategoryOf",
+                "description": "A is a category of B"
+            }
+        },
+        "StockedAt": {
+            "domain": "Relationship",
+            "description": "A is stocked at B",
+            "inverse": {
+                "name": "Stocks",
+                "description": "A is the location of stock B"
+            }
+        },
+        "Sold": {
+            "domain": "Relationship",
+            "description": "A sold B",
+            "inverse": {
+                "name": "SoldBy",
+                "description": "A was sold by B"
+            }
+        }
+    },
+    "facets": {
+        "CustomerType": {
+            "classifier": "IsA",
+            "classification": "CustomerType"
+        },
+        "AgencyTaxStatus": {
+            "classifier": "IsA",
+            "classification": "AgencyTaxStatus"
+        },
+        "AgencyCustomerType": {
+            "classifier": "IsA",
+            "classification": "AgencyCustomerType"
+        },
+        "Employee": {
+            "classifier": "IsA",
+            "classification": "Employee",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "LastName": {
+                        "type": "string"
+                    },
+                    "FirstName": {
+                        "type": "string"
+                    },
+                    "Title": {
+                        "type": "string"
+                    },
+                    "Title Of Courtesy": {
+                        "type": "string"
+                    },
+                    "BirthDate": {
+                        "type": "number"
+                    },
+                    "Hire Date": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Company": {
+                    "card": "ONE",
+                    "rel": "EmployeeOf",
+                    "child": "Company"
+                },
+                "Manager": {
+                    "card": "ONE",
+                    "rel": "ReportsTo",
+                    "child": "Manager"
+                },
+                "Territory": {
+                    "card": "MANY",
+                    "rel": "HasTerritory",
+                    "child": "Territory"
+                },
+                "Sold": {
+                    "card": "MANY",
+                    "rel": "Sold",
+                    "child": "Order"
+                },
+                "Mailing Address": {
+                    "card": "ONE",
+                    "rel": "MailingAddress",
+                    "child": "StreetAddress"
+                }
+            }
+        },
+        "Customer": {
+            "classifier": "IsA",
+            "classification": "Customer",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Customer Type": {
+                    "card": "ONE",
+                    "rel": "CustomerType",
+                    "child": "AgencyCustomerType"
+                },
+                "Sales Tax Status": {
+                    "card": "ONE",
+                    "rel": "SalesTaxStatus",
+                    "child": "AgencyTaxStatus"
+                },
+                "Order": {
+                    "card": "MANY",
+                    "rel": "Ordered",
+                    "child": "Order"
+                },
+                "Shipping Address": {
+                    "card": "ONE",
+                    "rel": "MailingAddress",
+                    "child": "StreetAddress"
+                },
+                "Mailing Address": {
+                    "card": "ONE",
+                    "rel": "ShippingAddress",
+                    "child": "StreetAddress"
+                }
+            }
+        },
+        "Company": {
+            "classifier": "IsA",
+            "classification": "Company",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Contact": {
+                    "card": "ONE",
+                    "rel": "Employee",
+                    "child": "Employee"
+                },
+                "Sales Tax Status": {
+                    "card": "ONE",
+                    "rel": "SalesTaxStatus",
+                    "child": "AgencyTaxStatus"
+                },
+                "Employee": {
+                    "card": "MANY",
+                    "rel": "HasEmployee",
+                    "child": "Employee"
+                },
+                "Department": {
+                    "card": "MANY",
+                    "rel": "HasDepartment",
+                    "child": "Department"
+                },
+                "Mailing Address": {
+                    "card": "ONE",
+                    "rel": "MailingAddress",
+                    "child": "StreetAddress"
+                }
+            }
+        },
+        "Supplier": {
+            "classifier": "IsA",
+            "classification": "Supplier",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "region": {
+                    "card": "MANY",
+                    "rel": "InRegion",
+                    "child": "Region"
+                }
+            }
+        },
+        "Shipper": {
+            "classifier": "IsA",
+            "classification": "Shipper",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "region": {
+                    "card": "MANY",
+                    "rel": "InRegion",
+                    "child": "Region"
+                }
+            }
+        },
+        "Manager": {
+            "classifier": "IsA",
+            "classification": "Manager",
+            "constraints": {
+                "reports": {
+                    "card": "MANY",
+                    "rel": "HasReport",
+                    "child": "Employee"
+                }
+            }
+        },
+        "ComputeResource": {
+            "classifier": "IsA",
+            "classification": "ComputeResource"
+        },
+        "Department": {
+            "classifier": "IsA",
+            "classification": "Department",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "region": {
+                    "card": "ONE",
+                    "rel": "DepartmentOf",
+                    "child": "Company"
+                }
+            }
+        },
+        "ProductTaxStatus": {
+            "classifier": "IsA",
+            "classification": "ProductTaxStatus"
+        },
+        "PricedProduct": {
+            "classifier": "IsA",
+            "classification": "PricedProduct",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Unit Price": {
+                        "type": "number"
+                    }
+                }
+            },
+            "constraints": {
+                "category": {
+                    "card": "MANY",
+                    "rel": "IsCategorizedAs",
+                    "child": "Category"
+                },
+                "salesTaxStatus": {
+                    "card": "ONE",
+                    "rel": "SalesTaxStatus",
+                    "child": "ProductTaxStatus"
+                }
+            }
+        },
+        "ItemDetail": {
+            "classifier": "IsA",
+            "classification": "ItemDetail",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Unit Price": {
+                        "type": "number"
+                    },
+                    "Quantity": {
+                        "type": "number"
+                    },
+                    "Discount Percentage": {
+                        "type": "number"
+                    },
+                    "Tax Rate": {
+                        "type": "number"
+                    }
+                }
+            },
+            "constraints": {
+                "product": {
+                    "card": "ONE",
+                    "rel": "OrderedProductOf",
+                    "child": "PricedProduct"
+                },
+                "order": {
+                    "card": "ONE",
+                    "rel": "ItemDetailOf",
+                    "child": "Order"
+                }
+            }
+        },
+        "Order": {
+            "classifier": "IsA",
+            "classification": "Order",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "RequiredDate": {
+                        "type": "string"
+                    },
+                    "OrderDate": {
+                        "type": "string"
+                    },
+                    "ShipDate": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "product": {
+                    "card": "ONE",
+                    "rel": "OrderedProductOf",
+                    "child": "PricedProduct"
+                },
+                "order": {
+                    "card": "ONE",
+                    "rel": "ItemDetailOf",
+                    "child": "Order"
+                }
+            }
+        },
+        "Category": {
+            "classifier": "IsA",
+            "classification": "Category",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Picture": {
+                        "type": "string"
+                    },
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "StockedProduct": {
+            "classifier": "IsA",
+            "classification": "Order",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Picture": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "StockLocation": {
+                    "card": "ONE",
+                    "rel": "StockedAt",
+                    "child": "StockLocation",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "Quantity": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Region": {
+            "classifier": "IsA",
+            "classification": "Region",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Country": {
+            "classifier": "IsA",
+            "classification": "Country",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                }
+            }
+        },
+        "Area": {
+            "classifier": "IsA",
+            "classification": "Area",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                }
+            }
+        },
+        "StateOrProvince": {
+            "classifier": "IsA",
+            "classification": "StateOrProvince",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    },
+                    "State Code": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                },
+                "Area": {
+                    "card": "ONE",
+                    "rel": "InArea",
+                    "child": "Area"
+                }
+            }
+        },
+        "City": {
+            "classifier": "IsA",
+            "classification": "City",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                },
+                "Area": {
+                    "card": "ONE",
+                    "rel": "InArea",
+                    "child": "Area"
+                },
+                "StateOrProvince": {
+                    "card": "ONE",
+                    "rel": "InStateOrProvince",
+                    "child": "StateOrProvince"
+                }
+            }
+        },
+        "Street": {
+            "classifier": "IsA",
+            "classification": "Street",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                },
+                "Area": {
+                    "card": "ONE",
+                    "rel": "InArea",
+                    "child": "Area"
+                },
+                "StateOrProvince": {
+                    "card": "ONE",
+                    "rel": "InStateOrProvince",
+                    "child": "StateOrProvince"
+                },
+                "City": {
+                    "card": "ONE",
+                    "rel": "InCity",
+                    "child": "City"
+                }
+            }
+        },
+        "StreetAddress": {
+            "classifier": "IsA",
+            "classification": "StreetAddress",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Street Number": {
+                        "type": "string"
+                    },
+                    "Postal Code": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                },
+                "Area": {
+                    "card": "ONE",
+                    "rel": "InArea",
+                    "child": "Area"
+                },
+                "StateOrProvince": {
+                    "card": "ONE",
+                    "rel": "InStateOrProvince",
+                    "child": "StateOrProvince"
+                },
+                "City": {
+                    "card": "ONE",
+                    "rel": "InCity",
+                    "child": "City"
+                },
+                "Street": {
+                    "card": "ONE",
+                    "rel": "OnStreet",
+                    "child": "Street"
+                }
+            }
+        },
+        "Territory": {
+            "classifier": "IsA",
+            "classification": "Territory",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                },
+                "Area": {
+                    "card": "ONE",
+                    "rel": "InArea",
+                    "child": "Area"
+                },
+                "StateOrProvince": {
+                    "card": "ONE",
+                    "rel": "InStateOrProvince",
+                    "child": "StateOrProvince"
+                },
+                "City": {
+                    "card": "ONE",
+                    "rel": "InCity",
+                    "child": "City"
+                }
+            }
+        },
+        "StockLocation": {
+            "classifier": "IsA",
+            "classification": "StockLocation",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "Name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "constraints": {
+                "Region": {
+                    "card": "ONE",
+                    "rel": "InRegion",
+                    "child": "Region"
+                },
+                "Country": {
+                    "card": "ONE",
+                    "rel": "InCountry",
+                    "child": "Country"
+                },
+                "Area": {
+                    "card": "ONE",
+                    "rel": "InArea",
+                    "child": "Area"
+                },
+                "StateOrProvince": {
+                    "card": "ONE",
+                    "rel": "InStateOrProvince",
+                    "child": "StateOrProvince"
+                },
+                "City": {
+                    "card": "ONE",
+                    "rel": "InCity",
+                    "child": "City"
+                },
+                "Street": {
+                    "card": "ONE",
+                    "rel": "OnStreet",
+                    "child": "Street"
+                },
+                "StreetAddress": {
+                    "card": "ONE",
+                    "rel": "AtAddress",
+                    "child": "StreetAddress"
+                }
+            }
+        }
+    },
+    "sequencing": {
+        "Pick": [
+            {
+                "parent": "WaitingOnCreditCheck",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Ship": [
+            {
+                "parent": "WaitingOnPurchaseOrder",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Deliver": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "CheckCredit": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "CheckLetterOfCredit": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Discount": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "Fee": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "PrintCustomsDeclaration": [
+            {
+                "parent": "WaitingOnFee",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "PrintPurchaseOrder": [
+            {
+                "parent": "WaitingOnFee",
+                "child": "Available"
+            },
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ],
+        "SalesTax": [
+            {
+                "parent": "Available",
+                "child": "Active"
+            },
+            {
+                "parent": "Active",
+                "child": "Completed"
+            }
+        ]
+    },
+    "parentSequences": [
+        {
+            "service": "CheckCredit",
+            "status": "Completed",
+            "parent": "Pick",
+            "next": "Available"
+        },
+        {
+            "service": "CheckLetterOfCredit",
+            "status": "Completed",
+            "parent": "Pick",
+            "next": "Available"
+        },
+        {
+            "service": "PrintCustomsDeclaration",
+            "status": "Completed",
+            "parent": "Ship",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "PrintPurchaseOrder",
+            "status": "Completed",
+            "parent": "Ship",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "Discount",
+            "status": "Completed",
+            "parent": "Fee",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "SalesTax",
+            "status": "Completed",
+            "parent": "Fee",
+            "next": "Available",
+            "activeSiblings": false
+        },
+        {
+            "service": "Ship",
+            "status": "Completed",
+            "parent": "Deliver",
+            "next": "Completed",
+            "activeSiblings": false
+        },
+        {
+            "service": "Fee",
+            "status": "Completed",
+            "parent": "PrintPurchaseOrder",
+            "next": "Available",
+            "activeSiblings": false
+        }
+    ],
+    "siblingSequences": [
+        {
+            "parent": "Pick",
+            "status": "Completed",
+            "sibling": "Ship",
+            "next": "WaitingOnPurchaseOrder"
+        },
+        {
+            "parent": "PrintPurchaseOrder",
+            "status": "Completed",
+            "sibling": "PrintCustomsDeclaration",
+            "next": "Available"
+        }
+    ],
+    "childSequences": [
+        {
+            "parent": "Ship",
+            "status": "WaitingOnPurchaseOrder",
+            "child": "PrintPurchaseOrder",
+            "next": "WaitingOnFee"
+        },
+        {
+            "parent": "Pick",
+            "status": "WaitingOnCreditCheck",
+            "child": "CheckCredit",
+            "next": "Available"
+        },
+        {
+            "parent": "PrintPurchaseOrder",
+            "status": "WaitingOnFee",
+            "child": "Fee",
+            "next": "Available"
+        },
+        {
+            "parent": "Deliver",
+            "status": "Available",
+            "child": "Pick",
+            "next": "WaitingOnCreditCheck"
+        },
+        {
+            "parent": "Fee",
+            "status": "Available",
+            "child": "SalesTax",
+            "next": "Available"
+        },
+        {
+            "parent": "Fee",
+            "status": "Available",
+            "child": "Discount",
+            "next": "Available"
+        }
+    ],
+    "protocols": [
+        {
+            "match": {
+                "service": "Deliver",
+                "product": "AnyProduct",
+                "from": "AnyLocation",
+                "to": "AnyLocation"
+            },
+            "child": {
+                "service": "Pick",
+                "product": "SameProduct",
+                "assign": "Factory1Agency"
+            }
+        },
+        {
+            "match": {
+                "service": "Deliver",
+                "product": "AnyProduct",
+                "from": "AnyLocation",
+                "to": "AnyLocation",
+                "requester": "AnyAgency"
+            },
+            "child": {
+                "service": "Ship",
+                "product": "SameProduct",
+                "assign": "Factory1Agency"
+            }
+        },
+        {
+            "match": {
+                "service": "Pick",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "United States"
+            },
+            "child": {
+                "service": "CheckCredit",
+                "product": "SameProduct",
+                "assign": "CPU"
+            }
+        },
+        {
+            "match": {
+                "service": "Pick",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "European Union"
+            },
+            "child": {
+                "service": "CheckLetterOfCredit",
+                "product": "SameProduct",
+                "assign": "CreditDepartment"
+            }
+        },
+        {
+            "match": {
+                "service": "Ship",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "European Union"
+            },
+            "child": {
+                "service": "PrintCustomsDeclaration",
+                "product": "SameProduct",
+                "assign": "CPU"
+            }
+        },
+        {
+            "match": {
+                "service": "Ship",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "AnyLocation"
+            },
+            "child": {
+                "service": "PrintPurchaseOrder",
+                "product": "SameProduct",
+                "assign": "CPU"
+            }
+        },
+        {
+            "match": {
+                "service": "PrintPurchaseOrder",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "AnyLocation",
+                "requester": "AnyAgency"
+            },
+            "child": {
+                "service": "Fee",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        },
+        {
+            "match": {
+                "service": "Fee",
+                "product": "NonExemptProduct",
+                "from": "AnyLocation",
+                "to": "District Of Columbia",
+                "requester": "NonExempt"
+            },
+            "child": {
+                "service": "SalesTax",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        },
+        {
+            "match": {
+                "service": "Fee",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "European Union",
+                "requester": "ExternalCustomer"
+            },
+            "child": {
+                "service": "Discount",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        },
+        {
+            "match": {
+                "service": "Fee",
+                "product": "AnyProduct",
+                "from": "United States",
+                "to": "District Of Columbia",
+                "requester": "GeorgetownUniversity"
+            },
+            "child": {
+                "service": "SalesTax",
+                "product": "SameProduct",
+                "assign": "BillingComputer"
+            }
+        }
+    ],
+    "metaProtocols": [
+        {
+            "transform": "Deliver",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "InState"
+        },
+        {
+            "transform": "Pick",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "InArea",
+            "requester": "CustomerType"
+        },
+        {
+            "transform": "Ship",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "InArea",
+            "requester": "CustomerType"
+        },
+        {
+            "transform": "Fee",
+            "product": "AnyRelationship",
+            "from": "InCity",
+            "requester": "AgencyTaxStatus"
+        },
+        {
+            "transform": "PrintPurchaseOrder",
+            "product": "AnyRelationship",
+            "from": "InArea",
+            "to": "AnyRelationship",
+            "requester": "AnyRelationship"
+        }
+    ]
+}

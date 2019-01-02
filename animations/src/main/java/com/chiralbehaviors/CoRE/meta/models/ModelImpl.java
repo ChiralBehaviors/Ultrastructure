@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.AUTHENTICATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
+import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
 import static org.jooq.impl.DSL.name;
 
@@ -62,7 +64,6 @@ import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
@@ -72,11 +73,13 @@ import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.Edge;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetPropertyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.CoreInstance;
+import com.chiralbehaviors.CoRE.meta.AuthnModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
@@ -103,6 +106,8 @@ public class ModelImpl implements Model {
         AUTHORITY_HANDLE = new HashMap<>();
         Ruleform.RULEFORM.getTables()
                          .stream()
+                         .filter(t -> !t.equals(AUTHENTICATION))
+                         .filter(t -> !t.equals(TOKEN))
                          .filter(t -> !t.equals(JOB_CHRONOLOGY))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
                          .forEach(t -> {
@@ -118,9 +123,9 @@ public class ModelImpl implements Model {
                              Class<UpdatableRecord<?>> recordType = (Class<UpdatableRecord<?>>) t.getRecordType();
                              AUTHORITY_HANDLE.put(recordType, handle);
                          });
-        Arrays.asList(Agency.class, Attribute.class, Interval.class,
-                      Location.class, Product.class, Relationship.class,
-                      StatusCode.class, Unit.class)
+        Arrays.asList(Agency.class, Interval.class, Location.class,
+                      Product.class, Relationship.class, StatusCode.class,
+                      Unit.class)
               .stream()
               .forEach(c -> {
                   MethodHandle handle;
@@ -145,7 +150,7 @@ public class ModelImpl implements Model {
     }
 
     public static Configuration configuration() {
-        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_9_5);
+        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_10);
         Settings settings = new Settings();
         settings.setExecuteWithOptimisticLocking(true);
         settings.withRenderFormatted(false);
@@ -282,6 +287,14 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public boolean checkExistentialPermission(List<Agency> roles,
+                                              ExistentialRuleform target,
+                                              Relationship permission) {
+        return checkPermission(roles, (UpdatableRecord<?>) target, permission);
+
+    }
+
+    @Override
     public boolean checkInvoke(UpdatableRecord<?> target) {
         return checkPermission(target, invokePerm);
     }
@@ -295,14 +308,6 @@ public class ModelImpl implements Model {
     public boolean checkPermission(ExistentialRuleform target,
                                    Relationship permission) {
         return checkPermission((UpdatableRecord<?>) target, permission);
-    }
-
-    @Override
-    public boolean checkExistentialPermission(List<Agency> roles,
-                                              ExistentialRuleform target,
-                                              Relationship permission) {
-        return checkPermission(roles, (UpdatableRecord<?>) target, permission);
-
     }
 
     @Override
@@ -411,6 +416,11 @@ public class ModelImpl implements Model {
     @Override
     public Relationship getApplyPerm() {
         return applyPerm;
+    }
+
+    @Override
+    public AuthnModel getAuthnModel() {
+        return new AuthnModelImpl(this);
     }
 
     @Override
@@ -544,7 +554,7 @@ public class ModelImpl implements Model {
         List<UUID> roles = agencies.stream()
                                    .map(r -> r.getId())
                                    .collect(Collectors.toList());
-        ExistentialNetwork membership = EXISTENTIAL_NETWORK.as(MEMBERSHIP);
+        Edge membership = EDGE.as(MEMBERSHIP);
         CommonTableExpression<Record1<UUID>> groups = name(GROUPS).fields(AGENCY)
                                                                   .as(create.select(membership.field(membership.CHILD))
                                                                             .from(membership)
@@ -557,12 +567,12 @@ public class ModelImpl implements Model {
                                  .selectCount()
                                  .from(EXISTENTIAL)
                                  .where(EXISTENTIAL.ID.equal(intrinsic))
-                                 .andNotExists(create.select(EXISTENTIAL_NETWORK.CHILD)
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(create.selectFrom(groups))
-                                                                                      .or(EXISTENTIAL_NETWORK.PARENT.in(roles)))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(permission.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.eq(EXISTENTIAL.ID)))
+                                 .andNotExists(create.select(EDGE.CHILD)
+                                                     .from(EDGE)
+                                                     .where(EDGE.PARENT.in(create.selectFrom(groups))
+                                                                       .or(EDGE.PARENT.in(roles)))
+                                                     .and(EDGE.RELATIONSHIP.equal(permission.getId()))
+                                                     .and(EDGE.CHILD.eq(EXISTENTIAL.ID)))
                                  .fetchOne()
                                  .value1());
     }
@@ -614,6 +624,14 @@ public class ModelImpl implements Model {
                                                     instance)
                                   .getId());
 
+        FacetRecord facet = phantasmModel.getFacetDeclaration(relationship,
+                                                              kernel.getCore());
+        FacetPropertyRecord prop = phantasmModel.getFacetProperties(facet,
+                                                                    instance);
+        if (prop != null) {
+            excluded.add(prop.getId());
+        }
+
         relationship = kernel.getInstanceOf();
         excluded.add(phantasmModel.getImmediateLink(instance, relationship,
                                                     kernel.getCore())
@@ -622,6 +640,13 @@ public class ModelImpl implements Model {
                                                     factory.resolve(relationship.getInverse()),
                                                     instance)
                                   .getId());
+
+        facet = phantasmModel.getFacetDeclaration(relationship,
+                                                  kernel.getCore());
+        prop = phantasmModel.getFacetProperties(facet, instance);
+        if (prop != null) {
+            excluded.add(prop.getId());
+        }
 
         relationship = kernel.getLOGIN_TO();
         excluded.add(phantasmModel.getImmediateLink(kernel.getLoginRole(),
@@ -632,16 +657,7 @@ public class ModelImpl implements Model {
                                                     kernel.getLoginRole())
                                   .getId());
         relationship = kernel.getInstanceOf();
-        ExistentialAttributeRecord attribute = phantasmModel.getAttributeValue(instance,
-                                                                               kernel.getName());
-        if (attribute != null) {
-            excluded.add(attribute.getId());
-        }
-        attribute = phantasmModel.getAttributeValue(instance,
-                                                    kernel.getDescription());
-        if (attribute != null) {
-            excluded.add(attribute.getId());
-        }
+
         return excluded;
     }
 }

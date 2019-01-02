@@ -33,7 +33,7 @@ import org.apache.maven.plugin.MojoFailureException;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -98,7 +98,7 @@ public class WorkspaceDslLoader extends AbstractMojo {
                                  getLog().info(String.format("Loading dsl from: %s",
                                                              url.toExternalForm()));
                                  try {
-                                     WorkspaceImporter.manifest(is, model);
+                                     JsonImporter.manifest(is, model);
                                  } catch (IllegalStateException e) {
                                      getLog().warn(String.format("Could not load : %s",
                                                                  e.getMessage()));

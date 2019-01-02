@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.hellblazer.utils.Tuple;
 
@@ -86,35 +86,35 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         Agency i = model.records()
                         .newAgency("I", "I");
         i.insert();
-        ExistentialNetworkRecord edgeA = model.records()
+        EdgeRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
                                                                      b);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
+        EdgeRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
                                                                      c);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records()
+        EdgeRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
                                                                      d);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records()
+        EdgeRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
                                                                      e);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records()
+        EdgeRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
                                                                      f);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records()
+        EdgeRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
                                                                      g);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records()
+        EdgeRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
                                                                      h);
         edgeG.insert();
-        ExistentialNetworkRecord edgeH = model.records()
+        EdgeRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
                                                                      i);
         edgeH.insert();
@@ -175,35 +175,35 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         Agency i = model.records()
                         .newAgency("I", "I");
         i.insert();
-        ExistentialNetworkRecord edgeA = model.records()
+        EdgeRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
                                                                      b);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
+        EdgeRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
                                                                      c);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records()
+        EdgeRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
                                                                      d);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records()
+        EdgeRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
                                                                      e);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records()
+        EdgeRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
                                                                      f);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records()
+        EdgeRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
                                                                      g);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records()
+        EdgeRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
                                                                      h);
         edgeG.insert();
-        ExistentialNetworkRecord edgeH = model.records()
+        EdgeRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
                                                                      i);
         edgeH.insert();
@@ -274,35 +274,35 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         Agency i = model.records()
                         .newAgency("I", "I");
         i.insert();
-        ExistentialNetworkRecord edgeA = model.records()
+        EdgeRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
                                                                      b);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
+        EdgeRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
                                                                      c);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records()
+        EdgeRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
                                                                      d);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records()
+        EdgeRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
                                                                      e);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records()
+        EdgeRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
                                                                      f);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records()
+        EdgeRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
                                                                      g);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records()
+        EdgeRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
                                                                      h);
         edgeG.insert();
-        ExistentialNetworkRecord edgeH = model.records()
+        EdgeRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
                                                                      i);
         edgeH.insert();
@@ -411,25 +411,25 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         Agency H = model.records()
                         .newAgency("H", "H");
         H.insert();
-        ExistentialNetworkRecord edgeA = model.records()
+        EdgeRecord edgeA = model.records()
                                               .newExistentialNetwork(A, a, B);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
+        EdgeRecord edgeB = model.records()
                                               .newExistentialNetwork(B, b, C);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records()
+        EdgeRecord edgeC = model.records()
                                               .newExistentialNetwork(C, c, D);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records()
+        EdgeRecord edgeD = model.records()
                                               .newExistentialNetwork(D, d, E);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records()
+        EdgeRecord edgeE = model.records()
                                               .newExistentialNetwork(E, e, F);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records()
+        EdgeRecord edgeF = model.records()
                                               .newExistentialNetwork(F, f, G);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records()
+        EdgeRecord edgeG = model.records()
                                               .newExistentialNetwork(G, g, H);
         edgeG.insert();
 
@@ -443,7 +443,7 @@ public class NetworkInferrenceTest extends AbstractModelTest {
                                                  .collect(Collectors.toList())),
                      7, children.size());
 
-        List<ExistentialNetworkRecord> childrenLinks = model.getPhantasmModel()
+        List<EdgeRecord> childrenLinks = model.getPhantasmModel()
                                                             .getChildrenLinks(A,
                                                                               a);
         assertEquals(7, childrenLinks.size());
@@ -494,35 +494,35 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         Agency i = model.records()
                         .newAgency("I", "I");
         i.insert();
-        ExistentialNetworkRecord edgeA = model.records()
+        EdgeRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
                                                                      b);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records()
+        EdgeRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
                                                                      c);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records()
+        EdgeRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
                                                                      d);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records()
+        EdgeRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
                                                                      e);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records()
+        EdgeRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
                                                                      f);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records()
+        EdgeRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
                                                                      g);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records()
+        EdgeRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
                                                                      h);
         edgeG.insert();
-        ExistentialNetworkRecord edgeH = model.records()
+        EdgeRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
                                                                      i);
         edgeH.insert();

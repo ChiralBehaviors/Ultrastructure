@@ -21,12 +21,6 @@
 package com.chiralbehaviors.CoRE.phantasm.graphql.schemas;
 
 import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceScalarTypes.GraphQLUuid;
-import static graphql.Scalars.GraphQLBigDecimal;
-import static graphql.Scalars.GraphQLBoolean;
-import static graphql.Scalars.GraphQLFloat;
-import static graphql.Scalars.GraphQLInt;
-import static graphql.Scalars.GraphQLLong;
-import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
@@ -50,16 +44,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.graphql.EdgeTypeResolver;
 import com.chiralbehaviors.CoRE.phantasm.graphql.PhantasmInitializer;
@@ -75,12 +68,18 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.utils.English;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import graphql.Scalars;
 import graphql.annotations.GraphQLField;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
+import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
@@ -99,33 +98,57 @@ import graphql.schema.GraphQLUnionType;
  */
 public class FacetFields extends Phantasmagoria {
 
+    static class Resolution {
+        final Function<Object, JsonNode> inverse;
+        final Function<JsonNode, Object> transform;
+        final GraphQLType                type;
+
+        Resolution(Function<JsonNode, Object> transform,
+                   Function<Object, JsonNode> inverse, GraphQLType type) {
+            this.inverse = inverse;
+            this.transform = transform;
+            this.type = type;
+        }
+    }
+
     private static final String _EDGE              = "_edge";
     private static final String _EXT               = "_ext";
     private static final String ADD_TEMPLATE       = "add%s";
     private static final String APPLY_MUTATION     = "apply%s";
+    private static final String ARRAY              = "array";
+
     private static final String AT_RULEFORM        = "@ruleform";
+
+    private static final String BOOLEAN            = "boolean";
     private static final String CREATE_MUTATION    = "create%s";
     private static final String CREATE_TYPE        = "%sCreate";
     private static final String EXISTENTIAL        = "Existential";
     private static final String ID                 = "id";
     private static final String IDS                = "ids";
     private static final String IMMEDIATE_TEMPLATE = "immediate%s";
+    private static final String INTEGER            = "integer";
+    private static final String ITEMS              = "items";
+    private static final String NUMBER             = "number";
+    private static final String OBJECT             = "object";
     private static final String REMOVE_MUTATION    = "remove%s";
     private static final String REMOVE_TEMPLATE    = "remove%s";
-    @SuppressWarnings("unused")
-    private static final String SET_INDEX_TEMPLATE = "set%sIndex";
-    @SuppressWarnings("unused")
-    private static final String SET_KEY_TEMPLATE   = "set%sKey";
     private static final String SET_TEMPLATE       = "set%s";
     private static final String STATE              = "state";
+    private static final String STRING             = "string";
+    private static final String TYPE               = "type";
     private static final String UPDATE_MUTATION    = "update%s";
     private static final String UPDATE_TYPE        = "%sUpdate";
+
+    public static String capitalized(String baseName) {
+        return Character.toUpperCase(baseName.charAt(0))
+               + (baseName.length() == 1 ? "" : baseName.substring(1));
+    }
 
     public static URLClassLoader configureExecutionScope(List<String> urlStrings) {
         ClassLoader parent = Thread.currentThread()
                                    .getContextClassLoader();
         if (parent == null) {
-            parent = PhantasmBundle.class.getClassLoader();
+            parent = FacetFields.class.getClassLoader();
         }
         List<URL> urls = new ArrayList<>();
         for (String url : urlStrings) {
@@ -208,6 +231,32 @@ public class FacetFields extends Phantasmagoria {
 
     }
 
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
+    }
+
+    public static String toTypeName(String name) {
+        char chars[] = toValidName(name).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toValidName(String name) {
+        name = name.replaceAll("\\s", "");
+        StringBuilder sb = new StringBuilder();
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            sb.append("_");
+        }
+        for (char c : name.toCharArray()) {
+            if (!Character.isJavaIdentifierPart(c)) {
+                sb.append("_");
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     static Class<?> getDeclaringClass(Method method) {
         Class<?> object = method.getDeclaringClass();
         Class<?> declaringClass = object;
@@ -243,17 +292,12 @@ public class FacetFields extends Phantasmagoria {
 
     public FacetFields(Aspect facet) {
         super(facet);
-        name = WorkspacePresentation.toTypeName(facet.getName());
-        String notes = facet.getFacet()
-                            .getNotes();
-        typeBuilder = newObject().name(name)
-                                 .description(notes);
+        name = toTypeName(facet.getName());
+        typeBuilder = newObject().name(name);
         updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE,
-                                                                name))
-                                            .description(notes);
+                                                                name));
         createTypeBuilder = newInputObject().name(String.format(CREATE_TYPE,
-                                                                name))
-                                            .description(notes);
+                                                                name));
     }
 
     public GraphQLObjectType build(Aspect aspect, Builder query,
@@ -282,7 +326,7 @@ public class FacetFields extends Phantasmagoria {
     }
 
     public GraphQLTypeReference referenceToType(Aspect facet) {
-        return new GraphQLTypeReference(WorkspacePresentation.toTypeName(facet.getName()));
+        return new GraphQLTypeReference(toTypeName(facet.getName()));
     }
 
     public Set<FacetRecord> resolve(FacetRecord facet, List<Class<?>> plugins,
@@ -311,6 +355,63 @@ public class FacetFields extends Phantasmagoria {
         singularAuthorizations.values()
                               .forEach(auth -> references.add(auth.getChild()
                                                                   .getFacet()));
+    }
+
+    private void addAttribute(String name, JsonNode value) {
+        String set = String.format(SET_TEMPLATE, capitalized(name));
+        Resolution resolution = outputTypeFor(value);
+        typeBuilder.field(new GraphQLFieldDefinition.Builder().type((GraphQLOutputType) resolution.type)
+                                                              .name(name)
+                                                              .dataFetcher(env -> {
+                                                                  JsonNode properties = ctx(env).getFacetProperty(facet,
+                                                                                                                  ((Phantasm) env.getSource()).getRuleform());
+                                                                  return properties == null ? null
+                                                                                            : resolution.transform.apply(properties.get(name));
+                                                              })
+                                                              .description(name
+                                                                           + " property")
+                                                              .build());
+        GraphQLInputObjectField field = newInputObjectField().type((GraphQLInputType) resolution.type)
+                                                             .name(set)
+                                                             .description("set "
+                                                                          + name
+                                                                          + " property")
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(set, (crud, update) -> {
+            ExistentialRuleform instance = ((Phantasm) update.get(AT_RULEFORM)).getRuleform();
+            ObjectNode properties = (ObjectNode) crud.getFacetProperty(facet,
+                                                                       instance);
+            if (properties == null) {
+                properties = JsonNodeFactory.instance.objectNode();
+            }
+            properties.set(name, resolution.inverse.apply(update.get(set)));
+            crud.setFacetProperty(facet, instance, properties);
+        });
+    }
+
+    private void addAttribute(String key, JsonNode value,
+                              Builder edgeTypeBuilder,
+                              EdgeTypeResolver edgeTypeResolver,
+                              NetworkAuthorization auth) {
+        Resolution resolution = outputTypeFor(value);
+        edgeTypeBuilder.field(newFieldDefinition().type((GraphQLOutputType) resolution.type)
+                                                  .name(key)
+                                                  .description("Edge field")
+                                                  .dataFetcher(env -> {
+                                                      Traversal edge = (Traversal) env.getSource();
+                                                      if (edge == null
+                                                          || !edge.auth.equals(auth)) {
+                                                          return null;
+                                                      }
+                                                      JsonNode properties = ctx(env).getEdgeProperty(edge.parent,
+                                                                                                     auth,
+                                                                                                     edge.child);
+                                                      return properties == null ? null
+                                                                                : resolution.transform.apply(properties.get(key));
+                                                  })
+                                                  .build());
     }
 
     private void addChild(NetworkAuthorization auth) {
@@ -380,6 +481,46 @@ public class FacetFields extends Phantasmagoria {
                                    .build();
     }
 
+    private Function<Object, JsonNode> arrayInverse(Function<Object, JsonNode> transform) {
+        return obj -> {
+            if (obj == null) {
+                return null;
+            }
+            ArrayNode result = JsonNodeFactory.instance.arrayNode();
+            ((List<?>) obj).forEach(o -> result.add(transform.apply(o)));
+            return result;
+        };
+    }
+
+    private Function<JsonNode, Object> arrayTransform(Function<JsonNode, Object> transform) {
+        return array -> {
+            if (array == null) {
+                return null;
+            }
+            List<Object> result = new ArrayList<>();
+            ((ArrayNode) array).forEach(n -> {
+                result.add(transform.apply(n));
+            });
+            return result;
+        };
+    }
+
+    private Resolution arrayType(JsonNode value) {
+        JsonNode items = value.get(ITEMS);
+        if (!items.get(TYPE)
+                  .textValue()
+                  .equals(ARRAY)) {
+            Resolution inner = outputTypeFor(items);
+            return new Resolution(arrayTransform(inner.transform),
+                                  arrayInverse(inner.inverse),
+                                  new GraphQLList(inner.type));
+        }
+        Resolution inner = arrayType(items);
+        return new Resolution(arrayTransform(inner.transform),
+                              arrayInverse(inner.inverse),
+                              new GraphQLList(inner.type));
+    }
+
     private void build() {
         typeBuilder.field(newFieldDefinition().type(new GraphQLTypeReference(WorkspaceSchema.EDGE))
                                               .name(_EDGE)
@@ -403,47 +544,68 @@ public class FacetFields extends Phantasmagoria {
                                                      .description(String.format("the id of the updated %s",
                                                                                 name))
                                                      .build());
-        attributes.values()
-                  .forEach(attr -> visit(attr));
+        buildAttributes();
         childAuthorizations.values()
                            .forEach(auth -> visitChildren(auth));
         singularAuthorizations.values()
                               .forEach(auth -> visitSingular(auth));
     }
 
+    private void buildAttributes() {
+        if (schema == null) {
+            return;
+        }
+        ObjectNode props = (ObjectNode) schema.get("properties");
+        props.fields()
+             .forEachRemaining(entry -> {
+                 addAttribute(entry.getKey(), entry.getValue());
+             });
+    }
+
+    private void buildAttributes(JsonNode propertySchema,
+                                 Builder edgeTypeBuilder,
+                                 EdgeTypeResolver edgeTypeResolver,
+                                 NetworkAuthorization auth) {
+        ObjectNode props = (ObjectNode) propertySchema.get("properties");
+        props.fields()
+             .forEachRemaining(entry -> {
+                 addAttribute(entry.getKey(), entry.getValue(), edgeTypeBuilder,
+                              edgeTypeResolver, auth);
+             });
+    }
+
     private void buildEdge(NetworkAuthorization auth,
                            EdgeTypeResolver edgeTypeResolver,
                            GraphQLUnionType.Builder union) {
-        String facetName = WorkspacePresentation.toFieldName(name);
+        String facetName = toFieldName(name);
         Builder edgeTypeBuilder = newObject().name(String.format("_%s_%s",
                                                                  facetName,
                                                                  auth.getFieldName()))
                                              .description(String.format("The edge \"%s\" from facet \"%s\"",
                                                                         auth.getFieldName(),
                                                                         facetName));
-        auth.getAttributes()
-            .forEach(attr -> {
-                Attribute attribute = attr.getAttribute();
-                String fieldName = WorkspacePresentation.toFieldName(attr.getAttribute()
-                                                                         .getName());
-                GraphQLOutputType type = typeOf(attribute);
-                edgeTypeBuilder.field(newFieldDefinition().type(type)
-                                                          .name(fieldName)
-                                                          .description(attribute.getDescription())
-                                                          .dataFetcher(env -> {
-                                                              PhantasmContext ctx = ctx(env);
-                                                              Traversal edge = (Traversal) env.getSource();
-                                                              if (edge == null
-                                                                  || !edge.auth.equals(auth)) {
-                                                                  return null;
-                                                              }
-                                                              return ctx.getAttributeValue(facet,
-                                                                                           edge.parent,
-                                                                                           attr,
-                                                                                           edge.child);
-                                                          })
-                                                          .build());
-            });
+        JsonNode propertySchema = auth.getSchema();
+        if (propertySchema != null) {
+            buildAttributes(propertySchema, edgeTypeBuilder, edgeTypeResolver,
+                            auth);
+
+            edgeTypeBuilder.field(newFieldDefinition().type(edgePropertyType(auth,
+                                                                             propertySchema))
+                                                      .name("properties")
+                                                      .description("Json properties for edge")
+                                                      .dataFetcher(env -> {
+                                                          PhantasmContext ctx = ctx(env);
+                                                          Traversal edge = (Traversal) env.getSource();
+                                                          if (edge == null
+                                                              || !edge.auth.equals(auth)) {
+                                                              return null;
+                                                          }
+                                                          return ctx.getProperties(edge.parent,
+                                                                                   edge.auth,
+                                                                                   edge.child);
+                                                      })
+                                                      .build());
+        }
         GraphQLObjectType edgeType = edgeTypeBuilder.build();
         if (!edgeType.getFieldDefinitions()
                      .isEmpty()) {
@@ -561,6 +723,11 @@ public class FacetFields extends Phantasmagoria {
                     .build();
     }
 
+    private GraphQLOutputType edgePropertyType(NetworkAuthorization auth,
+                                               JsonNode propertySchema) {
+        return WorkspaceScalarTypes.GraphQLJson;
+    }
+
     private GraphQLFieldDefinition instance() {
         return newFieldDefinition().name(Introspector.decapitalize(name))
                                    .type(new GraphQLTypeReference(name))
@@ -590,6 +757,46 @@ public class FacetFields extends Phantasmagoria {
                                    })
                                    .build();
 
+    }
+
+    private Resolution outputTypeFor(JsonNode value) {
+        switch (value.get(TYPE)
+                     .asText()) {
+            case OBJECT: {
+                return new Resolution(node -> node, node -> (JsonNode) node,
+                                      WorkspaceScalarTypes.GraphQLJson);
+            }
+            case STRING: {
+                return new Resolution(node -> (node == null) ? null
+                                                             : node.asText(),
+                                      s -> JsonNodeFactory.instance.textNode((String) s),
+                                      Scalars.GraphQLString);
+            }
+            case NUMBER: {
+                return new Resolution(node -> (node == null) ? null
+                                                             : node.asDouble(),
+                                      s -> JsonNodeFactory.instance.numberNode((Double) s),
+                                      Scalars.GraphQLFloat);
+            }
+            case BOOLEAN: {
+                return new Resolution(node -> (node == null) ? null
+                                                             : node.asBoolean(),
+                                      s -> JsonNodeFactory.instance.booleanNode((Boolean) s),
+                                      Scalars.GraphQLBoolean);
+            }
+            case INTEGER: {
+                return new Resolution(node -> (node == null) ? null
+                                                             : node.asInt(),
+                                      s -> JsonNodeFactory.instance.numberNode((Integer) s),
+                                      Scalars.GraphQLInt);
+            }
+            case ARRAY: {
+                return arrayType(value);
+            }
+            default:
+                throw new IllegalArgumentException("Cannot convert to a GraphQLType: "
+                                                   + value);
+        }
     }
 
     private GraphQLFieldDefinition remove() {
@@ -654,33 +861,6 @@ public class FacetFields extends Phantasmagoria {
                                                         ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
                                                         auth,
                                                         crud.lookupList((List<UUID>) update.get(setter))));
-    }
-
-    private GraphQLOutputType typeOf(Attribute attribute) {
-        GraphQLOutputType type = null;
-        switch (attribute.getValueType()) {
-            case Binary:
-                type = GraphQLString; // encoded binary
-                break;
-            case Boolean:
-                type = GraphQLBoolean;
-                break;
-            case Integer:
-                type = GraphQLInt;
-                break;
-            case Numeric:
-                type = GraphQLFloat;
-                break;
-            case Text:
-                type = GraphQLString;
-                break;
-            case Timestamp:
-                type = GraphQLString;
-                break;
-            case JSON:
-                type = WorkspaceScalarTypes.GraphQLJson;
-        }
-        return attribute.getIndexed() ? new GraphQLList(type) : type;
     }
 
     @SuppressWarnings("unchecked")
@@ -759,81 +939,6 @@ public class FacetFields extends Phantasmagoria {
                                            .collect(Collectors.toList());
                     })
                     .build();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void visit(AttributeAuthorization auth) {
-        Attribute attribute = auth.getAttribute();
-        GraphQLOutputType type = typeOf(attribute);
-        typeBuilder.field(newFieldDefinition().type(type)
-                                              .name(auth.getFieldName())
-                                              .description(attribute.getDescription())
-                                              .dataFetcher(env -> ctx(env).getAttributeValue(facet,
-                                                                                             ((Phantasm) env.getSource()).getRuleform(),
-                                                                                             auth))
-                                              .build());
-
-        String setter = String.format(SET_TEMPLATE,
-                                      Phantasmagoria.capitalized(auth.getFieldName()));
-        graphql.schema.GraphQLInputObjectField.Builder builder = newInputObjectField().name(setter)
-                                                                                      .description(auth.getNotes());
-
-        if (auth.getAttribute()
-                .getIndexed()) {
-            updateTemplate.put(setter,
-                               (crud,
-                                update) -> crud.setAttributeValue(facet,
-                                                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
-                                                                  auth,
-                                                                  (List<Object>) update.get(setter)));
-            builder.type(new GraphQLList(GraphQLString));
-        } else if (auth.getAttribute()
-                       .getKeyed()) {
-            updateTemplate.put(setter,
-                               (crud,
-                                update) -> crud.setAttributeValue(facet,
-                                                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
-                                                                  auth,
-                                                                  (Map<String, Object>) update.get(setter)));
-            builder.type(GraphQLString);
-        } else {
-            updateTemplate.put(setter,
-                               (crud,
-                                update) -> crud.setAttributeValue(facet,
-                                                                  ((Phantasm) update.get(AT_RULEFORM)).getRuleform(),
-                                                                  auth,
-                                                                  update.get(setter)));
-            switch (auth.getAttribute()
-                        .getValueType()) {
-                case Binary:
-                    builder.type(GraphQLString);
-                    break;
-                case Boolean:
-                    builder.type(GraphQLBoolean);
-                    break;
-                case Integer:
-                    builder.type(GraphQLInt);
-                    break;
-                case JSON:
-                    builder.type(WorkspaceScalarTypes.GraphQLJson);
-                    break;
-                case Numeric:
-                    builder.type(GraphQLBigDecimal);
-                    break;
-                case Text:
-                    builder.type(GraphQLString);
-                    break;
-                case Timestamp:
-                    builder.type(GraphQLLong);
-                    break;
-                default:
-                    break;
-
-            }
-        }
-        GraphQLInputObjectField field = builder.build();
-        updateTypeBuilder.field(field);
-        createTypeBuilder.field(field);
     }
 
     private void visitChildren(NetworkAuthorization auth) {

@@ -8,11 +8,6 @@
     name
     description
   }
-  attributes {
-    id
-    name
-    description
-  }
   intervals {
     id
     name

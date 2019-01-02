@@ -57,21 +57,14 @@ public class ProtocolTest extends AbstractModelTest {
         infiniteTest.setAssignTo(halIncandenza.getId());
         infiniteTest.setChildAssignTo(michaelPemulous.getId());
         infiniteTest.setChildService(fireFuzzyGreenWarhead.getId());
-        infiniteTest.update();
-
-        ProtocolRecord infiniteTest2 = model.getJobModel()
-                                            .newInitializedProtocol(fireFuzzyGreenWarhead);
-        infiniteTest2.setAssignTo(halIncandenza.getId());
-        infiniteTest2.setChildAssignTo(michaelPemulous.getId());
-        infiniteTest2.setChildService(fireFuzzyGreenWarhead.getId());
-        infiniteTest2.update();
+        infiniteTest.insert();
 
         JobRecord startWW3 = model.getJobModel()
                                   .newInitializedJob(fireFuzzyGreenWarhead);
         startWW3.setAssignTo(halIncandenza.getId());
-        startWW3.update();
+        startWW3.insert();
         model.flush();
-        assertEquals(2, model.getJobModel()
+        assertEquals(1, model.getJobModel()
                              .getAllChildren(startWW3)
                              .size());
 
@@ -120,7 +113,7 @@ public class ProtocolTest extends AbstractModelTest {
         proto.setDeliverTo(locationClassification.getId());
         proto.setChildDeliverTo(deliverTo.getId());
         proto.setChildService(service2.getId());
-        proto.update();
+        proto.insert();
 
         MetaProtocolRecord meta = model.getJobModel()
                                        .newInitializedMetaProtocol(service);
@@ -130,13 +123,13 @@ public class ProtocolTest extends AbstractModelTest {
         meta.setDeliverTo(model.getKernel()
                                .getInstanceOf()
                                .getId());
-        meta.update();
+        meta.insert();
 
         JobRecord job = model.getJobModel()
                              .newInitializedJob(service);
         job.setAssignTo(assignTo.getId());
         job.setDeliverTo(deliverTo.getId());
-        job.update();
+        job.insert();
         Map<ProtocolRecord, InferenceMap> match = model.getJobModel()
                                                        .getProtocols(job);
         assertEquals(1, match.size());

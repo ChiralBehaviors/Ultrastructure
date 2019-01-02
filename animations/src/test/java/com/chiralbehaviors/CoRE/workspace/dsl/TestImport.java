@@ -27,11 +27,13 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
+import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 
 /**
  * @author hhildebrand
@@ -43,8 +45,8 @@ public class TestImport extends AbstractModelTest {
     public void testExampleWorkspace() throws Exception {
         Product definingProduct;
         try {
-            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResource("/thing.wsp"),
-                                                                    model);
+            JsonImporter importer = JsonImporter.manifest(getClass().getResource("/thing.json"),
+                                                          model);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
         } catch (IllegalStateException e) {
@@ -62,14 +64,15 @@ public class TestImport extends AbstractModelTest {
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", "IsA"));
+                               .lookup("kernel", ReferenceType.Existential,
+                                       "IsA"));
     }
 
     @Test
     public void testIncrementalVersionUpdate() throws Exception {
         try {
-            WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                       model);
+            JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
+                                  model);
         } catch (IllegalStateException e) {
             LoggerFactory.getLogger(TestImport.class)
                          .info("Not loading thing ontology version 1: {}",
@@ -77,37 +80,26 @@ public class TestImport extends AbstractModelTest {
         }
         // load version 2
 
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
-                                                                model);
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.def.json"),
+                                                      model);
         EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                           .getDefiningProduct(),
                                                                   model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("TheDude"));
+                               .lookup(ReferenceType.Existential, "TheDude"));
         Product definingProduct = workspace.getDefiningProduct();
-        assertEquals(2, definingProduct.getVersion()
-                                       .intValue());
-        assertEquals("Phantasm Demo V2", definingProduct.getName());
-        assertEquals("Test of Workspace versioning",
-                     definingProduct.getDescription());
+        Workspace wsp = model.wrap(Workspace.class, definingProduct);
+        assertEquals(2, wsp.get_Properties()
+                           .getVersion()
+                           .intValue());
+        assertEquals("Phantasm Demo V2", wsp.get_Properties()
+                                            .getName());
+        assertEquals("Test of Workspace versioning", wsp.get_Properties()
+                                                        .getDescription());
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
-                               .lookup("kernel", "IsA"));
-    }
-
-    @Test
-    public void testImport() throws Exception {
-        Product definingProduct;
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/import-test.wsp"),
-                                                                model);
-        definingProduct = importer.getWorkspace()
-                                  .getDefiningProduct();
-
-        EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
-                                                                  model);
-        assertNotNull(workspace);
-        assertNotNull(workspace.getScope()
-                               .lookup("kernel", "IsA"));
+                               .lookup("kernel", ReferenceType.Existential,
+                                       "IsA"));
     }
 }

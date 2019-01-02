@@ -29,18 +29,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.util.Arrays;
 
+import org.jooq.util.postgres.PostgresDSL;
+import org.junit.AfterClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.Thing1;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +55,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
 
+    @AfterClass
+    public static void cleanup() {
+        try {
+            Connection connection = newConnection();
+            RecordsFactory.clear(PostgresDSL.using(connection));
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void testDeltaGeneration() throws Exception {
         // This is a test where we have to have the kernel state committed, 
@@ -60,24 +75,25 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
              .connectionProvider()
              .acquire()
              .commit();
+        model.close();
+
         File version1File = new File(TARGET_TEST_CLASSES, THING_1_JSON);
         File version2File = new File(TARGET_TEST_CLASSES, THING_2_JSON);
         File version2_1File = new File(TARGET_TEST_CLASSES, THING_1_2_JSON);
-        try (Model myModel = new ModelImpl(newConnection())) {
-            myModel.create();
-            WorkspaceImporter importer;
-            Product definingProduct;
-            WorkspaceSnapshot snapshot;
 
+        try (Model myModel = new ModelImpl(newConnection())) {
             // load version 1
-            importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                  myModel);
-            definingProduct = importer.getWorkspace()
-                                      .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, myModel.create());
+            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
+                                                          myModel);
+            Product definingProduct = importer.getWorkspace()
+                                              .getDefiningProduct();
+            WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
+                                                               myModel.create());
+
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
+
         }
 
         try (Model myModel = new ModelImpl(newConnection())) {
@@ -87,8 +103,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
             // load version 2
 
-            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
-                                                                    myModel);
+            JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.2.def.json"),
+                                                          myModel);
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();
             WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
@@ -99,7 +115,6 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
 
         try (Model myModel = new ModelImpl(newConnection())) {
-
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new CoREModule());
             WorkspaceSnapshot version1;
@@ -117,9 +132,9 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
-            assertEquals(9, delta.getInserts()
+            assertEquals(7, delta.getInserts()
                                  .size());
-            assertEquals(3, delta.getUpdates()
+            assertEquals(1, delta.getUpdates()
                                  .size());
 
             assertNull(myModel.getWorkspaceModel()
@@ -129,31 +144,39 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope);
-            Agency theDude = (Agency) scope.lookup("TheDude");
+            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential,
+                                                   "TheDude");
             assertNotNull(theDude);
         }
 
         try (Model myModel = new ModelImpl(newConnection())) {
-
+            model.create()
+                 .configuration()
+                 .connectionProvider()
+                 .acquire();
             assertNull(myModel.getWorkspaceModel()
                               .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
-            WorkspaceSnapshot.load(myModel.create(),
-                                   Arrays.asList(version1File.toURI()
-                                                             .toURL(),
-                                                 version2_1File.toURI()
-                                                               .toURL()));
+            WorkspaceSnapshot.load(myModel.create(), version1File.toURI()
+                                                                 .toURL());
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope);
-            Agency theDude = (Agency) scope.lookup("TheDude");
+
+            WorkspaceSnapshot.load(myModel.create(), version2_1File.toURI()
+                                                                   .toURL());
+            scope = myModel.getWorkspaceModel()
+                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            assertNotNull(scope);
+            Agency theDude = (Agency) scope.lookup(ReferenceType.Existential,
+                                                   "TheDude");
             assertNotNull(theDude);
         }
     }
 
     @Test
     public void testUnload() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                                model);
+        JsonImporter importer = JsonImporter.manifest(getClass().getResourceAsStream("/thing.json"),
+                                                      model);
         Product definingProduct = importer.getWorkspace()
                                           .getDefiningProduct();
 

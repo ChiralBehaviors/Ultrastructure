@@ -25,7 +25,7 @@ import static com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.resolv
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Agency;
 import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Relationship;
 
@@ -38,9 +38,9 @@ import graphql.schema.DataFetchingEnvironment;
  */
 public class NetworkAuthorization {
 
-    private final ExistentialNetworkAuthorizationRecord record;
+    private final EdgeAuthorizationRecord record;
 
-    public NetworkAuthorization(ExistentialNetworkAuthorizationRecord record) {
+    public NetworkAuthorization(EdgeAuthorizationRecord record) {
         assert record != null;
         this.record = record;
     }
@@ -83,7 +83,7 @@ public class NetworkAuthorization {
         return Facet.fetch(env, record.getParent());
     }
 
-    public ExistentialNetworkAuthorizationRecord getRecord() {
+    public EdgeAuthorizationRecord getRecord() {
         return record;
     }
 

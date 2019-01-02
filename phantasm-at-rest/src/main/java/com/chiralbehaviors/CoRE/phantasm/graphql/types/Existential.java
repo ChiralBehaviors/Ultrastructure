@@ -29,12 +29,13 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.jooq.Tables;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.context.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.schemas.WorkspaceSchema;
-import com.chiralbehaviors.CoRE.phantasm.graphql.types.Existential.Product;
 
 import graphql.annotations.GraphQLDescription;
 import graphql.annotations.GraphQLField;
@@ -52,81 +53,6 @@ public interface Existential extends Phantasm {
 
         public Agency(ExistentialRecord record) {
             super(record);
-        }
-    }
-
-    @GraphQLDescription("The Attribute existential ruleform")
-    public class Attribute extends ExistentialCommon {
-
-        public Attribute(ExistentialRecord record) {
-            super(record);
-        }
-
-        @GraphQLField
-        public Boolean getIndexed() {
-            return record.getIndexed();
-        }
-
-        @GraphQLField
-        public Boolean getKeyed() {
-            return record.getKeyed();
-        }
-
-        @GraphQLField
-        public String getValueType() {
-            return record.getValueType()
-                         .toString();
-        }
-
-    }
-
-    public class AttributeState extends ExistentialState {
-        private static final String INDEXED    = "indexed";
-        private static final String KEYED      = "keyed";
-        private static final String VALUE_TYPE = "valueType";
-
-        public AttributeState(HashMap<String, Object> state) {
-            super(state);
-        }
-
-        @GraphQLField
-        public Boolean getIndexed() {
-            return (Boolean) state.get(INDEXED);
-        }
-
-        @GraphQLField
-        public Boolean getKeyed() {
-            return (Boolean) state.get(KEYED);
-        }
-
-        @GraphQLField
-        public ValueType getValueType() {
-            return (ValueType) state.get(VALUE_TYPE);
-        }
-
-        @Override
-        public void update(ExistentialRecord record) {
-            super.update(record);
-            if (state.containsKey(INDEXED)) {
-                record.setIndexed((Boolean) state.get(INDEXED));
-            }
-            if (state.containsKey(KEYED)) {
-                record.setKeyed((Boolean) state.get(KEYED));
-            }
-            if (state.containsKey(VALUE_TYPE)) {
-                record.setValueType((ValueType) state.get(VALUE_TYPE));
-            }
-        }
-    }
-
-    public class AttributeUpdateState extends AttributeState {
-        public AttributeUpdateState(HashMap<String, Object> state) {
-            super(state);
-        }
-
-        @GraphQLField
-        public UUID getId() {
-            return (UUID) state.get(ID);
         }
     }
 
@@ -189,17 +115,7 @@ public interface Existential extends Phantasm {
 
         @Override
         public int getVersion(DataFetchingEnvironment env) {
-            return WorkspaceSchema.ctx(env)
-                                  .records()
-                                  .resolve(record.getWorkspace())
-                                  .getVersion();
-        }
-
-        @Override
-        public Product getWorkspace(DataFetchingEnvironment env) {
-            return (Product) wrap(WorkspaceSchema.ctx(env)
-                                                 .records()
-                                                 .resolve(record.getWorkspace()));
+            return getRuleform().getVersion();
         }
     }
 
@@ -413,8 +329,6 @@ public interface Existential extends Phantasm {
         switch (record.getDomain()) {
             case Agency:
                 return new Agency(record);
-            case Attribute:
-                return new Attribute(record);
             case Interval:
                 return new Interval(record);
             case Location:
@@ -456,9 +370,6 @@ public interface Existential extends Phantasm {
     Agency getUpdatedBy(DataFetchingEnvironment env);
 
     @GraphQLField
-    int getVersion(DataFetchingEnvironment env);
-
-    @GraphQLField
-    Product getWorkspace(DataFetchingEnvironment env);
+    int getVersion(DataFetchingEnvironment env); 
 
 }

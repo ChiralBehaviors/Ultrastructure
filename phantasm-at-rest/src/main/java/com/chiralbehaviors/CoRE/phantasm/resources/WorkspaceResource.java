@@ -60,9 +60,10 @@ import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.workspaceProperties.WorkspaceProperties;
+import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.UuidUtil;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.MetaContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.context.PhantasmContext;
@@ -169,14 +170,14 @@ public class WorkspaceResource extends TransactionalResource {
                                                                                            .getInverse(),
                                                                                      ExistentialDomain.Product)) {
                 Map<String, Object> wsp = new TreeMap<>();
-                wsp.put("id", definingProduct.getId()
-                                             .toString());
-                wsp.put("name", definingProduct.getName());
-                wsp.put("description", definingProduct.getDescription());
-                wsp.put("IRI",
-                        readOnlyModel.wrap(Workspace.class, definingProduct)
-                                     .getIRI());
-                wsp.put("version", definingProduct.getVersion());
+                wsp.put("id", UuidUtil.encode(definingProduct.getId()));
+                WorkspaceProperties properties = readOnlyModel.wrap(Workspace.class,
+                                                                    definingProduct)
+                                                              .get_Properties();
+                wsp.put("name", properties.getName());
+                wsp.put("description", properties.getDescription());
+                wsp.put("iri", properties.getIri());
+                wsp.put("version", properties.getVersion());
                 workspaces.add(wsp);
             }
             return workspaces;
@@ -256,7 +257,8 @@ public class WorkspaceResource extends TransactionalResource {
             Product definingProduct = snapshot.getDefiningProduct();
 
             Workspace workspace = model.wrap(Workspace.class, definingProduct);
-            return workspace.getIRI();
+            return workspace.get_Properties()
+                            .getIri();
         }, create);
     }
 
@@ -271,9 +273,9 @@ public class WorkspaceResource extends TransactionalResource {
             Agency p = model.getCurrentPrincipal()
                             .getPrincipal();
 
-            WorkspaceImporter manifest;
+            JsonImporter manifest;
             try {
-                manifest = WorkspaceImporter.manifest(requestBody, model);
+                manifest = JsonImporter.manifest(requestBody, model);
             } catch (IOException e) {
                 log.info(String.format("Failed deserializing workspace snapshot by: %s:%s",
                                        p.getName(), p.getId()),
@@ -286,7 +288,8 @@ public class WorkspaceResource extends TransactionalResource {
             Product definingProduct = manifest.getWorkspace()
                                               .getDefiningProduct();
             Workspace workspace = model.wrap(Workspace.class, definingProduct);
-            return workspace.getIRI();
+            return workspace.get_Properties()
+                            .getIri();
         }, create);
     }
 
@@ -345,7 +348,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                     workspace),
                                                       Status.NOT_FOUND);
                 }
-                if (scoped == null) { 
+                if (scoped == null) {
                     throw new WebApplicationException(String.format("Workspace not found [%s] %s",
                                                                     uuid,
                                                                     workspace),

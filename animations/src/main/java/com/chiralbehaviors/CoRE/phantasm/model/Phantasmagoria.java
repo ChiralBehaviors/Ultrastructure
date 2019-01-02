@@ -23,27 +23,23 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
-import java.util.ArrayList;
+import java.beans.Introspector;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.utils.English;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Bare bones metadata representation of a Phantasm facet in Java
@@ -68,6 +64,7 @@ public class Phantasmagoria {
 
         public Aspect(FacetRecord facet, Relationship classifier,
                       ExistentialRuleform classification) {
+            assert facet != null & classifier != null & classification != null;
             this.facet = facet;
             this.classifier = classifier;
             this.classification = classification;
@@ -82,7 +79,7 @@ public class Phantasmagoria {
         }
 
         public ExistentialDomain getDomain() {
-            return classification.getDomain();
+            return facet.getConstrainTo();
         }
 
         public FacetRecord getFacet() {
@@ -100,116 +97,22 @@ public class Phantasmagoria {
         }
     }
 
-    public static class AttributeAuthorization {
-        private final Attribute                               attribute;
-        private final ExistentialAttributeAuthorizationRecord auth;
-        private final String                                  fieldName;
-
-        public AttributeAuthorization(String fieldName, DSLContext create,
-                                      ExistentialAttributeAuthorizationRecord auth) {
-            this(fieldName, auth,
-                 (Attribute) resolveExistential(create,
-                                                auth.getAuthorizedAttribute()));
-        }
-
-        public AttributeAuthorization(String fieldName,
-                                      ExistentialAttributeAuthorizationRecord auth,
-                                      Attribute attribute) {
-            this.fieldName = fieldName;
-            this.auth = auth;
-            this.attribute = attribute;
-        }
-
-        public Attribute getAttribute() {
-            return attribute;
-        }
-
-        public ExistentialAttributeAuthorizationRecord getAuth() {
-            return auth;
-        }
-
-        public String getFieldName() {
-            return fieldName;
-        }
-
-        public String getNotes() {
-            return auth.getNotes();
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Attribute auth[%s]", attribute.getName());
-        }
-    }
-
-    public static class NetworkAttributeAuthorization {
-        private final Attribute                                      attribute;
-        private final ExistentialNetworkAttributeAuthorizationRecord auth;
-        private final String                                         fieldName;
-        private final NetworkAuthorization                           networkAuth;
-
-        public NetworkAttributeAuthorization(String fieldName,
-                                             DSLContext create,
-                                             ExistentialNetworkAttributeAuthorizationRecord auth,
-                                             NetworkAuthorization networkAuth) {
-            this(fieldName, auth, networkAuth,
-                 (Attribute) resolveExistential(create,
-                                                auth.getAuthorizedAttribute()));
-        }
-
-        public NetworkAttributeAuthorization(String fieldName,
-                                             ExistentialNetworkAttributeAuthorizationRecord auth,
-                                             NetworkAuthorization networkAuth,
-                                             Attribute attribute) {
-            this.fieldName = fieldName;
-            this.auth = auth;
-            this.networkAuth = networkAuth;
-            this.attribute = attribute;
-        }
-
-        public Attribute getAttribute() {
-            return attribute;
-        }
-
-        public ExistentialNetworkAttributeAuthorizationRecord getAuth() {
-            return auth;
-        }
-
-        public String getFieldName() {
-            return fieldName;
-        }
-
-        public NetworkAuthorization getNetworkAuth() {
-            return networkAuth;
-        }
-
-        public String getNotes() {
-            return auth.getNotes();
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Attribute auth[%s]", attribute.getName());
-        }
-    }
-
     public static class NetworkAuthorization {
-        private final List<NetworkAttributeAuthorization>   attributes = new ArrayList<>();
-        private final ExistentialNetworkAuthorizationRecord auth;
-        private final Aspect                                child;
-        private final String                                fieldName;
-        private final FacetRecord                           parent;
-        private final Relationship                          relationship;
+        private final EdgeAuthorizationRecord auth;
+        private final Aspect                  child;
+        private final String                  fieldName;
+        private final FacetRecord             parent;
+        private final Relationship            relationship;
 
         public NetworkAuthorization(String fieldName, DSLContext create,
-                                    ExistentialNetworkAuthorizationRecord auth,
+                                    EdgeAuthorizationRecord auth,
                                     Aspect child) {
             this(fieldName, auth, resolveFacet(create, auth.getParent()),
                  resolve(create, auth.getRelationship()), child);
         }
 
         public NetworkAuthorization(String fieldName,
-                                    ExistentialNetworkAuthorizationRecord auth,
+                                    EdgeAuthorizationRecord auth,
                                     FacetRecord parent,
                                     Relationship relationship, Aspect child) {
             this.fieldName = fieldName;
@@ -219,15 +122,7 @@ public class Phantasmagoria {
             this.child = child;
         }
 
-        public void addAttribute(NetworkAttributeAuthorization attrAuth) {
-            attributes.add(attrAuth);
-        }
-
-        public List<NetworkAttributeAuthorization> getAttributes() {
-            return attributes;
-        }
-
-        public ExistentialNetworkAuthorizationRecord getAuth() {
+        public EdgeAuthorizationRecord getAuth() {
             return auth;
         }
 
@@ -255,6 +150,10 @@ public class Phantasmagoria {
             return relationship;
         }
 
+        public JsonNode getSchema() {
+            return auth.getSchema();
+        }
+
         public String plural() {
             return English.plural(fieldName);
         }
@@ -266,15 +165,25 @@ public class Phantasmagoria {
         }
     }
 
-    private static Relationship resolve(DSLContext create, UUID id) {
+    public static String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
+    }
+
+    protected static Relationship resolve(DSLContext create, UUID id) {
         return create.selectFrom(EXISTENTIAL)
                      .where(EXISTENTIAL.ID.equal(id))
                      .fetchOne()
                      .into(Relationship.class);
     }
 
-    private static ExistentialRuleform resolveExistential(DSLContext create,
-                                                          UUID id) {
+    protected static ExistentialRuleform resolveExistential(DSLContext create,
+                                                            UUID id) {
         return new RecordsFactory() {
             @Override
             public DSLContext create() {
@@ -294,34 +203,23 @@ public class Phantasmagoria {
                      .fetchOne();
     }
 
-    public final Map<String, AttributeAuthorization>        attributes             = new HashMap<>();
-    public final Map<String, NetworkAuthorization>          childAuthorizations    = new HashMap<>();
-    public final Map<String, NetworkAttributeAuthorization> edgeAttributes         = new HashMap<>();
-    public final Aspect                                     facet;
-    public final Map<String, NetworkAuthorization>          singularAuthorizations = new HashMap<>();
+    public final Map<String, NetworkAuthorization> childAuthorizations    = new HashMap<>();
+    public final Aspect                            facet;
+    public JsonNode                                schema;
+
+    public final Map<String, NetworkAuthorization> singularAuthorizations = new HashMap<>();
 
     public Phantasmagoria(Aspect facet) {
         this.facet = facet;
     }
 
     public void traverse(Model model) {
-        traverseAttributes(model);
+        schema = model.getPhantasmModel()
+                      .getFacetDeclaration(facet.classifier,
+                                           facet.classification)
+                      .getSchema();
         traverseNetworkAuths(model);
 
-    }
-
-    private void traverseAttributes(Model model) {
-
-        for (ExistentialAttributeAuthorizationRecord auth : model.getPhantasmModel()
-                                                                 .getAttributeAuthorizations(facet.getFacet(),
-                                                                                             false)) {
-            String fieldName = WorkspacePresentation.toFieldName(model.records()
-                                                                      .resolve(auth.getAuthorizedAttribute())
-                                                                      .getName());
-            attributes.put(fieldName,
-                           new AttributeAuthorization(fieldName, model.create(),
-                                                      auth));
-        }
     }
 
     private void traverseNetworkAuths(Model model) {
@@ -331,44 +229,19 @@ public class Phantasmagoria {
              .getNetworkAuthorizations(facet.getFacet(), false)
              .forEach(auth -> {
                  Aspect child = new Aspect(create, auth.getChild());
-                 String fieldName = WorkspacePresentation.toFieldName(auth.getName());
+                 String fieldName = toFieldName(auth.getName());
                  NetworkAuthorization networkAuth = new NetworkAuthorization(fieldName,
                                                                              create,
                                                                              auth,
                                                                              child);
-                 model.getPhantasmModel()
-                      .getNetworkAttributeAuthorizations(auth)
-                      .forEach(na -> {
-                          String n = networkAuth.getFieldName();
-                          String constraintName = Character.toUpperCase(n.charAt(0))
-                                                  + (n.length() == 1 ? ""
-                                                                     : n.substring(1));
-                          String edgeName = String.format("%sOf%s%s",
-                                                          WorkspacePresentation.toFieldName(model.records()
-                                                                                                 .resolve(na.getAuthorizedAttribute())
-                                                                                                 .getName()),
-                                                          constraintName,
-                                                          capitalized(fieldName));
-                          NetworkAttributeAuthorization attrAuth = new NetworkAttributeAuthorization(edgeName,
-                                                                                                     create,
-                                                                                                     na,
-                                                                                                     networkAuth);
-                          networkAuth.addAttribute(attrAuth);
-                          edgeAttributes.put(attrAuth.getFieldName(), attrAuth);
-                      });
 
                  if (auth.getCardinality() == Cardinality.N) {
-                     childAuthorizations.put(networkAuth.plural(), networkAuth);
+                     childAuthorizations.put(networkAuth.getFieldName(),
+                                             networkAuth);
                  } else {
                      singularAuthorizations.put(networkAuth.getFieldName(),
                                                 networkAuth);
                  }
              });
-    }
-
-    public static String capitalized(String field) {
-        char[] chars = field.toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
     }
 }

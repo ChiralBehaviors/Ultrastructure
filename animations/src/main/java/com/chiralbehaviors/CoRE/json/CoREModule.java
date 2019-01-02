@@ -54,6 +54,7 @@ public class CoREModule extends SimpleModule {
         addSerializer(new RecordSerializer());
         List<Class<?>> subTypes = new ArrayList<>();
         Ruleform.RULEFORM.getTables()
+                         .stream()
                          .forEach(table -> {
                              subTypes.add(table.getRecordType());
                          });

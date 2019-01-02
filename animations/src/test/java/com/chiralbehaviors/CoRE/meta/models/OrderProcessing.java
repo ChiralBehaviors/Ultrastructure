@@ -42,7 +42,7 @@ public interface OrderProcessing {
 
     Agency getBillingComputer();
 
-    Agency getCafleurBon();
+    Agency getCafleurebon();
 
     Product getCheckCredit();
 

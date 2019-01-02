@@ -1,5 +1,5 @@
 query getApplication($id: ID!) {
-  singlePageApplication(id: $id) {
+  singlePageApp(id: $id) {
     id
     name
     description
@@ -13,7 +13,7 @@ query getApplication($id: ID!) {
         id
       }
       _edge {
-        ... on _singlePageApplication_page {
+        ... on _singlePageApp_page {
           route
         }
       }

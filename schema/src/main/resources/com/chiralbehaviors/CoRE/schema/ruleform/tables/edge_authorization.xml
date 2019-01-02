@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			tableName="edge_authorization">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="edge_authorization_pkey" nullable="false" />
+			</column>
+			<column name="name" type="text" />
+			<column name="parent" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="relationship" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="child" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="schema" type="jsonb" />
+			<column name="default_properties" type="jsonb" />
+			<column name="cardinality" type="cardinality" defaultValue="N" />
+			<column name="authority" remarks="authority" type="uuid" />
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+			<column name="notes" type="TEXT" />
+		</createTable>
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="parent, relationship, child"
+			constraintName="edge_authorization_unique_key" deferrable="true"
+			disabled="false" initiallyDeferred="true"
+			tableName="edge_authorization" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="parent" baseTableName="edge_authorization"
+			constraintName="edge_authorization_parent_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="facet" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="relationship" baseTableName="edge_authorization"
+			constraintName="edge_authorization_relationship_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="child" baseTableName="edge_authorization"
+			constraintName="edge_authorization_child_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="facet" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="edge_authorization"
+			constraintName="edge_authorization_grouping_agency_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="edge_authorization"
+			constraintName="edge_authorization_updated_by_fkey"
+			deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<sql><![CDATA[
+        ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_json_schema CHECK (validate_json_schema(draftV4Schema(), schema));
+        ALTER TABLE edge_authorization ADD CONSTRAINT valid_network_auth_default_props_json_schmema CHECK (validate_json_schema(schema, default_properties));
+        CREATE INDEX edge_schema_idx ON edge_authorization USING gin(schema jsonb_path_ops);
+        ]]>
+		</sql>
+
+		<createIndex schemaName="ruleform"
+			indexName="edge_authorization_relationship_fkey_idx"
+			tableName="edge_authorization" unique="false">
+			<column name="relationship" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="edge_authorization_child_fkey_idx"
+			tableName="edge_authorization" unique="false">
+			<column name="child" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="edge_authorization_updated_by_fkey_idx"
+			tableName="edge_authorization" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="edge_authorization_authority_fkey_idx"
+			tableName="edge_authorization" unique="false">
+			<column name="authority" />
+		</createIndex>
+	</changeSet>
+</databaseChangeLog>

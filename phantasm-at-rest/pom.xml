@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -27,10 +28,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.chiralbehaviors</groupId>
-			<artifactId>jbcrypt</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.chiralbehaviors.CoRE</groupId>
 			<artifactId>animations</artifactId>
 		</dependency>
@@ -53,10 +50,6 @@
 		<dependency>
 			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-servlets</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.dropwizard</groupId>
-			<artifactId>dropwizard-metrics</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard</groupId>
@@ -89,18 +82,18 @@
 			<artifactId>graphql-java-annotations</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.chiralbehaviors.CoRE</groupId>
+			<artifactId>loader</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<exclusions>
 				<exclusion>
-					<groupId>com.google.code.findbugs</groupId>
-					<artifactId>annotations</artifactId>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.chiralbehaviors.CoRE</groupId>
-			<artifactId>loader</artifactId>
 		</dependency>
 
 		<!-- test dependencies -->
@@ -118,11 +111,6 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.dropwizard</groupId>
-			<artifactId>dropwizard-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -169,7 +157,7 @@
 						</goals>
 						<configuration>
 							<generator>
-								<resource>/thing.wsp</resource>
+								<resource>/thing.json</resource>
 								<outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
 								<packageName>com.chiralbehaviors.CoRE.phantasm.resource.test</packageName>
 								<namespacePackages>

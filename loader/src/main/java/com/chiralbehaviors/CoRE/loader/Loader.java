@@ -71,6 +71,21 @@ public class Loader {
         bootstrapCoRE();
     }
 
+    public void prepareDb() throws SQLException {
+        try (Connection dbaConnection = configuration.getDbaConnection()) {
+            dbaConnection.setAutoCommit(true);
+            log.info("dropping db {} successful: {}", configuration.coreDb,
+                     dbaConnection.prepareStatement(String.format("DROP DATABASE IF EXISTS %s",
+                                                                  configuration.coreDb))
+                                  .execute());
+            log.info("dropping role {} successful: {}",
+                     configuration.coreUsername,
+                     dbaConnection.prepareStatement(String.format("DROP ROLE IF EXISTS %s",
+                                                                  configuration.coreUsername))
+                                  .execute());
+        }
+    }
+
     public void rollback() throws SQLException, LiquibaseException {
         Liquibase liquibase = null;
         try (Connection connection = configuration.getCoreConnection()) {
@@ -107,6 +122,8 @@ public class Loader {
     }
 
     public void dropDatabase() throws Exception {
+        log.info(String.format("Dropping core db %s", configuration.coreDb));
+        prepareDb();
         Liquibase liquibase = null;
         try (Connection connection = configuration.getDbaConnection()) {
             Database database = DatabaseFactory.getInstance()

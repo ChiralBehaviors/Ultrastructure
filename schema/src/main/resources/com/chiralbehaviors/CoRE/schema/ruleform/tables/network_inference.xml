@@ -1,68 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" tableName="network_inference">
-            <column name="authority" type="uuid" />
-            <column name="workspace" type="uuid" />
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="network_inference_pkey" />
-            </column>
-            <column name="premise1" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="premise2" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="inference" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="version" type="INT4" />
-        </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authority" baseTableName="network_inference" constraintName="network_inference_authority_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="premise1" baseTableName="network_inference" constraintName="network_inference_premise1_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="premise2" baseTableName="network_inference" constraintName="network_inference_premise2_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="inference" baseTableName="network_inference" constraintName="network_inference_inference_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="network_inference" constraintName="network_inference_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="premise1, premise2, inference" constraintName="network_inference_relationship1_key"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="network_inference" />
-        <createIndex schemaName="ruleform" indexName="network_inference_updated_by_fkey_idx" tableName="network_inference"
-            unique="false"
-        >
-            <column name="updated_by" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="network_inference_premise1_idx" tableName="network_inference" unique="false">
-            <column name="premise1"></column>
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="network_inference_premise2_idx" tableName="network_inference" unique="false">
-            <column name="premise2"></column>
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="network_inference_inference_idx" tableName="network_inference" unique="false">
-            <column name="inference"></column>
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="network_inference_authority_idx" tableName="network_inference" unique="false">
-            <column name="authority"></column>
-        </createIndex>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="network_inference" constraintName="network_inference_workspace_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
-    </changeSet>
+	<changeSet author="hhildebrand" id="2.0.0">
+		<createTable schemaName="ruleform"
+			tableName="network_inference">
+			<column name="authority" type="uuid" />
+			<column name="id" type="uuid">
+				<constraints primaryKey="true"
+					primaryKeyName="network_inference_pkey" nullable="false" />
+			</column>
+			<column name="premise1" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="premise2" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="inference" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes" type="TEXT" />
+			<column name="updated_by"
+				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT4" />
+		</createTable>
+
+		<addUniqueConstraint schemaName="ruleform"
+			columnNames="premise1, premise2, inference"
+			constraintName="network_inference_relationship1_key"
+			deferrable="true" disabled="false" initiallyDeferred="true"
+			tableName="network_inference" />
+
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="authority" baseTableName="network_inference"
+			constraintName="network_inference_authority_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="premise1" baseTableName="network_inference"
+			constraintName="network_inference_premise1_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="premise2" baseTableName="network_inference"
+			constraintName="network_inference_premise2_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="inference" baseTableName="network_inference"
+			constraintName="network_inference_inference_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="CASCADE"
+			referencedColumnNames="id" referencedTableName="existential" />
+		<addForeignKeyConstraint
+			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+			baseColumnNames="updated_by" baseTableName="network_inference"
+			constraintName="network_inference_updated_by_fkey" deferrable="true"
+			initiallyDeferred="true" onDelete="SET DEFAULT"
+			referencedColumnNames="id" referencedTableName="existential" />
+
+		<createIndex schemaName="ruleform"
+			indexName="network_inference_premise2_fkey_idx"
+			tableName="network_inference" unique="false">
+			<column name="premise2" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="network_inference_inference_fkey_idx"
+			tableName="network_inference" unique="false">
+			<column name="inference" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="network_inference_updated_by_fkey_idx"
+			tableName="network_inference" unique="false">
+			<column name="updated_by" />
+		</createIndex>
+		<createIndex schemaName="ruleform"
+			indexName="network_inference_authority_idx"
+			tableName="network_inference" unique="false">
+			<column name="authority"></column>
+		</createIndex>
+	</changeSet>
 </databaseChangeLog>

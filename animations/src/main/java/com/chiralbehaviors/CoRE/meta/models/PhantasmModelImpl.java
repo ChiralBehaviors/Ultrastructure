@@ -223,7 +223,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
                                                .and(EDGE.CHILD.equal(EXISTENTIAL.ID))
                                                .and(EXISTENTIAL.DOMAIN.equal(domain))
-                                               .and(EDGE.INFERENCE.isNull())
                                                .fetchOne()
                                        : create.selectDistinct(EXISTENTIAL.fields())
                                                .from(EXISTENTIAL)
@@ -231,7 +230,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                .on(EDGE.PARENT.equal(parent.getId()))
                                                .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
                                                .and(EDGE.CHILD.equal(EXISTENTIAL.ID))
-                                               .and(EDGE.INFERENCE.isNull())
                                                .fetchOne();
         ;
         if (result == null) {
@@ -249,7 +247,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   .where(EDGE.PARENT.equal(parent.getId()))
                                   .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
                                   .and(EDGE.CHILD.equal(child.getId()))
-                                  .and(EDGE.INFERENCE.isNull())
                                   .fetchOne();
         if (result == null) {
             return null;
@@ -276,7 +273,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                        .and(EXISTENTIAL.ID.equal(EDGE.CHILD))
                                                        .where(EDGE.PARENT.equal(parent.getId()))
                                                        .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
-                                                       .and(EDGE.INFERENCE.isNull())
                                                        .fetch()
                                                : create.selectDistinct(EDGE.fields())
                                                        .from(EDGE)
@@ -284,7 +280,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                        .on(EXISTENTIAL.ID.equal(EDGE.CHILD))
                                                        .where(EDGE.PARENT.equal(parent.getId()))
                                                        .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
-                                                       .and(EDGE.INFERENCE.isNull())
                                                        .fetch();
         if (result == null) {
             return null;
@@ -313,7 +308,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   .where(EDGE.PARENT.equal(parent.getId()))
                                   .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
                                   .and(EDGE.CHILD.equal(child.getId()))
-                                  .and(EDGE.INFERENCE.isNull())
                                   .fetchOne();
         if (result == null) {
             return null;
@@ -499,12 +493,10 @@ public class PhantasmModelImpl implements PhantasmModel {
         create.deleteFrom(EDGE)
               .where(EDGE.PARENT.equal(parent.getId()))
               .and(EDGE.RELATIONSHIP.equal(relationship.getId()))
-              .and(EDGE.INFERENCE.isNull())
               .execute();
         create.deleteFrom(EDGE)
               .where(EDGE.CHILD.equal(parent.getId()))
               .and(EDGE.RELATIONSHIP.equal(relationship.getInverse()))
-              .and(EDGE.INFERENCE.isNull())
               .execute();
     }
 
@@ -538,7 +530,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                       .from(EXISTENTIAL, EDGE)
                                                       .where(EDGE.PARENT.equal(parent))
                                                       .and(EDGE.RELATIONSHIP.equal(relationship))
-                                                      .and(EDGE.INFERENCE.isNull())
                                                       .and(EXISTENTIAL.ID.equal(EDGE.CHILD));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));
@@ -560,7 +551,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                       .from(EXISTENTIAL, EDGE)
                                                       .where(EDGE.PARENT.equal(parent))
                                                       .and(EDGE.RELATIONSHIP.equal(relationship))
-                                                      .and(EDGE.INFERENCE.isNull())
                                                       .and(EXISTENTIAL.ID.equal(EDGE.CHILD));
         if (domain != null) {
             statement = statement.and(EXISTENTIAL.DOMAIN.equal(domain));

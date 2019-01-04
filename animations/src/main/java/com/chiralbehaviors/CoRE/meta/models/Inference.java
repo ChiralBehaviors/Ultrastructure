@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 
 import java.util.Arrays;
@@ -35,8 +35,8 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.Edge;
+import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
@@ -51,31 +51,20 @@ import com.chiralbehaviors.CoRE.meta.Model;
 public interface Inference {
 
     interface CurentPassRules {
-        Field<UUID> CHILD        = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "child"),
-                                             UUID.class);
-
         Field<UUID> ID           = DSL.field(DSL.name(CURRENT_PASS_RULES, "id"),
-                                             UUID.class);
-        Field<UUID> INFERENCE    = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "inference"),
                                              UUID.class);
         Field<UUID> PARENT       = DSL.field(DSL.name(CURRENT_PASS_RULES,
                                                       "parent"),
                                              UUID.class);
-        Field<UUID> PREMISE1     = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "premise1"),
-                                             UUID.class);
-        Field<UUID> PREMISE2     = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "premise2"),
-                                             UUID.class);
         Field<UUID> RELATIONSHIP = DSL.field(DSL.name(CURRENT_PASS_RULES,
                                                       "relationship"),
                                              UUID.class);
+        Field<UUID> CHILD        = DSL.field(DSL.name(CURRENT_PASS_RULES,
+                                                      "child"),
+                                             UUID.class);
 
         static List<Field<?>> fields() {
-            return Arrays.asList(ID, PARENT, RELATIONSHIP, CHILD, PREMISE1,
-                                 PREMISE2, INFERENCE);
+            return Arrays.asList(ID, PARENT, RELATIONSHIP, CHILD);
         }
     }
 
@@ -84,49 +73,29 @@ public interface Inference {
                                              UUID.class);
         Field<UUID> ID           = DSL.field(DSL.name(LAST_PASS_RULES, "id"),
                                              UUID.class);
-        Field<UUID> INFERENCE    = DSL.field(DSL.name(LAST_PASS_RULES,
-                                                      "inference"),
-                                             UUID.class);
         Field<UUID> PARENT       = DSL.field(DSL.name(LAST_PASS_RULES,
                                                       "parent"),
-                                             UUID.class);
-        Field<UUID> PREMISE1     = DSL.field(DSL.name(LAST_PASS_RULES,
-                                                      "premise1"),
-                                             UUID.class);
-        Field<UUID> PREMISE2     = DSL.field(DSL.name(LAST_PASS_RULES,
-                                                      "premise2"),
                                              UUID.class);
         Field<UUID> RELATIONSHIP = DSL.field(DSL.name(LAST_PASS_RULES,
                                                       "relationship"),
                                              UUID.class);
 
         static List<Field<?>> fields() {
-            return Arrays.asList(ID, PARENT, RELATIONSHIP, CHILD, PREMISE1,
-                                 PREMISE2, INFERENCE);
+            return Arrays.asList(ID, PARENT, RELATIONSHIP, CHILD);
         }
     }
 
     interface WorkingMemory {
-        Field<UUID> CHILD        = DSL.field(DSL.name(WORKING_MEMORY, "child"),
-                                             UUID.class);
-        Field<UUID> INFERENCE    = DSL.field(DSL.name(WORKING_MEMORY,
-                                                      "inference"),
-                                             UUID.class);
         Field<UUID> PARENT       = DSL.field(DSL.name(WORKING_MEMORY, "parent"),
-                                             UUID.class);
-        Field<UUID> PREMISE1     = DSL.field(DSL.name(WORKING_MEMORY,
-                                                      "premise1"),
-                                             UUID.class);
-        Field<UUID> PREMISE2     = DSL.field(DSL.name(WORKING_MEMORY,
-                                                      "premise2"),
                                              UUID.class);
         Field<UUID> RELATIONSHIP = DSL.field(DSL.name(WORKING_MEMORY,
                                                       "relationship"),
                                              UUID.class);
+        Field<UUID> CHILD        = DSL.field(DSL.name(WORKING_MEMORY, "child"),
+                                             UUID.class);
 
         static List<Field<?>> fields() {
-            return Arrays.asList(PARENT, RELATIONSHIP, CHILD, PREMISE1,
-                                 PREMISE2, INFERENCE);
+            return Arrays.asList(PARENT, RELATIONSHIP, CHILD);
         }
     }
 
@@ -159,9 +128,7 @@ public interface Inference {
         create().execute("CREATE TEMPORARY TABLE IF NOT EXISTS current_pass_rules ("
                          + "id uuid NOT NULL," + "parent uuid NOT NULL,"
                          + "relationship uuid NOT NULL,"
-                         + "child uuid NOT NULL," + "premise1 uuid NOT NULL,"
-                         + "premise2 uuid NOT NULL,"
-                         + "inference uuid NOT NULL )");
+                         + "child uuid NOT NULL )");
         create().truncate(CURRENT_PASS_RULES_TABLE)
                 .execute();
     }
@@ -175,9 +142,7 @@ public interface Inference {
     default void createLastPassRules() {
         create().execute("CREATE TEMPORARY TABLE IF NOT EXISTS last_pass_rules ("
                          + "id uuid NOT NULL, parent uuid NOT NULL,"
-                         + "relationship uuid NOT NULL, child uuid NOT NULL,"
-                         + "premise1 uuid NOT NULL, premise2 uuid NOT NULL,"
-                         + "inference uuid NOT NULL )");
+                         + "relationship uuid NOT NULL, child uuid NOT NULL )");
         create().truncate(LAST_PASS_RULES_TABLE)
                 .execute();
     }
@@ -185,8 +150,7 @@ public interface Inference {
     default void createWorkingMemory() {
         create().execute("CREATE TEMPORARY TABLE IF NOT EXISTS working_memory("
                          + "parent uuid NOT NULL, relationship uuid NOT NULL,"
-                         + "child uuid NOT NULL, premise1 uuid NOT NULL,"
-                         + "premise2 uuid NOT NULL, inference uuid NOT NULL )");
+                         + "child uuid NOT NULL)");
         create().truncate(WORKING_MEMORY_TABLE)
                 .execute();
     }
@@ -197,17 +161,11 @@ public interface Inference {
                                  .columns(CurentPassRules.ID,
                                           CurentPassRules.PARENT,
                                           CurentPassRules.RELATIONSHIP,
-                                          CurentPassRules.CHILD,
-                                          CurentPassRules.PREMISE1,
-                                          CurentPassRules.PREMISE2,
-                                          CurentPassRules.INFERENCE)
+                                          CurentPassRules.CHILD)
                                  .select(create().select(GENERATE_UUID,
                                                          WorkingMemory.PARENT,
                                                          WorkingMemory.RELATIONSHIP,
-                                                         WorkingMemory.CHILD,
-                                                         WorkingMemory.PREMISE1,
-                                                         WorkingMemory.PREMISE2,
-                                                         WorkingMemory.INFERENCE)
+                                                         WorkingMemory.CHILD)
                                                  .from(WORKING_MEMORY_TABLE))
                                  .execute();
         if (log.isTraceEnabled()) {
@@ -222,23 +180,13 @@ public interface Inference {
         Edge net = EDGE.as("net");
         Existential rel = EXISTENTIAL.as("rel");
 
-        int inverses = create().insertInto(EDGE,
-                                           EDGE.ID,
-                                           EDGE.PARENT,
-                                           EDGE.RELATIONSHIP,
-                                           EDGE.CHILD,
-                                           EDGE.INFERENCE,
-                                           EDGE.PREMISE1,
-                                           EDGE.PREMISE2,
-                                           EDGE.UPDATED_BY,
-                                           EDGE.VERSION)
+        int inverses = create().insertInto(EDGE, EDGE.ID, EDGE.PARENT,
+                                           EDGE.RELATIONSHIP, EDGE.CHILD,
+                                           EDGE.UPDATED_BY, EDGE.VERSION)
                                .select(create().select(GENERATE_UUID,
                                                        net.field(EDGE.CHILD),
                                                        rel.field(EXISTENTIAL.INVERSE),
                                                        net.field(EDGE.PARENT),
-                                                       net.field(EDGE.INFERENCE),
-                                                       net.field(EDGE.PREMISE1),
-                                                       net.field(EDGE.PREMISE2),
                                                        DSL.val(model().getCurrentPrincipal()
                                                                       .getPrincipal()
                                                                       .getId()),
@@ -272,23 +220,16 @@ public interface Inference {
 
         return create().insertInto(WORKING_MEMORY_TABLE, WorkingMemory.PARENT,
                                    WorkingMemory.RELATIONSHIP,
-                                   WorkingMemory.CHILD, WorkingMemory.INFERENCE,
-                                   WorkingMemory.PREMISE1,
-                                   WorkingMemory.PREMISE2)
+                                   WorkingMemory.CHILD)
                        .select(create().select(p1.field(EDGE.PARENT),
                                                NETWORK_INFERENCE.INFERENCE,
-                                               p2.field(EDGE.CHILD),
-                                               NETWORK_INFERENCE.ID,
-                                               p1.field(EDGE.ID),
-                                               p2.field(EDGE.ID))
+                                               p2.field(EDGE.CHILD))
                                        .from(p1)
                                        .join(p2)
                                        .on(p2.field(EDGE.PARENT)
                                              .equal(p1.field(EDGE.CHILD)))
                                        .and(p2.field(EDGE.CHILD)
                                               .notEqual(p1.field(EDGE.PARENT)))
-                                       .and(p2.field(p2.INFERENCE)
-                                              .isNull())
                                        .join(NETWORK_INFERENCE)
                                        .on(p1.field(EDGE.RELATIONSHIP)
                                              .equal(NETWORK_INFERENCE.PREMISE1))
@@ -327,23 +268,16 @@ public interface Inference {
 
         return create().insertInto(WORKING_MEMORY_TABLE, WorkingMemory.PARENT,
                                    WorkingMemory.RELATIONSHIP,
-                                   WorkingMemory.CHILD, WorkingMemory.INFERENCE,
-                                   WorkingMemory.PREMISE1,
-                                   WorkingMemory.PREMISE2)
+                                   WorkingMemory.CHILD)
                        .select(create().select(LastPassRules.PARENT,
                                                NETWORK_INFERENCE.INFERENCE,
-                                               p2.field(EDGE.CHILD),
-                                               NETWORK_INFERENCE.ID,
-                                               LastPassRules.ID,
-                                               p2.field(EDGE.ID))
+                                               p2.field(EDGE.CHILD))
                                        .from(LAST_PASS_RULES_TABLE)
                                        .join(p2)
                                        .on(p2.field(EDGE.PARENT)
                                              .equal(LastPassRules.CHILD))
                                        .and(p2.field(EDGE.CHILD)
                                               .notEqual(LastPassRules.PARENT))
-                                       .and(p2.field(EDGE.INFERENCE)
-                                              .isNull())
                                        .join(NETWORK_INFERENCE)
                                        .on(LastPassRules.RELATIONSHIP.equal(NETWORK_INFERENCE.PREMISE1))
                                        .and(p2.field(LastPassRules.RELATIONSHIP)
@@ -359,22 +293,13 @@ public interface Inference {
     }
 
     default int insert() {
-        return create().insertInto(EDGE, EDGE.ID,
-                                   EDGE.PARENT,
-                                   EDGE.RELATIONSHIP,
-                                   EDGE.CHILD,
-                                   EDGE.INFERENCE,
-                                   EDGE.PREMISE1,
-                                   EDGE.PREMISE2,
-                                   EDGE.UPDATED_BY,
-                                   EDGE.VERSION)
+        return create().insertInto(EDGE, EDGE.ID, EDGE.PARENT,
+                                   EDGE.RELATIONSHIP, EDGE.CHILD,
+                                   EDGE.UPDATED_BY, EDGE.VERSION)
                        .select(create().select(CurentPassRules.ID,
                                                CurentPassRules.PARENT,
                                                CurentPassRules.RELATIONSHIP,
                                                CurentPassRules.CHILD,
-                                               CurentPassRules.INFERENCE,
-                                               CurentPassRules.PREMISE1,
-                                               CurentPassRules.PREMISE2,
                                                DSL.val(model().getCurrentPrincipal()
                                                               .getPrincipal()
                                                               .getId()),

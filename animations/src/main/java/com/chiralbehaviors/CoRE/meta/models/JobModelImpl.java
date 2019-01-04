@@ -21,8 +21,8 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -516,15 +516,19 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<MetaProtocolRecord> getMetaprotocols(JobRecord job) {
-        return getMetaProtocolsFor(model.records()
-                                        .resolve(job.getService()));
+        return getMetaProtocolsFor(job.getService());
     }
 
     @Override
     public List<MetaProtocolRecord> getMetaProtocolsFor(Product service) {
+        UUID id = service.getId();
+        return getMetaProtocolsFor(id);
+    }
+
+    private List<MetaProtocolRecord> getMetaProtocolsFor(UUID service) {
         return model.create()
                     .selectFrom(META_PROTOCOL)
-                    .where(META_PROTOCOL.SERVICE.equal(service.getId()))
+                    .where(META_PROTOCOL.SERVICE.equal(service))
                     .fetch();
     }
 
@@ -1574,9 +1578,12 @@ public class JobModelImpl implements JobModel {
     private boolean pathExists(ExistentialRuleform rf,
                                Relationship mpRelationship,
                                ExistentialRuleform child) {
-        if (mpRelationship.equals(WellKnownRelationship.ANY)
-            || mpRelationship.equals(WellKnownRelationship.SAME)
-            || mpRelationship.equals(WellKnownRelationship.NOT_APPLICABLE)) {
+        if (mpRelationship.getId()
+                          .equals(WellKnownRelationship.ANY.id())
+            || mpRelationship.getId()
+                             .equals(WellKnownRelationship.SAME.id())
+            || mpRelationship.getId()
+                             .equals(WellKnownRelationship.NOT_APPLICABLE.id())) {
             return true;
         }
         if (!model.getPhantasmModel()

@@ -20,17 +20,23 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
+import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.Edge;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -46,136 +52,121 @@ public class NetworkInferrenceTest extends AbstractModelTest {
     public void testDeduction() throws Exception {
 
         Tuple<Relationship, Relationship> rels = model.records()
-                                                      .newRelationship("a", "a",
+                                                      .newRelationship("onStreet",
+                                                                       "a",
                                                                        "a'",
                                                                        "a'");
         rels.a.insert();
         rels.b.insert();
-        Relationship a = rels.a;
+        Relationship onStreet = rels.a;
 
         rels = model.records()
-                    .newRelationship("b", "b", "b'", "b'");
+                    .newRelationship("inCity", "b", "b'", "b'");
         rels.a.insert();
         rels.b.insert();
-        Relationship b = rels.a;
+        Relationship inCity = rels.a;
 
         rels = model.records()
-                    .newRelationship("c", "c", "c'", "c'");
+                    .newRelationship("inState", "c", "c'", "c'");
         rels.a.insert();
         rels.b.insert();
-        Relationship c = rels.a;
+        Relationship inState = rels.a;
 
         rels = model.records()
-                    .newRelationship("d", "d", "d'", "d'");
+                    .newRelationship("inCountry", "d", "d'", "d'");
         rels.a.insert();
         rels.b.insert();
-        Relationship d = rels.a;
-
-        rels = model.records()
-                    .newRelationship("e", "e", "e'", "e'");
-        rels.a.insert();
-        rels.b.insert();
-        Relationship e = rels.a;
-
-        rels = model.records()
-                    .newRelationship("f", "f", "f'", "f'");
-        rels.a.insert();
-        rels.b.insert();
-        Relationship f = rels.a;
-
-        rels = model.records()
-                    .newRelationship("g", "g", "g'", "g'");
-        rels.a.insert();
-        rels.b.insert();
-        Relationship g = rels.a;
+        Relationship inCountry = rels.a;
 
         NetworkInferenceRecord aIsB = model.records()
-                                           .newNetworkInference(a, b, a);
+                                           .newNetworkInference(onStreet,
+                                                                inCity, inCity);
         aIsB.insert();
         NetworkInferenceRecord aIsC = model.records()
-                                           .newNetworkInference(a, c, a);
+                                           .newNetworkInference(inCity, inState,
+                                                                inState);
         aIsC.insert();
         NetworkInferenceRecord aIsD = model.records()
-                                           .newNetworkInference(a, d, a);
+                                           .newNetworkInference(inState,
+                                                                inCountry,
+                                                                inCountry);
         aIsD.insert();
-        NetworkInferenceRecord aIsE = model.records()
-                                           .newNetworkInference(a, e, a);
-        aIsE.insert();
-        NetworkInferenceRecord aIsF = model.records()
-                                           .newNetworkInference(a, f, a);
-        aIsF.insert();
-        NetworkInferenceRecord aIsG = model.records()
-                                           .newNetworkInference(a, g, a);
-        aIsG.insert();
-        Agency A = model.records()
-                        .newAgency("A", "A");
-        A.insert();
-        Agency B = model.records()
-                        .newAgency("B", "B");
-        B.insert();
-        Agency C = model.records()
-                        .newAgency("C", "C");
-        C.insert();
-        Agency D = model.records()
-                        .newAgency("D", "D");
-        D.insert();
-        Agency E = model.records()
-                        .newAgency("E", "E");
-        E.insert();
-        Agency F = model.records()
-                        .newAgency("F", "F");
-        F.insert();
-        Agency G = model.records()
-                        .newAgency("G", "G");
-        G.insert();
-        Agency H = model.records()
-                        .newAgency("H", "H");
-        H.insert();
+
+        Agency house = model.records()
+                            .newAgency("House", "A");
+        house.insert();
+        Agency firstStreet = model.records()
+                                  .newAgency("1st Street", "B");
+        firstStreet.insert();
+        Agency Portland = model.records()
+                               .newAgency("Portland", "C");
+        Portland.insert();
+        Agency Oregon = model.records()
+                             .newAgency("Oregon", "D");
+        Oregon.insert();
+        Agency US = model.records()
+                         .newAgency("US", "E");
+        US.insert();
+
         EdgeRecord edgeA = model.records()
-                                .newExistentialNetwork(A, a, B);
+                                .newExistentialNetwork(house, onStreet,
+                                                       firstStreet);
         edgeA.insert();
         EdgeRecord edgeB = model.records()
-                                .newExistentialNetwork(B, b, C);
+                                .newExistentialNetwork(firstStreet, inCity,
+                                                       Portland);
         edgeB.insert();
         EdgeRecord edgeC = model.records()
-                                .newExistentialNetwork(C, c, D);
+                                .newExistentialNetwork(Portland, inState,
+                                                       Oregon);
         edgeC.insert();
         EdgeRecord edgeD = model.records()
-                                .newExistentialNetwork(D, d, E);
+                                .newExistentialNetwork(Oregon, inCountry, US);
         edgeD.insert();
-        EdgeRecord edgeE = model.records()
-                                .newExistentialNetwork(E, e, F);
-        edgeE.insert();
-        EdgeRecord edgeF = model.records()
-                                .newExistentialNetwork(F, f, G);
-        edgeF.insert();
-        EdgeRecord edgeG = model.records()
-                                .newExistentialNetwork(G, g, H);
-        edgeG.insert();
 
         model.flush();
 
-        Inference inference = new Inference() {
-
+        Inference inferenceApi = new Inference() {
             @Override
             public Model model() {
                 return model;
             }
         };
 
-        inference.dynamicInference(A.getId(), a.getId(), H.getId());
+        UUID parent = house.getId();
+        UUID relationship = inCountry.getId();
+        UUID child = US.getId();
+        
+        Edge p1 = EDGE.as("p1");
+        Edge p2 = EDGE.as("p2");
 
-        List<ExistentialRuleform> children = model.getPhantasmModel()
-                                                  .getChildren(A, a,
-                                                               ExistentialDomain.Agency);
-        assertEquals(String.format("%s", children.stream()
-                                                 .map(r -> r.getName())
-                                                 .collect(Collectors.toList())),
-                     7, children.size());
+        Record3<UUID, UUID, UUID> terminal;
+        terminal = model.create()
+                        .select(p1.field(EDGE.PARENT),
+                                NETWORK_INFERENCE.INFERENCE.as("relationship"),
+                                p2.field(EDGE.CHILD))
+                        .from(p1)
+                        .join(p2)
+                        .on(p2.field(EDGE.PARENT)
+                              .equal(p1.field(EDGE.CHILD))
+                              .and(p2.field(EDGE.CHILD)
+                                     .eq(child))
+                              .and(p2.field(EDGE.CHILD)
+                                     .notEqual(p1.field(EDGE.PARENT))))
+                        .join(NETWORK_INFERENCE)
+                        .on(NETWORK_INFERENCE.INFERENCE.eq(relationship)
+                                                       .and(p1.field(EDGE.RELATIONSHIP)
+                                                              .equal(NETWORK_INFERENCE.PREMISE1))
+                                                       .and(p2.field(EDGE.RELATIONSHIP)
+                                                              .equal(NETWORK_INFERENCE.PREMISE2)))
+                        .fetchOne();
+        RecordsFactory records = model.records();
 
-        List<EdgeRecord> childrenLinks = model.getPhantasmModel()
-                                              .getChildrenLinks(A, a);
-        assertEquals(7, childrenLinks.size());
+        System.out.println(String.format("%s.%s.%s",
+                                         records.existentialName(terminal.component1()),
+                                         records.existentialName(terminal.component2()),
+                                         records.existentialName(terminal.component3())));
+        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
     }
 
     @Test

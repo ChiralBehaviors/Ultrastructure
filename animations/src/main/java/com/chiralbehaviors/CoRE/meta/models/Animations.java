@@ -21,8 +21,8 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.PARENT_SEQUENCING_AUTHORIZATION;
@@ -286,9 +286,9 @@ public class Animations extends DefaultRecordListener {
     }
 
     private void propagate() {
-        if (inferNetwork) {
-            inference.propagate();
-        }
+//        if (inferNetwork) {
+//            inference.propagate();
+//        }
     }
 
     private void reset() {

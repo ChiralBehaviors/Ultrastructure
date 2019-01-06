@@ -87,7 +87,9 @@ public class Animations extends DefaultRecordListener {
     private final Map<RecordType<?>, Consumer<RecordContext>> afterInsert        = new HashMap<>();
     private final Map<RecordType<?>, Consumer<RecordContext>> afterUpdate        = new HashMap<>();
     private final Set<ChildSequencingAuthorizationRecord>     childSequences     = new HashSet<>();
+    @SuppressWarnings("unused")
     private final Inference                                   inference;
+    @SuppressWarnings("unused")
     private boolean                                           inferNetwork;
     private final List<JobRecord>                             jobs               = new ArrayList<>();
     private final Model                                       model;

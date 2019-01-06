@@ -120,19 +120,18 @@ public interface Inference {
         }
     }
 
-    final String                                     DEDUCTIONS               = "deductions";
-    @SuppressWarnings("unchecked")
-    final Table<? extends Record3<UUID, UUID, UUID>> DEDUCTIONS_TABLE         = (Table<? extends Record3<UUID, UUID, UUID>>) DSL.table(DSL.name(DEDUCTIONS));
-    final String                                     CURRENT_PASS_RULES       = "current_pass_rules";
-    final Table<?>                                   CURRENT_PASS_RULES_TABLE = DSL.table(DSL.name(CURRENT_PASS_RULES));
-    static Field<UUID>                               GENERATE_UUID            = DSL.field("uuid_generate_v1mc()",
-                                                                                          UUID.class);
-    final String                                     LAST_PASS_RULES          = "last_pass_rules";
-    final Table<?>                                   LAST_PASS_RULES_TABLE    = DSL.table(DSL.name(LAST_PASS_RULES));
-    static Logger                                    log                      = LoggerFactory.getLogger(Inference.class);
-    static int                                       MAX_DEDUCTIONS           = 1000;
-    final String                                     WORKING_MEMORY           = "working_memory";
-    final Table<?>                                   WORKING_MEMORY_TABLE     = DSL.table(DSL.name(WORKING_MEMORY));
+    final String        DEDUCTIONS               = "deductions";
+    final Table<Record> DEDUCTIONS_TABLE         = DSL.table(DSL.name(DEDUCTIONS));
+    final String        CURRENT_PASS_RULES       = "current_pass_rules";
+    final Table<?>      CURRENT_PASS_RULES_TABLE = DSL.table(DSL.name(CURRENT_PASS_RULES));
+    static Field<UUID>  GENERATE_UUID            = DSL.field("uuid_generate_v1mc()",
+                                                             UUID.class);
+    final String        LAST_PASS_RULES          = "last_pass_rules";
+    final Table<?>      LAST_PASS_RULES_TABLE    = DSL.table(DSL.name(LAST_PASS_RULES));
+    static Logger       log                      = LoggerFactory.getLogger(Inference.class);
+    static int          MAX_DEDUCTIONS           = 1000;
+    final String        WORKING_MEMORY           = "working_memory";
+    final Table<?>      WORKING_MEMORY_TABLE     = DSL.table(DSL.name(WORKING_MEMORY));
 
     default void alterDeductionTablesForNextPass() {
         create().truncate("last_pass_rules")
@@ -207,13 +206,13 @@ public interface Inference {
         Edge premise1 = EDGE.as("premise1");
         Edge premise2 = EDGE.as("premise2");
 
-        Table<? extends Record3<UUID, UUID, UUID>> backtrack = DEDUCTIONS_TABLE.as("deduced");
+        Table<Record> backtrack = DEDUCTIONS_TABLE.as("deduced");
 
         SelectOnConditionStep<Record3<UUID, UUID, UUID>> termination;
         Select<? extends Record3<UUID, UUID, UUID>> inferences;
 
         termination = create().select(p1.field(EDGE.PARENT),
-                                      NETWORK_INFERENCE.INFERENCE.as("relationship"),
+                                      NETWORK_INFERENCE.INFERENCE,
                                       p2.field(EDGE.CHILD))
                               .from(p1)
                               .join(p2)
@@ -231,8 +230,7 @@ public interface Inference {
                                                                     .equal(NETWORK_INFERENCE.PREMISE2)));
 
         inferences = create().select(premise1.field(EDGE.PARENT),
-                                     networkInference.field(NETWORK_INFERENCE.PREMISE1)
-                                                     .as("relationship"),
+                                     networkInference.field(NETWORK_INFERENCE.INFERENCE),
                                      premise2.field(EDGE.CHILD))
                              .from(premise1)
                              .join(premise2)
@@ -249,14 +247,14 @@ public interface Inference {
                              .on(premise2.field(EDGE.CHILD)
                                          .eq(Deductions.PARENT));
 
-        Result<? extends Record3<UUID, UUID, UUID>> fetched = create().withRecursive(DEDUCTIONS_TABLE.getName(),
-                                                                                     Deductions.PARENT.getName(),
-                                                                                     Deductions.RELATIONSHIP.getName(),
-                                                                                     Deductions.CHILD.getName())
-                                                                      .as(termination.unionAll(inferences))
-                                                                      .selectFrom(backtrack)
-                                                                      .where(Deductions.PARENT.eq(parent))
-                                                                      .fetch();
+        Result<Record> fetched = create().withRecursive(DEDUCTIONS_TABLE.getName(),
+                                                        Deductions.PARENT.getName(),
+                                                        Deductions.RELATIONSHIP.getName(),
+                                                        Deductions.CHILD.getName())
+                                         .as(termination.unionAll(inferences))
+                                         .selectFrom(backtrack)
+                                         .where(Deductions.PARENT.eq(parent))
+                                         .fetch();
         return fetched.size() == 1;
     }
 

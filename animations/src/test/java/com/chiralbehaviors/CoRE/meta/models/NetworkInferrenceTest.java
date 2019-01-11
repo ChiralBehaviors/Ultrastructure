@@ -20,23 +20,16 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
-import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
-import org.jooq.Record3;
-import org.jooq.Result;
-import org.jooq.SelectOnConditionStep;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.Edge;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -133,39 +126,9 @@ public class NetworkInferrenceTest extends AbstractModelTest {
             }
         };
 
-        UUID parent = Portland.getId();
+        UUID parent = house.getId();
         UUID relationship = inCountry.getId();
         UUID child = US.getId();
-        
-        Edge p1 = EDGE.as("p1");
-        Edge p2 = EDGE.as("p2");
-
-        Record3<UUID, UUID, UUID> terminal;
-        terminal = model.create()
-                        .select(p1.field(EDGE.PARENT),
-                                NETWORK_INFERENCE.INFERENCE.as("relationship"),
-                                p2.field(EDGE.CHILD))
-                        .from(p1)
-                        .join(p2)
-                        .on(p2.field(EDGE.PARENT)
-                              .equal(p1.field(EDGE.CHILD))
-                              .and(p2.field(EDGE.CHILD)
-                                     .eq(child))
-                              .and(p2.field(EDGE.CHILD)
-                                     .notEqual(p1.field(EDGE.PARENT))))
-                        .join(NETWORK_INFERENCE)
-                        .on(NETWORK_INFERENCE.INFERENCE.eq(relationship)
-                                                       .and(p1.field(EDGE.RELATIONSHIP)
-                                                              .equal(NETWORK_INFERENCE.PREMISE1))
-                                                       .and(p2.field(EDGE.RELATIONSHIP)
-                                                              .equal(NETWORK_INFERENCE.PREMISE2)))
-                        .fetchOne();
-        RecordsFactory records = model.records();
-
-        System.out.println(String.format("%s.%s.%s",
-                                         records.existentialName(terminal.component1()),
-                                         records.existentialName(terminal.component2()),
-                                         records.existentialName(terminal.component3())));
         assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
     }
 

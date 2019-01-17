@@ -126,9 +126,18 @@ public class NetworkInferrenceTest extends AbstractModelTest {
             }
         };
 
-        UUID parent = firstStreet.getId();
+        UUID parent = Oregon.getId();
         UUID relationship = inCountry.getId();
         UUID child = US.getId();
+        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        parent = Portland.getId();
+        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        parent = firstStreet.getId();
+        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        parent = house.getId();
         assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
     }
 

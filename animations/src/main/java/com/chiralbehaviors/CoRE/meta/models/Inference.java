@@ -372,7 +372,7 @@ public interface Inference {
         Field<UUID> targetParent = DSL.field(DSL.name(target.getName(),
                                                       "parent"),
                                              UUID.class);
-        Table<Record> backtrack = INFERENCES_TABLE.as("deduced");
+        Table<Record> backtrack = INFERENCES_TABLE.as("inferred");
         Field<UUID> backtrackParent = DSL.field(DSL.name(backtrack.getName(),
                                                          "parent"),
                                                 UUID.class);

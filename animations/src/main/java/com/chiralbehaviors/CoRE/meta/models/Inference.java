@@ -34,7 +34,6 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Select;
-import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
@@ -73,20 +72,6 @@ public interface Inference {
         }
     }
 
-    interface Deductions {
-        Field<UUID> CHILD        = DSL.field(DSL.name("deduced", "child"),
-                                             UUID.class);
-        Field<UUID> PARENT       = DSL.field(DSL.name("deduced", "parent"),
-                                             UUID.class);
-        Field<UUID> RELATIONSHIP = DSL.field(DSL.name("deduced",
-                                                      "relationship"),
-                                             UUID.class);
-
-        static List<Field<?>> fields() {
-            return Arrays.asList(PARENT, RELATIONSHIP, CHILD);
-        }
-    }
-
     interface LastPassRules {
         Field<UUID> CHILD        = DSL.field(DSL.name(LAST_PASS_RULES, "child"),
                                              UUID.class);
@@ -118,6 +103,8 @@ public interface Inference {
         }
     }
 
+    final Field<UUID>   CHILD                    = DSL.field(DSL.name("child"),
+                                                             UUID.class);
     final String        CURRENT_PASS_RULES       = "current_pass_rules";
     final Table<?>      CURRENT_PASS_RULES_TABLE = DSL.table(DSL.name(CURRENT_PASS_RULES));
     final String        DEDUCTIONS               = "deductions";
@@ -128,6 +115,12 @@ public interface Inference {
     final Table<?>      LAST_PASS_RULES_TABLE    = DSL.table(DSL.name(LAST_PASS_RULES));
     static Logger       log                      = LoggerFactory.getLogger(Inference.class);
     static int          MAX_DEDUCTIONS           = 1000;
+    final Field<UUID>   PARENT                   = DSL.field(DSL.name("parent"),
+                                                             UUID.class);
+    final Field<UUID>   RELATIONSHIP             = DSL.field(DSL.name("relationship"),
+                                                             UUID.class);
+    final String        TARGET                   = "target";
+    final Table<Record> TARGET_TABLE             = DSL.table(DSL.name(TARGET));
     final String        WORKING_MEMORY           = "working_memory";
     final Table<?>      WORKING_MEMORY_TABLE     = DSL.table(DSL.name(WORKING_MEMORY));
 
@@ -198,14 +191,19 @@ public interface Inference {
     default boolean dynamicInference(UUID parent, UUID relationship,
                                      UUID child) {
 
-        return create().fetchExists(create().withRecursive(DEDUCTIONS_TABLE.getName(),
-                                                           Deductions.PARENT.getName(),
-                                                           Deductions.RELATIONSHIP.getName(),
-                                                           Deductions.CHILD.getName())
-                                            .as(terminalInference(relationship,
-                                                                  child).union(recursiveInferences(parent)))
-                                            .selectFrom(DEDUCTIONS_TABLE.as("deduced"))
-                                            .where(Deductions.PARENT.eq(parent)));
+        return create().fetchExists(create().withRecursive(TARGET_TABLE.getName(),
+                                                           PARENT.getName(),
+                                                           RELATIONSHIP.getName(),
+                                                           CHILD.getName())
+                                            .as(target(parent, relationship,
+                                                       child))
+                                            .with(DEDUCTIONS_TABLE.getName(),
+                                                  PARENT.getName(),
+                                                  RELATIONSHIP.getName(),
+                                                  CHILD.getName())
+                                            .as(terminalInference().union(recursiveInferences()))
+                                            .selectFrom(DEDUCTIONS_TABLE)
+                                            .where(PARENT.eq(parent)));
     }
 
     default void generateInverses() {
@@ -369,8 +367,15 @@ public interface Inference {
         generateInverses();
     }
 
-    default Select<? extends Record3<UUID, UUID, UUID>> recursiveInferences(UUID parent) {
+    default Select<? extends Record3<UUID, UUID, UUID>> recursiveInferences() {
+        Table<Record> target = TARGET_TABLE.as("target");
+        Field<UUID> targetParent = DSL.field(DSL.name(target.getName(),
+                                                      "parent"),
+                                             UUID.class);
         Table<Record> backtrack = DEDUCTIONS_TABLE.as("deduced");
+        Field<UUID> backtrackParent = DSL.field(DSL.name(backtrack.getName(),
+                                                         "parent"),
+                                                UUID.class);
         Edge premise1 = EDGE.as("premise1");
         Edge premise2 = EDGE.as("premise2");
 
@@ -390,57 +395,36 @@ public interface Inference {
                                                 .equal(NETWORK_INFERENCE.PREMISE2)))
                        .join(backtrack)
                        .on(premise2.field(EDGE.CHILD)
-                                   .eq(Deductions.PARENT)
+                                   .eq(backtrackParent)
                                    .or(premise1.field(EDGE.CHILD)
-                                               .eq(Deductions.PARENT)))
-                       .and(premise1.field(EDGE.CHILD)
-                                    .notEqual(parent))
-                       .and(premise2.field(EDGE.CHILD)
-                                    .notEqual(parent));
+                                               .eq(backtrackParent)))
+                       .join(target)
+                       .on(premise1.field(EDGE.CHILD)
+                                   .notEqual(targetParent)
+                                   .and(premise2.field(EDGE.CHILD)
+                                                .notEqual(targetParent)));
     }
 
-    default Select<Record3<UUID, UUID, UUID>> terminalInference(UUID relationship,
-                                                                UUID child) {
+    default Select<Record3<UUID, UUID, UUID>> target(UUID parent,
+                                                     UUID relationship,
+                                                     UUID child) {
+        return create().select(value(parent), value(relationship),
+                               value(child));
+    }
+
+    default Select<Record3<UUID, UUID, UUID>> terminalInference() {
+        Table<Record> target = TARGET_TABLE.as("target");
+        Field<UUID> relationship = DSL.field(DSL.name(target.getName(),
+                                                      "relationship"),
+                                             UUID.class);
+        Field<UUID> child = DSL.field(DSL.name(target.getName(), "child"),
+                                      UUID.class);
         Edge p1 = EDGE.as("p1");
-        return create().select(p1.field(EDGE.PARENT), value(relationship),
-                               value(child))
-                       .from(p1)
+        return create().select(p1.field(EDGE.PARENT), relationship, child)
+                       .from(p1, target)
                        .where(p1.field(EDGE.RELATIONSHIP)
                                 .eq(relationship))
                        .and(p1.field(EDGE.CHILD)
                               .eq(child));
-    }
-
-    default SelectConditionStep<Record> termination(UUID classifier,
-                                                    UUID classification) {
-        Edge exist = EDGE.as("exist");
-        Edge p1 = EDGE.as("p1");
-        Edge p2 = EDGE.as("p2");
-
-        return DSL.select(Arrays.asList(p1.field(EDGE.PARENT),
-                                        NETWORK_INFERENCE.INFERENCE,
-                                        p2.field(EDGE.CHILD)))
-                  .from(p1)
-                  .join(p2)
-                  .on(p2.field(EDGE.PARENT)
-                        .equal(p1.field(EDGE.CHILD)))
-                  .and(p2.field(EDGE.CHILD)
-                         .notEqual(p1.field(EDGE.PARENT)))
-                  .join(NETWORK_INFERENCE)
-                  .on(p1.field(EDGE.RELATIONSHIP)
-                        .equal(NETWORK_INFERENCE.PREMISE1))
-                  .and(p2.field(EDGE.RELATIONSHIP)
-                         .equal(NETWORK_INFERENCE.PREMISE2))
-                  .and(p2.field(EDGE.RELATIONSHIP)
-                         .equal(classifier))
-                  .leftOuterJoin(exist)
-                  .on(exist.field(EDGE.PARENT)
-                           .equal(p1.field(EDGE.PARENT)))
-                  .and(exist.field(EDGE.RELATIONSHIP)
-                            .equal(NETWORK_INFERENCE.INFERENCE))
-                  .and(exist.field(EDGE.CHILD)
-                            .equal(classification))
-                  .where(exist.field(EDGE.ID)
-                              .isNull());
     }
 }

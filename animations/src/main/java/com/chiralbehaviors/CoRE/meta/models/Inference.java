@@ -107,10 +107,10 @@ public interface Inference {
                                                              UUID.class);
     final String        CURRENT_PASS_RULES       = "current_pass_rules";
     final Table<?>      CURRENT_PASS_RULES_TABLE = DSL.table(DSL.name(CURRENT_PASS_RULES));
-    final String        DEDUCTIONS               = "deductions";
-    final Table<Record> DEDUCTIONS_TABLE         = DSL.table(DSL.name(DEDUCTIONS));
     static Field<UUID>  GENERATE_UUID            = DSL.field("uuid_generate_v1mc()",
                                                              UUID.class);
+    final String        INFERENCES               = "inferences";
+    final Table<Record> INFERENCES_TABLE         = DSL.table(DSL.name(INFERENCES));
     final String        LAST_PASS_RULES          = "last_pass_rules";
     final Table<?>      LAST_PASS_RULES_TABLE    = DSL.table(DSL.name(LAST_PASS_RULES));
     static Logger       log                      = LoggerFactory.getLogger(Inference.class);
@@ -197,12 +197,12 @@ public interface Inference {
                                                            CHILD.getName())
                                             .as(target(parent, relationship,
                                                        child))
-                                            .with(DEDUCTIONS_TABLE.getName(),
+                                            .with(INFERENCES_TABLE.getName(),
                                                   PARENT.getName(),
                                                   RELATIONSHIP.getName(),
                                                   CHILD.getName())
                                             .as(terminalInference().union(recursiveInferences()))
-                                            .selectFrom(DEDUCTIONS_TABLE)
+                                            .selectFrom(INFERENCES_TABLE)
                                             .where(PARENT.eq(parent)));
     }
 
@@ -372,7 +372,7 @@ public interface Inference {
         Field<UUID> targetParent = DSL.field(DSL.name(target.getName(),
                                                       "parent"),
                                              UUID.class);
-        Table<Record> backtrack = DEDUCTIONS_TABLE.as("deduced");
+        Table<Record> backtrack = INFERENCES_TABLE.as("deduced");
         Field<UUID> backtrackParent = DSL.field(DSL.name(backtrack.getName(),
                                                          "parent"),
                                                 UUID.class);
@@ -414,17 +414,18 @@ public interface Inference {
 
     default Select<Record3<UUID, UUID, UUID>> terminalInference() {
         Table<Record> target = TARGET_TABLE.as("target");
-        Field<UUID> relationship = DSL.field(DSL.name(target.getName(),
-                                                      "relationship"),
-                                             UUID.class);
-        Field<UUID> child = DSL.field(DSL.name(target.getName(), "child"),
-                                      UUID.class);
+        Field<UUID> targetRelationship = DSL.field(DSL.name(target.getName(),
+                                                            "relationship"),
+                                                   UUID.class);
+        Field<UUID> targetChild = DSL.field(DSL.name(target.getName(), "child"),
+                                            UUID.class);
         Edge p1 = EDGE.as("p1");
-        return create().select(p1.field(EDGE.PARENT), relationship, child)
+        return create().select(p1.field(EDGE.PARENT), targetRelationship,
+                               targetChild)
                        .from(p1, target)
                        .where(p1.field(EDGE.RELATIONSHIP)
-                                .eq(relationship))
+                                .eq(targetRelationship))
                        .and(p1.field(EDGE.CHILD)
-                              .eq(child));
+                              .eq(targetChild));
     }
 }

@@ -288,9 +288,9 @@ public class Animations extends DefaultRecordListener {
     }
 
     private void propagate() {
-//        if (inferNetwork) {
-//            inference.propagate();
-//        }
+        if (inferNetwork) {
+            inference.generateInverses();
+        }
     }
 
     private void reset() {

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Routines.infer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -32,7 +33,6 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -119,26 +119,35 @@ public class NetworkInferrenceTest extends AbstractModelTest {
 
         model.flush();
 
-        Inference inferenceApi = new Inference() {
-            @Override
-            public Model model() {
-                return model;
-            }
-        };
-
         UUID parent = Oregon.getId();
         UUID relationship = inCountry.getId();
         UUID child = US.getId();
-        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        assertTrue(model.create()
+                        .select(infer(parent, relationship, child))
+                        .fetchOne()
+                        .component1());
 
         parent = Portland.getId();
-        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        assertTrue(model.create()
+                        .select(infer(parent, relationship, child))
+                        .fetchOne()
+                        .component1());
 
         parent = firstStreet.getId();
-        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        assertTrue(model.create()
+                        .select(infer(parent, relationship, child))
+                        .fetchOne()
+                        .component1());
 
         parent = house.getId();
-        assertTrue(inferenceApi.dynamicInference(parent, relationship, child));
+
+        assertTrue(model.create()
+                        .select(infer(parent, relationship, child))
+                        .fetchOne()
+                        .component1());
     }
 
     @Test

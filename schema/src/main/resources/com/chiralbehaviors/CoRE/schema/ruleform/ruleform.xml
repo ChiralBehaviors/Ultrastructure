@@ -16,5 +16,6 @@
 		file="reference_type.xml" />
 	<include relativeToChangelogFile="true" file="cardinality.xml" />
 	<include relativeToChangelogFile="true" file="tables.xml" />
+	<include relativeToChangelogFile="true" file="inference.xml" />
 
 </databaseChangeLog>

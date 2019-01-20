@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="2.0.0" author="hhildebrand">
+		<sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION infer(parent uuid, relationship uuid, child uuid) 
+            RETURNS boolean AS $$
+            select true as "one" 
+            where exists (
+                with recursive "target"("parent", "relationship", "child") 
+                    as (select parent, relationship, child),
+                "inferences"("parent", "relationship", "child") as (
+                    (
+                        select "p1"."parent", "target"."relationship", "target"."child"
+                            from "ruleform"."edge" as "p1", "target" as "target" 
+                                where ("p1"."relationship" = "target"."relationship" and "p1"."child" = "target"."child")
+                    ) union (
+                        select "premise1"."parent", "ruleform"."network_inference"."inference", "premise2"."child" 
+                            from "ruleform"."edge" as "premise1" 
+                            join "ruleform"."edge" as "premise2" 
+                                on ("premise2"."parent" = "premise1"."child" and "premise2"."child" <> "premise1"."parent") 
+                            join "ruleform"."network_inference" 
+                                on ("premise1"."relationship" = "ruleform"."network_inference"."premise1" and "premise2"."relationship" = "ruleform"."network_inference"."premise2") 
+                            join "inferences" as "inferred" 
+                                on ("premise2"."child" = "inferred"."parent" or "premise1"."child" = "inferred"."parent")
+                            join "target" as "target" 
+                                on ("premise1"."child" <> "target"."parent" and "premise2"."child" <> "target"."parent")
+                    )
+                ) 
+                select * from "inferences" where "parent" = parent
+            )
+            $$ LANGUAGE SQL;
+        ]]>
+		</sql>
+	</changeSet>
+</databaseChangeLog> 

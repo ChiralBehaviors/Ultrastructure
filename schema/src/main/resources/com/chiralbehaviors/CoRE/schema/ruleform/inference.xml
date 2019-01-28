@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="2.0.0" author="hhildebrand">
+		<sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION infer(par uuid, rel uuid, chld uuid) 
+            RETURNS boolean AS $$
+			select exists (
+			    with recursive target(parent, relationship, child) 
+			        as (select par, rel, chld),
+			    inferences(parent, relationship, child) 
+			        as (
+			            (
+			                select p1.parent, target.relationship, target.child
+			                    from ruleform.edge as p1, 
+			                         target as target 
+			                where (p1.relationship = target.relationship and p1.child = target.child)
+			            ) union (
+			                select p, r, c 
+			                    from inferences as inferred, 
+			                         ruleform.all_network_inferences, 
+			                         lateral (
+			                            (
+			                                select graph.parent as p, 
+			                                       ruleform.all_network_inferences.inference as r, 
+			                                       inferred.child as c
+			                                    from target as target 
+			                                join ruleform.edge as graph 
+			                                    on (graph.parent <> inferred.child
+			                                        and graph.relationship = ruleform.all_network_inferences.premise1
+			                                        and graph.child <> target.parent
+			                                        and graph.child = inferred.parent) 
+			                                where (inferred.child <> target.parent 
+			                                       and inferred.relationship = ruleform.all_network_inferences.premise2)
+			                            ) union (
+			                                select graph.parent as p, ruleform.all_network_inferences.premise1 as r, inferred.parent as c
+			                                    from target as target 
+			                                join ruleform.edge as graph 
+			                                    on (graph.parent <> inferred.child 
+			                                        and graph.relationship = ruleform.all_network_inferences.premise1
+			                                        and graph.child = inferred.parent and graph.child <> target.parent)
+			                                where (inferred.child <> target.parent
+			                                       and inferred.relationship = ruleform.all_network_inferences.premise2)
+			                            ) union (
+			                                select inferred.parent as p, ruleform.all_network_inferences.inference as r, graph.child as c
+			                                    from target as target
+			                                join ruleform.edge as graph 
+			                                    on (graph.parent = inferred.child
+			                                        and graph.relationship = ruleform.all_network_inferences.premise2
+			                                        and graph.child <> target.parent
+			                                        and graph.child <> inferred.child)
+			                                where (inferred.child <> target.parent 
+			                                       and inferred.relationship = ruleform.all_network_inferences.premise1)
+			                            )
+			                        ) as alias_83156015
+			            )
+			        ) 
+			    select * from inferences, target
+			        where (inferences.parent = target.parent
+			               and inferences.relationship = target.relationship 
+			               and inferences.child = target.child)
+			)
+            $$ LANGUAGE SQL;
+        ]]>
+		</sql>
+	</changeSet>
+</databaseChangeLog> 

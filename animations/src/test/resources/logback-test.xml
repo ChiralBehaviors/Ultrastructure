@@ -13,7 +13,7 @@
 		<level value="info" />
 	</logger>
     <logger name="org.jooq.tools.LoggerListener">
-        <level value="info" />
+        <level value="INFO" />
     </logger> 
 	<root>
 		<level value="INFO" />

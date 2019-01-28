@@ -29,10 +29,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.util.UUID;
 
+import org.jooq.util.postgres.PostgresDSL;
+import org.junit.AfterClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.json.CoREModule;
@@ -49,8 +53,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class StateSnapshotTest extends AbstractModelTest {
-
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
+
+    @AfterClass
+    public static void cleanup() {
+        try {
+            Connection connection = newConnection();
+            RecordsFactory.clear(PostgresDSL.using(connection));
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testSnap() throws Exception {
@@ -70,7 +84,7 @@ public class StateSnapshotTest extends AbstractModelTest {
                             .getId();
             snap = myModel.snapshot();
             assertEquals(3, snap.getInserts()
-                                 .size());
+                                .size());
             try (OutputStream os = new FileOutputStream(new File(TARGET_TEST_CLASSES,
                                                                  THINGS_JSON))) {
                 snap.serializeTo(os);

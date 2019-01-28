@@ -1226,6 +1226,7 @@ public class JobModelImpl implements JobModel {
         selectQuery.addConditions(condition);
     }
 
+    @SuppressWarnings("unused")
     private void addMask2(SelectQuery<Record> selectQuery,
                           TableField<?, UUID> parent, UUID relationship,
                           UUID child, ExistentialDomain domain) {

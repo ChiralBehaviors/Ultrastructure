@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.ALL_NETWORK_INFERENCES;
 import static com.chiralbehaviors.CoRE.jooq.Tables.AUTHENTICATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
@@ -53,6 +54,7 @@ public class StateSnapshot extends WorkspaceSnapshot {
                          .filter(t -> !t.equals(TOKEN))
                          .filter(t -> !t.equals(AUTHENTICATION))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
+                         .filter(t -> !t.equals(ALL_NETWORK_INFERENCES))
                          .forEach(t -> {
                              records.addAll(create.selectDistinct(t.fields())
                                                   .from(t)

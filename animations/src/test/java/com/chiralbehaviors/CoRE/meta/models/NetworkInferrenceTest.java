@@ -20,12 +20,12 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Routines.infer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +134,7 @@ public class NetworkInferrenceTest extends AbstractModelTest {
 
         UUID parent = Oregon.getId();
         UUID relationship = inCountry.getId();
-        UUID child = US.getId(); 
+        UUID child = US.getId();
 
         assertTrue(inf.dynamicInference(parent, relationship, child));
 
@@ -149,6 +149,7 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         parent = house.getId();
 
         assertTrue(inf.dynamicInference(parent, relationship, child));
+
     }
 
     @SuppressWarnings("unused")
@@ -158,6 +159,7 @@ public class NetworkInferrenceTest extends AbstractModelTest {
         l.setLevel(Level.DEBUG);
     }
 
+    @Ignore
     @Test
     public void testIterativeInference() throws Exception {
         Relationship equals = model.records()

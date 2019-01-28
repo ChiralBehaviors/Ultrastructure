@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.ALL_NETWORK_INFERENCES;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
@@ -41,7 +42,6 @@ import org.jooq.Record3;
 import org.jooq.Select;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.Table;
 import org.slf4j.Logger;
@@ -128,45 +128,6 @@ public interface Inference {
     final String        WORKING_MEMORY           = "working_memory";
     final Table<?>      WORKING_MEMORY_TABLE     = table(name(WORKING_MEMORY));
 
-    default Select<Record3<UUID, UUID, UUID>> allNetworkInferences() {
-        Field<UUID> premise1 = field(name("premise1"), UUID.class);
-        Field<UUID> premise2 = field(name("premise2"), UUID.class);
-        Field<UUID> inference = field(name("inference"), UUID.class);
-
-        Existential p1Inv = EXISTENTIAL.as("p1Inv");
-        Existential p2Inv = EXISTENTIAL.as("p2Inv");
-        Existential infInv = EXISTENTIAL.as("infInv");
-
-        Field<UUID> p1 = p1Inv.field(EXISTENTIAL.INVERSE)
-                              .as("premise1");
-        Field<UUID> p2 = p2Inv.field(EXISTENTIAL.INVERSE)
-                              .as("premise2");
-        Field<UUID> inf = infInv.field(EXISTENTIAL.INVERSE)
-                                .as("inference");
-
-        SelectOnConditionStep<Record3<UUID, UUID, UUID>> inverseInferences;
-        inverseInferences = create().select(p2, p1, inf)
-                                    .from(NETWORK_INFERENCE)
-                                    .join(p1Inv)
-                                    .on(p1Inv.field(EXISTENTIAL.ID)
-                                             .eq(NETWORK_INFERENCE.PREMISE1))
-                                    .join(p2Inv)
-                                    .on(p2Inv.field(EXISTENTIAL.ID)
-                                             .eq(NETWORK_INFERENCE.PREMISE2))
-                                    .join(infInv)
-                                    .on(infInv.field(EXISTENTIAL.ID)
-                                              .eq(NETWORK_INFERENCE.INFERENCE));
-
-        return create().select(premise1.as("p1"), premise2.as("p2"),
-                               inference.as("inf"))
-                       .from(create().select(NETWORK_INFERENCE.PREMISE1,
-                                             NETWORK_INFERENCE.PREMISE2,
-                                             NETWORK_INFERENCE.INFERENCE)
-                                     .from(NETWORK_INFERENCE)
-                                     .union(inverseInferences))
-                       .orderBy(premise1, premise2, inference);
-    }
-
     default void alterDeductionTablesForNextPass() {
         create().truncate("last_pass_rules")
                 .execute();
@@ -248,17 +209,17 @@ public interface Inference {
                                  .as(terminalInference().union(recursiveInferences()))
                                  .selectFrom(INFERENCES_TABLE);
 
-        System.out.println();
-        inferenceQuery.fetch()
-                      .stream()
-                      .map(r -> {
-                          return records.existentialName((UUID) r.get(0))
-                                 + " -> "
-                                 + records.existentialName((UUID) r.get(1))
-                                 + " -> "
-                                 + records.existentialName((UUID) r.get(2));
-                      })
-                      .forEach(row -> System.out.println(row));
+//        System.out.println();
+//        inferenceQuery.fetch()
+//                      .stream()
+//                      .map(r -> {
+//                          return records.existentialName((UUID) r.get(0))
+//                                 + " -> "
+//                                 + records.existentialName((UUID) r.get(1))
+//                                 + " -> "
+//                                 + records.existentialName((UUID) r.get(2));
+//                      })
+//                      .forEach(row -> System.out.println(row));
 
         return create().fetchExists(inferenceQuery.where(PARENT.eq(parent)
                                                                .and(RELATIONSHIP.eq(relationship))
@@ -427,15 +388,6 @@ public interface Inference {
     }
 
     default SelectJoinStep<Record3<UUID, UUID, UUID>> recursiveInferences() {
-        Table<Record3<UUID, UUID, UUID>> allNetworkInferences = allNetworkInferences().asTable()
-                                                                                      .as("all_network_inferences");
-        Field<UUID> p1 = field(name(allNetworkInferences.getName(), "p1"),
-                               UUID.class);
-        Field<UUID> p2 = field(name(allNetworkInferences.getName(), "p2"),
-                               UUID.class);
-        Field<UUID> inf = field(name(allNetworkInferences.getName(), "inf"),
-                                UUID.class);
-
         Table<Record> target = TARGET_TABLE.as("target");
         Field<UUID> targetParent = field(name(target.getName(), "parent"),
                                          UUID.class);
@@ -456,35 +408,42 @@ public interface Inference {
 
         infer = create().select(graph.field(EDGE.PARENT)
                                      .as(p),
-                                inf.as(r), backtrackChild.as(c))
+                                ALL_NETWORK_INFERENCES.INFERENCE.as(r),
+                                backtrackChild.as(c))
                         .from(target)
                         .join(graph)
-                        .on(graph.field(EDGE.RELATIONSHIP)
-                                 .equal(p1)
+                        .on(graph.field(EDGE.PARENT)
+                                 .notEqual(backtrackChild)
+                                 .and(graph.field(EDGE.RELATIONSHIP)
+                                           .equal(ALL_NETWORK_INFERENCES.PREMISE1))
                                  .and(graph.field(EDGE.CHILD)
                                            .notEqual(targetParent))
-                                 .and(backtrackChild.notEqual(targetParent)))
-                        .where(backtrackParent.eq(graph.field(EDGE.CHILD))
-                                              .and(backtrackRelationship.equal(p2))
-                                              .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
+                                 .and(graph.field(EDGE.CHILD)
+                                           .eq(backtrackParent)))
+                        .where(backtrackChild.notEqual(targetParent)
+                                             .and(backtrackRelationship.equal(ALL_NETWORK_INFERENCES.PREMISE2)));
 
         SelectConditionStep<Record3<UUID, UUID, UUID>> infer2;
         infer2 = create().select(graph.field(EDGE.PARENT)
                                       .as(p),
-                                 p1.as(r), backtrackParent.as(c))
+                                 ALL_NETWORK_INFERENCES.PREMISE1.as(r),
+                                 backtrackParent.as(c))
                          .from(target)
                          .join(graph)
-                         .on(graph.field(EDGE.RELATIONSHIP)
-                                  .equal(p1)
+                         .on(graph.field(EDGE.PARENT)
+                                  .notEqual(backtrackChild)
+                                  .and(graph.field(EDGE.RELATIONSHIP)
+                                            .equal(ALL_NETWORK_INFERENCES.PREMISE1))
                                   .and(graph.field(EDGE.CHILD)
-                                            .notEqual(targetParent))
-                                  .and(backtrackChild.notEqual(targetParent)))
-                         .where(backtrackParent.eq(graph.field(EDGE.CHILD))
-                                               .and(backtrackRelationship.equal(p2))
-                                               .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
+                                            .eq(backtrackParent))
+                                  .and(graph.field(EDGE.CHILD)
+                                            .notEqual(targetParent)))
+                         .where(backtrackChild.notEqual(targetParent)
+                                              .and(backtrackRelationship.equal(ALL_NETWORK_INFERENCES.PREMISE2)));
 
         SelectConditionStep<Record3<UUID, UUID, UUID>> deduce;
-        deduce = create().select(backtrackParent.as(p), inf.as(r),
+        deduce = create().select(backtrackParent.as(p),
+                                 ALL_NETWORK_INFERENCES.INFERENCE.as(r),
                                  graph.field(EDGE.CHILD)
                                       .as(c))
                          .from(target)
@@ -492,16 +451,16 @@ public interface Inference {
                          .on(graph.field(EDGE.PARENT)
                                   .eq(backtrackChild)
                                   .and(graph.field(EDGE.RELATIONSHIP)
-                                            .equal(p2))
+                                            .equal(ALL_NETWORK_INFERENCES.PREMISE2))
                                   .and(graph.field(EDGE.CHILD)
                                             .notEqual(targetParent))
                                   .and(graph.field(EDGE.CHILD)
                                             .notEqual(backtrackChild)))
                          .where(backtrackChild.notEqual(targetParent))
-                         .and(backtrackRelationship.equal(p1));
+                         .and(backtrackRelationship.equal(ALL_NETWORK_INFERENCES.PREMISE1));
 
         return create().select(p, r, c)
-                       .from(backtrack, allNetworkInferences,
+                       .from(backtrack, ALL_NETWORK_INFERENCES,
                              lateral(infer.union(infer2)
                                           .union(deduce)));
     }

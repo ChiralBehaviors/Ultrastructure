@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.ALL_NETWORK_INFERENCES;
 import static com.chiralbehaviors.CoRE.jooq.Tables.AUTHENTICATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.TOKEN;
@@ -126,6 +127,7 @@ public class WorkspaceSnapshot {
                          .filter(t -> !t.equals(TOKEN))
                          .filter(t -> !t.equals(AUTHENTICATION))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
+                         .filter(t -> !t.equals(ALL_NETWORK_INFERENCES))
                          .forEach(t -> {
                              create.selectDistinct(t.fields())
                                    .from(t)
@@ -153,6 +155,7 @@ public class WorkspaceSnapshot {
                          .filter(t -> !t.equals(TOKEN))
                          .filter(t -> !t.equals(AUTHENTICATION))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
+                         .filter(t -> !t.equals(ALL_NETWORK_INFERENCES))
                          .forEach(t -> {
                              create.selectDistinct(t.fields())
                                    .from(t)

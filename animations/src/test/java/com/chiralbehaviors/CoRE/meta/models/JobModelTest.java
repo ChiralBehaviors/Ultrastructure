@@ -37,21 +37,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.jooq.Record1;
 import org.jooq.impl.DSL;
-import org.jooq.tools.LoggerListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.Routines;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
-import com.chiralbehaviors.CoRE.jooq.tables.NetworkInference;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -672,11 +668,11 @@ public class JobModelTest extends AbstractModelTest {
 
         };
 
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
+        //        model.create()
+        //             .configuration()
+        //             .connectionProvider()
+        //             .acquire()
+        //             .commit();
 
         assertTrue(inf.dynamicInference(scenario.getFactory1()
                                                 .getId(),
@@ -719,11 +715,54 @@ public class JobModelTest extends AbstractModelTest {
                                                         "InArea"),
                                         workspace.getId(ReferenceType.Existential,
                                                         "European Union")));
-        model.create()
-             .configuration()
-             .connectionProvider()
-             .acquire()
-             .commit();
+        assertNotNull(model.create()
+                           .select(DSL.value(true))
+                           .where(Routines.infer(scenario.getRsb225()
+                                                         .getId(),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "InArea"),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "United States"))
+                                          .eq(true))
+                           .fetchOne());
+
+        assertFalse(model.create()
+                         .select(Routines.infer(scenario.getRsb225()
+                                                        .getId(),
+                                                workspace.getId(ReferenceType.Existential,
+                                                                "InArea"),
+                                                workspace.getId(ReferenceType.Existential,
+                                                                "European Union")))
+                         .fetchOne()
+                         .component1());
+
+        assertNotNull(model.create()
+                           .select(DSL.value(true))
+                           .where(Routines.infer(scenario.getFactory1()
+                                                         .getId(),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "InArea"),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "United States"))
+                                          .eq(true))
+                           .fetchOne());
+        assertNotNull(model.create()
+                           .select(DSL.value(true))
+                           .where(Routines.infer(scenario.getFactory1()
+                                                         .getId(),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "InArea"),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "United States"))
+                                          .eq(true)
+                                          .and(Routines.infer(scenario.getRsb225()
+                                                                      .getId(),
+                                                              workspace.getId(ReferenceType.Existential,
+                                                                              "InArea"),
+                                                              workspace.getId(ReferenceType.Existential,
+                                                                              "United States"))
+                                                       .eq(true)))
+                           .fetchOne());
 
     }
 
@@ -760,11 +799,11 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
         model.flush();
-        //        model.create()
-        //             .configuration()
-        //             .connectionProvider()
-        //             .acquire()
-        //             .commit();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(5, jobs.size());
 

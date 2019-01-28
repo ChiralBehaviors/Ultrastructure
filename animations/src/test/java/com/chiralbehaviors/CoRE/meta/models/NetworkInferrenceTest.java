@@ -27,13 +27,18 @@ import static org.junit.Assert.assertTrue;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.EdgeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.hellblazer.utils.Tuple;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 
 /**
  * @author hhildebrand
@@ -119,35 +124,38 @@ public class NetworkInferrenceTest extends AbstractModelTest {
 
         model.flush();
 
+        Inference inf = new Inference() {
+
+            @Override
+            public Model model() {
+                return model;
+            }
+        };
+
         UUID parent = Oregon.getId();
         UUID relationship = inCountry.getId();
-        UUID child = US.getId();
+        UUID child = US.getId(); 
 
-        assertTrue(model.create()
-                        .select(infer(parent, relationship, child))
-                        .fetchOne()
-                        .component1());
+        assertTrue(inf.dynamicInference(parent, relationship, child));
 
         parent = Portland.getId();
 
-        assertTrue(model.create()
-                        .select(infer(parent, relationship, child))
-                        .fetchOne()
-                        .component1());
+        assertTrue(inf.dynamicInference(parent, relationship, child));
 
         parent = firstStreet.getId();
 
-        assertTrue(model.create()
-                        .select(infer(parent, relationship, child))
-                        .fetchOne()
-                        .component1());
+        assertTrue(inf.dynamicInference(parent, relationship, child));
 
         parent = house.getId();
 
-        assertTrue(model.create()
-                        .select(infer(parent, relationship, child))
-                        .fetchOne()
-                        .component1());
+        assertTrue(inf.dynamicInference(parent, relationship, child));
+    }
+
+    @SuppressWarnings("unused")
+    private void debugLogLevel() {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger l = loggerContext.getLogger("org.jooq.tools.LoggerListener");
+        l.setLevel(Level.DEBUG);
     }
 
     @Test

@@ -23,6 +23,11 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.NETWORK_INFERENCE;
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.lateral;
+import static org.jooq.impl.DSL.name;
+import static org.jooq.impl.DSL.table;
+import static org.jooq.impl.DSL.val;
 import static org.jooq.impl.DSL.value;
 
 import java.util.Arrays;
@@ -34,11 +39,14 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Select;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectOnConditionStep;
 import org.jooq.Table;
-import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.jooq.tables.Edge;
 import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -55,17 +63,15 @@ import com.chiralbehaviors.CoRE.meta.Model;
 public interface Inference {
 
     interface CurentPassRules {
-        Field<UUID> CHILD        = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "child"),
-                                             UUID.class);
-        Field<UUID> ID           = DSL.field(DSL.name(CURRENT_PASS_RULES, "id"),
-                                             UUID.class);
-        Field<UUID> PARENT       = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "parent"),
-                                             UUID.class);
-        Field<UUID> RELATIONSHIP = DSL.field(DSL.name(CURRENT_PASS_RULES,
-                                                      "relationship"),
-                                             UUID.class);
+        Field<UUID> CHILD        = field(name(CURRENT_PASS_RULES, "child"),
+                                         UUID.class);
+        Field<UUID> ID           = field(name(CURRENT_PASS_RULES, "id"),
+                                         UUID.class);
+        Field<UUID> PARENT       = field(name(CURRENT_PASS_RULES, "parent"),
+                                         UUID.class);
+        Field<UUID> RELATIONSHIP = field(name(CURRENT_PASS_RULES,
+                                              "relationship"),
+                                         UUID.class);
 
         static List<Field<?>> fields() {
             return Arrays.asList(ID, PARENT, RELATIONSHIP, CHILD);
@@ -73,16 +79,14 @@ public interface Inference {
     }
 
     interface LastPassRules {
-        Field<UUID> CHILD        = DSL.field(DSL.name(LAST_PASS_RULES, "child"),
-                                             UUID.class);
-        Field<UUID> ID           = DSL.field(DSL.name(LAST_PASS_RULES, "id"),
-                                             UUID.class);
-        Field<UUID> PARENT       = DSL.field(DSL.name(LAST_PASS_RULES,
-                                                      "parent"),
-                                             UUID.class);
-        Field<UUID> RELATIONSHIP = DSL.field(DSL.name(LAST_PASS_RULES,
-                                                      "relationship"),
-                                             UUID.class);
+        Field<UUID> CHILD        = field(name(LAST_PASS_RULES, "child"),
+                                         UUID.class);
+        Field<UUID> ID           = field(name(LAST_PASS_RULES, "id"),
+                                         UUID.class);
+        Field<UUID> PARENT       = field(name(LAST_PASS_RULES, "parent"),
+                                         UUID.class);
+        Field<UUID> RELATIONSHIP = field(name(LAST_PASS_RULES, "relationship"),
+                                         UUID.class);
 
         static List<Field<?>> fields() {
             return Arrays.asList(ID, PARENT, RELATIONSHIP, CHILD);
@@ -90,39 +94,77 @@ public interface Inference {
     }
 
     interface WorkingMemory {
-        Field<UUID> CHILD        = DSL.field(DSL.name(WORKING_MEMORY, "child"),
-                                             UUID.class);
-        Field<UUID> PARENT       = DSL.field(DSL.name(WORKING_MEMORY, "parent"),
-                                             UUID.class);
-        Field<UUID> RELATIONSHIP = DSL.field(DSL.name(WORKING_MEMORY,
-                                                      "relationship"),
-                                             UUID.class);
+        Field<UUID> CHILD        = field(name(WORKING_MEMORY, "child"),
+                                         UUID.class);
+        Field<UUID> PARENT       = field(name(WORKING_MEMORY, "parent"),
+                                         UUID.class);
+        Field<UUID> RELATIONSHIP = field(name(WORKING_MEMORY, "relationship"),
+                                         UUID.class);
 
         static List<Field<?>> fields() {
             return Arrays.asList(PARENT, RELATIONSHIP, CHILD);
         }
     }
 
-    final Field<UUID>   CHILD                    = DSL.field(DSL.name("child"),
-                                                             UUID.class);
+    final Field<UUID>   CHILD                    = field(name("child"),
+                                                         UUID.class);
     final String        CURRENT_PASS_RULES       = "current_pass_rules";
-    final Table<?>      CURRENT_PASS_RULES_TABLE = DSL.table(DSL.name(CURRENT_PASS_RULES));
-    static Field<UUID>  GENERATE_UUID            = DSL.field("uuid_generate_v1mc()",
-                                                             UUID.class);
+    final Table<?>      CURRENT_PASS_RULES_TABLE = table(name(CURRENT_PASS_RULES));
+    static Field<UUID>  GENERATE_UUID            = field("uuid_generate_v1mc()",
+                                                         UUID.class);
     final String        INFERENCES               = "inferences";
-    final Table<Record> INFERENCES_TABLE         = DSL.table(DSL.name(INFERENCES));
+    final Table<Record> INFERENCES_TABLE         = table(name(INFERENCES));
     final String        LAST_PASS_RULES          = "last_pass_rules";
-    final Table<?>      LAST_PASS_RULES_TABLE    = DSL.table(DSL.name(LAST_PASS_RULES));
+    final Table<?>      LAST_PASS_RULES_TABLE    = table(name(LAST_PASS_RULES));
     static Logger       log                      = LoggerFactory.getLogger(Inference.class);
     static int          MAX_DEDUCTIONS           = 1000;
-    final Field<UUID>   PARENT                   = DSL.field(DSL.name("parent"),
-                                                             UUID.class);
-    final Field<UUID>   RELATIONSHIP             = DSL.field(DSL.name("relationship"),
-                                                             UUID.class);
+    final Field<UUID>   PARENT                   = field(name("parent"),
+                                                         UUID.class);
+    final Field<UUID>   RELATIONSHIP             = field(name("relationship"),
+                                                         UUID.class);
     final String        TARGET                   = "target";
-    final Table<Record> TARGET_TABLE             = DSL.table(DSL.name(TARGET));
+    final Table<Record> TARGET_TABLE             = table(name(TARGET));
     final String        WORKING_MEMORY           = "working_memory";
-    final Table<?>      WORKING_MEMORY_TABLE     = DSL.table(DSL.name(WORKING_MEMORY));
+    final Table<?>      WORKING_MEMORY_TABLE     = table(name(WORKING_MEMORY));
+
+    default Select<Record3<UUID, UUID, UUID>> allNetworkInferences() {
+        Field<UUID> premise1 = field(name("premise1"), UUID.class);
+        Field<UUID> premise2 = field(name("premise2"), UUID.class);
+        Field<UUID> inference = field(name("inference"), UUID.class);
+
+        Existential p1Inv = EXISTENTIAL.as("p1Inv");
+        Existential p2Inv = EXISTENTIAL.as("p2Inv");
+        Existential infInv = EXISTENTIAL.as("infInv");
+
+        Field<UUID> p1 = p1Inv.field(EXISTENTIAL.INVERSE)
+                              .as("premise1");
+        Field<UUID> p2 = p2Inv.field(EXISTENTIAL.INVERSE)
+                              .as("premise2");
+        Field<UUID> inf = infInv.field(EXISTENTIAL.INVERSE)
+                                .as("inference");
+
+        SelectOnConditionStep<Record3<UUID, UUID, UUID>> inverseInferences;
+        inverseInferences = create().select(p2, p1, inf)
+                                    .from(NETWORK_INFERENCE)
+                                    .join(p1Inv)
+                                    .on(p1Inv.field(EXISTENTIAL.ID)
+                                             .eq(NETWORK_INFERENCE.PREMISE1))
+                                    .join(p2Inv)
+                                    .on(p2Inv.field(EXISTENTIAL.ID)
+                                             .eq(NETWORK_INFERENCE.PREMISE2))
+                                    .join(infInv)
+                                    .on(infInv.field(EXISTENTIAL.ID)
+                                              .eq(NETWORK_INFERENCE.INFERENCE));
+
+        return create().select(premise1.as("p1"), premise2.as("p2"),
+                               inference.as("inf"))
+                       .from(create().select(NETWORK_INFERENCE.PREMISE1,
+                                             NETWORK_INFERENCE.PREMISE2,
+                                             NETWORK_INFERENCE.INFERENCE)
+                                     .from(NETWORK_INFERENCE)
+                                     .union(inverseInferences))
+                       .orderBy(premise1, premise2, inference);
+    }
 
     default void alterDeductionTablesForNextPass() {
         create().truncate("last_pass_rules")
@@ -190,20 +232,37 @@ public interface Inference {
 
     default boolean dynamicInference(UUID parent, UUID relationship,
                                      UUID child) {
+        RecordsFactory records = model().records();
+        records.existentialName(child);
 
-        return create().fetchExists(create().withRecursive(TARGET_TABLE.getName(),
-                                                           PARENT.getName(),
-                                                           RELATIONSHIP.getName(),
-                                                           CHILD.getName())
-                                            .as(target(parent, relationship,
-                                                       child))
-                                            .with(INFERENCES_TABLE.getName(),
-                                                  PARENT.getName(),
-                                                  RELATIONSHIP.getName(),
-                                                  CHILD.getName())
-                                            .as(terminalInference().union(recursiveInferences()))
-                                            .selectFrom(INFERENCES_TABLE)
-                                            .where(PARENT.eq(parent)));
+        SelectConditionStep<Record> inferenceQuery;
+        inferenceQuery = create().withRecursive(TARGET_TABLE.getName(),
+                                                PARENT.getName(),
+                                                RELATIONSHIP.getName(),
+                                                CHILD.getName())
+                                 .as(target(parent, relationship, child))
+                                 .with(INFERENCES_TABLE.getName(),
+                                       PARENT.getName(), RELATIONSHIP.getName(),
+                                       CHILD.getName())
+                                 .as(terminalInference().union(recursiveInferences()))
+                                 .selectFrom(INFERENCES_TABLE)
+                                 .where(PARENT.eq(parent)
+                                              .and(RELATIONSHIP.eq(relationship))
+                                              .and(CHILD.eq(child)));
+
+        System.out.println();
+        inferenceQuery.fetch()
+                      .stream()
+                      .map(r -> {
+                          return records.existentialName((UUID) r.get(0))
+                                 + " -> "
+                                 + records.existentialName((UUID) r.get(1))
+                                 + " -> "
+                                 + records.existentialName((UUID) r.get(2));
+                      })
+                      .forEach(row -> System.out.println(row));
+
+        return create().fetchExists(inferenceQuery);
     }
 
     default void generateInverses() {
@@ -219,10 +278,10 @@ public interface Inference {
                                                        net.field(EDGE.CHILD),
                                                        rel.field(EXISTENTIAL.INVERSE),
                                                        net.field(EDGE.PARENT),
-                                                       DSL.val(model().getCurrentPrincipal()
-                                                                      .getPrincipal()
-                                                                      .getId()),
-                                                       DSL.val(0))
+                                                       val(model().getCurrentPrincipal()
+                                                                  .getPrincipal()
+                                                                  .getId()),
+                                                       val(0))
                                                .from(net)
                                                .join(rel)
                                                .on(net.field(EDGE.RELATIONSHIP)
@@ -332,10 +391,10 @@ public interface Inference {
                                                CurentPassRules.PARENT,
                                                CurentPassRules.RELATIONSHIP,
                                                CurentPassRules.CHILD,
-                                               DSL.val(model().getCurrentPrincipal()
-                                                              .getPrincipal()
-                                                              .getId()),
-                                               DSL.val(0))
+                                               val(model().getCurrentPrincipal()
+                                                          .getPrincipal()
+                                                          .getId()),
+                                               val(0))
                                        .from(CURRENT_PASS_RULES_TABLE)
                                        .leftOuterJoin(EDGE)
                                        .on(CurentPassRules.PARENT.equal(EDGE.PARENT))
@@ -367,42 +426,85 @@ public interface Inference {
         generateInverses();
     }
 
-    default Select<? extends Record3<UUID, UUID, UUID>> recursiveInferences() {
-        Table<Record> target = TARGET_TABLE.as("target");
-        Field<UUID> targetParent = DSL.field(DSL.name(target.getName(),
-                                                      "parent"),
-                                             UUID.class);
-        Table<Record> backtrack = INFERENCES_TABLE.as("inferred");
-        Field<UUID> backtrackParent = DSL.field(DSL.name(backtrack.getName(),
-                                                         "parent"),
-                                                UUID.class);
-        Edge premise1 = EDGE.as("premise1");
-        Edge premise2 = EDGE.as("premise2");
+    default SelectJoinStep<Record3<UUID, UUID, UUID>> recursiveInferences() {
+        Table<Record3<UUID, UUID, UUID>> allNetworkInferences = allNetworkInferences().asTable()
+                                                                                      .as("all_network_inferences");
+        Field<UUID> p1 = field(name(allNetworkInferences.getName(), "p1"),
+                               UUID.class);
+        Field<UUID> p2 = field(name(allNetworkInferences.getName(), "p2"),
+                               UUID.class);
+        Field<UUID> inf = field(name(allNetworkInferences.getName(), "inf"),
+                                UUID.class);
 
-        return create().select(premise1.field(EDGE.PARENT),
-                               NETWORK_INFERENCE.INFERENCE,
-                               premise2.field(EDGE.CHILD))
-                       .from(premise1)
-                       .join(premise2)
-                       .on(premise2.field(EDGE.PARENT)
-                                   .eq(premise1.field(EDGE.CHILD))
-                                   .and(premise2.field(EDGE.CHILD)
-                                                .notEqual(premise1.field(EDGE.PARENT))))
-                       .join(NETWORK_INFERENCE)
-                       .on(premise1.field(EDGE.RELATIONSHIP)
-                                   .equal(NETWORK_INFERENCE.PREMISE1)
-                                   .and(premise2.field(EDGE.RELATIONSHIP)
-                                                .equal(NETWORK_INFERENCE.PREMISE2)))
-                       .join(backtrack)
-                       .on(premise2.field(EDGE.CHILD)
-                                   .eq(backtrackParent)
-                                   .or(premise1.field(EDGE.CHILD)
-                                               .eq(backtrackParent)))
-                       .join(target)
-                       .on(premise1.field(EDGE.CHILD)
-                                   .notEqual(targetParent)
-                                   .and(premise2.field(EDGE.CHILD)
-                                                .notEqual(targetParent)));
+        Table<Record> target = TARGET_TABLE.as("target");
+        Field<UUID> targetParent = field(name(target.getName(), "parent"),
+                                         UUID.class);
+        Table<Record> backtrack = INFERENCES_TABLE.as("inferred");
+        Field<UUID> backtrackParent = field(name(backtrack.getName(), "parent"),
+                                            UUID.class);
+        Field<UUID> backtrackRelationship = field(name(backtrack.getName(),
+                                                       "relationship"),
+                                                  UUID.class);
+        Field<UUID> backtrackChild = field(name(backtrack.getName(), "child"),
+                                           UUID.class);
+        Field<UUID> parent = field(name("p"), UUID.class);
+        Field<UUID> inferedRelationship = field(name("r"), UUID.class);
+        Field<UUID> child = field(name("c"), UUID.class);
+        Edge graph = EDGE.as("graph");
+
+        SelectConditionStep<Record3<UUID, UUID, UUID>> infer;
+
+        infer = create().select(graph.field(EDGE.PARENT)
+                                     .as(parent),
+                                inf.as(inferedRelationship),
+                                backtrackChild.as(child))
+                        .from(target)
+                        .join(graph)
+                        .on(graph.field(EDGE.RELATIONSHIP)
+                                 .equal(p1)
+                                 .and(graph.field(EDGE.CHILD)
+                                           .notEqual(targetParent))
+                                 .and(backtrackChild.notEqual(targetParent)))
+                        .where(backtrackParent.eq(graph.field(EDGE.CHILD))
+                                              .and(backtrackRelationship.equal(p2))
+                                              .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
+
+        SelectConditionStep<Record3<UUID, UUID, UUID>> infer2;
+        infer2 = create().select(graph.field(EDGE.PARENT)
+                                      .as(parent),
+                                 p1.as(inferedRelationship),
+                                 backtrackParent.as(child))
+                         .from(target)
+                         .join(graph)
+                         .on(graph.field(EDGE.RELATIONSHIP)
+                                  .equal(p1)
+                                  .and(graph.field(EDGE.CHILD)
+                                            .notEqual(targetParent))
+                                  .and(backtrackChild.notEqual(targetParent)))
+                         .where(backtrackParent.eq(graph.field(EDGE.CHILD))
+                                               .and(backtrackRelationship.equal(p2))
+                                               .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
+
+        SelectConditionStep<Record3<UUID, UUID, UUID>> deduce;
+        deduce = create().select(backtrackParent.as(parent),
+                                 inf.as(inferedRelationship),
+                                 graph.field(EDGE.CHILD)
+                                      .as(child))
+                         .from(target)
+                         .join(graph)
+                         .on(graph.field(EDGE.RELATIONSHIP)
+                                  .equal(p2)
+                                  .and(graph.field(EDGE.CHILD)
+                                            .notEqual(targetParent))
+                                  .and(backtrackChild.notEqual(targetParent)))
+                         .where(backtrackChild.eq(graph.field(EDGE.PARENT))
+                                              .and(backtrackRelationship.equal(p1))
+                                              .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
+
+        return create().select(parent, inferedRelationship, child)
+                       .from(backtrack, allNetworkInferences,
+                             lateral(infer.union(infer2)
+                                          .union(deduce)));
     }
 
     default Select<Record3<UUID, UUID, UUID>> target(UUID parent,
@@ -414,11 +516,11 @@ public interface Inference {
 
     default Select<Record3<UUID, UUID, UUID>> terminalInference() {
         Table<Record> target = TARGET_TABLE.as("target");
-        Field<UUID> targetRelationship = DSL.field(DSL.name(target.getName(),
-                                                            "relationship"),
-                                                   UUID.class);
-        Field<UUID> targetChild = DSL.field(DSL.name(target.getName(), "child"),
-                                            UUID.class);
+        Field<UUID> targetRelationship = field(name(target.getName(),
+                                                    "relationship"),
+                                               UUID.class);
+        Field<UUID> targetChild = field(name(target.getName(), "child"),
+                                        UUID.class);
         Edge p1 = EDGE.as("p1");
         return create().select(p1.field(EDGE.PARENT), targetRelationship,
                                targetChild)

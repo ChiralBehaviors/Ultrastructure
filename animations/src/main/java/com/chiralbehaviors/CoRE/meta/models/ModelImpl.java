@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.AUTHENTICATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.*;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
@@ -110,6 +110,7 @@ public class ModelImpl implements Model {
                          .filter(t -> !t.equals(TOKEN))
                          .filter(t -> !t.equals(JOB_CHRONOLOGY))
                          .filter(t -> !t.equals(WORKSPACE_LABEL))
+                         .filter(t -> !t.equals(ALL_NETWORK_INFERENCES))
                          .forEach(t -> {
                              MethodHandle handle;
                              try {

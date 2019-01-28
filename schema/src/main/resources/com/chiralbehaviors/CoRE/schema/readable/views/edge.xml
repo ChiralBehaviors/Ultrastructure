@@ -13,7 +13,6 @@
                     c.name AS child, 
                     p.domain AS parent_domain,
                     c.domain AS child_domain,
-                    n.notes, 
                     u.name AS updated_by, 
                     w.name AS workspace, n.id, 
                     wa.key AS wsp_key,
@@ -26,7 +25,6 @@
 			   JOIN existential u ON n.updated_by = u.id
              LEFT JOIN workspace_label wa ON wa.reference = n.id
              LEFT JOIN existential w ON wa.workspace = w.id
-             WHERE n.inference IS NULL
             ]]>
         </createView>
     </changeSet>

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 
 /**
@@ -35,6 +36,8 @@ public interface OrderProcessing {
     Product getAbc486();
 
     StatusCode getActive();
+
+    Relationship getAreaOf();
 
     StatusCode getAvailable();
 
@@ -71,7 +74,7 @@ public interface OrderProcessing {
     Location getRsb225();
 
     Product getShip();
-
+    
     StatusCode getWaitingOnPurchaseOrder();
 
 }

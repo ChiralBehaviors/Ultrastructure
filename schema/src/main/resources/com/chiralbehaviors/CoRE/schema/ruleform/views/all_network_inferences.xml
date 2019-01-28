@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+	<changeSet id="2.0.0" author="hhildebrand">
+		<createView viewName="all_network_inferences"
+			schemaName="ruleform" replaceIfExists="true"><![CDATA[
+			select premise1, premise2, inference 
+			from (
+			    (
+			        select ruleform.network_inference.premise1, 
+			               ruleform.network_inference.premise2, 
+			               ruleform.network_inference.inference 
+			            from ruleform.network_inference
+			    ) union (
+			        select p2Inv.inverse as premise2, 
+			               p1Inv.inverse as premise1, 
+			               infInv.inverse as inference
+			        from ruleform.network_inference
+			        join ruleform.existential as p1Inv
+			            on p1Inv.id = ruleform.network_inference.premise1
+			        join ruleform.existential as p2Inv
+			            on p2Inv.id = ruleform.network_inference.premise2
+			        join ruleform.existential as infInv 
+			            on infInv.id = ruleform.network_inference.inference
+			    )
+			) as foo
+            ]]>
+        </createView>
+	</changeSet>
+</databaseChangeLog>

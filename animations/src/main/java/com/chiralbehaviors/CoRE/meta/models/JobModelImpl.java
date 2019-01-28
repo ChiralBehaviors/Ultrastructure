@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static org.jooq.impl.DSL.*;
+import static com.chiralbehaviors.CoRE.jooq.Routines.*;
 import static com.chiralbehaviors.CoRE.jooq.Tables.CHILD_SEQUENCING_AUTHORIZATION;
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -516,16 +518,13 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<MetaProtocolRecord> getMetaprotocols(JobRecord job) {
-        return getMetaProtocolsFor(model.records()
-                                        .resolve(job.getService()));
+        return getMetaProtocolsFor(job.getService());
     }
 
     @Override
     public List<MetaProtocolRecord> getMetaProtocolsFor(Product service) {
-        return model.create()
-                    .selectFrom(META_PROTOCOL)
-                    .where(META_PROTOCOL.SERVICE.equal(service.getId()))
-                    .fetch();
+        UUID id = service.getId();
+        return getMetaProtocolsFor(id);
     }
 
     @Override
@@ -838,23 +837,23 @@ public class JobModelImpl implements JobModel {
         addServiceMask(metaProtocol, job, selectQuery);
         addStatusMask(metaProtocol, job, selectQuery);
 
-        addMask(selectQuery, metaProtocol.getDeliverFrom(),
-                job.getDeliverFrom(), PROTOCOL.DELIVER_FROM,
+        addMask(selectQuery, job.getDeliverFrom(),
+                metaProtocol.getDeliverFrom(), PROTOCOL.DELIVER_FROM,
                 ExistentialDomain.Location);
-        addMask(selectQuery, metaProtocol.getDeliverTo(), job.getDeliverTo(),
+        addMask(selectQuery, job.getDeliverTo(), metaProtocol.getDeliverTo(),
                 PROTOCOL.DELIVER_TO, ExistentialDomain.Location);
 
-        addMask(selectQuery, metaProtocol.getProduct(), job.getProduct(),
+        addMask(selectQuery, job.getProduct(), metaProtocol.getProduct(),
                 PROTOCOL.PRODUCT, ExistentialDomain.Product);
 
-        addMask(selectQuery, metaProtocol.getRequester(), job.getRequester(),
+        addMask(selectQuery, job.getRequester(), metaProtocol.getRequester(),
                 PROTOCOL.REQUESTER, ExistentialDomain.Agency);
 
-        addMask(selectQuery, metaProtocol.getAssignTo(), job.getAssignTo(),
+        addMask(selectQuery, job.getAssignTo(), metaProtocol.getAssignTo(),
                 PROTOCOL.ASSIGN_TO, ExistentialDomain.Agency);
 
-        addMask(selectQuery, metaProtocol.getQuantityUnit(),
-                job.getQuantityUnit(), PROTOCOL.QUANTITY_UNIT,
+        addMask(selectQuery, job.getQuantityUnit(),
+                metaProtocol.getQuantityUnit(), PROTOCOL.QUANTITY_UNIT,
                 ExistentialDomain.Unit);
 
         return selectQuery.fetch()
@@ -1194,30 +1193,65 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    private void addMask(SelectQuery<Record> selectQuery, UUID classifier,
-                         UUID classification, TableField<?, UUID> field,
+    private void addMask(SelectQuery<Record> selectQuery, UUID parent,
+                         UUID relationship, TableField<?, UUID> child,
                          ExistentialDomain domain) {
-        if (classifier.equals(WellKnownRelationship.ANY.id())) {
+        if (relationship.equals(WellKnownRelationship.ANY.id())) {
             if (log.isTraceEnabled()) {
-                log.trace("Match ANY {}", field.getName());
+                log.trace("Match ANY {}", child.getName());
             }
             return;
         }
         Condition condition;
-        if (classifier.equals(WellKnownRelationship.SAME.id())) {
-            condition = field.eq(classification);
+        if (relationship.equals(WellKnownRelationship.SAME.id())) {
+            condition = child.eq(parent);
             if (log.isTraceEnabled()) {
-                log.trace("Match SAME {}", field.getName());
+                log.trace("Match SAME {}", child.getName());
             }
         } else {
-            condition = field.in(inferenceSubQuery(classifier, classification));
+            condition = infer(value(parent), value(relationship),
+                              child).isTrue();
             if (log.isTraceEnabled()) {
-                log.trace("Match on inferrred {}", field.getName());
+                log.trace("Match on inferrred {} < {}:{}", model.records()
+                                                                .existentialName(parent),
+                          model.records()
+                               .existentialName(relationship),
+                          child.getName());
             }
         }
-        condition = condition.or(field.equal(getAnyId(domain)))
-                             .or(field.equal(getSameId(domain)))
-                             .or(field.equal(getNotApplicable(domain)));
+        condition = child.equal(getAnyId(domain))
+                         .or(child.equal(getSameId(domain)))
+                         .or(child.equal(getNotApplicable(domain)))
+                         .or(condition);
+        selectQuery.addConditions(condition);
+    }
+
+    @SuppressWarnings("unused")
+    private void addMask2(SelectQuery<Record> selectQuery,
+                          TableField<?, UUID> parent, UUID relationship,
+                          UUID child, ExistentialDomain domain) {
+        if (relationship.equals(WellKnownRelationship.ANY.id())) {
+            if (log.isTraceEnabled()) {
+                log.trace("Match ANY {}", parent.getName());
+            }
+            return;
+        }
+        Condition condition;
+        if (relationship.equals(WellKnownRelationship.SAME.id())) {
+            condition = parent.eq(child);
+            if (log.isTraceEnabled()) {
+                log.trace("Match SAME {}", parent.getName());
+            }
+        } else {
+            condition = parent.in(inferenceSubQuery(relationship, child));
+            if (log.isTraceEnabled()) {
+                log.trace("Match on inferrred {}", parent.getName());
+            }
+        }
+        condition = parent.equal(getAnyId(domain))
+                          .or(parent.equal(getSameId(domain)))
+                          .or(parent.equal(getNotApplicable(domain)))
+                          .or(condition);
         selectQuery.addConditions(condition);
     }
 
@@ -1231,8 +1265,9 @@ public class JobModelImpl implements JobModel {
                 log.trace("Match SAME service");
             }
         } else {
-            selectQuery.addConditions(PROTOCOL.SERVICE.in(inferenceSubQuery(metaProtocol.getServiceType(),
-                                                                            job.getService())));
+            selectQuery.addConditions(infer(PROTOCOL.SERVICE,
+                                            value(metaProtocol.getServiceType()),
+                                            value(job.getService())).isTrue());
             if (log.isTraceEnabled()) {
                 log.trace("Match inferred service");
             }
@@ -1249,8 +1284,9 @@ public class JobModelImpl implements JobModel {
                 log.trace("Match on SAME status");
             }
         } else {
-            selectQuery.addConditions(PROTOCOL.STATUS.in(inferenceSubQuery(metaProtocol.getStatus(),
-                                                                           job.getService())));
+            selectQuery.addConditions(infer(PROTOCOL.STATUS,
+                                            value(metaProtocol.getStatus()),
+                                            value(job.getStatus())).isTrue());
             if (log.isTraceEnabled()) {
                 log.trace("Match on inferred status");
             }
@@ -1349,6 +1385,13 @@ public class JobModelImpl implements JobModel {
             default:
                 throw new IllegalArgumentException();
         }
+    }
+
+    private List<MetaProtocolRecord> getMetaProtocolsFor(UUID service) {
+        return model.create()
+                    .selectFrom(META_PROTOCOL)
+                    .where(META_PROTOCOL.SERVICE.equal(service))
+                    .fetch();
     }
 
     private UUID getNotApplicable(ExistentialDomain domain) {
@@ -1574,9 +1617,12 @@ public class JobModelImpl implements JobModel {
     private boolean pathExists(ExistentialRuleform rf,
                                Relationship mpRelationship,
                                ExistentialRuleform child) {
-        if (mpRelationship.equals(WellKnownRelationship.ANY)
-            || mpRelationship.equals(WellKnownRelationship.SAME)
-            || mpRelationship.equals(WellKnownRelationship.NOT_APPLICABLE)) {
+        if (mpRelationship.getId()
+                          .equals(WellKnownRelationship.ANY.id())
+            || mpRelationship.getId()
+                             .equals(WellKnownRelationship.SAME.id())
+            || mpRelationship.getId()
+                             .equals(WellKnownRelationship.NOT_APPLICABLE.id())) {
             return true;
         }
         if (!model.getPhantasmModel()

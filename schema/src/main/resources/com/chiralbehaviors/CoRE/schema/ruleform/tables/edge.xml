@@ -20,11 +20,7 @@
 			</column>
 			<column name="child" type="uuid">
 				<constraints nullable="false" />
-			</column>
-			<column name="inference" type="uuid" />
-			<column name="premise1" type="uuid" />
-			<column name="premise2" type="uuid" />
-			<column name="notes" type="TEXT" />
+			</column> 
 			<column name="updated_by"
 				defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
 				<constraints nullable="false" />
@@ -40,12 +36,6 @@
 
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="child" baseTableName="edge"
-			constraintName="edge_child_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="parent" baseTableName="edge"
 			constraintName="edge_parent_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
@@ -56,36 +46,24 @@
 			constraintName="edge_relationship_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="CASCADE"
 			referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child" baseTableName="edge"
+            constraintName="edge_child_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE"
+            referencedColumnNames="id" referencedTableName="existential" />
 		<addForeignKeyConstraint
 			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
 			baseColumnNames="updated_by" baseTableName="edge"
 			constraintName="edge_updated_by_fkey" deferrable="true"
 			initiallyDeferred="true" onDelete="SET DEFAULT"
 			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="authority" baseTableName="edge"
-			constraintName="edge_authority_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="SET DEFAULT"
-			referencedColumnNames="id" referencedTableName="existential" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="premise1" baseTableName="edge"
-			constraintName="edge_premise1_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="edge" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="premise2" baseTableName="edge"
-			constraintName="edge_premise2_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="edge" />
-		<addForeignKeyConstraint
-			baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-			baseColumnNames="inference" baseTableName="edge"
-			constraintName="edge_inference_fkey" deferrable="true"
-			initiallyDeferred="true" onDelete="CASCADE"
-			referencedColumnNames="id" referencedTableName="network_inference" />
+        <addForeignKeyConstraint
+            baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="edge"
+            constraintName="edge_authority_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT"
+            referencedColumnNames="id" referencedTableName="existential" />
 
 		<createIndex schemaName="ruleform"
 			indexName="edge_relationship_idx" tableName="edge" unique="false">
@@ -94,15 +72,7 @@
 		<createIndex schemaName="ruleform"
 			indexName="edge_child_fky_idx" tableName="edge" unique="false">
 			<column name="child" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="edge_premise2_fky_idx" tableName="edge" unique="false">
-			<column name="premise2" />
-		</createIndex>
-		<createIndex schemaName="ruleform"
-			indexName="edge_inference_fky_idx" tableName="edge" unique="false">
-			<column name="inference" />
-		</createIndex>
+		</createIndex> 
 		<createIndex schemaName="ruleform"
 			indexName="edge_updated_by_fkey_idx" tableName="edge" unique="false">
 			<column name="updated_by" />

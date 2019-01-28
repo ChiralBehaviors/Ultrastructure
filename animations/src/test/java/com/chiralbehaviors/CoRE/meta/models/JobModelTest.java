@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -36,13 +37,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.jooq.impl.DSL;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.jooq.Routines;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -53,8 +58,13 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationR
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.JsonImporter;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.hellblazer.utils.Tuple;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 
 /**
  * @author hhildebrand
@@ -64,14 +74,16 @@ public class JobModelTest extends AbstractModelTest {
 
     private static JobModel        jobModel;
     private static OrderProcessing scenario;
+    private WorkspaceAccessor      workspace;
 
     @Before
     public void loadOrderProcessing() throws Exception {
         JsonImporter scope = JsonImporter.manifest(getClass().getResourceAsStream(ACM_95_WSP),
                                                    model);
-        scenario = scope.getWorkspace()
-                        .getAccessor(OrderProcessing.class);
+        workspace = scope.getWorkspace();
+        scenario = workspace.getAccessor(OrderProcessing.class);
         jobModel = model.getJobModel();
+        model.flush();
     }
 
     @Test
@@ -646,6 +658,122 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     @Test
+    public void testInferences() throws Exception {
+        Inference inf = new Inference() {
+
+            @Override
+            public Model model() {
+                return model;
+            }
+
+        };
+
+        //        model.create()
+        //             .configuration()
+        //             .connectionProvider()
+        //             .acquire()
+        //             .commit();
+
+        assertTrue(inf.dynamicInference(scenario.getFactory1()
+                                                .getId(),
+                                        workspace.getId(ReferenceType.Existential,
+                                                        "InArea"),
+                                        workspace.getId(ReferenceType.Existential,
+                                                        "United States")));
+
+        assertFalse(inf.dynamicInference(scenario.getFactory1()
+                                                 .getId(),
+                                         workspace.getId(ReferenceType.Existential,
+                                                         "InArea"),
+                                         workspace.getId(ReferenceType.Existential,
+                                                         "European Union")));
+
+        assertTrue(inf.dynamicInference(scenario.getRsb225()
+                                                .getId(),
+                                        workspace.getId(ReferenceType.Existential,
+                                                        "InArea"),
+                                        workspace.getId(ReferenceType.Existential,
+                                                        "United States")));
+
+        assertFalse(inf.dynamicInference(scenario.getRsb225()
+                                                 .getId(),
+                                         workspace.getId(ReferenceType.Existential,
+                                                         "InArea"),
+                                         workspace.getId(ReferenceType.Existential,
+                                                         "European Union")));
+
+        assertFalse(inf.dynamicInference(scenario.getRc31()
+                                                 .getId(),
+                                         workspace.getId(ReferenceType.Existential,
+                                                         "InArea"),
+                                         workspace.getId(ReferenceType.Existential,
+                                                         "United States")));
+
+        assertTrue(inf.dynamicInference(scenario.getRc31()
+                                                .getId(),
+                                        workspace.getId(ReferenceType.Existential,
+                                                        "InArea"),
+                                        workspace.getId(ReferenceType.Existential,
+                                                        "European Union")));
+        assertNotNull(model.create()
+                           .select(DSL.value(true))
+                           .where(Routines.infer(scenario.getRsb225()
+                                                         .getId(),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "InArea"),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "United States"))
+                                          .eq(true))
+                           .fetchOne());
+
+        assertFalse(model.create()
+                         .select(Routines.infer(scenario.getRsb225()
+                                                        .getId(),
+                                                workspace.getId(ReferenceType.Existential,
+                                                                "InArea"),
+                                                workspace.getId(ReferenceType.Existential,
+                                                                "European Union")))
+                         .fetchOne()
+                         .component1());
+
+        assertNotNull(model.create()
+                           .select(DSL.value(true))
+                           .where(Routines.infer(scenario.getFactory1()
+                                                         .getId(),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "InArea"),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "United States"))
+                                          .eq(true))
+                           .fetchOne());
+        assertNotNull(model.create()
+                           .select(DSL.value(true))
+                           .where(Routines.infer(scenario.getFactory1()
+                                                         .getId(),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "InArea"),
+                                                 workspace.getId(ReferenceType.Existential,
+                                                                 "United States"))
+                                          .eq(true)
+                                          .and(Routines.infer(scenario.getRsb225()
+                                                                      .getId(),
+                                                              workspace.getId(ReferenceType.Existential,
+                                                                              "InArea"),
+                                                              workspace.getId(ReferenceType.Existential,
+                                                                              "United States"))
+                                                       .eq(true)))
+                           .fetchOne());
+
+    }
+
+    @SuppressWarnings("unused")
+    private void debugLogLevel() {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger l = loggerContext.getLogger("org.jooq.tools.LoggerListener");
+        l.setLevel(Level.DEBUG);
+    }
+
+    @Test
     public void testOrder() throws Exception {
         JobRecord order = model.getJobModel()
                                .newInitializedJob(scenario.getDeliver());
@@ -665,13 +793,17 @@ public class JobModelTest extends AbstractModelTest {
         Map<ProtocolRecord, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
         model.flush();
-        model.flush();
         jobModel.changeStatus(order, scenario.getAvailable(),
                               "transition during test");
         model.flush();
         jobModel.changeStatus(order, scenario.getActive(),
                               "transition during test");
         model.flush();
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
         List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(5, jobs.size());
 

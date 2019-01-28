@@ -46,7 +46,5 @@
 		file="views/child_sequencing_authorization.xml" />
 	<include relativeToChangelogFile="true"
 		file="views/self_sequencing_authorization.xml" />
-	<include relativeToChangelogFile="true"
-		file="views/deductions.xml" />
 
 </databaseChangeLog>

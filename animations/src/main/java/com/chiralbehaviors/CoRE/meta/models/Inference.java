@@ -489,14 +489,16 @@ public interface Inference {
                                       .as(c))
                          .from(target)
                          .join(graph)
-                         .on(graph.field(EDGE.RELATIONSHIP)
-                                  .equal(p2)
+                         .on(graph.field(EDGE.PARENT)
+                                  .eq(backtrackChild)
+                                  .and(graph.field(EDGE.RELATIONSHIP)
+                                            .equal(p2))
                                   .and(graph.field(EDGE.CHILD)
                                             .notEqual(targetParent))
-                                  .and(backtrackChild.notEqual(targetParent)))
-                         .where(backtrackChild.eq(graph.field(EDGE.PARENT))
-                                              .and(backtrackRelationship.equal(p1))
-                                              .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
+                                  .and(graph.field(EDGE.CHILD)
+                                            .notEqual(backtrackChild)))
+                         .where(backtrackChild.notEqual(targetParent))
+                         .and(backtrackRelationship.equal(p1));
 
         return create().select(p, r, c)
                        .from(backtrack, allNetworkInferences,

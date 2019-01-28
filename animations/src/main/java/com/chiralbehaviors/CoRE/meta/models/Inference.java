@@ -42,6 +42,7 @@ import org.jooq.Select;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,7 +236,7 @@ public interface Inference {
         RecordsFactory records = model().records();
         records.existentialName(child);
 
-        SelectConditionStep<Record> inferenceQuery;
+        SelectWhereStep<Record> inferenceQuery;
         inferenceQuery = create().withRecursive(TARGET_TABLE.getName(),
                                                 PARENT.getName(),
                                                 RELATIONSHIP.getName(),
@@ -245,10 +246,7 @@ public interface Inference {
                                        PARENT.getName(), RELATIONSHIP.getName(),
                                        CHILD.getName())
                                  .as(terminalInference().union(recursiveInferences()))
-                                 .selectFrom(INFERENCES_TABLE)
-                                 .where(PARENT.eq(parent)
-                                              .and(RELATIONSHIP.eq(relationship))
-                                              .and(CHILD.eq(child)));
+                                 .selectFrom(INFERENCES_TABLE);
 
         System.out.println();
         inferenceQuery.fetch()
@@ -262,7 +260,9 @@ public interface Inference {
                       })
                       .forEach(row -> System.out.println(row));
 
-        return create().fetchExists(inferenceQuery);
+        return create().fetchExists(inferenceQuery.where(PARENT.eq(parent)
+                                                               .and(RELATIONSHIP.eq(relationship))
+                                                               .and(CHILD.eq(child))));
     }
 
     default void generateInverses() {
@@ -447,17 +447,16 @@ public interface Inference {
                                                   UUID.class);
         Field<UUID> backtrackChild = field(name(backtrack.getName(), "child"),
                                            UUID.class);
-        Field<UUID> parent = field(name("p"), UUID.class);
-        Field<UUID> inferedRelationship = field(name("r"), UUID.class);
-        Field<UUID> child = field(name("c"), UUID.class);
+        Field<UUID> p = field(name("p"), UUID.class);
+        Field<UUID> r = field(name("r"), UUID.class);
+        Field<UUID> c = field(name("c"), UUID.class);
         Edge graph = EDGE.as("graph");
 
         SelectConditionStep<Record3<UUID, UUID, UUID>> infer;
 
         infer = create().select(graph.field(EDGE.PARENT)
-                                     .as(parent),
-                                inf.as(inferedRelationship),
-                                backtrackChild.as(child))
+                                     .as(p),
+                                inf.as(r), backtrackChild.as(c))
                         .from(target)
                         .join(graph)
                         .on(graph.field(EDGE.RELATIONSHIP)
@@ -471,9 +470,8 @@ public interface Inference {
 
         SelectConditionStep<Record3<UUID, UUID, UUID>> infer2;
         infer2 = create().select(graph.field(EDGE.PARENT)
-                                      .as(parent),
-                                 p1.as(inferedRelationship),
-                                 backtrackParent.as(child))
+                                      .as(p),
+                                 p1.as(r), backtrackParent.as(c))
                          .from(target)
                          .join(graph)
                          .on(graph.field(EDGE.RELATIONSHIP)
@@ -486,10 +484,9 @@ public interface Inference {
                                                .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
 
         SelectConditionStep<Record3<UUID, UUID, UUID>> deduce;
-        deduce = create().select(backtrackParent.as(parent),
-                                 inf.as(inferedRelationship),
+        deduce = create().select(backtrackParent.as(p), inf.as(r),
                                  graph.field(EDGE.CHILD)
-                                      .as(child))
+                                      .as(c))
                          .from(target)
                          .join(graph)
                          .on(graph.field(EDGE.RELATIONSHIP)
@@ -501,7 +498,7 @@ public interface Inference {
                                               .and(backtrackRelationship.equal(p1))
                                               .and(backtrackChild.notEqual(graph.field(EDGE.PARENT))));
 
-        return create().select(parent, inferedRelationship, child)
+        return create().select(p, r, c)
                        .from(backtrack, allNetworkInferences,
                              lateral(infer.union(infer2)
                                           .union(deduce)));

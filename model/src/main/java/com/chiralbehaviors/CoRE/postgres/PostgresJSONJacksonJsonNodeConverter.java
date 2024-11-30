@@ -27,19 +27,20 @@ import org.jooq.Converter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
+import org.jooq.JSONB;
 
 /**
  * @author hhildebrand
  *
  */
 public class PostgresJSONJacksonJsonNodeConverter
-        implements Converter<Object, JsonNode> {
+        implements Converter<JSONB, JsonNode> {
 
     private static final ObjectMapper MAPPER           = new ObjectMapper();
     private static final long         serialVersionUID = 1L;
 
     @Override
-    public JsonNode from(Object t) {
+    public JsonNode from(JSONB t) {
         try {
             return t == null ? null : MAPPER.readTree(t + "");
         } catch (IOException e) {
@@ -48,16 +49,16 @@ public class PostgresJSONJacksonJsonNodeConverter
     }
 
     @Override
-    public Class<Object> fromType() {
-        return Object.class;
+    public Class<JSONB> fromType() {
+        return JSONB.class;
     }
 
     @Override
-    public Object to(JsonNode u) {
+    public JSONB to(JsonNode u) {
         try {
             return u == null
                    || u.equals(NullNode.instance) ? null
-                                                  : MAPPER.writeValueAsString(u);
+                                                  : JSONB.jsonbOrNull(MAPPER.writeValueAsString(u));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

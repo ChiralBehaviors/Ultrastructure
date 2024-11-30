@@ -155,7 +155,7 @@ abstract public class Bootstrap {
                                                                auth.getId(),
                                                                ReferenceType.Facet,
                                                                kernelWorkspace);
-        auth.insert();
+//        auth.insert();
         label.insert();
     }
 
@@ -164,7 +164,7 @@ abstract public class Bootstrap {
         ExistentialRecord existential = create.selectFrom(EXISTENTIAL)
                                               .where(EXISTENTIAL.ID.equal(wko.id()))
                                               .fetchOne();
-        existential.insert();
+//        existential.insert();
         WorkspaceLabelRecord auth = records.newWorkspaceLabel(key, wko.id(),
                                                               ReferenceType.Existential,
                                                               kernelWorkspace);

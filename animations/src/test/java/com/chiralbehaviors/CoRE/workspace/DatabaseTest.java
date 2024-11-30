@@ -53,7 +53,6 @@ abstract public class DatabaseTest {
               .connectionProvider()
               .acquire()
               .rollback();
-        create.close();
     }
 
     @Before

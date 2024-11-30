@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.json;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.JSONB;
 import org.jooq.Record;
 import org.jooq.StoreQuery;
 

@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.model;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.postgres.JsonExtensions.CONVERTER;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeConverter;
 import org.jooq.UpdatableRecord;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -52,7 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class PhantasmCRUD {
-    public static final String       _INSTANCE = "_instance";
+    public static final String                               _INSTANCE = "_instance";
     public static final ObjectMapper MAPPER    = new ObjectMapper();
 
     protected final Model            model;
@@ -233,7 +235,7 @@ public class PhantasmCRUD {
                                                  .getEdgeProperties(parent,
                                                                     auth.getAuth(),
                                                                     child);
-        return edgeProperties == null ? null : edgeProperties.getProperties();
+        return edgeProperties == null ? null : CONVERTER.from(edgeProperties.getProperties());
     }
 
     public JsonNode getFacetProperty(Aspect facet,
@@ -241,7 +243,7 @@ public class PhantasmCRUD {
         FacetPropertyRecord record = model.getPhantasmModel()
                                           .getFacetProperties(facet.getFacet(),
                                                               ruleform);
-        return record == null ? null : record.getProperties();
+        return record == null ? null : CONVERTER.from(record.getProperties());
     }
 
     /**
@@ -310,7 +312,7 @@ public class PhantasmCRUD {
                                                  .getEdgeProperties(parent,
                                                                     auth.getAuth(),
                                                                     child);
-        return edgeProperties == null ? null : edgeProperties.getProperties();
+        return edgeProperties == null ? null : CONVERTER.from(edgeProperties.getProperties());
     }
 
     /**
@@ -464,7 +466,6 @@ public class PhantasmCRUD {
 
     /**
      * @param description
-     * @param id
      * @return
      */
     public ExistentialRuleform setDescription(ExistentialRuleform instance,
@@ -504,10 +505,10 @@ public class PhantasmCRUD {
             properties.setAuth(auth.getAuth()
                                    .getId());
             properties.setEdge(edge.getId());
-            properties.setProperties(MAPPER.valueToTree(object));
+            properties.setProperties(CONVERTER.to(MAPPER.valueToTree(object)));
             properties.insert();
         } else {
-            properties.setProperties(MAPPER.valueToTree(object));
+            properties.setProperties(CONVERTER.to(MAPPER.valueToTree(object)));
             properties.update();
         }
         return null;
@@ -528,7 +529,7 @@ public class PhantasmCRUD {
             create = true;
         }
         properties.setProperties(object == null ? null
-                                                : MAPPER.valueToTree(object));
+                                                : CONVERTER.to(MAPPER.valueToTree(object)));
         if (create) {
             properties.insert();
         } else {

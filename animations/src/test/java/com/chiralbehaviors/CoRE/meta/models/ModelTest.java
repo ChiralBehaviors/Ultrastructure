@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot.CONVERT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -63,7 +64,7 @@ public class ModelTest extends AbstractModelTest {
                                    .newFacetProperty();
         attribute.setFacet(facet.getId());
         attribute.setExistential(agency.getId());
-        attribute.setProperties(JsonNodeFactory.instance.textNode("foo"));
+        attribute.setProperties(CONVERT.to(JsonNodeFactory.instance.textNode("foo")));
         attribute.insert();  
     }
 

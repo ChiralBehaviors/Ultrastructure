@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.json;
 import java.io.IOException;
 
 import org.jooq.Field;
+import org.jooq.JSONB;
 import org.jooq.Record;
 import org.jooq.tools.StringUtils;
 
@@ -62,7 +63,11 @@ public class RecordSerializer extends JsonSerializer<Record> {
             Object value = record.getValue(field);
             if (value != null) {
                 jgen.writeFieldName(StringUtils.toCamelCaseLC(field.getName()));
-                jgen.writeObject(value);
+                if (value instanceof JSONB json) {
+                    jgen.writeObject(json.data());
+                } else {
+                    jgen.writeObject(value);
+                }
             }
         }
     }

@@ -766,13 +766,6 @@ public class JobModelTest extends AbstractModelTest {
 
     }
 
-    @SuppressWarnings("unused")
-    private void debugLogLevel() {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        ch.qos.logback.classic.Logger l = loggerContext.getLogger("org.jooq.tools.LoggerListener");
-        l.setLevel(Level.DEBUG);
-    }
-
     @Test
     public void testOrder() throws Exception {
         JobRecord order = model.getJobModel()

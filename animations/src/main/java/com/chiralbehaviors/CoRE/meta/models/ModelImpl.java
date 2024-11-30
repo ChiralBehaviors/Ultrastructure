@@ -151,7 +151,7 @@ public class ModelImpl implements Model {
     }
 
     public static Configuration configuration() {
-        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES_10);
+        Configuration configuration = new DefaultConfiguration().set(SQLDialect.POSTGRES);
         Settings settings = new Settings();
         settings.setExecuteWithOptimisticLocking(true);
         settings.withRenderFormatted(false);
@@ -364,7 +364,6 @@ public class ModelImpl implements Model {
                          .error("error rolling back transaction during model close",
                                 e);
         }
-        create.close();
     }
 
     @Override

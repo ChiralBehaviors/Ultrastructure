@@ -6,7 +6,17 @@ An implementation of Ultrastructure
 
 See the [Ultrastructure Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) for moar information
 
+Current Status
 ==============
+Raised from the dead to build in modern timz. The 
+GraphQL and Rest APis are cut from the build due to 
+vast changes in Dropwizard, Jackson, etc.  Don't need
+that, so not worrying about it now ;)
+
+Things build and run, although there's no "service" any more.
+
+Build Information
+==================
 
 [![Build Status](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/badge/icon)](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/)[![Coverage Status](https://coveralls.io/repos/github/ChiralBehaviors/Ultrastructure/badge.svg?branch=master)](https://coveralls.io/github/ChiralBehaviors/Ultrastructure?branch=master)
 

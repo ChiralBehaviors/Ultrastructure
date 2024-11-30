@@ -28,6 +28,9 @@ import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -43,6 +46,21 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
  *
  */
 abstract public class DatabaseTest {
+
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
+    "postgres:16-alpine"
+    );
+
+    @BeforeAll
+    static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgres.stop();
+    }
+
     protected DSLContext     create;
     protected RecordsFactory RECORDS;
 

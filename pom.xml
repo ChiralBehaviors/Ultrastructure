@@ -82,15 +82,15 @@
 		<module>dsl</module>
 		<module>loader-plugin-test</module>
 		<module>phantasm-plugin</module>
-		<module>phantasm-at-rest</module>
+<!--		<module>phantasm-at-rest</module>-->
 		<module>thing-ontology</module>
 		<module>workspace-plugin</module>
 		<module>schema</module>
 		<module>test-plugin</module>
 		<module>acm-95-ontology</module>
-		<module>handi-navi</module>
-		<module>universal</module>
-		<module>postgresql-testing</module>
+<!--		<module>handi-navi</module>-->
+<!--		<module>universal</module>-->
+<!--		<module>postgresql-testing</module>-->
 	</modules>
 
 	<dependencyManagement>
@@ -529,9 +529,9 @@
 				<version>1.2.2</version>
 			</dependency>
 			<dependency>
-				<groupId>ru.yandex.qatools.embed</groupId>
-				<artifactId>postgresql-embedded</artifactId>
-				<version>2.10</version>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>1.20.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -609,11 +609,6 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.jooq</groupId>
-					<artifactId>jooq-codegen-maven</artifactId>
-					<version>${jooq.version}</version>
-				</plugin>
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>workspace-plugin</artifactId>
@@ -755,7 +750,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>1.4.1</version>
+					<version>3.5.0</version>
 					<executions>
 						<execution>
 							<id>enforce</id>
@@ -770,82 +765,59 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.jooq</groupId>
+					<artifactId>jooq-codegen-maven</artifactId>
+					<version>${jooq.version}</version>
+					<configuration>
+						<jdbc>
+							<url>${container.db.url}</url>
+							<username>${db.login}</username>
+							<password>${db.password}</password>
+						</jdbc>
+					</configuration>
+				</plugin>
+				<plugin>
+					<!-- used to start the postgressql test container -->
+					<groupId>org.codehaus.gmaven</groupId>
+					<artifactId>groovy-maven-plugin</artifactId>
+					<version>2.1.1</version>
+					<executions>
+						<execution>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>execute</goal>
+							</goals>
+							<configuration>
+								<source>
+									// very dirty hack to pre-load class to fix class loading issue
+									Class.forName("org.testcontainers.shaded.com.github.dockerjava.core.command.KillContainerCmdImpl")
+									Class.forName("org.testcontainers.shaded.com.github.dockerjava.core.exec.KillContainerCmdExec")
+									db = new org.testcontainers.containers.PostgreSQLContainer(
+											"postgres:latest")
+											.withUsername("${db.login}")
+											.withDatabaseName(${db.database})
+											.withPassword(${db.password})
+
+									db.start()
+
+									// After you've started the container, collect its generated
+									// JDBC URL (which contains a random port)
+									project.properties.setProperty('container.db.url', db.getJdbcUrl())
+
+								</source>
+							</configuration>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.testcontainers</groupId>
+							<artifactId>postgresql</artifactId>
+							<version>1.20.3</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-	<profiles>
-		<profile>
-			<id>coverage</id>
-			<properties>
-				<core.log.level>TRACE</core.log.level>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.1</version>
-						<configuration>
-							<excludes>
-								<exclude>com/chiralbehaviors/CoRE/jooq/**/*</exclude>
-								<exclude>com/chiralbehaviors/CoRE/workspace/dsl/grammar/**/*</exclude>
-								<exclude>com/chiralbehaviors/CoRE/universal/spa/**/*</exclude>
-								<exclude>**/WorkspacePresentation*</exclude>
-								<exclude>**/HelpMojo*</exclude>
-								<exclude>**/UniversalApplication*</exclude>
-								<exclude>**/English*</exclude>
-								<exclude>**/TwoFormInflector*</exclude>
-								<exclude>**/json/RecordMixin*</exclude>
-								<exclude>**/json/IngoreStoredQueryOverload*</exclude>
-								<exclude>**/utils/CoreDbConfiguration*</exclude>
-								<exclude>**/utils/DbaConfiguration*</exclude>
-								<exclude>**/postgres/PostgresJSONJacksonJsonNodeBinding*</exclude>
-								<exclude>**/postgres/PostgresJSONJacksonJsonNodeConverter*</exclude>
-								<exclude>**/authentication/NullAuthFilter*</exclude>
-							</excludes>
-						</configuration>
-						<executions>
-							<execution>
-								<id>prepare-agent</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>report</id>
-								<goals>
-									<goal>report</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.eluder.coveralls</groupId>
-						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>4.3.0</version>
-						<configuration>
-							<repoToken>${coveralls.repo.token}</repoToken>
-						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>javax.xml.bind</groupId>
-								<artifactId>jaxb-api</artifactId>
-								<version>${jaxb.version}</version>
-							</dependency>
-							<dependency>
-								<groupId>com.sun.xml.bind</groupId>
-								<artifactId>jaxb-core</artifactId>
-								<version>${jaxb.version}</version>
-							</dependency>
-							<dependency>
-								<groupId>com.sun.xml.bind</groupId>
-								<artifactId>jaxb-impl</artifactId>
-								<version>${jaxb.version}</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

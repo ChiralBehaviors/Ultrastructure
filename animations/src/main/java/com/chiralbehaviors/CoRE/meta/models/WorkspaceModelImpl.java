@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.meta.models.ModelImpl.clearPhantasmCache;
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot.CONVERT;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         props.put("version", version);
         props.put("name", name);
         props.put("description", description);
-        properties.setProperties(props);
+        properties.setProperties(CONVERT.to(props));
         properties.insert();
         workspace.add(properties);
         return scope;

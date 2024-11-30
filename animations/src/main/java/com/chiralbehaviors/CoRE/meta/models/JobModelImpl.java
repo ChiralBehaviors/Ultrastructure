@@ -1,7 +1,6 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -9,7 +8,7 @@
  *  the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- *  ULtrastructure is distributed in the hope that it will be useful,
+ *  Ultrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Affero General Public License for more details.
@@ -1084,10 +1083,6 @@ public class JobModelImpl implements JobModel {
                              r.getParent());
     }
 
-    /**
-     * @param metaProtocol
-     * @return
-     */
     public Object toString(MetaProtocolRecord r) {
         return String.format("MetaProtocol[%s->%s:%s:%s:%s:%s:%s:%s]",
                              model.records()
@@ -1455,8 +1450,6 @@ public class JobModelImpl implements JobModel {
      * Do the work of matching protocols to networks defined by jobs and
      * metaprocols.
      *
-     * @param metaprotocol
-     * @param job
      * @return
      */
 

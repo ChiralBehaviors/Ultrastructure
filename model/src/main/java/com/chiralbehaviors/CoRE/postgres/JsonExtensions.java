@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.postgres;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSONB;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDataType;
@@ -34,7 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface JsonExtensions {
     final PostgresJSONJacksonJsonNodeConverter CONVERTER = new PostgresJSONJacksonJsonNodeConverter();
-    final DefaultDataType<JsonNode>            JSON_B    = new DefaultDataType<>(SQLDialect.POSTGRES_9_5,
+    final DefaultDataType<JsonNode>            JSON_B    = new DefaultDataType<>(SQLDialect.POSTGRES,
                                                                                  JsonNode.class,
                                                                                  "jsonb");
 
@@ -47,7 +48,7 @@ public interface JsonExtensions {
         return DSL.condition("{0}<@{1}", field, DSL.val(parent, field));
     }
 
-    public static Condition contains(Field<JsonNode> field, JsonNode value) {
+    public static Condition contains(Field<JSONB> field, JsonNode value) {
         return DSL.condition("{0}@>{1}", field, DSL.val(value, field));
     }
 

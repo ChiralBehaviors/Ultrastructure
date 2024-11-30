@@ -1,34 +1,22 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
  *
-
+ *
  * This file is part of Ultrastructure.
  *
- *  Ultrastructure is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Affero General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * Ultrastructure is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General
+ * Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- *  ULtrastructure is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Affero General Public License for more details.
+ * ULtrastructure is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
  *
- *  You should have received a copy of the GNU Affero General Public License
- *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with Ultrastructure.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 package com.chiralbehaviors.CoRE.phantasm.model;
-
-import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
-import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
-
-import java.beans.Introspector;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -40,6 +28,16 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.utils.English;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.jooq.DSLContext;
+
+import java.beans.Introspector;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot.CONVERT;
 
 /**
  * Bare bones metadata representation of a Phantasm facet in Java
@@ -48,6 +46,70 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public class Phantasmagoria {
+    public final Map<String, NetworkAuthorization> childAuthorizations = new HashMap<>();
+    public final Aspect                            facet;
+    public final Map<String, NetworkAuthorization> singularAuthorizations = new HashMap<>();
+    public       JsonNode                          schema;
+
+    public Phantasmagoria(Aspect facet) {
+        this.facet = facet;
+    }
+
+    public static String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
+    }
+
+    protected static Relationship resolve(DSLContext create, UUID id) {
+        return create.selectFrom(EXISTENTIAL).where(EXISTENTIAL.ID.equal(id)).fetchOne().into(Relationship.class);
+    }
+
+    protected static ExistentialRuleform resolveExistential(DSLContext create, UUID id) {
+        return new RecordsFactory() {
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+
+            @Override
+            public UUID currentPrincipalId() {
+                return null;
+            }
+        }.resolve(id);
+    }
+
+    private static FacetRecord resolveFacet(DSLContext create, UUID id) {
+        return create.selectFrom(FACET).where(FACET.ID.equal(id)).fetchOne();
+    }
+
+    public void traverse(Model model) {
+        schema = CONVERT.from(
+        model.getPhantasmModel().getFacetDeclaration(facet.classifier, facet.classification).getSchema());
+        traverseNetworkAuths(model);
+
+    }
+
+    private void traverseNetworkAuths(Model model) {
+
+        DSLContext create = model.create();
+        model.getPhantasmModel().getNetworkAuthorizations(facet.getFacet(), false).forEach(auth -> {
+            Aspect child = new Aspect(create, auth.getChild());
+            String fieldName = toFieldName(auth.getName());
+            NetworkAuthorization networkAuth = new NetworkAuthorization(fieldName, create, auth, child);
+
+            if (auth.getCardinality() == Cardinality.N) {
+                childAuthorizations.put(networkAuth.getFieldName(), networkAuth);
+            } else {
+                singularAuthorizations.put(networkAuth.getFieldName(), networkAuth);
+            }
+        });
+    }
+
     public static class Aspect {
         private final ExistentialRuleform classification;
         private final Relationship        classifier;
@@ -62,8 +124,7 @@ public class Phantasmagoria {
             this(create, resolveFacet(create, id));
         }
 
-        public Aspect(FacetRecord facet, Relationship classifier,
-                      ExistentialRuleform classification) {
+        public Aspect(FacetRecord facet, Relationship classifier, ExistentialRuleform classification) {
             assert facet != null & classifier != null & classification != null;
             this.facet = facet;
             this.classifier = classifier;
@@ -92,8 +153,7 @@ public class Phantasmagoria {
 
         @Override
         public String toString() {
-            return String.format("Aspect[%s:%s]", classifier.getName(),
-                                 classification.getName());
+            return String.format("Aspect[%s:%s]", classifier.getName(), classification.getName());
         }
     }
 
@@ -104,16 +164,12 @@ public class Phantasmagoria {
         private final FacetRecord             parent;
         private final Relationship            relationship;
 
-        public NetworkAuthorization(String fieldName, DSLContext create,
-                                    EdgeAuthorizationRecord auth,
-                                    Aspect child) {
-            this(fieldName, auth, resolveFacet(create, auth.getParent()),
-                 resolve(create, auth.getRelationship()), child);
+        public NetworkAuthorization(String fieldName, DSLContext create, EdgeAuthorizationRecord auth, Aspect child) {
+            this(fieldName, auth, resolveFacet(create, auth.getParent()), resolve(create, auth.getRelationship()),
+                 child);
         }
 
-        public NetworkAuthorization(String fieldName,
-                                    EdgeAuthorizationRecord auth,
-                                    FacetRecord parent,
+        public NetworkAuthorization(String fieldName, EdgeAuthorizationRecord auth, FacetRecord parent,
                                     Relationship relationship, Aspect child) {
             this.fieldName = fieldName;
             this.auth = auth;
@@ -151,7 +207,7 @@ public class Phantasmagoria {
         }
 
         public JsonNode getSchema() {
-            return auth.getSchema();
+            return CONVERT.from(auth.getSchema());
         }
 
         public String plural() {
@@ -160,88 +216,7 @@ public class Phantasmagoria {
 
         @Override
         public String toString() {
-            return String.format("Network Auth[%s->%s]", relationship.getName(),
-                                 child);
+            return String.format("Network Auth[%s->%s]", relationship.getName(), child);
         }
-    }
-
-    public static String capitalized(String field) {
-        char[] chars = field.toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
-    }
-
-    public static String toFieldName(String name) {
-        return Introspector.decapitalize(name.replaceAll("\\s", ""));
-    }
-
-    protected static Relationship resolve(DSLContext create, UUID id) {
-        return create.selectFrom(EXISTENTIAL)
-                     .where(EXISTENTIAL.ID.equal(id))
-                     .fetchOne()
-                     .into(Relationship.class);
-    }
-
-    protected static ExistentialRuleform resolveExistential(DSLContext create,
-                                                            UUID id) {
-        return new RecordsFactory() {
-            @Override
-            public DSLContext create() {
-                return create;
-            }
-
-            @Override
-            public UUID currentPrincipalId() {
-                return null;
-            }
-        }.resolve(id);
-    }
-
-    private static FacetRecord resolveFacet(DSLContext create, UUID id) {
-        return create.selectFrom(FACET)
-                     .where(FACET.ID.equal(id))
-                     .fetchOne();
-    }
-
-    public final Map<String, NetworkAuthorization> childAuthorizations    = new HashMap<>();
-    public final Aspect                            facet;
-    public JsonNode                                schema;
-
-    public final Map<String, NetworkAuthorization> singularAuthorizations = new HashMap<>();
-
-    public Phantasmagoria(Aspect facet) {
-        this.facet = facet;
-    }
-
-    public void traverse(Model model) {
-        schema = model.getPhantasmModel()
-                      .getFacetDeclaration(facet.classifier,
-                                           facet.classification)
-                      .getSchema();
-        traverseNetworkAuths(model);
-
-    }
-
-    private void traverseNetworkAuths(Model model) {
-
-        DSLContext create = model.create();
-        model.getPhantasmModel()
-             .getNetworkAuthorizations(facet.getFacet(), false)
-             .forEach(auth -> {
-                 Aspect child = new Aspect(create, auth.getChild());
-                 String fieldName = toFieldName(auth.getName());
-                 NetworkAuthorization networkAuth = new NetworkAuthorization(fieldName,
-                                                                             create,
-                                                                             auth,
-                                                                             child);
-
-                 if (auth.getCardinality() == Cardinality.N) {
-                     childAuthorizations.put(networkAuth.getFieldName(),
-                                             networkAuth);
-                 } else {
-                     singularAuthorizations.put(networkAuth.getFieldName(),
-                                                networkAuth);
-                 }
-             });
     }
 }

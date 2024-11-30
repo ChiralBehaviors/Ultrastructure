@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EDGE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.enums.ReferenceType.Existential;
+import static com.chiralbehaviors.CoRE.postgres.JsonExtensions.CONVERTER;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -134,10 +135,6 @@ public class JsonImporter {
     private UUID                uuid;
     private EditableWorkspace   workspace;
 
-    /**
-     * @param resourceAsStream
-     * @param model2
-     */
     public JsonImporter(InputStream resource, Model model) {
         this(from(resource), model);
     }
@@ -241,11 +238,11 @@ public class JsonImporter {
                                        .newFacetProperty();
                 facetProperties.setExistential(existential.getId());
                 facetProperties.setFacet(facet.getId());
-                facetProperties.setProperties(properties);
+                facetProperties.setProperties(CONVERTER.to(properties));
                 facetProperties.insert();
                 workspace.add(facetProperties);
             } else {
-                facetProperties.setProperties(properties);
+                facetProperties.setProperties(CONVERTER.to(properties));
                 facetProperties.update();
             }
         }
@@ -335,15 +332,15 @@ public class JsonImporter {
         authorization.setName(name);
         authorization.setParent(auth.getId());
         authorization.setRelationship(resolve(constraint.rel));
-        authorization.setSchema(constraint.schema);
-        authorization.setDefaultProperties(constraint.defaultProperties);
+        authorization.setSchema(CONVERTER.to(constraint.schema));
+        authorization.setDefaultProperties(CONVERTER.to(constraint.defaultProperties));
         resolveChild(constraint, authorization, loaded);
         Cardinality cardinality = cardinality(constraint);
         authorization.setCardinality(cardinality);
         authorization.insert();
         workspace.add(authorization);
         log.debug("loading constraint {} on {}", name, auth.getName());
-        authorization.setSchema(constraint.schema);
+        authorization.setSchema(CONVERTER.to(constraint.schema));
     }
 
     private FacetRecord load(String name, Facet facet) {
@@ -361,8 +358,8 @@ public class JsonImporter {
         authorization.setClassifier(classifier.getId());
         authorization.setClassification(classification.getId());
         authorization.setName(name);
-        authorization.setSchema(facet.schema);
-        authorization.setDefaultProperties(facet.defaultProperties);
+        authorization.setSchema(CONVERTER.to(facet.schema));
+        authorization.setDefaultProperties(CONVERTER.to(facet.defaultProperties));
         authorization.insert();
         log.debug("loading Facet {}", name);
         workspace.put(name, authorization);
@@ -718,7 +715,7 @@ public class JsonImporter {
                          .fetchSingle()
                          .component1();
         props.setAuth(auth);
-        props.setProperties(edge.properties);
+        props.setProperties(CONVERTER.to(edge.properties));
         props.setEdge(record.getId());
         props.insert(); 
         workspace.add(props);

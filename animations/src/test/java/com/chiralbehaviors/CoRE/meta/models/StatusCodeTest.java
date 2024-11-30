@@ -127,7 +127,6 @@ public class StatusCodeTest extends AbstractModelTest {
                                                                         loopState,
                                                                         state1);
         back.insert();
-        terminate.insert();
         model.flush();
     }
 

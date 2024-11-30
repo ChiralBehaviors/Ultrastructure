@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_LABEL;
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot.CONVERT;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeConverter;
 import org.jooq.Record2;
 import org.jooq.TableRecord;
 
@@ -308,7 +310,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
         ObjectNode value = JsonNodeFactory.instance.objectNode();
         value.put(NAMESPACE, name);
-        attribute.setProperties(value);
+        attribute.setProperties(CONVERT.to(value));
         if (update) {
             attribute.update();
         } else {
@@ -409,9 +411,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                     .getImmediateChildrenLinks(getDefiningProduct(),
                                                                kernel.getImports(),
                                                                ExistentialDomain.Product)) {
-            JsonNode properties = model.getPhantasmModel()
+            JsonNode properties = CONVERT.from(model.getPhantasmModel()
                                        .getEdgeProperties(auth, link)
-                                       .getProperties();
+                                       .getProperties());
 
             Integer lookupOrderValue = properties.hasNonNull(LOOKUP_ORDER) ? ((IntNode) properties.get(LOOKUP_ORDER)).asInt()
                                                                             : -1;

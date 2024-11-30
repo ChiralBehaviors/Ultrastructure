@@ -161,7 +161,7 @@ public class FacetTypeTest extends AbstractModelTest {
         assertTrue(newAliases.containsAll(thing1.get_Properties()
                                                 .getAliases()));
         assertEquals(newUri, thing1.get_Properties()
-                                   .getURI());
+                                   .getUri());
 
         variables = new HashMap<>();
         variables.put("thing1", UuidUtil.encode(thing1.getRuleform()
@@ -253,7 +253,7 @@ public class FacetTypeTest extends AbstractModelTest {
         thing1Props.setAliases(Arrays.asList(new String[] { "smith",
                                                             "jones" }));
         String uri = "http://example.com";
-        thing1Props.setURI(uri);
+        thing1Props.setUri(uri);
         thing1.set_Properties(thing1Props);
 
         thing1.setDerivedFrom(artifact1);
@@ -302,7 +302,7 @@ public class FacetTypeTest extends AbstractModelTest {
         assertEquals(Arrays.asList(newAliases), thing1.get_Properties()
                                                       .getAliases());
         assertEquals(newUri, thing1.get_Properties()
-                                   .getURI());
+                                   .getUri());
 
         MasterThing kingThing = model.construct(MasterThing.class,
                                                 ExistentialDomain.Product,
@@ -374,7 +374,7 @@ public class FacetTypeTest extends AbstractModelTest {
         thing1Props.setAliases(Arrays.asList(new String[] { "smith",
                                                             "jones" }));
         String uri = "http://example.com";
-        thing1Props.setURI(uri);
+        thing1Props.setUri(uri);
         thing1Props.setName("test");
         thing1Props.setDescription("testy");
         thing1.set_Properties(thing1Props);

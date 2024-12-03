@@ -88,7 +88,9 @@
 		<module>schema</module>
 		<module>test-plugin</module>
 		<module>acm-95-ontology</module>
-<!--		<module>handi-navi</module>-->
+		<module>utils</module>
+		<module>jbcrypt</module>
+		<!--		<module>handi-navi</module>-->
 <!--		<module>universal</module>-->
 <!--		<module>postgresql-testing</module>-->
 	</modules>

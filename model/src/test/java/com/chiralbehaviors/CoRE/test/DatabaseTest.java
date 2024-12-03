@@ -25,13 +25,10 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
-import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
@@ -45,13 +42,12 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
 /**
  * @author hhildebrand
- *
  */
 abstract public class DatabaseTest {
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-    "postgres:16-alpine"
-    );
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+    protected DSLContext     create;
+    protected RecordsFactory RECORDS;
 
     @BeforeClass
     public static void beforeAll() {
@@ -62,9 +58,6 @@ abstract public class DatabaseTest {
     public static void afterAll() {
         postgres.stop();
     }
-
-    protected DSLContext     create;
-    protected RecordsFactory RECORDS;
 
     @After
     public void after() throws DataAccessException, SQLException {
